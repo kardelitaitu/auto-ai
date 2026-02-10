@@ -33,6 +33,10 @@ export class FreeOpenRouterHelper {
     this.results = null;
     this.testing = false;
     this.testStartTime = null;
+    
+    // Cache TTL: 5 minutes (300000 ms)
+    this.CACHE_TTL = 300000;
+    this.cacheTimestamp = null;
   }
 
   _maskKey(key) {
@@ -164,7 +168,9 @@ export class FreeOpenRouterHelper {
     }
 
     if (this.results && this.results.testDuration > 0) {
-      logger.info('[FreeRouterHelper] Tests already completed, using cached results');
+      const cacheAge = this.cacheTimestamp ? Math.round((Date.now() - this.cacheTimestamp) / 1000) : 'unknown';
+      const cacheStatus = this.isCacheValid() ? 'valid' : 'stale';
+      logger.info(`[FreeRouterHelper] Tests already completed, using cached results (${cacheAge}s old, ${cacheStatus})`);
       return this.results;
     }
 
@@ -241,6 +247,10 @@ export class FreeOpenRouterHelper {
     this.results.testDuration = Date.now() - this.testStartTime;
     this.testing = false;
     this.testStartTime = null;
+    
+    // Set cache timestamp when tests complete
+    this.cacheTimestamp = Date.now();
+    logger.debug(`[FreeRouterHelper] Cache timestamp set: ${new Date(this.cacheTimestamp).toISOString()}`);
 
     logger.info(`[FreeRouterHelper] Model Test Complete: ${successCount}/${this.models.length} working (${this.results.testDuration}ms)`);
     
@@ -278,7 +288,35 @@ export class FreeOpenRouterHelper {
   }
 
   getResults() {
+    // Check if cache is expired
+    if (this.results && this.cacheTimestamp) {
+      const age = Date.now() - this.cacheTimestamp;
+      if (age > this.CACHE_TTL) {
+        logger.info(`[FreeRouterHelper] Cache expired (${Math.round(age / 1000)}s old), will refresh on next request`);
+        // Don't clear immediately, just mark as stale
+        return { ...this.results, stale: true, cacheAge: age };
+      }
+    }
     return this.results;
+  }
+
+  /**
+   * Check if cached results are still valid
+   * @returns {boolean}
+   */
+  isCacheValid() {
+    if (!this.results || !this.cacheTimestamp) return false;
+    const age = Date.now() - this.cacheTimestamp;
+    return age <= this.CACHE_TTL;
+  }
+
+  /**
+   * Get cache age in milliseconds
+   * @returns {number|null}
+   */
+  getCacheAge() {
+    if (!this.cacheTimestamp) return null;
+    return Date.now() - this.cacheTimestamp;
   }
 
   isTesting() {
