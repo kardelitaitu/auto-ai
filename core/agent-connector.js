@@ -11,6 +11,7 @@ import VisionInterpreter from './vision-interpreter.js';
 import { getSettings } from '../utils/configLoader.js';
 import RequestQueue from './request-queue.js';
 import CircuitBreaker from './circuit-breaker.js';
+import { LLMBatcher } from './request-batcher.js';
 
 const logger = createLogger('agent-connector.js');
 
@@ -25,6 +26,8 @@ class AgentConnector {
         this.visionInterpreter = new VisionInterpreter();
         this.requestQueue = new RequestQueue({ maxConcurrent: 3, maxRetries: 3 });
         this.circuitBreaker = new CircuitBreaker({ failureThreshold: 5, halfOpenTime: 30000 });
+        this.llmBatcher = new LLMBatcher({ batchSize: 5, batchDelay: 50 });
+        this.llmBatcher.setClients({ local: this.localClient, cloud: this.cloudClient });
     }
 
     /**
@@ -89,7 +92,8 @@ class AgentConnector {
     getStats(sessionId) {
         return {
             queue: this.requestQueue.getStats(),
-            circuitBreaker: this.circuitBreaker.getAllStatus()
+            circuitBreaker: this.circuitBreaker.getAllStatus(),
+            batcher: this.llmBatcher.getStats()
         };
     }
 
