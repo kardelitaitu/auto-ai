@@ -14,7 +14,7 @@
 | Phase 3 | 🟡 In Progress | phase3-router-optimization | Medium |
 | Phase 4 | ✅ Complete | phase4-queue-retry | Medium |
 | Phase 5 | ❌ Removed | - | Medium |
-| Phase 6 | ⏸️ Pending | - | None |
+| Phase 6 | ✅ Complete | phase6-health-monitoring | Low |
 
 ## Phase 0: Safety Setup - COMPLETE
 
@@ -225,6 +225,58 @@ git checkout phase4-queue-retry
 | Feb 11 | Phase 2 started | Config management improvements |
 | Feb 11 | Add ConfigManager | Centralize configuration with validation |
 | Feb 11 | Schema-based validation | Catch config errors early |
+| Feb 11 | Remove LLM batcher | Not integrated, causing confusion |
+
+## Phase 6: Health Monitoring - ✅ COMPLETE
+
+**Status**: ✅ COMPLETE  
+**Started**: February 11, 2025  
+**Completed**: February 11, 2025  
+**Risk**: Low (additive only)  
+**Commit**: Pending
+
+### Goal
+Add consolidated health monitoring for agent-connector with metrics tracking and health scoring
+
+### Plan
+1. Add LLM request tracking to agent-connector.js
+2. Create getHealth() method combining queue, circuit breaker, and request metrics
+3. Add health logging function
+4. Add unit tests
+5. Commit changes
+
+### Files
+- MODIFY: core/agent-connector.js
+- NEW: tests/agent-connector-health.test.js
+
+### Rollback
+```bash
+git checkout phase4-queue-retry
+```
+
+### Phase 6 Summary
+✅ **Completed Successfully** - Added health monitoring to agent-connector
+
+**Features Added:**
+- Request tracking: total, successful, failed, local vs cloud, vision
+- Success rate calculation
+- Average duration tracking
+- Health score (0-100) based on success rate, queue utilization, circuit breaker status
+- Consolidated getHealth() method with status, checks, and summary
+- logHealth() function for periodic reporting
+
+**Health Checks:**
+- Queue health (running/queued requests)
+- Circuit breaker status (healthy/degraded/recovering)
+- Request success rate and average duration
+
+**Usage:**
+```javascript
+const health = agentConnector.getHealth();
+// { status: 'healthy', healthScore: 95, checks: {...}, summary: {...} }
+
+agentConnector.logHealth(); // Logs formatted health report
+```
 
 ## Activity Log
 
@@ -357,6 +409,40 @@ git checkout phase4-queue-retry
 - Requests continued going through normal path
 - Decision: Remove entirely to avoid confusion
 - Reverted all changes, deleted batcher files
+
+### February 11, 2025 - Phase 6 Started
+**09:42** - Phase 6 initiated
+**09:43** - Starting health monitoring implementation
+
+**09:44** - ✅ Added LLM request tracking to agent-connector.js
+- Stats object with: totalRequests, successfulRequests, failedRequests
+- Local vs cloud request tracking
+- Vision request tracking
+- Success rate calculation
+- Average duration tracking
+
+**09:45** - ✅ Created getHealth() method
+- Consolidated health status combining queue, circuit breaker, request metrics
+- Health score calculation (0-100) based on:
+  - Request success rate (50% weight)
+  - Queue utilization (25% weight)
+  - Circuit breaker status (25% weight)
+- Status: healthy (>80), degraded (50-80), unhealthy (<50)
+
+**09:46** - ✅ Added logHealth() function
+- Formatted console output with timestamp
+- Shows status, success rate, queue, circuit breaker
+- Easy to read summary for monitoring
+
+**09:47** - ✅ Created unit tests
+- tests/agent-connector-health.test.js (15 test cases)
+- Tests for stats tracking
+- Tests for health score calculation
+- Tests for health report generation
+- Syntax validation passed
+
+**09:48** - ✅ Phase 6 complete
+- All files created
 - Ready for testing
 
 ## Notes

@@ -25,6 +25,17 @@ class AgentConnector {
         this.visionInterpreter = new VisionInterpreter();
         this.requestQueue = new RequestQueue({ maxConcurrent: 3, maxRetries: 3 });
         this.circuitBreaker = new CircuitBreaker({ failureThreshold: 5, halfOpenTime: 30000 });
+
+        this.stats = {
+            totalRequests: 0,
+            successfulRequests: 0,
+            failedRequests: 0,
+            totalDuration: 0,
+            localRequests: 0,
+            cloudRequests: 0,
+            visionRequests: 0,
+            startTime: Date.now()
+        };
     }
 
     /**
@@ -40,11 +51,39 @@ class AgentConnector {
         const { action, payload, sessionId } = request;
         logger.info(`[${sessionId}] Processing request: ${action}`);
 
-        const priority = payload.priority || 0;
+        const startTime = Date.now();
+        this.stats.totalRequests++;
 
-        return this.requestQueue.enqueue(async () => {
-            return this._executeWithCircuitBreaker(request, action);
-        }, { priority });
+        const isVision = action === 'analyze_page_with_vision' || payload?.vision;
+        if (isVision) {
+            this.stats.visionRequests++;
+        }
+
+        try {
+            const priority = payload.priority || 0;
+
+            const result = await this.requestQueue.enqueue(async () => {
+                return this._executeWithCircuitBreaker(request, action);
+            }, { priority });
+
+            const duration = Date.now() - startTime;
+            this.stats.successfulRequests++;
+            this.stats.totalDuration += duration;
+
+            if (result.metadata?.routedTo === 'cloud') {
+                this.stats.cloudRequests++;
+            } else {
+                this.stats.localRequests++;
+            }
+
+            return result;
+        } catch (error) {
+            const duration = Date.now() - startTime;
+            this.stats.failedRequests++;
+            this.stats.totalDuration += duration;
+
+            throw error;
+        }
     }
 
     /**
@@ -87,10 +126,120 @@ class AgentConnector {
      * @returns {object}
      */
     getStats(sessionId) {
+        const { totalRequests, successfulRequests, failedRequests, totalDuration, localRequests, cloudRequests, visionRequests, startTime } = this.stats;
+
+        const successRate = totalRequests > 0 ? ((successfulRequests / totalRequests) * 100).toFixed(2) : 0;
+        const avgDuration = totalRequests > 0 ? Math.round(totalDuration / totalRequests) : 0;
+        const uptime = Date.now() - startTime;
+
         return {
+            requests: {
+                total: totalRequests,
+                successful: successfulRequests,
+                failed: failedRequests,
+                successRate: parseFloat(successRate),
+                avgDuration,
+                local: localRequests,
+                cloud: cloudRequests,
+                vision: visionRequests
+            },
             queue: this.requestQueue.getStats(),
-            circuitBreaker: this.circuitBreaker.getAllStatus()
+            circuitBreaker: this.circuitBreaker.getAllStatus(),
+            uptime
         };
+    }
+
+    /**
+     * Get consolidated health status
+     * @returns {object}
+     */
+    getHealth() {
+        const stats = this.getStats();
+        const queueStats = stats.queue;
+        const cbStatus = stats.circuitBreaker;
+
+        let circuitHealth = 'healthy';
+        for (const [model, status] of Object.entries(cbStatus)) {
+            if (status.state === 'OPEN') {
+                circuitHealth = 'degraded';
+                break;
+            }
+            if (status.state === 'HALF_OPEN') {
+                circuitHealth = 'recovering';
+            }
+        }
+
+        const healthScore = this._calculateHealthScore(stats);
+
+        return {
+            status: healthScore > 80 ? 'healthy' : healthScore > 50 ? 'degraded' : 'unhealthy',
+            healthScore,
+            timestamp: Date.now(),
+            checks: {
+                queue: {
+                    status: queueStats.running < queueStats.running * 0.8 ? 'healthy' : 'degraded',
+                    running: queueStats.running,
+                    queued: queueStats.queued
+                },
+                circuitBreaker: {
+                    status: circuitHealth,
+                    breakers: cbStatus
+                },
+                requests: {
+                    status: parseFloat(stats.requests.successRate) > 80 ? 'healthy' : 'degraded',
+                    successRate: stats.requests.successRate,
+                    avgDuration: stats.requests.avgDuration
+                }
+            },
+            summary: {
+                totalRequests: stats.requests.total,
+                uptime: stats.uptime,
+                utilization: (queueStats.running / 3 * 100).toFixed(0) + '%'
+            }
+        };
+    }
+
+    /**
+     * Calculate overall health score (0-100)
+     * @private
+     */
+    _calculateHealthScore(stats) {
+        let score = 100;
+
+        const successRatePenalty = 100 - stats.requests.successRate;
+        score -= (successRatePenalty * 0.5);
+
+        const queueUtilization = stats.queue.running / 3;
+        if (queueUtilization > 0.8) {
+            score -= 20;
+        } else if (queueUtilization > 0.6) {
+            score -= 10;
+        }
+
+        for (const [model, status] of Object.entries(stats.circuitBreaker)) {
+            if (status.state === 'OPEN') {
+                score -= 30;
+            } else if (status.state === 'HALF_OPEN') {
+                score -= 15;
+            }
+        }
+
+        return Math.max(0, Math.min(100, Math.round(score)));
+    }
+
+    /**
+     * Log health status to console
+     */
+    logHealth() {
+        const health = this.getHealth();
+        const timestamp = new Date().toLocaleTimeString();
+
+        console.log(`\n[${timestamp}] Agent Connector Health Report`);
+        console.log(`Status: ${health.status.toUpperCase()} (score: ${health.healthScore})`);
+        console.log(`Requests: ${health.summary.totalRequests} total, ${health.checks.requests.successRate}% success`);
+        console.log(`Queue: ${health.checks.queue.running} running, ${health.checks.queue.queued} queued`);
+        console.log(`Circuit Breakers: ${health.checks.circuitBreaker.status}`);
+        console.log(`Uptime: ${Math.round(health.summary.uptime / 1000)}s\n`);
     }
 
     /**
