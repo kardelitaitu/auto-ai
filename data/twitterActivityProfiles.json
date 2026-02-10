@@ -1,0 +1,2352 @@
+[
+  {
+    "id": "01-Skimmer",
+    "description": "Type: Skimmer | Input: Mouse (83%) | Dive: 30.5% | T-Dive: 12.1% Like: 2.00% Bkmk: 0.05% Follow: 0.16%",
+    "timings": {
+      "readingPhase": {
+        "mean": 34620,
+        "deviation": 6944
+      },
+      "scrollPause": {
+        "mean": 437,
+        "deviation": 132
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1162,
+          "deviation": 124
+        },
+        "keys": {
+          "mean": 100,
+          "deviation": 21
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.3701,
+      "profileDive": 0.3051,
+      "tweetDive": 0.1207,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0005,
+      "followOnProfile": 0.0016,
+      "idle": 0.0693
+    },
+    "inputMethods": {
+      "wheelDown": 0.8309,
+      "wheelUp": 0.0458,
+      "space": 0.1233,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "02-Skimmer",
+    "description": "Type: Skimmer | Input: Mouse (88%) | Dive: 37.4% | T-Dive: 10.8% Like: 2.00% Bkmk: 1.11% Follow: 0.52%",
+    "timings": {
+      "readingPhase": {
+        "mean": 23763,
+        "deviation": 10320
+      },
+      "scrollPause": {
+        "mean": 218,
+        "deviation": 172
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1183,
+          "deviation": 159
+        },
+        "keys": {
+          "mean": 144,
+          "deviation": 26
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2397,
+      "profileDive": 0.3739,
+      "tweetDive": 0.1075,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0111,
+      "followOnProfile": 0.0052,
+      "idle": 0.0234
+    },
+    "inputMethods": {
+      "wheelDown": 0.8755,
+      "wheelUp": 0.024,
+      "space": 0.1006,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "03-Skimmer",
+    "description": "Type: Skimmer | Input: Mouse (81%) | Dive: 36.1% | T-Dive: 12.6% Like: 2.00% Bkmk: 0.76% Follow: 0.27%",
+    "timings": {
+      "readingPhase": {
+        "mean": 27883,
+        "deviation": 9571
+      },
+      "scrollPause": {
+        "mean": 312,
+        "deviation": 127
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 880,
+          "deviation": 236
+        },
+        "keys": {
+          "mean": 107,
+          "deviation": 26
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2873,
+      "profileDive": 0.3606,
+      "tweetDive": 0.1257,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0076,
+      "followOnProfile": 0.0027,
+      "idle": 0
+    },
+    "inputMethods": {
+      "wheelDown": 0.8145,
+      "wheelUp": 0.0225,
+      "space": 0.163,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "04-Skimmer",
+    "description": "Type: Skimmer | Input: Mouse (84%) | Dive: 47.3% | T-Dive: 19.7% Like: 2.00% Bkmk: 0.81% Follow: 0.34%",
+    "timings": {
+      "readingPhase": {
+        "mean": 26938,
+        "deviation": 9925
+      },
+      "scrollPause": {
+        "mean": 429,
+        "deviation": 171
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1058,
+          "deviation": 267
+        },
+        "keys": {
+          "mean": 125,
+          "deviation": 22
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2589,
+      "profileDive": 0.4733,
+      "tweetDive": 0.1966,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0081,
+      "followOnProfile": 0.0034,
+      "idle": 0.0228
+    },
+    "inputMethods": {
+      "wheelDown": 0.8444,
+      "wheelUp": 0.0198,
+      "space": 0.1359,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "05-Balanced",
+    "description": "Type: Balanced | Input: Keys (76%) | Dive: 59.0% | T-Dive: 17.9% Like: 2.00% Bkmk: 0.44% Follow: 0.40%",
+    "timings": {
+      "readingPhase": {
+        "mean": 31521,
+        "deviation": 12647
+      },
+      "scrollPause": {
+        "mean": 739,
+        "deviation": 375
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 874,
+          "deviation": 240
+        },
+        "keys": {
+          "mean": 94,
+          "deviation": 34
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.0913,
+      "profileDive": 0.59,
+      "tweetDive": 0.1789,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0044,
+      "followOnProfile": 0.004,
+      "idle": 0.1325
+    },
+    "inputMethods": {
+      "wheelDown": 0,
+      "wheelUp": 0,
+      "space": 0.1904,
+      "keysDown": 0.7607,
+      "keysUp": 0.0488
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "06-Balanced",
+    "description": "Type: Balanced | Input: Mouse (89%) | Dive: 51.3% | T-Dive: 25.2% Like: 2.00% Bkmk: 0.80% Follow: 0.50%",
+    "timings": {
+      "readingPhase": {
+        "mean": 39426,
+        "deviation": 12159
+      },
+      "scrollPause": {
+        "mean": 832,
+        "deviation": 325
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 841,
+          "deviation": 108
+        },
+        "keys": {
+          "mean": 97,
+          "deviation": 41
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1587,
+      "profileDive": 0.5131,
+      "tweetDive": 0.2524,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.008,
+      "followOnProfile": 0.005,
+      "idle": 0.0421
+    },
+    "inputMethods": {
+      "wheelDown": 0.8895,
+      "wheelUp": 0.018,
+      "space": 0.0924,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "07-Balanced",
+    "description": "Type: Balanced | Input: Mouse (94%) | Dive: 53.5% | T-Dive: 21.8% Like: 2.00% Bkmk: 1.18% Follow: 0.56%",
+    "timings": {
+      "readingPhase": {
+        "mean": 30181,
+        "deviation": 11920
+      },
+      "scrollPause": {
+        "mean": 861,
+        "deviation": 309
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 873,
+          "deviation": 239
+        },
+        "keys": {
+          "mean": 147,
+          "deviation": 44
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2306,
+      "profileDive": 0.5353,
+      "tweetDive": 0.218,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0118,
+      "followOnProfile": 0.0056,
+      "idle": 0.1611
+    },
+    "inputMethods": {
+      "wheelDown": 0.9414,
+      "wheelUp": 0.0196,
+      "space": 0.0391,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "08-Balanced",
+    "description": "Type: Balanced | Input: Mouse (92%) | Dive: 56.9% | T-Dive: 30.5% Like: 2.00% Bkmk: 0.89% Follow: 0.57%",
+    "timings": {
+      "readingPhase": {
+        "mean": 33416,
+        "deviation": 13320
+      },
+      "scrollPause": {
+        "mean": 779,
+        "deviation": 290
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1125,
+          "deviation": 284
+        },
+        "keys": {
+          "mean": 139,
+          "deviation": 44
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1339,
+      "profileDive": 0.5688,
+      "tweetDive": 0.3054,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0089,
+      "followOnProfile": 0.0057,
+      "idle": 0.1458
+    },
+    "inputMethods": {
+      "wheelDown": 0.9175,
+      "wheelUp": 0.0135,
+      "space": 0.0689,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "09-Balanced",
+    "description": "Type: Balanced | Input: Mouse (76%) | Dive: 68.9% | T-Dive: 20.5% Like: 2.00% Bkmk: 0.05% Follow: 0.42%",
+    "timings": {
+      "readingPhase": {
+        "mean": 37931,
+        "deviation": 13643
+      },
+      "scrollPause": {
+        "mean": 961,
+        "deviation": 403
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1061,
+          "deviation": 201
+        },
+        "keys": {
+          "mean": 95,
+          "deviation": 27
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.198,
+      "profileDive": 0.6886,
+      "tweetDive": 0.2049,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0005,
+      "followOnProfile": 0.0042,
+      "idle": 0.1248
+    },
+    "inputMethods": {
+      "wheelDown": 0.7633,
+      "wheelUp": 0.0498,
+      "space": 0.1869,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "10-Balanced",
+    "description": "Type: Balanced | Input: Mouse (83%) | Dive: 57.4% | T-Dive: 16.8% Like: 2.00% Bkmk: 1.33% Follow: 0.38%",
+    "timings": {
+      "readingPhase": {
+        "mean": 36744,
+        "deviation": 11342
+      },
+      "scrollPause": {
+        "mean": 809,
+        "deviation": 336
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 895,
+          "deviation": 183
+        },
+        "keys": {
+          "mean": 130,
+          "deviation": 28
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.197,
+      "profileDive": 0.574,
+      "tweetDive": 0.168,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0133,
+      "followOnProfile": 0.0038,
+      "idle": 0.1312
+    },
+    "inputMethods": {
+      "wheelDown": 0.8329,
+      "wheelUp": 0.0445,
+      "space": 0.1226,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "11-Balanced",
+    "description": "Type: Balanced | Input: Mouse (83%) | Dive: 50.2% | T-Dive: 28.7% Like: 2.00% Bkmk: 1.59% Follow: 0.61%",
+    "timings": {
+      "readingPhase": {
+        "mean": 31773,
+        "deviation": 14399
+      },
+      "scrollPause": {
+        "mean": 671,
+        "deviation": 304
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 956,
+          "deviation": 187
+        },
+        "keys": {
+          "mean": 138,
+          "deviation": 20
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1598,
+      "profileDive": 0.5018,
+      "tweetDive": 0.2873,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0159,
+      "followOnProfile": 0.0061,
+      "idle": 0.1283
+    },
+    "inputMethods": {
+      "wheelDown": 0.8265,
+      "wheelUp": 0.0307,
+      "space": 0.1428,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "12-Balanced",
+    "description": "Type: Balanced | Input: Mouse (91%) | Dive: 67.0% | T-Dive: 14.0% Like: 2.00% Bkmk: 0.85% Follow: 0.46%",
+    "timings": {
+      "readingPhase": {
+        "mean": 32599,
+        "deviation": 10105
+      },
+      "scrollPause": {
+        "mean": 905,
+        "deviation": 400
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1001,
+          "deviation": 156
+        },
+        "keys": {
+          "mean": 86,
+          "deviation": 28
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1274,
+      "profileDive": 0.6699,
+      "tweetDive": 0.1399,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0085,
+      "followOnProfile": 0.0046,
+      "idle": 0.0621
+    },
+    "inputMethods": {
+      "wheelDown": 0.9114,
+      "wheelUp": 0.0133,
+      "space": 0.0753,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "13-Balanced",
+    "description": "Type: Balanced | Input: Mouse (86%) | Dive: 36.7% | T-Dive: 26.1% Like: 2.00% Bkmk: 1.15% Follow: 0.51%",
+    "timings": {
+      "readingPhase": {
+        "mean": 35914,
+        "deviation": 12443
+      },
+      "scrollPause": {
+        "mean": 587,
+        "deviation": 250
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1081,
+          "deviation": 173
+        },
+        "keys": {
+          "mean": 106,
+          "deviation": 32
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1697,
+      "profileDive": 0.3667,
+      "tweetDive": 0.2609,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0115,
+      "followOnProfile": 0.0051,
+      "idle": 0.0268
+    },
+    "inputMethods": {
+      "wheelDown": 0.8556,
+      "wheelUp": 0.02,
+      "space": 0.1244,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "14-Balanced",
+    "description": "Type: Balanced | Input: Mouse (89%) | Dive: 46.4% | T-Dive: 29.5% Like: 2.00% Bkmk: 1.17% Follow: 0.53%",
+    "timings": {
+      "readingPhase": {
+        "mean": 41069,
+        "deviation": 13047
+      },
+      "scrollPause": {
+        "mean": 642,
+        "deviation": 394
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 855,
+          "deviation": 235
+        },
+        "keys": {
+          "mean": 89,
+          "deviation": 39
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.261,
+      "profileDive": 0.4635,
+      "tweetDive": 0.295,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0117,
+      "followOnProfile": 0.0053,
+      "idle": 0.2284
+    },
+    "inputMethods": {
+      "wheelDown": 0.8931,
+      "wheelUp": 0.0428,
+      "space": 0.0641,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "15-Balanced",
+    "description": "Type: Balanced | Input: Mouse (88%) | Dive: 54.3% | T-Dive: 18.9% Like: 2.00% Bkmk: 1.63% Follow: 0.61%",
+    "timings": {
+      "readingPhase": {
+        "mean": 45251,
+        "deviation": 10227
+      },
+      "scrollPause": {
+        "mean": 843,
+        "deviation": 269
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 875,
+          "deviation": 272
+        },
+        "keys": {
+          "mean": 93,
+          "deviation": 34
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2032,
+      "profileDive": 0.5433,
+      "tweetDive": 0.1891,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0163,
+      "followOnProfile": 0.0061,
+      "idle": 0.0401
+    },
+    "inputMethods": {
+      "wheelDown": 0.8814,
+      "wheelUp": 0.0454,
+      "space": 0.0731,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "16-Balanced",
+    "description": "Type: Balanced | Input: Mouse (78%) | Dive: 59.8% | T-Dive: 8.3% Like: 2.00% Bkmk: 1.29% Follow: 0.38%",
+    "timings": {
+      "readingPhase": {
+        "mean": 30690,
+        "deviation": 11407
+      },
+      "scrollPause": {
+        "mean": 658,
+        "deviation": 247
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1094,
+          "deviation": 272
+        },
+        "keys": {
+          "mean": 91,
+          "deviation": 47
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.0842,
+      "profileDive": 0.5984,
+      "tweetDive": 0.0826,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0129,
+      "followOnProfile": 0.0038,
+      "idle": 0.0397
+    },
+    "inputMethods": {
+      "wheelDown": 0.7835,
+      "wheelUp": 0.0105,
+      "space": 0.206,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "17-Balanced",
+    "description": "Type: Balanced | Input: Mouse (85%) | Dive: 52.0% | T-Dive: 18.9% Like: 2.00% Bkmk: 2.23% Follow: 0.39%",
+    "timings": {
+      "readingPhase": {
+        "mean": 29663,
+        "deviation": 13179
+      },
+      "scrollPause": {
+        "mean": 670,
+        "deviation": 337
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1187,
+          "deviation": 261
+        },
+        "keys": {
+          "mean": 143,
+          "deviation": 26
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.155,
+      "profileDive": 0.5204,
+      "tweetDive": 0.1889,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0223,
+      "followOnProfile": 0.0039,
+      "idle": 0.0815
+    },
+    "inputMethods": {
+      "wheelDown": 0.846,
+      "wheelUp": 0.0125,
+      "space": 0.1414,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "18-Balanced",
+    "description": "Type: Balanced | Input: Mouse (79%) | Dive: 40.0% | T-Dive: 21.4% Like: 2.00% Bkmk: 0.78% Follow: 0.43%",
+    "timings": {
+      "readingPhase": {
+        "mean": 36952,
+        "deviation": 10199
+      },
+      "scrollPause": {
+        "mean": 636,
+        "deviation": 344
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1079,
+          "deviation": 228
+        },
+        "keys": {
+          "mean": 130,
+          "deviation": 23
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2086,
+      "profileDive": 0.4,
+      "tweetDive": 0.214,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0078,
+      "followOnProfile": 0.0043,
+      "idle": 0.1356
+    },
+    "inputMethods": {
+      "wheelDown": 0.7907,
+      "wheelUp": 0.0179,
+      "space": 0.1914,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "19-Balanced",
+    "description": "Type: Balanced | Input: Keys (85%) | Dive: 52.4% | T-Dive: 20.0% Like: 2.00% Bkmk: 1.19% Follow: 0.56%",
+    "timings": {
+      "readingPhase": {
+        "mean": 36332,
+        "deviation": 11047
+      },
+      "scrollPause": {
+        "mean": 896,
+        "deviation": 238
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 848,
+          "deviation": 194
+        },
+        "keys": {
+          "mean": 130,
+          "deviation": 41
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2522,
+      "profileDive": 0.5237,
+      "tweetDive": 0.2001,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0119,
+      "followOnProfile": 0.0056,
+      "idle": 0.1461
+    },
+    "inputMethods": {
+      "wheelDown": 0,
+      "wheelUp": 0,
+      "space": 0.1366,
+      "keysDown": 0.8458,
+      "keysUp": 0.0176
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "20-Balanced",
+    "description": "Type: Balanced | Input: Mouse (92%) | Dive: 36.6% | T-Dive: 18.5% Like: 2.00% Bkmk: 0.30% Follow: 0.40%",
+    "timings": {
+      "readingPhase": {
+        "mean": 39817,
+        "deviation": 13853
+      },
+      "scrollPause": {
+        "mean": 837,
+        "deviation": 407
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 997,
+          "deviation": 104
+        },
+        "keys": {
+          "mean": 107,
+          "deviation": 46
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1809,
+      "profileDive": 0.3661,
+      "tweetDive": 0.1852,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.003,
+      "followOnProfile": 0.004,
+      "idle": 0.0699
+    },
+    "inputMethods": {
+      "wheelDown": 0.9175,
+      "wheelUp": 0.0492,
+      "space": 0.0333,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "21-Balanced",
+    "description": "Type: Balanced | Input: Mouse (75%) | Dive: 60.2% | T-Dive: 19.1% Like: 2.00% Bkmk: 0.92% Follow: 0.39%",
+    "timings": {
+      "readingPhase": {
+        "mean": 31203,
+        "deviation": 12361
+      },
+      "scrollPause": {
+        "mean": 836,
+        "deviation": 285
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 899,
+          "deviation": 143
+        },
+        "keys": {
+          "mean": 111,
+          "deviation": 35
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2389,
+      "profileDive": 0.6024,
+      "tweetDive": 0.1915,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0092,
+      "followOnProfile": 0.0039,
+      "idle": 0.0846
+    },
+    "inputMethods": {
+      "wheelDown": 0.7458,
+      "wheelUp": 0.0337,
+      "space": 0.2204,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "22-Balanced",
+    "description": "Type: Balanced | Input: Mouse (83%) | Dive: 44.5% | T-Dive: 21.9% Like: 2.00% Bkmk: 0.51% Follow: 0.38%",
+    "timings": {
+      "readingPhase": {
+        "mean": 30996,
+        "deviation": 11538
+      },
+      "scrollPause": {
+        "mean": 792,
+        "deviation": 357
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1035,
+          "deviation": 152
+        },
+        "keys": {
+          "mean": 140,
+          "deviation": 48
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1894,
+      "profileDive": 0.4455,
+      "tweetDive": 0.2194,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0051,
+      "followOnProfile": 0.0038,
+      "idle": 0.087
+    },
+    "inputMethods": {
+      "wheelDown": 0.8329,
+      "wheelUp": 0.0326,
+      "space": 0.1345,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "23-Balanced",
+    "description": "Type: Balanced | Input: Mouse (81%) | Dive: 57.3% | T-Dive: 18.7% Like: 2.00% Bkmk: 1.31% Follow: 0.36%",
+    "timings": {
+      "readingPhase": {
+        "mean": 31018,
+        "deviation": 12019
+      },
+      "scrollPause": {
+        "mean": 950,
+        "deviation": 324
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 925,
+          "deviation": 132
+        },
+        "keys": {
+          "mean": 93,
+          "deviation": 41
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1972,
+      "profileDive": 0.5725,
+      "tweetDive": 0.1869,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0131,
+      "followOnProfile": 0.0036,
+      "idle": 0.095
+    },
+    "inputMethods": {
+      "wheelDown": 0.8135,
+      "wheelUp": 0.028,
+      "space": 0.1584,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "24-Balanced",
+    "description": "Type: Balanced | Input: Mouse (92%) | Dive: 51.9% | T-Dive: 22.2% Like: 2.00% Bkmk: 0.69% Follow: 0.50%",
+    "timings": {
+      "readingPhase": {
+        "mean": 33922,
+        "deviation": 11573
+      },
+      "scrollPause": {
+        "mean": 812,
+        "deviation": 303
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 863,
+          "deviation": 214
+        },
+        "keys": {
+          "mean": 143,
+          "deviation": 32
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1829,
+      "profileDive": 0.5192,
+      "tweetDive": 0.2223,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0069,
+      "followOnProfile": 0.005,
+      "idle": 0.0915
+    },
+    "inputMethods": {
+      "wheelDown": 0.9242,
+      "wheelUp": 0.0263,
+      "space": 0.0495,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "25-Balanced",
+    "description": "Type: Balanced | Input: Keys (89%) | Dive: 46.9% | T-Dive: 22.0% Like: 2.00% Bkmk: 1.58% Follow: 0.39%",
+    "timings": {
+      "readingPhase": {
+        "mean": 37168,
+        "deviation": 9951
+      },
+      "scrollPause": {
+        "mean": 704,
+        "deviation": 318
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1021,
+          "deviation": 245
+        },
+        "keys": {
+          "mean": 123,
+          "deviation": 28
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1524,
+      "profileDive": 0.4687,
+      "tweetDive": 0.2198,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0158,
+      "followOnProfile": 0.0039,
+      "idle": 0.1068
+    },
+    "inputMethods": {
+      "wheelDown": 0,
+      "wheelUp": 0,
+      "space": 0.0826,
+      "keysDown": 0.8902,
+      "keysUp": 0.0272
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "26-Balanced",
+    "description": "Type: Balanced | Input: Mouse (84%) | Dive: 47.0% | T-Dive: 22.6% Like: 2.00% Bkmk: 1.45% Follow: 0.42%",
+    "timings": {
+      "readingPhase": {
+        "mean": 34733,
+        "deviation": 13169
+      },
+      "scrollPause": {
+        "mean": 704,
+        "deviation": 343
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 828,
+          "deviation": 215
+        },
+        "keys": {
+          "mean": 90,
+          "deviation": 42
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.188,
+      "profileDive": 0.4697,
+      "tweetDive": 0.2256,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0145,
+      "followOnProfile": 0.0042,
+      "idle": 0.0818
+    },
+    "inputMethods": {
+      "wheelDown": 0.8398,
+      "wheelUp": 0.0383,
+      "space": 0.1219,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "27-Balanced",
+    "description": "Type: Balanced | Input: Mouse (89%) | Dive: 42.2% | T-Dive: 18.5% Like: 2.00% Bkmk: 0.00% Follow: 0.54%",
+    "timings": {
+      "readingPhase": {
+        "mean": 32101,
+        "deviation": 12940
+      },
+      "scrollPause": {
+        "mean": 655,
+        "deviation": 341
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 925,
+          "deviation": 199
+        },
+        "keys": {
+          "mean": 81,
+          "deviation": 31
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1307,
+      "profileDive": 0.4219,
+      "tweetDive": 0.1854,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0,
+      "followOnProfile": 0.0054,
+      "idle": 0.0805
+    },
+    "inputMethods": {
+      "wheelDown": 0.8915,
+      "wheelUp": 0.0403,
+      "space": 0.0682,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "28-Balanced",
+    "description": "Type: Balanced | Input: Mouse (79%) | Dive: 69.9% | T-Dive: 22.4% Like: 2.00% Bkmk: 0.72% Follow: 0.49%",
+    "timings": {
+      "readingPhase": {
+        "mean": 34698,
+        "deviation": 11266
+      },
+      "scrollPause": {
+        "mean": 685,
+        "deviation": 214
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1185,
+          "deviation": 124
+        },
+        "keys": {
+          "mean": 141,
+          "deviation": 45
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2161,
+      "profileDive": 0.6989,
+      "tweetDive": 0.2245,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0072,
+      "followOnProfile": 0.0049,
+      "idle": 0.1542
+    },
+    "inputMethods": {
+      "wheelDown": 0.7949,
+      "wheelUp": 0.0484,
+      "space": 0.1567,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "29-Balanced",
+    "description": "Type: Balanced | Input: Mouse (81%) | Dive: 42.7% | T-Dive: 16.7% Like: 2.00% Bkmk: 1.25% Follow: 0.33%",
+    "timings": {
+      "readingPhase": {
+        "mean": 37705,
+        "deviation": 12372
+      },
+      "scrollPause": {
+        "mean": 739,
+        "deviation": 351
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 892,
+          "deviation": 146
+        },
+        "keys": {
+          "mean": 116,
+          "deviation": 24
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1685,
+      "profileDive": 0.4268,
+      "tweetDive": 0.1667,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0125,
+      "followOnProfile": 0.0033,
+      "idle": 0.0816
+    },
+    "inputMethods": {
+      "wheelDown": 0.8085,
+      "wheelUp": 0.0305,
+      "space": 0.161,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "30-Balanced",
+    "description": "Type: Balanced | Input: Mouse (81%) | Dive: 56.1% | T-Dive: 21.6% Like: 2.00% Bkmk: 0.00% Follow: 0.61%",
+    "timings": {
+      "readingPhase": {
+        "mean": 41266,
+        "deviation": 11497
+      },
+      "scrollPause": {
+        "mean": 658,
+        "deviation": 289
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 956,
+          "deviation": 239
+        },
+        "keys": {
+          "mean": 97,
+          "deviation": 27
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2582,
+      "profileDive": 0.5614,
+      "tweetDive": 0.2157,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0,
+      "followOnProfile": 0.0061,
+      "idle": 0.0621
+    },
+    "inputMethods": {
+      "wheelDown": 0.8093,
+      "wheelUp": 0.0447,
+      "space": 0.146,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "31-DeepDiver",
+    "description": "Type: DeepDiver | Input: Mouse (90%) | Dive: 66.2% | T-Dive: 30.9% Like: 2.00% Bkmk: 4.16% Follow: 0.62%",
+    "timings": {
+      "readingPhase": {
+        "mean": 45027,
+        "deviation": 7806
+      },
+      "scrollPause": {
+        "mean": 1482,
+        "deviation": 561
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 892,
+          "deviation": 163
+        },
+        "keys": {
+          "mean": 121,
+          "deviation": 23
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1648,
+      "profileDive": 0.6618,
+      "tweetDive": 0.3085,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0416,
+      "followOnProfile": 0.0062,
+      "idle": 0.1096
+    },
+    "inputMethods": {
+      "wheelDown": 0.9026,
+      "wheelUp": 0.0356,
+      "space": 0.0618,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "32-DeepDiver",
+    "description": "Type: DeepDiver | Input: Mouse (90%) | Dive: 80.0% | T-Dive: 28.2% Like: 2.00% Bkmk: 5.07% Follow: 0.78%",
+    "timings": {
+      "readingPhase": {
+        "mean": 46923,
+        "deviation": 7284
+      },
+      "scrollPause": {
+        "mean": 1385,
+        "deviation": 547
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 936,
+          "deviation": 160
+        },
+        "keys": {
+          "mean": 105,
+          "deviation": 33
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1966,
+      "profileDive": 0.8,
+      "tweetDive": 0.282,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0507,
+      "followOnProfile": 0.0078,
+      "idle": 0.0474
+    },
+    "inputMethods": {
+      "wheelDown": 0.8968,
+      "wheelUp": 0.0402,
+      "space": 0.0629,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "33-DeepDiver",
+    "description": "Type: DeepDiver | Input: Mouse (87%) | Dive: 80.0% | T-Dive: 32.3% Like: 2.00% Bkmk: 3.32% Follow: 0.78%",
+    "timings": {
+      "readingPhase": {
+        "mean": 50000,
+        "deviation": 8972
+      },
+      "scrollPause": {
+        "mean": 1481,
+        "deviation": 570
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 946,
+          "deviation": 150
+        },
+        "keys": {
+          "mean": 85,
+          "deviation": 49
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.0547,
+      "profileDive": 0.8,
+      "tweetDive": 0.3232,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0332,
+      "followOnProfile": 0.0078,
+      "idle": 0.0809
+    },
+    "inputMethods": {
+      "wheelDown": 0.8723,
+      "wheelUp": 0.0344,
+      "space": 0.0933,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "34-DeepDiver",
+    "description": "Type: DeepDiver | Input: Mouse (87%) | Dive: 78.7% | T-Dive: 42.3% Like: 2.00% Bkmk: 4.46% Follow: 0.89%",
+    "timings": {
+      "readingPhase": {
+        "mean": 42512,
+        "deviation": 7469
+      },
+      "scrollPause": {
+        "mean": 1357,
+        "deviation": 512
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 837,
+          "deviation": 299
+        },
+        "keys": {
+          "mean": 107,
+          "deviation": 47
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1602,
+      "profileDive": 0.7872,
+      "tweetDive": 0.4225,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0446,
+      "followOnProfile": 0.0089,
+      "idle": 0.052
+    },
+    "inputMethods": {
+      "wheelDown": 0.865,
+      "wheelUp": 0.0472,
+      "space": 0.0878,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "35-Lurker",
+    "description": "Type: Lurker | Input: Mouse (83%) | Dive: 31.3% | T-Dive: 25.5% Like: 2.00% Bkmk: 5.46% Follow: 0.27%",
+    "timings": {
+      "readingPhase": {
+        "mean": 33005,
+        "deviation": 10162
+      },
+      "scrollPause": {
+        "mean": 897,
+        "deviation": 445
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1158,
+          "deviation": 190
+        },
+        "keys": {
+          "mean": 136,
+          "deviation": 42
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1405,
+      "profileDive": 0.3128,
+      "tweetDive": 0.2553,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0546,
+      "followOnProfile": 0.0027,
+      "idle": 0.0544
+    },
+    "inputMethods": {
+      "wheelDown": 0.8291,
+      "wheelUp": 0.045,
+      "space": 0.1259,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "36-Lurker",
+    "description": "Type: Lurker | Input: Mouse (91%) | Dive: 31.4% | T-Dive: 20.8% Like: 1.58% Bkmk: 4.49% Follow: 0.32%",
+    "timings": {
+      "readingPhase": {
+        "mean": 40365,
+        "deviation": 11353
+      },
+      "scrollPause": {
+        "mean": 1066,
+        "deviation": 339
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1169,
+          "deviation": 199
+        },
+        "keys": {
+          "mean": 95,
+          "deviation": 37
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.0982,
+      "profileDive": 0.314,
+      "tweetDive": 0.2083,
+      "likeTweetafterDive": 0.0158,
+      "bookmarkAfterDive": 0.0449,
+      "followOnProfile": 0.0032,
+      "idle": 0.0202
+    },
+    "inputMethods": {
+      "wheelDown": 0.9058,
+      "wheelUp": 0.0246,
+      "space": 0.0697,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "37-Lurker",
+    "description": "Type: Lurker | Input: Mouse (78%) | Dive: 31.5% | T-Dive: 27.5% Like: 2.00% Bkmk: 4.09% Follow: 0.22%",
+    "timings": {
+      "readingPhase": {
+        "mean": 28154,
+        "deviation": 10217
+      },
+      "scrollPause": {
+        "mean": 911,
+        "deviation": 476
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 820,
+          "deviation": 106
+        },
+        "keys": {
+          "mean": 80,
+          "deviation": 37
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.0881,
+      "profileDive": 0.3152,
+      "tweetDive": 0.2749,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0409,
+      "followOnProfile": 0.0022,
+      "idle": 0.1742
+    },
+    "inputMethods": {
+      "wheelDown": 0.7849,
+      "wheelUp": 0.031,
+      "space": 0.1841,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "38-Lurker",
+    "description": "Type: Lurker | Input: Mouse (83%) | Dive: 30.9% | T-Dive: 34.4% Like: 2.00% Bkmk: 5.35% Follow: 0.40%",
+    "timings": {
+      "readingPhase": {
+        "mean": 29596,
+        "deviation": 8821
+      },
+      "scrollPause": {
+        "mean": 955,
+        "deviation": 451
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 944,
+          "deviation": 113
+        },
+        "keys": {
+          "mean": 109,
+          "deviation": 32
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2227,
+      "profileDive": 0.309,
+      "tweetDive": 0.3445,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0535,
+      "followOnProfile": 0.004,
+      "idle": 0.0613
+    },
+    "inputMethods": {
+      "wheelDown": 0.8254,
+      "wheelUp": 0.044,
+      "space": 0.1306,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "39-DoomScroller",
+    "description": "Type: DoomScroller | Input: Mouse (98%) | Dive: 26.1% | T-Dive: 18.6% Like: 0.91% Bkmk: 1.31% Follow: 0.08%",
+    "timings": {
+      "readingPhase": {
+        "mean": 10000,
+        "deviation": 8443
+      },
+      "scrollPause": {
+        "mean": 427,
+        "deviation": 170
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 800,
+          "deviation": 293
+        },
+        "keys": {
+          "mean": 82,
+          "deviation": 40
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1781,
+      "profileDive": 0.2606,
+      "tweetDive": 0.1863,
+      "likeTweetafterDive": 0.0091,
+      "bookmarkAfterDive": 0.0131,
+      "followOnProfile": 0.0008,
+      "idle": 0.1777
+    },
+    "inputMethods": {
+      "wheelDown": 0.9774,
+      "wheelUp": 0.0259,
+      "space": 0,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "40-DoomScroller",
+    "description": "Type: DoomScroller | Input: Mouse (81%) | Dive: 13.7% | T-Dive: 11.9% Like: 2.00% Bkmk: 0.00% Follow: 0.13%",
+    "timings": {
+      "readingPhase": {
+        "mean": 10000,
+        "deviation": 8044
+      },
+      "scrollPause": {
+        "mean": 308,
+        "deviation": 50
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1022,
+          "deviation": 172
+        },
+        "keys": {
+          "mean": 87,
+          "deviation": 32
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.2283,
+      "profileDive": 0.1365,
+      "tweetDive": 0.119,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0,
+      "followOnProfile": 0.0013,
+      "idle": 0.1156
+    },
+    "inputMethods": {
+      "wheelDown": 0.8096,
+      "wheelUp": 0.0415,
+      "space": 0.1489,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "41-DoomScroller",
+    "description": "Type: DoomScroller | Input: Mouse (93%) | Dive: 26.1% | T-Dive: 21.1% Like: 1.88% Bkmk: 1.05% Follow: 0.27%",
+    "timings": {
+      "readingPhase": {
+        "mean": 11587,
+        "deviation": 8594
+      },
+      "scrollPause": {
+        "mean": 251,
+        "deviation": 77
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 810,
+          "deviation": 176
+        },
+        "keys": {
+          "mean": 121,
+          "deviation": 27
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1952,
+      "profileDive": 0.261,
+      "tweetDive": 0.2114,
+      "likeTweetafterDive": 0.0188,
+      "bookmarkAfterDive": 0.0105,
+      "followOnProfile": 0.0027,
+      "idle": 0.1852
+    },
+    "inputMethods": {
+      "wheelDown": 0.9327,
+      "wheelUp": 0.018,
+      "space": 0.0493,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "42-DoomScroller",
+    "description": "Type: DoomScroller | Input: Mouse (94%) | Dive: 32.8% | T-Dive: 5.3% Like: 2.00% Bkmk: 0.24% Follow: 0.26%",
+    "timings": {
+      "readingPhase": {
+        "mean": 16159,
+        "deviation": 8675
+      },
+      "scrollPause": {
+        "mean": 200,
+        "deviation": 113
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1171,
+          "deviation": 134
+        },
+        "keys": {
+          "mean": 114,
+          "deviation": 32
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1607,
+      "profileDive": 0.3278,
+      "tweetDive": 0.0527,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0024,
+      "followOnProfile": 0.0026,
+      "idle": 0.1434
+    },
+    "inputMethods": {
+      "wheelDown": 0.9448,
+      "wheelUp": 0.0357,
+      "space": 0.0195,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "43-NewsJunkie",
+    "description": "Type: NewsJunkie | Input: Mouse (83%) | Dive: 26.0% | T-Dive: 51.5% Like: 2.00% Bkmk: 4.27% Follow: 1.00%",
+    "timings": {
+      "readingPhase": {
+        "mean": 12144,
+        "deviation": 9766
+      },
+      "scrollPause": {
+        "mean": 571,
+        "deviation": 203
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 847,
+          "deviation": 230
+        },
+        "keys": {
+          "mean": 89,
+          "deviation": 36
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.7941,
+      "profileDive": 0.26,
+      "tweetDive": 0.5151,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0427,
+      "followOnProfile": 0.01,
+      "idle": 0.0822
+    },
+    "inputMethods": {
+      "wheelDown": 0.8339,
+      "wheelUp": 0.0276,
+      "space": 0.1385,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "44-NewsJunkie",
+    "description": "Type: NewsJunkie | Input: Mouse (87%) | Dive: 30.0% | T-Dive: 51.3% Like: 2.00% Bkmk: 4.53% Follow: 1.00%",
+    "timings": {
+      "readingPhase": {
+        "mean": 10751,
+        "deviation": 10584
+      },
+      "scrollPause": {
+        "mean": 488,
+        "deviation": 194
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1166,
+          "deviation": 214
+        },
+        "keys": {
+          "mean": 107,
+          "deviation": 27
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.8,
+      "profileDive": 0.3003,
+      "tweetDive": 0.5128,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0453,
+      "followOnProfile": 0.01,
+      "idle": 0.0961
+    },
+    "inputMethods": {
+      "wheelDown": 0.8713,
+      "wheelUp": 0.0321,
+      "space": 0.0965,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "45-NewsJunkie",
+    "description": "Type: NewsJunkie | Input: Mouse (89%) | Dive: 38.9% | T-Dive: 49.9% Like: 2.00% Bkmk: 4.65% Follow: 1.00%",
+    "timings": {
+      "readingPhase": {
+        "mean": 10000,
+        "deviation": 10144
+      },
+      "scrollPause": {
+        "mean": 677,
+        "deviation": 200
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 953,
+          "deviation": 208
+        },
+        "keys": {
+          "mean": 144,
+          "deviation": 36
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.8,
+      "profileDive": 0.3894,
+      "tweetDive": 0.4985,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0465,
+      "followOnProfile": 0.01,
+      "idle": 0.1614
+    },
+    "inputMethods": {
+      "wheelDown": 0.8932,
+      "wheelUp": 0.0173,
+      "space": 0.0895,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "46-NewsJunkie",
+    "description": "Type: NewsJunkie | Input: Mouse (94%) | Dive: 22.3% | T-Dive: 49.5% Like: 2.00% Bkmk: 4.68% Follow: 1.00%",
+    "timings": {
+      "readingPhase": {
+        "mean": 28058,
+        "deviation": 10304
+      },
+      "scrollPause": {
+        "mean": 493,
+        "deviation": 217
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 995,
+          "deviation": 121
+        },
+        "keys": {
+          "mean": 139,
+          "deviation": 20
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.7857,
+      "profileDive": 0.2225,
+      "tweetDive": 0.4949,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0468,
+      "followOnProfile": 0.01,
+      "idle": 0.1192
+    },
+    "inputMethods": {
+      "wheelDown": 0.941,
+      "wheelUp": 0.0194,
+      "space": 0.0396,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "47-Stalker",
+    "description": "Type: Stalker | Input: Mouse (86%) | Dive: 80.0% | T-Dive: 14.5% Like: 2.00% Bkmk: 0.90% Follow: 1.00%",
+    "timings": {
+      "readingPhase": {
+        "mean": 35111,
+        "deviation": 12077
+      },
+      "scrollPause": {
+        "mean": 703,
+        "deviation": 320
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 950,
+          "deviation": 226
+        },
+        "keys": {
+          "mean": 119,
+          "deviation": 28
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1431,
+      "profileDive": 0.8,
+      "tweetDive": 0.1452,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.009,
+      "followOnProfile": 0.01,
+      "idle": 0.2186
+    },
+    "inputMethods": {
+      "wheelDown": 0.8574,
+      "wheelUp": 0.0144,
+      "space": 0.1282,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "48-Stalker",
+    "description": "Type: Stalker | Input: Mouse (84%) | Dive: 80.0% | T-Dive: 12.3% Like: 2.00% Bkmk: 0.51% Follow: 1.00%",
+    "timings": {
+      "readingPhase": {
+        "mean": 31819,
+        "deviation": 10750
+      },
+      "scrollPause": {
+        "mean": 884,
+        "deviation": 327
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 834,
+          "deviation": 268
+        },
+        "keys": {
+          "mean": 102,
+          "deviation": 44
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1251,
+      "profileDive": 0.8,
+      "tweetDive": 0.1228,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0051,
+      "followOnProfile": 0.01,
+      "idle": 0.1057
+    },
+    "inputMethods": {
+      "wheelDown": 0.8393,
+      "wheelUp": 0.011,
+      "space": 0.1497,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "49-Stalker",
+    "description": "Type: Stalker | Input: Mouse (95%) | Dive: 80.0% | T-Dive: 6.3% Like: 2.00% Bkmk: 0.60% Follow: 1.00%",
+    "timings": {
+      "readingPhase": {
+        "mean": 38043,
+        "deviation": 11715
+      },
+      "scrollPause": {
+        "mean": 844,
+        "deviation": 420
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 846,
+          "deviation": 165
+        },
+        "keys": {
+          "mean": 100,
+          "deviation": 26
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1293,
+      "profileDive": 0.8,
+      "tweetDive": 0.0627,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.006,
+      "followOnProfile": 0.01,
+      "idle": 0.1118
+    },
+    "inputMethods": {
+      "wheelDown": 0.9479,
+      "wheelUp": 0.0321,
+      "space": 0.0201,
+      "keysDown": 0,
+      "keysUp": 0
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  },
+  {
+    "id": "50-Stalker",
+    "description": "Type: Stalker | Input: Keys (81%) | Dive: 80.0% | T-Dive: 15.2% Like: 2.00% Bkmk: 1.29% Follow: 1.00%",
+    "timings": {
+      "readingPhase": {
+        "mean": 32279,
+        "deviation": 12694
+      },
+      "scrollPause": {
+        "mean": 588,
+        "deviation": 328
+      },
+      "actionSpecific": {
+        "space": {
+          "mean": 1006,
+          "deviation": 223
+        },
+        "keys": {
+          "mean": 86,
+          "deviation": 40
+        },
+        "idle": {
+          "mean": 15000,
+          "deviation": 5000
+        }
+      }
+    },
+    "probabilities": {
+      "refresh": 0.1411,
+      "profileDive": 0.8,
+      "tweetDive": 0.1522,
+      "likeTweetafterDive": 0.02,
+      "bookmarkAfterDive": 0.0129,
+      "followOnProfile": 0.01,
+      "idle": 0.131
+    },
+    "inputMethods": {
+      "wheelDown": 0,
+      "wheelUp": 0,
+      "space": 0.1549,
+      "keysDown": 0.8079,
+      "keysUp": 0.0372
+    },
+    "maxLike": 5,
+    "maxFollow": 2,
+    "theme": "dark"
+  }
+]

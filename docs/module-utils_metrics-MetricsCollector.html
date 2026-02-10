@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>MetricsCollector - MultiBrowseAutomation Docs</title>
+    
+    <meta name="description" content="Documentation for the Multi-Browser Automation Framework" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/your-repo-here" target="_blank" >GitHub Repo</a></h2><h3>Classes</h3><ul><li><a href="module-connectors_baseDiscover-BaseDiscover.html">BaseDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_baseDiscover-BaseDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html">LocalBraveDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html">RoxybrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-core_automator-Automator.html">Automator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#closeAll">closeAll</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#connectToBrowser">connectToBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getBrowser">getBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectedEndpoints">getConnectedEndpoints</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectionCount">getConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthyConnectionCount">getHealthyConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#isHealthy">isHealthy</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#reconnect">reconnect</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#startHealthChecks">startHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#stopHealthChecks">stopHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#testConnection">testConnection</a></li></ul></li><li><a href="module-core_discovery-Discovery.html">Discovery</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#discoverBrowsers">discoverBrowsers</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#getConnectorInfo">getConnectorInfo</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#loadConnectors">loadConnectors</a></li></ul></li><li><a href="module-core_orchestrator-Orchestrator.html">Orchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#addTask">addTask</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getMetrics">getMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#logMetrics">logMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#processTasks">processTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#startDiscovery">startDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#waitForTasksToComplete">waitForTasksToComplete</a></li></ul></li><li><a href="module-core_sessionManager-SessionManager.html">SessionManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#addSession">addSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#cleanupTimedOutSessions">cleanupTimedOutSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#findAndOccupyIdleWorker">findAndOccupyIdleWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getAllSessions">getAllSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getSessionMetadata">getSessionMetadata</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#loadSessionState">loadSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#releaseWorker">releaseWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#removeSession">removeSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#saveSessionState">saveSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#stopCleanupTimer">stopCleanupTimer</a></li></ul></li><li><a href="module-utils_apiHandler-ApiHandler.html">ApiHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#post">post</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#put">put</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#request">request</a></li></ul></li><li><a href="module-utils_configLoader-ConfigLoader.html">ConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#getValue">getValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#loadConfig">loadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#reloadConfig">reloadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#validateConfig">validateConfig</a></li></ul></li><li><a href="module-utils_logger-Logger.html">Logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#warn">warn</a></li></ul></li><li><a href="module-utils_metrics-MetricsCollector.html">MetricsCollector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#exportToJSON">exportToJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#generateJsonReport">generateJsonReport</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordApiCall">recordApiCall</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordBrowserDiscovery">recordBrowserDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSessionEvent">recordSessionEvent</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTaskExecution">recordTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#reset">reset</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-connectors_baseDiscover.html">connectors/baseDiscover</a></li><li><a href="module-connectors_discovery_localBrave.html">connectors/discovery/localBrave</a></li><li><a href="module-connectors_discovery_roxybrowser.html">connectors/discovery/roxybrowser</a></li><li><a href="module-core_automator.html">core/automator</a></li><li><a href="module-core_discovery.html">core/discovery</a></li><li><a href="module-core_orchestrator.html">core/orchestrator</a></li><li><a href="module-core_sessionManager.html">core/sessionManager</a></li><li><a href="module-main.html">main</a></li><li><a href="module-tasks__template.html">tasks/_template</a></li><li><a href="module-tasks_automationTask1.html">tasks/automationTask1</a></li><li><a href="module-tasks_automationTask2.html">tasks/automationTask2</a></li><li><a href="module-utils_apiHandler.html">utils/apiHandler</a></li><li><a href="module-utils_configLoader.html">utils/configLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getBrowserAPI">getBrowserAPI</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeoutValue">getTimeoutValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeouts">getTimeouts</a></li></ul></li><li><a href="module-utils_envLoader.html">utils/envLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getEnv">getEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getLogLevel">getLogLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getNodeEnv">getNodeEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getRequiredEnv">getRequiredEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isDevelopment">isDevelopment</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isProduction">isProduction</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVars">resolveEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVarsInObject">resolveEnvVarsInObject</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.validateRequiredEnvVars">validateRequiredEnvVars</a></li></ul></li><li><a href="module-utils_logger.html">utils/logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createLogger">createLogger</a></li></ul></li><li><a href="module-utils_metrics.html">utils/metrics</a></li><li><a href="module-utils_randomScrolling.html">utils/randomScrolling</a></li><li><a href="module-utils_randomZoom.html">utils/randomZoom</a></li><li><a href="module-utils_retry.html">utils/retry</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_retry.html#.withRetry">withRetry</a></li></ul></li><li><a href="module-utils_utils.html">utils/utils</a></li><li><a href="module-utils_validator.html">utils/validator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateApiResponse">validateApiResponse</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateBrowserConnection">validateBrowserConnection</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validatePayload">validatePayload</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateTaskExecution">validateTaskExecution</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">MetricsCollector</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="module-utils_metrics.html">utils/metrics</a>~</span>
+        
+        
+            MetricsCollector
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+
+    <h4 class="name" id="MetricsCollector"><span class="type-signature"></span>new MetricsCollector<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>A class for tracking system performance and statistics.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="exportToJSON"><span class="type-signature"></span>exportToJSON<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Exports the current metrics to a JSON string.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line302">line 302</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    A JSON string of the current metrics.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="generateJsonReport"><span class="type-signature type-signature-async">(async) </span>generateJsonReport<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Generates and saves a JSON report of the current run.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line314">line 314</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getRecentTasks"><span class="type-signature"></span>getRecentTasks<span class="signature">(limit<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;object>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Gets the recent task history.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line196">line 196</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>limit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>10</code>
+                
+                </td>
+            
+
+            <td class="description last">The number of recent tasks to return.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    An array of recent task execution objects.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;object></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getStats"><span class="type-signature"></span>getStats<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Gets comprehensive statistics about the system.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line123">line 123</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    An object containing system statistics.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getTaskBreakdown"><span class="type-signature"></span>getTaskBreakdown<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Gets task statistics grouped by task name.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line204">line 204</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    An object containing statistics for each task.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="logStats"><span class="type-signature"></span>logStats<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Logs the current statistics to the console.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line343">line 343</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="recordApiCall"><span class="type-signature"></span>recordApiCall<span class="signature">(responseTime, success)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Records an API call.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line95">line 95</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>responseTime</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The response time of the API call in milliseconds.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>success</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Whether the API call succeeded.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="recordBrowserDiscovery"><span class="type-signature"></span>recordBrowserDiscovery<span class="signature">(count, connected, failed)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Records a browser discovery attempt.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line82">line 82</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>count</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The number of browsers discovered.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>connected</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The number of browsers that successfully connected.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>failed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The number of browsers that failed to connect.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="recordSessionEvent"><span class="type-signature"></span>recordSessionEvent<span class="signature">(event, activeCount)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Records a session lifecycle event.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line109">line 109</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The type of event ('created' or 'closed').</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>activeCount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current number of active sessions.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="recordTaskExecution"><span class="type-signature"></span>recordTaskExecution<span class="signature">(taskName, duration, success, sessionId, error<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Records a task execution.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line46">line 46</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>taskName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The name of the task.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The duration of the task in milliseconds.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>success</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Whether the task succeeded.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sessionId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The ID of the session that executed the task.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Error</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>null</code>
+                
+                </td>
+            
+
+            <td class="description last">The error object if the task failed.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="reset"><span class="type-signature"></span>reset<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Resets all metrics.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_metrics.js.html">utils/metrics.js</a>, <a href="utils_metrics.js.html#line274">line 274</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Nov 05 2025 05:16:57 GMT+0700 (Indochina Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "name": "multi-browser-automation",
+  "version": "0.0.30",
+  "description": "Agentic orchestration framework for discovering and automating pre-existing browser instances via CDP",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "node test-optimizations.js",
+    "docs": "jsdoc -c jsdoc.json",
+    "docs:watch": "jsdoc -c jsdoc.json -r"
+  },
+  "keywords": [
+    "automation",
+    "browser",
+    "playwright",
+    "cdp",
+    "multi-browser",
+    "roxybrowser",
+    "ixbrowser",
+    "morelogin",
+    "anti-detect",
+    "orchestration"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "https-proxy-agent": "^7.0.6",
+    "playwright": "^1.56.1"
+  },
+  "devDependencies": {
+    "docdash": "^2.0.2",
+    "jsdoc": "^4.0.5"
+  }
+}

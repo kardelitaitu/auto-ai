@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>utils/validator.js - MultiBrowseAutomation Docs</title>
+    
+    <meta name="description" content="Documentation for the Multi-Browser Automation Framework" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/your-repo-here" target="_blank" >GitHub Repo</a></h2><h3>Classes</h3><ul><li><a href="module-connectors_baseDiscover-BaseDiscover.html">BaseDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_baseDiscover-BaseDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html">LocalBraveDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html">RoxybrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-core_automator-Automator.html">Automator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#closeAll">closeAll</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#connectToBrowser">connectToBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getBrowser">getBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectedEndpoints">getConnectedEndpoints</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectionCount">getConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthyConnectionCount">getHealthyConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#isHealthy">isHealthy</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#reconnect">reconnect</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#startHealthChecks">startHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#stopHealthChecks">stopHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#testConnection">testConnection</a></li></ul></li><li><a href="module-core_discovery-Discovery.html">Discovery</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#discoverBrowsers">discoverBrowsers</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#getConnectorInfo">getConnectorInfo</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#loadConnectors">loadConnectors</a></li></ul></li><li><a href="module-core_orchestrator-Orchestrator.html">Orchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#addTask">addTask</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getMetrics">getMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#logMetrics">logMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#processTasks">processTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#startDiscovery">startDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#waitForTasksToComplete">waitForTasksToComplete</a></li></ul></li><li><a href="module-core_sessionManager-SessionManager.html">SessionManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#addSession">addSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#cleanupTimedOutSessions">cleanupTimedOutSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#findAndOccupyIdleWorker">findAndOccupyIdleWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getAllSessions">getAllSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getSessionMetadata">getSessionMetadata</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#loadSessionState">loadSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#releaseWorker">releaseWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#removeSession">removeSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#saveSessionState">saveSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#stopCleanupTimer">stopCleanupTimer</a></li></ul></li><li><a href="module-utils_apiHandler-ApiHandler.html">ApiHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#post">post</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#put">put</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#request">request</a></li></ul></li><li><a href="module-utils_configLoader-ConfigLoader.html">ConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#getValue">getValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#loadConfig">loadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#reloadConfig">reloadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#validateConfig">validateConfig</a></li></ul></li><li><a href="module-utils_logger-Logger.html">Logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#warn">warn</a></li></ul></li><li><a href="module-utils_metrics-MetricsCollector.html">MetricsCollector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#exportToJSON">exportToJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#generateJsonReport">generateJsonReport</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordApiCall">recordApiCall</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordBrowserDiscovery">recordBrowserDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSessionEvent">recordSessionEvent</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTaskExecution">recordTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#reset">reset</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-connectors_baseDiscover.html">connectors/baseDiscover</a></li><li><a href="module-connectors_discovery_localBrave.html">connectors/discovery/localBrave</a></li><li><a href="module-connectors_discovery_roxybrowser.html">connectors/discovery/roxybrowser</a></li><li><a href="module-core_automator.html">core/automator</a></li><li><a href="module-core_discovery.html">core/discovery</a></li><li><a href="module-core_orchestrator.html">core/orchestrator</a></li><li><a href="module-core_sessionManager.html">core/sessionManager</a></li><li><a href="module-main.html">main</a></li><li><a href="module-tasks__template.html">tasks/_template</a></li><li><a href="module-tasks_automationTask1.html">tasks/automationTask1</a></li><li><a href="module-tasks_automationTask2.html">tasks/automationTask2</a></li><li><a href="module-utils_apiHandler.html">utils/apiHandler</a></li><li><a href="module-utils_configLoader.html">utils/configLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getBrowserAPI">getBrowserAPI</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeoutValue">getTimeoutValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeouts">getTimeouts</a></li></ul></li><li><a href="module-utils_envLoader.html">utils/envLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getEnv">getEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getLogLevel">getLogLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getNodeEnv">getNodeEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getRequiredEnv">getRequiredEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isDevelopment">isDevelopment</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isProduction">isProduction</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVars">resolveEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVarsInObject">resolveEnvVarsInObject</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.validateRequiredEnvVars">validateRequiredEnvVars</a></li></ul></li><li><a href="module-utils_logger.html">utils/logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createLogger">createLogger</a></li></ul></li><li><a href="module-utils_metrics.html">utils/metrics</a></li><li><a href="module-utils_randomScrolling.html">utils/randomScrolling</a></li><li><a href="module-utils_randomZoom.html">utils/randomZoom</a></li><li><a href="module-utils_retry.html">utils/retry</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_retry.html#.withRetry">withRetry</a></li></ul></li><li><a href="module-utils_utils.html">utils/utils</a></li><li><a href="module-utils_validator.html">utils/validator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateApiResponse">validateApiResponse</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateBrowserConnection">validateBrowserConnection</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validatePayload">validatePayload</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateTaskExecution">validateTaskExecution</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">utils/validator.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview A collection of validation functions for various data structures.
+ * @module utils/validator
+ */
+
+import { createLogger } from './logger.js';
+
+const logger = createLogger('validator.js');
+
+/**
+ * Validates a single value against a set of rules.
+ * @param {string} field - The name of the field being validated.
+ * @param {any} value - The value to validate.
+ * @param {object} rules - The validation rules.
+ * @returns {string[]} An array of error messages.
+ * @private
+ */
+function validateField(field, value, rules) {
+  const errors = [];
+
+  if (rules.required &amp;&amp; (value === undefined || value === null)) {
+    errors.push(`Required field '${field}' is missing`);
+    return errors;
+  }
+
+  if (value === undefined || value === null) {
+    return errors;
+  }
+
+  if (rules.type &amp;&amp; typeof value !== rules.type) {
+    errors.push(`Field '${field}' must be of type ${rules.type}, got ${typeof value}`);
+    return errors;
+  }
+
+  if (rules.type === 'number') {
+    if (rules.min !== undefined &amp;&amp; value &lt; rules.min) {
+      errors.push(`Field '${field}' must be at least ${rules.min}, got ${value}`);
+    }
+    if (rules.max !== undefined &amp;&amp; value > rules.max) {
+      errors.push(`Field '${field}' must be at most ${rules.max}, got ${value}`);
+    }
+  }
+
+  if (rules.type === 'string') {
+    if (rules.minLength !== undefined &amp;&amp; value.length &lt; rules.minLength) {
+      errors.push(`Field '${field}' must be at least ${rules.minLength} characters long`);
+    }
+    if (rules.maxLength !== undefined &amp;&amp; value.length > rules.maxLength) {
+      errors.push(`Field '${field}' must be at most ${rules.maxLength} characters long`);
+    }
+    if (rules.pattern &amp;&amp; !new RegExp(rules.pattern).test(value)) {
+      errors.push(`Field '${field}' does not match required pattern`);
+    }
+  }
+
+  if (rules.type === 'array') {
+    if (!Array.isArray(value)) {
+      errors.push(`Field '${field}' must be an array`);
+    } else if (rules.nonEmpty &amp;&amp; value.length === 0) {
+      errors.push(`Field '${field}' must be a non-empty array`);
+    } else if (rules.itemSchema) {
+      value.forEach((item, index) => {
+        const itemErrors = validate(item, rules.itemSchema);
+        if (!itemErrors.isValid) {
+          itemErrors.errors.forEach(error => {
+            errors.push(`Error in '${field}[${index}]': ${error}`);
+          });
+        }
+      });
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Validates an object against a schema.
+ * @param {object} data - The object to validate.
+ * @param {object} schema - The validation schema.
+ * @returns {{isValid: boolean, errors: string[]}} An object indicating whether the data is valid, and an array of any validation errors.
+ * @private
+ */
+function validate(data, schema) {
+  const errors = [];
+
+  if (!data || typeof data !== 'object') {
+    errors.push('Data must be a valid object');
+    return { isValid: false, errors };
+  }
+
+  for (const [field, rules] of Object.entries(schema)) {
+    const value = data[field];
+    const fieldErrors = validateField(field, value, rules);
+    if (fieldErrors.length > 0) {
+      errors.push(...fieldErrors);
+    }
+  }
+
+  return { isValid: errors.length === 0, errors };
+}
+
+/**
+ * Validates the structure and types of a task payload.
+ * @param {object} payload - The task payload to validate.
+ * @param {object} [schema={}] - Additional validation schema to merge with the default schema.
+ * @returns {{isValid: boolean, errors: string[]}} An object indicating whether the payload is valid, and an array of any validation errors.
+ */
+export function validatePayload(payload, schema = {}) {
+  const defaultSchema = {
+    browserInfo: { type: 'string', required: false },
+    url: { type: 'string', required: false, pattern: '^(http|https)://' },
+    duration: { type: 'number', required: false, min: 1, max: 3600 },
+  };
+
+  const validationSchema = { ...defaultSchema, ...schema };
+  const result = validate(payload, validationSchema);
+
+  if (!result.isValid) {
+    logger.warn('Payload validation failed:', result.errors);
+  }
+
+  return result;
+}
+
+const apiResponseSchemas = {
+  roxybrowser: {
+    code: { type: 'number', required: true },
+    msg: { type: 'string', required: false },
+    data: {
+      type: 'array',
+      required: true,
+      itemSchema: {
+        ws: { type: 'string', required: false },
+        http: { type: 'string', required: false },
+        windowName: { type: 'string', required: false },
+        sortNum: { type: 'number', required: false },
+      },
+    },
+  },
+  ixbrowser: {
+    code: { type: 'number', required: true },
+  },
+  morelogin: {
+    code: { type: 'number', required: true },
+  },
+  localChrome: {
+    code: { type: 'number', required: true },
+  },
+};
+
+/**
+ * Validates the structure of an API response.
+ * @param {object} response - The API response to validate.
+ * @param {string} [apiType='unknown'] - The type of API (e.g., 'roxybrowser').
+ * @returns {{isValid: boolean, errors: string[]}} An object indicating whether the response is valid, and an array of any validation errors.
+ */
+export function validateApiResponse(response, apiType = 'unknown') {
+  const schema = apiResponseSchemas[apiType];
+
+  if (!schema) {
+    logger.warn(`No specific validation rules for API type: ${apiType}`);
+    return { isValid: true, errors: [] };
+  }
+
+  const result = validate(response, schema);
+
+  if (!result.isValid) {
+    logger.error(`API response validation failed for ${apiType}:`, result.errors);
+  } else {
+    logger.debug(`API response validation passed for ${apiType}`);
+  }
+
+  return result;
+}
+
+/**
+ * Validates browser connection parameters.
+ * @param {string} wsEndpoint - The WebSocket endpoint URL.
+ * @returns {{isValid: boolean, errors: string[]}} An object indicating whether the connection parameters are valid, and an array of any validation errors.
+ */
+export function validateBrowserConnection(wsEndpoint) {
+  const schema = {
+    wsEndpoint: { type: 'string', required: true, pattern: '^wss?://.+' },
+  };
+  const result = validate({ wsEndpoint }, schema);
+
+  if (!result.isValid) {
+    logger.warn('Browser connection validation failed:', result.errors);
+  }
+
+  return result;
+}
+
+/**
+ * Validates the parameters for a task execution.
+ * @param {object} browser - The Playwright browser instance.
+ * @param {object} payload - The task payload.
+ * @param {object} [schema={}] - Additional validation schema for the payload.
+ * @returns {{isValid: boolean, errors: string[]}} An object indicating whether the parameters are valid, and an array of any validation errors.
+ */
+export function validateTaskExecution(instance, payload, schema = {}) {
+  const errors = [];
+
+  if (!instance || typeof instance !== 'object') {
+    errors.push('Browser, Context, or Page instance is required');
+  } else {
+    const isBrowser = typeof instance.newContext === 'function';
+    const isContext = typeof instance.newPage === 'function';
+    const isPage = typeof instance.goto === 'function'; // Pages have a goto method
+
+    if (!isBrowser &amp;&amp; !isContext &amp;&amp; !isPage) {
+      errors.push('Invalid browser, context, or page instance provided');
+    }
+  }
+
+  const payloadValidation = validatePayload(payload, schema);
+  if (!payloadValidation.isValid) {
+    errors.push(...payloadValidation.errors);
+  }
+
+  const isValid = errors.length === 0;
+
+  if (!isValid) {
+    logger.error('Task execution validation failed:', errors);
+  }
+
+  return { isValid, errors };
+}
+
+export default {
+  validatePayload,
+  validateApiResponse,
+  validateBrowserConnection,
+  validateTaskExecution,
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Nov 05 2025 05:16:57 GMT+0700 (Indochina Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Discovery - MultiBrowseAutomation Docs</title>
+    
+    <meta name="description" content="Documentation for the Multi-Browser Automation Framework" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/your-repo-here" target="_blank" >GitHub Repo</a></h2><h3>Classes</h3><ul><li><a href="module-connectors_baseDiscover-BaseDiscover.html">BaseDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_baseDiscover-BaseDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html">LocalBraveDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html">RoxybrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-core_automator-Automator.html">Automator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#closeAll">closeAll</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#connectToBrowser">connectToBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getBrowser">getBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectedEndpoints">getConnectedEndpoints</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectionCount">getConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthyConnectionCount">getHealthyConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#isHealthy">isHealthy</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#reconnect">reconnect</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#startHealthChecks">startHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#stopHealthChecks">stopHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#testConnection">testConnection</a></li></ul></li><li><a href="module-core_discovery-Discovery.html">Discovery</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#discoverBrowsers">discoverBrowsers</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#getConnectorInfo">getConnectorInfo</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#loadConnectors">loadConnectors</a></li></ul></li><li><a href="module-core_orchestrator-Orchestrator.html">Orchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#addTask">addTask</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getMetrics">getMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#logMetrics">logMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#processTasks">processTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#startDiscovery">startDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#waitForTasksToComplete">waitForTasksToComplete</a></li></ul></li><li><a href="module-core_sessionManager-SessionManager.html">SessionManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#addSession">addSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#cleanupTimedOutSessions">cleanupTimedOutSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#findAndOccupyIdleWorker">findAndOccupyIdleWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getAllSessions">getAllSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getSessionMetadata">getSessionMetadata</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#loadSessionState">loadSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#releaseWorker">releaseWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#removeSession">removeSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#saveSessionState">saveSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#stopCleanupTimer">stopCleanupTimer</a></li></ul></li><li><a href="module-utils_apiHandler-ApiHandler.html">ApiHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#post">post</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#put">put</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#request">request</a></li></ul></li><li><a href="module-utils_configLoader-ConfigLoader.html">ConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#getValue">getValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#loadConfig">loadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#reloadConfig">reloadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#validateConfig">validateConfig</a></li></ul></li><li><a href="module-utils_logger-Logger.html">Logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#warn">warn</a></li></ul></li><li><a href="module-utils_metrics-MetricsCollector.html">MetricsCollector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#exportToJSON">exportToJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#generateJsonReport">generateJsonReport</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordApiCall">recordApiCall</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordBrowserDiscovery">recordBrowserDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSessionEvent">recordSessionEvent</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTaskExecution">recordTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#reset">reset</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-connectors_baseDiscover.html">connectors/baseDiscover</a></li><li><a href="module-connectors_discovery_localBrave.html">connectors/discovery/localBrave</a></li><li><a href="module-connectors_discovery_roxybrowser.html">connectors/discovery/roxybrowser</a></li><li><a href="module-core_automator.html">core/automator</a></li><li><a href="module-core_discovery.html">core/discovery</a></li><li><a href="module-core_orchestrator.html">core/orchestrator</a></li><li><a href="module-core_sessionManager.html">core/sessionManager</a></li><li><a href="module-main.html">main</a></li><li><a href="module-tasks__template.html">tasks/_template</a></li><li><a href="module-tasks_automationTask1.html">tasks/automationTask1</a></li><li><a href="module-tasks_automationTask2.html">tasks/automationTask2</a></li><li><a href="module-utils_apiHandler.html">utils/apiHandler</a></li><li><a href="module-utils_configLoader.html">utils/configLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getBrowserAPI">getBrowserAPI</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeoutValue">getTimeoutValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeouts">getTimeouts</a></li></ul></li><li><a href="module-utils_envLoader.html">utils/envLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getEnv">getEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getLogLevel">getLogLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getNodeEnv">getNodeEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getRequiredEnv">getRequiredEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isDevelopment">isDevelopment</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isProduction">isProduction</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVars">resolveEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVarsInObject">resolveEnvVarsInObject</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.validateRequiredEnvVars">validateRequiredEnvVars</a></li></ul></li><li><a href="module-utils_logger.html">utils/logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createLogger">createLogger</a></li></ul></li><li><a href="module-utils_metrics.html">utils/metrics</a></li><li><a href="module-utils_randomScrolling.html">utils/randomScrolling</a></li><li><a href="module-utils_randomZoom.html">utils/randomZoom</a></li><li><a href="module-utils_retry.html">utils/retry</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_retry.html#.withRetry">withRetry</a></li></ul></li><li><a href="module-utils_utils.html">utils/utils</a></li><li><a href="module-utils_validator.html">utils/validator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateApiResponse">validateApiResponse</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateBrowserConnection">validateBrowserConnection</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validatePayload">validatePayload</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateTaskExecution">validateTaskExecution</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Discovery</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="module-core_discovery.html">core/discovery</a>~</span>
+        
+        
+            Discovery
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+
+    <h4 class="name" id="Discovery"><span class="type-signature"></span>new Discovery<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Discovers browser instances by loading and querying connectors.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_discovery.js.html">core/discovery.js</a>, <a href="core_discovery.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="connectors"><span class="type-signature"></span>connectors<span class="type-signature"> :Array.&lt;{name: string, instance: object}></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_discovery.js.html">core/discovery.js</a>, <a href="core_discovery.js.html#line20">line 20</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;{name: string, instance: object}></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="discoverBrowsers"><span class="type-signature type-signature-async">(async) </span>discoverBrowsers<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Discovers browser instances using all loaded connectors.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_discovery.js.html">core/discovery.js</a>, <a href="core_discovery.js.html#line72">line 72</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    A promise that resolves with an array of discovered browser endpoints.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Array.&lt;object>></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getConnectorInfo"><span class="type-signature"></span>getConnectorInfo<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;{name: string, type: string}>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Gets information about the loaded connectors.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_discovery.js.html">core/discovery.js</a>, <a href="core_discovery.js.html#line112">line 112</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    An array of objects containing connector information.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;{name: string, type: string}></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="loadConnectors"><span class="type-signature type-signature-async">(async) </span>loadConnectors<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Loads all discovery connectors from the discovery directory.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_discovery.js.html">core/discovery.js</a>, <a href="core_discovery.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;void></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Nov 05 2025 05:16:57 GMT+0700 (Indochina Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

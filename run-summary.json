@@ -1,0 +1,58 @@
+{
+  "summary": {
+    "system": {
+      "uptime": 363548,
+      "uptimeFormatted": "6m 3s",
+      "timeSinceReset": 363548,
+      "timeSinceResetFormatted": "6m 3s"
+    },
+    "tasks": {
+      "executed": 1,
+      "failed": 0,
+      "succeeded": 1,
+      "successRate": 100,
+      "avgDuration": 357638,
+      "totalDuration": 357638,
+      "durationPercentiles": {
+        "p50": 357638,
+        "p95": 357638,
+        "p99": 357638
+      }
+    },
+    "browsers": {
+      "discovered": 1,
+      "connected": 1,
+      "failed": 0,
+      "connectionRate": "100.00"
+    },
+    "api": {
+      "calls": 0,
+      "failures": 0,
+      "successRate": 0,
+      "avgResponseTime": 0
+    },
+    "sessions": {
+      "created": 1,
+      "active": 1,
+      "closed": 0
+    },
+    "social": {
+      "follows": 0,
+      "likes": 0,
+      "retweets": 0,
+      "tweets": 0
+    },
+    "runEndTime": "2026-02-10T21:20:20.113Z"
+  },
+  "tasks": [
+    {
+      "taskName": "ai-twitterActivity",
+      "duration": 357638,
+      "success": true,
+      "sessionId": "Brave-9002:9002",
+      "error": null,
+      "startTime": "2026-02-10T21:14:22.450Z",
+      "timestamp": 1770758420088
+    }
+  ]
+}

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>utils/metrics.js - MultiBrowseAutomation Docs</title>
+    
+    <meta name="description" content="Documentation for the Multi-Browser Automation Framework" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/your-repo-here" target="_blank" >GitHub Repo</a></h2><h3>Classes</h3><ul><li><a href="module-connectors_baseDiscover-BaseDiscover.html">BaseDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_baseDiscover-BaseDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html">LocalBraveDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html">RoxybrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-core_automator-Automator.html">Automator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#closeAll">closeAll</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#connectToBrowser">connectToBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getBrowser">getBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectedEndpoints">getConnectedEndpoints</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectionCount">getConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthyConnectionCount">getHealthyConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#isHealthy">isHealthy</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#reconnect">reconnect</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#startHealthChecks">startHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#stopHealthChecks">stopHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#testConnection">testConnection</a></li></ul></li><li><a href="module-core_discovery-Discovery.html">Discovery</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#discoverBrowsers">discoverBrowsers</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#getConnectorInfo">getConnectorInfo</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#loadConnectors">loadConnectors</a></li></ul></li><li><a href="module-core_orchestrator-Orchestrator.html">Orchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#addTask">addTask</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getMetrics">getMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#logMetrics">logMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#processTasks">processTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#startDiscovery">startDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#waitForTasksToComplete">waitForTasksToComplete</a></li></ul></li><li><a href="module-core_sessionManager-SessionManager.html">SessionManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#addSession">addSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#cleanupTimedOutSessions">cleanupTimedOutSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#findAndOccupyIdleWorker">findAndOccupyIdleWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getAllSessions">getAllSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getSessionMetadata">getSessionMetadata</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#loadSessionState">loadSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#releaseWorker">releaseWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#removeSession">removeSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#saveSessionState">saveSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#stopCleanupTimer">stopCleanupTimer</a></li></ul></li><li><a href="module-utils_apiHandler-ApiHandler.html">ApiHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#post">post</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#put">put</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#request">request</a></li></ul></li><li><a href="module-utils_configLoader-ConfigLoader.html">ConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#getValue">getValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#loadConfig">loadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#reloadConfig">reloadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#validateConfig">validateConfig</a></li></ul></li><li><a href="module-utils_logger-Logger.html">Logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#warn">warn</a></li></ul></li><li><a href="module-utils_metrics-MetricsCollector.html">MetricsCollector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#exportToJSON">exportToJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#generateJsonReport">generateJsonReport</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordApiCall">recordApiCall</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordBrowserDiscovery">recordBrowserDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSessionEvent">recordSessionEvent</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTaskExecution">recordTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#reset">reset</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-connectors_baseDiscover.html">connectors/baseDiscover</a></li><li><a href="module-connectors_discovery_localBrave.html">connectors/discovery/localBrave</a></li><li><a href="module-connectors_discovery_roxybrowser.html">connectors/discovery/roxybrowser</a></li><li><a href="module-core_automator.html">core/automator</a></li><li><a href="module-core_discovery.html">core/discovery</a></li><li><a href="module-core_orchestrator.html">core/orchestrator</a></li><li><a href="module-core_sessionManager.html">core/sessionManager</a></li><li><a href="module-main.html">main</a></li><li><a href="module-tasks__template.html">tasks/_template</a></li><li><a href="module-tasks_automationTask1.html">tasks/automationTask1</a></li><li><a href="module-tasks_automationTask2.html">tasks/automationTask2</a></li><li><a href="module-utils_apiHandler.html">utils/apiHandler</a></li><li><a href="module-utils_configLoader.html">utils/configLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getBrowserAPI">getBrowserAPI</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeoutValue">getTimeoutValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeouts">getTimeouts</a></li></ul></li><li><a href="module-utils_envLoader.html">utils/envLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getEnv">getEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getLogLevel">getLogLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getNodeEnv">getNodeEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getRequiredEnv">getRequiredEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isDevelopment">isDevelopment</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isProduction">isProduction</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVars">resolveEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVarsInObject">resolveEnvVarsInObject</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.validateRequiredEnvVars">validateRequiredEnvVars</a></li></ul></li><li><a href="module-utils_logger.html">utils/logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createLogger">createLogger</a></li></ul></li><li><a href="module-utils_metrics.html">utils/metrics</a></li><li><a href="module-utils_randomScrolling.html">utils/randomScrolling</a></li><li><a href="module-utils_randomZoom.html">utils/randomZoom</a></li><li><a href="module-utils_retry.html">utils/retry</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_retry.html#.withRetry">withRetry</a></li></ul></li><li><a href="module-utils_utils.html">utils/utils</a></li><li><a href="module-utils_validator.html">utils/validator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateApiResponse">validateApiResponse</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateBrowserConnection">validateBrowserConnection</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validatePayload">validatePayload</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateTaskExecution">validateTaskExecution</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">utils/metrics.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview System-wide metrics collection and monitoring.
+ * @module utils/metrics
+ */
+
+import { createLogger } from './logger.js';
+
+const logger = createLogger('metrics.js');
+
+/**
+ * @class MetricsCollector
+ * @description A class for tracking system performance and statistics.
+ */
+class MetricsCollector {
+  constructor() {
+    this.metrics = {
+      tasksExecuted: 0,
+      tasksFailed: 0,
+      totalTaskDuration: 0,
+      taskDurations: [],
+      browsersDiscovered: 0,
+      browsersConnected: 0,
+      browsersFailed: 0,
+      apiCalls: 0,
+      apiFailures: 0,
+      totalApiResponseTime: 0,
+      sessionsCreated: 0,
+      sessionsActive: 0,
+      sessionsClosed: 0,
+      startTime: Date.now(),
+      lastResetTime: Date.now()
+    };
+    
+    this.taskHistory = [];
+    this.maxHistorySize = 100;
+  }
+
+  /**
+   * Records a task execution.
+   * @param {string} taskName - The name of the task.
+   * @param {number} duration - The duration of the task in milliseconds.
+   * @param {boolean} success - Whether the task succeeded.
+   * @param {string} sessionId - The ID of the session that executed the task.
+   * @param {Error} [error=null] - The error object if the task failed.
+   */
+  recordTaskExecution(taskName, duration, success, sessionId, error = null) {
+    this.metrics.tasksExecuted++;
+    this.metrics.totalTaskDuration += duration;
+    this.metrics.taskDurations.push(duration);
+    
+    if (this.metrics.taskDurations.length > 100) {
+      this.metrics.taskDurations.shift();
+    }
+    
+    if (!success) {
+      this.metrics.tasksFailed++;
+    }
+    
+    this.taskHistory.push({
+      taskName,
+      duration,
+      success,
+      sessionId,
+      error: error ? error.message : null,
+      startTime: new Date(Date.now() - duration).toISOString(),
+      timestamp: Date.now()
+    });
+    
+    if (this.taskHistory.length > this.maxHistorySize) {
+      this.taskHistory.shift();
+    }
+    
+    logger.debug(`Task '${taskName}' recorded: ${success ? 'SUCCESS' : 'FAILED'}, duration: ${duration}ms`);
+  }
+
+  /**
+   * Records a browser discovery attempt.
+   * @param {number} count - The number of browsers discovered.
+   * @param {number} connected - The number of browsers that successfully connected.
+   * @param {number} failed - The number of browsers that failed to connect.
+   */
+  recordBrowserDiscovery(count, connected, failed) {
+    this.metrics.browsersDiscovered += count;
+    this.metrics.browsersConnected += connected;
+    this.metrics.browsersFailed += failed;
+    
+    logger.debug(`Browser discovery: ${count} discovered, ${connected} connected, ${failed} failed`);
+  }
+
+  /**
+   * Records an API call.
+   * @param {number} responseTime - The response time of the API call in milliseconds.
+   * @param {boolean} success - Whether the API call succeeded.
+   */
+  recordApiCall(responseTime, success) {
+    this.metrics.apiCalls++;
+    this.metrics.totalApiResponseTime += responseTime;
+    
+    if (!success) {
+      this.metrics.apiFailures++;
+    }
+  }
+
+  /**
+   * Records a session lifecycle event.
+   * @param {string} event - The type of event ('created' or 'closed').
+   * @param {number} activeCount - The current number of active sessions.
+   */
+  recordSessionEvent(event, activeCount) {
+    if (event === 'created') {
+      this.metrics.sessionsCreated++;
+    } else if (event === 'closed') {
+      this.metrics.sessionsClosed++;
+    }
+    
+    this.metrics.sessionsActive = activeCount;
+  }
+
+  /**
+   * Gets comprehensive statistics about the system.
+   * @returns {object} An object containing system statistics.
+   */
+  getStats() {
+    const now = Date.now();
+    const uptime = now - this.metrics.startTime;
+    const timeSinceReset = now - this.metrics.lastResetTime;
+    
+    const successRate = this.metrics.tasksExecuted > 0
+      ? ((this.metrics.tasksExecuted - this.metrics.tasksFailed) / this.metrics.tasksExecuted * 100).toFixed(2)
+      : 0;
+    
+    const avgTaskDuration = this.metrics.tasksExecuted > 0
+      ? (this.metrics.totalTaskDuration / this.metrics.tasksExecuted).toFixed(2)
+      : 0;
+    
+    const avgApiResponseTime = this.metrics.apiCalls > 0
+      ? (this.metrics.totalApiResponseTime / this.metrics.apiCalls).toFixed(2)
+      : 0;
+    
+    const apiSuccessRate = this.metrics.apiCalls > 0
+      ? ((this.metrics.apiCalls - this.metrics.apiFailures) / this.metrics.apiCalls * 100).toFixed(2)
+      : 0;
+    
+    const sortedDurations = [...this.metrics.taskDurations].sort((a, b) => a - b);
+    const p50 = this.getPercentile(sortedDurations, 50);
+    const p95 = this.getPercentile(sortedDurations, 95);
+    const p99 = this.getPercentile(sortedDurations, 99);
+    
+    return {
+      system: {
+        uptime,
+        uptimeFormatted: this.formatDuration(uptime),
+        timeSinceReset,
+        timeSinceResetFormatted: this.formatDuration(timeSinceReset)
+      },
+      tasks: {
+        executed: this.metrics.tasksExecuted,
+        failed: this.metrics.tasksFailed,
+        succeeded: this.metrics.tasksExecuted - this.metrics.tasksFailed,
+        successRate: parseFloat(successRate),
+        avgDuration: parseFloat(avgTaskDuration),
+        totalDuration: this.metrics.totalTaskDuration,
+        durationPercentiles: {
+          p50,
+          p95,
+          p99
+        }
+      },
+      browsers: {
+        discovered: this.metrics.browsersDiscovered,
+        connected: this.metrics.browsersConnected,
+        failed: this.metrics.browsersFailed,
+        connectionRate: this.metrics.browsersDiscovered > 0
+          ? (this.metrics.browsersConnected / this.metrics.browsersDiscovered * 100).toFixed(2)
+          : 0
+      },
+      api: {
+        calls: this.metrics.apiCalls,
+        failures: this.metrics.apiFailures,
+        successRate: parseFloat(apiSuccessRate),
+        avgResponseTime: parseFloat(avgApiResponseTime)
+      },
+      sessions: {
+        created: this.metrics.sessionsCreated,
+        active: this.metrics.sessionsActive,
+        closed: this.metrics.sessionsClosed
+      }
+    };
+  }
+
+  /**
+   * Gets the recent task history.
+   * @param {number} [limit=10] - The number of recent tasks to return.
+   * @returns {object[]} An array of recent task execution objects.
+   */
+  getRecentTasks(limit = 10) {
+    return this.taskHistory.slice(-limit).reverse();
+  }
+
+  /**
+   * Gets task statistics grouped by task name.
+   * @returns {object} An object containing statistics for each task.
+   */
+  getTaskBreakdown() {
+    const breakdown = {};
+    
+    for (const task of this.taskHistory) {
+      if (!breakdown[task.taskName]) {
+        breakdown[task.taskName] = {
+          executions: 0,
+          successes: 0,
+          failures: 0,
+          totalDuration: 0,
+          durations: []
+        };
+      }
+      
+      const stats = breakdown[task.taskName];
+      stats.executions++;
+      stats.totalDuration += task.duration;
+      stats.durations.push(task.duration);
+      
+      if (task.success) {
+        stats.successes++;
+      } else {
+        stats.failures++;
+      }
+    }
+    
+    for (const [taskName, stats] of Object.entries(breakdown)) {
+      stats.avgDuration = (stats.totalDuration / stats.executions).toFixed(2);
+      stats.successRate = ((stats.successes / stats.executions) * 100).toFixed(2);
+      delete stats.durations;
+    }
+    
+    return breakdown;
+  }
+
+  /**
+   * Calculates a percentile from a sorted array.
+   * @param {number[]} sortedArray - A sorted array of numbers.
+   * @param {number} percentile - The percentile to calculate (0-100).
+   * @returns {number} The percentile value.
+   * @private
+   */
+  getPercentile(sortedArray, percentile) {
+    if (sortedArray.length === 0) return 0;
+    
+    const index = Math.ceil((percentile / 100) * sortedArray.length) - 1;
+    return sortedArray[Math.max(0, index)];
+  }
+
+  /**
+   * Formats a duration in milliseconds to a human-readable string.
+   * @param {number} ms - The duration in milliseconds.
+   * @returns {string} The formatted duration string.
+   * @private
+   */
+  formatDuration(ms) {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
+    if (hours > 0) return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+    return `${seconds}s`;
+  }
+
+  /**
+   * Resets all metrics.
+   */
+  reset() {
+    const previousStats = this.getStats();
+    
+    this.metrics = {
+      tasksExecuted: 0,
+      tasksFailed: 0,
+      totalTaskDuration: 0,
+      taskDurations: [],
+      browsersDiscovered: 0,
+      browsersConnected: 0,
+      browsersFailed: 0,
+      apiCalls: 0,
+      apiFailures: 0,
+      totalApiResponseTime: 0,
+      sessionsCreated: 0,
+      sessionsActive: 0,
+      sessionsClosed: 0,
+      startTime: this.metrics.startTime,
+      lastResetTime: Date.now()
+    };
+    
+    logger.info('Metrics reset', previousStats);
+  }
+
+  /**
+   * Exports the current metrics to a JSON string.
+   * @returns {string} A JSON string of the current metrics.
+   */
+  exportToJSON() {
+    return JSON.stringify({
+      stats: this.getStats(),
+      recentTasks: this.getRecentTasks(20),
+      taskBreakdown: this.getTaskBreakdown()
+    }, null, 2);
+  }
+
+  /**
+   * Generates and saves a JSON report of the current run.
+   * @returns {Promise&lt;void>}
+   */
+  async generateJsonReport() {
+    logger.info('Generating JSON summary report...');
+    try {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+
+      const report = {
+        summary: {
+          ...this.getStats(),
+          runEndTime: new Date().toISOString(),
+        },
+        tasks: this.taskHistory.map(task => ({
+          ...task,
+          // Ensure error is serializable
+          error: task.error instanceof Error ? { message: task.error.message, stack: task.error.stack } : task.error,
+        })),
+      };
+
+      const reportPath = path.join(process.cwd(), 'run-summary.json');
+      await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
+      logger.info(`Successfully generated JSON report at ${reportPath}`);
+    } catch (error) {
+      logger.error('Failed to generate JSON report:', error);
+    }
+  }
+
+  /**
+   * Logs the current statistics to the console.
+   */
+  logStats() {
+    const stats = this.getStats();
+    
+    logger.info('================== System Metrics ==================');
+    logger.info(`Uptime: ${stats.system.uptimeFormatted}`);
+    logger.info(`Tasks: ${stats.tasks.executed} executed, ${stats.tasks.succeeded} succeeded, ${stats.tasks.failed} failed (${stats.tasks.successRate}% success rate)`);
+    logger.info(`Avg Task Duration: ${stats.tasks.avgDuration}ms`);
+    logger.info(`Browsers: ${stats.browsers.connected}/${stats.browsers.discovered} connected (${stats.browsers.connectionRate}%)`);
+    logger.info(`Sessions: ${stats.sessions.active} active, ${stats.sessions.created} total created`);
+    logger.info(`API: ${stats.api.calls} calls, ${stats.api.avgResponseTime}ms avg response time (${stats.api.successRate}% success rate)`);
+    logger.info('====================================================');
+  }
+}
+
+const metricsCollector = new MetricsCollector();
+
+export default metricsCollector;
+export { MetricsCollector };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Nov 05 2025 05:16:57 GMT+0700 (Indochina Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

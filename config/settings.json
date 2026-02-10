@@ -1,0 +1,234 @@
+{
+  "twitter": {
+    "session": {
+      "minSeconds": 300,
+      "maxSeconds": 540,
+      "randomProfile": true
+    },
+    "engagement": {
+      "maxReplies": 3,
+      "maxRetweets": 1,
+      "maxQuotes": 1,
+      "maxLikes": 5,
+      "maxFollows": 2,
+      "maxBookmarks": 2
+    },
+    "reply": {
+      "probability": 0.6,
+      "minChars": 10,
+      "maxChars": 200,
+      "emojiChance": 0.3,
+      "questionChance": 0.2,
+      "methods": {
+        "replyA": { "weight": 40, "enabled": true },
+        "replyB": { "weight": 35, "enabled": true },
+        "replyC": { "weight": 25, "enabled": true }
+      }
+    },
+    "quote": {
+      "probability": 0.2,
+      "methods": {
+        "quoteA": { "weight": 40, "enabled": true },
+        "quoteB": { "weight": 35, "enabled": true },
+        "quoteC": { "weight": 25, "enabled": true }
+      }
+    },
+    "timing": {
+      "warmupMin": 2000,
+      "warmupMax": 15000,
+      "scrollMin": 300,
+      "scrollMax": 700,
+      "scrollPauseMin": 1500,
+      "scrollPauseMax": 4000,
+      "readMin": 5000,
+      "readMax": 15000,
+      "diveRead": 10000,
+      "globalScrollMultiplier": 2.0
+    },
+    "phases": {
+      "warmupPercent": 0.1,
+      "activePercent": 0.7,
+      "cooldownPercent": 0.2
+    }
+  },
+  "llm": {
+    "vllm": {
+      "enabled": false,
+      "endpoint": "http://localhost:8000/v1",
+      "model": "meta-llama/Llama-3.3-70B-Instruct",
+      "timeout": 120000
+    },
+    "local": {
+      "enabled": false,
+      "provider": "ollama",
+      "endpoint": "http://localhost:11434",
+      "model": "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q5_K_M",
+      "textModel": "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q5_K_M",
+      "timeout": 60000,
+      "retryAttempts": 2,
+      "warmup": true
+    },
+    "cloud": {
+      "provider": "openrouter",
+      "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+      "timeout": 120000,
+      "enabled": false,
+      "retryAttempts": 1,
+      "retryDelay": 3000,
+      "providers": [
+        {
+          "name": "openrouter1",
+          "apiKey": "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",
+          "model": "arcee-ai/trinity-large-preview:free"
+        },
+        {
+          "name": "openrouter2",
+          "apiKey": "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",
+          "model": "tngtech/deepseek-r1t2-chimera:free"
+        },
+        {
+          "name": "openrouter3",
+          "apiKey": "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",
+          "model": "z-ai/glm-4.5-air:free"
+        },
+        {
+          "name": "openrouter4",
+          "apiKey": "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",
+          "model": "stepfun/step-3.5-flash:free"
+        },
+        {
+          "name": "openrouter5",
+          "apiKey": "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",
+          "model": "tngtech/deepseek-r1t-chimera:free"
+        },
+        {
+          "name": "openrouter6",
+          "apiKey": "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",
+          "model": "arcee-ai/trinity-mini:free"
+        },
+        {
+          "name": "openrouter7",
+          "apiKey": "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",
+          "model": "meta-llama/llama-3.3-70b-instruct:free"
+        },
+        {
+          "name": "openrouter8",
+          "apiKey": "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",
+          "model": "qwen/qwen3-next-80b-a3b-instruct:free"
+        },
+        {
+          "name": "openrouter9",
+          "apiKey": "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",
+          "model": "google/gemma-3-27b-it:free"
+        }
+      ]
+    },
+    "fallback": {
+      "enabled": true,
+      "maxRetries": 2,
+      "retryDelay": 2000
+    }
+  },
+  "humanization": {
+    "mouse": {
+      "minDuration": 300,
+      "maxDuration": 1500,
+      "baseSpeed": 2.0,
+      "jitterRange": 2
+    },
+    "keystroke": {
+      "baseDelay": 120,
+      "stdDev": 40,
+      "punctuationPause": 300,
+      "spacePause": 150
+    },
+    "idle": {
+      "wiggleFrequency": 2000,
+      "wiggleMagnitude": 5,
+      "enabled": true
+    }
+  },
+  "verification": {
+    "auditTimeout": 5000,
+    "preFlightEnabled": true,
+    "postFlightEnabled": true,
+    "waitForStateTimeout": 5000
+  },
+  "state": {
+    "maxBreadcrumbs": 50,
+    "compactionThreshold": 20
+  },
+  "system": {
+    "environment": "development",
+    "logLevel": "info",
+    "sessionTimeoutMs": 1800000,
+    "cleanupIntervalMs": 300000
+  },
+"open_router_free_api": {
+    "enabled": true,
+    "api_keys": [
+      "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",
+      "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",
+      "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",
+      "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",
+      "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",
+      "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",
+      "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",
+      "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",
+      "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",
+      "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",
+      "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"
+    ],
+    "models": {
+      "primary": "arcee-ai/trinity-large-preview:free",
+      "fallbacks": [
+        "nousresearch/hermes-3-llama-3.1-405b:free",
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+        "google/gemma-3-27b-it:free",
+        "qwen/qwen3-next-80b-a3b-instruct:free",
+        "mistralai/mistral-small-3.1-24b-instruct:free",
+        "tngtech/deepseek-r1t-chimera:free",
+        "tngtech/deepseek-r1t2-chimera:free",
+        "upstage/solar-pro-3:free",
+        "stepfun/step-3.5-flash:free",
+        "openrouter/free"
+      ]
+    },
+    "proxy": {
+      "enabled": true,
+      "fallback_to_direct": true,
+      "list": [
+        "45.39.75.251:6165:KingAirdrop:kiNgdom77",
+        "45.39.75.252:6166:KingAirdrop:kiNgdom77",
+        "45.38.111.110:6025:KingAirdrop:kiNgdom77",
+        "45.38.111.30:5945:KingAirdrop:kiNgdom77",
+        "45.39.73.233:5648:KingAirdrop:kiNgdom77",
+        "45.39.73.209:5624:KingAirdrop:kiNgdom77",
+        "45.38.111.158:6073:KingAirdrop:kiNgdom77",
+        "45.38.111.45:5960:KingAirdrop:kiNgdom77",
+        "45.39.75.77:5991:KingAirdrop:kiNgdom77",
+        "45.38.111.33:5948:KingAirdrop:kiNgdom77",
+        "45.39.73.235:5650:KingAirdrop:kiNgdom77",
+        "45.39.75.93:6007:KingAirdrop:kiNgdom77",
+        "45.39.73.21:5436:KingAirdrop:kiNgdom77",
+        "45.38.111.214:6129:KingAirdrop:kiNgdom77",
+        "45.39.73.161:5576:KingAirdrop:kiNgdom77",
+        "45.39.75.30:5944:KingAirdrop:kiNgdom77",
+        "45.38.111.171:6086:KingAirdrop:kiNgdom77",
+        "82.29.223.56:7870:KingAirdrop:kiNgdom77",
+        "45.39.73.7:5422:KingAirdrop:kiNgdom77",
+        "45.39.75.3:5917:KingAirdrop:kiNgdom77",
+        "45.39.75.220:6134:KingAirdrop:kiNgdom77",
+        "45.39.73.243:5658:KingAirdrop:kiNgdom77",
+        "45.39.75.194:6108:KingAirdrop:kiNgdom77",
+        "45.39.73.72:5487:KingAirdrop:kiNgdom77",
+        "45.38.111.196:6111:KingAirdrop:kiNgdom77",
+        "45.39.73.222:5637:KingAirdrop:kiNgdom77",
+        "45.39.73.220:5635:KingAirdrop:kiNgdom77",
+        "45.39.73.113:5528:KingAirdrop:kiNgdom77",
+        "45.39.73.151:5566:KingAirdrop:kiNgdom77"
+      ]
+    }
+  }
+}

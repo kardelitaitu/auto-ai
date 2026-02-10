@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            width: 300px;
+            padding: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1da1f2;
+            /* Twitter Blue */
+            font-size: 18px;
+            border-bottom: 2px solid #e1e8ed;
+            padding-bottom: 10px;
+        }
+
+        .stats {
+            margin: 15px 0;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #e1e8ed;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #657786;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #14171a;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        #scanBtn {
+            background-color: #1da1f2;
+            color: white;
+        }
+
+        #scanBtn:hover {
+            background-color: #0c85d0;
+        }
+
+        #downloadBtn {
+            background-color: #17bf63;
+            color: white;
+        }
+
+        #downloadBtn:hover {
+            background-color: #0ca14b;
+        }
+
+        #clearBtn {
+            background-color: #e0245e;
+            color: white;
+            margin-top: 20px;
+            font-size: 12px;
+            padding: 5px;
+        }
+
+        #clearBtn:hover {
+            background-color: #c51f53;
+        }
+
+        .message {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #657786;
+            text-align: center;
+            min-height: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>t.co Link Grabber</h2>
+
+    <div class="stats">
+        <div class="stat-row">
+            <span class="stat-label">Total Stored:</span>
+            <span class="stat-value" id="totalCount">0</span>
+        </div>
+    </div>
+
+    <!-- Auto-Scan is active via Content Script -->
+    <div style="font-size:11px; text-align:center; color:#888; margin-bottom:10px;">
+        Auto-Grabber Running 🟢
+    </div>
+
+    <button id="downloadBtn">Export to config/tco_links.json format</button>
+
+    <div class="message" id="statusMsg">Ready</div>
+
+    <button id="clearBtn">Clear Storage</button>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

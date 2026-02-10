@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>core/orchestrator.js - MultiBrowseAutomation Docs</title>
+    
+    <meta name="description" content="Documentation for the Multi-Browser Automation Framework" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/your-repo-here" target="_blank" >GitHub Repo</a></h2><h3>Classes</h3><ul><li><a href="module-connectors_baseDiscover-BaseDiscover.html">BaseDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_baseDiscover-BaseDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html">LocalBraveDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html">RoxybrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-core_automator-Automator.html">Automator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#closeAll">closeAll</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#connectToBrowser">connectToBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getBrowser">getBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectedEndpoints">getConnectedEndpoints</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectionCount">getConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthyConnectionCount">getHealthyConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#isHealthy">isHealthy</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#reconnect">reconnect</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#startHealthChecks">startHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#stopHealthChecks">stopHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#testConnection">testConnection</a></li></ul></li><li><a href="module-core_discovery-Discovery.html">Discovery</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#discoverBrowsers">discoverBrowsers</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#getConnectorInfo">getConnectorInfo</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#loadConnectors">loadConnectors</a></li></ul></li><li><a href="module-core_orchestrator-Orchestrator.html">Orchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#addTask">addTask</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getMetrics">getMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#logMetrics">logMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#processTasks">processTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#startDiscovery">startDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#waitForTasksToComplete">waitForTasksToComplete</a></li></ul></li><li><a href="module-core_sessionManager-SessionManager.html">SessionManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#addSession">addSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#cleanupTimedOutSessions">cleanupTimedOutSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#findAndOccupyIdleWorker">findAndOccupyIdleWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getAllSessions">getAllSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getSessionMetadata">getSessionMetadata</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#loadSessionState">loadSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#releaseWorker">releaseWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#removeSession">removeSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#saveSessionState">saveSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#stopCleanupTimer">stopCleanupTimer</a></li></ul></li><li><a href="module-utils_apiHandler-ApiHandler.html">ApiHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#post">post</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#put">put</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#request">request</a></li></ul></li><li><a href="module-utils_configLoader-ConfigLoader.html">ConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#getValue">getValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#loadConfig">loadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#reloadConfig">reloadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#validateConfig">validateConfig</a></li></ul></li><li><a href="module-utils_logger-Logger.html">Logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#warn">warn</a></li></ul></li><li><a href="module-utils_metrics-MetricsCollector.html">MetricsCollector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#exportToJSON">exportToJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#generateJsonReport">generateJsonReport</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordApiCall">recordApiCall</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordBrowserDiscovery">recordBrowserDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSessionEvent">recordSessionEvent</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTaskExecution">recordTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#reset">reset</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-connectors_baseDiscover.html">connectors/baseDiscover</a></li><li><a href="module-connectors_discovery_localBrave.html">connectors/discovery/localBrave</a></li><li><a href="module-connectors_discovery_roxybrowser.html">connectors/discovery/roxybrowser</a></li><li><a href="module-core_automator.html">core/automator</a></li><li><a href="module-core_discovery.html">core/discovery</a></li><li><a href="module-core_orchestrator.html">core/orchestrator</a></li><li><a href="module-core_sessionManager.html">core/sessionManager</a></li><li><a href="module-main.html">main</a></li><li><a href="module-tasks__template.html">tasks/_template</a></li><li><a href="module-tasks_automationTask1.html">tasks/automationTask1</a></li><li><a href="module-tasks_automationTask2.html">tasks/automationTask2</a></li><li><a href="module-utils_apiHandler.html">utils/apiHandler</a></li><li><a href="module-utils_configLoader.html">utils/configLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getBrowserAPI">getBrowserAPI</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeoutValue">getTimeoutValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeouts">getTimeouts</a></li></ul></li><li><a href="module-utils_envLoader.html">utils/envLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getEnv">getEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getLogLevel">getLogLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getNodeEnv">getNodeEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getRequiredEnv">getRequiredEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isDevelopment">isDevelopment</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isProduction">isProduction</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVars">resolveEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVarsInObject">resolveEnvVarsInObject</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.validateRequiredEnvVars">validateRequiredEnvVars</a></li></ul></li><li><a href="module-utils_logger.html">utils/logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createLogger">createLogger</a></li></ul></li><li><a href="module-utils_metrics.html">utils/metrics</a></li><li><a href="module-utils_randomScrolling.html">utils/randomScrolling</a></li><li><a href="module-utils_randomZoom.html">utils/randomZoom</a></li><li><a href="module-utils_retry.html">utils/retry</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_retry.html#.withRetry">withRetry</a></li></ul></li><li><a href="module-utils_utils.html">utils/utils</a></li><li><a href="module-utils_validator.html">utils/validator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateApiResponse">validateApiResponse</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateBrowserConnection">validateBrowserConnection</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validatePayload">validatePayload</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateTaskExecution">validateTaskExecution</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">core/orchestrator.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview The main orchestrator for the multi-browser automation framework.
+ * @module core/orchestrator
+ */
+
+import { EventEmitter } from 'events';
+import SessionManager from './sessionManager.js';
+import Discovery from './discovery.js';
+import Automator from './automator.js';
+import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue, getSettings } from '../utils/configLoader.js';
+import { validateTaskExecution, validatePayload } from '../utils/validator.js';
+import { isDevelopment } from '../utils/envLoader.js';
+import metricsCollector from '../utils/metrics.js';
+
+const logger = createLogger('orchestrator.js');
+
+/**
+ * @class Orchestrator
+ * @extends EventEmitter
+ * @description Coordinates browser discovery, session management, and task execution.
+ */
+class Orchestrator extends EventEmitter {
+  constructor() {
+    super();
+    /** @type {Automator} */
+    this.automator = new Automator();
+    /** @type {SessionManager} */
+    this.sessionManager = new SessionManager();
+    /** @type {Array&lt;{taskName: string, payload: object}>} */
+    this.taskQueue = [];
+    this.isProcessingTasks = false;
+    this.processTimeout = null;
+    /** @type {Discovery} */
+    this.discovery = new Discovery();
+  }
+
+  /**
+   * Starts the browser discovery process and adds discovered browsers to the session manager.
+   * @returns {Promise&lt;void>}
+   */
+  async startDiscovery() {
+    logger.info("Starting browser discovery...");
+
+    try {
+      await this.discovery.loadConnectors();
+
+      const endpoints = await this.discovery.discoverBrowsers();
+
+      if (endpoints.length === 0) {
+        logger.warn("No browser endpoints discovered. Session manager will remain empty.");
+        return;
+      }
+
+      logger.info(`Found ${endpoints.length} browser endpoints. Attempting to connect in parallel...`);
+
+      const connectionPromises = endpoints.map(endpointData => {
+        const wsEndpoint = endpointData.ws;
+        const browserName = String(endpointData.windowName || endpointData.sortNum || 'Unnamed Profile');
+
+        if (!wsEndpoint) {
+          logger.warn(`Profile ${browserName} has no 'ws' endpoint. Skipping.`);
+          return Promise.resolve(null);
+        }
+
+        return this.automator.connectToBrowser(wsEndpoint)
+          .then(browser => ({ browser, browserName }))
+          .catch(error => {
+            throw new Error(`Failed to connect to browser profile ${browserName}: ${error.message}`);
+          });
+      });
+
+      const results = await Promise.allSettled(connectionPromises);
+
+      for (const result of results) {
+        if (result.status === 'fulfilled' &amp;&amp; result.value) {
+          const { browser, browserName } = result.value;
+          this.sessionManager.addSession(browser, browserName);
+          logger.info(`Successfully connected and added session for ${browserName}.`);
+        } else if (result.status === 'rejected') {
+          logger.error(result.reason.message);
+        }
+      }
+
+      const connectedCount = this.sessionManager.activeSessionsCount;
+      const failedCount = endpoints.length - connectedCount;
+      
+      logger.info(`Discovery completed. Connected to ${connectedCount} browsers.`);
+      
+      metricsCollector.recordBrowserDiscovery(endpoints.length, connectedCount, failedCount);
+
+      if (connectedCount > 0) {
+        this.automator.startHealthChecks();
+      }
+    } catch (error) {
+      logger.error("Browser discovery failed:", error.message);
+    }
+  }
+
+  /**
+   * Adds a task to the execution queue.
+   * @param {string} taskName - The name of the task (corresponds to a file in the tasks/ directory).
+   * @param {object} [payload={}] - The data payload for the task.
+   * @throws {Error} If the task name or payload is invalid.
+   */
+  addTask(taskName, payload = {}) {
+    if (!taskName || typeof taskName !== 'string') {
+      logger.error('Task name must be a non-empty string');
+      throw new Error('Invalid task name provided');
+    }
+
+    const payloadValidation = validatePayload(payload);
+    if (!payloadValidation.isValid) {
+      logger.error(`Task payload validation failed for '${taskName}':`, payloadValidation.errors);
+      throw new Error(`Invalid task payload: ${payloadValidation.errors.join(', ')}`);
+    }
+
+    this.taskQueue.push({ taskName, payload });
+    logger.info(`Task '${taskName}' added to queue. Queue size: ${this.taskQueue.length}. Queue contents: ${this.taskQueue.map(t => t.taskName).join(', ')}`);
+    
+    if (this.processTimeout) {
+      clearTimeout(this.processTimeout);
+    }
+    this.processTimeout = setTimeout(() => {
+      this.processTasks();
+    }, 50); // Debounce task processing
+  }
+
+  /**
+   * Processes tasks from the queue in parallel using available idle sessions.
+   * @returns {Promise&lt;void>}
+   */
+  async processTasks() {
+    if (this.isProcessingTasks || this.taskQueue.length === 0 || this.sessionManager.activeSessionsCount === 0) {
+      return;
+    }
+
+    this.isProcessingTasks = true;
+    logger.info("Starting concurrent checklist processing for all sessions...");
+
+    const tasksToReplicate = [...this.taskQueue];
+    logger.info(`Broadcasting ${tasksToReplicate.length} tasks to all sessions: ${tasksToReplicate.map(t => t.taskName).join(', ')}`);
+    this.taskQueue.length = 0;
+
+    const sessions = this.sessionManager.getAllSessions();
+    const allSessionPromises = sessions.map(session => 
+      this.processChecklistForSession(session, tasksToReplicate)
+    );
+
+    await Promise.allSettled(allSessionPromises);
+
+    this.isProcessingTasks = false;
+    logger.info("All sessions have completed their task checklists.");
+
+    this.emit('tasksProcessed');
+
+    if (this.taskQueue.length > 0) {
+      logger.info("New tasks found in queue. Restarting processing...");
+      this.processTasks();
+    } else {
+      this.emit('allTasksComplete');
+    }
+  }
+
+  /**
+   * Manages the concurrent execution of a checklist of tasks for a single browser session.
+   * @param {object} session - The session object from the SessionManager.
+   * @param {Array&lt;object>} tasks - The array of task objects to execute.
+   * @private
+   */
+  async processChecklistForSession(session, tasks) {
+    logger.info(`[${session.id}] Starting checklist of ${tasks.length} tasks with up to ${session.workers.length} parallel tabs.`);
+    
+    const taskList = [...tasks];
+    const contexts = session.browser.contexts();
+    const sharedContext = contexts.length > 0 ? contexts[0] : await session.browser.newContext();
+
+    try {
+      const workerPromises = session.workers.map(async (worker) => {
+        logger.debug(`[${session.id}][Worker ${worker.id}] Starting...`);
+
+        while (true) {
+          const task = taskList.shift();
+          if (!task) {
+            logger.debug(`[${session.id}][Worker ${worker.id}] No more tasks. Exiting.`);
+            break;
+          }
+
+          this.sessionManager.findAndOccupyIdleWorker(session.id);
+          let page = null;
+          try {
+            page = await sharedContext.newPage();
+            logger.info(`[${session.id}][Worker ${worker.id}] Starting task '${task.taskName}' in new tab.`);
+            await this.executeTask(task, page, session);
+          } catch (e) {
+            logger.error(`[${session.id}][Worker ${worker.id}] Critical error during task '${task.taskName}':`, e);
+          } finally {
+            if (page) {
+              await page.close();
+            }
+            this.sessionManager.releaseWorker(session.id, worker.id);
+            logger.info(`[${session.id}][Worker ${worker.id}] Finished task '${task.taskName}'. Worker is now idle.`);
+          }
+        }
+      });
+
+      await Promise.all(workerPromises);
+    } finally {
+      await sharedContext.close();
+      logger.info(`[${session.id}] All tasks complete. Closed shared browser context.`);
+    }
+
+    logger.info(`[${session.id}] Completed all tasks in the checklist.`);
+  }
+
+  /**
+   * Waits for all tasks in the queue to be processed.
+   * @returns {Promise&lt;void>}
+   */
+  async waitForTasksToComplete() {
+    if (this.taskQueue.length === 0 &amp;&amp; !this.isProcessingTasks) {
+      logger.info("waitForTasksToComplete: No tasks in queue and not processing. Resolving immediately.");
+      return Promise.resolve();
+    }
+
+    logger.info("waitForTasksToComplete: Waiting for tasks to finish using event-driven approach...");
+    
+    return new Promise(resolve => {
+      const checkCompletion = () => {
+        if (this.taskQueue.length === 0 &amp;&amp; !this.isProcessingTasks) {
+          logger.info("waitForTasksToComplete: All tasks completed.");
+          this.removeListener('tasksProcessed', checkCompletion);
+          this.removeListener('allTasksComplete', onComplete);
+          resolve();
+        }
+      };
+
+      const onComplete = () => {
+        logger.info("waitForTasksToComplete: Received completion event.");
+        this.removeListener('tasksProcessed', checkCompletion);
+        this.removeListener('allTasksComplete', onComplete);
+        resolve();
+      };
+
+      this.on('tasksProcessed', checkCompletion);
+      this.on('allTasksComplete', onComplete);
+    });
+  }
+
+  /**
+   * Loads and executes a single task.
+   * @param {{taskName: string, payload: object}} task - The task object.
+   * @param {playwright.Page} page - The Playwright Page object to run the task in.
+   * @param {object} session - The session to use.
+   * @private
+   */
+  async executeTask(task, page, session) {
+    const startTime = Date.now();
+    let success = false;
+    let error = null;
+    
+    try {
+      const validation = validateTaskExecution(page, task.payload);
+      if (!validation.isValid) {
+        throw new Error(`Task execution validation failed: ${validation.errors.join(', ')}`);
+      }
+
+      const cacheBuster = isDevelopment() ? `?v=${Date.now()}` : '';
+      const taskModule = await import(`../tasks/${task.taskName}.js${cacheBuster}`);
+      if (typeof taskModule.default === 'function') {
+        const augmentedPayload = {
+          ...task.payload,
+          browserInfo: session.browserInfo || 'unknown_profile'
+        };
+
+        const payloadValidation = validatePayload(augmentedPayload);
+        if (!payloadValidation.isValid) {
+          throw new Error(`Augmented payload validation failed: ${payloadValidation.errors.join(', ')}`);
+        }
+
+        // The task now receives a Page object directly.
+        await taskModule.default(page, augmentedPayload);
+        success = true;
+      } else {
+        throw new Error(`Task '${task.taskName}' does not export a default function.`);
+      }
+    } catch (err) {
+      error = err;
+      success = false;
+      logger.error(`Error executing task '${task.taskName}' on session ${session.id}:`, err);
+    } finally {
+      const duration = Date.now() - startTime;
+      metricsCollector.recordTaskExecution(task.taskName, duration, success, session.id, error);
+    }
+  }
+
+  /**
+   * Gets the current metrics and statistics.
+   * @returns {object} An object containing the current metrics.
+   */
+  getMetrics() {
+    return metricsCollector.getStats();
+  }
+
+  /**
+   * Gets the recent task history.
+   * @param {number} [limit=10] - The number of recent tasks to return.
+   * @returns {object[]} An array of recent task execution objects.
+   */
+  getRecentTasks(limit = 10) {
+    return metricsCollector.getRecentTasks(limit);
+  }
+
+  /**
+   * Gets task statistics grouped by task name.
+   * @returns {object} An object containing statistics for each task.
+   */
+  getTaskBreakdown() {
+    return metricsCollector.getTaskBreakdown();
+  }
+
+  /**
+   * Logs the current metrics to the console.
+   */
+  logMetrics() {
+    metricsCollector.logStats();
+  }
+
+  /**
+   * Gracefully shuts down the orchestrator and all connected sessions.
+   * @returns {Promise&lt;void>}
+   */
+  async shutdown() {
+    logger.info("Orchestrator shutting down...");
+    
+    logger.info("Final system metrics:");
+    metricsCollector.logStats();
+    
+    if (this.isProcessingTasks) {
+      logger.info("Waiting for task processing to complete...");
+      await this.waitForTasksToComplete();
+    }
+
+    await metricsCollector.generateJsonReport();
+    
+    await this.automator.shutdown();
+    
+    logger.info("Orchestrator shutdown completed");
+  }
+}
+
+export default Orchestrator;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Nov 05 2025 05:16:57 GMT+0700 (Indochina Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

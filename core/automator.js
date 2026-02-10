@@ -1,0 +1,284 @@
+/**
+ * @fileoverview Manages Playwright browser connections, including health checks and automatic reconnections.
+ * @module core/automator
+ */
+
+import { chromium } from 'playwright';
+import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
+import { withRetry } from '../utils/retry.js';
+
+const logger = createLogger('automator.js');
+
+/**
+ * @class Automator
+ * @description Manages browser connections with health monitoring and reconnection capabilities.
+ */
+class Automator {
+  constructor() {
+    /** @type {Map<string, object>} */
+    this.connections = new Map();
+    this.healthCheckInterval = null;
+    this.isShuttingDown = false;
+  }
+
+  /**
+   * Connects to a browser via its CDP endpoint.
+   * @param {string} wsEndpoint - The WebSocket endpoint URL of the browser.
+   * @param {object} [options={}] - Connection options for Playwright.
+   * @returns {Promise<object>} A promise that resolves with the connected browser instance.
+   */
+  async connectToBrowser(wsEndpoint, options = {}) {
+    const timeout = await getTimeoutValue('browser.connectionTimeoutMs', 10000);
+
+    const browser = await withRetry(async () => {
+      logger.info(`Attempting connection to ${wsEndpoint}`);
+      const browser = await chromium.connectOverCDP(wsEndpoint, {
+        timeout,
+        ...options
+      });
+      await this.testConnection(browser);
+      return browser;
+    }, { description: `Browser connection to ${wsEndpoint}` });
+
+    this.connections.set(wsEndpoint, {
+      browser,
+      endpoint: wsEndpoint,
+      connectedAt: Date.now(),
+      lastHealthCheck: Date.now(),
+      healthy: true,
+      reconnectAttempts: 0
+    });
+
+    logger.info(`Successfully connected to ${wsEndpoint}`);
+    return browser;
+  }
+
+  /**
+   * Tests the health of a browser connection.
+   * @param {object} browser - The browser instance to test.
+   * @returns {Promise<boolean>} A promise that resolves with true if the connection is healthy.
+   * @throws {Error} If the browser is not connected.
+   */
+  async testConnection(browser) {
+    if (!browser.isConnected()) {
+      throw new Error('Browser is not connected');
+    }
+    return true;
+  }
+
+  /**
+   * Reconnects to a browser if the connection is lost.
+   * @param {string} wsEndpoint - The WebSocket endpoint to reconnect to.
+   * @returns {Promise<object>} A promise that resolves with the reconnected browser instance.
+   */
+  async reconnect(wsEndpoint) {
+    logger.info(`Attempting to reconnect to ${wsEndpoint}`);
+    const connectionInfo = this.connections.get(wsEndpoint);
+
+    if (connectionInfo?.browser) {
+      try {
+        await connectionInfo.browser.close();
+      } catch (e) {
+        logger.debug('Error closing old connection:', e.message);
+      }
+    }
+
+    this.connections.delete(wsEndpoint);
+
+    return this.connectToBrowser(wsEndpoint);
+  }
+
+  /**
+   * Starts health check monitoring for all connections.
+   * @param {number} [interval=null] - The health check interval in milliseconds. Defaults to the value from the configuration.
+   */
+  async startHealthChecks(interval = null) {
+    if (this.healthCheckInterval) {
+      logger.warn('Health checks already running');
+      return;
+    }
+
+    const checkInterval = interval || await getTimeoutValue('browser.healthCheckIntervalMs', 30000);
+
+    this.healthCheckInterval = setInterval(async () => {
+      if (this.isShuttingDown) return;
+
+      // Removed repetitive debug log - only log failures/changes
+
+      for (const [endpoint, connectionInfo] of this.connections.entries()) {
+        try {
+          const timeSinceLastCheck = Date.now() - connectionInfo.lastHealthCheck;
+          if (timeSinceLastCheck < 10000) {
+            continue;
+          }
+
+          await this.testConnection(connectionInfo.browser);
+
+          // Only log if status changed from unhealthy to healthy
+          const wasUnhealthy = !connectionInfo.healthy;
+
+          connectionInfo.lastHealthCheck = Date.now();
+          connectionInfo.healthy = true;
+          connectionInfo.reconnectAttempts = 0;
+
+          if (wasUnhealthy) {
+            logger.info(`Health check recovered for ${endpoint}`);
+          }
+
+        } catch (error) {
+          logger.error(`Health check failed for ${endpoint}:`, error.message);
+          connectionInfo.healthy = false;
+
+          this.attemptBackgroundReconnect(endpoint, connectionInfo);
+        }
+      }
+    }, checkInterval);
+
+    logger.info(`Started health check monitoring (interval: ${checkInterval}ms)`);
+  }
+
+  /**
+   * Attempts to reconnect to a browser in the background.
+   * @param {string} endpoint - The WebSocket endpoint to reconnect to.
+   * @param {object} connectionInfo - The connection information object.
+   * @private
+   */
+  async attemptBackgroundReconnect(endpoint, connectionInfo) {
+    if (connectionInfo.reconnectAttempts >= 3) {
+      logger.error(`Max reconnect attempts reached for ${endpoint}, removing connection`);
+      this.connections.delete(endpoint);
+      return;
+    }
+
+    connectionInfo.reconnectAttempts++;
+
+    try {
+      logger.info(`Background reconnection attempt ${connectionInfo.reconnectAttempts} for ${endpoint}`);
+      await this.reconnect(endpoint);
+    } catch (error) {
+      logger.error(`Background reconnect failed for ${endpoint}:`, error.message);
+    }
+  }
+
+  /**
+   * Stops the health check monitoring.
+   */
+  stopHealthChecks() {
+    if (this.healthCheckInterval) {
+      clearInterval(this.healthCheckInterval);
+      this.healthCheckInterval = null;
+      logger.info('Stopped health check monitoring');
+    }
+  }
+
+  /**
+   * Gets a browser instance by its WebSocket endpoint.
+   * @param {string} wsEndpoint - The WebSocket endpoint of the browser.
+   * @returns {object | null} The browser instance, or null if not found.
+   */
+  getBrowser(wsEndpoint) {
+    const connectionInfo = this.connections.get(wsEndpoint);
+    return connectionInfo?.browser || null;
+  }
+
+  /**
+   * Checks if a browser connection is healthy.
+   * @param {string} wsEndpoint - The WebSocket endpoint of the browser.
+   * @returns {boolean} True if the connection is healthy, false otherwise.
+   */
+  isHealthy(wsEndpoint) {
+    const connectionInfo = this.connections.get(wsEndpoint);
+    return connectionInfo?.healthy ?? false;
+  }
+
+  /**
+   * Gets all connected WebSocket endpoints.
+   * @returns {string[]} An array of connected WebSocket endpoints.
+   */
+  getConnectedEndpoints() {
+    return Array.from(this.connections.keys());
+  }
+
+  /**
+   * Gets the number of active connections.
+   * @returns {number} The number of active connections.
+   */
+  getConnectionCount() {
+    return this.connections.size;
+  }
+
+  /**
+   * Gets the number of healthy connections.
+   * @returns {number} The number of healthy connections.
+   */
+  getHealthyConnectionCount() {
+    return Array.from(this.connections.values())
+      .filter(conn => conn.healthy)
+      .length;
+  }
+
+  /**
+   * Closes all browser connections.
+   * @returns {Promise<void>}
+   */
+  async closeAll() {
+    this.isShuttingDown = true;
+
+    logger.info(`Closing ${this.connections.size} browser connections`);
+
+    this.stopHealthChecks();
+
+    const closePromises = Array.from(this.connections.values()).map(
+      async (connectionInfo) => {
+        try {
+          if (connectionInfo.browser && typeof connectionInfo.browser.close === 'function') {
+            await connectionInfo.browser.close();
+            logger.debug(`Closed connection to ${connectionInfo.endpoint}`);
+          }
+        } catch (error) {
+          logger.error(`Error closing browser at ${connectionInfo.endpoint}:`, error.message);
+        }
+      }
+    );
+
+    await Promise.allSettled(closePromises);
+    this.connections.clear();
+
+    logger.info('All connections closed');
+  }
+
+  /**
+   * Gets connection statistics.
+   * @returns {object} An object containing connection statistics.
+   */
+  getStats() {
+    const connections = Array.from(this.connections.values());
+
+    return {
+      totalConnections: this.connections.size,
+      healthyConnections: this.getHealthyConnectionCount(),
+      unhealthyConnections: this.connections.size - this.getHealthyConnectionCount(),
+      connections: connections.map(conn => ({
+        endpoint: conn.endpoint,
+        healthy: conn.healthy,
+        uptime: Date.now() - conn.connectedAt,
+        lastHealthCheck: Date.now() - conn.lastHealthCheck,
+        reconnectAttempts: conn.reconnectAttempts
+      }))
+    };
+  }
+
+  /**
+   * Gracefully shuts down the automator.
+   * @returns {Promise<void>}
+   */
+  async shutdown() {
+    logger.info('Automator shutting down...');
+    await this.closeAll();
+    logger.info('Automator shutdown complete');
+  }
+}
+
+export default Automator;
+export { Automator };

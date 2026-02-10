@@ -1,0 +1,18 @@
+{
+  "sessions": [
+    {
+      "id": "Brave-9002:9002",
+      "browserInfo": "Brave-9002:9002",
+      "workers": [
+        {
+          "id": 0,
+          "status": "idle"
+        }
+      ],
+      "createdAt": 1770758062316,
+      "lastActivity": 1770758420090
+    }
+  ],
+  "nextSessionId": 1,
+  "savedAt": 1770758420117
+}

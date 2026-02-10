@@ -1,0 +1,48 @@
+{
+  "source": {
+    "include": [
+      "main.js",
+      "core/automator.js",
+      "core/discovery.js",
+      "core/orchestrator.js",
+      "core/sessionManager.js",
+      "connectors/baseDiscover.js",
+      "connectors/discovery/localBrave.js",
+      "connectors/discovery/roxybrowser.js",
+      "tasks/_template.js",
+      "tasks/automationTask1.js",
+      "tasks/automationTask2.js",
+      "utils/apiHandler.js",
+      "utils/configLoader.js",
+      "utils/envLoader.js",
+      "utils/logger.js",
+      "utils/metrics.js",
+      "utils/randomScrolling.js",
+      "utils/randomZoom.js",
+      "utils/retry.js",
+      "utils/utils.js",
+      "utils/validator.js"
+    ]
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "template": "node_modules/docdash",
+    "readme": "README.md"
+  },
+  "docdash": {
+    "sort": true,
+    "search": true,
+    "collapse": true,
+    "meta": {
+      "title": "MultiBrowseAutomation Docs",
+      "description": "Documentation for the Multi-Browser Automation Framework"
+    },
+    "menu": {
+      "GitHub Repo": {
+        "href": "https://github.com/your-repo-here",
+        "target": "_blank"
+      }
+    }
+  }
+}

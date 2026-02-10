@@ -1,0 +1,34 @@
+{
+  "session": {
+    "timeoutMs": 1800000,
+    "cleanupIntervalMs": 300000
+  },
+  "task": {
+    "minDelayMs": 1000,
+    "maxDelayMs": 5000,
+    "finalDelayMs": 1000
+  },
+  "automation": {
+    "zoom": {
+      "minWaitMs": 2000,
+      "maxWaitMs": 5000
+    },
+    "scrolling": {
+      "minReadDelayMs": 1000,
+      "maxReadDelayMs": 3500,
+      "minPauseMs": 500,
+      "maxPauseMs": 1500
+    }
+  },
+  "api": {
+    "retryDelayMs": 2000,
+    "maxRetries": 3,
+    "pollingIntervalMs": 250
+  },
+  "browser": {
+    "connectionTimeoutMs": 10000,
+    "healthCheckIntervalMs": 30000,
+    "reconnectDelayMs": 2000,
+    "maxReconnectAttempts": 3
+  }
+}
