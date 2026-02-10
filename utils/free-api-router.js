@@ -14,6 +14,7 @@ import { ModelPerfTracker } from './model-perf-tracker.js';
 import { ConfigValidator } from './config-validator.js';
 import { ApiKeyTimeoutTracker } from './api-key-timeout-tracker.js';
 import { FreeOpenRouterHelper } from './free-openrouter-helper.js';
+import { RouterError, ProxyError, RateLimitError, ModelError, classifyHttpError } from './errors.js';
 
 const logger = createLogger('free-api-router.js');
 
@@ -455,7 +456,10 @@ export class FreeApiRouter {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
+        throw classifyHttpError(response.status, errorText, { 
+          endpoint: this.endpoint, 
+          model: payload.model 
+        });
       }
 
        const data = await response.json();
@@ -474,7 +478,12 @@ export class FreeApiRouter {
        };
      } catch (error) {
        clearTimeout(timeoutId);
-       throw error;
+       // If it's already an AppError, rethrow it
+       if (error.name && error.name.includes('Error') && error.code) {
+         throw error;
+       }
+       // Otherwise wrap it
+       throw new RouterError(error.message, { endpoint: this.endpoint }, error);
      }
    }
 
@@ -494,7 +503,9 @@ export class FreeApiRouter {
       const httpAgent = await agent.getAgent();
 
       if (!httpAgent) {
-        throw new Error('Failed to create proxy agent');
+        throw new ProxyError('Failed to create proxy agent', { 
+          proxy: `${proxy.host}:${proxy.port}` 
+        });
       }
 
       const response = await fetch(this.endpoint, {
@@ -514,7 +525,11 @@ export class FreeApiRouter {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
+        throw classifyHttpError(response.status, errorText, { 
+          endpoint: this.endpoint, 
+          model: payload.model,
+          proxy: `${proxy.host}:${proxy.port}`
+        });
       }
 
        const data = await response.json();
