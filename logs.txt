@@ -1,400 +1,384 @@
-[2026-02-10T21:25:07.456Z] [INFO] [banner] Initializing Agent Environment...
-[2026-02-10T21:25:07.457Z] [INFO] [main.js] MultiBrowseAutomation - Starting up...
-[2026-02-10T21:25:07.458Z] [INFO] [main.js] Checking Docker LLM status...
-[2026-02-10T21:25:07.459Z] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
-[2026-02-10T21:25:07.461Z] [DEBUG] [configLoader.js] Loaded configuration from settings.json
-[2026-02-10T21:25:07.461Z] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
-[2026-02-10T21:25:07.498Z] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
-[2026-02-10T21:25:07.499Z] [INFO] [sessionManager.js] Started cleanup timer with 300000ms interval
-[2026-02-10T21:25:07.500Z] [INFO] [main.js] Attempting to discover and connect to available browsers...
-[2026-02-10T21:25:07.501Z] [INFO] [orchestrator.js] Starting browser discovery...
-[2026-02-10T21:25:07.503Z] [INFO] [discovery.js] Loading 8 discovery connectors...
-[2026-02-10T21:25:07.504Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
-[2026-02-10T21:25:07.507Z] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
-[2026-02-10T21:25:07.507Z] [INFO] [sessionManager.js] Loaded configuration: session=1800000ms, cleanup=300000ms, concurrency=1
-[2026-02-10T21:25:07.508Z] [INFO] [sessionManager.js] Stopped cleanup timer
-[2026-02-10T21:25:07.509Z] [INFO] [sessionManager.js] Started cleanup timer with 300000ms interval
-[2026-02-10T21:25:07.512Z] [INFO] [baseDiscover.js] BaseDiscover initialized
-[2026-02-10T21:25:07.513Z] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
-[2026-02-10T21:25:07.513Z] [INFO] [discovery.js] Loaded connector: ixbrowser
-[2026-02-10T21:25:07.514Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
-[2026-02-10T21:25:07.516Z] [INFO] [baseDiscover.js] BaseDiscover initialized
-[2026-02-10T21:25:07.517Z] [INFO] [localBrave.js] Initialized LocalBraveDiscover
-[2026-02-10T21:25:07.518Z] [INFO] [discovery.js] Loaded connector: localBrave
-[2026-02-10T21:25:07.518Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
-[2026-02-10T21:25:07.520Z] [WARN] [discovery.js] Skipping localChrome: invalid connector class export. Export was: undefined
-[2026-02-10T21:25:07.521Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
-[2026-02-10T21:25:07.522Z] [WARN] [discovery.js] Skipping localEdge: invalid connector class export. Export was: undefined
-[2026-02-10T21:25:07.523Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
-[2026-02-10T21:25:07.524Z] [WARN] [discovery.js] Skipping localVivaldi: invalid connector class export. Export was: undefined
-[2026-02-10T21:25:07.525Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
-[2026-02-10T21:25:07.527Z] [WARN] [discovery.js] Skipping morelogin: invalid connector class export. Export was: undefined
-[2026-02-10T21:25:07.527Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
-[2026-02-10T21:25:07.531Z] [INFO] [baseDiscover.js] BaseDiscover initialized
-[2026-02-10T21:25:07.532Z] [WARN] [roxybrowser.js] ROXYBROWSER_API_KEY not set in environment variables
-[2026-02-10T21:25:07.532Z] [INFO] [discovery.js] Loaded connector: roxybrowser
-[2026-02-10T21:25:07.533Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
-[2026-02-10T21:25:07.535Z] [INFO] [baseDiscover.js] BaseDiscover initialized
-[2026-02-10T21:25:07.536Z] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
-[2026-02-10T21:25:07.537Z] [INFO] [discovery.js] Loaded connector: undetectable
-[2026-02-10T21:25:07.538Z] [INFO] [discovery.js] Successfully loaded 4 connectors
-[2026-02-10T21:25:07.538Z] [INFO] [discovery.js] Starting browser discovery with 4 connectors in parallel...
-[2026-02-10T21:25:07.539Z] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
-[2026-02-10T21:25:07.540Z] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
-[2026-02-10T21:25:07.543Z] [INFO] [localBrave.js] Discovering localBrave instances
-[2026-02-10T21:25:07.544Z] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
-[2026-02-10T21:25:07.562Z] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
-[2026-02-10T21:25:07.563Z] [WARN] [roxybrowser.js] API Key not configured for roxybrowser. Skipping discovery.
-[2026-02-10T21:25:07.564Z] [INFO] [undetectable.js] Starting discovery for undetectable browser type
-[2026-02-10T21:25:07.565Z] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
-[2026-02-10T21:25:07.583Z] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[2026-02-10T21:25:07.585Z] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[2026-02-10T21:25:07.589Z] [DEBUG] [localBrave.js] Found 36 browser tabs from Brave on port 9002
-[2026-02-10T21:25:07.597Z] [INFO] [localBrave.js] Found connectable Brave instance: Local Brave Browser (Port 9002)
-[2026-02-10T21:25:07.598Z] [INFO] [localBrave.js] Discovery complete. Found 1 localBrave profiles.
-[2026-02-10T21:25:08.600Z] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
-[2026-02-10T21:25:08.601Z] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
-[2026-02-10T21:25:08.602Z] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
-[2026-02-10T21:25:08.602Z] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
-[2026-02-10T21:25:08.603Z] [INFO] [discovery.js] Connector ixbrowser found no endpoints
-[2026-02-10T21:25:08.604Z] [INFO] [discovery.js] Connector localBrave found 1 endpoints
-[2026-02-10T21:25:08.604Z] [INFO] [discovery.js] Connector roxybrowser found no endpoints
-[2026-02-10T21:25:08.605Z] [INFO] [discovery.js] Connector undetectable found no endpoints
-[2026-02-10T21:25:08.606Z] [INFO] [discovery.js] Discovery complete. Found 1 total endpoints
-[2026-02-10T21:25:08.606Z] [INFO] [orchestrator.js] Found 1 browser endpoints. Attempting to connect in parallel...
-[2026-02-10T21:25:08.607Z] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:9002/devtools/browser/264fa430-337d-4a21-bad1-0fd400b3ede2
-[2026-02-10T21:25:09.751Z] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:9002/devtools/browser/264fa430-337d-4a21-bad1-0fd400b3ede2
-[2026-02-10T21:25:09.752Z] [INFO] [sessionManager.js] Added new session: Brave-9002:9002 at Brave-9002:9002 with 1 worker slots.
-[2026-02-10T21:25:09.753Z] [INFO] [orchestrator.js] Successfully connected and added session for Brave-9002:9002.
-[2026-02-10T21:25:09.754Z] [INFO] [orchestrator.js] Discovery completed. Connected to 1 browsers.
-[2026-02-10T21:25:09.755Z] [DEBUG] [metrics.js] Browser discovery: 1 discovered, 1 connected, 0 failed
-[2026-02-10T21:25:09.756Z] [INFO] [main.js] Successfully connected to undefined browser(s). Ready for automation.
-[2026-02-10T21:25:09.757Z] [INFO] [main.js] Adding specified tasks to the queue...
-[2026-02-10T21:25:09.758Z] [INFO] [main.js] Adding specified tasks to the queue...
-[2026-02-10T21:25:09.759Z] [INFO] [orchestrator.js] Task 'ai-twitterActivity' added to queue. Queue size: 1. Queue contents: ai-twitterActivity
-[2026-02-10T21:25:09.760Z] [INFO] [main.js] MultiBrowseAutomation - System initialized. All tasks queued.
-[2026-02-10T21:25:09.760Z] [INFO] [main.js] Waiting for all tasks to be processed...
-[2026-02-10T21:25:09.761Z] [INFO] [orchestrator.js] waitForTasksToComplete: Waiting for tasks to finish using event-driven approach...
-[2026-02-10T21:25:09.762Z] [INFO] [automator.js] Started health check monitoring (interval: 30000ms)
-[2026-02-10T21:25:09.811Z] [INFO] [orchestrator.js] Starting concurrent checklist processing for all sessions...
-[2026-02-10T21:25:09.812Z] [INFO] [orchestrator.js] Broadcasting 1 tasks to all sessions: ai-twitterActivity
-[2026-02-10T21:25:09.813Z] [INFO] [orchestrator.js] [Brave-9002:9002] Starting checklist of 1 tasks with up to 1 parallel tabs.
-[2026-02-10T21:25:09.814Z] [DEBUG] [orchestrator.js] [Brave-9002:9002][Worker 0] Starting...
-[2026-02-10T21:25:09.815Z] [DEBUG] [sessionManager.js] Occupied worker 0 in session Brave-9002:9002
-[2026-02-10T21:25:09.899Z] [INFO] [orchestrator.js] [Brave-9002:9002][Worker 0] Starting task 'ai-twitterActivity' in new tab.
-[2026-02-10T21:25:09.950Z] [INFO] [EntropyController] [session-1770758709950-dos3n67kk] Session initialized with paceMultiplier=0.97
-[2026-02-10T21:25:09.951Z] [INFO] [EntropyController] [session-1770758709950-dos3n67kk] Fatigue scheduled for T+4.1m
-[2026-02-10T21:25:09.957Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Initializing AI-Enhanced Agent...
-[2026-02-10T21:25:09.958Z] [INFO] [config-service.js] [Config] Service initialized
-[2026-02-10T21:25:09.959Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Config loaded - reply probability: 60%, quote probability: 20%
-[2026-02-10T21:25:09.959Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Reply methods: A=40%, B=35%, C=25%
-[2026-02-10T21:25:09.960Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Quote methods: A=40%, B=35%, C=25%
-[2026-02-10T21:25:09.961Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Profile: 08-Balanced-undefined | Input: undefined (undefined%) | Dive: undefined% | Like: undefined% | Follow: undefined%
-[2026-02-10T21:25:09.962Z] [INFO] [humanization.js] [Humanization] Engine initialized
-[2026-02-10T21:25:09.963Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] Initialized [Type: Balanced | Input: Mouse (92%) | Dive: 56.9% | T-Dive: 30.5% Like: 2.00% Bkmk: 0.89% Follow: 0.57%]. Fatigue scheduled for T+5.0m
-[2026-02-10T21:25:09.966Z] [INFO] [ai-reply-engine.js] [AIReplyEngine] Initialized (probability: 0.6)
-[2026-02-10T21:25:09.966Z] [INFO] [ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.2)
-[2026-02-10T21:25:09.967Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AITwitterAgent] Initialized (replyProbability: 0.6)
-[2026-02-10T21:25:09.968Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AITwitterAgent] Engagement limits: replies: 0/3, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/2, bookmarks: 0/2
-[2026-02-10T21:25:09.969Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AITwitterAgent] Session phases: warmup(0-10%) → active(10-80%) → cooldown(80-100%)
-[2026-02-10T21:25:09.969Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Overriding agent methods with modularized versions...
-[2026-02-10T21:25:09.970Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] AITwitterAgent initialized
-[2026-02-10T21:25:09.971Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Engagement limits: replies: 0/3, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/2, bookmarks: 0/2
-[2026-02-10T21:25:09.972Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [HumanizationPatch] Injecting consistency and entropy scripts...
-[2026-02-10T21:25:09.973Z] [INFO] [local-client.js] [Local] All local clients are disabled
-[2026-02-10T21:25:09.974Z] [DEBUG] [cloud-client.js] [Cloud] _loadConfig called, keys in settings: twitter, llm, humanization, verification, state, system, open_router_free_api
-[2026-02-10T21:25:09.975Z] [DEBUG] [cloud-client.js] [Cloud] llm.cloud exists: true
-[2026-02-10T21:25:09.976Z] [DEBUG] [cloud-client.js] [Cloud] this.config after assignment: provider, endpoint, timeout, enabled, retryAttempts, retryDelay, providers
-[2026-02-10T21:25:09.977Z] [DEBUG] [cloud-client.js] [Cloud] providers array length: 9
-[2026-02-10T21:25:09.978Z] [INFO] [cloud-client.js] CloudClient initialized with 9 API keys (fallback enabled)
-[2026-02-10T21:25:09.979Z] [DEBUG] [cloud-client.js] Models configured: arcee-ai/trinity-large-preview:free, tngtech/deepseek-r1t2-chimera:free, z-ai/glm-4.5-air:free, stepfun/step-3.5-flash:free, tngtech/deepseek-r1t-chimera:free, arcee-ai/trinity-mini:free, meta-llama/llama-3.3-70b-instruct:free, qwen/qwen3-next-80b-a3b-instruct:free, google/gemma-3-27b-it:free
-[2026-02-10T21:25:09.980Z] [INFO] [cloud-client.js] [Cloud] Free API Router enabled
-[2026-02-10T21:25:09.981Z] [INFO] [cloud-client.js] [Cloud] Models: 12, API keys: 11
-[2026-02-10T21:25:09.982Z] [INFO] [cloud-client.js] [Cloud] Creating new FreeOpenRouterHelper singleton
-[2026-02-10T21:25:09.983Z] [INFO] [cloud-client.js] [Cloud] Starting background model tests...
-[2026-02-10T21:25:09.984Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] Starting background model tests (12 models)...
-[2026-02-10T21:25:09.985Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 1/12: arcee-ai/trinity-large-preview:free (key: sk-or-...c962)
-[2026-02-10T21:25:09.987Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.30:5944
-[2026-02-10T21:25:09.988Z] [INFO] [free-api-router.js] [FreeRouter] Session default:default -> API Key 9/11
-[2026-02-10T21:25:09.989Z] [INFO] [free-api-router.js] [FreeRouter] Initialized for session: default:default
-[2026-02-10T21:25:09.990Z] [INFO] [free-api-router.js] [FreeRouter] API Keys: 11, Selected: 9
-[2026-02-10T21:25:09.991Z] [INFO] [free-api-router.js] [FreeRouter] Primary model: arcee-ai/trinity-large-preview:free
-[2026-02-10T21:25:09.992Z] [INFO] [free-api-router.js] [FreeRouter] Fallback models: 11
-[2026-02-10T21:25:09.992Z] [INFO] [free-api-router.js] [FreeRouter] Timeout: default=120000ms, quick=20000ms
-[2026-02-10T21:25:09.993Z] [INFO] [free-api-router.js] [FreeRouter] Proxy enabled: 29 proxies
-[2026-02-10T21:25:09.994Z] [INFO] [free-api-router.js] [FreeRouter] Advanced features: CircuitBreaker, RateLimitTracker, RequestDedupe, ModelPerfTracker, ApiKeyTimeoutTracker
-[2026-02-10T21:25:09.995Z] [INFO] [cloud-client.js] [Cloud] Free Router session: API key 9/11
-[2026-02-10T21:25:09.996Z] [INFO] [cloud-client.js] [Cloud] Free Router primary model: arcee-ai/trinity-large-preview:free
-[2026-02-10T21:25:10.010Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:10.011Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.30:5944
-[2026-02-10T21:25:10.050Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [HumanizationPatch] Scripts injected.
-[2026-02-10T21:25:10.051Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Warm-up 13.2s...
-[2026-02-10T21:25:12.038Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] arcee-ai/trinity-large-preview:free (2052ms)
-[2026-02-10T21:25:12.243Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 2/12: nousresearch/hermes-3-llama-3.1-405b:free (key: sk-or-...1656)
-[2026-02-10T21:25:12.244Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.38.111.33:5948
-[2026-02-10T21:25:12.245Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:12.246Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.38.111.33:5948
-[2026-02-10T21:25:13.333Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] nousresearch/hermes-3-llama-3.1-405b:free: HTTP 429
-[2026-02-10T21:25:13.536Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 3/12: meta-llama/llama-3.3-70b-instruct:free (key: sk-or-...662c)
-[2026-02-10T21:25:13.537Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.233:5648
-[2026-02-10T21:25:13.543Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:13.544Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.73.233:5648
-[2026-02-10T21:25:16.181Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] meta-llama/llama-3.3-70b-instruct:free: HTTP 402
-[2026-02-10T21:25:16.387Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 4/12: cognitivecomputations/dolphin-mistral-24b-venice-edition:free (key: sk-or-...a182)
-[2026-02-10T21:25:16.388Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.38.111.158:6073
-[2026-02-10T21:25:16.388Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:16.389Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.38.111.158:6073
-[2026-02-10T21:25:19.184Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] cognitivecomputations/dolphin-mistral-24b-venice-edition:free: HTTP 402
-[2026-02-10T21:25:19.394Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 5/12: google/gemma-3-27b-it:free (key: sk-or-...6eb0)
-[2026-02-10T21:25:19.395Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.77:5991
-[2026-02-10T21:25:19.396Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:19.397Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.77:5991
-[2026-02-10T21:25:20.148Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] google/gemma-3-27b-it:free: HTTP 429
-[2026-02-10T21:25:20.357Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 6/12: qwen/qwen3-next-80b-a3b-instruct:free (key: sk-or-...2bcb)
-[2026-02-10T21:25:20.358Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.151:5566
-[2026-02-10T21:25:20.359Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:20.360Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.73.151:5566
-[2026-02-10T21:25:21.282Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] qwen/qwen3-next-80b-a3b-instruct:free: HTTP 429
-[2026-02-10T21:25:21.491Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 7/12: mistralai/mistral-small-3.1-24b-instruct:free (key: sk-or-...9a06)
-[2026-02-10T21:25:21.492Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.3:5917
-[2026-02-10T21:25:21.492Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:21.493Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.3:5917
-[2026-02-10T21:25:22.417Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] mistralai/mistral-small-3.1-24b-instruct:free: HTTP 429
-[2026-02-10T21:25:22.625Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 8/12: tngtech/deepseek-r1t-chimera:free (key: sk-or-...4e27)
-[2026-02-10T21:25:22.626Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.77:5991
-[2026-02-10T21:25:22.626Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:22.627Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.77:5991
-[2026-02-10T21:25:23.274Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Navigating to https://x.com (bookmark style)
-[2026-02-10T21:25:24.784Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] tngtech/deepseek-r1t-chimera:free (2159ms)
-[2026-02-10T21:25:24.993Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 9/12: tngtech/deepseek-r1t2-chimera:free (key: sk-or-...319f)
-[2026-02-10T21:25:24.994Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.38.111.214:6129
-[2026-02-10T21:25:24.995Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:24.996Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.38.111.214:6129
-[2026-02-10T21:25:26.565Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] X.com loaded (main)
-[2026-02-10T21:25:26.725Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [WARN] Suspected not logged in: Primary Timeline not visible on /home.
-[2026-02-10T21:25:27.331Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] tngtech/deepseek-r1t2-chimera:free: Unexpected response
-[2026-02-10T21:25:27.536Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 10/12: upstage/solar-pro-3:free (key: sk-or-...8b8c)
-[2026-02-10T21:25:27.537Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.222:5637
-[2026-02-10T21:25:27.538Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:27.538Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.73.222:5637
-[2026-02-10T21:25:29.793Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Starting session (10 cycles, 300-540s)...
-[2026-02-10T21:25:29.794Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AITwitterAgent] Starting AI-Enhanced Session...
-[2026-02-10T21:25:29.795Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] Starting Session on https://x.com/home
-[2026-02-10T21:25:29.800Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] Session Timer Set: 487.2s (until 4:33:37 AM)
-[2026-02-10T21:25:29.801Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] Enforcing theme: dark
-[2026-02-10T21:25:29.804Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Human] Session starting...
-[2026-02-10T21:25:30.235Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] upstage/solar-pro-3:free: Unexpected response
-[2026-02-10T21:25:30.438Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 11/12: stepfun/step-3.5-flash:free (key: sk-or-...19f4)
-[2026-02-10T21:25:30.439Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.38.111.30:5945
-[2026-02-10T21:25:30.440Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:30.441Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.38.111.30:5945
-[2026-02-10T21:25:32.476Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] stepfun/step-3.5-flash:free: Unexpected response
-[2026-02-10T21:25:32.683Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 12/12: openrouter/free (key: sk-or-...c962)
-[2026-02-10T21:25:32.684Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.235:5650
-[2026-02-10T21:25:32.685Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:25:32.685Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.73.235:5650
-[2026-02-10T21:25:35.518Z] [INFO] [global-scroll-controller.js] [GlobalScroll] Initialized with multiplier: 2x
-[2026-02-10T21:25:37.932Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Human] Session started
-[2026-02-10T21:25:37.974Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] --- Loop 1  ---
-[2026-02-10T21:25:40.380Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] openrouter/free: Unexpected response
-[2026-02-10T21:25:40.593Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] Model Test Complete: 2/12 working (30607ms)
-[2026-02-10T21:25:40.593Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] Working: arcee-ai/trinity-large-preview:free, tngtech/deepseek-r1t-chimera:free
-[2026-02-10T21:25:40.594Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] Failed: nousresearch/hermes-3-llama-3.1-405b:free, meta-llama/llama-3.3-70b-instruct:free, cognitivecomputations/dolphin-mistral-24b-venice-edition:free, google/gemma-3-27b-it:free, qwen/qwen3-next-80b-a3b-instruct:free, mistralai/mistral-small-3.1-24b-instruct:free, tngtech/deepseek-r1t2-chimera:free, upstage/solar-pro-3:free, stepfun/step-3.5-flash:free, openrouter/free
-[2026-02-10T21:25:40.993Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Idle] Reading Phase (42.7s)
-[2026-02-10T21:25:42.333Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Reply lock ACQUIRED
-[2026-02-10T21:25:42.333Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Branch] Tweet Dive (Expanding with AI)...
-[2026-02-10T21:25:42.360Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Debug] Targeting tweet text body (Primary).
-[2026-02-10T21:25:43.768Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Debug] Target: Box=x:523,y:373
-[2026-02-10T21:25:43.769Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Attempt] Ghost Click on Permalink...
-[2026-02-10T21:25:43.770Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Human] Thinking about Tweet Permalink for 351ms...
-[2026-02-10T21:25:54.566Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Fail] Ghost Click did not navigate. Retrying with NATIVE click...
-[2026-02-10T21:25:54.663Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Success] Native Click navigated to tweet.
-[2026-02-10T21:25:54.664Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Tracking new tweet 2021326451971326448
-[2026-02-10T21:25:54.664Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Extracting tweet content from full page...
-[2026-02-10T21:25:55.937Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Extracted tweet text (92 chars)
-[2026-02-10T21:25:55.938Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI-Engage] Decision: REPLY (roll: 18.7%, reply: 60%, quote: 20%)
-[2026-02-10T21:25:55.939Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Analyzing tweet from @Starlink...
-[2026-02-10T21:25:55.940Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Tweet URL: https://x.com/Starlink/status/2021326451971326448
-[2026-02-10T21:25:55.941Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Sentiment] Analyzing tweet sentiment...
-[2026-02-10T21:25:55.945Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [SentimentGuard] ✅ Neutral/Positive content (score: 0.00)
-[2026-02-10T21:25:55.946Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Sentiment] Dimensions - Valence: 0.00, Arousal: 0.21, Dominance: 0.50, Sarcasm: 0.00
-[2026-02-10T21:25:55.947Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI-Context] Extracting enhanced context...
-[2026-02-10T21:25:55.955Z] [INFO] [ai-context-engine.js] [Context] Starting comprehensive reply extraction...
-[2026-02-10T21:25:55.956Z] [DEBUG] [ai-context-engine.js] [Context] Step 1: Slowly scrolling to load all replies...
-[2026-02-10T21:26:09.329Z] [DEBUG] [ai-context-engine.js] [Context] Step 2: Extracting while scrolling up...
-[2026-02-10T21:26:10.010Z] [DEBUG] [ai-context-engine.js] [Context] Target reached: 47 replies
-[2026-02-10T21:26:10.524Z] [INFO] [ai-context-engine.js] [Context] Final reply count: 30 (from 47 candidates)
-[2026-02-10T21:26:10.526Z] [INFO] [ai-context-engine.js] [Context] Enhanced context: neutral, tone: serious, 30 replies, minimal engagement
-[2026-02-10T21:26:10.527Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI-Context] Enhanced: sentiment=neutral, tone=serious, engagement=minimal, 30 replies
-[2026-02-10T21:26:10.528Z] [DEBUG] [ai-reply-engine.js] [AIReply] Tweet clipped from 92 to 92 chars
-[2026-02-10T21:26:10.529Z] [INFO] [ai-reply-engine.js] [AIReply] Sentiment Analysis:
-[2026-02-10T21:26:10.530Z] [INFO] [ai-reply-engine.js] [AIReply]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
-[2026-02-10T21:26:10.530Z] [INFO] [ai-reply-engine.js] [AIReply]   - Valence: 0.00
-[2026-02-10T21:26:10.531Z] [INFO] [ai-reply-engine.js] [AIReply]   - Arousal: 0.21
-[2026-02-10T21:26:10.532Z] [INFO] [ai-reply-engine.js] [AIReply]   - Dominance: 0.50
-[2026-02-10T21:26:10.532Z] [INFO] [ai-reply-engine.js] [AIReply]   - Sarcasm: 0.00
-[2026-02-10T21:26:10.533Z] [INFO] [ai-reply-engine.js] [AIReply]   - Toxicity: 0.00
-[2026-02-10T21:26:10.534Z] [INFO] [ai-reply-engine.js] [AIReply]   - Risk Level: low
-[2026-02-10T21:26:10.535Z] [INFO] [ai-reply-engine.js] [AIReply]   - Engagement Style: neutral
-[2026-02-10T21:26:10.536Z] [INFO] [ai-reply-engine.js] [AIReply]   - Conversation Type: general
-[2026-02-10T21:26:10.549Z] [INFO] [ai-reply-engine.js] [AIReply] Reply selection strategy: longest (pos: 4, neg: 0, sarcastic: 0)
-[2026-02-10T21:26:10.550Z] [INFO] [ai-reply-engine.js] [AIReply] Selected 30 replies for LLM context (filtered from 30)
-[2026-02-10T21:26:10.553Z] [DEBUG] [ai-reply-engine.js] [AIReply] Detected language: English
-[2026-02-10T21:26:10.555Z] [INFO] [ai-reply-engine.js] [DEBUG] ============================================
-[2026-02-10T21:26:10.555Z] [INFO] [ai-reply-engine.js] [DEBUG] TWEET TO REPLY TO:
-[2026-02-10T21:26:10.556Z] [INFO] [ai-reply-engine.js] [DEBUG] Author: @Starlink
-[2026-02-10T21:26:10.557Z] [INFO] [ai-reply-engine.js] [DEBUG] URL: https://x.com/Starlink/status/2021326451971326448
-[2026-02-10T21:26:10.558Z] [INFO] [ai-reply-engine.js] [DEBUG] Tweet Text: "From in-flight to at home, Starlink keeps you connected to high-speed, low-latency internet "
-[2026-02-10T21:26:10.559Z] [INFO] [ai-reply-engine.js] [DEBUG] Tweet Length: 92 chars
-[2026-02-10T21:26:10.560Z] [INFO] [ai-reply-engine.js] [DEBUG] ----------------------------------------------
-[2026-02-10T21:26:10.561Z] [INFO] [ai-reply-engine.js] [DEBUG] REPLIES CONTEXT (30 loaded, showing longest 30):
-[2026-02-10T21:26:10.562Z] [INFO] [ai-reply-engine.js] [DEBUG] [1] Reply1: "@SpaceX: One key benefit of @SpaceX shifting its near-term focus to the Moon is the poten..."
-[2026-02-10T21:26:10.562Z] [INFO] [ai-reply-engine.js] [DEBUG] [2] Reply2: "@DJPTECHNO: New babies are impossibly tiny and only this tiny (hand for scale) for a few wee..."
-[2026-02-10T21:26:10.563Z] [INFO] [ai-reply-engine.js] [DEBUG] [3] Reply3: "@DJPTECHNO: SpaceX is now shifting their priorities into building a Moon Base - doing so in ..."
-[2026-02-10T21:26:10.564Z] [INFO] [ai-reply-engine.js] [DEBUG] [4] Reply4: "@DJPTECHNO: Game-changing connectivity From the sky to home, seamless high-speed internet an..."
-[2026-02-10T21:26:10.565Z] [INFO] [ai-reply-engine.js] [DEBUG] [5] Reply5: "@DJPTECHNO: shifting its near-term focus to the Moon is the potential for more immediate com..."
-[2026-02-10T21:26:10.566Z] [INFO] [ai-reply-engine.js] [DEBUG] [6] Reply6: "@DJPTECHNO: From the sky to home, seamless high-speed internet anywhere on Earth. This is th..."
-[2026-02-10T21:26:10.566Z] [INFO] [ai-reply-engine.js] [DEBUG] [7] Reply7: "@DJPTECHNO: من الجو إلى المنزل، إنترنت سريع ومستقر في أي مكان على الأرض… هذا هو مستقبل الاتص..."
-[2026-02-10T21:26:10.567Z] [INFO] [ai-reply-engine.js] [DEBUG] [8] Reply8: "@NASA: Crew-12, SpaceX, and @NASA completed a full rehearsal of launch day activities"
-[2026-02-10T21:26:10.568Z] [INFO] [ai-reply-engine.js] [DEBUG] [9] Reply9: "@DJPTECHNO: High-speed is what we need to send nice messages to melt the ice."
-[2026-02-10T21:26:10.569Z] [INFO] [ai-reply-engine.js] [DEBUG] [10] Reply10: "@DJPTECHNO: Just not in lagos, Nigeria We have really poor speed here"
-[2026-02-10T21:26:10.570Z] [INFO] [ai-reply-engine.js] [DEBUG] [11] Reply11: "@DJPTECHNO: completed a full rehearsal of launch day activities"
-[2026-02-10T21:26:10.571Z] [INFO] [ai-reply-engine.js] [DEBUG] [12] Reply12: "@DJPTECHNO: نقلة نوعية حقيقية في عالم الاتصال"
-[2026-02-10T21:26:10.571Z] [INFO] [ai-reply-engine.js] [DEBUG] [13] Reply13: "@DJPTECHNO: The media could not be played."
-[2026-02-10T21:26:10.572Z] [INFO] [ai-reply-engine.js] [DEBUG] [14] Reply14: "@DJPTECHNO: Game-changing connectivity"
-[2026-02-10T21:26:10.573Z] [INFO] [ai-reply-engine.js] [DEBUG] [15] Reply15: "@DJPTECHNO: Create your own with Grok"
-[2026-02-10T21:26:10.574Z] [INFO] [ai-reply-engine.js] [DEBUG] [16] Reply16: "@DJPTECHNO: Crew-12, SpaceX, and"
-[2026-02-10T21:26:10.574Z] [INFO] [ai-reply-engine.js] [DEBUG] [17] Reply17: "@DJPTECHNO: One key benefit of"
-[2026-02-10T21:26:10.575Z] [INFO] [ai-reply-engine.js] [DEBUG] [18] Reply18: "@tobyliiiiiiiiii: @tobyliiiiiiiiii"
-[2026-02-10T21:26:10.576Z] [INFO] [ai-reply-engine.js] [DEBUG] [19] Reply19: "@DJPTECHNO: Sawyer Merritt"
-[2026-02-10T21:26:10.577Z] [INFO] [ai-reply-engine.js] [DEBUG] [20] Reply20: "@SawyerMerritt: @SawyerMerritt"
-[2026-02-10T21:26:10.578Z] [INFO] [ai-reply-engine.js] [DEBUG] [21] Reply21: "@manasetmurad: @manasetmurad"
-[2026-02-10T21:26:10.579Z] [INFO] [ai-reply-engine.js] [DEBUG] [22] Reply22: "@DJPTECHNO: Casey Handmer"
-[2026-02-10T21:26:10.579Z] [INFO] [ai-reply-engine.js] [DEBUG] [23] Reply23: "@gasper_tomc: @gasper_tomc"
-[2026-02-10T21:26:10.580Z] [INFO] [ai-reply-engine.js] [DEBUG] [24] Reply24: "@RedPill272: @RedPill272"
-[2026-02-10T21:26:10.581Z] [INFO] [ai-reply-engine.js] [DEBUG] [25] Reply25: "@DJPTECHNO: DJP TECHNO"
-[2026-02-10T21:26:10.582Z] [INFO] [ai-reply-engine.js] [DEBUG] [26] Reply26: "@DJPTECHNO: @DJPTECHNO"
-[2026-02-10T21:26:10.582Z] [INFO] [ai-reply-engine.js] [DEBUG] [27] Reply27: "@DJPTECHNO: Bill Machi"
-[2026-02-10T21:26:10.583Z] [INFO] [ai-reply-engine.js] [DEBUG] [28] Reply28: "@BillMachi: @BillMachi"
-[2026-02-10T21:26:10.584Z] [INFO] [ai-reply-engine.js] [DEBUG] [29] Reply29: "@CJHandmer: @CJHandmer"
-[2026-02-10T21:26:10.585Z] [INFO] [ai-reply-engine.js] [DEBUG] [30] Reply30: "@DJPTECHNO: Otoide A."
-[2026-02-10T21:26:10.586Z] [INFO] [ai-reply-engine.js] [DEBUG] ----------------------------------------------
-[2026-02-10T21:26:10.586Z] [INFO] [ai-reply-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
-[2026-02-10T21:26:10.587Z] [INFO] [ai-reply-engine.js] [DEBUG] Language: English
-[2026-02-10T21:26:10.588Z] [INFO] [ai-reply-engine.js] [DEBUG] System Prompt Length: 4233 chars
-[2026-02-10T21:26:10.589Z] [INFO] [ai-reply-engine.js] [DEBUG] User Prompt Length: 2895 chars
-[2026-02-10T21:26:10.589Z] [INFO] [ai-reply-engine.js] [DEBUG] Vision Mode: disabled
-[2026-02-10T21:26:10.590Z] [INFO] [ai-reply-engine.js] [DEBUG] ============================================
-[2026-02-10T21:26:10.591Z] [INFO] [ai-reply-engine.js] [AIReply] Generating English reply (attempt 1/2)...
-[2026-02-10T21:26:10.592Z] [INFO] [agent-connector.js] [undefined] Processing request: generate_reply
-[2026-02-10T21:26:10.593Z] [INFO] [agent-connector.js] [undefined] All local providers disabled (vllm: false, ollama: false), using cloud only
-[2026-02-10T21:26:10.594Z] [INFO] [agent-connector.js] [undefined] Sending to cloud...
-[2026-02-10T21:26:10.595Z] [DEBUG] [cloud-client.js] [Cloud] _loadConfig called, keys in settings: twitter, llm, humanization, verification, state, system, open_router_free_api
-[2026-02-10T21:26:10.596Z] [DEBUG] [cloud-client.js] [Cloud] llm.cloud exists: true
-[2026-02-10T21:26:10.596Z] [DEBUG] [cloud-client.js] [Cloud] this.config after assignment: provider, endpoint, timeout, enabled, retryAttempts, retryDelay, providers
-[2026-02-10T21:26:10.597Z] [DEBUG] [cloud-client.js] [Cloud] providers array length: 9
-[2026-02-10T21:26:10.598Z] [INFO] [cloud-client.js] CloudClient initialized with 9 API keys (fallback enabled)
-[2026-02-10T21:26:10.599Z] [DEBUG] [cloud-client.js] Models configured: arcee-ai/trinity-large-preview:free, tngtech/deepseek-r1t2-chimera:free, z-ai/glm-4.5-air:free, stepfun/step-3.5-flash:free, tngtech/deepseek-r1t-chimera:free, arcee-ai/trinity-mini:free, meta-llama/llama-3.3-70b-instruct:free, qwen/qwen3-next-80b-a3b-instruct:free, google/gemma-3-27b-it:free
-[2026-02-10T21:26:10.599Z] [INFO] [cloud-client.js] [Cloud] Free API Router enabled
-[2026-02-10T21:26:10.600Z] [INFO] [cloud-client.js] [Cloud] Models: 12, API keys: 11
-[2026-02-10T21:26:10.601Z] [INFO] [cloud-client.js] [Cloud] Reusing cached test results: 2/12 working
-[2026-02-10T21:26:10.602Z] [INFO] [free-api-router.js] [FreeRouter] Session default:default -> API Key 9/11
-[2026-02-10T21:26:10.603Z] [INFO] [free-api-router.js] [FreeRouter] Initialized for session: default:default
-[2026-02-10T21:26:10.603Z] [INFO] [free-api-router.js] [FreeRouter] API Keys: 11, Selected: 9
-[2026-02-10T21:26:10.604Z] [INFO] [free-api-router.js] [FreeRouter] Primary model: arcee-ai/trinity-large-preview:free
-[2026-02-10T21:26:10.605Z] [INFO] [free-api-router.js] [FreeRouter] Fallback models: 1
-[2026-02-10T21:26:10.606Z] [INFO] [free-api-router.js] [FreeRouter] Timeout: default=120000ms, quick=20000ms
-[2026-02-10T21:26:10.607Z] [INFO] [free-api-router.js] [FreeRouter] Proxy enabled: 29 proxies
-[2026-02-10T21:26:10.607Z] [INFO] [free-api-router.js] [FreeRouter] Advanced features: CircuitBreaker, RateLimitTracker, RequestDedupe, ModelPerfTracker, ApiKeyTimeoutTracker
-[2026-02-10T21:26:10.608Z] [INFO] [cloud-client.js] [Cloud] Free Router session: API key 9/11
-[2026-02-10T21:26:10.609Z] [INFO] [cloud-client.js] [Cloud] Free Router primary model: arcee-ai/trinity-large-preview:free
-[2026-02-10T21:26:10.610Z] [INFO] [cloud-client.js] [Cloud] Sending request with FreeApiRouter...
-[2026-02-10T21:26:10.613Z] [INFO] [free-api-router.js] [FreeRouter] No test results available, using 2 configured models
-[2026-02-10T21:26:10.615Z] [INFO] [free-api-router.js] [FreeRouter] Attempt 1/3: Trying model arcee-ai/trinity-large-preview:free
-[2026-02-10T21:26:10.616Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.151:5566
-[2026-02-10T21:26:10.617Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
-[2026-02-10T21:26:12.207Z] [DEBUG] [model-perf-tracker.js] [ModelPerfTracker] arcee-ai/trinity-large-preview:free::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 success (1/1, 1596ms avg)
-[2026-02-10T21:26:12.209Z] [DEBUG] [request-dedupe.js] [RequestDedupe] Cached response for key -333b8d7
-[2026-02-10T21:26:12.210Z] [SUCCESS] [cloud-client.js] [Cloud] FreeRouter request completed in 1615ms
-[2026-02-10T21:26:12.211Z] [SUCCESS] [agent-connector.js] [undefined] Cloud reply generated in 1617ms
-[2026-02-10T21:26:12.211Z] [INFO] [ai-reply-engine.js] [DEBUG] ----------------------------------------------
-[2026-02-10T21:26:12.212Z] [INFO] [ai-reply-engine.js] [DEBUG] TOKEN ESTIMATION:
-[2026-02-10T21:26:12.213Z] [INFO] [ai-reply-engine.js] [DEBUG]   Input Tokens: ~1782 (system + prompt + 30 replies)
-[2026-02-10T21:26:12.214Z] [INFO] [ai-reply-engine.js] [DEBUG]   Output Tokens: ~22 (response)
-[2026-02-10T21:26:12.215Z] [INFO] [ai-reply-engine.js] [DEBUG]   Total Estimated: ~1804
-[2026-02-10T21:26:12.215Z] [INFO] [ai-reply-engine.js] [DEBUG] ----------------------------------------------
-[2026-02-10T21:26:12.216Z] [INFO] [ai-reply-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
-[2026-02-10T21:26:12.217Z] [INFO] [ai-reply-engine.js] [DEBUG] Finally getting reliable internet on flights would be a game-changer for remote work!
-[2026-02-10T21:26:12.218Z] [INFO] [ai-reply-engine.js] [DEBUG] ----------------------------------------------
-[2026-02-10T21:26:12.219Z] [INFO] [ai-reply-engine.js] [AIReply] Generated English reply: "finally getting reliable internet on flights would..."
-[2026-02-10T21:26:12.220Z] [INFO] [ai-reply-engine.js] [AIReply] Generated reply: "finally getting reliable internet on flights would..."
-[2026-02-10T21:26:12.221Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI-Replies] Generating reply: "finally getting reliable inter..."
-[2026-02-10T21:26:12.222Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Executing reply with human-like behavior...
-[2026-02-10T21:26:12.223Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Using modularized reply execution
-[2026-02-10T21:26:12.224Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Selected reply method: replyA
-[2026-02-10T21:26:12.225Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [replyA] Starting keyboard shortcut method (R key)
-[2026-02-10T21:26:12.733Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [replyA] Focusing main tweet...
-[2026-02-10T21:26:12.912Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [replyA] Clicked tweet timestamp
-[2026-02-10T21:26:13.227Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [replyA] Pressing R key...
-[2026-02-10T21:26:15.329Z] [DEBUG] [human-interaction.js] [Verify] Checking if composer is open...
-[2026-02-10T21:26:15.345Z] [DEBUG] [human-interaction.js] [Verify] Selector "[data-testid="tweetTextarea_0"]": visible=true, box=found
-[2026-02-10T21:26:15.346Z] [DEBUG] [human-interaction.js] [Verify] Composer open with: [data-testid="tweetTextarea_0"]
-[2026-02-10T21:26:15.351Z] [DEBUG] [human-interaction.js] [Verify] Element has value: empty
-[2026-02-10T21:26:15.352Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [replyA] Composer opened with: [data-testid="tweetTextarea_0"]
-[2026-02-10T21:26:15.827Z] [DEBUG] [human-interaction.js] [EnsureFocus] Strategy 1 succeeded
-[2026-02-10T21:26:15.829Z] [DEBUG] [human-interaction.js] [Type] Active element: DIV, contentEditable: true
-[2026-02-10T21:26:15.830Z] [DEBUG] [human-interaction.js] [Type] Starting to type 85 chars...
-[2026-02-10T21:26:17.917Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 656ms
-[2026-02-10T21:26:18.862Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 572ms
-[2026-02-10T21:26:19.589Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 620ms
-[2026-02-10T21:26:24.243Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 795ms
-[2026-02-10T21:26:25.753Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 498ms
-[2026-02-10T21:26:30.968Z] [DEBUG] [human-interaction.js] [Type] Finished typing
-[2026-02-10T21:26:31.529Z] [DEBUG] [human-interaction.js] [Post] Attempting to post...
-[2026-02-10T21:26:32.083Z] [DEBUG] [human-interaction.js] [Verify] Checking if post was sent...
-[2026-02-10T21:26:32.165Z] [DEBUG] [human-interaction.js] [Verify] toast notification: found (Your post was sent.
+[2026-02-10T21:53:51.876Z] [INFO] [banner] Initializing Agent Environment...
+[2026-02-10T21:53:51.877Z] [INFO] [main.js] MultiBrowseAutomation - Starting up...
+[2026-02-10T21:53:51.878Z] [INFO] [main.js] Checking Docker LLM status...
+[2026-02-10T21:53:51.879Z] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
+[2026-02-10T21:53:51.882Z] [DEBUG] [configLoader.js] Loaded configuration from settings.json
+[2026-02-10T21:53:51.883Z] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
+[2026-02-10T21:53:51.923Z] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
+[2026-02-10T21:53:51.924Z] [INFO] [sessionManager.js] Started cleanup timer with 300000ms interval
+[2026-02-10T21:53:51.925Z] [INFO] [main.js] Attempting to discover and connect to available browsers...
+[2026-02-10T21:53:51.926Z] [INFO] [orchestrator.js] Starting browser discovery...
+[2026-02-10T21:53:51.928Z] [INFO] [discovery.js] Loading 8 discovery connectors...
+[2026-02-10T21:53:51.929Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
+[2026-02-10T21:53:51.931Z] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[2026-02-10T21:53:51.932Z] [INFO] [sessionManager.js] Loaded configuration: session=1800000ms, cleanup=300000ms, concurrency=1
+[2026-02-10T21:53:51.933Z] [INFO] [sessionManager.js] Stopped cleanup timer
+[2026-02-10T21:53:51.934Z] [INFO] [sessionManager.js] Started cleanup timer with 300000ms interval
+[2026-02-10T21:53:51.937Z] [INFO] [baseDiscover.js] BaseDiscover initialized
+[2026-02-10T21:53:51.937Z] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
+[2026-02-10T21:53:51.938Z] [INFO] [discovery.js] Loaded connector: ixbrowser
+[2026-02-10T21:53:51.939Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
+[2026-02-10T21:53:51.941Z] [INFO] [baseDiscover.js] BaseDiscover initialized
+[2026-02-10T21:53:51.942Z] [INFO] [localBrave.js] Initialized LocalBraveDiscover
+[2026-02-10T21:53:51.942Z] [INFO] [discovery.js] Loaded connector: localBrave
+[2026-02-10T21:53:51.943Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
+[2026-02-10T21:53:51.945Z] [WARN] [discovery.js] Skipping localChrome: invalid connector class export. Export was: undefined
+[2026-02-10T21:53:51.946Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
+[2026-02-10T21:53:51.947Z] [WARN] [discovery.js] Skipping localEdge: invalid connector class export. Export was: undefined
+[2026-02-10T21:53:51.948Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
+[2026-02-10T21:53:51.949Z] [WARN] [discovery.js] Skipping localVivaldi: invalid connector class export. Export was: undefined
+[2026-02-10T21:53:51.950Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
+[2026-02-10T21:53:51.952Z] [WARN] [discovery.js] Skipping morelogin: invalid connector class export. Export was: undefined
+[2026-02-10T21:53:51.953Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
+[2026-02-10T21:53:51.955Z] [INFO] [baseDiscover.js] BaseDiscover initialized
+[2026-02-10T21:53:51.956Z] [WARN] [roxybrowser.js] ROXYBROWSER_API_KEY not set in environment variables
+[2026-02-10T21:53:51.956Z] [INFO] [discovery.js] Loaded connector: roxybrowser
+[2026-02-10T21:53:51.957Z] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
+[2026-02-10T21:53:51.959Z] [INFO] [baseDiscover.js] BaseDiscover initialized
+[2026-02-10T21:53:51.960Z] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
+[2026-02-10T21:53:51.960Z] [INFO] [discovery.js] Loaded connector: undetectable
+[2026-02-10T21:53:51.961Z] [INFO] [discovery.js] Successfully loaded 4 connectors
+[2026-02-10T21:53:51.962Z] [INFO] [discovery.js] Starting browser discovery with 4 connectors in parallel...
+[2026-02-10T21:53:51.963Z] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
+[2026-02-10T21:53:51.963Z] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
+[2026-02-10T21:53:51.967Z] [INFO] [localBrave.js] Discovering localBrave instances
+[2026-02-10T21:53:51.967Z] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
+[2026-02-10T21:53:51.984Z] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
+[2026-02-10T21:53:51.985Z] [WARN] [roxybrowser.js] API Key not configured for roxybrowser. Skipping discovery.
+[2026-02-10T21:53:51.985Z] [INFO] [undetectable.js] Starting discovery for undetectable browser type
+[2026-02-10T21:53:51.986Z] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
+[2026-02-10T21:53:52.004Z] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[2026-02-10T21:53:52.005Z] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[2026-02-10T21:53:52.009Z] [DEBUG] [localBrave.js] Found 40 browser tabs from Brave on port 9002
+[2026-02-10T21:53:52.013Z] [INFO] [localBrave.js] Found connectable Brave instance: Local Brave Browser (Port 9002)
+[2026-02-10T21:53:52.013Z] [INFO] [localBrave.js] Discovery complete. Found 1 localBrave profiles.
+[2026-02-10T21:53:53.022Z] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
+[2026-02-10T21:53:53.022Z] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
+[2026-02-10T21:53:53.024Z] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
+[2026-02-10T21:53:53.024Z] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
+[2026-02-10T21:53:53.025Z] [INFO] [discovery.js] Connector ixbrowser found no endpoints
+[2026-02-10T21:53:53.026Z] [INFO] [discovery.js] Connector localBrave found 1 endpoints
+[2026-02-10T21:53:53.026Z] [INFO] [discovery.js] Connector roxybrowser found no endpoints
+[2026-02-10T21:53:53.027Z] [INFO] [discovery.js] Connector undetectable found no endpoints
+[2026-02-10T21:53:53.027Z] [INFO] [discovery.js] Discovery complete. Found 1 total endpoints
+[2026-02-10T21:53:53.028Z] [INFO] [orchestrator.js] Found 1 browser endpoints. Attempting to connect in parallel...
+[2026-02-10T21:53:53.029Z] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:9002/devtools/browser/264fa430-337d-4a21-bad1-0fd400b3ede2
+[2026-02-10T21:53:54.264Z] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:9002/devtools/browser/264fa430-337d-4a21-bad1-0fd400b3ede2
+[2026-02-10T21:53:54.265Z] [INFO] [sessionManager.js] Added new session: Brave-9002:9002 at Brave-9002:9002 with 1 worker slots.
+[2026-02-10T21:53:54.266Z] [INFO] [orchestrator.js] Successfully connected and added session for Brave-9002:9002.
+[2026-02-10T21:53:54.267Z] [INFO] [orchestrator.js] Discovery completed. Connected to 1 browsers.
+[2026-02-10T21:53:54.268Z] [DEBUG] [metrics.js] Browser discovery: 1 discovered, 1 connected, 0 failed
+[2026-02-10T21:53:54.269Z] [INFO] [main.js] Successfully connected to undefined browser(s). Ready for automation.
+[2026-02-10T21:53:54.269Z] [INFO] [main.js] Adding specified tasks to the queue...
+[2026-02-10T21:53:54.270Z] [INFO] [main.js] Adding specified tasks to the queue...
+[2026-02-10T21:53:54.272Z] [INFO] [orchestrator.js] Task 'ai-twitterActivity' added to queue. Queue size: 1. Queue contents: ai-twitterActivity
+[2026-02-10T21:53:54.273Z] [INFO] [main.js] MultiBrowseAutomation - System initialized. All tasks queued.
+[2026-02-10T21:53:54.273Z] [INFO] [main.js] Waiting for all tasks to be processed...
+[2026-02-10T21:53:54.274Z] [INFO] [orchestrator.js] waitForTasksToComplete: Waiting for tasks to finish using event-driven approach...
+[2026-02-10T21:53:54.275Z] [INFO] [automator.js] Started health check monitoring (interval: 30000ms)
+[2026-02-10T21:53:54.322Z] [INFO] [orchestrator.js] Starting concurrent checklist processing for all sessions...
+[2026-02-10T21:53:54.323Z] [INFO] [orchestrator.js] Broadcasting 1 tasks to all sessions: ai-twitterActivity
+[2026-02-10T21:53:54.324Z] [INFO] [orchestrator.js] [Brave-9002:9002] Starting checklist of 1 tasks with up to 1 parallel tabs.
+[2026-02-10T21:53:54.326Z] [DEBUG] [orchestrator.js] [Brave-9002:9002][Worker 0] Starting...
+[2026-02-10T21:53:54.327Z] [DEBUG] [sessionManager.js] Occupied worker 0 in session Brave-9002:9002
+[2026-02-10T21:53:54.410Z] [INFO] [orchestrator.js] [Brave-9002:9002][Worker 0] Starting task 'ai-twitterActivity' in new tab.
+[2026-02-10T21:53:54.462Z] [INFO] [EntropyController] [session-1770760434462-11x21l8oc] Session initialized with paceMultiplier=0.70
+[2026-02-10T21:53:54.463Z] [INFO] [EntropyController] [session-1770760434462-11x21l8oc] Fatigue scheduled for T+4.3m
+[2026-02-10T21:53:54.469Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Initializing AI-Enhanced Agent...
+[2026-02-10T21:53:54.471Z] [INFO] [config-service.js] [Config] Service initialized
+[2026-02-10T21:53:54.472Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Config loaded - reply probability: 60%, quote probability: 20%
+[2026-02-10T21:53:54.473Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Reply methods: A=40%, B=35%, C=25%
+[2026-02-10T21:53:54.474Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Quote methods: A=40%, B=35%, C=25%
+[2026-02-10T21:53:54.476Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Profile: 22-Balanced-undefined | Input: undefined (undefined%) | Dive: undefined% | Like: undefined% | Follow: undefined%
+[2026-02-10T21:53:54.477Z] [INFO] [humanization.js] [Humanization] Engine initialized
+[2026-02-10T21:53:54.479Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] Initialized [Type: Balanced | Input: Mouse (83%) | Dive: 44.5% | T-Dive: 21.9% Like: 2.00% Bkmk: 0.51% Follow: 0.38%]. Fatigue scheduled for T+4.8m
+[2026-02-10T21:53:54.481Z] [INFO] [ai-reply-engine.js] [AIReplyEngine] Initialized (probability: 0.6)
+[2026-02-10T21:53:54.482Z] [INFO] [ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.2)
+[2026-02-10T21:53:54.484Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AITwitterAgent] Initialized (replyProbability: 0.6)
+[2026-02-10T21:53:54.485Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AITwitterAgent] Engagement limits: replies: 0/3, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/2, bookmarks: 0/2
+[2026-02-10T21:53:54.485Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AITwitterAgent] Session phases: warmup(0-10%) → active(10-80%) → cooldown(80-100%)
+[2026-02-10T21:53:54.486Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Overriding agent methods with modularized versions...
+[2026-02-10T21:53:54.487Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] AITwitterAgent initialized
+[2026-02-10T21:53:54.488Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Engagement limits: replies: 0/3, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/2, bookmarks: 0/2
+[2026-02-10T21:53:54.489Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [HumanizationPatch] Injecting consistency and entropy scripts...
+[2026-02-10T21:53:54.491Z] [INFO] [local-client.js] [Local] All local clients are disabled
+[2026-02-10T21:53:54.492Z] [DEBUG] [cloud-client.js] [Cloud] _loadConfig called, keys in settings: twitter, llm, humanization, verification, state, system, open_router_free_api
+[2026-02-10T21:53:54.493Z] [DEBUG] [cloud-client.js] [Cloud] llm.cloud exists: true
+[2026-02-10T21:53:54.494Z] [DEBUG] [cloud-client.js] [Cloud] this.config after assignment: provider, endpoint, timeout, enabled, retryAttempts, retryDelay, providers
+[2026-02-10T21:53:54.495Z] [DEBUG] [cloud-client.js] [Cloud] providers array length: 9
+[2026-02-10T21:53:54.496Z] [INFO] [cloud-client.js] CloudClient initialized with 9 API keys (fallback enabled)
+[2026-02-10T21:53:54.496Z] [DEBUG] [cloud-client.js] Models configured: arcee-ai/trinity-large-preview:free, tngtech/deepseek-r1t2-chimera:free, z-ai/glm-4.5-air:free, stepfun/step-3.5-flash:free, tngtech/deepseek-r1t-chimera:free, arcee-ai/trinity-mini:free, meta-llama/llama-3.3-70b-instruct:free, qwen/qwen3-next-80b-a3b-instruct:free, google/gemma-3-27b-it:free
+[2026-02-10T21:53:54.497Z] [INFO] [cloud-client.js] [Cloud] Free API Router enabled
+[2026-02-10T21:53:54.498Z] [INFO] [cloud-client.js] [Cloud] Models: 12, API keys: 11
+[2026-02-10T21:53:54.499Z] [INFO] [cloud-client.js] [Cloud] Creating new FreeOpenRouterHelper singleton
+[2026-02-10T21:53:54.500Z] [INFO] [cloud-client.js] [Cloud] Starting background model tests...
+[2026-02-10T21:53:54.501Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] Starting background model tests (12 models)...
+[2026-02-10T21:53:54.502Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 1/12: arcee-ai/trinity-large-preview:free (key: sk-or-...c962)
+[2026-02-10T21:53:54.503Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.38.111.171:6086
+[2026-02-10T21:53:54.505Z] [INFO] [free-api-router.js] [FreeRouter] Session default:default -> API Key 9/11
+[2026-02-10T21:53:54.506Z] [INFO] [free-api-router.js] [FreeRouter] Initialized for session: default:default
+[2026-02-10T21:53:54.507Z] [INFO] [free-api-router.js] [FreeRouter] API Keys: 11, Selected: 9
+[2026-02-10T21:53:54.508Z] [INFO] [free-api-router.js] [FreeRouter] Primary model: arcee-ai/trinity-large-preview:free
+[2026-02-10T21:53:54.509Z] [INFO] [free-api-router.js] [FreeRouter] Fallback models: 11
+[2026-02-10T21:53:54.510Z] [INFO] [free-api-router.js] [FreeRouter] Timeout: default=120000ms, quick=20000ms
+[2026-02-10T21:53:54.510Z] [INFO] [free-api-router.js] [FreeRouter] Proxy enabled: 29 proxies
+[2026-02-10T21:53:54.511Z] [INFO] [free-api-router.js] [FreeRouter] Advanced features: CircuitBreaker, RateLimitTracker, RequestDedupe, ModelPerfTracker, ApiKeyTimeoutTracker
+[2026-02-10T21:53:54.512Z] [INFO] [cloud-client.js] [Cloud] Free Router session: API key 9/11
+[2026-02-10T21:53:54.513Z] [INFO] [cloud-client.js] [Cloud] Free Router primary model: arcee-ai/trinity-large-preview:free
+[2026-02-10T21:53:54.528Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:53:54.529Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.38.111.171:6086
+[2026-02-10T21:53:54.572Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [HumanizationPatch] Scripts injected.
+[2026-02-10T21:53:54.573Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Warm-up 4.8s...
+[2026-02-10T21:53:58.579Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] arcee-ai/trinity-large-preview:free: HTTP 503
+[2026-02-10T21:53:58.779Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 2/12: nousresearch/hermes-3-llama-3.1-405b:free (key: sk-or-...1656)
+[2026-02-10T21:53:58.780Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.235:5650
+[2026-02-10T21:53:58.781Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:53:58.782Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.73.235:5650
+[2026-02-10T21:53:59.339Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Navigating to https://x.com (bookmark style)
+[2026-02-10T21:53:59.981Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] nousresearch/hermes-3-llama-3.1-405b:free: HTTP 429
+[2026-02-10T21:54:00.191Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 3/12: meta-llama/llama-3.3-70b-instruct:free (key: sk-or-...662c)
+[2026-02-10T21:54:00.192Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.243:5658
+[2026-02-10T21:54:00.193Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:00.194Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.73.243:5658
+[2026-02-10T21:54:01.125Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] meta-llama/llama-3.3-70b-instruct:free: HTTP 429
+[2026-02-10T21:54:01.328Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 4/12: cognitivecomputations/dolphin-mistral-24b-venice-edition:free (key: sk-or-...a182)
+[2026-02-10T21:54:01.329Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.252:6166
+[2026-02-10T21:54:01.330Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:01.331Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.252:6166
+[2026-02-10T21:54:02.305Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] X.com loaded (main)
+[2026-02-10T21:54:02.403Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [WARN] Suspected not logged in: Primary Timeline not visible on /home.
+[2026-02-10T21:54:02.579Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] cognitivecomputations/dolphin-mistral-24b-venice-edition:free: HTTP 429
+[2026-02-10T21:54:02.783Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 5/12: google/gemma-3-27b-it:free (key: sk-or-...6eb0)
+[2026-02-10T21:54:02.784Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.3:5917
+[2026-02-10T21:54:02.784Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:02.785Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.3:5917
+[2026-02-10T21:54:03.751Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] google/gemma-3-27b-it:free: HTTP 429
+[2026-02-10T21:54:03.967Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 6/12: qwen/qwen3-next-80b-a3b-instruct:free (key: sk-or-...2bcb)
+[2026-02-10T21:54:03.968Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.30:5944
+[2026-02-10T21:54:03.969Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:03.969Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.30:5944
+[2026-02-10T21:54:04.879Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] qwen/qwen3-next-80b-a3b-instruct:free: HTTP 429
+[2026-02-10T21:54:05.084Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 7/12: mistralai/mistral-small-3.1-24b-instruct:free (key: sk-or-...9a06)
+[2026-02-10T21:54:05.085Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.220:5635
+[2026-02-10T21:54:05.086Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:05.086Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.73.220:5635
+[2026-02-10T21:54:05.959Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Starting session (10 cycles, 300-540s)...
+[2026-02-10T21:54:05.960Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AITwitterAgent] Starting AI-Enhanced Session...
+[2026-02-10T21:54:05.961Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] Starting Session on https://x.com/home
+[2026-02-10T21:54:05.962Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] Session Timer Set: 467.6s (until 5:01:53 AM)
+[2026-02-10T21:54:05.962Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] Enforcing theme: dark
+[2026-02-10T21:54:05.977Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Human] Session starting...
+[2026-02-10T21:54:06.074Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] mistralai/mistral-small-3.1-24b-instruct:free: HTTP 429
+[2026-02-10T21:54:06.278Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 8/12: tngtech/deepseek-r1t-chimera:free (key: sk-or-...4e27)
+[2026-02-10T21:54:06.279Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.77:5991
+[2026-02-10T21:54:06.280Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:06.281Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.77:5991
+[2026-02-10T21:54:09.428Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] tngtech/deepseek-r1t-chimera:free (3148ms)
+[2026-02-10T21:54:09.642Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 9/12: tngtech/deepseek-r1t2-chimera:free (key: sk-or-...319f)
+[2026-02-10T21:54:09.643Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.251:6165
+[2026-02-10T21:54:09.644Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:09.645Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.251:6165
+[2026-02-10T21:54:10.475Z] [INFO] [global-scroll-controller.js] [GlobalScroll] Initialized with multiplier: 2x
+[2026-02-10T21:54:12.104Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Human] Session started
+[2026-02-10T21:54:12.155Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] --- Loop 1  ---
+[2026-02-10T21:54:12.588Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] tngtech/deepseek-r1t2-chimera:free: HTTP 429
+[2026-02-10T21:54:12.801Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 10/12: upstage/solar-pro-3:free (key: sk-or-...8b8c)
+[2026-02-10T21:54:12.802Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.38.111.171:6086
+[2026-02-10T21:54:12.803Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:12.804Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.38.111.171:6086
+[2026-02-10T21:54:14.539Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] upstage/solar-pro-3:free: Unexpected response
+[2026-02-10T21:54:14.752Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 11/12: stepfun/step-3.5-flash:free (key: sk-or-...19f4)
+[2026-02-10T21:54:14.753Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.38.111.171:6086
+[2026-02-10T21:54:14.754Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:14.755Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.38.111.171:6086
+[2026-02-10T21:54:15.109Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Idle] Reading Phase (56.1s)
+[2026-02-10T21:54:16.875Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] stepfun/step-3.5-flash:free: Unexpected response
+[2026-02-10T21:54:17.089Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Testing 12/12: openrouter/free (key: sk-or-...c962)
+[2026-02-10T21:54:17.090Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.75.220:6134
+[2026-02-10T21:54:17.091Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:54:17.091Z] [DEBUG] [free-openrouter-helper.js] [FreeRouterHelper] Using proxy: 45.39.75.220:6134
+[2026-02-10T21:54:24.020Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Reply lock ACQUIRED
+[2026-02-10T21:54:24.021Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Branch] Tweet Dive (Expanding with AI)...
+[2026-02-10T21:54:24.043Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Debug] Targeting tweet text body (Primary).
+[2026-02-10T21:54:25.333Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Debug] Target: Box=x:523,y:208
+[2026-02-10T21:54:25.334Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Attempt] Ghost Click on Permalink...
+[2026-02-10T21:54:25.335Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Human] Thinking about Tweet Permalink for 478ms...
+[2026-02-10T21:54:26.932Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] openrouter/free (9843ms)
+[2026-02-10T21:54:27.137Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] Model Test Complete: 2/12 working (32634ms)
+[2026-02-10T21:54:27.137Z] [INFO] [free-openrouter-helper.js] [FreeRouterHelper] Working: tngtech/deepseek-r1t-chimera:free, openrouter/free
+[2026-02-10T21:54:27.138Z] [WARN] [free-openrouter-helper.js] [FreeRouterHelper] Failed: arcee-ai/trinity-large-preview:free, nousresearch/hermes-3-llama-3.1-405b:free, meta-llama/llama-3.3-70b-instruct:free, cognitivecomputations/dolphin-mistral-24b-venice-edition:free, google/gemma-3-27b-it:free, qwen/qwen3-next-80b-a3b-instruct:free, mistralai/mistral-small-3.1-24b-instruct:free, tngtech/deepseek-r1t2-chimera:free, upstage/solar-pro-3:free, stepfun/step-3.5-flash:free
+[2026-02-10T21:54:27.665Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Success] Navigated to tweet page.
+[2026-02-10T21:54:27.666Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Debug] Tweet URL: https://x.com/GraceGym_/status/2021276711111819277
+[2026-02-10T21:54:27.667Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Tracking new tweet 2021276711111819277
+[2026-02-10T21:54:27.668Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Extracting tweet content from full page...
+[2026-02-10T21:54:28.925Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Extracted tweet text (54 chars)
+[2026-02-10T21:54:28.926Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Engage] Decision: SKIP (roll: 82.3%, reply: 60%, quote: 20%)
+[2026-02-10T21:54:28.927Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Engage] Skipped (both reply and quote rolled out)
+[2026-02-10T21:54:28.928Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Idle] Reading expanded tweet for 6450ms...
+[2026-02-10T21:54:35.398Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Action] Open media viewer
+[2026-02-10T21:54:35.399Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Human] Thinking about Media Viewer for 549ms...
+[2026-02-10T21:54:37.571Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Media] Viewing media for 5.3s...
+[2026-02-10T21:54:43.517Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Scroll] Reading replies...
+[2026-02-10T21:54:49.102Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] Returning to Home Feed...
+[2026-02-10T21:54:49.108Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[2026-02-10T21:54:49.109Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Human] Thinking about Home Icon for 508ms...
+[2026-02-10T21:54:53.400Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Navigation] Clicking 'Home Icon' again (2nd click to reload)...
+[2026-02-10T21:54:53.401Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Human] Thinking about Home Icon for 370ms...
+[2026-02-10T21:54:56.325Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Navigation] Navigate to /home Success.
+[2026-02-10T21:54:56.344Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Tab] "For you" is already selected.
+[2026-02-10T21:54:58.637Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Reply lock RELEASED
+[2026-02-10T21:55:10.573Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Reply lock ACQUIRED
+[2026-02-10T21:55:10.575Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Branch] Tweet Dive (Expanding with AI)...
+[2026-02-10T21:55:10.629Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Debug] Targeting tweet text body (Primary).
+[2026-02-10T21:55:11.523Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Debug] Target: Box=x:523,y:373
+[2026-02-10T21:55:11.524Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Attempt] Ghost Click on Permalink...
+[2026-02-10T21:55:11.525Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Human] Thinking about Tweet Permalink for 560ms...
+[2026-02-10T21:55:14.412Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Success] Navigated to tweet page.
+[2026-02-10T21:55:14.413Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Debug] Tweet URL: https://x.com/inviz0/status/2021032598525661440
+[2026-02-10T21:55:14.414Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Tracking new tweet 2021032598525661440
+[2026-02-10T21:55:14.415Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Extracting tweet content from full page...
+[2026-02-10T21:55:15.488Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI] Extracted tweet text (59 chars)
+[2026-02-10T21:55:15.489Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Engage] Decision: QUOTE (roll: 68.3%, reply: 60%, quote: 20%)
+[2026-02-10T21:55:15.490Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Quote] Analyzing tweet from @inviz0...
+[2026-02-10T21:55:15.491Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Quote] Tweet URL: https://x.com/inviz0/status/2021032598525661440
+[2026-02-10T21:55:15.492Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Sentiment] Analyzing tweet sentiment...
+[2026-02-10T21:55:15.497Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [SentimentGuard] ✅ Neutral/Positive content (score: 0.00)
+[2026-02-10T21:55:15.498Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Sentiment] Dimensions - Valence: -0.35, Arousal: 0.21, Dominance: 0.50, Sarcasm: 0.00
+[2026-02-10T21:55:15.499Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Context] Loading replies for quote context...
+[2026-02-10T21:55:15.507Z] [INFO] [ai-context-engine.js] [Context] Starting comprehensive reply extraction...
+[2026-02-10T21:55:15.508Z] [DEBUG] [ai-context-engine.js] [Context] Step 1: Slowly scrolling to load all replies...
+[2026-02-10T21:55:27.774Z] [DEBUG] [ai-context-engine.js] [Context] Step 2: Extracting while scrolling up...
+[2026-02-10T21:55:29.011Z] [DEBUG] [ai-context-engine.js] [Context] Target reached: 99 replies
+[2026-02-10T21:55:29.634Z] [INFO] [ai-context-engine.js] [Context] Final reply count: 30 (from 99 candidates)
+[2026-02-10T21:55:29.637Z] [INFO] [ai-context-engine.js] [Context] Enhanced context: neutral, tone: serious, 30 replies, minimal engagement
+[2026-02-10T21:55:29.637Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Context] Enhanced: sentiment=neutral, tone=serious, 30 replies
+[2026-02-10T21:55:29.638Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Quote] Generating quote tweet...
+[2026-02-10T21:55:29.640Z] [INFO] [ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[2026-02-10T21:55:29.641Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[2026-02-10T21:55:29.641Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Valence: -0.35
+[2026-02-10T21:55:29.642Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Arousal: 0.21
+[2026-02-10T21:55:29.643Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Dominance: 0.50
+[2026-02-10T21:55:29.644Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[2026-02-10T21:55:29.644Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[2026-02-10T21:55:29.645Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[2026-02-10T21:55:29.646Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[2026-02-10T21:55:29.647Z] [INFO] [ai-quote-engine.js] [AIQuote]   - Conversation Type: negative
+[2026-02-10T21:55:29.658Z] [INFO] [ai-quote-engine.js] [AIQuote] Reply selection strategy: longest (pos: 4, neg: 3, sarcastic: 0)
+[2026-02-10T21:55:29.660Z] [INFO] [ai-quote-engine.js] [AIQuote] Selected 30 replies for LLM context (filtered from 30)
+[2026-02-10T21:55:29.661Z] [INFO] [ai-quote-engine.js] [DEBUG] ============================================
+[2026-02-10T21:55:29.662Z] [INFO] [ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[2026-02-10T21:55:29.662Z] [INFO] [ai-quote-engine.js] [DEBUG] Author: @inviz0
+[2026-02-10T21:55:29.663Z] [INFO] [ai-quote-engine.js] [DEBUG] URL: https://x.com/inviz0/status/2021032598525661440
+[2026-02-10T21:55:29.664Z] [INFO] [ai-quote-engine.js] [DEBUG] Tweet Text: "This is the most realistic fight I have seen in a long time"
+[2026-02-10T21:55:29.665Z] [INFO] [ai-quote-engine.js] [DEBUG] Tweet Length: 59 chars
+[2026-02-10T21:55:29.666Z] [INFO] [ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: negative
+[2026-02-10T21:55:29.666Z] [INFO] [ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[2026-02-10T21:55:29.667Z] [INFO] [ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (30 selected from 30):
+[2026-02-10T21:55:29.668Z] [INFO] [ai-quote-engine.js] [DEBUG] [1] Reply1: "@r_trooper_2187: *Catches a sword in his mouth* *Rips balcony railing piece to use as weapon* *Re..."
+[2026-02-10T21:55:29.669Z] [INFO] [ai-quote-engine.js] [DEBUG] [2] Reply2: "@r_trooper_2187: Not “realistic” in a literal sense, but the weight, timing, and desperation feel..."
+[2026-02-10T21:55:29.670Z] [INFO] [ai-quote-engine.js] [DEBUG] [3] Reply3: "@r_trooper_2187: The most realistic fight where a guy catches a sword mid-strike and breaks it of..."
+[2026-02-10T21:55:29.670Z] [INFO] [ai-quote-engine.js] [DEBUG] [4] Reply4: "@r_trooper_2187: KA - Akihiro Ota / Not sure if he did SB too but if he did that just makes it ev..."
+[2026-02-10T21:55:29.671Z] [INFO] [ai-quote-engine.js] [DEBUG] [5] Reply5: "@r_trooper_2187: Realistic or well animated … I wanna know what human is acrobatic as him first o..."
+[2026-02-10T21:55:29.672Z] [INFO] [ai-quote-engine.js] [DEBUG] [6] Reply6: "@r_trooper_2187: Stop hating in the comments, you know what he means if you’re an anime fan."
+[2026-02-10T21:55:29.673Z] [INFO] [ai-quote-engine.js] [DEBUG] [7] Reply7: "@r_trooper_2187: "Most realistic", and the dude bites the sword in the first two seconds."
+[2026-02-10T21:55:29.674Z] [INFO] [ai-quote-engine.js] [DEBUG] [8] Reply8: "@r_trooper_2187: wow and I can see what's going on JJK should take some notes"
+[2026-02-10T21:55:29.675Z] [INFO] [ai-quote-engine.js] [DEBUG] [9] Reply9: "@r_trooper_2187: realistic isn't the word i would use to describe it."
+[2026-02-10T21:55:29.676Z] [INFO] [ai-quote-engine.js] [DEBUG] [10] Reply10: "@r_trooper_2187: The animators behind it are very imaginative"
+[2026-02-10T21:55:29.676Z] [INFO] [ai-quote-engine.js] [DEBUG] [11] Reply11: "@r_trooper_2187: A realistic sword fight lasts like 6 seconds"
+[2026-02-10T21:55:29.677Z] [INFO] [ai-quote-engine.js] [DEBUG] [12] Reply12: "@r_trooper_2187: reminds me of Gabimaru from Hells Paradise"
+[2026-02-10T21:55:29.678Z] [INFO] [ai-quote-engine.js] [DEBUG] [13] Reply13: "@r_trooper_2187: Caught a sword with his teeth realistic"
+[2026-02-10T21:55:29.679Z] [INFO] [ai-quote-engine.js] [DEBUG] [14] Reply14: "@grok: @grok what is this. Do a good search"
+[2026-02-10T21:55:29.679Z] [INFO] [ai-quote-engine.js] [DEBUG] [15] Reply15: "@grok: hey @grok what anime's scene is this"
+[2026-02-10T21:55:29.680Z] [INFO] [ai-quote-engine.js] [DEBUG] [16] Reply16: "@r_trooper_2187: insane engagement bait I applaud you"
+[2026-02-10T21:55:29.681Z] [INFO] [ai-quote-engine.js] [DEBUG] [17] Reply17: "@r_trooper_2187: What’s the name of the anime ??"
+[2026-02-10T21:55:29.682Z] [INFO] [ai-quote-engine.js] [DEBUG] [18] Reply18: "@r_trooper_2187: The media could not be played."
+[2026-02-10T21:55:29.683Z] [INFO] [ai-quote-engine.js] [DEBUG] [19] Reply19: "@r_trooper_2187: what is this. Do a good search"
+[2026-02-10T21:55:29.684Z] [INFO] [ai-quote-engine.js] [DEBUG] [20] Reply20: "@r_trooper_2187: Son of Pharaoh {Yu.Ha.Ba.Ha)"
+[2026-02-10T21:55:29.684Z] [INFO] [ai-quote-engine.js] [DEBUG] [21] Reply21: "@r_trooper_2187: what anime's scene is this"
+[2026-02-10T21:55:29.685Z] [INFO] [ai-quote-engine.js] [DEBUG] [22] Reply22: "@grok: @grok what anime is this"
+[2026-02-10T21:55:29.686Z] [INFO] [ai-quote-engine.js] [DEBUG] [23] Reply23: "@grok: @grok name of the anime"
+[2026-02-10T21:55:29.687Z] [INFO] [ai-quote-engine.js] [DEBUG] [24] Reply24: "@r_trooper_2187: Did you say realistic ?"
+[2026-02-10T21:55:29.688Z] [INFO] [ai-quote-engine.js] [DEBUG] [25] Reply25: "@r_trooper_2187: How’s dis realistic lol"
+[2026-02-10T21:55:29.688Z] [INFO] [ai-quote-engine.js] [DEBUG] [26] Reply26: "@grok: @grok name this anime"
+[2026-02-10T21:55:29.689Z] [INFO] [ai-quote-engine.js] [DEBUG] [27] Reply27: "@r_trooper_2187: Zimbabwean Spiderman"
+[2026-02-10T21:55:29.690Z] [INFO] [ai-quote-engine.js] [DEBUG] [28] Reply28: "@grok: @grok このアニメのタイトル教えて"
+[2026-02-10T21:55:29.691Z] [INFO] [ai-quote-engine.js] [DEBUG] [29] Reply29: "@r_trooper_2187: what anime is this"
+[2026-02-10T21:55:29.691Z] [INFO] [ai-quote-engine.js] [DEBUG] [30] Reply30: "@r_trooper_2187: name of the anime"
+[2026-02-10T21:55:29.692Z] [INFO] [ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[2026-02-10T21:55:29.693Z] [INFO] [ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[2026-02-10T21:55:29.694Z] [INFO] [ai-quote-engine.js] [DEBUG] System Prompt Length: 1515 chars
+[2026-02-10T21:55:29.694Z] [INFO] [ai-quote-engine.js] [DEBUG] User Prompt Length: 2582 chars
+[2026-02-10T21:55:29.695Z] [INFO] [ai-quote-engine.js] [DEBUG] ============================================
+[2026-02-10T21:55:29.696Z] [INFO] [ai-quote-engine.js] [AI-Quote] Generating quote tweet (attempt 1/2)...
+[2026-02-10T21:55:29.697Z] [INFO] [agent-connector.js] [quote-engine] Processing request: generate_reply
+[2026-02-10T21:55:29.698Z] [INFO] [agent-connector.js] [quote-engine] All local providers disabled (vllm: false, ollama: false), using cloud only
+[2026-02-10T21:55:29.699Z] [INFO] [agent-connector.js] [quote-engine] Sending to cloud...
+[2026-02-10T21:55:29.700Z] [DEBUG] [cloud-client.js] [Cloud] _loadConfig called, keys in settings: twitter, llm, humanization, verification, state, system, open_router_free_api
+[2026-02-10T21:55:29.701Z] [DEBUG] [cloud-client.js] [Cloud] llm.cloud exists: true
+[2026-02-10T21:55:29.702Z] [DEBUG] [cloud-client.js] [Cloud] this.config after assignment: provider, endpoint, timeout, enabled, retryAttempts, retryDelay, providers
+[2026-02-10T21:55:29.703Z] [DEBUG] [cloud-client.js] [Cloud] providers array length: 9
+[2026-02-10T21:55:29.703Z] [INFO] [cloud-client.js] CloudClient initialized with 9 API keys (fallback enabled)
+[2026-02-10T21:55:29.704Z] [DEBUG] [cloud-client.js] Models configured: arcee-ai/trinity-large-preview:free, tngtech/deepseek-r1t2-chimera:free, z-ai/glm-4.5-air:free, stepfun/step-3.5-flash:free, tngtech/deepseek-r1t-chimera:free, arcee-ai/trinity-mini:free, meta-llama/llama-3.3-70b-instruct:free, qwen/qwen3-next-80b-a3b-instruct:free, google/gemma-3-27b-it:free
+[2026-02-10T21:55:29.705Z] [INFO] [cloud-client.js] [Cloud] Free API Router enabled
+[2026-02-10T21:55:29.706Z] [INFO] [cloud-client.js] [Cloud] Models: 12, API keys: 11
+[2026-02-10T21:55:29.707Z] [INFO] [cloud-client.js] [Cloud] Reusing cached test results: 2/12 working
+[2026-02-10T21:55:29.708Z] [INFO] [free-api-router.js] [FreeRouter] Session default:default -> API Key 9/11
+[2026-02-10T21:55:29.709Z] [INFO] [free-api-router.js] [FreeRouter] Initialized for session: default:default
+[2026-02-10T21:55:29.710Z] [INFO] [free-api-router.js] [FreeRouter] API Keys: 11, Selected: 9
+[2026-02-10T21:55:29.711Z] [INFO] [free-api-router.js] [FreeRouter] Primary model: tngtech/deepseek-r1t-chimera:free
+[2026-02-10T21:55:29.711Z] [INFO] [free-api-router.js] [FreeRouter] Fallback models: 1
+[2026-02-10T21:55:29.712Z] [INFO] [free-api-router.js] [FreeRouter] Timeout: default=120000ms, quick=20000ms
+[2026-02-10T21:55:29.713Z] [INFO] [free-api-router.js] [FreeRouter] Proxy enabled: 29 proxies
+[2026-02-10T21:55:29.714Z] [INFO] [free-api-router.js] [FreeRouter] Advanced features: CircuitBreaker, RateLimitTracker, RequestDedupe, ModelPerfTracker, ApiKeyTimeoutTracker
+[2026-02-10T21:55:29.715Z] [INFO] [cloud-client.js] [Cloud] Free Router session: API key 9/11
+[2026-02-10T21:55:29.716Z] [INFO] [cloud-client.js] [Cloud] Free Router primary model: tngtech/deepseek-r1t-chimera:free
+[2026-02-10T21:55:29.718Z] [INFO] [cloud-client.js] [Cloud] Sending request with FreeApiRouter...
+[2026-02-10T21:55:29.720Z] [INFO] [free-api-router.js] [FreeRouter] No test results available, using 2 configured models
+[2026-02-10T21:55:29.720Z] [INFO] [free-api-router.js] [FreeRouter] Attempt 1/3: Trying model tngtech/deepseek-r1t-chimera:free
+[2026-02-10T21:55:29.722Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Parsed proxy: 45.39.73.235:5650
+[2026-02-10T21:55:29.723Z] [DEBUG] [proxy-agent.js] [ProxyAgent] Created HTTPS proxy agent
+[2026-02-10T21:55:58.963Z] [DEBUG] [model-perf-tracker.js] [ModelPerfTracker] tngtech/deepseek-r1t-chimera:free::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 success (1/1, 29244ms avg)
+[2026-02-10T21:55:58.965Z] [DEBUG] [request-dedupe.js] [RequestDedupe] Cached response for key -235b387
+[2026-02-10T21:55:58.966Z] [SUCCESS] [cloud-client.js] [Cloud] FreeRouter request completed in 29265ms
+[2026-02-10T21:55:58.966Z] [SUCCESS] [agent-connector.js] [quote-engine] Cloud reply generated in 29268ms
+[2026-02-10T21:55:58.967Z] [INFO] [ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[2026-02-10T21:55:58.968Z] [INFO] [ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE:
+[2026-02-10T21:55:58.968Z] [INFO] [ai-quote-engine.js] [DEBUG] {"success":true,"content":"Okay, I need to craft a quote tweet based on the original tweet and the reactions. The original tweet says, \"This is the most realistic fight I have seen in a long time,\" and there are a lot of reactions debating whether the fight is actually realistic, with some pointing out over-the-top elements like catching a sword with teeth. \n\nThe user wants a neutral tone, negative conversation type, and valence. It should be a short, specific question or observation. No gen
+[2026-02-10T21:55:58.969Z] [INFO] [ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[2026-02-10T21:55:58.969Z] [DEBUG] [ai-quote-engine.js] [DEBUG] Raw content length: 1225 chars
+[2026-02-10T21:55:58.971Z] [DEBUG] [ai-quote-engine.js] [DEBUG] Extracted reply: "How does the sword-catching moment contribute to the fight's realism?..."
+[2026-02-10T21:55:58.972Z] [INFO] [ai-quote-engine.js] [AIQuoteEngine] ✨ Cleaned quote: "How does the sword-catching moment contribute to the fight's realism?" (69 chars)
+[2026-02-10T21:55:58.973Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Quote] AI QUOTE: "How does the sword-catching moment contribute to the fight's realism?"
+[2026-02-10T21:55:58.973Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Using modularized quote execution
+[2026-02-10T21:55:58.974Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Selected quote method: quoteA
+[2026-02-10T21:55:58.975Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [quoteA] Starting keyboard compose method
+[2026-02-10T21:55:59.697Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [quoteA] Clicked tweet timestamp
+[2026-02-10T21:56:00.254Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [quoteA] Pressed T
+[2026-02-10T21:56:01.019Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [quoteA] Pressed ArrowDown
+[2026-02-10T21:56:01.656Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [quoteA] Pressed Enter
+[2026-02-10T21:56:03.162Z] [DEBUG] [human-interaction.js] [Verify] Checking if composer is open...
+[2026-02-10T21:56:03.177Z] [DEBUG] [human-interaction.js] [Verify] Selector "[data-testid="tweetTextarea_0"]": visible=true, box=found
+[2026-02-10T21:56:03.178Z] [DEBUG] [human-interaction.js] [Verify] Composer open with: [data-testid="tweetTextarea_0"]
+[2026-02-10T21:56:03.184Z] [DEBUG] [human-interaction.js] [Verify] Element has value: empty
+[2026-02-10T21:56:03.185Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [quoteA] Quote composer ready
+[2026-02-10T21:56:03.894Z] [DEBUG] [human-interaction.js] [EnsureFocus] Strategy 1 succeeded
+[2026-02-10T21:56:03.896Z] [DEBUG] [human-interaction.js] [Type] Active element: DIV, contentEditable: true
+[2026-02-10T21:56:03.897Z] [DEBUG] [human-interaction.js] [Type] Starting to type 69 chars...
+[2026-02-10T21:56:04.295Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 519ms
+[2026-02-10T21:56:06.172Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 545ms
+[2026-02-10T21:56:07.725Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 762ms
+[2026-02-10T21:56:10.314Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 535ms
+[2026-02-10T21:56:12.501Z] [DEBUG] [human-interaction.js] [Type] Thinking pause: 412ms
+[2026-02-10T21:56:16.558Z] [DEBUG] [human-interaction.js] [Type] Finished typing
+[2026-02-10T21:56:17.457Z] [DEBUG] [human-interaction.js] [Post] Attempting to post...
+[2026-02-10T21:56:18.001Z] [DEBUG] [human-interaction.js] [Verify] Checking if post was sent...
+[2026-02-10T21:56:18.379Z] [DEBUG] [human-interaction.js] [Verify] toast notification: found (Your post was sent.
 View)
-[2026-02-10T21:26:32.167Z] [DEBUG] [human-interaction.js] [Post] Success via toast notification
-[2026-02-10T21:26:32.167Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [replyA] Reply posted successfully
-[2026-02-10T21:26:32.168Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Reply method replyA completed: success
-[2026-02-10T21:26:32.169Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Reply posted successfully via replyA
-[2026-02-10T21:26:32.170Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Engagement] 1/3 Replies posted
-[2026-02-10T21:26:32.171Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Idle] Reading expanded tweet for 5692ms...
-[2026-02-10T21:26:37.878Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Scroll] Reading replies...
-[2026-02-10T21:26:43.665Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] Returning to Home Feed...
-[2026-02-10T21:26:43.671Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Navigation] Clicking 'X Logo' (1st click for reload)...
-[2026-02-10T21:26:43.672Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Human] Thinking about X Logo for 480ms...
-[2026-02-10T21:26:47.824Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Navigation] Clicking 'X Logo' again (2nd click to reload)...
-[2026-02-10T21:26:47.825Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Human] Thinking about X Logo for 356ms...
-[2026-02-10T21:26:52.322Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Navigation] Navigate to /home Success.
-[2026-02-10T21:26:52.339Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Tab] "For you" is already selected.
-[2026-02-10T21:26:54.280Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Reply lock RELEASED
-[2026-02-10T21:26:54.282Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Branch] Inspecting User Profile
-[2026-02-10T21:26:54.293Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] Clicking profile: @adikara55
-[2026-02-10T21:26:54.294Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Attempt] Ghost Click on Profile Link...
-[2026-02-10T21:26:54.295Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Human] Thinking about Profile Link for 312ms...
-[2026-02-10T21:26:59.990Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Success] Ghost Click navigated to profile.
-[2026-02-10T21:26:59.998Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Tab] Visiting profile tab: Tweets
-[2026-02-10T21:26:59.999Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Human] Thinking about Profile Tab Tweets for 502ms...
-[2026-02-10T21:27:05.921Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Idle] Reading Phase (28.9s)
-[2026-02-10T21:27:07.764Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Reply lock ACQUIRED
-[2026-02-10T21:27:07.765Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Branch] Tweet Dive (Expanding with AI)...
-[2026-02-10T21:27:07.812Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Debug] Targeting tweet text body (Primary).
-[2026-02-10T21:27:08.610Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Debug] Target: Box=x:523,y:374
-[2026-02-10T21:27:08.611Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Attempt] Ghost Click on Permalink...
-[2026-02-10T21:27:08.612Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Human] Thinking about Tweet Permalink for 300ms...
-[2026-02-10T21:27:11.663Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Success] Navigated to tweet page.
-[2026-02-10T21:27:11.664Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Debug] Tweet URL: https://x.com/adikara55/status/2021263045247345017
-[2026-02-10T21:27:11.665Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Tracking new tweet 2021263045247345017
-[2026-02-10T21:27:11.666Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Extracting tweet content from full page...
-[2026-02-10T21:27:12.757Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI] Extracted tweet text (66 chars)
-[2026-02-10T21:27:12.758Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI-Engage] Decision: QUOTE (roll: 70.9%, reply: 60%, quote: 20%)
-[2026-02-10T21:27:12.759Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI-Quote] Analyzing tweet from @adikara55...
-[2026-02-10T21:27:12.760Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI-Quote] Tweet URL: https://x.com/adikara55/status/2021263045247345017
-[2026-02-10T21:27:12.761Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Sentiment] Analyzing tweet sentiment...
-[2026-02-10T21:27:12.762Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [SentimentGuard] ✅ Neutral/Positive content (score: 0.00)
-[2026-02-10T21:27:12.763Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [Sentiment] Dimensions - Valence: 0.00, Arousal: 0.21, Dominance: 0.35, Sarcasm: 0.00
-[2026-02-10T21:27:12.764Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:08-Balanced] [AI-Context] Loading replies for quote context...
-[2026-02-10T21:27:12.770Z] [INFO] [ai-context-engine.js] [Context] Starting comprehensive reply extraction...
-[2026-02-10T21:27:12.771Z] [DEBUG] [ai-context-engine.js] [Context] Step 1: Slowly scrolling to load all replies...
-[2026-02-10T21:27:16.212Z] [INFO] [main.js] Received SIGINT. Shutting down gracefully...
+[2026-02-10T21:56:18.380Z] [DEBUG] [human-interaction.js] [Post] Success via toast notification
+[2026-02-10T21:56:18.380Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [quoteA] Quote posted successfully
+[2026-02-10T21:56:18.381Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [ai-twitterActivity] Quote method quoteA completed: success
+[2026-02-10T21:56:18.382Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Engagement] 1/1 Quotes posted
+[2026-02-10T21:56:18.382Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [AI-Quote] Quote tweet posted successfully via quoteA
+[2026-02-10T21:56:18.383Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Idle] Reading expanded tweet for 12401ms...
+[2026-02-10T21:56:18.384Z] [INFO] [ai-twitterActivity.js [Brave-9002:9002]] [Agent:22-Balanced] [Micro] Fidget loop started
+[2026-02-10T21:56:24.495Z] [INFO] [main.js] Received SIGINT. Shutting down gracefully...

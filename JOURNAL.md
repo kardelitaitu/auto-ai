@@ -12,8 +12,8 @@
 | Phase 1 | ✅ Complete | phase1-error-handling | Low |
 | Phase 2 | ✅ Complete | phase2-config | Low-Med |
 | Phase 3 | 🟡 In Progress | phase3-router-optimization | Medium |
-| Phase 4 | ⏸️ Pending | - | Medium |
-| Phase 5 | ⏸️ Pending | - | None |
+| Phase 4 | ✅ Complete | phase4-queue-retry | Medium |
+| Phase 5 | ⏸️ Pending | - | Medium |
 | Phase 6 | ⏸️ Pending | - | None |
 
 ## Phase 0: Safety Setup - COMPLETE
@@ -125,6 +125,65 @@ git checkout backup-baseline
 
 **Commit**: c0231ac
 
+## Phase 4: Request Queuing & Retry Logic - ✅ COMPLETE
+
+**Status**: ✅ COMPLETE  
+**Started**: February 11, 2025  
+**Completed**: February 11, 2025  
+**Duration**: 1 day  
+**Risk**: Medium  
+**Commit**: Pending
+
+### Goal
+Add request queuing with concurrency limits, retry logic with exponential backoff, and circuit breaker pattern for model health
+
+### Plan
+1. Create core/request-queue.js with concurrency limits and retry logic
+2. Create core/circuit-breaker.js for model health monitoring
+3. Update core/agent-connector.js to use new queue and breaker systems
+4. Add unit tests for queue and circuit breaker
+5. Commit changes
+
+### Files
+- NEW: core/request-queue.js
+- NEW: core/circuit-breaker.js
+- MODIFY: core/agent-connector.js
+- NEW: tests/request-queue.test.js
+- NEW: tests/circuit-breaker.test.js
+
+### Rollback
+```bash
+git checkout phase3-router-optimization
+```
+
+### Phase 4 Summary
+✅ **Completed Successfully** - Added request queuing and circuit breaker
+
+**RequestQueue Features:**
+- Concurrency limiting (default: 3 parallel requests)
+- Priority-based queue ordering
+- Exponential backoff retry (max 3 retries, 1s base delay)
+- Automatic retry for network errors (timeout, ECONNRESET, 429, 503, etc.)
+- Statistics tracking (enqueued, completed, failed, retried)
+- Queue pause/resume capability
+- Max queue size enforcement
+
+**CircuitBreaker Features:**
+- Three states: CLOSED, OPEN, HALF_OPEN
+- Configurable failure threshold (default: 5 failures)
+- Configurable success threshold for recovery (default: 2 successes)
+- Automatic state transitions based on failure rate
+- Half-open timeout (default: 30s) before retry
+- Health monitoring with failure rate calculation
+- Manual control: forceOpen, forceClose, reset
+- Per-model isolation (local-model, cloud-model)
+
+**Integration:**
+- All agent-connector requests now flow through RequestQueue
+- Local and cloud calls protected by CircuitBreaker
+- Queue statistics available via agentConnector.getStats()
+- Circuit breaker health available via agentConnector.getStats()
+
 ## Decision Log
 
 | Date | Decision | Reason |
@@ -208,24 +267,44 @@ git checkout backup-baseline
 - 3 files changed, 657 insertions
 - Phase 2 complete ahead of schedule
 
-### February 11, 2025 - Phase 3 Started
-**09:27** - Phase 3 initiated
-**09:28** - Created phase3-router-optimization branch
-**09:29** - Starting router optimization
+### February 11, 2025 - Phase 4 Started
+**09:27** - Phase 4 initiated
+**09:28** - Created phase4-queue-retry branch
+**09:29** - Starting request queuing and circuit breaker implementation
 
-**09:30** - ✅ Added TTL caching to FreeOpenRouterHelper
-- Added CACHE_TTL constant (5 minutes = 300000ms)
-- Added cacheTimestamp field to track cache age
-- Updated getResults() to check cache expiration
-- Added isCacheValid() method
-- Added getCacheAge() method
-- Cache shows age and status (valid/stale) in logs
-- Backward compatible with existing code
+**09:30** - ✅ Created core/request-queue.js
+- Concurrency limiting with configurable maxConcurrent
+- Priority-based queue ordering (higher priority first)
+- Exponential backoff retry with jitter
+- Automatic retry for network errors (timeout, ECONN*, 429, 503, etc.)
+- Statistics tracking: enqueued, completed, failed, retried
+- Queue pause/resume capability
+- Max queue size enforcement (default: 100)
 
-**09:31** - ✅ Updated test completion logic
-- Set cacheTimestamp when tests complete
-- Show cache age when returning cached results
-- Logs indicate whether cache is valid or stale
+**09:31** - ✅ Created core/circuit-breaker.js
+- Three-state model: CLOSED, OPEN, HALF_OPEN
+- Configurable failure threshold and success threshold
+- Automatic state transitions based on failure rate
+- Half-open timeout before retry attempts
+- Health monitoring with failure rate calculation
+- Per-model isolation (local-model, cloud-model)
+- Manual control: forceOpen, forceClose, reset methods
+
+**09:32** - ✅ Updated core/agent-connector.js
+- Added RequestQueue and CircuitBreaker instances
+- All requests now flow through queue with concurrency control
+- Local and cloud calls wrapped with circuit breaker
+- Added getStats() method for monitoring
+- Backward compatible - existing code continues to work
+
+**09:33** - ✅ Created unit tests
+- tests/request-queue.test.js (14 test cases)
+- tests/circuit-breaker.test.js (14 test cases)
+- Syntax validation passed
+
+**09:34** - ✅ Phase 4 complete
+- All files committed
+- Ready for testing
 
 ## Notes
 

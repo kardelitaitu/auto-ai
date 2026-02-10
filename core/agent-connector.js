@@ -9,6 +9,8 @@ import LocalClient from './local-client.js';
 import CloudClient from './cloud-client.js';
 import VisionInterpreter from './vision-interpreter.js';
 import { getSettings } from '../utils/configLoader.js';
+import RequestQueue from './request-queue.js';
+import CircuitBreaker from './circuit-breaker.js';
 
 const logger = createLogger('agent-connector.js');
 
@@ -20,7 +22,9 @@ class AgentConnector {
     constructor() {
         this.localClient = new LocalClient();
         this.cloudClient = new CloudClient();
-        this.visionInterpreter = new VisionInterpreter(); // Initialize Bridge
+        this.visionInterpreter = new VisionInterpreter();
+        this.requestQueue = new RequestQueue({ maxConcurrent: 3, maxRetries: 3 });
+        this.circuitBreaker = new CircuitBreaker({ failureThreshold: 5, halfOpenTime: 30000 });
     }
 
     /**
@@ -36,6 +40,33 @@ class AgentConnector {
         const { action, payload, sessionId } = request;
         logger.info(`[${sessionId}] Processing request: ${action}`);
 
+        const priority = payload.priority || 0;
+
+        return this.requestQueue.enqueue(async () => {
+            return this._executeWithCircuitBreaker(request, action);
+        }, { priority });
+    }
+
+    /**
+     * Execute request through circuit breaker
+     * @private
+     */
+    async _executeWithCircuitBreaker(request, action) {
+        const { sessionId } = request;
+        const modelId = `agent-${action}`;
+
+        return this.circuitBreaker.execute(modelId, async () => {
+            return this._routeRequest(request, action);
+        }, { retries: 3 });
+    }
+
+    /**
+     * Route request to appropriate handler
+     * @private
+     */
+    async _routeRequest(request, action) {
+        const { payload, sessionId } = request;
+
         // Route based on action type
         if (action === 'analyze_page_with_vision') {
             return this.handleVisionRequest(request);
@@ -47,7 +78,39 @@ class AgentConnector {
         }
 
         // Default to cloud for complex logic
-        return this.cloudClient.sendRequest(request);
+        return this._sendToCloud(request, Date.now());
+    }
+
+    /**
+     * Get queue and circuit breaker statistics
+     * @param {string} sessionId
+     * @returns {object}
+     */
+    getStats(sessionId) {
+        return {
+            queue: this.requestQueue.getStats(),
+            circuitBreaker: this.circuitBreaker.getAllStatus()
+        };
+    }
+
+    /**
+     * Execute local client request with circuit breaker
+     * @private
+     */
+    async _sendToLocal(llmRequest, sessionId) {
+        return this.circuitBreaker.execute('local-model', async () => {
+            return this.localClient.sendRequest(llmRequest);
+        });
+    }
+
+    /**
+     * Execute cloud client request with circuit breaker
+     * @private
+     */
+    async _callCloudWithBreaker(cloudRequest, sessionId) {
+        return this.circuitBreaker.execute('cloud-model', async () => {
+            return this.cloudClient.sendRequest(cloudRequest);
+        });
     }
 
     /**
@@ -95,7 +158,7 @@ class AgentConnector {
             };
 
             try {
-                const response = await this.localClient.sendRequest(llmRequest);
+                const response = await this._sendToLocal(llmRequest, sessionId);
 
                 if (response.success) {
                     const duration = Date.now() - start;
@@ -146,7 +209,7 @@ class AgentConnector {
         };
 
         try {
-            let response = await this.localClient.sendRequest(llmRequest);
+            let response = await this._sendToLocal(llmRequest, sessionId);
             const duration = Date.now() - start;
 
             if (response.success) {
@@ -180,11 +243,10 @@ class AgentConnector {
                 ...request,
                 payload: {
                     ...payload,
-                    // Strip vision data for cloud fallback to reduce payload
                     vision: null
                 }
             };
-            const cloudResponse = await this.cloudClient.sendRequest(cloudRequest);
+            const cloudResponse = await this._callCloudWithBreaker(cloudRequest, sessionId);
 
             if (cloudResponse.success) {
                 const duration = Date.now() - start;
@@ -239,7 +301,7 @@ class AgentConnector {
                     vision: null
                 }
             };
-            const cloudResponse = await this.cloudClient.sendRequest(cloudRequest);
+            const cloudResponse = await this._callCloudWithBreaker(cloudRequest, sessionId);
 
             if (cloudResponse.success) {
                 const duration = Date.now() - startTime;
@@ -301,7 +363,7 @@ class AgentConnector {
             temperature: 0.1 // Low temperature for consistent JSON
         };
 
-        let response = await this.localClient.sendRequest(llmRequest);
+        let response = await this._sendToLocal(llmRequest, sessionId);
         let usedProvider = 'local';
 
         // 3. Fallback to Cloud if local failed (not implemented fully yet, but logic placeholder)
