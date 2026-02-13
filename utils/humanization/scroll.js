@@ -20,11 +20,11 @@ export class HumanScroll {
         this.logger = logger;
         this.agent = null;
     }
-    
+
     setAgent(agent) {
         this.agent = agent;
     }
-    
+
     /**
      * Main scroll method - use this instead of page.mouse.wheel()
      * 
@@ -37,10 +37,10 @@ export class HumanScroll {
             normal: { bursts: 3, pxMin: 100, pxMax: 300 },
             heavy: { bursts: 5, pxMax: 500 }
         };
-        
+
         const config = intensityConfig[intensity] || intensityConfig.normal;
         const burstCount = config.bursts || mathUtils.randomInRange(2, 4);
-        
+
         // Determine scroll direction and amount
         let scrollAmount;
         switch (direction) {
@@ -52,25 +52,25 @@ export class HumanScroll {
                 break;
             case 'random':
             default:
-                scrollAmount = Math.random() > 0.5 
+                scrollAmount = Math.random() > 0.5
                     ? mathUtils.randomInRange(100, 300)
                     : -mathUtils.randomInRange(50, 150);
                 break;
         }
-        
+
         // Execute scroll burst pattern
         for (let i = 0; i < burstCount; i++) {
             // Random variation in scroll amount
             const variation = (Math.random() - 0.5) * 0.2; // ±10%
             const adjustedScroll = Math.round(scrollAmount * (1 + variation));
-            
+
             await scrollRandom(this.page, adjustedScroll, adjustedScroll);
-            
+
             // Pause between bursts (looking time)
             if (i < burstCount - 1) {
                 const pauseTime = mathUtils.gaussian(400, 200);
                 await this.page.waitForTimeout(pauseTime);
-                
+
                 // Occasionally scroll back slightly (re-reading)
                 if (mathUtils.roll(0.2) && i > 0) {
                     await scrollRandom(this.page, 20, 50);
@@ -78,16 +78,16 @@ export class HumanScroll {
                 }
             }
         }
-        
+
         // Final pause (processing time)
-        const endPause = mathUtils.gaussian(1500, 500);
+        const endPause = intensity === 'light' ? mathUtils.gaussian(800, 300) : mathUtils.gaussian(1500, 500);
         await this.page.waitForTimeout(endPause);
-        
+
         if (this.agent) {
             this.agent.log(`[Scroll] ${direction} (${burstCount} bursts, ${Math.abs(scrollAmount)}px)`);
         }
     }
-    
+
     /**
      * Scroll to element with human-like approach
      */
@@ -95,73 +95,73 @@ export class HumanScroll {
         try {
             const element = await locator.first();
             if (!element) return;
-            
+
             const box = await element.boundingBox();
             if (!box) return;
-            
+
             // Calculate distance to center
             const viewportHeight = await this.page.evaluate(() => window.innerHeight);
             const targetY = box.y + box.height / 2;
             const centerY = viewportHeight / 2;
             const distance = targetY - centerY;
-            
+
             if (Math.abs(distance) < 100) {
                 // Already close, just micro-adjust
                 await scrollRandom(this.page, Math.abs(distance * 0.5), Math.abs(distance * 0.5));
             } else {
                 // Human approach: quick-jump → slow-approach
                 const approachCount = 2;
-                
+
                 for (let i = 0; i < approachCount; i++) {
                     const remaining = distance * ((approachCount - i) / approachCount);
                     const scrollAmount = remaining * 0.6; // Overshoot slightly
-                    
+
                     await scrollRandom(this.page, Math.abs(scrollAmount), Math.abs(scrollAmount));
                     await this.page.waitForTimeout(mathUtils.randomInRange(200, 400));
                 }
-                
+
                 // Fine-tuning
                 await scrollRandom(this.page, Math.abs(distance * 0.1), Math.abs(distance * 0.1));
             }
-            
+
             // Pause to "look" at element
             await this.page.waitForTimeout(mathUtils.gaussian(300, 100));
-            
+
         } catch (e) {
             // Fallback to direct scroll
             await scrollRandom(this.page, 200, 200);
         }
     }
-    
+
     /**
      * Micro-adjustments during "reading"
      */
     async microAdjustments() {
         const adjustments = mathUtils.randomInRange(2, 4);
-        
+
         for (let i = 0; i < adjustments; i++) {
             // Tiny random movements
             await scrollRandom(this.page, -30, 30);
             await this.page.waitForTimeout(mathUtils.randomInRange(100, 300));
         }
     }
-    
+
     /**
      * Quick scroll to "check what's new"
      */
     async quickCheck() {
         await this.execute('down', 'light');
     }
-    
+
     /**
      * Deep scroll (exploring feed)
      */
     async deepScroll() {
         const sessions = mathUtils.randomInRange(3, 5);
-        
+
         for (let i = 0; i < sessions; i++) {
             await this.execute('down', 'normal');
-            
+
             // Occasionally go back up slightly
             if (mathUtils.roll(0.3)) {
                 await scrollRandom(this.page, 50, 100);
@@ -169,7 +169,7 @@ export class HumanScroll {
             }
         }
     }
-    
+
     /**
      * Scroll to top (refresh)
      */
@@ -179,7 +179,7 @@ export class HumanScroll {
             await scrollRandom(this.page, 500, 500);
             await this.page.waitForTimeout(mathUtils.randomInRange(50, 100));
         }
-        
+
         // Fine adjustment
         await scrollRandom(this.page, 100, 100);
         await this.page.waitForTimeout(entropy.reactionTime());

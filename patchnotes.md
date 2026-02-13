@@ -1,3 +1,26 @@
+### ✅ version 0.0.4
+(13 February 2026) Engagement & Navigation Fixes
+- Fixed engagement double-counting in `ai-twitterAgent.js` (removed redundant `recordEngagement` calls).
+- Optimized post-action navigation: Bot now skips reading phase and returns home immediately after successful engagement.
+- 🎯 **Consolidated Action Selection**: Enforced strictly single action per dive by removing secondary rolls and hidden fallbacks.
+- 🛡️ **Action Interference Resolution**: Disabled autonomous `DiveQueue` fallbacks (auto-likes/bookmarks) during failed AI dives to ensure strictly one action per task.
+- 📝 **Compacted Logging**: Engagement progress and proxy testing logs are now condensed into single-line summaries for a cleaner console output.
+
+### ✅ version 0.0.3
+(13 February 2026) Network Logic Optimization
+
+## Improvements
+- 🚀 **Optimized Network Idle Detection** in `ai-twitterActivity.js`
+  - Replaced strict 10s network idle wait with smart adaptive wait
+  - When page is visually loaded (`xLoaded`), wait reduces to 4s
+  - Added better logging for network status (no more "Network not fully idle" warnings for normal background activity)
+- 🚀 **Optimized Session Start Latency**
+  - Reduced "warm-up" delays in `HumanizationEngine` and `HumanTiming`
+  - Shortened processing pauses for initial "light" scroll maneuvers
+  - Targeted latency reduction of ~3-4 seconds per session start
+
+---
+
 ### ✅ version 0.0.2
 (25 December 2024) Smart Step-by-Step System
 

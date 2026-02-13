@@ -3,7 +3,7 @@ import { entropy } from './entropyController.js';
 import { profileManager } from './profileManager.js';
 import { GhostCursor } from './ghostCursor.js';
 import { HumanizationEngine } from './humanization/index.js';
-import { scrollRandom } from './scroll-helper.js';
+import { scrollDown, scrollRandom } from './scroll-helper.js';
 
 
 export class TwitterAgent {
@@ -103,6 +103,37 @@ export class TwitterAgent {
             
             try { await target.click({ force: true }); } catch { }
         }
+    }
+
+    /**
+     * Safe human-like click with retry logic
+     * Wraps humanClick with automatic retry on failure
+     * @param {Object} target - Playwright locator or element handle
+     * @param {string} description - Description for logging
+     * @param {number} retries - Number of retry attempts (default: 3)
+     * @returns {Promise<boolean>} - True if successful, false if all retries failed
+     */
+    async safeHumanClick(target, description = 'Target', retries = 3) {
+        const attemptLogs = [];
+        for (let attempt = 1; attempt <= retries; attempt++) {
+            try {
+                await this.humanClick(target, description);
+                this.log(`[Interaction] [${description}] Success on attempt ${attempt}/${retries}`);
+                return true;
+            } catch (error) {
+                attemptLogs.push(`Attempt ${attempt}: ${error.message}`);
+                this.log(`[Interaction] [${description}] Attempt ${attempt}/${retries} failed: ${error.message}`);
+                if (attempt === retries) {
+                    this.log(`[Interaction] [${description}] All retries exhausted. Errors: ${attemptLogs.join('; ')}`);
+                    return false;
+                }
+                // Exponential backoff: 1s, 2s, 3s...
+                const delay = 1000 * attempt;
+                this.log(`[Interaction] [${description}] Waiting ${delay}ms before retry ${attempt + 1}...`);
+                await this.page.waitForTimeout(delay);
+            }
+        }
+        return false;
     }
 
     /**
@@ -213,7 +244,7 @@ export class TwitterAgent {
      */
     async sixLayerClick(element, logPrefix) {
         const layers = [
-            { name: 'Ghost Click', fn: async () => await this.humanClick(element, 'Follow Button') },
+            { name: 'Ghost Click', fn: async () => await this.safeHumanClick(element, 'Follow Button', 2) },
             { name: 'Native Click', fn: async () => await element.click({ timeout: 8000 }) },
             { name: 'Force Click', fn: async () => await element.click({ force: true, timeout: 8000 }) },
             {
@@ -755,7 +786,7 @@ export class TwitterAgent {
 
             if (method === 'WHEEL_DOWN') {
                 const distance = mathUtils.gaussian(400, 150);
-                await scrollRandom(this.page, distance, distance);
+                await scrollDown(this.page, distance);
                 if (mathUtils.roll(0.2)) {
                     const viewport = this.page.viewportSize() || { width: 1280, height: 720 };
                     // Random move within viewport
@@ -905,8 +936,8 @@ export class TwitterAgent {
                 this.log(`[Debug] Navigate Target: Box=${dbgBox ? `x:${Math.round(dbgBox.x)},y:${Math.round(dbgBox.y)},w:${Math.round(dbgBox.width)},h:${Math.round(dbgBox.height)}` : 'null'} | VP=${dbgVP ? `${dbgVP.width}x${dbgVP.height}` : 'null'}`);
 
                 this.log(`[Attempt] Ghost Click on Permalink...`);
-                // Use new anti-sybil wrapper
-                await this.humanClick(clickTarget, 'Tweet Permalink');
+                // Use new anti-sybil wrapper with retry
+                await this.safeHumanClick(clickTarget, 'Tweet Permalink', 3);
             }
 
             let expanded = false;
@@ -942,7 +973,7 @@ export class TwitterAgent {
                 const media = this.page.locator('[data-testid="tweetPhoto"]').first();
                 if (await media.count() > 0 && await media.isVisible()) {
                     this.log('[Action] Open media viewer');
-                    await this.humanClick(media, 'Media Viewer');
+                    await this.safeHumanClick(media, 'Media Viewer', 3);
                     const viewTime = mathUtils.randomInRange(5000, 12000);
                     this.log(`[Media] Viewing media for ${(viewTime / 1000).toFixed(1)}s...`);
                     await this.page.waitForTimeout(viewTime);
@@ -989,7 +1020,7 @@ export class TwitterAgent {
                                     this.log('[Skip] Tweet already liked (aria-label check).');
                                 } else {
                                     this.log('Action: ❤ Like');
-                                    await this.humanClick(likeButton, 'Like Button');
+                                    await this.safeHumanClick(likeButton, 'Like Button', 3);
                                     this.state.likes++;
                                     await this.page.waitForTimeout(mathUtils.randomInRange(2000, 5000));
                                 }
@@ -1012,7 +1043,7 @@ export class TwitterAgent {
                 } else if (await bm.isVisible()) {
                     this.log('[Action] Attempting Ghost Click: 🔖 Bookmark');
                     try {
-                        await this.humanClick(bm, 'Bookmark Button');
+                        await this.safeHumanClick(bm, 'Bookmark Button', 3);
                         await this.page.waitForTimeout(entropy.postClickDelay());
                         this.log('[Success] Ghost Click: Bookmark');
                     } catch (e) {
@@ -1088,8 +1119,8 @@ export class TwitterAgent {
 
             // Navigate
             this.log(`[Attempt] Ghost Click on Profile Link...`);
-            // Use new anti-sybil wrapper
-            await this.humanClick(target, 'Profile Link');
+            // Use new anti-sybil wrapper with retry
+            await this.safeHumanClick(target, 'Profile Link', 3);
             try {
                 // Wait for the URL to contain the user handle (ignoring query params)
                 // We use a looser regex check or just wait for loadstate because sometimes href is just /User
@@ -1144,7 +1175,7 @@ export class TwitterAgent {
                 const tab = this.page.locator(chosen.sel).first();
                 if (await tab.count() > 0 && await tab.isVisible()) {
                     this.log(`[Tab] Visiting profile tab: ${chosen.name}`);
-                    try { await this.humanClick(tab, `Profile Tab ${chosen.name}`); } catch { }
+                    await this.safeHumanClick(tab, `Profile Tab ${chosen.name}`, 3);
                     await this.page.waitForTimeout(mathUtils.randomInRange(800, 1600));
                     await this.simulateReading();
                 }
@@ -1189,34 +1220,16 @@ export class TwitterAgent {
             if (await target.isVisible()) {
                 // First click
                 this.log(`[Navigation] Clicking '${targetName}' (1st click for reload)...`);
-                await this.humanClick(target, targetName);
+                await this.safeHumanClick(target, targetName, 3);
                 await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
 
                 // Second click to ensure fresh content
                 this.log(`[Navigation] Clicking '${targetName}' again (2nd click to reload)...`);
-                await this.humanClick(target, targetName);
+                await this.safeHumanClick(target, targetName, 3);
                 await this.page.waitForTimeout(mathUtils.randomInRange(500, 1000));
 
-                // Check for "Show X posts" button and click if present
-                // this.log('[Navigation] Checking for "Show X posts" button...');
-
-                // Match: button[role="button"] containing span with "Show X posts"
-                const showPostsBtn = this.page.locator('[role="button"]:has(span:has-text(/Show \\d+ posts/))').first();
-
-                try {
-                    await this.page.waitForSelector('[role="button"]:has-text("Show ")', { timeout: 3000 }).catch(() => {});
-                    if (await showPostsBtn.count() > 0 && await showPostsBtn.isVisible()) {
-                        const btnText = await showPostsBtn.locator('span').textContent().catch(() => '');
-                        this.log(`[Navigation] Clicking "${btnText}" to load posts...`);
-                        await this.humanClick(showPostsBtn, 'Show Posts');
-                        await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
-                        this.log('[Navigation] Show posts button clicked successfully.');
-                    } else {
-                        this.log('[Navigation] No "Show X posts" button found or visible.');
-                    }
-                } catch (e) {
-                    //this.log('[Navigation] No "Show X posts" button found.');
-                }
+                // Note: "Show X posts" button check is now handled in ensureForYouTab()
+                // which is called below after URL navigation completes
 
                 try {
                     await this.page.waitForURL('**/home**', { timeout: 5000 });
@@ -1303,15 +1316,106 @@ export class TwitterAgent {
             if (await target.isVisible()) {
                 this.log(`[Tab] Switching to "${targetText}" tab...`);
                 try {
-                    await this.humanClick(target, 'For You Tab');
+                    await this.safeHumanClick(target, 'For You Tab', 3);
                     await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
                 } catch (e) {
                     this.log('[Tab] Ghost click failed, trying native...');
                     await target.click();
                 }
             }
+            
+            // After ensuring "For you" tab, check for "Show X posts" button
+            // This button appears 2-3 seconds after returning home (per user feedback)
+            await this.checkAndClickShowPostsButton();
         } catch (e) {
             this.log(`[Tab] Failed to ensure timeline tab: ${e.message}`);
+        }
+    }
+
+    /**
+     * Check for and click "Show X posts" button that appears when new posts are available
+     * This button typically appears 2-3 seconds after returning home and ensuring "For you" tab
+     * @returns {Promise<boolean>} true if button was found and clicked, false otherwise
+     */
+    async checkAndClickShowPostsButton() {
+        try {
+            // Wait 2-3 seconds for button to appear (as per user feedback)
+            this.log('[Posts] Waiting for "Show X posts" button to appear...');
+            await this.page.waitForTimeout(mathUtils.randomInRange(2000, 3000));
+
+            // Multiple selector patterns to catch variations:
+            // - "Show 34 posts"
+            // - "Show 5 posts" 
+            // - "Show X new posts"
+            const buttonSelectors = [
+                // Primary: button with role containing span with "Show" and "posts"
+                '[role="button"]:has(span:has-text(/Show\\s+\\d+\\s+posts/i))',
+                // Alternative: button containing text "Show" and "posts"
+                'button:has-text(/Show\\s+\\d+\\s+posts/i)',
+                // Broader match: any element with role button containing "Show" and number
+                '[role="button"]:has-text("Show"):has-text(/\\d+/)'
+            ];
+
+            let showPostsBtn = null;
+            let btnText = '';
+
+            // Try each selector
+            for (const selector of buttonSelectors) {
+                try {
+                    const btn = this.page.locator(selector).first();
+                    if (await btn.count() > 0 && await btn.isVisible()) {
+                        const text = await btn.textContent().catch(() => '');
+                        // Validate it matches the pattern
+                        if (/show\s+\d+\s+post/i.test(text)) {
+                            showPostsBtn = btn;
+                            btnText = text.trim();
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    // Continue to next selector
+                }
+            }
+
+            if (showPostsBtn) {
+                this.log(`[Posts] Found "${btnText}" button, clicking to load new posts...`);
+                
+                // HUMAN-LIKE: Additional pre-click behavior for this specific button
+                // 1. Ensure button is in viewport (scroll if needed)
+                await showPostsBtn.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
+                await this.page.waitForTimeout(mathUtils.randomInRange(300, 600));
+                
+                // 2. Move cursor to vicinity first (not directly on button)
+                const box = await showPostsBtn.boundingBox();
+                if (box) {
+                    const offsetX = mathUtils.randomInRange(-30, 30);
+                    const offsetY = mathUtils.randomInRange(-20, 20);
+                    await this.ghost.move(box.x + box.width/2 + offsetX, box.y + box.height/2 + offsetY, mathUtils.randomInRange(15, 25));
+                    await this.page.waitForTimeout(mathUtils.randomInRange(400, 800));
+                }
+                
+                // 3. Use safeHumanClick for full simulated interaction with retry
+                await this.safeHumanClick(showPostsBtn, 'Show Posts Button', 3);
+                
+                // 3. HUMAN-LIKE: "Reading" the new posts after loading
+                this.log('[Posts] Posts loading, simulating reading behavior...');
+                const waitTime = mathUtils.randomInRange(1200, 2500);
+                await this.page.waitForTimeout(waitTime);
+                
+                // 4. Scroll down slightly to show the new posts (human-like discovery)
+                const scrollVariance = 0.8 + Math.random() * 0.4;
+                await scrollRandom(this.page, Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));
+                await this.page.waitForTimeout(mathUtils.randomInRange(600, 1000));
+                
+                this.log('[Posts] New posts loaded successfully.');
+                return true;
+            } else {
+                this.log('[Posts] No "Show X posts" button found.');
+                return false;
+            }
+        } catch (error) {
+            this.log(`[Posts] Error checking for show posts button: ${error.message}`);
+            return false;
         }
     }
 
@@ -1674,7 +1778,7 @@ export class TwitterAgent {
             if (!composerOpened) {
                 const postBtn = this.page.locator('[data-testid="SideNav_NewTweet_Button"]').first();
                 if (await postBtn.isVisible()) {
-                    await this.humanClick(postBtn, 'New Tweet Button');
+                    await this.safeHumanClick(postBtn, 'New Tweet Button', 3);
                     await this.page.waitForSelector('[data-testid="tweetTextarea_0"]', { timeout: 5000 });
                 } else {
                     this.log('[Error] ❌ New Tweet button not found.');
@@ -1692,7 +1796,7 @@ export class TwitterAgent {
 
             // 3. Click Post
             const sendBtn = this.page.locator('[data-testid="tweetButton"]').first();
-            await this.humanClick(sendBtn, 'Post Button');
+            await this.safeHumanClick(sendBtn, 'Post Button', 3);
 
             this.log(`[postTweet] 🚀🚀🚀 Tweet sent successfully: "${text}"✅✅✅`);
             this.state.engagements++;

@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 363548,
-      "uptimeFormatted": "6m 3s",
-      "timeSinceReset": 363548,
-      "timeSinceResetFormatted": "6m 3s"
+      "uptime": 23893,
+      "uptimeFormatted": "23s",
+      "timeSinceReset": 23893,
+      "timeSinceResetFormatted": "23s"
     },
     "tasks": {
       "executed": 1,
       "failed": 0,
       "succeeded": 1,
       "successRate": 100,
-      "avgDuration": 357638,
-      "totalDuration": 357638,
+      "avgDuration": 21709,
+      "totalDuration": 21709,
       "durationPercentiles": {
-        "p50": 357638,
-        "p95": 357638,
-        "p99": 357638
+        "p50": 21709,
+        "p95": 21709,
+        "p99": 21709
       }
     },
     "browsers": {
@@ -42,17 +42,36 @@
       "retweets": 0,
       "tweets": 0
     },
-    "runEndTime": "2026-02-10T21:20:20.113Z"
+    "twitter": {
+      "actions": {
+        "likes": 0,
+        "replies": 0,
+        "quotes": 0,
+        "retweets": 0,
+        "bookmarks": 0,
+        "follows": 0,
+        "tweets": 0,
+        "total": 0
+      },
+      "performance": {
+        "avgDiveDuration": 0,
+        "diveCount": 0,
+        "avgAILatency": 0,
+        "aiRequestCount": 0
+      },
+      "errors": {}
+    },
+    "runEndTime": "2026-02-13T00:00:24.787Z"
   },
   "tasks": [
     {
-      "taskName": "ai-twitterActivity",
-      "duration": 357638,
+      "taskName": "ai-twitteractivity",
+      "duration": 21709,
       "success": true,
       "sessionId": "Brave-9002:9002",
       "error": null,
-      "startTime": "2026-02-10T21:14:22.450Z",
-      "timestamp": 1770758420088
+      "startTime": "2026-02-13T00:00:03.053Z",
+      "timestamp": 1770940824762
     }
   ]
 }

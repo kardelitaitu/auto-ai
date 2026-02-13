@@ -33,12 +33,12 @@ export const replyMethods = {
             logger.info(`[replyA] Focusing main tweet...`);
             const timeElement = page.locator('article time').first();
             if (await timeElement.count() > 0) {
-                await timeElement.click({ timeout: 3000 });
+                await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3);
                 logger.info(`[replyA] Clicked tweet timestamp`);
             } else {
                 const tweetText = page.locator('[data-testid="tweetText"]').first();
                 if (await tweetText.count() > 0) {
-                    await tweetText.click({ offset: { x: 10, y: 10 }, timeout: 3000 });
+                    await human.safeHumanClick(tweetText, 'Tweet Text', 3);
                     logger.info(`[replyA] Clicked tweet text (fallback)`);
                 }
             }
@@ -100,7 +100,7 @@ export const replyMethods = {
         await btnResult.element.scrollIntoViewIfNeeded();
         await human.fixation(300, 800);
         await human.microMove(page, 20);
-        await btnResult.element.click();
+        await human.safeHumanClick(btnResult.element, 'Reply Button', 3);
         
         logger.info(`[replyB] Clicked reply button`);
         await page.waitForTimeout(2000);
@@ -141,7 +141,7 @@ export const replyMethods = {
         logger.info(`[replyC] Focusing main tweet...`);
         const timeElement = page.locator('article time').first();
         if (await timeElement.count() > 0) {
-            await timeElement.click({ timeout: 3000 });
+            await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3);
             logger.info(`[replyC] Clicked tweet timestamp`);
         }
         await page.waitForTimeout(500);
@@ -192,7 +192,7 @@ export const replyMethods = {
         await replyBoxAfter.scrollIntoViewIfNeeded();
         await page.waitForTimeout(300);
         
-        await replyBoxAfter.click({ timeout: 3000 });
+        await human.safeHumanClick(replyBoxAfter, 'Reply Box', 3);
         logger.info(`[replyC] Clicked reply box`);
         await page.waitForTimeout(300);
 
@@ -230,7 +230,7 @@ export const quoteMethods = {
         // Click time element to focus tweet
         const quoteTimeElement = page.locator('article time').first();
         if (await quoteTimeElement.count() > 0) {
-            await quoteTimeElement.click({ timeout: 3000 });
+            await human.safeHumanClick(quoteTimeElement, 'Tweet Timestamp', 3);
             logger.info(`[quoteA] Clicked tweet timestamp`);
         }
         await page.waitForTimeout(500);
@@ -261,7 +261,7 @@ export const quoteMethods = {
 
         // Clear any existing text first
         const composerA = verifyA.locator || page.locator(verifyA.selector).first();
-        await composerA.click();
+        await human.safeHumanClick(composerA, 'Quote Composer', 3);
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Delete');
         await page.waitForTimeout(200);
@@ -329,7 +329,7 @@ export const quoteMethods = {
         await retweetBtn.scrollIntoViewIfNeeded();
         await human.fixation(300, 800);
         await human.microMove(page, 20);
-        await retweetBtn.click({ timeout: 5000 });
+        await human.safeHumanClick(retweetBtn, 'Retweet Button', 3);
         logger.info(`[quoteB] Clicked retweet button`);
         await page.waitForTimeout(1000);
 
@@ -370,7 +370,7 @@ export const quoteMethods = {
         // Click Quote option
         await human.fixation(100, 300);
         await human.microMove(page, 10);
-        await quoteOption.click({ timeout: 5000 });
+        await human.safeHumanClick(quoteOption, 'Quote Menu Option', 3);
         logger.info(`[quoteB] Clicked Quote option`);
         await page.waitForTimeout(1500);
 
@@ -385,7 +385,7 @@ export const quoteMethods = {
 
         // Type and post
         const composerB = verifyB.locator || page.locator(verifyB.selector).first();
-        await composerB.click();
+        await human.safeHumanClick(composerB, 'Quote Composer', 3);
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Delete');
         await page.waitForTimeout(200);
@@ -452,7 +452,7 @@ export const quoteMethods = {
         await composeBtn.scrollIntoViewIfNeeded();
         await human.fixation(300, 800);
         await human.microMove(page, 20);
-        await composeBtn.click({ timeout: 5000 });
+        await human.safeHumanClick(composeBtn, 'Compose Button', 3);
         logger.info(`[quoteC] Clicked Compose button`);
         await page.waitForTimeout(1500);
 

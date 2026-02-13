@@ -248,6 +248,232 @@ class Automator {
     logger.info('All connections closed');
   }
 
+  // =========================================================================
+  // CONNECTION HEALTH CHECKS - Better error recovery
+  // =========================================================================
+
+  /**
+   * Check network connectivity by trying to reach a known endpoint
+   * @returns {Promise<object>} Health check result
+   */
+  async checkNetworkConnectivity() {
+    const startTime = Date.now();
+    
+    try {
+      // Try to fetch a simple known URL to check network
+      const { chromium } = await import('playwright');
+      const testContext = await chromium.launch({ headless: true });
+      const testPage = await testContext.newPage();
+      
+      // Use a very short timeout for quick check
+      await testPage.goto('https://x.com', { 
+        waitUntil: 'domcontentloaded', 
+        timeout: 5000 
+      });
+      
+      await testContext.close();
+      
+      const latency = Date.now() - startTime;
+      
+      return {
+        healthy: true,
+        latency,
+        checkedAt: Date.now()
+      };
+    } catch (error) {
+      return {
+        healthy: false,
+        latency: null,
+        error: error.message,
+        checkedAt: Date.now()
+      };
+    }
+  }
+
+  /**
+   * Check if page is responsive by evaluating JavaScript
+   * @param {object} page - Playwright page object
+   * @returns {Promise<object>} Page health result
+   */
+  async checkPageResponsive(page) {
+    try {
+      if (!page || page.isClosed()) {
+        return {
+          healthy: false,
+          error: 'Page is closed or null',
+          checkedAt: Date.now()
+        };
+      }
+
+      // Try to evaluate simple JS to check responsiveness
+      const result = await page.evaluate(() => {
+        return {
+          documentReady: document.readyState,
+          title: document.title,
+          bodyExists: !!document.body
+        };
+      }).catch(() => ({ error: 'Evaluation failed' }));
+
+      const isResponsive = result.documentReady === 'complete' || result.documentReady === 'interactive';
+      
+      return {
+        healthy: isResponsive,
+        documentState: result.documentReady,
+        title: result.title,
+        checkedAt: Date.now()
+      };
+    } catch (error) {
+      return {
+        healthy: false,
+        error: error.message,
+        checkedAt: Date.now()
+      };
+    }
+  }
+
+  /**
+   * Perform comprehensive health check on a connection
+   * @param {string} wsEndpoint - WebSocket endpoint
+   * @param {object} page - Optional page object for page check
+   * @returns {Promise<object>} Comprehensive health status
+   */
+  async checkConnectionHealth(wsEndpoint, page = null) {
+    const connectionInfo = this.connections.get(wsEndpoint);
+    
+    const checks = {
+      browserConnection: false,
+      network: null,
+      page: null
+    };
+
+    // Check browser connection
+    try {
+      if (connectionInfo?.browser?.isConnected()) {
+        checks.browserConnection = true;
+      }
+    } catch (error) {
+      checks.browserConnection = false;
+    }
+
+    // Check network (every 5th check to avoid overhead)
+    if (Math.random() < 0.2) {
+      checks.network = await this.checkNetworkConnectivity();
+    }
+
+    // Check page if provided
+    if (page) {
+      checks.page = await this.checkPageResponsive(page);
+    }
+
+    // Determine overall health
+    const healthy = checks.browserConnection && 
+                   (checks.network?.healthy !== false) &&
+                   (checks.page?.healthy !== false);
+
+    const result = {
+      endpoint: wsEndpoint,
+      healthy,
+      checks,
+      checkedAt: Date.now()
+    };
+
+    // Update connection info
+    if (connectionInfo) {
+      connectionInfo.healthy = healthy;
+      connectionInfo.lastHealthCheck = Date.now();
+    }
+
+    return result;
+  }
+
+  /**
+   * Attempt to recover a connection
+   * @param {string} wsEndpoint - WebSocket endpoint
+   * @param {object} page - Playwright page object
+   * @returns {Promise<object>} Recovery result
+   */
+  async recoverConnection(wsEndpoint, page = null) {
+    const connectionInfo = this.connections.get(wsEndpoint);
+    const recoverySteps = [];
+
+    logger.warn(`[Health] Starting connection recovery for ${wsEndpoint}`);
+
+    // Step 1: Verify browser connection
+    try {
+      if (connectionInfo?.browser?.isConnected()) {
+        recoverySteps.push({ step: 'browser_check', success: true });
+        
+        // Step 2: Try page navigation if page provided
+        if (page && !page.isClosed()) {
+          try {
+            await page.reload({ waitUntil: 'domcontentloaded', timeout: 15000 });
+            recoverySteps.push({ step: 'page_reload', success: true });
+          } catch (error) {
+            recoverySteps.push({ step: 'page_reload', success: false, error: error.message });
+            
+            // Step 3: Try navigating directly to home
+            try {
+              await page.goto('https://x.com/home', { waitUntil: 'domcontentloaded', timeout: 20000 });
+              recoverySteps.push({ step: 'navigate_home', success: true });
+            } catch (navError) {
+              recoverySteps.push({ step: 'navigate_home', success: false, error: navError.message });
+            }
+          }
+        }
+      } else {
+        recoverySteps.push({ step: 'browser_check', success: false, error: 'Browser disconnected' });
+        
+        // Try to reconnect
+        try {
+          await this.reconnect(wsEndpoint);
+          recoverySteps.push({ step: 'reconnect', success: true });
+        } catch (error) {
+          recoverySteps.push({ step: 'reconnect', success: false, error: error.message });
+        }
+      }
+    } catch (error) {
+      recoverySteps.push({ step: 'initial_check', success: false, error: error.message });
+    }
+
+    // Determine if recovery was successful
+    const recoverySuccessful = recoverySteps.some(step => step.success);
+    
+    logger.warn(`[Health] Recovery ${recoverySuccessful ? 'succeeded' : 'failed'} for ${wsEndpoint}`);
+
+    return {
+      successful: recoverySuccessful,
+      steps: recoverySteps,
+      recoveredAt: Date.now()
+    };
+  }
+
+  /**
+   * Get health summary for all connections
+   * @returns {Promise<object>} Health summary
+   */
+  async getHealthSummary() {
+    const endpoints = this.getConnectedEndpoints();
+    const summary = {
+      total: endpoints.length,
+      healthy: 0,
+      unhealthy: 0,
+      connections: {}
+    };
+
+    for (const endpoint of endpoints) {
+      const health = await this.checkConnectionHealth(endpoint);
+      summary.connections[endpoint] = health;
+      
+      if (health.healthy) {
+        summary.healthy++;
+      } else {
+        summary.unhealthy++;
+      }
+    }
+
+    return summary;
+  }
+
   /**
    * Gets connection statistics.
    * @returns {object} An object containing connection statistics.

@@ -101,11 +101,28 @@ function initLogFile() {
 function writeToLogFile(level, scriptName, message, args) {
   try {
     const timestamp = new Date().toISOString();
+    // Extract structured data if first arg is an object
+    let structuredData = null;
+    let cleanArgs = [...args];
+    if (args.length > 0 && typeof args[0] === 'object' && args[0] !== null) {
+      structuredData = args[0];
+      cleanArgs = args.slice(1);
+    }
     // Regex to strip ANSI codes
     const cleanMessage = message.replace(/\x1b\[[0-9;]*m/g, '');
-    const argsStr = args.length > 0 ? ' ' + JSON.stringify(args) : '';
-    const logLine = `[${timestamp}] [${level.toUpperCase()}] [${scriptName}] ${cleanMessage}${argsStr}\n`;
-    fs.appendFileSync(LOG_FILE, logLine, 'utf8');
+    const argsStr = cleanArgs.length > 0 ? ' ' + JSON.stringify(cleanArgs) : '';
+    
+    // Build structured log line
+    const logEntry = {
+      timestamp,
+      level: level.toUpperCase(),
+      module: scriptName,
+      sessionId: currentSessionId,
+      message: cleanMessage,
+      ...(structuredData && { data: structuredData })
+    };
+    
+    fs.appendFileSync(LOG_FILE, JSON.stringify(logEntry) + '\n', 'utf8');
   } catch (error) {
     // Silently fail
   }
@@ -271,4 +288,221 @@ export function createLogger(scriptName) {
   return new Logger(scriptName);
 }
 
+// Session tracking for structured logging
+let currentSessionId = null;
+let sessionStartTime = null;
+let sessionBrowserInfo = null;
+
+export const sessionLogger = {
+  startSession(sessionId, browserInfo = null) {
+    currentSessionId = sessionId;
+    sessionStartTime = Date.now();
+    sessionBrowserInfo = browserInfo;
+    const logger = createLogger('session.js');
+    logger.info(`[Session] Started: ${sessionId} ${browserInfo ? `[${browserInfo}]` : ''}`);
+    return { sessionId, browserInfo, startTime: sessionStartTime };
+  },
+
+  endSession() {
+    const sessionId = currentSessionId;
+    const duration = sessionStartTime ? Date.now() - sessionStartTime : 0;
+    const logger = createLogger('session.js');
+    logger.info(`[Session] Ended: ${sessionId} (duration: ${duration}ms)`);
+    currentSessionId = null;
+    sessionStartTime = null;
+    sessionBrowserInfo = null;
+    return { sessionId, duration };
+  },
+
+  getSessionId() {
+    return currentSessionId;
+  },
+
+  getSessionInfo() {
+    return {
+      sessionId: currentSessionId,
+      browserInfo: sessionBrowserInfo,
+      startTime: sessionStartTime,
+      duration: sessionStartTime ? Date.now() - sessionStartTime : 0
+    };
+  }
+};
+
 export default Logger;
+
+// =========================================================================
+// BUFFERED LOGGER - Reduces I/O overhead for high-frequency logging
+// =========================================================================
+
+/**
+ * @class BufferedLogger
+ * @description Buffers log entries and flushes them periodically or when threshold is reached
+ *              Reduces console I/O overhead during high-activity periods
+ */
+class BufferedLogger {
+  /**
+   * Create a buffered logger
+   * @param {object} options - Configuration options
+   */
+  constructor(options = {}) {
+    this.flushInterval = options.flushInterval || 5000; // Default: 5 seconds
+    this.maxBufferSize = options.maxBufferSize || 100;  // Default: 100 entries
+    this.minBufferSize = options.minBufferSize || 10;   // Default: 10 entries
+    
+    this.buffer = [];
+    this.timer = null;
+    this.logger = createLogger('BufferedLogger');
+    this.module = options.module || 'buffered';
+    this.enabled = options.enabled !== false;
+    
+    if (this.enabled) {
+      this._startTimer();
+    }
+  }
+
+  /**
+   * Start the flush timer
+   */
+  _startTimer() {
+    if (this.timer) return;
+    this.timer = setInterval(() => this.flush(), this.flushInterval);
+  }
+
+  /**
+   * Stop the flush timer
+   */
+  _stopTimer() {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+
+  /**
+   * Add entry to buffer
+   * @param {string} level - Log level
+   * @param {string} message - Log message
+   * @param {object} data - Optional data
+   */
+  _add(level, message, data = null) {
+    if (!this.enabled) return;
+    
+    this.buffer.push({
+      timestamp: Date.now(),
+      level,
+      message,
+      data
+    });
+
+    // Flush if buffer is full
+    if (this.buffer.length >= this.maxBufferSize) {
+      this.flush();
+    }
+  }
+
+  /**
+   * Flush buffer to console and file
+   */
+  flush() {
+    if (this.buffer.length === 0) return;
+
+    // Get base logger for actual output
+    const baseLogger = createLogger(this.module);
+    const entriesToFlush = [...this.buffer];
+    this.buffer = [];
+
+    // Group entries by level for cleaner output
+    const grouped = entriesToFlush.reduce((acc, entry) => {
+      if (!acc[entry.level]) acc[entry.level] = [];
+      acc[entry.level].push(entry);
+      return acc;
+    }, {});
+
+    // Output grouped entries
+    for (const [level, entries] of Object.entries(grouped)) {
+      if (entries.length === 1) {
+        // Single entry - log normally
+        const entry = entries[0];
+        baseLogger[level.toLowerCase()](`[Buffer:${entries.length}] ${entry.message}`);
+      } else {
+        // Multiple entries - summarize
+        baseLogger[level.toLowerCase()](`[Buffer:${entries.length}] ${entries[0].message} (+${entries.length - 1} more)`);
+      }
+    }
+  }
+
+  /**
+   * Log info level message
+   */
+  info(message, data = null) {
+    this._add('INFO', message, data);
+  }
+
+  /**
+   * Log success level message
+   */
+  success(message, data = null) {
+    this._add('SUCCESS', message, data);
+  }
+
+  /**
+   * Log warn level message
+   */
+  warn(message, data = null) {
+    this._add('WARN', message, data);
+  }
+
+  /**
+   * Log error level message (flushes immediately)
+   */
+  error(message, data = null) {
+    this._add('ERROR', message, data);
+    this.flush(); // Errors should be logged immediately
+  }
+
+  /**
+   * Log debug level message
+   */
+  debug(message, data = null) {
+    this._add('DEBUG', message, data);
+  }
+
+  /**
+   * Get buffer statistics
+   */
+  getStats() {
+    return {
+      bufferSize: this.buffer.length,
+      maxBufferSize: this.maxBufferSize,
+      flushInterval: this.flushInterval,
+      enabled: this.enabled
+    };
+  }
+
+  /**
+   * Clear buffer without logging
+   */
+  clear() {
+    this.buffer = [];
+  }
+
+  /**
+   * Shutdown - flush remaining and cleanup
+   */
+  shutdown() {
+    this._stopTimer();
+    this.flush();
+  }
+}
+
+/**
+ * Create a buffered logger instance
+ * @param {string} moduleName - Module name for logging
+ * @param {object} options - Configuration options
+ * @returns {BufferedLogger}
+ */
+export function createBufferedLogger(moduleName, options = {}) {
+  return new BufferedLogger({ ...options, module: moduleName });
+}
+
+export { BufferedLogger };

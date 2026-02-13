@@ -80,7 +80,12 @@ export class AIQuoteEngine {
             skips: 0,
             failures: 0,
             safetyBlocks: 0,
-            errors: 0
+            errors: 0,
+            emptyContent: 0,
+            extractFailed: 0,
+            validationFailed: 0,
+            retriesUsed: 0,
+            fallbackUsed: 0
         };
 
         this.logger.info(`[AIQuoteEngine] Initialized (probability: ${this.config.QUOTE_PROBABILITY})`);
@@ -278,98 +283,209 @@ Output only the quote tweet text.`;
         this.logger.info(`[DEBUG] ============================================`);
 
         try {
-            this.logger.info(`[AI-Quote] Generating quote tweet (attempt 1/2)...`);
+            let lastError = null;
+            const maxRetries = this.config.MAX_RETRIES;
 
-            const result = await this.agent.processRequest({
-                action: 'generate_reply',
-                payload: {
-                    systemPrompt,
-                    userPrompt,
-                    tweetText,
-                    authorUsername,
-                    engagementType: 'quote',
-                    maxTokens: 75
-                },
-                sessionId: 'quote-engine'
-            });
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                this.logger.info(`[AI-Quote] Generating quote tweet (attempt ${attempt}/${maxRetries})...`);
 
-            // DEBUG: Log raw LLM response
-            this.logger.info(`[DEBUG] ----------------------------------------------`);
-            this.logger.info(`[DEBUG] LLM RAW RESPONSE:`);
-            this.logger.info(`[DEBUG] ${result ? JSON.stringify(result).substring(0, 500) : 'result is null/undefined'}`);
-            this.logger.info(`[DEBUG] ----------------------------------------------`);
+                try {
+                    const result = await this.agent.processRequest({
+                        action: 'generate_reply',
+                        sessionId: this.agent.sessionId || 'quote-engine',
+                        payload: {
+                            systemPrompt,
+                            userPrompt,
+                            tweetText,
+                            authorUsername,
+                            engagementType: 'quote',
+                            maxTokens: 75
+                        }
+                    });
 
-            // Detailed failure analysis
-            if (!result) {
-                this.logger.error(`[AIQuoteEngine] ❌ LLM result is null/undefined`);
-                return { quote: null, success: false, reason: 'llm_result_null' };
+                    // DEBUG: Log raw LLM response
+                    this.logger.info(`[DEBUG] ----------------------------------------------`);
+                    this.logger.info(`[DEBUG] LLM RAW RESPONSE (attempt ${attempt}):`);
+                    this.logger.info(`[DEBUG] ${result ? JSON.stringify(result).substring(0, 1000) : 'result is null/undefined'}`);
+                    this.logger.info(`[DEBUG] ----------------------------------------------`);
+
+                    // Detailed failure analysis
+                    if (!result) {
+                        this.logger.error(`[AIQuoteEngine] ❌ LLM result is null/undefined (attempt ${attempt})`);
+                        lastError = 'llm_result_null';
+                        continue;
+                    }
+
+                    if (!result.success) {
+                        this.logger.error(`[AIQuoteEngine] ❌ LLM request failed: ${result.error || 'unknown error'} (attempt ${attempt})`);
+                        lastError = `llm_failed: ${result.error || 'unknown'}`;
+                        continue;
+                    }
+
+                    // Extract content from nested response structure (result.data.content) or direct result.content
+                    const rawContent = result.data?.content || result.content || '';
+                    this.logger.info(`[DEBUG] Extracted content: "${rawContent.substring(0, 100)}..." (length: ${rawContent.length})`);
+
+                    if (!rawContent || rawContent.trim().length === 0) {
+                        this.logger.error(`[AIQuoteEngine] ❌ LLM returned empty content (attempt ${attempt}/${maxRetries})`);
+                        this.stats.emptyContent++;
+                        lastError = 'llm_empty_content';
+                        if (attempt < maxRetries) {
+                            this.logger.info(`[AIQuoteEngine] Retrying...`);
+                            this.stats.retriesUsed++;
+                            continue;
+                        }
+                        return { quote: null, success: false, reason: 'llm_empty_content' };
+                    }
+
+                    this.logger.debug(`[DEBUG] Raw content length: ${rawContent.length} chars`);
+
+                    const reply = this.extractReplyFromResponse(rawContent);
+                    this.logger.debug(`[DEBUG] Extracted reply: "${reply?.substring(0, 100)}..."`);
+
+                    if (!reply) {
+                        this.logger.warn(`[AIQuoteEngine] ⚠️ Could not extract reply from LLM response patterns (attempt ${attempt})`);
+                        this.logger.warn(`[DEBUG] Full raw content:\n${rawContent}`);
+                        // Fallback: use raw content directly if it's a valid quote
+                        const fallbackReply = rawContent.trim();
+                        if (fallbackReply.length >= this.config.MIN_QUOTE_LENGTH) {
+                            this.logger.info(`[AIQuoteEngine] 🔄 Using raw content as fallback: "${fallbackReply.substring(0, 50)}..."`);
+                            this.stats.fallbackUsed++;
+                            return {
+                                quote: fallbackReply,
+                                success: true,
+                                note: 'fallback_content_used'
+                            };
+                        }
+                        this.stats.extractFailed++;
+                        lastError = 'extract_reply_failed';
+                        if (attempt < maxRetries) {
+                            this.logger.info(`[AIQuoteEngine] Retrying...`);
+                            this.stats.retriesUsed++;
+                            continue;
+                        }
+                        return { quote: null, success: false, reason: 'extract_reply_failed' };
+                    }
+
+                    const cleaned = this.cleanQuote(reply);
+                    this.logger.info(`[AIQuoteEngine] ✨ Cleaned quote: "${cleaned}" (${cleaned.length} chars)`);
+
+                    if (cleaned.length < this.config.MIN_QUOTE_LENGTH) {
+                        this.logger.error(`[AIQuoteEngine] ❌ Quote too short: ${cleaned.length} chars (min: ${this.config.MIN_QUOTE_LENGTH}) (attempt ${attempt})`);
+                        lastError = 'quote_too_short';
+                        if (attempt < maxRetries) {
+                            this.logger.info(`[AIQuoteEngine] Retrying...`);
+                            this.stats.retriesUsed++;
+                            continue;
+                        }
+                        return { quote: null, success: false, reason: 'quote_too_short' };
+                    }
+
+                    const validation = this.validateQuote(cleaned);
+                    if (validation.valid) {
+                        this.stats.successes++;
+                        return {
+                            quote: cleaned,
+                            success: true
+                        };
+                    } else {
+                        this.logger.warn(`[AIQuoteEngine] ❌ Quote validation failed (${validation.reason}): "${cleaned}" (attempt ${attempt})`);
+                        this.stats.validationFailed++;
+                        lastError = `validation_failed: ${validation.reason}`;
+                        if (attempt < maxRetries) {
+                            this.logger.info(`[AIQuoteEngine] Retrying...`);
+                            this.stats.retriesUsed++;
+                            continue;
+                        }
+                        return { quote: null, success: false, reason: `validation_failed: ${validation.reason}` };
+                    }
+
+                } catch (error) {
+                    this.logger.error(`[AIQuoteEngine] ❌ Generation error (attempt ${attempt}): ${error.message}`);
+                    this.stats.errors++;
+                    lastError = error.message;
+                    if (attempt < maxRetries) {
+                        this.logger.info(`[AIQuoteEngine] Retrying...`);
+                        this.stats.retriesUsed++;
+                        continue;
+                    }
+                    return { quote: null, success: false, reason: error.message };
+                }
             }
 
-            if (!result.success) {
-                this.logger.error(`[AIQuoteEngine] ❌ LLM request failed: ${result.error || 'unknown error'}`);
-                return { quote: null, success: false, reason: `llm_failed: ${result.error || 'unknown'}` };
-            }
-
-            if (!result.content) {
-                this.logger.error(`[AIQuoteEngine] ❌ LLM returned empty content`);
-                return { quote: null, success: false, reason: 'llm_empty_content' };
-            }
-
-            this.logger.debug(`[DEBUG] Raw content length: ${result.content.length} chars`);
-
-            const reply = this.extractReplyFromResponse(result.content);
-            this.logger.debug(`[DEBUG] Extracted reply: "${reply?.substring(0, 100)}..."`);
-
-            if (!reply) {
-                this.logger.error(`[AIQuoteEngine] ❌ Could not extract reply from LLM response`);
-                this.logger.debug(`[DEBUG] Full raw content:\n${result.content}`);
-                return { quote: null, success: false, reason: 'extract_reply_failed' };
-            }
-
-            const cleaned = this.cleanQuote(reply);
-            this.logger.info(`[AIQuoteEngine] ✨ Cleaned quote: "${cleaned}" (${cleaned.length} chars)`);
-
-            if (cleaned.length < this.config.MIN_QUOTE_LENGTH) {
-                this.logger.error(`[AIQuoteEngine] ❌ Quote too short: ${cleaned.length} chars (min: ${this.config.MIN_QUOTE_LENGTH})`);
-                return { quote: null, success: false, reason: 'quote_too_short' };
-            }
-
-            const validation = this.validateQuote(cleaned);
-            if (validation.valid) {
-                return {
-                    quote: cleaned,
-                    success: true
-                };
-            } else {
-                this.logger.warn(`[AIQuoteEngine] ❌ Quote validation failed (${validation.reason}): "${cleaned}"`);
-                return { quote: null, success: false, reason: `validation_failed: ${validation.reason}` };
-            }
+            // All retries exhausted
+            this.logger.error(`[AIQuoteEngine] ❌ All ${maxRetries} attempts failed. Last error: ${lastError}`);
+            this.stats.failures++;
+            return { quote: null, success: false, reason: `all_attempts_failed: ${lastError}` };
 
         } catch (error) {
             this.logger.error(`[AIQuoteEngine] Generation failed: ${error.message}`);
+            this.stats.errors++;
             return { quote: null, success: false, reason: error.message };
         }
     }
 
     extractReplyFromResponse(content) {
-        if (!content) return null;
+        if (!content) {
+            this.logger.warn(`[extractReplyFromResponse] Empty content received`);
+            return null;
+        }
 
         const trimmed = content.trim();
+        this.logger.debug(`[extractReplyFromResponse] Processing content: "${trimmed.substring(0, 100)}..." (length: ${trimmed.length})`);
 
         // ================================================================
-        // SPECIAL HANDLING FOR THINKING/REASONING MODELS (DeepSeek R1, etc.)
+        // PATTERN 0: Direct content (already clean, most common case)
         // ================================================================
+        if (trimmed.length >= 10 && trimmed.length < 300) {
+            // Check if it looks like a real tweet (not JSON, not thinking)
+            const isCleanResponse = !trimmed.startsWith('{') && 
+                                    !trimmed.startsWith('[') &&
+                                    !trimmed.startsWith('```') &&
+                                    !trimmed.toLowerCase().includes('thinking') &&
+                                    !trimmed.toLowerCase().includes('reasoning') &&
+                                    !trimmed.toLowerCase().includes('<thought>');
 
-        // Pattern 1: Look for trailing quoted text (highest priority)
+            if (isCleanResponse) {
+                // Check for reasoning patterns
+                const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(trimmed) ||
+                                   /Let me|I'll|First|Then|So I|Now I/i.test(trimmed) ||
+                                   /This is my|My draft|Here's my|I think this/i.test(trimmed) ||
+                                   /It needs to be|My draft fits/i.test(trimmed) ||
+                                   /That'?s specific|It feels authentic/i.test(trimmed);
+
+                if (!isReasoning) {
+                    this.logger.debug(`[extractReplyFromResponse] ✓ Direct content used`);
+                    return trimmed;
+                }
+            }
+        }
+
+        // ================================================================
+        // PATTERN 1: Look for trailing quoted text (highest priority)
+        // ================================================================
         const quotedMatch = trimmed.match(/"([^"]{10,280})"\s*$/);
         if (quotedMatch) {
             const quoted = quotedMatch[1].trim();
             if (!/I (?:need to|should|want to|will|must) /i.test(quoted)) {
+                this.logger.debug(`[extractReplyFromResponse] ✓ Quoted text pattern matched`);
                 return quoted;
             }
         }
 
-        // Pattern 2: Look for content after last newline (often the actual response)
+        // Pattern 1b: Single quotes
+        const singleQuotedMatch = trimmed.match(/'([^']{10,280})'\s*$/);
+        if (singleQuotedMatch) {
+            const quoted = singleQuotedMatch[1].trim();
+            if (!/I (?:need to|should|want to|will|must) /i.test(quoted)) {
+                this.logger.debug(`[extractReplyFromResponse] ✓ Single-quoted text pattern matched`);
+                return quoted;
+            }
+        }
+
+        // ================================================================
+        // PATTERN 2: Look for content after last newline (often the actual response)
+        // ================================================================
         const lines = trimmed.split('\n');
         const lastLine = lines[lines.length - 1].trim();
         
@@ -383,20 +499,14 @@ Output only the quote tweet text.`;
                                /That's specific|My draft|Here's my|I think this/i.test(lastLine);
             
             if (!isReasoning) {
+                this.logger.debug(`[extractReplyFromResponse] ✓ Last line pattern matched`);
                 return lastLine;
             }
         }
 
-        // Pattern 3: Look for single quoted text at the end
-        const singleQuotedMatch = trimmed.match(/'([^']{10,280})'\s*$/);
-        if (singleQuotedMatch) {
-            const quoted = singleQuotedMatch[1].trim();
-            if (!/I (?:need to|should|want to|will|must) /i.test(quoted)) {
-                return quoted;
-            }
-        }
-
-        // Pattern 4: Look for the last paragraph if it looks like a real response
+        // ================================================================
+        // PATTERN 3: Look for the last paragraph if it looks like a real response
+        // ================================================================
         const paragraphs = trimmed.split(/\n\n+/);
         for (let i = paragraphs.length - 1; i >= 0; i--) {
             const para = paragraphs[i].trim();
@@ -406,9 +516,39 @@ Output only the quote tweet text.`;
                                    /This is my|My draft|Here's my/i.test(para) ||
                                    /It needs to be|My draft fits|I think this/i.test(para);
                 if (!isReasoning) {
+                    this.logger.debug(`[extractReplyFromResponse] ✓ Paragraph pattern matched`);
                     return para;
                 }
             }
+        }
+
+        // ================================================================
+        // PATTERN 4: Look for content after "Answer:", "Response:", "Quote:", etc.
+        // ================================================================
+        const labelPatterns = [
+            /^(?:Answer|Response|Quote|Tweet|My response|Here's my):?\s*/i,
+            /^(?:The|Ma) quote:?\s*/i,
+            /^(?:I'd|I would|No) (?:say|think|respond):?\s*/i
+        ];
+
+        for (const pattern of labelPatterns) {
+            const match = trimmed.match(pattern);
+            if (match) {
+                const afterLabel = trimmed.substring(match[0].length).trim();
+                if (afterLabel.length >= 10 && afterLabel.length < 300) {
+                    this.logger.debug(`[extractReplyFromResponse] ✓ Label pattern matched`);
+                    return afterLabel;
+                }
+            }
+        }
+
+        // ================================================================
+        // PATTERN 5: Look for sentences in the content
+        // ================================================================
+        const sentenceMatch = trimmed.match(/^[^.!?]*[.!?]/);
+        if (sentenceMatch && sentenceMatch[0].length >= 10 && sentenceMatch[0].length < 300) {
+            this.logger.debug(`[extractReplyFromResponse] ✓ Sentence pattern matched`);
+            return sentenceMatch[0].trim();
         }
 
         // ================================================================
@@ -421,11 +561,13 @@ Output only the quote tweet text.`;
             .trim();
 
         cleaned = cleaned.replace(/<thinking>[\s\S]*?<\/thinking>/gi, '');
+        cleaned = cleaned.replace(/<\/?THINKING>/gi, '');
         cleaned = cleaned.replace(/\[\/?THINKING\]/gi, '');
         cleaned = cleaned.replace(/\[[\s]*REASONING[\s]*\][\s\S]*?$/gim, '');
         cleaned = cleaned.replace(/^(?:First,?\s*)?I\s+(?:need to|should|want to|must|will|have to|can)\s+[\s\S]*?(?=\n\n|[.!?]\s*[A-Z][a-z]+)/gim, '');
         cleaned = cleaned.replace(/(?:Let me|I'll|I will)\s+(?:think|reason|analyze)[\s\S]*?(?=\.\s*[A-Z]|\n\n)/gi, '');
         cleaned = cleaned.replace(/^(?:My|Here's|The)\s+(?:draft|response|answer|output|suggestion):?\s*/gi, '');
+        cleaned = cleaned.replace(/^(?:Okay,?\s*)?I (?:need to|should|want to|will) [^\n]*/i, '');
 
         if (cleaned.startsWith('{') || cleaned.startsWith('[')) {
             try {
@@ -434,7 +576,15 @@ Output only the quote tweet text.`;
                 if (parsed.content) return parsed.content;
                 if (parsed.text) return parsed.text;
                 if (parsed.message) return parsed.message;
+                if (parsed.output) return parsed.output;
+                // Try to find any string field
+                for (const key of Object.keys(parsed)) {
+                    if (typeof parsed[key] === 'string' && parsed[key].length >= 10 && parsed[key].length < 300) {
+                        return parsed[key];
+                    }
+                }
             } catch (e) {
+                // Not JSON, continue
             }
         }
 
@@ -442,7 +592,14 @@ Output only the quote tweet text.`;
             .replace(/^(?:Okay,?\s*)?I (?:need to|should|want to|will) [^\n]*/i, '')
             .trim();
 
-        return cleaned || null;
+        if (cleaned && cleaned.length >= 10 && cleaned.length < 300) {
+            this.logger.debug(`[extractReplyFromResponse] ✓ Cleaned content used`);
+            return cleaned;
+        }
+
+        this.logger.warn(`[extractReplyFromResponse] ❌ No pattern matched, returning null`);
+        this.logger.debug(`[DEBUG] Full content that failed to extract:\n${content}`);
+        return null;
     }
 
     /**
@@ -492,8 +649,11 @@ Output only the quote tweet text.`;
             await page.evaluate(() => window.scrollTo(0, 0));
             await page.waitForTimeout(mathUtils.randomInRange(500, 1000));
 
+            // Initialize human interaction for simulated clicking
+            const human = new HumanInteraction(page);
+            
             if (humanTyping && typeof humanTyping === 'function') {
-                await composer.click();
+                await human.safeHumanClick(composer, 'Quote Composer', 3);
                 await humanTyping(composer, quoteText);
             } else {
                 await composer.fill(quoteText);
@@ -519,7 +679,8 @@ Output only the quote tweet text.`;
             logger.warn(`[AIQuote] Ctrl+Enter didn't close composer, trying button click...`);
             const postBtn = page.locator('span:has-text("Post")').first();
             if (await postBtn.count() > 0) {
-                await postBtn.click();
+                const human = new HumanInteraction(page);
+                await human.safeHumanClick(postBtn, 'Quote Post Button', 3);
                 await page.waitForTimeout(mathUtils.randomInRange(1500, 2500));
             }
 
@@ -922,11 +1083,30 @@ Output only the quote tweet text.`;
             return await this.quoteMethodB_Retweet(page, quoteText, human);
         }
 
+        // Wait for quote preview to be fully loaded before typing
+        human.logStep('WAIT_QUOTE', 'Waiting for quote preview to load...');
+        await page.waitForSelector('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]', {
+            timeout: 5000,
+            state: 'visible'
+        }).catch(() => {
+            human.logStep('QUOTE_WAIT_TIMEOUT', 'Quote preview not visible, proceeding anyway');
+        });
+        await new Promise(resolve => setTimeout(resolve, 500));  // Additional settle time
+
         // Find composer textarea
         verify = await human.verifyComposerOpen(page);
         const composer = page.locator(verify.selector).first();
 
+        // Verify quote preview is still present
+        const quotePreviewCheck = await page.locator('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]').first();
+        if (await quotePreviewCheck.count() > 0) {
+            human.logStep('QUOTE_READY', 'Quote preview confirmed');
+        } else {
+            human.logStep('QUOTE_WARN', 'Quote preview may not be loaded');
+        }
+
         // Type quote
+        human.logStep('TYPE_QUOTE', `Typing ${quoteText.length} chars...`);
         await human.typeText(page, quoteText, composer);
 
         // Post with Ctrl+Enter
@@ -1049,6 +1229,16 @@ Output only the quote tweet text.`;
         human.logStep('QUOTE_CLICK', 'Clicked Quote option');
         await new Promise(resolve => setTimeout(resolve, 1500));
 
+        // Wait for quote preview to load before typing
+        human.logStep('WAIT_QUOTE', 'Waiting for quote preview...');
+        await page.waitForSelector('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]', {
+            timeout: 5000,
+            state: 'visible'
+        }).catch(() => {
+            human.logStep('QUOTE_WAIT_TIMEOUT', 'Quote preview not visible');
+        });
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         // STEP 3: Verify composer is ready
         const verify = await human.verifyComposerOpen(page);
         if (!verify.open) {
@@ -1128,6 +1318,12 @@ Output only the quote tweet text.`;
         const currentUrl = page.url();
         human.logStep('CURRENT_URL', currentUrl);
 
+        // Copy URL to clipboard for pasting
+        await page.evaluate((url) => {
+            navigator.clipboard.writeText(url);
+        }, currentUrl);
+        human.logStep('CLIPBOARD', 'URL copied to clipboard');
+
         // Close any open menus
         await page.keyboard.press('Escape');
         await new Promise(resolve => setTimeout(resolve, 300));
@@ -1174,6 +1370,14 @@ Output only the quote tweet text.`;
         human.logStep('CLICK', 'Clicked Compose button');
         await new Promise(resolve => setTimeout(resolve, 1500));
 
+        // Wait for composer to be fully loaded
+        await page.waitForSelector('[data-testid="tweetTextarea_0"]', {
+            timeout: 5000,
+            state: 'visible'
+        }).catch(() => {
+            human.logStep('COMPOSER_WAIT_TIMEOUT', 'Composer not visible');
+        });
+
         // STEP 2: Verify composer is open
         const verify = await human.verifyComposerOpen(page);
         if (!verify.open) {
@@ -1182,18 +1386,16 @@ Output only the quote tweet text.`;
         }
         human.logStep('COMPOSER_READY', verify.selector);
 
-        // STEP 3: Paste the tweet URL
-        human.logStep('PASTE_URL', 'Pasting tweet URL...');
-        await page.keyboard.press('Control+v');
-        await new Promise(resolve => setTimeout(resolve, 750));
+        // Additional wait for composer to be fully interactive
+        await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Step 4: Type the comment FIRST
+        // STEP 3: Type the comment FIRST
         const composer = page.locator(verify.selector).first();
         
         human.logStep('TYPING', `Entering ${quoteText.length} chars`);
         await human.typeText(page, quoteText, composer);
 
-        // Step 5: Create new line AFTER typing comment
+        // Step 4: Create new line AFTER typing comment
         human.logStep('NEWLINE', 'Creating new line...');
         await page.keyboard.press('Enter');
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -1211,7 +1413,7 @@ Output only the quote tweet text.`;
             await new Promise(resolve => setTimeout(resolve, 500));
         }
 
-        // Step 6: Paste the URL LAST (appears as preview/card below comment)
+        // Step 5: Paste the URL LAST (appears as preview/card below comment)
         human.logStep('PASTE_URL', 'Pasting tweet URL...');
         await page.keyboard.press('Control+v');
         await new Promise(resolve => setTimeout(resolve, 750));

@@ -78,7 +78,7 @@ function createEngagementTracker(limits = DEFAULT_LIMITS) {
         },
         
         isAnyExhausted() {
-            return Object.keys(this.limits).every(action => !this.canPerform(action));
+            return Object.keys(this.limits).some(action => !this.canPerform(action));
         },
         
         hasRemainingCapacity() {

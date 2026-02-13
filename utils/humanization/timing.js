@@ -142,11 +142,11 @@ export class HumanTiming {
      */
     async sessionRampUp() {
         // Humans don't start at full speed
-        const rampUpSteps = 3;
+        const rampUpSteps = 2;
 
         for (let i = 1; i <= rampUpSteps; i++) {
             const factor = i / rampUpSteps;
-            const delay = mathUtils.gaussian(1500 * factor, 500);
+            const delay = mathUtils.gaussian(800 * factor, 300);
             await this.page.waitForTimeout(delay);
         }
     }

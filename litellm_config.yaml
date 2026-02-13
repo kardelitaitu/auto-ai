@@ -1,0 +1,16 @@
+model_list:
+  - model_name: ollama/win-agent
+    litellm_params:
+      model: ollama/win-agent
+      api_base: "http://localhost:11434"
+
+litellm_settings:
+  # GLOBAL SETTING: Automatically strip 'thinking' and 'reasoning' params
+  drop_params: true 
+  # Fixes compatibility with Claude Code's chat history format
+  unified_turn_format: true
+
+general_settings:
+  # CRITICAL: We REMOVE 'master_key' so it never checks a database.
+  # We enable this to keep the server alive even if a request fails.
+  allow_requests_on_error: true

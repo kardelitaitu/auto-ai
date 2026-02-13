@@ -37,7 +37,16 @@ class Orchestrator extends EventEmitter {
   }
 
   /**
-   * Starts the browser discovery process and adds discovered browsers to the session manager.
+   * Helper method for sleep/delay
+   * @param {number} ms - Milliseconds to sleep
+   * @returns {Promise<void>}
+   */
+  _sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+    * Starts the browser discovery process and adds discovered browsers to the session manager.
    * @param {object} [options={}] - Discovery options.
    * @param {string[]} [options.browsers=[]] - List of specific browsers/connectors to discover.
    * @returns {Promise<void>}
@@ -204,7 +213,16 @@ class Orchestrator extends EventEmitter {
             break;
           }
 
-          this.sessionManager.findAndOccupyIdleWorker(session.id);
+          // Use atomic worker allocation with await
+          const allocatedWorker = await this.sessionManager.findAndOccupyIdleWorker(session.id);
+          if (!allocatedWorker) {
+            logger.warn(`[${session.id}] No idle workers available, retrying...`);
+            // Put task back at the front of the list
+            taskList.unshift(task);
+            await this._sleep(100);
+            continue;
+          }
+          
           let page = null;
           try {
             page = await sharedContext.newPage();
@@ -219,7 +237,8 @@ class Orchestrator extends EventEmitter {
               await page.close().catch(() => { });
               this.sessionManager.unregisterPage(session.id, page);
             }
-            this.sessionManager.releaseWorker(session.id, worker.id);
+            // Use atomic worker release with await
+            await this.sessionManager.releaseWorker(session.id, allocatedWorker.id);
             logger.info(`[${session.id}][Worker ${worker.id}] Finished task '${task.taskName}'. Worker is now idle.`);
           }
         }

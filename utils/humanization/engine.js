@@ -157,7 +157,7 @@ export class HumanizationEngine {
         await this._timingEngine.sessionRampUp();
 
         // Initial scroll to "wake up" the feed
-        await this.page.waitForTimeout(mathUtils.randomInRange(1000, 2000));
+        await this.page.waitForTimeout(mathUtils.randomInRange(400, 800));
         await this.scroll('down', 'light');
 
         this._updateActivity();

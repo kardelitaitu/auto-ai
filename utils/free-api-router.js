@@ -202,35 +202,37 @@ export class FreeApiRouter {
     return `${key.substring(0, 6)}...${key.substring(key.length - 4)}`;
   }
 
-  async processRequest(request) {
-    this.stats.totalRequests++;
+   async processRequest(request) {
+     this.stats.totalRequests++;
 
-    if (!this.config.enabled) {
-      return { success: false, error: 'Free API router not enabled' };
-    }
+     if (!this.config.enabled) {
+       return { success: false, error: 'Free API router not enabled' };
+     }
 
-    const { messages, maxTokens = 100, temperature = 0.7 } = request;
+     const { messages, maxTokens = 100, temperature = 0.7 } = request;
 
-    const startTime = Date.now();
+     const startTime = Date.now();
 
-    const dedupeResult = this.requestDedupe.check(messages, this.config.models.primary, maxTokens, temperature);
+     const dedupeResult = this.requestDedupe.check(messages, this.config.models.primary, maxTokens, temperature);
 
-    if (dedupeResult.hit) {
-      this.stats.dedupeHits++;
-      this.stats.successes++;
+     if (dedupeResult.hit) {
+       this.stats.dedupeHits++;
+       this.stats.successes++;
 
-      const warningStatus = this.rateLimitTracker.getWarningStatus(this.sessionApiKey);
-      logger.info(`[FreeRouter] Dedupe hit, returning cached response`);
+       const warningStatus = this.rateLimitTracker.getWarningStatus(this.sessionApiKey);
+       logger.info(`[FreeRouter] Dedupe hit, returning cached response`);
 
-      return {
-        success: true,
-        content: dedupeResult.response,
-        model: this.config.models.primary,
-        keyUsed: this.sessionApiKeyIndex,
-        fromCache: true,
-        warningStatus: warningStatus
-      };
-    }
+       return {
+         success: true,
+         content: dedupeResult.response,
+         model: this.config.models.primary,
+         keyUsed: this.sessionApiKeyIndex,
+         fromCache: true,
+         warningStatus: warningStatus
+       };
+     }
+
+     logger.info(`[FreeRouter] processRequest: calling _tryModelWithKey`);
 
     // Build list of models to try - prioritize working models from test results
     let modelsToTry = [];
@@ -406,9 +408,11 @@ export class FreeApiRouter {
     };
   }
 
-  async _tryModelWithKey(model, messages, maxTokens, temperature, startTime) {
-    const proxyString = this._selectRequestProxy();
-    const proxy = this._parseProxy(proxyString);
+   async _tryModelWithKey(model, messages, maxTokens, temperature, startTime) {
+     logger.info(`[FreeRouter] _tryModelWithKey: model=${model}`);
+     const proxyString = this._selectRequestProxy();
+     logger.info(`[FreeRouter] _tryModelWithKey: proxy=${proxyString}`);
+     const proxy = this._parseProxy(proxyString);
 
     const payload = {
       model,
@@ -432,12 +436,13 @@ export class FreeApiRouter {
     }
   }
 
-  async _callDirect(payload, timeout) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      controller.abort();
-      this.stats.quickTimeouts++;
-    }, timeout);
+   async _callDirect(payload, timeout) {
+     logger.info(`[FreeRouter] _callDirect: starting request to ${payload.model}`);
+     const controller = new AbortController();
+     const timeoutId = setTimeout(() => {
+       controller.abort();
+       this.stats.quickTimeouts++;
+     }, timeout);
 
     try {
       const response = await fetch(this.endpoint, {
@@ -462,20 +467,38 @@ export class FreeApiRouter {
         });
       }
 
-       const data = await response.json();
-       
-       const message = data.choices[0]?.message;
-       const content = message?.content || '';
-       const reasoningContent = message?.reasoning_content;
+const data = await response.json();
+        
+        const message = data.choices[0]?.message;
+        let content = message?.content || '';
+        
+        // DEBUG: Log raw API response to debug empty responses
+        // Check if reasoning_content has the actual response (some models put it there)
+        const reasoningContent = message?.reasoning_content || '';
+        
+        if (!content && reasoningContent) {
+          logger.warn(`[FreeRouter] ⚠️ Content empty but reasoning_content has ${reasoningContent.length} chars - using reasoning_content`);
+          content = reasoningContent;
+        }
+        
+        // Log FULL response (not just first 500 chars) when debugging
+        if (!content) {
+          logger.warn(`[FreeRouter] ⚠️ EMPTY RESPONSE from model ${payload.model}`);
+          logger.warn(`[FreeRouter] Full API Response: ${JSON.stringify(data, null, 2)}`);
+          logger.warn(`[FreeRouter] Message object: ${JSON.stringify(message, null, 2)}`);
+          logger.warn(`[FreeRouter] All choices: ${JSON.stringify(data.choices, null, 2)}`);
+        } else {
+          logger.debug(`[FreeRouter] Response received (${content.length} chars): ${content.substring(0, 200)}...`);
+        }
+        
+        if (reasoningContent) {
+          logger.debug(`[FreeRouter] Reasoning content excluded by API (${reasoningContent.length} chars)`);
+        }
 
-       if (reasoningContent) {
-         logger.debug(`[FreeRouter] Reasoning content excluded by API (${reasoningContent.length} chars)`);
-       }
-
-       return {
-         success: true,
-         content: content
-       };
+        return {
+          success: true,
+          content: content
+        };
      } catch (error) {
        clearTimeout(timeoutId);
        // If it's already an AppError, rethrow it
@@ -532,21 +555,39 @@ export class FreeApiRouter {
         });
       }
 
-       const data = await response.json();
+const data = await response.json();
 
-       const message = data.choices[0]?.message;
-       const content = message?.content || '';
-       const reasoningContent = message?.reasoning_content;
+        const message = data.choices[0]?.message;
+        let content = message?.content || '';
+        
+        // DEBUG: Log raw API response to debug empty responses
+        // Check if reasoning_content has the actual response (some models put it there)
+        const reasoningContent = message?.reasoning_content || '';
+        
+        if (!content && reasoningContent) {
+          logger.warn(`[FreeRouter] ⚠️ Content empty but reasoning_content has ${reasoningContent.length} chars via proxy - using reasoning_content`);
+          content = reasoningContent;
+        }
+        
+        // Log FULL response (not just first 500 chars) when debugging
+        if (!content) {
+          logger.warn(`[FreeRouter] ⚠️ EMPTY RESPONSE from model ${payload.model} via proxy ${proxy.host}`);
+          logger.warn(`[FreeRouter] Full API Response: ${JSON.stringify(data, null, 2)}`);
+          logger.warn(`[FreeRouter] Message object: ${JSON.stringify(message, null, 2)}`);
+          logger.warn(`[FreeRouter] All choices: ${JSON.stringify(data.choices, null, 2)}`);
+        } else {
+          logger.debug(`[FreeRouter] Response received (${content.length} chars): ${content.substring(0, 200)}...`);
+        }
+        
+        if (reasoningContent) {
+          logger.debug(`[FreeRouter] Reasoning content excluded by API (${reasoningContent.length} chars)`);
+        }
 
-       if (reasoningContent) {
-         logger.debug(`[FreeRouter] Reasoning content excluded by API (${reasoningContent.length} chars)`);
-       }
-
-       return {
-         success: true,
-         content: content,
-         proxy: `${proxy.host}:${proxy.port}`
-       };
+        return {
+          success: true,
+          content: content,
+          proxy: `${proxy.host}:${proxy.port}`
+        };
      } catch (error) {
        clearTimeout(timeoutId);
        throw error;

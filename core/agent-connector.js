@@ -62,13 +62,19 @@ class AgentConnector {
         try {
             const priority = payload.priority || 0;
 
-            const result = await this.requestQueue.enqueue(async () => {
+            const queueResult = await this.requestQueue.enqueue(async () => {
                 return this._executeWithCircuitBreaker(request, action);
             }, { priority });
 
             const duration = Date.now() - startTime;
             this.stats.successfulRequests++;
-            this.stats.totalDuration += duration;
+
+            // Unwrap the result from request queue (it's wrapped in { success: true, data: result })
+            const result = queueResult.data || queueResult;
+
+            // DEBUG: Log result content before returning
+            const contentLen = result.content?.length || 0;
+            logger.debug(`[${sessionId}] processRequest returning: success=${result.success}, contentLen=${contentLen}`);
 
             if (result.metadata?.routedTo === 'cloud') {
                 this.stats.cloudRequests++;
@@ -257,7 +263,9 @@ class AgentConnector {
      * @private
      */
     async _callCloudWithBreaker(cloudRequest, sessionId) {
+        logger.info(`[${sessionId}] _callCloudWithBreaker: calling cloudClient.sendRequest`);
         return this.circuitBreaker.execute('cloud-model', async () => {
+            logger.info(`[${sessionId}] Circuit breaker passed, calling cloudClient.sendRequest`);
             return this.cloudClient.sendRequest(cloudRequest);
         });
     }
@@ -440,7 +448,7 @@ class AgentConnector {
     async _sendToCloud(request, startTime) {
         const { payload, sessionId } = request;
 
-        logger.info(`[${sessionId}] Sending to cloud...`);
+        logger.info(`[${sessionId}] _sendToCloud: Sending to cloud...`);
 
         try {
             const cloudRequest = {

@@ -6,13 +6,15 @@
       "workers": [
         {
           "id": 0,
-          "status": "idle"
+          "status": "idle",
+          "occupiedAt": null,
+          "occupiedBy": null
         }
       ],
-      "createdAt": 1770758062316,
-      "lastActivity": 1770758420090
+      "createdAt": 1770940802922,
+      "lastActivity": 1770940824764
     }
   ],
   "nextSessionId": 1,
-  "savedAt": 1770758420117
+  "savedAt": 1770940824794
 }

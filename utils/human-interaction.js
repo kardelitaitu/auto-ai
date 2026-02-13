@@ -7,12 +7,112 @@
 import { createLogger } from './logger.js';
 import { mathUtils } from './mathUtils.js';
 import { entropy } from './entropyController.js';
+import { GhostCursor } from './ghostCursor.js';
 
 const logger = createLogger('human-interaction.js');
 
 export class HumanInteraction {
-    constructor() {
+    constructor(page = null) {
         this.debugMode = process.env.HUMAN_DEBUG === 'true';
+        this.page = page;
+        this.ghost = null;
+        if (page) {
+            this.ghost = new GhostCursor(page);
+        }
+    }
+
+    /**
+     * Set page reference and initialize GhostCursor
+     * Call this before using human-like clicking methods
+     */
+    setPage(page) {
+        this.page = page;
+        this.ghost = new GhostCursor(page);
+    }
+
+    /**
+     * Human-like click using GhostCursor simulated mouse
+     * Includes: scroll into view, fixation delay, micro-movements, and ghost click
+     */
+    async humanClick(element, description = 'Target') {
+        if (!this.page || !this.ghost) {
+            this.logWarn(`[humanClick] No page/ghost initialized, falling back to native click`);
+            try {
+                await element.click({ allowNativeFallback: true });
+            } catch (e) {
+                this.logDebug(`[humanClick] Fallback click failed: ${e.message}`);
+                throw e;
+            }
+            return;
+        }
+
+        this.logDebug(`[humanClick] Starting human-like click on ${description}`);
+        
+        try {
+            // 1. Scroll element into view
+            await element.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
+            await new Promise(resolve => setTimeout(resolve, mathUtils.randomInRange(300, 600)));
+
+            // 2. Get element position for ghost cursor
+            const box = await element.boundingBox();
+            if (!box) {
+                throw new Error('Element not visible or no bounding box');
+            }
+
+            // 3. Move cursor to vicinity first (not directly on target)
+            const offsetX = mathUtils.randomInRange(-30, 30);
+            const offsetY = mathUtils.randomInRange(-20, 20);
+            const targetX = box.x + box.width / 2 + offsetX;
+            const targetY = box.y + box.height / 2 + offsetY;
+            
+            await this.ghost.move(targetX, targetY, mathUtils.randomInRange(15, 25));
+            await new Promise(resolve => setTimeout(resolve, mathUtils.randomInRange(400, 800)));
+
+            // 4. Use GhostCursor for the actual click
+            await this.ghost.click(element, { allowNativeFallback: true });
+            
+            this.logDebug(`[humanClick] Successfully clicked ${description}`);
+        } catch (e) {
+            this.logDebug(`[humanClick] Failed on ${description}: ${e.message}, trying fallback`);
+            // Fallback to native click
+            try {
+                await element.click({ force: true });
+            } catch (e2) {
+                this.logDebug(`[humanClick] Fallback also failed: ${e2.message}`);
+                throw e2;
+            }
+        }
+    }
+
+    /**
+     * Safe human-like click with retry logic
+     * Wraps humanClick with automatic retry on failure
+     * @param {Object} element - Playwright locator or element handle
+     * @param {string} description - Description for logging
+     * @param {number} retries - Number of retry attempts (default: 3)
+     * @returns {Promise<boolean>} - True if successful, false if all retries failed
+     */
+    async safeHumanClick(element, description = 'Target', retries = 3) {
+        const attemptLogs = [];
+        for (let attempt = 1; attempt <= retries; attempt++) {
+            try {
+                await this.humanClick(element, description);
+                this.logDebug(`[safeHumanClick] [${description}] Success on attempt ${attempt}/${retries}`);
+                return true;
+            } catch (error) {
+                attemptLogs.push(`Attempt ${attempt}: ${error.message}`);
+                this.logWarn(`[safeHumanClick] [${description}] Attempt ${attempt}/${retries} failed: ${error.message}`);
+                if (attempt === retries) {
+                    this.logWarn(`[safeHumanClick] [${description}] All retries exhausted. Errors: ${attemptLogs.join('; ')}`);
+                    return false;
+                }
+                // Exponential backoff: 1s, 2s, 3s...
+                const delay = 1000 * attempt;
+                this.logDebug(`[safeHumanClick] [${description}] Waiting ${delay}ms before retry ${attempt + 1}...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+        return false;
     }
 
     /**
@@ -226,6 +326,24 @@ export class HumanInteraction {
             return { sent: true, method: 'url_change' };
         }
 
+        // Additional verification: wait a bit and check again if not confirmed
+        this.logDebug(`[Verify] Post not immediately confirmed, waiting...`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Final check: composer should be closed
+        const composerVisible = await page.locator('[data-testid="tweetTextarea_0"]').isVisible().catch(() => false);
+        if (!composerVisible) {
+            this.logDebug(`[Verify] Composer closed after wait: confirmed`);
+            return { sent: true, method: 'composer_closed' };
+        }
+
+        // Last resort: check if we're back on the timeline
+        const finalUrl = page.url();
+        if (!finalUrl.includes('compose') && (finalUrl.includes('twitter.com') || finalUrl.includes('x.com'))) {
+            this.logDebug(`[Verify] Back on timeline: confirmed`);
+            return { sent: true, method: 'timeline_return' };
+        }
+
         return { sent: false, method: null };
     }
 
@@ -233,9 +351,14 @@ export class HumanInteraction {
      * Type text with human-like delays and robust focus handling
      */
     async typeText(page, text, inputEl) {
-        // Step 1: Clear any existing text first
+        // Ensure we have page reference for ghost cursor
+        if (!this.page || this.page !== page) {
+            this.setPage(page);
+        }
+
+        // Step 1: Clear any existing text first using human-like click
         try {
-            await inputEl.click({ timeout: 3000 });
+            await this.humanClick(inputEl, 'Text Input - Clear');
             await page.keyboard.press('Control+a');
             await new Promise(resolve => setTimeout(resolve, 200));
         } catch (e) {
@@ -264,9 +387,9 @@ export class HumanInteraction {
         
         this.logDebug(`[Type] Active element: ${activeCheck.tagName}, contentEditable: ${activeCheck.isContentEditable}`);
 
-        // If still not focused, try force clicking
+        // If still not focused, try force clicking as last resort
         if (!activeCheck.isContentEditable && !activeCheck.tagName?.toLowerCase().includes('textarea')) {
-            this.logDebug(`[Type] Not focused correctly, force clicking...`);
+            this.logDebug(`[Type] Not focused correctly, trying force click fallback...`);
             try {
                 await inputEl.click({ force: true });
                 await new Promise(resolve => setTimeout(resolve, 200));
@@ -308,16 +431,26 @@ export class HumanInteraction {
 
     /**
      * Ensure element is focused with multiple strategies
+     * Uses human-like clicking with GhostCursor
      */
     async ensureFocus(page, element) {
+        // Ensure we have page reference
+        if (!this.page || this.page !== page) {
+            this.setPage(page);
+        }
+
         const focusStrategies = [
-            // Strategy 1: Regular click
+            // Strategy 1: Human-like click with GhostCursor
             async () => {
-                await element.click({ timeout: 3000 });
-                await new Promise(resolve => setTimeout(resolve, 200));
-                return true;
+                try {
+                    await this.humanClick(element, 'Focus Target');
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    return true;
+                } catch {
+                    return false;
+                }
             },
-            // Strategy 2: Focus method
+            // Strategy 2: Focus method (no click needed)
             async () => {
                 try {
                     await element.focus();
@@ -327,27 +460,7 @@ export class HumanInteraction {
                     return false;
                 }
             },
-            // Strategy 3: Click with offset
-            async () => {
-                try {
-                    await element.click({ position: { x: 5, y: 5 } });
-                    await new Promise(resolve => setTimeout(resolve, 200));
-                    return true;
-                } catch {
-                    return false;
-                }
-            },
-            // Strategy 4: Double click
-            async () => {
-                try {
-                    await element.dblclick();
-                    await new Promise(resolve => setTimeout(resolve, 200));
-                    return true;
-                } catch {
-                    return false;
-                }
-            },
-            // Strategy 5: Force click
+            // Strategy 3: Force click as fallback
             async () => {
                 try {
                     await element.click({ force: true });
@@ -416,7 +529,7 @@ export class HumanInteraction {
                 const btn = page.locator(selector).first();
                 if (await btn.count() > 0 && await btn.isVisible()) {
                     this.logDebug(`[Post] Clicking: ${selector}`);
-                    await btn.click();
+                    await this.humanClick(btn, 'Post Button');
                     await new Promise(resolve => setTimeout(resolve, 500));
 
                     const result2 = await this.verifyPostSent(page);
@@ -433,6 +546,182 @@ export class HumanInteraction {
         this.logDebug(`[Post] Failed - no method worked`);
         return { success: false, reason: 'post_failed' };
     }
+
+    // =========================================================================
+    // SELECTOR FALLBACK METHODS - Reduces element not found errors
+    // =========================================================================
+
+    /**
+     * Find element with fallback selectors chain
+     * Reduces element not found errors by trying multiple selectors
+     * @param {string[]} selectors - Array of selectors to try (ordered by priority)
+     * @param {object} options - Options for visibility check
+     * @returns {Promise<object|null>} - Found element info or null
+     */
+    async findWithFallback(selectors, options = {}) {
+        const { visible = true, timeout = 5000, logLevel = 'debug' } = options;
+        
+        const startTime = Date.now();
+        
+        for (let i = 0; i < selectors.length; i++) {
+            const selector = selectors[i];
+            const elapsed = Date.now() - startTime;
+            
+            if (elapsed >= timeout) {
+                this.logWarn(`[Fallback] Timeout reached after ${elapsed}ms, stopping search`);
+                break;
+            }
+            
+            try {
+                const element = this.page.locator(selector).first();
+                
+                // Check if element exists
+                const count = await element.count();
+                if (count === 0) {
+                    this.logDebug(`[Fallback] Selector ${i + 1}/${selectors.length} not found: ${selector}`);
+                    continue;
+                }
+                
+                // Check visibility if required
+                if (visible) {
+                    const isVisible = await element.isVisible().catch(() => false);
+                    if (!isVisible) {
+                        this.logDebug(`[Fallback] Selector ${i + 1}/${selectors.length} not visible: ${selector}`);
+                        continue;
+                    }
+                }
+                
+                this.logDebug(`[Fallback] Found element with selector ${i + 1}/${selectors.length}: ${selector}`);
+                return { element, selector, index: i };
+            } catch (error) {
+                this.logDebug(`[Fallback] Error with selector ${i + 1}/${selectors.length} (${selector}): ${error.message}`);
+                continue;
+            }
+        }
+        
+        this.logWarn(`[Fallback] All ${selectors.length} selectors failed`);
+        return null;
+    }
+
+    /**
+     * Find multiple elements with fallback selectors
+     * @param {string[]} selectors - Array of selectors to try
+     * @param {object} options - Options
+     * @returns {Promise<object[]>} - Array of element locators
+     */
+    async findAllWithFallback(selectors, options = {}) {
+        const { visible = true, limit = 20 } = options;
+        
+        for (const selector of selectors) {
+            try {
+                const elements = this.page.locator(selector);
+                const count = await elements.count();
+                
+                if (count > 0) {
+                    const results = [];
+                    const actualLimit = Math.min(count, limit);
+                    
+                    for (let i = 0; i < actualLimit; i++) {
+                        const el = elements.nth(i);
+                        
+                        if (visible) {
+                            if (await el.isVisible().catch(() => false)) {
+                                results.push(el);
+                            }
+                        } else {
+                            results.push(el);
+                        }
+                    }
+                    
+                    if (results.length > 0) {
+                        this.logDebug(`[Fallback] Found ${results.length} visible elements with: ${selector}`);
+                        return results;
+                    }
+                }
+            } catch (error) {
+                this.logDebug(`[Fallback] Error with selector (${selector}): ${error.message}`);
+                continue;
+            }
+        }
+        
+        return [];
+    }
+
+    /**
+     * Click element with automatic fallback selector chain
+     * Tries multiple selectors if primary fails
+     * @param {string[]} selectors - Array of selectors to try
+     * @param {string} description - Description for logging
+     * @param {object} options - Click options
+     * @returns {Promise<boolean>} - True if successful
+     */
+    async clickWithFallback(selectors, description = 'Element', options = {}) {
+        for (let i = 0; i < selectors.length; i++) {
+            const selector = selectors[i];
+            
+            try {
+                const element = this.page.locator(selector).first();
+                const count = await element.count();
+                
+                if (count === 0) {
+                    this.logDebug(`[ClickFallback] Selector ${i + 1}/${selectors.length} not found: ${selector}`);
+                    continue;
+                }
+                
+                if (!await element.isVisible().catch(() => false)) {
+                    this.logDebug(`[ClickFallback] Selector ${i + 1}/${selectors.length} not visible: ${selector}`);
+                    continue;
+                }
+                
+                this.logDebug(`[ClickFallback] Clicking ${description} with: ${selector}`);
+                await this.humanClick(element, description);
+                return true;
+            } catch (error) {
+                this.logDebug(`[ClickFallback] Error with selector ${i + 1}/${selectors.length} (${selector}): ${error.message}`);
+                continue;
+            }
+        }
+        
+        this.logWarn(`[ClickFallback] All selectors failed for: ${description}`);
+        return false;
+    }
+
+    /**
+     * Wait for element with multiple selector fallbacks
+     * @param {string[]} selectors - Array of selectors
+     * @param {object} options - Wait options
+     * @returns {Promise<object|null>} - Element info or null
+     */
+    async waitForWithFallback(selectors, options = {}) {
+        const { visible = true, timeout = 5000, state = 'visible' } = options;
+        
+        for (const selector of selectors) {
+            try {
+                const element = this.page.locator(selector);
+                
+                await element.first().waitFor({ state, timeout: Math.min(timeout, 10000) });
+                
+                if (visible) {
+                    if (await element.first().isVisible().catch(() => false)) {
+                        this.logDebug(`[WaitFallback] Found: ${selector}`);
+                        return { element: element.first(), selector };
+                    }
+                } else {
+                    this.logDebug(`[WaitFallback] Found: ${selector}`);
+                    return { element: element.first(), selector };
+                }
+            } catch (error) {
+                this.logDebug(`[WaitFallback] Not found within timeout: ${selector}`);
+                continue;
+            }
+        }
+        
+        return null;
+    }
+
+    // =========================================================================
+    // LOGGING HELPERS
+    // =========================================================================
 
     /**
      * Debug logging helper

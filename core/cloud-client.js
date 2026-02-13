@@ -123,64 +123,55 @@ const logger = createLogger('cloud-client.js');
                  logger.warn('No cloud providers configured. Cloud client will not function.');
              }
 
-             // Check for open_router_free_api configuration
-             const freeApiConfig = settings?.open_router_free_api || {};
-             if (freeApiConfig.enabled) {
-                 logger.info(`[Cloud] Free API Router enabled`);
+              // Check for open_router_free_api configuration
+              const freeApiConfig = settings?.open_router_free_api || {};
+              if (freeApiConfig.enabled) {
+                  const allModels = [
+                      freeApiConfig.models?.primary,
+                      ...(freeApiConfig.models?.fallbacks || [])
+                  ].filter(Boolean);
 
-                 const allModels = [
-                     freeApiConfig.models?.primary,
-                     ...(freeApiConfig.models?.fallbacks || [])
-                 ].filter(Boolean);
+                  const allApiKeys = freeApiConfig.api_keys || [];
 
-                 const allApiKeys = freeApiConfig.api_keys || [];
+                  // Check if we already have results (prevents duplicate tests)
+                  if (CloudClient.sharedHelper) {
+                      const existingResults = CloudClient.sharedHelper.getResults();
+                      if (existingResults && existingResults.testDuration > 0) {
+                          logger.info(`[Cloud] Reuse cache: ${existingResults.working.length}/${existingResults.total} OK`);
+                      } else if (CloudClient.sharedHelper.isTesting()) {
+                          logger.info(`[Cloud] Tests already running`);
+                      } else {
+                          CloudClient.sharedHelper.updateConfig(allApiKeys, allModels);
+                          CloudClient.sharedHelper.testAllModelsInBackground();
+                      }
+                   } else {
+                       CloudClient.sharedHelper = FreeOpenRouterHelper.getInstance({
+                           apiKeys: allApiKeys,
+                           models: allModels,
+                           proxy: freeApiConfig.proxy?.enabled ? freeApiConfig.proxy.list : null,
+                           testTimeout: 10000,
+                           batchSize: 5
+                       });
+                       CloudClient.sharedHelper.testAllModelsInBackground();
+                   }
 
-                 logger.info(`[Cloud] Models: ${allModels.length}, API keys: ${allApiKeys.length}`);
+                  const optimized = CloudClient.sharedHelper.getOptimizedModelList(freeApiConfig.models?.primary);
 
-                 // Check if we already have results (prevents duplicate tests)
-                 if (CloudClient.sharedHelper) {
-                     const existingResults = CloudClient.sharedHelper.getResults();
-                     if (existingResults && existingResults.testDuration > 0) {
-                         logger.info(`[Cloud] Reusing cached test results: ${existingResults.working.length}/${existingResults.total} working`);
-                     } else if (CloudClient.sharedHelper.isTesting()) {
-                         logger.info(`[Cloud] Tests already running, waiting for completion...`);
-                     } else {
-                         logger.info(`[Cloud] Updating existing helper with new config...`);
-                         CloudClient.sharedHelper.updateConfig(allApiKeys, allModels);
-                         CloudClient.sharedHelper.testAllModelsInBackground();
-                     }
-                 } else {
-                     logger.info(`[Cloud] Creating new FreeOpenRouterHelper singleton`);
-                     CloudClient.sharedHelper = FreeOpenRouterHelper.getInstance({
-                         apiKeys: allApiKeys,
-                         models: allModels,
-                         proxy: freeApiConfig.proxy?.enabled ? freeApiConfig.proxy.list : null,
-                         testTimeout: 10000
-                     });
-                     logger.info(`[Cloud] Starting background model tests...`);
-                     CloudClient.sharedHelper.testAllModelsInBackground();
-                 }
+                  this.freeApiRouter = new FreeApiRouter({
+                      enabled: true,
+                      apiKeys: allApiKeys,
+                      primaryModel: optimized.primary || freeApiConfig.models?.primary,
+                      fallbackModels: optimized.fallbacks.length > 0 
+                          ? optimized.fallbacks 
+                          : (freeApiConfig.models?.fallbacks || []),
+                      proxyEnabled: freeApiConfig.proxy?.enabled || false,
+                      proxyList: freeApiConfig.proxy?.list || [],
+                      proxyFallbackToDirect: freeApiConfig.proxy?.fallback_to_direct !== false,
+                      timeout: this.timeout
+                  });
 
-                 const optimized = CloudClient.sharedHelper.getOptimizedModelList(freeApiConfig.models?.primary);
-
-                 this.freeApiRouter = new FreeApiRouter({
-                     enabled: true,
-                     apiKeys: allApiKeys,
-                     primaryModel: optimized.primary || freeApiConfig.models?.primary,
-                     fallbackModels: optimized.fallbacks.length > 0 
-                         ? optimized.fallbacks 
-                         : (freeApiConfig.models?.fallbacks || []),
-                     proxyEnabled: freeApiConfig.proxy?.enabled || false,
-                     proxyList: freeApiConfig.proxy?.list || [],
-                     proxyFallbackToDirect: freeApiConfig.proxy?.fallback_to_direct !== false,
-                     timeout: this.timeout
-                 });
-
-                 const sessionInfo = this.freeApiRouter.getSessionInfo();
-                 logger.info(`[Cloud] Free Router session: API key ${sessionInfo.apiKeyIndex}/${sessionInfo.totalApiKeys}`);
-                 logger.info(`[Cloud] Free Router primary model: ${sessionInfo.primaryModel}`);
-             } else {
-                  logger.debug(`[Cloud] Free API Router not enabled in config`);
+                  const sessionInfo = this.freeApiRouter.getSessionInfo();
+                  logger.info(`[Cloud] Router: ${sessionInfo.primaryModel} (key ${sessionInfo.apiKeyIndex}/${sessionInfo.totalApiKeys})`);
               }
 
           } catch (error) {
@@ -213,35 +204,37 @@ const logger = createLogger('cloud-client.js');
                   return { tested: false, reason: 'no_models' };
               }
 
+              // Check if we need to initialize or update the helper
               if (!CloudClient.sharedHelper) {
+                  logger.info('[Cloud] Creating new FreeOpenRouterHelper singleton');
                   CloudClient.sharedHelper = FreeOpenRouterHelper.getInstance({
                       apiKeys: freeApiConfig.api_keys || [],
                       models: allModels,
                       proxy: freeApiConfig.proxy?.enabled ? freeApiConfig.proxy.list : null,
-                      testTimeout: 10000
+                      testTimeout: 10000,
+                      batchSize: 5
                   });
+                  // Start tests asynchronously
                   CloudClient.sharedHelper.testAllModelsInBackground();
-              }
-
-              CloudClient.sharedHelper.updateConfig(freeApiConfig.api_keys || [], allModels);
-
-              const existingResults = CloudClient.sharedHelper.getResults();
-              if (!existingResults || existingResults.total === 0) {
-                  CloudClient.sharedHelper.testAllModelsInBackground();
-                  return {
-                      tested: true,
-                      status: 'testing_in_background',
-                      totalModels: allModels.length,
-                      results: CloudClient.sharedHelper.getResults()
-                  };
               } else {
-                  return {
-                      tested: true,
-                      status: 'using_cached_results',
-                      totalModels: allModels.length,
-                      results: existingResults
-                  };
+                  // Update config if needed
+                  CloudClient.sharedHelper.updateConfig(freeApiConfig.api_keys || [], allModels);
+                  
+                  // Only restart tests if cache is invalid/stale
+                  if (!CloudClient.sharedHelper.isCacheValid()) {
+                      logger.info('[Cloud] Cache stale, restarting background model tests...');
+                      CloudClient.sharedHelper.testAllModelsInBackground();
+                  } else {
+                      logger.info('[Cloud] Using cached model test results');
+                  }
               }
+
+              return {
+                  tested: true,
+                  status: CloudClient.sharedHelper.isTesting() ? 'testing_in_progress' : 'using_cached_results',
+                  totalModels: allModels.length,
+                  results: CloudClient.sharedHelper.getResults()
+              };
 
           } catch (error) {
               logger.error('[Cloud] Failed to start model tests:', error.message);

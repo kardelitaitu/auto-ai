@@ -33,7 +33,13 @@ export class FreeOpenRouterHelper {
     this.results = null;
     this.testing = false;
     this.testStartTime = null;
-    
+
+    // Mutex for preventing race conditions
+    this.testLock = null;
+
+    // Parallel batch size - test multiple models concurrently for speed
+    this.batchSize = options.batchSize || 5;
+
     // Cache TTL: 5 minutes (300000 ms)
     this.CACHE_TTL = 300000;
     this.cacheTimestamp = null;
@@ -64,13 +70,13 @@ export class FreeOpenRouterHelper {
 
   _parseProxy(proxyString) {
     if (!proxyString) return null;
-    
+
     const parts = proxyString.split(':');
     if (parts.length !== 4) {
       logger.warn(`[FreeRouterHelper] Invalid proxy format: ${proxyString}`);
       return null;
     }
-    
+
     return {
       host: parts[0],
       port: parts[1],
@@ -81,7 +87,7 @@ export class FreeOpenRouterHelper {
 
   async _testModel(model, apiKey) {
     const startTime = Date.now();
-    
+
     const testPrompt = [
       { role: 'user', content: 'Reply with exactly one word: "ok"' }
     ];
@@ -100,10 +106,9 @@ export class FreeOpenRouterHelper {
       const timeoutId = setTimeout(() => controller.abort(), this.testTimeout);
 
       try {
-        // Select and setup proxy if available
         const proxyString = this._selectProxy();
         const proxy = this._parseProxy(proxyString);
-        
+
         let fetchOptions = {
           method: 'POST',
           headers: {
@@ -116,21 +121,19 @@ export class FreeOpenRouterHelper {
           signal: controller.signal
         };
 
-        // Add proxy agent if proxy is configured
         if (proxy) {
           const proxyUrl = proxy.username
             ? `http://${proxy.username}:${proxy.password}@${proxy.host}:${proxy.port}`
             : `http://${proxy.host}:${proxy.port}`;
-          
+
           try {
             const agent = await createProxyAgent(proxyUrl);
             const httpAgent = await agent.getAgent();
             if (httpAgent) {
               fetchOptions.agent = httpAgent;
-              logger.debug(`[FreeRouterHelper] Using proxy: ${proxy.host}:${proxy.port}`);
             }
           } catch (proxyError) {
-            logger.warn(`[FreeRouterHelper] Failed to create proxy agent: ${proxyError.message}`);
+            logger.debug(`[FreeRouter] Proxy failed: ${proxyError.message}`);
           }
         }
 
@@ -162,116 +165,111 @@ export class FreeOpenRouterHelper {
   }
 
   async testAllModelsInBackground() {
-    if (this.testing) {
-      logger.warn('[FreeRouterHelper] Test already in progress, returning cached results');
+    // Acquire lock to prevent race conditions
+    if (this.testing && this.testLock) {
+      logger.info('[FreeRouter] Already testing, waiting...');
+      await this.testLock;
       return this.results || { working: [], failed: [], total: 0, testDuration: 0 };
     }
 
-    if (this.results && this.results.testDuration > 0) {
+    if (this.testing && !this.testLock) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return await this.testAllModelsInBackground();
+    }
+
+    if (this.results && this.results.testDuration > 0 && this.isCacheValid()) {
       const cacheAge = this.cacheTimestamp ? Math.round((Date.now() - this.cacheTimestamp) / 1000) : 'unknown';
-      const cacheStatus = this.isCacheValid() ? 'valid' : 'stale';
-      logger.info(`[FreeRouterHelper] Tests already completed, using cached results (${cacheAge}s old, ${cacheStatus})`);
+      logger.info(`[FreeRouter] Cache: ${cacheAge}s old, ${this.results.working.length}/${this.results.total} working`);
       return this.results;
     }
 
     if (this.models.length === 0) {
-      logger.warn('[FreeRouterHelper] No models configured');
+      logger.warn('[FreeRouter] No models configured');
       this.results = { working: [], failed: [], total: 0, testDuration: 0 };
       return this.results;
     }
 
     if (this.apiKeys.length === 0) {
-      logger.warn('[FreeRouterHelper] No API keys configured');
+      logger.warn('[FreeRouter] No API keys configured');
       this.results = { working: [], failed: [], total: 0, testDuration: 0 };
       return this.results;
     }
 
-    logger.info(`[FreeRouterHelper] Starting background model tests (${this.models.length} models)...`);
+    const proxies = this.proxy && this.proxy.length > 0
+      ? this.proxy.map(p => p.split(':')[0]).join(', ')
+      : 'direct';
+    logger.info(`[FreeRouter] Testing ${this.endpoint} with proxies: ${proxies}`);
+    logger.info(`[FreeRouter] Starting background tests (${this.models.length} models)...`);
 
+    // Acquire lock
     this.testing = true;
-    this.results = {
-      working: [],
-      failed: [],
-      total: this.models.length,
-      testDuration: 0
+    this.testLock = (async () => {
+      this.results = {
+        working: [],
+        failed: [],
+        total: this.models.length,
+        testDuration: 0
+      };
+
+      this.testStartTime = Date.now();
+
+      let successCount = 0;
+      let failCount = 0;
+
+      // Process models in parallel batches
+      for (let i = 0; i < this.models.length; i += this.batchSize) {
+        if (!this.testing) {
+          this.results.testDuration = Date.now() - this.testStartTime;
+          return this.results;
+        }
+
+        const batch = this.models.slice(i, i + this.batchSize);
+        const batchPromises = batch.map(async (model) => {
+          const apiKey = this._getNextApiKey();
+          const result = await this._testModel(model, apiKey);
+
+          if (result.success) {
+            this.results.working.push(model);
+            successCount++;
+          } else {
+            this.results.failed.push({ model, error: result.error?.substring(0, 30) || 'Err', duration: result.duration });
+            failCount++;
+          }
+        });
+
+        await Promise.all(batchPromises);
+
+        // Small delay between batches to avoid rate limiting
+        if (i + this.batchSize < this.models.length) {
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+      }
+
+      this.results.testDuration = Date.now() - this.testStartTime;
+      this.testing = false;
+      this.testStartTime = null;
+
+      let resultMsg = `[FreeRouter] Done: ${successCount}/${this.models.length} OK (${this.results.testDuration}ms)`;
+      logger.info(resultMsg);
+
+      this.cacheTimestamp = Date.now();
+      return this.results;
+    })();
+
+    // NON-BLOCKING: Return immediately, tests run in background
+    return {
+      testing: true,
+      message: 'Tests started in background',
+      cached: false
     };
-
-    this.testStartTime = Date.now();
-
-    let successCount = 0;
-    let failCount = 0;
-
-    for (let i = 0; i < this.models.length; i++) {
-      if (!this.testing) {
-        logger.warn('[FreeRouterHelper] Test interrupted, returning partial results');
-        this.results.testDuration = Date.now() - this.testStartTime;
-        this.testing = false;
-        this.testStartTime = null;
-        logger.info(`[FreeRouterHelper] Partial results: ${successCount}/${i} working`);
-        return this.results;
-      }
-
-      const model = this.models[i];
-      const apiKey = this._getNextApiKey();
-
-      logger.debug(`[FreeRouterHelper] Testing ${i + 1}/${this.models.length}: ${model} (key: ${this._maskKey(apiKey)})`);
-
-      try {
-        const result = await this._testModel(model, apiKey);
-
-        if (!this.results) {
-          this.results = { working: [], failed: [], total: this.models.length, testDuration: 0 };
-        }
-
-        if (result.success) {
-          this.results.working.push(model);
-          successCount++;
-          logger.info(`[FreeRouterHelper] ${model} (${result.duration}ms)`);
-        } else {
-          this.results.failed.push({ model, error: result.error?.substring(0, 40) || 'Unknown error', duration: result.duration });
-          failCount++;
-          logger.warn(`[FreeRouterHelper] ${model}: ${result.error?.substring(0, 40)}`);
-        }
-      } catch (error) {
-        if (!this.results) {
-          this.results = { working: [], failed: [], total: this.models.length, testDuration: 0 };
-        }
-        this.results.failed.push({ model, error: error.message, duration: 0 });
-        failCount++;
-        logger.warn(`[FreeRouterHelper] ${model}: ${error.message}`);
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 200));
-    }
-
-    this.results.testDuration = Date.now() - this.testStartTime;
-    this.testing = false;
-    this.testStartTime = null;
-    
-    // Set cache timestamp when tests complete
-    this.cacheTimestamp = Date.now();
-    logger.debug(`[FreeRouterHelper] Cache timestamp set: ${new Date(this.cacheTimestamp).toISOString()}`);
-
-    logger.info(`[FreeRouterHelper] Model Test Complete: ${successCount}/${this.models.length} working (${this.results.testDuration}ms)`);
-    
-    if (this.results.working.length > 0) {
-      logger.info(`[FreeRouterHelper] Working: ${this.results.working.join(', ')}`);
-    }
-    
-    if (this.results.failed.length > 0) {
-      const failedModels = this.results.failed.map(f => f.model).join(', ');
-      logger.warn(`[FreeRouterHelper] Failed: ${failedModels}`);
-    }
-
-    return this.results;
   }
 
   async waitForTests(maxWait = 60000) {
     const startWait = Date.now();
-    while (this.testing && (Date.now() - startWait) < maxWait) {
+    while ((this.testing || this.testLock) && (Date.now() - startWait) < maxWait) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-    if (this.testing) {
+    if (this.testing || this.testLock) {
       logger.warn('[FreeRouterHelper] Wait timeout, tests still in progress');
     }
     return this.results;
@@ -321,6 +319,22 @@ export class FreeOpenRouterHelper {
 
   isTesting() {
     return this.testing;
+  }
+
+  getQuickStatus() {
+    if (this.testing) {
+      return { status: 'testing', progress: `${this.results?.working?.length || 0}/${this.models.length}` };
+    }
+    if (this.results && this.results.testDuration > 0) {
+      return {
+        status: 'done',
+        working: this.results.working.length,
+        failed: this.results.failed.length,
+        total: this.results.total,
+        duration: this.results.testDuration
+      };
+    }
+    return { status: 'idle' };
   }
 
   getOptimizedModelList(primary = null) {

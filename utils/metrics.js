@@ -32,6 +32,19 @@ class MetricsCollector {
       totalLikes: 0,
       totalRetweets: 0,
       totalTweets: 0,
+      // Twitter engagement metrics
+      totalReplies: 0,
+      totalQuotes: 0,
+      totalBookmarks: 0,
+      // Performance metrics
+      totalDiveDuration: 0,
+      diveCount: 0,
+      diveDurations: [],
+      totalAILatency: 0,
+      aiRequestCount: 0,
+      aiLatencies: [],
+      // Error tracking
+      errorsByType: {},
       startTime: Date.now(),
       lastResetTime: Date.now()
     };
@@ -167,6 +180,154 @@ class MetricsCollector {
   }
 
   /**
+   * Records Twitter engagement actions (replies, quotes, bookmarks)
+   * @param {string} type - The type of action: 'reply', 'quote', 'bookmark'
+   * @param {number} [count=1] - The number of actions to record
+   */
+  recordTwitterEngagement(type, count = 1) {
+    if (typeof type !== 'string') {
+      logger.warn(`[recordTwitterEngagement] Invalid type: expected string, got ${typeof type}`);
+      return;
+    }
+
+    const safeCount = typeof count === 'number' && !isNaN(count) && count > 0
+      ? Math.floor(count)
+      : 0;
+
+    if (safeCount === 0) {
+      return;
+    }
+
+    const normalizedType = type.toLowerCase().trim();
+
+    switch (normalizedType) {
+      case 'reply':
+        this.metrics.totalReplies += safeCount;
+        break;
+      case 'quote':
+        this.metrics.totalQuotes += safeCount;
+        break;
+      case 'bookmark':
+        this.metrics.totalBookmarks += safeCount;
+        break;
+      default:
+        logger.warn(`[recordTwitterEngagement] Unknown action type: '${type}'`);
+        return;
+    }
+
+    logger.debug(`[recordTwitterEngagement] Recorded ${safeCount} ${normalizedType}(s)`);
+  }
+
+  /**
+   * Records the duration of a tweet dive operation
+   * @param {number} durationMs - Duration in milliseconds
+   */
+  recordDiveDuration(durationMs) {
+    if (typeof durationMs !== 'number' || isNaN(durationMs) || durationMs < 0) {
+      return;
+    }
+
+    this.metrics.totalDiveDuration += durationMs;
+    this.metrics.diveCount++;
+    this.metrics.diveDurations.push(durationMs);
+
+    if (this.metrics.diveDurations.length > 100) {
+      this.metrics.diveDurations.shift();
+    }
+
+    logger.debug(`[recordDiveDuration] Recorded: ${durationMs}ms (avg: ${this.getAvgDiveDuration()}ms)`);
+  }
+
+  /**
+   * Records AI request latency
+   * @param {number} latencyMs - Latency in milliseconds
+   * @param {boolean} success - Whether the request succeeded
+   */
+  recordAILatency(latencyMs, success = true) {
+    if (typeof latencyMs !== 'number' || isNaN(latencyMs) || latencyMs < 0) {
+      return;
+    }
+
+    this.metrics.totalAILatency += latencyMs;
+    this.metrics.aiRequestCount++;
+    this.metrics.aiLatencies.push(latencyMs);
+
+    if (this.metrics.aiLatencies.length > 100) {
+      this.metrics.aiLatencies.shift();
+    }
+
+    if (!success) {
+      this.recordError('ai_request_failure', 'AI request failed');
+    }
+
+    logger.debug(`[recordAILatency] Recorded: ${latencyMs}ms (avg: ${this.getAvgAILatency()}ms)`);
+  }
+
+  /**
+   * Records an error with type categorization
+   * @param {string} errorType - The type/category of error
+   * @param {string} message - Error message
+   */
+  recordError(errorType, message) {
+    if (!this.metrics.errorsByType[errorType]) {
+      this.metrics.errorsByType[errorType] = { count: 0, messages: [] };
+    }
+    this.metrics.errorsByType[errorType].count++;
+    if (this.metrics.errorsByType[errorType].messages.length < 5) {
+      this.metrics.errorsByType[errorType].messages.push(message);
+    }
+    logger.debug(`[recordError] ${errorType}: ${message}`);
+  }
+
+  /**
+   * Gets average dive duration in milliseconds
+   * @returns {number} Average duration or 0 if no dives recorded
+   */
+  getAvgDiveDuration() {
+    if (this.metrics.diveCount === 0) return 0;
+    return Math.round(this.metrics.totalDiveDuration / this.metrics.diveCount);
+  }
+
+  /**
+   * Gets average AI latency in milliseconds
+   * @returns {number} Average latency or 0 if no requests recorded
+   */
+  getAvgAILatency() {
+    if (this.metrics.aiRequestCount === 0) return 0;
+    return Math.round(this.metrics.totalAILatency / this.metrics.aiRequestCount);
+  }
+
+  /**
+   * Gets Twitter-specific engagement metrics
+   * @returns {object} Engagement statistics
+   */
+  getTwitterEngagementMetrics() {
+    const totalEngagements = this.metrics.totalLikes + this.metrics.totalReplies + 
+                             this.metrics.totalQuotes + this.metrics.totalRetweets +
+                             this.metrics.totalBookmarks + this.metrics.totalFollows;
+
+    return {
+      actions: {
+        likes: this.metrics.totalLikes,
+        replies: this.metrics.totalReplies,
+        quotes: this.metrics.totalQuotes,
+        retweets: this.metrics.totalRetweets,
+        bookmarks: this.metrics.totalBookmarks,
+        follows: this.metrics.totalFollows,
+        tweets: this.metrics.totalTweets,
+        total: totalEngagements
+      },
+      performance: {
+        avgDiveDuration: this.getAvgDiveDuration(),
+        diveCount: this.metrics.diveCount,
+        avgAILatency: this.getAvgAILatency(),
+        aiRequestCount: this.metrics.aiRequestCount
+      },
+      errors: { ...this.metrics.errorsByType }
+    };
+  }
+
+  /**
    * Gets comprehensive statistics about the system.
    * @returns {object} An object containing system statistics.
    */
@@ -240,7 +401,8 @@ class MetricsCollector {
         likes: this.metrics.totalLikes,
         retweets: this.metrics.totalRetweets,
         tweets: this.metrics.totalTweets
-      }
+      },
+      twitter: this.getTwitterEngagementMetrics()
     };
   }
 

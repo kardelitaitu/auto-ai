@@ -320,6 +320,7 @@ export class AIReplyEngine {
       try {
         const request = {
           action: 'generate_reply',
+          sessionId: this.agent.sessionId || 'reply-engine',
           payload: {
             systemPrompt: REPLY_SYSTEM_PROMPT,
             userPrompt: promptData.text,
@@ -1506,7 +1507,7 @@ Write ONE short reply (1 sentence max):`;
   async executeReply(page, replyText, options = {}) {
     this.logger.info(`[AIReply] Executing reply (${replyText.length} chars)...`);
 
-    const human = new HumanInteraction();
+    const human = new HumanInteraction(page);
     human.debugMode = true;
 
     // Define 4 reply methods with weights
@@ -1553,8 +1554,8 @@ Write ONE short reply (1 sentence max):`;
      await page.keyboard.press('Escape');
      await new Promise(resolve => setTimeout(resolve, 300));
 
-     // Click on the page body first to ensure focus
-     await page.click('body', { offset: { x: 100, y: 100 } }).catch(() => {});
+     // Click on the page body first to ensure focus (using mouse for simple click)
+     await page.mouse.click(100, 100);
      await new Promise(resolve => setTimeout(resolve, 200));
 
      // Press R for reply
@@ -1566,9 +1567,9 @@ Write ONE short reply (1 sentence max):`;
      const verify = await human.verifyComposerOpen(page);
      if (!verify.open) {
        human.logStep('VERIFY_FAILED', 'Composer did not open');
-       // Try clicking on the page body again and pressing R
-       await page.click('body', { offset: { x: 100, y: 100 } }).catch(() => {});
-       await new Promise(resolve => setTimeout(resolve, 500));
+        // Try clicking on the page body again and pressing R
+        await page.mouse.click(100, 100);
+        await new Promise(resolve => setTimeout(resolve, 500));
        await page.keyboard.press('r');
        await new Promise(resolve => setTimeout(resolve, 1500));
        const verify2 = await human.verifyComposerOpen(page);
@@ -1606,31 +1607,33 @@ Write ONE short reply (1 sentence max):`;
      await page.evaluate(() => window.scrollTo(0, 0));
      await new Promise(resolve => setTimeout(resolve, 800));
 
-     // Click on the main tweet text area to ensure we're focused on it
-     human.logStep('FOCUS_MAIN', 'Clicking main tweet to ensure focus');
-     const mainTweetSelectors = [
-       '[data-testid="tweetText"]',
-       '[class*="tweetText"]',
-       'article[role="article"] [dir="auto"]'
-     ];
+      // Click on the main tweet text area to ensure we're focused on it
+      human.logStep('FOCUS_MAIN', 'Clicking main tweet to ensure focus');
+      const mainTweetSelectors = [
+        '[data-testid="tweetText"]',
+        '[class*="tweetText"]',
+        'article[role="article"] [dir="auto"]'
+      ];
 
-     let mainTweetClicked = false;
-     for (const selector of mainTweetSelectors) {
-       try {
-         const el = page.locator(selector).first();
-         if (await el.count() > 0) {
-           await el.click({ offset: { x: 10, y: 10 } }).catch(() => {});
-           await new Promise(resolve => setTimeout(resolve, 300));
-           mainTweetClicked = true;
-           human.logStep('FOCUS_MAIN', `Clicked with ${selector}`);
-           break;
-         }
-       } catch (e) {}
-     }
+      let mainTweetClicked = false;
+      for (const selector of mainTweetSelectors) {
+        try {
+          const el = page.locator(selector).first();
+          if (await el.count() > 0) {
+            const success = await human.safeHumanClick(el, 'Main Tweet - Focus', 3);
+            if (success) {
+              await new Promise(resolve => setTimeout(resolve, 300));
+              mainTweetClicked = true;
+              human.logStep('FOCUS_MAIN', `Clicked with ${selector}`);
+              break;
+            }
+          }
+        } catch (e) {}
+      }
 
-     if (!mainTweetClicked) {
-       human.logStep('FOCUS_MAIN', 'Could not click main tweet, continuing anyway');
-     }
+      if (!mainTweetClicked) {
+        human.logStep('FOCUS_MAIN', 'Could not click main tweet, continuing anyway');
+      }
 
      // Random delay before action
      await human.hesitation(500, 1500);
@@ -1682,12 +1685,11 @@ Write ONE short reply (1 sentence max):`;
     // Micro movement
     await human.microMove(page, 20);
 
-    // Click
+    // Click using human-like interaction with retry
     human.logStep('CLICK', `Clicking with ${btnResult.selector}`);
-    try {
-      await btnResult.element.click();
-    } catch (e) {
-      human.logStep('CLICK_FAILED', `Trying force click: ${e.message}`);
+    const clickSuccess = await human.safeHumanClick(btnResult.element, 'Reply Button', 3);
+    if (!clickSuccess) {
+      human.logStep('CLICK_FAILED', 'humanClick failed after retries, trying force click');
       await btnResult.element.click({ force: true });
     }
 
@@ -1854,7 +1856,7 @@ Write ONE short reply (1 sentence max):`;
       const replyOption = page.locator('text=Reply', '[aria-label*="Reply"]').first();
       if (await replyOption.count() > 0) {
         human.logStep('MENU_CLICK', 'Clicking Reply from menu');
-        await replyOption.click();
+        await human.safeHumanClick(replyOption, 'Reply Menu Option', 3);
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
     } else {

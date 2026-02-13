@@ -8,56 +8,63 @@ const __dirname = path.dirname(__filename);
 
 const OUTPUT_FILE = path.join(__dirname, '../data/twitterActivityProfiles.json');
 
-// Aggressive Bounds - Max 50s per loop
+// Tweaked Bounds
 const BOUNDS = {
     Skimmer: {
-        readingPhase: { mean: 25000, deviation: 10000 },
-        scrollPause: { mean: 400, deviation: 150 },
-        refresh: 0.3, dive: 0.4,
-        tweetDive: 0.15, like: 0.03,
-        bookmark: 0.005, follow: 0.003
+        readingPhase: { mean: 60000, deviation: 20000 },
+        scrollPause: { mean: 800, deviation: 300 },
+        refresh: 0.2, dive: 0.2,
+        tweetDive: 0.05, like: 0.01,
+        bookmark: 0.002, follow: 0.001,
+        tweet: 0.01 // 1%
     },
     Balanced: {
-        readingPhase: { mean: 35000, deviation: 12000 },
-        scrollPause: { mean: 800, deviation: 300 },
-        refresh: 0.2, dive: 0.5,
-        tweetDive: 0.2, like: 0.04,
-        bookmark: 0.01, follow: 0.005
+        readingPhase: { mean: 120000, deviation: 45000 },
+        scrollPause: { mean: 2000, deviation: 800 },
+        refresh: 0.1, dive: 0.3,
+        tweetDive: 0.1, like: 0.015,
+        bookmark: 0.005, follow: 0.003,
+        tweet: 0.05 // 5%
     },
     DeepDiver: {
-        readingPhase: { mean: 45000, deviation: 8000 },
-        scrollPause: { mean: 1500, deviation: 500 },
-        refresh: 0.1, dive: 0.8,
-        tweetDive: 0.35, like: 0.05,
-        bookmark: 0.04, follow: 0.008
+        readingPhase: { mean: 210000, deviation: 70000 },
+        scrollPause: { mean: 4000, deviation: 1500 },
+        refresh: 0.05, dive: 0.6,
+        tweetDive: 0.2, like: 0.018,
+        bookmark: 0.02, follow: 0.005,
+        tweet: 0.02 // 2%
     },
     Lurker: {
-        readingPhase: { mean: 40000, deviation: 10000 },
-        scrollPause: { mean: 1000, deviation: 400 },
-        refresh: 0.1, dive: 0.3,
-        tweetDive: 0.25, like: 0.025,
-        bookmark: 0.05, follow: 0.003
+        readingPhase: { mean: 250000, deviation: 90000 },
+        scrollPause: { mean: 3000, deviation: 1000 },
+        refresh: 0.05, dive: 0.1,
+        tweetDive: 0.15, like: 0.005,
+        bookmark: 0.03, follow: 0.001,
+        tweet: 0.001 // 0.1%
     },
     DoomScroller: {
-        readingPhase: { mean: 15000, deviation: 8000 },
-        scrollPause: { mean: 300, deviation: 100 },
-        refresh: 0.15, dive: 0.2,
-        tweetDive: 0.1, like: 0.02,
-        bookmark: 0.003, follow: 0.002
+        readingPhase: { mean: 30000, deviation: 12000 },
+        scrollPause: { mean: 600, deviation: 200 },
+        refresh: 0.1, dive: 0.05,
+        tweetDive: 0.02, like: 0.005,
+        bookmark: 0.001, follow: 0.0005,
+        tweet: 0.001 // 0.1%
     },
     NewsJunkie: {
-        readingPhase: { mean: 20000, deviation: 10000 },
-        scrollPause: { mean: 600, deviation: 200 },
-        refresh: 0.8, dive: 0.3,
-        tweetDive: 0.5, like: 0.03,
-        bookmark: 0.05, follow: 0.02
+        readingPhase: { mean: 40000, deviation: 15000 },
+        scrollPause: { mean: 1200, deviation: 400 },
+        refresh: 0.6, dive: 0.1,
+        tweetDive: 0.3, like: 0.01,
+        bookmark: 0.025, follow: 0.01,
+        tweet: 0.15 // 15%
     },
     Stalker: {
-        readingPhase: { mean: 35000, deviation: 12000 },
-        scrollPause: { mean: 800, deviation: 300 },
-        refresh: 0.15, dive: 0.95,
-        tweetDive: 0.15, like: 0.03,
-        bookmark: 0.01, follow: 0.05
+        readingPhase: { mean: 120000, deviation: 40000 },
+        scrollPause: { mean: 2000, deviation: 800 },
+        refresh: 0.1, dive: 0.9,
+        tweetDive: 0.05, like: 0.01,
+        bookmark: 0.005, follow: 0.02,
+        tweet: 0.01 // 1%
     }
 };
 
@@ -76,31 +83,15 @@ class ProfileFactory {
     static create(index, type = "Balanced") {
         const bounds = BOUNDS[type];
 
-        // 1. Timings - Aggressive: max 50s per loop
-        const MAX_READING_PHASE = 50000; // 50 seconds max
-        const MIN_READING_PHASE = 10000; // 10 seconds min
-        
-        let readingMean = this.gaussian(bounds.readingPhase.mean, 5000);
-        readingMean = Math.max(MIN_READING_PHASE, Math.min(MAX_READING_PHASE, readingMean));
-        
-        let readingDev = this.gaussian(bounds.readingPhase.deviation, 1000);
-        readingDev = Math.max(2000, Math.min(15000, readingDev));
-        
+        // 1. Timings
         const pReading = {
-            mean: Math.floor(readingMean),
-            deviation: Math.floor(readingDev)
+            mean: Math.floor(Math.max(15000, this.gaussian(bounds.readingPhase.mean, 10000))),
+            deviation: Math.floor(Math.max(5000, this.gaussian(bounds.readingPhase.deviation, 2000)))
         };
 
-        // Faster scrolling - more aggressive
-        let scrollMean = this.gaussian(bounds.scrollPause.mean, 100);
-        scrollMean = Math.max(200, Math.min(3000, scrollMean));
-        
-        let scrollDev = this.gaussian(bounds.scrollPause.deviation, 50);
-        scrollDev = Math.max(50, Math.min(800, scrollDev));
-        
         const pScroll = {
-            mean: Math.floor(scrollMean),
-            deviation: Math.floor(scrollDev)
+            mean: Math.floor(Math.max(200, this.gaussian(bounds.scrollPause.mean, 200))),
+            deviation: Math.floor(Math.max(50, this.gaussian(bounds.scrollPause.deviation, 50)))
         };
 
         // 2. Initial Probabilities
@@ -114,6 +105,9 @@ class ProfileFactory {
         let pLikeAfter = Math.max(0.005, Math.min(0.02, this.gaussian(bounds.like, 0.005)));
         let pBookmark = Math.max(0, Math.min(0.1, this.gaussian(bounds.bookmark, 0.005)));
         let pFollow = Math.max(0, Math.min(0.01, this.gaussian(bounds.follow, 0.001)));
+
+        // Tweet (Post) Probability
+        let pTweet = Math.max(0, Math.min(0.3, this.gaussian(bounds.tweet, 0.02)));
 
 
         // 3. New Input Logic (Mouse vs Keyboard Personas)
@@ -159,12 +153,13 @@ class ProfileFactory {
         pLikeAfter = this.round(pLikeAfter);
         pBookmark = this.round(pBookmark);
         pFollow = this.round(pFollow);
+        pTweet = this.round(pTweet);
 
         // Generate ID and Description
         const id = `${String(index).padStart(2, '0')}-${type}`;
         const inputDesc = isMouseUser ? `Mouse (${(inputP.wheelDown * 100).toFixed(0)}%)` : `Keys (${(inputP.keysDown * 100).toFixed(0)}%)`;
 
-        const desc = `Type: ${type} | Input: ${inputDesc} | Dive: ${(pDive * 100).toFixed(1)}% | T-Dive: ${(pTweetDive * 100).toFixed(1)}% Like: ${(pLikeAfter * 100).toFixed(2)}% Bkmk: ${(pBookmark * 100).toFixed(2)}% Follow: ${(pFollow * 100).toFixed(2)}%`;
+        const desc = `Type: ${type} | Input: ${inputDesc} | Dive: ${(pDive * 100).toFixed(1)}% | Tweet: ${(pTweet * 100).toFixed(1)}% | T-Dive: ${(pTweetDive * 100).toFixed(1)}% Like: ${(pLikeAfter * 100).toFixed(2)}%`;
 
         return {
             id,
@@ -195,12 +190,13 @@ class ProfileFactory {
                 likeTweetafterDive: pLikeAfter,
                 bookmarkAfterDive: pBookmark,
                 followOnProfile: pFollow,
+                tweet: pTweet,
                 // Reverted to original range logic (approx 10-30%)
                 idle: pIdle
             },
             inputMethods: inputP,
-            maxLike: 5,
-            maxFollow: 2,
+            maxLike: 2,
+            maxFollow: 1,
             theme: 'dark'
         };
     }

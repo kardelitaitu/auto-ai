@@ -73,6 +73,12 @@ export class RequestDedupe {
       return;
     }
 
+    // Don't cache empty responses - they pollute the cache
+    if (!response || (typeof response === 'string' && response.trim().length === 0)) {
+      logger.debug(`[RequestDedupe] Not caching empty response`);
+      return;
+    }
+
     const key = this._generateKey(messages, model, maxTokens, temperature);
 
     this.cache.set(key, {

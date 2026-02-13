@@ -27,6 +27,11 @@ class SessionManager {
     this.cleanupIntervalMs = options.cleanupIntervalMs || 5 * 60 * 1000;
     this.concurrencyPerBrowser = 1;
     this.cleanupInterval = null;
+    
+    // Worker allocation lock - prevents race conditions
+    this.workerLocks = new Map(); // sessionId -> Promise
+    this.workerOccupancy = new Map(); // Track worker occupancy for debugging
+    
     this.startCleanupTimer();
     this.loadConfiguration();
   }
@@ -117,43 +122,174 @@ class SessionManager {
   }
 
   /**
-   * Finds an idle worker in a specific session, marks it as busy, and returns it.
-   * @param {string} sessionId - The ID of the session to check.
-   * @returns {object | null} The worker object if found, otherwise null.
-   */
-  findAndOccupyIdleWorker(sessionId) {
-    const session = this.sessions.find(s => s.id === sessionId);
-    if (!session) return null;
-
-    const worker = session.workers.find(w => w.status === 'idle');
-    if (worker) {
-      worker.status = 'busy';
-      logger.debug(`Occupied worker ${worker.id} in session ${sessionId}`);
-      return worker;
+    * Finds an idle worker in a specific session, marks it as busy, and returns it.
+    * Uses atomic locking to prevent race conditions.
+    * @param {string} sessionId - The ID of the session to check.
+    * @returns {Promise<object | null>} The worker object if found, otherwise null.
+    */
+  async findAndOccupyIdleWorker(sessionId) {
+    // Acquire lock for this session to ensure atomicity
+    if (!this.workerLocks.has(sessionId)) {
+      this.workerLocks.set(sessionId, Promise.resolve());
     }
+    
+    const lockPromise = this.workerLocks.get(sessionId);
+    
+    // Create a new promise that waits for the lock and then processes
+    const result = await new Promise((resolve) => {
+      lockPromise.then(async () => {
+        // We hold the lock - proceed with atomic operation
+        const session = this.sessions.find(s => s.id === sessionId);
+        if (!session) {
+          resolve(null);
+          return;
+        }
 
-    return null;
+        // Find first idle worker
+        const worker = session.workers.find(w => w.status === 'idle');
+        if (worker) {
+          // Double-check worker is still idle (defensive programming)
+          if (session.workers.find(w => w.id === worker.id && w.status === 'idle')) {
+            worker.status = 'busy';
+            worker.occupiedAt = Date.now();
+            worker.occupiedBy = this._getCurrentExecutionContext();
+            
+            // Track occupancy for debugging
+            const occupancyKey = `${sessionId}:${worker.id}`;
+            this.workerOccupancy.set(occupancyKey, {
+              startTime: Date.now(),
+              context: worker.occupiedBy
+            });
+            
+            logger.debug(`[ATOMIC] Occupied worker ${worker.id} in session ${sessionId} (context: ${worker.occupiedBy})`);
+            resolve(worker);
+            return;
+          }
+        }
+
+        logger.debug(`[ATOMIC] No idle workers available in session ${sessionId}`);
+        resolve(null);
+      });
+    });
+    
+    return result;
   }
 
   /**
-   * Releases a worker in a specific session, setting its status to idle.
-   * @param {string} sessionId - The ID of the session.
-   * @param {number} workerId - The ID of the worker to release.
-   */
-  releaseWorker(sessionId, workerId) {
-    const session = this.sessions.find(s => s.id === sessionId);
-    if (session) {
-      const worker = session.workers.find(w => w.id === workerId);
-      if (worker) {
-        worker.status = 'idle';
-        session.lastActivity = Date.now();
-        logger.debug(`Released worker ${worker.id} in session ${sessionId}`);
-      } else {
-        logger.warn(`Worker ${workerId} not found in session ${sessionId} to release.`);
-      }
-    } else {
-      logger.warn(`Session ${sessionId} not found to release a worker.`);
+    * Releases a worker in a specific session, setting its status to idle.
+    * Uses atomic locking to prevent race conditions.
+    * @param {string} sessionId - The ID of the session.
+    * @param {number} workerId - The ID of the worker to release.
+    */
+  async releaseWorker(sessionId, workerId) {
+    // Acquire lock for this session to ensure atomicity
+    if (!this.workerLocks.has(sessionId)) {
+      this.workerLocks.set(sessionId, Promise.resolve());
     }
+    
+    const lockPromise = this.workerLocks.get(sessionId);
+    
+    // Create a new promise that waits for the lock and then processes
+    await new Promise((resolve) => {
+      lockPromise.then(async () => {
+        // We hold the lock - proceed with atomic operation
+        const session = this.sessions.find(s => s.id === sessionId);
+        if (session) {
+          const worker = session.workers.find(w => w.id === workerId);
+          if (worker) {
+            // Only release if worker is busy
+            if (worker.status === 'busy') {
+              worker.status = 'idle';
+              worker.occupiedAt = null;
+              worker.occupiedBy = null;
+              session.lastActivity = Date.now();
+              
+              // Clear occupancy tracking
+              const occupancyKey = `${sessionId}:${worker.id}`;
+              const occupancyInfo = this.workerOccupancy.get(occupancyKey);
+              if (occupancyInfo) {
+                const duration = Date.now() - occupancyInfo.startTime;
+                logger.debug(`[ATOMIC] Released worker ${worker.id} in session ${sessionId} after ${duration}ms (context: ${occupancyInfo.context})`);
+                this.workerOccupancy.delete(occupancyKey);
+              } else {
+                logger.debug(`[ATOMIC] Released worker ${worker.id} in session ${sessionId}`);
+              }
+            } else {
+              logger.warn(`[ATOMIC] Worker ${workerId} in session ${sessionId} is not busy, cannot release`);
+            }
+          } else {
+            logger.warn(`Worker ${workerId} not found in session ${sessionId} to release.`);
+          }
+        } else {
+          logger.warn(`Session ${sessionId} not found to release a worker.`);
+        }
+        
+        resolve();
+      });
+    });
+  }
+
+  /**
+    * Gets the current execution context for debugging.
+    * @private
+    */
+  _getCurrentExecutionContext() {
+    try {
+      // Try to get stack trace info
+      const stack = new Error().stack;
+      if (stack) {
+        // Extract useful context from stack
+        const lines = stack.split('\n').slice(2, 4); // Skip Error and this function
+        return lines.map(line => line.trim()).join(' | ');
+      }
+    } catch (e) {
+      // Fallback to basic info
+    }
+    return 'unknown';
+  }
+
+  /**
+    * Gets occupancy information for debugging.
+    * @param {string} sessionId - The session ID.
+    * @returns {object} Occupancy information.
+    */
+  getWorkerOccupancy(sessionId) {
+    const occupancy = {};
+    for (const [key, info] of this.workerOccupancy) {
+      if (key.startsWith(`${sessionId}:`)) {
+        const workerId = key.split(':')[1];
+        occupancy[workerId] = {
+          duration: Date.now() - info.startTime,
+          context: info.context
+        };
+      }
+    }
+    return occupancy;
+  }
+
+  /**
+    * Checks if any workers are stuck (occupied for too long).
+    * @param {number} thresholdMs - Threshold in milliseconds.
+    * @returns {object[]} List of stuck workers.
+    */
+  getStuckWorkers(thresholdMs = 60000) {
+    const stuck = [];
+    const now = Date.now();
+    
+    for (const [key, info] of this.workerOccupancy) {
+      const duration = now - info.startTime;
+      if (duration > thresholdMs) {
+        const [sessionId, workerId] = key.split(':');
+        stuck.push({
+          sessionId,
+          workerId: parseInt(workerId),
+          duration,
+          context: info.context
+        });
+      }
+    }
+    
+    return stuck;
   }
 
   /**

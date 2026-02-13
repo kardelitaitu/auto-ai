@@ -5,7 +5,14 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "node test-optimizations.js",
+    "test": "npx vitest run",
+    "test:unit": "npx vitest run tests/unit",
+    "test:integration": "npx vitest run tests/integration",
+    "test:edge-cases": "npx vitest run tests/edge-cases",
+    "test:all": "npx vitest run tests/",
+    "test:watch": "npx vitest",
+    "test:coverage": "npx vitest run --coverage",
+    "test:verbose": "npx vitest run --reporter=verbose",
     "docs": "jsdoc -c jsdoc.json",
     "docs:watch": "jsdoc -c jsdoc.json -r"
   },
@@ -33,7 +40,10 @@
     "playwright": "^1.56.1"
   },
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
     "docdash": "^2.0.2",
-    "jsdoc": "^4.0.5"
+    "jest": "^30.2.0",
+    "jsdoc": "^4.0.5",
+    "vitest": "^4.0.18"
   }
 }

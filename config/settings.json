@@ -49,6 +49,27 @@
       "warmupPercent": 0.1,
       "activePercent": 0.7,
       "cooldownPercent": 0.2
+    },
+    "actions": {
+      "reply": {
+        "probability": 0.60,
+        "enabled": true
+      },
+      "quote": {
+        "probability": 0.20,
+        "enabled": true
+      },
+      "like": {
+        "probability": 0.15,
+        "enabled": true
+      },
+      "bookmark": {
+        "probability": 0.05,
+        "enabled": true
+      },
+      "goHome": {
+        "enabled": true
+      }
     }
   },
   "llm": {
@@ -164,7 +185,7 @@
     "sessionTimeoutMs": 1800000,
     "cleanupIntervalMs": 300000
   },
-"open_router_free_api": {
+  "open_router_free_api": {
     "enabled": true,
     "api_keys": [
       "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",
@@ -228,7 +249,35 @@
         "45.39.73.220:5635:KingAirdrop:kiNgdom77",
         "45.39.73.113:5528:KingAirdrop:kiNgdom77",
         "45.39.73.151:5566:KingAirdrop:kiNgdom77"
-      ]
+        ]
+      }
+    },
+
+  "logging": {
+    "engagementProgress": {
+      "enabled": true,
+      "showProgressBar": true,
+      "progressBarStyle": "blocks",
+      "showPercent": true,
+      "showCounts": true,
+      "types": {
+        "replies": { "show": true, "label": "replies" },
+        "retweets": { "show": true, "label": "retweets" },
+        "quotes": { "show": true, "label": "quotes" },
+        "likes": { "show": true, "label": "likes" },
+        "follows": { "show": true, "label": "follows" },
+        "bookmarks": { "show": true, "label": "bookmarks" }
+      }
+    },
+    "finalStats": {
+      "enabled": true,
+      "showQueueStatus": true,
+      "showEngagement": true,
+      "showDuration": true
+    },
+    "queueMonitor": {
+      "enabled": true,
+      "interval": 30000
     }
   }
 }

@@ -30,7 +30,7 @@ class ProxyAgent {
     this.username = url.username ? decodeURIComponent(url.username) : null;
     this.password = url.password ? decodeURIComponent(url.password) : null;
 
-    logger.debug(`[ProxyAgent] Parsed proxy: ${this.host}:${this.port}`);
+    // logger.debug(`[ProxyAgent] Parsed proxy: ${this.host}:${this.port}`);
   }
 
   async getAgent() {
@@ -45,7 +45,7 @@ class ProxyAgent {
         : `${this.host}:${this.port}`;
 
       this.agent = new HttpsProxyAgent(`http://${auth}`);
-      logger.debug(`[ProxyAgent] Created HTTPS proxy agent`);
+      // logger.debug(`[ProxyAgent] Created HTTPS proxy agent`);
       return this.agent;
     } catch (error) {
       logger.warn(`[ProxyAgent] Failed to create proxy agent: ${error.message}`);

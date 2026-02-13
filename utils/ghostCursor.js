@@ -153,74 +153,138 @@ export class GhostCursor {
     }
 
 /**
- * Twitter-specific reply click with hover-hold and hesitation
- * Simulates reading the tweet before deciding to reply
- * @param {object} locator - Playwright locator
- * @param {string} actionType - Click profile to use ('reply', 'like', 'retweet', etc.)
- */
-async twitterClick(locator, actionType = 'reply') {
-  const profile = TWITTER_CLICK_PROFILES[actionType] || TWITTER_CLICK_PROFILES.nav;
+  * Wait for element to be stable (not moving) before clicking
+  * Prevents clicking on animating elements
+  * @param {object} locator - Playwright locator
+  * @param {number} maxWaitMs - Maximum wait time (default: 3000ms)
+  * @returns {object|null} - Bounding box if stable, null if timed out
+  */
+async waitForStableElement(locator, maxWaitMs = 3000) {
+  const startTime = Date.now();
+  let prevBox = null;
+  let stableCount = 0;
+  const requiredStableChecks = 3; // Need 3 consecutive stable checks
 
-  try {
-    // Get bounding box
-    const bbox = await locator.boundingBox();
+  while (Date.now() - startTime < maxWaitMs) {
+    const bbox = await locator.boundingBox().catch(() => null);
     if (!bbox) {
-      console.warn('[GhostCursor] Twitter click: No bounding box found');
-      return await locator.click({ force: true }).catch(() => {});
+      return null;
     }
 
-    // HUMAN-LIKE: Target fixation - pause to "look at" the target before moving
-    // Humans typically pause 200-800ms before starting to move the mouse
-    const fixationDelay = mathUtils.randomInRange(200, 800);
-    await new Promise(r => setTimeout(r, fixationDelay));
-
-    // Calculate target point (Gaussian distribution)
-    const marginX = bbox.width * 0.15;
-    const marginY = bbox.height * 0.15;
-    const targetX = mathUtils.gaussian(
-      bbox.x + bbox.width / 2,
-      bbox.width / 6,
-      bbox.x + marginX,
-      bbox.x + bbox.width - marginX
-    );
-    const targetY = mathUtils.gaussian(
-      bbox.y + bbox.height / 2,
-      bbox.height / 6,
-      bbox.y + marginY,
-      bbox.y + bbox.height - marginY
-    );
-
-    // Phase 1: Move to target with hesitation mid-path (for long moves >400px)
-    await this.moveWithHesitation(targetX, targetY);
-
-    // Phase 2: Hover with drift (reading time)
-    await this.hoverWithDrift(targetX, targetY, profile.hoverMin, profile.hoverMax);
-
-    // Phase 3: Pre-click hesitation
-    if (profile.hesitation) {
-      await new Promise(r => setTimeout(r, mathUtils.randomInRange(40, 120)));
+    if (prevBox) {
+      // Calculate total delta (movement)
+      const delta = Math.abs(bbox.x - prevBox.x) + Math.abs(bbox.y - prevBox.y);
+      
+      // If element is stable (minimal movement)
+      if (delta < 2) {
+        stableCount++;
+        if (stableCount >= requiredStableChecks) {
+          return bbox;
+        }
+      } else {
+        stableCount = 0; // Reset if element moves
+      }
     }
+    
+    prevBox = bbox;
+    await new Promise(r => setTimeout(r, 100));
+  }
 
-    // Phase 4: Micro-move before click (aiming pressure simulation)
-    if (profile.microMove) {
-      const microX = targetX + mathUtils.randomInRange(-2, 2);
-      const microY = targetY + mathUtils.randomInRange(-2, 2);
-      await this.page.mouse.move(microX, microY);
-      await new Promise(r => setTimeout(r, mathUtils.randomInRange(20, 50)));
-    }
+  // Return last known position if we timed out
+  return prevBox;
+}
 
-    // Phase 5: Execute click
-    await this.page.mouse.down();
-    await new Promise(r => setTimeout(r, profile.holdMs));
-    await this.page.mouse.up();
+/**
+  * Twitter-specific reply click with hover-hold and hesitation
+  * Simulates reading the tweet before deciding to reply
+  * With retry logic and stability checks
+  * @param {object} locator - Playwright locator
+  * @param {string} actionType - Click profile to use ('reply', 'like', 'retweet', etc.)
+  * @param {number} maxRetries - Maximum retry attempts (default: 3)
+  */
+async twitterClick(locator, actionType = 'reply', maxRetries = 3) {
+  const profile = TWITTER_CLICK_PROFILES[actionType] || TWITTER_CLICK_PROFILES.nav;
+  let lastError = null;
 
-    this.previousPos = { x: targetX, y: targetY };
-
-  } catch (error) {
-    console.warn(`[GhostCursor] Twitter click failed: ${error.message}`);
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      await locator.click({ force: true });
-    } catch {}
+      // Get bounding box with stability check
+      let bbox = await this.waitForStableElement(locator, 3000);
+      
+      if (!bbox) {
+        console.warn('[GhostCursor] Twitter click: No bounding box found');
+        await locator.click({ force: true }).catch(() => {});
+        return;
+      }
+
+      // HUMAN-LIKE: Target fixation - pause to "look at" the target before moving
+      // Reduce fixation delay on retries (human would know where to click)
+      const fixationDelay = attempt === 0 
+        ? mathUtils.randomInRange(200, 800)
+        : mathUtils.randomInRange(50, 200);
+      await new Promise(r => setTimeout(r, fixationDelay));
+
+      // Calculate target point (Gaussian distribution)
+      const marginX = bbox.width * 0.15;
+      const marginY = bbox.height * 0.15;
+      const targetX = mathUtils.gaussian(
+        bbox.x + bbox.width / 2,
+        bbox.width / 6,
+        bbox.x + marginX,
+        bbox.x + bbox.width - marginX
+      );
+      const targetY = mathUtils.gaussian(
+        bbox.y + bbox.height / 2,
+        bbox.height / 6,
+        bbox.y + marginY,
+        bbox.y + bbox.height - marginY
+      );
+
+      // Phase 1: Move to target with hesitation mid-path (for long moves >400px)
+      await this.moveWithHesitation(targetX, targetY);
+
+      // Phase 2: Hover with drift (reading time) - reduced drift for stability
+      await this.hoverWithDrift(targetX, targetY, profile.hoverMin, profile.hoverMax);
+
+      // Phase 3: Pre-click hesitation
+      if (profile.hesitation) {
+        await new Promise(r => setTimeout(r, mathUtils.randomInRange(40, 120)));
+      }
+
+      // Phase 4: Micro-move before click (aiming pressure simulation)
+      if (profile.microMove) {
+        const microX = targetX + mathUtils.randomInRange(-2, 2);
+        const microY = targetY + mathUtils.randomInRange(-2, 2);
+        await this.page.mouse.move(microX, microY);
+        await new Promise(r => setTimeout(r, mathUtils.randomInRange(20, 50)));
+      }
+
+      // Phase 5: Execute click
+      await this.page.mouse.down();
+      await new Promise(r => setTimeout(r, profile.holdMs));
+      await this.page.mouse.up();
+
+      this.previousPos = { x: targetX, y: targetY };
+      return; // Success - exit function
+
+    } catch (error) {
+      lastError = error;
+      console.warn(`[GhostCursor] Twitter click attempt ${attempt + 1}/${maxRetries + 1} failed: ${error.message}`);
+      
+      if (attempt < maxRetries) {
+        // Exponential backoff: 1s, 2s, 4s
+        const delay = Math.pow(2, attempt) * 1000;
+        await new Promise(r => setTimeout(r, delay));
+      }
+    }
+  }
+
+  // All retries exhausted - try native click as final fallback
+  console.warn(`[GhostCursor] All retries failed, using native fallback: ${lastError?.message}`);
+  try {
+    await locator.click({ force: true });
+  } catch (fallbackError) {
+    console.warn(`[GhostCursor] Native fallback also failed: ${fallbackError.message}`);
   }
 }
 
@@ -265,7 +329,7 @@ async moveWithHesitation(targetX, targetY) {
 async hoverWithDrift(startX, startY, minDuration, maxDuration) {
   const duration = mathUtils.randomInRange(minDuration, maxDuration);
   const startTime = Date.now();
-  const driftRange = 3; // 3px drift range
+  const driftRange = 1; // Reduced from 3px to 1px for better stability
 
   while (Date.now() - startTime < duration) {
     // Random drift within small range
@@ -299,8 +363,8 @@ async move(targetX, targetY) {
   // Fitts's Law approximation
   const targetDuration = 250 + (distance * 0.4) + mathUtils.randomInRange(-50, 50);
 
-  // Overshoot check (60% chance on long moves)
-  const shouldOvershoot = distance > 300 && mathUtils.roll(0.6);
+  // Overshoot check (20% chance on long moves >500px) - reduced from 60% for better accuracy
+  const shouldOvershoot = distance > 500 && mathUtils.roll(0.2);
 
   if (shouldOvershoot) {
     const overshootScale = mathUtils.randomInRange(1.05, 1.15);
