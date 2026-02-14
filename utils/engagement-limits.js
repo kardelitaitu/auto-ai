@@ -89,7 +89,7 @@ function createEngagementTracker(limits = DEFAULT_LIMITS) {
         },
         
         record(action) {
-            if (!this.stats.hasOwnProperty(action)) {
+            if (!Object.prototype.hasOwnProperty.call(this.stats, action)) {
                 console.warn(`[engagement-limits.js] Unknown action: ${action}`);
                 return false;
             }
@@ -172,7 +172,7 @@ function createEngagementTracker(limits = DEFAULT_LIMITS) {
         },
         
         setLimit(action, limit) {
-            if (this.limits.hasOwnProperty(action)) {
+            if (Object.prototype.hasOwnProperty.call(this.limits, action)) {
                 this.limits[action] = limit;
             }
         },

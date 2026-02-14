@@ -66,7 +66,7 @@ class HumanizerEngine {
         const distance = this._calculateDistance(start, end);
         const duration = this._calculateDuration(distance);
 
-        let pathPoints = [];
+        let pathPoints;
 
         // 1. Overshoot Logic (if distance is far enough)
         if (overshoot && distance > 300 && Math.random() > 0.3) {

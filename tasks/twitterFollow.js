@@ -9,7 +9,7 @@ const TARGET_TWEET_URL = 'https://x.com/_nadiku/status/1998218314703852013';
 
 // Manual Referrer Override (optional, for testing specific sources)
 // Set to '' to disable. When set, has 20% chance to be used instead of dynamic engine.
-const MANUAL_REFERRER = ''; // Example: 'https://www.reddit.com/r/technology/'
+let MANUAL_REFERRER = ''; // Example: 'https://www.reddit.com/r/technology/'
 
 import { createLogger } from '../utils/utils.js';
 import { TwitterAgent } from '../utils/twitterAgent.js';
@@ -35,9 +35,8 @@ function extractUsername(tweetUrl) {
 
 /**
  * Executes the Follow Task.
- * @param {import('playwright').Page} page
- * @param {object} payload
- * @param {string} payload.browserInfo
+ * @param {object} page - The Playwright page instance.
+ * @param {any} payload
  */
 export default async function twitterFollowTask(page, payload) {
     const startTime = process.hrtime.bigint();
@@ -47,7 +46,8 @@ export default async function twitterFollowTask(page, payload) {
 
     logger.info(`[twitterFollow] Initializing Entropy Agent... (Timeout: ${(taskTimeoutMs / 1000 / 60).toFixed(1)}m)`);
 
-    let agent = null;
+    let agent;
+    let sessionStart;
 
     try {
         // Wrap execution in a Promise.race to enforce hard time limit
@@ -67,6 +67,7 @@ export default async function twitterFollowTask(page, payload) {
                 }
 
                 agent = new TwitterAgent(page, profile, logger);
+                sessionStart = agent.sessionStart;
 
                 // Enforce Theme
                 if (profile.theme) {
@@ -132,7 +133,7 @@ export default async function twitterFollowTask(page, payload) {
                     logger.warn(`[twitterFollow] Navigation failed: ${navError.message}`);
                     if (navError.message.includes('ERR_TOO_MANY_REDIRECTS')) {
                         logger.error(`[twitterFollow] 🛑 Fatal: Infinite redirect loop detected on ${targetUrl}. Aborting task.`);
-                        throw new Error('Fatal: ERR_TOO_MANY_REDIRECTS');
+                        throw new Error('Fatal: ERR_TOO_MANY_REDIRECTS', { cause: navError });
                     }
                     // For other errors, maybe retry once or let general catch handle it?
                     // Let's try a fallback to direct goto without params if headers failed us
@@ -146,7 +147,7 @@ export default async function twitterFollowTask(page, payload) {
                     await page.waitForSelector('article[data-testid="tweet"]', { state: 'visible', timeout: 60000 });
                 } catch (e) {
                     logger.warn(`[twitterFollow] Timed out waiting for tweet selector. Page might be incomplete.`);
-                    throw new Error('Fatal: Tweet selector timeout - likely stuck or no internet');
+                    throw new Error('Fatal: Tweet selector timeout - likely stuck or no internet', { cause: e });
                 }
 
                 // 6. Simulate Reading (Tweet Thread)
@@ -287,8 +288,8 @@ export default async function twitterFollowTask(page, payload) {
             logger.error(`[twitterFollow] Error: ${error.message}`, error);
         }
     } finally {
-        if (agent && agent.sessionStart) {
-            const duration = ((Date.now() - agent.sessionStart) / 1000 / 60).toFixed(1);
+        if (sessionStart) {
+            const duration = ((Date.now() - sessionStart) / 1000 / 60).toFixed(1);
             logger.info(`[Metrics] Task Finished. Duration: ${duration}m`);
         }
 
@@ -303,7 +304,7 @@ export default async function twitterFollowTask(page, payload) {
 
 /**
  * Applies anti-detect and humanization patches.
- * @param {import('playwright').Page} page 
+ * @param {object} page - The Playwright page instance. 
  * @param {object} logger 
  */
 async function applyHumanizationPatch(page, logger) {

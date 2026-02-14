@@ -91,7 +91,7 @@ export class HumanScroll {
     /**
      * Scroll to element with human-like approach
      */
-    async toElement(locator, context = 'view') {
+    async toElement(locator, _context = 'view') {
         try {
             const element = await locator.first();
             if (!element) return;
@@ -127,7 +127,7 @@ export class HumanScroll {
             // Pause to "look" at element
             await this.page.waitForTimeout(mathUtils.gaussian(300, 100));
 
-        } catch (e) {
+        } catch (_e) {
             // Fallback to direct scroll
             await scrollRandom(this.page, 200, 200);
         }

@@ -19,8 +19,33 @@ function loadProfiles() {
     try {
         if (fs.existsSync(profilesPath)) {
             const data = fs.readFileSync(profilesPath, 'utf8');
-            PROFILES = JSON.parse(data);
-            return PROFILES.length > 0;
+            const loaded = JSON.parse(data);
+            
+            if (Array.isArray(loaded)) {
+                const validProfiles = loaded.filter(p => {
+                    if (!p) return false;
+                    if (!p.id || !p.timings || !p.probabilities) {
+                        console.warn(`[WARN] Profile validation issues: Missing required fields for ${p?.id || 'unknown'}`);
+                        return false;
+                    }
+                    
+                    // Validate scrollPause mean exists as it's critical for selection
+                    if (!p.timings.scrollPause || typeof p.timings.scrollPause.mean !== 'number') {
+                        console.warn(`[WARN] Profile validation issues: Invalid scrollPause timings for ${p.id}`);
+                        return false;
+                    }
+
+                    return true;
+                });
+                
+                if (validProfiles.length < loaded.length) {
+                    console.warn(`[WARN] ${loaded.length - validProfiles.length} invalid profiles were skipped.`);
+                }
+                
+                PROFILES = validProfiles;
+                return PROFILES.length > 0;
+            }
+            return false;
         }
         return false;
     } catch (e) {
@@ -127,5 +152,37 @@ export const profileManager = {
      */
     getCount: () => {
         return PROFILES.length;
+    },
+
+    /**
+     * Async version of getStarter
+     * @returns {Promise<Object>}
+     */
+    getStarterAsync: async () => {
+        return profileManager.getStarter();
+    },
+
+    /**
+     * Async version of getById
+     * @param {string} profileId
+     * @returns {Promise<Object>}
+     */
+    getByIdAsync: async (profileId) => {
+        return profileManager.getById(profileId);
+    },
+
+    /**
+     * Async version of reload
+     * @returns {Promise<boolean>}
+     */
+    reloadAsync: async () => {
+        return loadProfiles();
+    },
+
+    /**
+     * Resets the internal profiles array (For testing only)
+     */
+    reset: () => {
+        PROFILES = [];
     }
 };

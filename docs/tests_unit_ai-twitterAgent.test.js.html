@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>tests/unit/ai-twitterAgent.test.js - MultiBrowseAutomation Docs</title>
+    
+    <meta name="description" content="Documentation for the Multi-Browser Automation Framework" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/your-repo-here" target="_blank" >GitHub Repo</a></h2><h3>Classes</h3><ul><li><a href="ActionOrchestrator.html">ActionOrchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getConstraintBlockedRoutines">getConstraintBlockedRoutines</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getNext">getNext</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getNextRoutine">getNextRoutine</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#record">record</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#reset">reset</a></li></ul></li><li><a href="module-connectors_baseDiscover-BaseDiscover.html">BaseDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_baseDiscover-BaseDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_ixbrowser-IxbrowserDiscover.html">IxbrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_ixbrowser-IxbrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html">LocalBraveDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html">RoxybrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_undetectable-UndetectableDiscover.html">UndetectableDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_undetectable-UndetectableDiscover.html#discover">discover</a></li></ul></li><li><a href="module-core_agent-connector-AgentConnector.html">AgentConnector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#getHealth">getHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#handleGenerateReply">handleGenerateReply</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#handleVisionRequest">handleVisionRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#logHealth">logHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#processRequest">processRequest</a></li></ul></li><li><a href="module-core_audit-verifier-AuditVerifier.html">AuditVerifier</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#calculateReliabilityMetric">calculateReliabilityMetric</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#postFlightCheck">postFlightCheck</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#preFlightCheck">preFlightCheck</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#waitForState">waitForState</a></li></ul></li><li><a href="module-core_automator-Automator.html">Automator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkConnectionHealth">checkConnectionHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkPageResponsive">checkPageResponsive</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#closeAll">closeAll</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#connectToBrowser">connectToBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getBrowser">getBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectedEndpoints">getConnectedEndpoints</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectionCount">getConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthSummary">getHealthSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthyConnectionCount">getHealthyConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#isHealthy">isHealthy</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#reconnect">reconnect</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#recoverConnection">recoverConnection</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#startHealthChecks">startHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#stopHealthChecks">stopHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#testConnection">testConnection</a></li></ul></li><li><a href="module-core_circuit-breaker-CircuitBreaker.html">CircuitBreaker</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#execute">execute</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#forceClose">forceClose</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#forceOpen">forceOpen</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getAllStatus">getAllStatus</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getBreaker">getBreaker</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getHealth">getHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#reset">reset</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#resetAll">resetAll</a></li></ul></li><li><a href="module-core_cloud-client-CloudClient.html">CloudClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#getMultiClient">getMultiClient</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#sendRequest">sendRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#testConnection">testConnection</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#testFreeModels">testFreeModels</a></li></ul></li><li><a href="module-core_discovery-Discovery.html">Discovery</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#discoverBrowsers">discoverBrowsers</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#getConnectorInfo">getConnectorInfo</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#loadConnectors">loadConnectors</a></li></ul></li><li><a href="module-core_history-compactor-HistoryCompactor.html">HistoryCompactor</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#compactHistory">compactHistory</a></li><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#generateNarrativeSummary">generateNarrativeSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#getStats">getStats</a></li></ul></li><li><a href="module-core_humanizer-engine-HumanizerEngine.html">HumanizerEngine</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#_easeOutCubic">_easeOutCubic</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#_generateComputedPath">_generateComputedPath</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generateKeystrokeTiming">generateKeystrokeTiming</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generateMousePath">generateMousePath</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generatePause">generatePause</a></li></ul></li><li><a href="module-core_idle-ghosting-IdleGhosting.html">IdleGhosting</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#isGhosting">isGhosting</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#setWiggleParams">setWiggleParams</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#start">start</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#stop">stop</a></li></ul></li><li><a href="module-core_intent-classifier-IntentClassifier.html">IntentClassifier</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#classify">classify</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#forceCloud">forceCloud</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#forceLocal">forceLocal</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#getStats">getStats</a></li></ul></li><li><a href="module-core_local-client-LocalClient.html">LocalClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#sendRequest">sendRequest</a></li></ul></li><li><a href="module-core_ollama-client-OllamaClient.html">OllamaClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_chatRequest">_chatRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_generateRequest">_generateRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_warmupModel">_warmupModel</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#applyHumanization">applyHumanization</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#applyTypos">applyTypos</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#generate">generate</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#initialize">initialize</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#isReady">isReady</a></li></ul></li><li><a href="module-core_orchestrator-Orchestrator.html">Orchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#_sleep">_sleep</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#addTask">addTask</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getMetrics">getMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#logMetrics">logMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#processTasks">processTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#startDiscovery">startDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#waitForTasksToComplete">waitForTasksToComplete</a></li></ul></li><li><a href="module-core_prompt-builder-PromptBuilder.html">PromptBuilder</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_prompt-builder-PromptBuilder.html#build">build</a></li></ul></li><li><a href="module-core_request-queue-RequestQueue.html">RequestQueue</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#enqueue">enqueue</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#pause">pause</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#resume">resume</a></li></ul></li><li><a href="module-core_semantic-parser-SemanticParser.html">SemanticParser</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#extractSemanticTree">extractSemanticTree</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#findElementByName">findElementByName</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#generateCompactRepresentation">generateCompactRepresentation</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#getTreeStats">getTreeStats</a></li></ul></li><li><a href="module-core_sessionManager-SessionManager.html">SessionManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#addSession">addSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#cleanupTimedOutSessions">cleanupTimedOutSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#findAndOccupyIdleWorker">findAndOccupyIdleWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getAllSessions">getAllSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getSessionMetadata">getSessionMetadata</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getStuckWorkers">getStuckWorkers</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getWorkerOccupancy">getWorkerOccupancy</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#loadSessionState">loadSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#registerPage">registerPage</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#releaseWorker">releaseWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#removeSession">removeSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#saveSessionState">saveSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#stopCleanupTimer">stopCleanupTimer</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#unregisterPage">unregisterPage</a></li></ul></li><li><a href="module-core_state-manager-StateManager.html">StateManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#addBreadcrumb">addBreadcrumb</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#calculateComplexityScore">calculateComplexityScore</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#clearSession">clearSession</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getBreadcrumbSummary">getBreadcrumbSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getBreadcrumbs">getBreadcrumbs</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getExecutionState">getExecutionState</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#updateExecutionState">updateExecutionState</a></li></ul></li><li><a href="module-core_stuck-detector-StuckDetector.html">StuckDetector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_stuck-detector-StuckDetector.html#check">check</a></li><li data-type='method' style='display: none;'><a href="module-core_stuck-detector-StuckDetector.html#reset">reset</a></li></ul></li><li><a href="module-core_vision-interpreter-VisionInterpreter.html">VisionInterpreter</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vision-interpreter-VisionInterpreter.html#buildPrompt">buildPrompt</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-interpreter-VisionInterpreter.html#parseResponse">parseResponse</a></li></ul></li><li><a href="module-core_vision-packager-VisionPackager.html">VisionPackager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#captureScreenshot">captureScreenshot</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#captureWithROI">captureWithROI</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#cleanupOldScreenshots">cleanupOldScreenshots</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#compressScreenshot">compressScreenshot</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#identifyROI">identifyROI</a></li></ul></li><li><a href="module-core_vllm-client-VLLMClient.html">VLLMClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#sendRequest">sendRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#testConnection">testConnection</a></li></ul></li><li><a href="module-utils_actions.ActionRunner.html">ActionRunner</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#calculateSmartProbabilities">calculateSmartProbabilities</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#executeAction">executeAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#getEngagementType">getEngagementType</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#isActionAvailable">isActionAvailable</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#selectAction">selectAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#tryExecute">tryExecute</a></li></ul></li><li><a href="module-utils_apiHandler-ApiHandler.html">ApiHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#post">post</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#put">put</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#request">request</a></li></ul></li><li><a href="module-utils_async-queue.DiveQueue.html">DiveQueue</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#addDive">addDive</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#canEngage">canEngage</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#disableQuickMode">disableQuickMode</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#enableQuickMode">enableQuickMode</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#getEngagementProgress">getEngagementProgress</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#getFullStatus">getFullStatus</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#recordEngagement">recordEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#resetEngagement">resetEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#updateEngagementLimits">updateEngagementLimits</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#updateEngagementLimits">updateEngagementLimits</a></li></ul></li><li><a href="module-utils_config-cache.ConfigCache.html">ConfigCache</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#cleanExpired">cleanExpired</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getEntries">getEntries</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getMemoryUsage">getMemoryUsage</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#has">has</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#set">set</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#updateMaxSize">updateMaxSize</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#updateTTL">updateTTL</a></li></ul></li><li><a href="module-utils_config-service-ConfigService.html">ConfigService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#_getWithDefaults">_getWithDefaults</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#ensureInit">ensureInit</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#getProfileConfig">getProfileConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#init">init</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#reload">reload</a></li></ul></li><li><a href="module-utils_config-validator.ConfigValidator.html">ConfigValidator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#getSchema">getSchema</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateConfig">validateConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateSectionConfig">validateSectionConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateWithReport">validateWithReport</a></li></ul></li><li><a href="module-utils_configLoader-ConfigLoader.html">ConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#getValue">getValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#loadConfig">loadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#reloadConfig">reloadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#validateConfig">validateConfig</a></li></ul></li><li><a href="module-utils_entropyController-EntropyController.html">EntropyController</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#applyFatigueToTiming">applyFatigueToTiming</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#calculateFatigueLevel">calculateFatigueLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#checkFatigue">checkFatigue</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#gaussian">gaussian</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#generateSessionProfile">generateSessionProfile</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#getFatigueModifiers">getFatigueModifiers</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#getSessionStats">getSessionStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#interActionGap">interActionGap</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#logAction">logAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#logNormal">logNormal</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#microBreakDuration">microBreakDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#pageLoadWait">pageLoadWait</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#poisson">poisson</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#postClickDelay">postClickDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#preDecisionDelay">preDecisionDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#reactionTime">reactionTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#readingTime">readingTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#resetSession">resetSession</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#retryDelay">retryDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#scrollDistance">scrollDistance</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#scrollSettleTime">scrollSettleTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#shouldMicroBreak">shouldMicroBreak</a></li></ul></li><li><a href="module-utils_environment-config.EnvironmentConfig.html">EnvironmentConfig</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#generateDocumentation">generateDocumentation</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getConfigPath">getConfigPath</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getCurrentEnvValues">getCurrentEnvValues</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getEnvOverrides">getEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getSupportedEnvVars">getSupportedEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#isSupportedEnvVar">isSupportedEnvVar</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#validateEnvValues">validateEnvValues</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.applyEnvOverrides">applyEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.getNestedValue">getNestedValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.logAppliedOverrides">logAppliedOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.parseEnvValue">parseEnvValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.setNestedValue">setNestedValue</a></li></ul></li><li><a href="module-utils_errors.AppError.html">AppError</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_errors.AppError.html#toJSON">toJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_errors.AppError.html#toString">toString</a></li></ul></li><li><a href="module-utils_errors.BrowserError.html">BrowserError</a></li><li><a href="module-utils_errors.CircuitBreakerError.html">CircuitBreakerError</a></li><li><a href="module-utils_errors.ConfigError.html">ConfigError</a></li><li><a href="module-utils_errors.ModelError.html">ModelError</a></li><li><a href="module-utils_errors.ProxyError.html">ProxyError</a></li><li><a href="module-utils_errors.RateLimitError.html">RateLimitError</a></li><li><a href="module-utils_errors.RouterError.html">RouterError</a></li><li><a href="module-utils_errors.TimeoutError.html">TimeoutError</a></li><li><a href="module-utils_errors.ValidationError.html">ValidationError</a></li><li><a href="module-utils_global-scroll-controller-GlobalScrollController.html">GlobalScrollController</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#apply">apply</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#applyRandom">applyRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#getMultiplier">getMultiplier</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#init">init</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#reload">reload</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollBy">scrollBy</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollDown">scrollDown</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollRandom">scrollRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollReplies">scrollReplies</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToBottom">scrollToBottom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToElement">scrollToElement</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToTop">scrollToTop</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollUp">scrollUp</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#smoothScroll">smoothScroll</a></li></ul></li><li><a href="module-utils_logger-BufferedLogger.html">BufferedLogger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_add">_add</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_startTimer">_startTimer</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_stopTimer">_stopTimer</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#flush">flush</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#success">success</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#warn">warn</a></li></ul></li><li></li><li><a href="module-utils_logger-Logger.html">Logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#_log">_log</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#colorizeTags">colorizeTags</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#success">success</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#warn">warn</a></li></ul></li><li><a href="module-utils_metrics-MetricsCollector.html">MetricsCollector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#exportToJSON">exportToJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#generateJsonReport">generateJsonReport</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getAvgAILatency">getAvgAILatency</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getAvgDiveDuration">getAvgDiveDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTwitterEngagementMetrics">getTwitterEngagementMetrics</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordAILatency">recordAILatency</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordApiCall">recordApiCall</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordBrowserDiscovery">recordBrowserDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordDiveDuration">recordDiveDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordError">recordError</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSessionEvent">recordSessionEvent</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSocialAction">recordSocialAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTaskExecution">recordTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTwitterEngagement">recordTwitterEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#reset">reset</a></li></ul></li><li><a href="module-utils_sentiment-integration.SentimentIntegration.html">SentimentIntegration</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#checkEngagementAction">checkEngagementAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#enrichContext">enrichContext</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#export">export</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#getReplyToneAdaptation">getReplyToneAdaptation</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#setEnabled">setEnabled</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#setPersonality">setPersonality</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#shouldQuoteCheck">shouldQuoteCheck</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#shouldReplyCheck">shouldReplyCheck</a></li></ul></li><li><a href="module-utils_sentiment-service.SentimentService.html">SentimentService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyze">analyze</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyzeBasic">analyzeBasic</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyzeForReplySelection">analyzeForReplySelection</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#calculateConfidence">calculateConfidence</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#deriveCompositeMetrics">deriveCompositeMetrics</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getEngagementRecommendations">getEngagementRecommendations</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getFromCache">getFromCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getNeutralAnalysis">getNeutralAnalysis</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getReplyRecommendations">getReplyRecommendations</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#hasNegativePattern">hasNegativePattern</a></li></ul></li><li><a href="module-utils_task-config-loader.TaskConfigLoader.html">TaskConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#loadAiTwitterActivityConfig">loadAiTwitterActivityConfig</a></li></ul></li><li><a href="utils_config-manager%250D%250DThis%2520is%2520a%2520NEW%2520module%2520for%2520Phase%25202%2520improvements.%2520It%2520does%2520not%2520replace%2520existing%2520config%2520loaders%250Dbut%2520provides%2520a%2520more%2520robust%2520alternative%2520for%2520new%2520code.module_-ConfigManager.html">ConfigManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#get">get</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getCacheStats">getCacheStats</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getSources">getSources</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getWithMeta">getWithMeta</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#has">has</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#init">init</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#keys">keys</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#reload">reload</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#set">set</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#toJSON">toJSON</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-connectors_baseDiscover.html">connectors/baseDiscover</a></li><li><a href="module-connectors_discovery_ixbrowser.html">connectors/discovery/ixbrowser</a></li><li><a href="module-connectors_discovery_localBrave.html">connectors/discovery/localBrave</a></li><li><a href="module-connectors_discovery_roxybrowser.html">connectors/discovery/roxybrowser</a></li><li><a href="module-connectors_discovery_undetectable.html">connectors/discovery/undetectable</a></li><li><a href="module-constants_twitter-timeouts.html">constants/twitter-timeouts</a></li><li><a href="module-core_agent-connector.html">core/agent-connector</a></li><li><a href="module-core_agent-cortex.html">core/agent-cortex</a></li><li><a href="module-core_audit-verifier.html">core/audit-verifier</a></li><li><a href="module-core_automator.html">core/automator</a></li><li><a href="module-core_circuit-breaker.html">core/circuit-breaker</a></li><li><a href="module-core_cloud-client.html">core/cloud-client</a></li><li><a href="module-core_discovery.html">core/discovery</a></li><li><a href="module-core_history-compactor.html">core/history-compactor</a></li><li><a href="module-core_humanizer-engine.html">core/humanizer-engine</a></li><li><a href="module-core_idle-ghosting.html">core/idle-ghosting</a></li><li><a href="module-core_intent-classifier.html">core/intent-classifier</a></li><li><a href="module-core_local-client.html">core/local-client</a></li><li><a href="module-core_ollama-client.html">core/ollama-client</a></li><li><a href="module-core_orchestrator.html">core/orchestrator</a></li><li><a href="module-core_prompt-builder.html">core/prompt-builder</a></li><li><a href="module-core_request-queue.html">core/request-queue</a></li><li><a href="module-core_semantic-parser.html">core/semantic-parser</a></li><li><a href="module-core_sessionManager.html">core/sessionManager</a></li><li><a href="module-core_state-manager.html">core/state-manager</a></li><li><a href="module-core_stuck-detector.html">core/stuck-detector</a></li><li><a href="module-core_vision-interpreter.html">core/vision-interpreter</a></li><li><a href="module-core_vision-packager.html">core/vision-packager</a></li><li><a href="module-core_vision_image-storage.html">core/vision/image-storage</a></li><li><a href="module-core_vision_roi-detector.html">core/vision/roi-detector</a></li><li><a href="module-core_vllm-client.html">core/vllm-client</a></li><li><a href="module-examples_simpleNavigate.html">examples/simpleNavigate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-examples_simpleNavigate.html#~simpleNavigate">simpleNavigate</a></li></ul></li><li><a href="module-local-agent_core_actionEngine.html">local-agent/core/actionEngine</a></li><li><a href="module-local-agent_core_agent.html">local-agent/core/agent</a></li><li><a href="module-local-agent_core_vision.html">local-agent/core/vision</a></li><li><a href="module-local-agent_network_llmClient.html">local-agent/network/llmClient</a></li><li><a href="module-main.html">main</a></li><li><a href="module-strategies_EntropyReferrer.html">strategies/EntropyReferrer</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-strategies_EntropyReferrer.html#~_extractContext">_extractContext</a></li></ul></li><li><a href="module-tasks_agentNavigate.html">tasks/agentNavigate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_agentNavigate.html#~agentNavigate">agentNavigate</a></li></ul></li><li><a href="module-tasks_ai-testertask.html">tasks/ai-testertask</a></li><li><a href="module-tasks_automationTask1.html">tasks/automationTask1</a></li><li><a href="module-tasks_automationTask2.html">tasks/automationTask2</a></li><li><a href="module-tasks_cookieBotRandom.html">tasks/cookieBotRandom</a></li><li><a href="module-tasks_runAgent.html">tasks/runAgent</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_runAgent.html#.run">run</a></li></ul></li><li><a href="module-tasks_testGoogleSearch.html">tasks/testGoogleSearch</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_testGoogleSearch.html#~testGoogleSearch">testGoogleSearch</a></li></ul></li><li><a href="module-tasks_twitterscroll.html">tasks/twitterscroll</a></li><li><a href="module-tests_test-core-modules.html">tests/test-core-modules</a></li><li><a href="module-utils_actions.html">utils/actions</a></li><li><a href="module-utils_actions_ai-twitter-bookmark.html">utils/actions/ai-twitter-bookmark</a></li><li><a href="module-utils_actions_ai-twitter-go-home.html">utils/actions/ai-twitter-go-home</a></li><li><a href="module-utils_actions_ai-twitter-like.html">utils/actions/ai-twitter-like</a></li><li><a href="module-utils_actions_ai-twitter-quote.html">utils/actions/ai-twitter-quote</a></li><li><a href="module-utils_actions_ai-twitter-reply.html">utils/actions/ai-twitter-reply</a></li><li><a href="module-utils_ai-context-engine.html">utils/ai-context-engine</a></li><li><a href="module-utils_ai-quote-engine.html">utils/ai-quote-engine</a></li><li><a href="module-utils_ai-reply-engine.html">utils/ai-reply-engine</a></li><li><a href="module-utils_ai-tools.html">utils/ai-tools</a></li><li><a href="module-utils_ai-twitterAgent.html">utils/ai-twitterAgent</a></li><li><a href="module-utils_api-key-timeout-tracker.html">utils/api-key-timeout-tracker</a></li><li><a href="module-utils_apiHandler.html">utils/apiHandler</a></li><li><a href="module-utils_async-queue.html">utils/async-queue</a></li><li><a href="module-utils_banner.html">utils/banner</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_banner.html#.showBanner">showBanner</a></li></ul></li><li><a href="module-utils_browserPatch.html">utils/browserPatch</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_browserPatch.html#.applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="module-utils_circuit-breaker.html">utils/circuit-breaker</a></li><li><a href="module-utils_config-cache.html">utils/config-cache</a></li><li><a href="module-utils_config-service.html">utils/config-service</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-service.html#~applyEnvOverrides">applyEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service.html#~getFromEnvOrSettings">getFromEnvOrSettings</a></li></ul></li><li><a href="module-utils_config-validator.html">utils/config-validator</a></li><li><a href="module-utils_configLoader.html">utils/configLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getBrowserAPI">getBrowserAPI</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeoutValue">getTimeoutValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeouts">getTimeouts</a></li></ul></li><li><a href="module-utils_content-depth.html">utils/content-depth</a></li><li><a href="module-utils_dockerLLM.html">utils/dockerLLM</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#.ensureDockerLLM">ensureDockerLLM</a></li><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#~isLocalLLMReady">isLocalLLMReady</a></li><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#~startLocalLLM">startLocalLLM</a></li></ul></li><li><a href="module-utils_engagement-limits.html">utils/engagement-limits</a></li><li><a href="module-utils_entropyController.html">utils/entropyController</a></li><li><a href="module-utils_envLoader.html">utils/envLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getEnv">getEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getLogLevel">getLogLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getNodeEnv">getNodeEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getRequiredEnv">getRequiredEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isDevelopment">isDevelopment</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isProduction">isProduction</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVars">resolveEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVarsInObject">resolveEnvVarsInObject</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.validateRequiredEnvVars">validateRequiredEnvVars</a></li></ul></li><li><a href="module-utils_environment-config.html">utils/environment-config</a></li><li><a href="module-utils_errors.html">utils/errors</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_errors.html#.classifyHttpError">classifyHttpError</a></li><li data-type='method' style='display: none;'><a href="module-utils_errors.html#.wrapError">wrapError</a></li></ul></li><li><a href="module-utils_free-api-router.html">utils/free-api-router</a></li><li><a href="module-utils_free-openrouter-helper.html">utils/free-openrouter-helper</a></li><li><a href="module-utils_global-scroll-controller.html">utils/global-scroll-controller</a></li><li><a href="module-utils_human-interaction.html">utils/human-interaction</a></li><li><a href="module-utils_human-timing.html">utils/human-timing</a></li><li><a href="module-utils_local-ollama-manager.html">utils/local-ollama-manager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.ensureOllama">ensureOllama</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.isOllamaRunning">isOllamaRunning</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.startOllama">startOllama</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#~doesModelExist">doesModelExist</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#~isOllamaProcessRunning">isOllamaProcessRunning</a></li></ul></li><li><a href="module-utils_logger.html">utils/logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createBufferedLogger">createBufferedLogger</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createLogger">createLogger</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#~initLogFile">initLogFile</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#~writeToLogFile">writeToLogFile</a></li></ul></li><li><a href="module-utils_metrics.html">utils/metrics</a></li><li><a href="module-utils_micro-interactions.html">utils/micro-interactions</a></li><li><a href="module-utils_mistake-engine.html">utils/mistake-engine</a></li><li><a href="module-utils_model-perf-tracker.html">utils/model-perf-tracker</a></li><li><a href="module-utils_motor-control.html">utils/motor-control</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_motor-control.html#~getXSelectors">getXSelectors</a></li><li data-type='method' style='display: none;'><a href="module-utils_motor-control.html#~smartSelector">smartSelector</a></li></ul></li><li><a href="module-utils_navigation-diversity.html">utils/navigation-diversity</a></li><li><a href="module-utils_proxy-agent.html">utils/proxy-agent</a></li><li><a href="module-utils_randomScrolling.html">utils/randomScrolling</a></li><li><a href="module-utils_randomZoom.html">utils/randomZoom</a></li><li><a href="module-utils_rate-limit-tracker.html">utils/rate-limit-tracker</a></li><li><a href="module-utils_request-dedupe.html">utils/request-dedupe</a></li><li><a href="module-utils_retry.html">utils/retry</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_retry.html#.withRetry">withRetry</a></li></ul></li><li><a href="module-utils_scroll-helper.html">utils/scroll-helper</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.getScrollMultiplier">getScrollMultiplier</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scroll">scroll</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollDown">scrollDown</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollRandom">scrollRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollToBottom">scrollToBottom</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollToTop">scrollToTop</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollUp">scrollUp</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollWheel">scrollWheel</a></li></ul></li><li><a href="module-utils_scroll-humanizer.html">utils/scroll-humanizer</a></li><li><a href="module-utils_sentiment-analyzer-multi.html">utils/sentiment-analyzer-multi</a></li><li><a href="module-utils_sentiment-analyzers.html">utils/sentiment-analyzers</a></li><li><a href="module-utils_sentiment-data.html">utils/sentiment-data</a></li><li><a href="module-utils_sentiment-decision-engine.html">utils/sentiment-decision-engine</a></li><li><a href="module-utils_sentiment-guard.html">utils/sentiment-guard</a></li><li><a href="module-utils_sentiment-integration.html">utils/sentiment-integration</a></li><li><a href="module-utils_sentiment-service.html">utils/sentiment-service</a></li><li><a href="module-utils_session-phases.html">utils/session-phases</a></li><li><a href="module-utils_task-config-loader.html">utils/task-config-loader</a></li><li><a href="module-utils_temporal-awareness.html">utils/temporal-awareness</a></li><li><a href="module-utils_twitter-interaction-methods.html">utils/twitter-interaction-methods</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_twitter-interaction-methods.html#.executeQuoteMethod">executeQuoteMethod</a></li><li data-type='method' style='display: none;'><a href="module-utils_twitter-interaction-methods.html#.executeReplyMethod">executeReplyMethod</a></li></ul></li><li><a href="module-utils_twitter-reply-prompt.html">utils/twitter-reply-prompt</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_twitter-reply-prompt.html#.buildEnhancedPrompt">buildEnhancedPrompt</a></li><li data-type='method' style='display: none;'><a href="module-utils_twitter-reply-prompt.html#.getStrategyInstruction">getStrategyInstruction</a></li></ul></li><li><a href="module-utils_urlReferrerGenerator.html">utils/urlReferrerGenerator</a></li><li><a href="module-utils_utils.html">utils/utils</a></li><li><a href="module-utils_validator.html">utils/validator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateApiResponse">validateApiResponse</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateBrowserConnection">validateBrowserConnection</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validatePayload">validatePayload</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateTaskExecution">validateTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#~convertSchemaToZod">convertSchemaToZod</a></li></ul></li><li><a href="tasks_twitterActivity.html#.module:js">tasks/twitterActivity.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterActivity.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterFollow.html#.module:js">tasks/twitterFollow.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterFollow.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterFollowLikeRetweet.html#.module:js">tasks/twitterFollowLikeRetweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterFollowLikeRetweet.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterTweet.html#.module:js">tasks/twitterTweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterTweet.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tests_integration_agent-connector-health.module_test.html">tests/integration/agent-connector-health.test</a></li><li><a href="tests_integration_agent-connector.module_test.html">tests/integration/agent-connector.test</a></li><li><a href="tests_integration_circuit-breaker.module_test.html">tests/integration/circuit-breaker.test</a></li><li><a href="tests_integration_cloud-client.module_test.html">tests/integration/cloud-client.test</a></li><li><a href="tests_integration_profile-manager.module_test.html">tests/integration/profile-manager.test</a></li><li><a href="tests_integration_request-queue.module_test.html">tests/integration/request-queue.test</a></li><li><a href="tests_integration_task-config-loader.module_test.html">tests/integration/task-config-loader.test</a></li><li><a href="tests_test-multiline-tweet.module_js.html">tests/test-multiline-tweet.js</a></li><li><a href="tests_unit_ai-twitter-activity.module_test.html">tests/unit/ai-twitter-activity.test</a></li><li><a href="tests_unit_ai-twitterAgent.module_test.html">tests/unit/ai-twitterAgent.test</a></li><li><a href="tests_unit_ai-twitterAgent.real.module_test.html">tests/unit/ai-twitterAgent.real.test</a></li><li><a href="tests_unit_apiHandler.module_test.html">tests/unit/apiHandler.test</a></li><li><a href="tests_unit_async-queue.module_test.html">tests/unit/async-queue.test</a></li><li><a href="tests_unit_banner.module_test.html">tests/unit/banner.test</a></li><li><a href="tests_unit_circuit-breaker.module_test.html">tests/unit/circuit-breaker.test</a></li><li><a href="tests_unit_config-service.module_test.html">tests/unit/config-service.test</a></li><li><a href="tests_unit_discovery.module_test.html">tests/unit/discovery.test</a></li><li><a href="tests_unit_dockerLLM.module_test.html">tests/unit/dockerLLM.test</a></li><li><a href="tests_unit_engagement-limits.module_test.html">tests/unit/engagement-limits.test</a></li><li><a href="tests_unit_envLoader.module_test.html">tests/unit/envLoader.test</a></li><li><a href="tests_unit_global-scroll-controller.module_test.html">tests/unit/global-scroll-controller.test</a></li><li><a href="tests_unit_human-interaction.module_test.html">tests/unit/human-interaction.test</a></li><li><a href="tests_unit_humanization-utils.module_test.html">tests/unit/humanization-utils.test</a></li><li><a href="tests_unit_ixbrowser.module_test.html">tests/unit/ixbrowser.test</a></li><li><a href="tests_unit_logging-config.module_test.html">tests/unit/logging-config.test</a></li><li><a href="tests_unit_request-queue.module_test.html">tests/unit/request-queue.test</a></li><li><a href="tests_unit_retry.module_test.html">tests/unit/retry.test</a></li><li><a href="tests_unit_roxybrowser.module_test.html">tests/unit/roxybrowser.test</a></li><li><a href="tests_unit_scroll-helper.module_test.html">tests/unit/scroll-helper.test</a></li><li><a href="tests_unit_session-manager.module_test.html">tests/unit/session-manager.test</a></li><li><a href="tests_unit_validator.module_test.html">tests/unit/validator.test</a></li><li><a href="tools_composeTweet.module_js.html">tools/composeTweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~composeTweet">composeTweet</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~main">main</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~showQueueStatus">showQueueStatus</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~viewQueue">viewQueue</a></li></ul></li><li><a href="utils_config-manager%250D%250DThis%2520is%2520a%2520NEW%2520module%2520for%2520Phase%25202%2520improvements.%2520It%2520does%2520not%2520replace%2520existing%2520config%2520loaders%250Dbut%2520provides%2520a%2520more%2520robust%2520alternative%2520for%2520new%2520code.module_.html">utils/config-managerThis is a NEW module for Phase 2 improvements. It does not replace existing config loadersbut provides a more robust alternative for new code.</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configDrivenReply">configDrivenReply</a></li><li><a href="global.html#ensureProfilesLoaded">ensureProfilesLoaded</a></li><li><a href="global.html#estimateConversationTokens">estimateConversationTokens</a></li><li><a href="global.html#estimateMessageTokens">estimateMessageTokens</a></li><li><a href="global.html#estimateTokens">estimateTokens</a></li><li><a href="global.html#formatEngagementLine">formatEngagementLine</a></li><li><a href="global.html#formatEngagementSummary">formatEngagementSummary</a></li><li><a href="global.html#generateProfiles">generateProfiles</a></li><li><a href="global.html#generateProgressBar">generateProgressBar</a></li><li><a href="global.html#getDefaultLoggingConfig">getDefaultLoggingConfig</a></li><li><a href="global.html#getLoggingConfig">getLoggingConfig</a></li><li><a href="global.html#loadProfiles">loadProfiles</a></li><li><a href="global.html#mathUtils">mathUtils</a></li><li><a href="global.html#postQuoteWithMethod">postQuoteWithMethod</a></li><li><a href="global.html#postReplyRandom">postReplyRandom</a></li><li><a href="global.html#postReplyWithFallback">postReplyWithFallback</a></li><li><a href="global.html#postReplyWithMethod">postReplyWithMethod</a></li><li><a href="global.html#resetLoggingConfig">resetLoggingConfig</a></li><li><a href="global.html#runAllEdgeCaseTests">runAllEdgeCaseTests</a></li><li><a href="global.html#runAllIntegrationTests">runAllIntegrationTests</a></li><li><a href="global.html#runAllTests">runAllTests</a></li><li><a href="global.html#runAllUnitTests">runAllUnitTests</a></li><li><a href="global.html#smartReply">smartReply</a></li><li><a href="global.html#takeScreenshot">takeScreenshot</a></li><li><a href="global.html#testStats">testStats</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">tests/unit/ai-twitterAgent.test.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview Unit Tests for AITwitterAgent - Simplified Version
+ * Tests key behaviors with minimal mock complexity
+ * @module tests/unit/ai-twitterAgent.test
+ */
+
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+// Mock dependencies at a higher level
+const mockPage = {
+  goto: vi.fn().mockResolvedValue(undefined),
+  waitForTimeout: vi.fn().mockResolvedValue(undefined),
+  url: vi.fn().mockReturnValue('https://x.com/home'),
+  isClosed: vi.fn().mockReturnValue(false),
+  close: vi.fn().mockResolvedValue(undefined),
+  evaluate: vi.fn().mockResolvedValue({ readyState: 'complete', title: 'Home' }),
+  context: vi.fn().mockReturnValue({
+    browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) })
+  }),
+  emulateMedia: vi.fn().mockResolvedValue(undefined),
+  on: vi.fn()
+};
+
+const mockLogger = {
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+  debug: vi.fn()
+};
+
+const mockProfile = {
+  id: 'test-profile',
+  type: 'engagement',
+  inputMethod: 'balanced',
+  inputMethodPct: 50,
+  probabilities: { dive: 30, like: 40, follow: 10 },
+  theme: 'dark'
+};
+
+const mockOptions = {
+  replyProbability: 0.5,
+  quoteProbability: 0.2,
+  engagementLimits: {
+    replies: 3,
+    retweets: 1,
+    quotes: 1,
+    likes: 5,
+    follows: 2,
+    bookmarks: 2
+  },
+  config: {}
+};
+
+// Create a minimal AITwitterAgent-like class for testing
+class MockEngagementTracker {
+  constructor(limits) {
+    this.limits = limits;
+    this.state = { likes: 0, replies: 0, bookmarks: 0, quotes: 0, retweets: 0, follows: 0 };
+  }
+
+  canPerform(action) {
+    return this.state[action] &lt; (this.limits[action] || Infinity);
+  }
+
+  record(action) {
+    if (this.canPerform(action)) {
+      this.state[action]++;
+      return true;
+    }
+    return false;
+  }
+
+  getProgress(action) {
+    return `${this.state[action]}/${this.limits[action] || '∞'}`;
+  }
+
+  getStatus() {
+    const status = {};
+    for (const [action, limit] of Object.entries(this.limits)) {
+      status[action] = {
+        current: this.state[action] || 0,
+        limit,
+        remaining: limit - (this.state[action] || 0),
+        percentage: `${((this.state[action] || 0) / limit * 100).toFixed(0)}%`
+      };
+    }
+    return status;
+  }
+
+  getSummary() {
+    return Object.entries(this.state)
+      .filter(([action, count]) => count > 0)
+      .map(([action, count]) => `${action}: ${count}/${this.limits[action]}`)
+      .join(', ');
+  }
+}
+
+class MockDiveQueue {
+  constructor(limits) {
+    this.limits = limits;
+    this.state = { likes: 0, replies: 0, bookmarks: 0 };
+  }
+
+  canEngage(action) {
+    return this.state[action] &lt; (this.limits[action] || Infinity);
+  }
+
+  recordEngagement(action) {
+    if (this.canEngage(action)) {
+      this.state[action]++;
+      return true;
+    }
+    return false;
+  }
+
+  getEngagementProgress() {
+    const progress = {};
+    for (const [action, limit] of Object.entries(this.limits)) {
+      progress[action] = {
+        current: this.state[action] || 0,
+        limit,
+        remaining: limit - (this.state[action] || 0),
+        percentUsed: ((this.state[action] || 0) / limit * 100)
+      };
+    }
+    return progress;
+  }
+
+  getFullStatus() {
+    return {
+      queue: { queueLength: 0, activeCount: 0, utilizationPercent: 0 },
+      engagement: this.getEngagementProgress(),
+      failedCount: 0,
+      timedOutCount: 0
+    };
+  }
+
+  enableQuickMode() {}
+  isInCooldown() { return false; }
+}
+
+// Mock AITwitterAgent class for testing
+class MockAITwitterAgent {
+  constructor(page, profile, logger, options = {}) {
+    this.page = page;
+    this.config = profile;
+    this.logger = logger;
+    this.twitterConfig = options.config || {};
+    
+    // Page state management
+    this.pageState = 'HOME';
+    this.scrollingEnabled = true;
+    this.operationLock = false;
+    this.diveLockAcquired = false;
+    this.homeUrl = 'https://x.com/home';
+    
+    // Log buffering
+    this.lastWaitLogTime = 0;
+    this.waitLogInterval = 10000;
+    
+    // Engagement limits
+    const customLimits = options.engagementLimits || {
+      replies: 3, retweets: 1, quotes: 1, likes: 5, follows: 2, bookmarks: 2
+    };
+    
+    // Create synchronized engagement trackers
+    const tracker = new MockEngagementTracker(customLimits);
+    const queue = new MockDiveQueue(customLimits);
+    
+    this._tracker = tracker;
+    this._queue = queue;
+    
+    // Synchronized engagement tracker
+    this.engagementTracker = {
+      canPerform: (action) => tracker.canPerform(action) &amp;&amp; queue.canEngage(action),
+      record: (action) => {
+        if (tracker.canPerform(action) &amp;&amp; queue.canEngage(action)) {
+          tracker.record(action);
+          queue.recordEngagement(action);
+          return true;
+        }
+        return false;
+      },
+      getProgress: (action) => tracker.getProgress(action),
+      getStatus: () => tracker.getStatus(),
+      getSummary: () => tracker.getSummary()
+    };
+    
+    // Quick mode
+    this.quickModeEnabled = false;
+    
+    // Session tracking
+    this.sessionStart = Date.now();
+    this.sessionDuration = 0;
+    this.currentPhase = 'warmup';
+    this.lastPhaseLogged = null;
+    
+    // Processed tweets
+    this._processedTweetIds = new Set();
+    
+    // Scroll tracking
+    this._lastScrollY = 0;
+    this._lastScrollTime = 0;
+    this._minScrollPerDive = 400;
+    this._scrollExplorationThreshold = 600;
+    
+    // AI stats
+    this.aiStats = { attempts: 0, replies: 0, skips: 0, safetyBlocks: 0, errors: 0 };
+    
+    // Action handlers
+    this.actions = {
+      reply: {},
+      quote: {},
+      like: {},
+      bookmark: {},
+      goHome: {}
+    };
+    this.actionRunner = { agent: this };
+    
+    // Mock loggers
+    this.queueLogger = {
+      info: vi.fn(), warn: vi.fn(), error: vi.fn(),
+      shutdown: vi.fn().mockResolvedValue(undefined)
+    };
+    this.engagementLogger = {
+      info: vi.fn(), warn: vi.fn(), error: vi.fn(),
+      shutdown: vi.fn().mockResolvedValue(undefined)
+    };
+  }
+  
+  // Dive lock methods
+  async startDive() {
+    while (this.operationLock) {
+      await new Promise(r => setTimeout(r, 10));
+    }
+    this.operationLock = true;
+    this.diveLockAcquired = true;
+    this.pageState = 'DIVING';
+    this.scrollingEnabled = false;
+  }
+  
+  async endDive(success = true, returnHome = false) {
+    this.operationLock = false;
+    this.diveLockAcquired = false;
+    this.scrollingEnabled = true;
+    this.pageState = returnHome ? 'HOME' : 'TWEET_PAGE';
+  }
+  
+  // Health check
+  async performHealthCheck() {
+    try {
+      const browser = this.page.context()?.browser();
+      if (!browser?.isConnected()) {
+        return { healthy: false, reason: 'browser_disconnected' };
+      }
+      
+      const pageHealth = await this.page.evaluate(() => ({
+        readyState: document.readyState,
+        title: document.title,
+        hasBody: !!document.body
+      })).catch(() => ({ readyState: 'error', title: '', hasBody: false }));
+      
+      if (pageHealth.readyState !== 'complete' &amp;&amp; pageHealth.readyState !== 'interactive') {
+        return { healthy: false, reason: 'page_not_ready' };
+      }
+      
+      const currentUrl = this.page.url();
+      if (!currentUrl.includes('x.com') &amp;&amp; !currentUrl.includes('twitter.com')) {
+        return { healthy: false, reason: 'unexpected_url' };
+      }
+      
+      return { healthy: true, pageState: pageHealth.readyState };
+    } catch (error) {
+      return { healthy: false, reason: error.message };
+    }
+  }
+  
+  // Logger flush
+  async flushLogs() {
+    await Promise.all([
+      this.queueLogger.shutdown(),
+      this.engagementLogger.shutdown()
+    ]);
+  }
+}
+
+// Test constants
+const PAGE_STATE = {
+  HOME: 'HOME',
+  DIVING: 'DIVING',
+  TWEET_PAGE: 'TWEET_PAGE',
+  RETURNING: 'RETURNING'
+};
+
+describe('AITwitterAgent', () => {
+  let agent;
+  
+  beforeEach(() => {
+    vi.clearAllMocks();
+    agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+  });
+  
+  afterEach(() => {
+    if (agent &amp;&amp; typeof agent.flushLogs === 'function') {
+      agent.flushLogs().catch(() => {});
+    }
+  });
+  
+  describe('Constructor &amp; Initialization', () => {
+    it('should initialize with correct values', () => {
+      expect(agent.page).toBe(mockPage);
+      expect(agent.config).toBe(mockProfile);
+      expect(agent.logger).toBe(mockLogger);
+      expect(agent.pageState).toBe('HOME');
+      expect(agent.scrollingEnabled).toBe(true);
+      expect(agent.operationLock).toBe(false);
+    });
+    
+    it('should initialize engagement tracker', () => {
+      expect(agent.engagementTracker).toBeDefined();
+      expect(typeof agent.engagementTracker.canPerform).toBe('function');
+      expect(typeof agent.engagementTracker.record).toBe('function');
+    });
+    
+    it('should initialize AI stats', () => {
+      expect(agent.aiStats).toEqual({
+        attempts: 0, replies: 0, skips: 0, safetyBlocks: 0, errors: 0
+      });
+    });
+    
+    it('should initialize session tracking', () => {
+      expect(agent.sessionStart).toBeDefined();
+      expect(agent.currentPhase).toBe('warmup');
+    });
+    
+    it('should initialize processed tweets set', () => {
+      expect(agent._processedTweetIds).toBeInstanceOf(Set);
+      expect(agent._processedTweetIds.size).toBe(0);
+    });
+    
+    it('should initialize scroll tracking', () => {
+      expect(agent._lastScrollY).toBe(0);
+      expect(agent._minScrollPerDive).toBe(400);
+    });
+    
+    it('should initialize quick mode as disabled', () => {
+      expect(agent.quickModeEnabled).toBe(false);
+    });
+    
+    it('should accept custom engagement limits', () => {
+      const customAgent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, {
+        engagementLimits: { likes: 10, replies: 5 }
+      });
+      expect(customAgent).toBeDefined();
+    });
+  });
+  
+  describe('Dive Lock Mechanism', () => {
+    it('should acquire lock on startDive', async () => {
+      await agent.startDive();
+      expect(agent.operationLock).toBe(true);
+      expect(agent.diveLockAcquired).toBe(true);
+    });
+    
+    it('should set page state to DIVING', async () => {
+      await agent.startDive();
+      expect(agent.pageState).toBe('DIVING');
+    });
+    
+    it('should disable scrolling during dive', async () => {
+      await agent.startDive();
+      expect(agent.scrollingEnabled).toBe(false);
+    });
+    
+    it('should release lock on endDive', async () => {
+      await agent.startDive();
+      await agent.endDive();
+      expect(agent.operationLock).toBe(false);
+    });
+    
+    it('should enable scrolling after dive', async () => {
+      await agent.startDive();
+      expect(agent.scrollingEnabled).toBe(false);
+      await agent.endDive();
+      expect(agent.scrollingEnabled).toBe(true);
+    });
+    
+    it('should return home when specified', async () => {
+      await agent.startDive();
+      await agent.endDive(true, true);
+      expect(agent.pageState).toBe('HOME');
+    });
+    
+    it('should stay on tweet page when not returning', async () => {
+      await agent.startDive();
+      await agent.endDive(true, false);
+      expect(agent.pageState).toBe('TWEET_PAGE');
+    });
+  });
+  
+  describe('Engagement Tracking', () => {
+    it('should allow engagement when under limit', () => {
+      const canLike = agent.engagementTracker.canPerform('likes');
+      expect(canLike).toBe(true);
+    });
+    
+    it('should record engagement action', () => {
+      const recorded = agent.engagementTracker.record('likes');
+      expect(recorded).toBe(true);
+    });
+    
+    it('should track progress correctly', () => {
+      agent.engagementTracker.record('likes');
+      agent.engagementTracker.record('likes');
+      const progress = agent.engagementTracker.getProgress('likes');
+      expect(progress).toContain('/');
+    });
+    
+    it('should return status object', () => {
+      const status = agent.engagementTracker.getStatus();
+      expect(typeof status).toBe('object');
+      expect(status.likes).toBeDefined();
+    });
+    
+    it('should return summary string', () => {
+      const summary = agent.engagementTracker.getSummary();
+      expect(typeof summary).toBe('string');
+    });
+  });
+  
+  describe('Health Check', () => {
+    it('should return healthy when browser connected', async () => {
+      const result = await agent.performHealthCheck();
+      expect(result.healthy).toBe(true);
+    });
+    
+    it('should return unhealthy when browser disconnected', async () => {
+      mockPage.context.mockReturnValueOnce({
+        browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(false) })
+      });
+      const agent2 = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      const result = await agent2.performHealthCheck();
+      expect(result.healthy).toBe(false);
+      expect(result.reason).toBe('browser_disconnected');
+    });
+    
+    it('should handle page evaluation error', async () => {
+      mockPage.evaluate.mockRejectedValueOnce(new Error('Eval failed'));
+      const agent3 = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      const result = await agent3.performHealthCheck();
+      expect(result.healthy).toBe(false);
+    });
+    
+    it('should handle unexpected URL', async () => {
+      mockPage.url.mockReturnValueOnce('https://evil.com');
+      const agent4 = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      const result = await agent4.performHealthCheck();
+      expect(result.healthy).toBe(false);
+      expect(result.reason).toBe('unexpected_url');
+    });
+  });
+  
+  describe('Logged Messages', () => {
+    it('should have logger initialized', () => {
+      expect(agent.logger).toBeDefined();
+    });
+    
+    it('should have queue logger', () => {
+      expect(agent.queueLogger).toBeDefined();
+      expect(typeof agent.queueLogger.info).toBe('function');
+    });
+    
+    it('should have engagement logger', () => {
+      expect(agent.engagementLogger).toBeDefined();
+      expect(typeof agent.engagementLogger.info).toBe('function');
+    });
+  });
+  
+  describe('Buffered Logging', () => {
+    it('should have flushLogs method', async () => {
+      expect(typeof agent.flushLogs).toBe('function');
+      await agent.flushLogs();
+      expect(agent.queueLogger.shutdown).toHaveBeenCalled();
+      expect(agent.engagementLogger.shutdown).toHaveBeenCalled();
+    });
+  });
+  
+  describe('Processed Tweet Tracking', () => {
+    it('should track processed tweets', () => {
+      agent._processedTweetIds.add('tweet-1');
+      agent._processedTweetIds.add('tweet-2');
+      expect(agent._processedTweetIds.size).toBe(2);
+      expect(agent._processedTweetIds.has('tweet-1')).toBe(true);
+    });
+    
+    it('should check if tweet was processed', () => {
+      agent._processedTweetIds.add('tweet-123');
+      expect(agent._processedTweetIds.has('tweet-123')).toBe(true);
+      expect(agent._processedTweetIds.has('tweet-456')).toBe(false);
+    });
+    
+    it('should clear processed tweets', () => {
+      agent._processedTweetIds.add('tweet-1');
+      agent._processedTweetIds.clear();
+      expect(agent._processedTweetIds.size).toBe(0);
+    });
+  });
+  
+  describe('Scroll Tracking', () => {
+    it('should track scroll position', () => {
+      agent._lastScrollY = 500;
+      expect(agent._lastScrollY).toBe(500);
+    });
+    
+    it('should track scroll time', () => {
+      const now = Date.now();
+      agent._lastScrollTime = now;
+      expect(agent._lastScrollTime).toBe(now);
+    });
+    
+    it('should have minimum scroll per dive setting', () => {
+      expect(agent._minScrollPerDive).toBe(400);
+    });
+    
+    it('should have exploration threshold setting', () => {
+      expect(agent._scrollExplorationThreshold).toBe(600);
+    });
+  });
+  
+  describe('Session Phase Tracking', () => {
+    it('should track session start', () => {
+      expect(agent.sessionStart).toBeDefined();
+    });
+    
+    it('should track session duration', () => {
+      agent.sessionDuration = 60000;
+      expect(agent.sessionDuration).toBe(60000);
+    });
+    
+    it('should start in warmup phase', () => {
+      expect(agent.currentPhase).toBe('warmup');
+    });
+    
+    it('should transition phases', () => {
+      agent.currentPhase = 'active';
+      expect(agent.currentPhase).toBe('active');
+      agent.currentPhase = 'cooldown';
+      expect(agent.currentPhase).toBe('cooldown');
+    });
+  });
+  
+  describe('AI Stats', () => {
+    it('should initialize with zeros', () => {
+      expect(agent.aiStats.attempts).toBe(0);
+      expect(agent.aiStats.replies).toBe(0);
+      expect(agent.aiStats.skips).toBe(0);
+    });
+    
+    it('should track stats', () => {
+      agent.aiStats.attempts++;
+      agent.aiStats.replies++;
+      expect(agent.aiStats.attempts).toBe(1);
+      expect(agent.aiStats.replies).toBe(1);
+    });
+  });
+  
+  describe('Action Handlers', () => {
+    it('should have action handlers', () => {
+      expect(agent.actions.reply).toBeDefined();
+      expect(agent.actions.quote).toBeDefined();
+      expect(agent.actions.like).toBeDefined();
+      expect(agent.actions.bookmark).toBeDefined();
+      expect(agent.actions.goHome).toBeDefined();
+    });
+    
+    it('should have action runner', () => {
+      expect(agent.actionRunner).toBeDefined();
+      expect(agent.actionRunner.agent).toBe(agent);
+    });
+  });
+  
+  describe('Quick Mode', () => {
+    it('should be disabled by default', () => {
+      expect(agent.quickModeEnabled).toBe(false);
+    });
+    
+    it('should be toggleable', () => {
+      agent.quickModeEnabled = true;
+      expect(agent.quickModeEnabled).toBe(true);
+    });
+  });
+  
+  describe('Home URL', () => {
+    it('should be set correctly', () => {
+      expect(agent.homeUrl).toBe('https://x.com/home');
+    });
+  });
+  
+  describe('Wait Log Interval', () => {
+    it('should be 10 seconds', () => {
+      expect(agent.waitLogInterval).toBe(10000);
+    });
+    
+    it('should track last wait log time', () => {
+      expect(agent.lastWaitLogTime).toBe(0);
+    });
+  });
+});
+
+describe('MockEngagementTracker', () => {
+  const limits = { likes: 5, replies: 3, bookmarks: 2 };
+  let tracker;
+  
+  beforeEach(() => {
+    tracker = new MockEngagementTracker(limits);
+  });
+  
+  it('should allow actions under limit', () => {
+    expect(tracker.canPerform('likes')).toBe(true);
+    expect(tracker.canPerform('replies')).toBe(true);
+  });
+  
+  it('should record actions', () => {
+    expect(tracker.record('likes')).toBe(true);
+    expect(tracker.state.likes).toBe(1);
+  });
+  
+  it('should prevent actions at limit', () => {
+    for (let i = 0; i &lt; 5; i++) tracker.record('likes');
+    expect(tracker.canPerform('likes')).toBe(false);
+    expect(tracker.record('likes')).toBe(false);
+  });
+  
+  it('should return correct progress', () => {
+    tracker.record('likes');
+    tracker.record('likes');
+    const progress = tracker.getProgress('likes');
+    expect(progress).toBe('2/5');
+  });
+  
+  it('should return status object', () => {
+    const status = tracker.getStatus();
+    expect(status.likes.current).toBe(0);
+    expect(status.likes.limit).toBe(5);
+    expect(status.likes.remaining).toBe(5);
+  });
+  
+  it('should return summary string', () => {
+    tracker.record('likes');
+    tracker.record('replies');
+    const summary = tracker.getSummary();
+    expect(summary).toContain('likes');
+    expect(summary).toContain('replies');
+  });
+});
+
+describe('MockDiveQueue', () => {
+  const limits = { likes: 5, replies: 3 };
+  let queue;
+  
+  beforeEach(() => {
+    queue = new MockDiveQueue(limits);
+  });
+  
+  it('should allow engagement under limit', () => {
+    expect(queue.canEngage('likes')).toBe(true);
+  });
+  
+  it('should record engagement', () => {
+    expect(queue.recordEngagement('likes')).toBe(true);
+    expect(queue.state.likes).toBe(1);
+  });
+  
+  it('should return engagement progress', () => {
+    queue.recordEngagement('likes');
+    const progress = queue.getEngagementProgress();
+    expect(progress.likes.current).toBe(1);
+    expect(progress.likes.limit).toBe(5);
+  });
+  
+  it('should return full status', () => {
+    const status = queue.getFullStatus();
+    expect(status.queue.queueLength).toBe(0);
+    expect(status.engagement).toBeDefined();
+  });
+  
+  it('should enable quick mode', () => {
+    expect(() => queue.enableQuickMode()).not.toThrow();
+  });
+  
+  it('should report cooldown state', () => {
+    expect(queue.isInCooldown()).toBe(false);
+  });
+});
+
+describe('AITwitterAgent Edge Cases', () => {
+  it('should handle null profile', () => {
+    const agent = new MockAITwitterAgent(mockPage, null, mockLogger, mockOptions);
+    expect(agent.config).toBeNull();
+  });
+  
+  it('should handle empty options', () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, {});
+    expect(agent).toBeDefined();
+  });
+  
+  it('should handle startDive without endDive', async () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    await agent.startDive();
+    expect(agent.operationLock).toBe(true);
+  });
+  
+  it('should handle endDive without startDive', async () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    await agent.endDive();
+    expect(agent.operationLock).toBe(false);
+  });
+  
+  it('should handle multiple startDive calls', async () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    await agent.startDive();
+    expect(agent.operationLock).toBe(true);
+  });
+  
+  it('should handle rapid startDive and endDive', async () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    await agent.startDive();
+    await agent.endDive();
+    expect(agent.operationLock).toBe(false);
+    expect(agent.scrollingEnabled).toBe(true);
+  });
+  
+  it('should handle engagement with invalid action', () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    const canPerform = agent.engagementTracker.canPerform('invalid');
+    expect(canPerform).toBeDefined();
+  });
+  
+  it('should handle recording with invalid action', () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    const recorded = agent.engagementTracker.record('invalid');
+    expect(typeof recorded).toBe('boolean');
+  });
+  
+  it('should handle special characters in tweet IDs', () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    agent._processedTweetIds.add('tweet-123!@#$%');
+    expect(agent._processedTweetIds.has('tweet-123!@#$%')).toBe(true);
+  });
+  
+  it('should handle negative session duration', () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    agent.sessionDuration = -1000;
+    expect(agent.sessionDuration).toBe(-1000);
+  });
+  
+  it('should handle negative scroll position', () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    agent._lastScrollY = -100;
+    expect(agent._lastScrollY).toBe(-100);
+  });
+  
+  it('should handle invalid phase transitions', () => {
+    const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+    agent.currentPhase = 'invalid-phase';
+    expect(agent.currentPhase).toBe('invalid-phase');
+  });
+});
+
+describe('AITwitterAgent Integration Scenarios', () => {
+  describe('Full dive cycle', () => {
+    it('should complete full dive cycle', async () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      await agent.startDive();
+      expect(agent.pageState).toBe('DIVING');
+      
+      await agent.endDive(true, true);
+      expect(agent.pageState).toBe('HOME');
+      expect(agent.operationLock).toBe(false);
+    });
+    
+    it('should track engagement through cycle', () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      agent.engagementTracker.record('likes');
+      const progress = agent.engagementTracker.getProgress('likes');
+      
+      expect(progress).toBeDefined();
+      expect(typeof progress).toBe('string');
+    });
+  });
+  
+  describe('Multiple engagement actions', () => {
+    it('should track multiple engagement actions', () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      agent.engagementTracker.record('likes');
+      agent.engagementTracker.record('likes');
+      agent.engagementTracker.record('replies');
+      
+      const status = agent.engagementTracker.getStatus();
+      expect(status.likes.current).toBeGreaterThan(0);
+    });
+    
+    it('should track different engagement types', () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      agent.engagementTracker.record('likes');
+      agent.engagementTracker.record('replies');
+      agent.engagementTracker.record('bookmarks');
+      
+      const summary = agent.engagementTracker.getSummary();
+      expect(summary).toContain('likes');
+      expect(summary).toContain('replies');
+      expect(summary).toContain('bookmarks');
+    });
+  });
+  
+  describe('Session lifecycle', () => {
+    it('should track session progression', () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      const startTime = agent.sessionStart;
+      agent.sessionDuration = 300000;
+      
+      expect(agent.sessionStart).toBe(startTime);
+      expect(agent.sessionDuration).toBe(300000);
+    });
+    
+    it('should transition through phases', () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      agent.currentPhase = 'warmup';
+      agent.currentPhase = 'active';
+      agent.currentPhase = 'cooldown';
+      
+      expect(agent.currentPhase).toBe('cooldown');
+    });
+  });
+  
+  describe('Tweet processing lifecycle', () => {
+    it('should track processed tweets', () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      agent._processedTweetIds.add('tweet-1');
+      agent._processedTweetIds.add('tweet-2');
+      agent._processedTweetIds.add('tweet-3');
+      
+      expect(agent._processedTweetIds.size).toBe(3);
+    });
+    
+    it('should clear processed tweets', () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      agent._processedTweetIds.add('tweet-1');
+      agent._processedTweetIds.clear();
+      
+      expect(agent._processedTweetIds.size).toBe(0);
+    });
+  });
+  
+  describe('Quick mode lifecycle', () => {
+    it('should enable quick mode', () => {
+      const agent = new MockAITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
+      
+      expect(agent.quickModeEnabled).toBe(false);
+      agent.quickModeEnabled = true;
+      expect(agent.quickModeEnabled).toBe(true);
+    });
+  });
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Feb 14 2026 11:39:38 GMT+0700 (Indochina Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

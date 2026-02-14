@@ -112,13 +112,13 @@ class ProfileFactory {
 
         // 3. New Input Logic (Mouse vs Keyboard Personas)
         const isMouseUser = type === 'DoomScroller' ? true : (Math.random() < 0.9);
-        let inputP = {};
+        let inputP;
 
         if (isMouseUser) {
             const wheelBase = (type === 'DoomScroller') ? 0.95 : 0.85;
             const wheelDown = this.gaussian(wheelBase, 0.05);
             const wheelUp = Math.random() * 0.04 + 0.01;
-            const remaining = 1.0 - (wheelDown + wheelUp);
+            // const remaining = 1.0 - (wheelDown + wheelUp);
             let wDown = Math.max(0.70, wheelDown);
             let wUp = Math.max(0.01, wheelUp);
             let sp = Math.max(0, 1 - wDown - wUp);

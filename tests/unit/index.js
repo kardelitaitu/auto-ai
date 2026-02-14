@@ -7,19 +7,35 @@
  *   import * as unitTests from '@tests/unit';
  */
 
-export { default as aiTwitterActivity } from './ai-twitter-activity.test.js';
-export { default as aiTwitterAgent } from './ai-twitterAgent.test.js';
-export { default as asyncQueue } from './async-queue.test.js';
-export { default as configService } from './config-service.test.js';
-export { default as engagementLimits } from './engagement-limits.test.js';
-export { default as humanInteraction } from './human-interaction.test.js';
-export { default as smartProb } from './test-smart-prob.js';
-export { default as actionConfig } from './test-action-config.js';
-export { default as actions } from './test-actions.js';
-export { default as simpleDive } from './test-simple-dive.js';
-export { default as humanMethods } from './test-human-methods.js';
-export { default as modularMethods } from './test-modular-methods.js';
-export { default as replyMethod } from './test-reply-method.js';
+import aiTwitterActivity from './ai-twitter-activity.test.js';
+import aiTwitterAgent from './ai-twitterAgent.test.js';
+import asyncQueue from './async-queue.test.js';
+import configService from './config-service.test.js';
+import engagementLimits from './engagement-limits.test.js';
+import humanInteraction from './human-interaction.test.js';
+import smartProb from './test-smart-prob.js';
+import actionConfig from './test-action-config.js';
+import actions from './test-actions.js';
+import simpleDive from './test-simple-dive.js';
+import humanMethods from './test-human-methods.js';
+import modularMethods from './test-modular-methods.js';
+import replyMethod from './test-reply-method.js';
+
+export {
+  aiTwitterActivity,
+  aiTwitterAgent,
+  asyncQueue,
+  configService,
+  engagementLimits,
+  humanInteraction,
+  smartProb,
+  actionConfig,
+  actions,
+  simpleDive,
+  humanMethods,
+  modularMethods,
+  replyMethod
+};
 
 /**
  * Run all unit tests

@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>utils/ai-quote-engine.js - MultiBrowseAutomation Docs</title>
+    
+    <meta name="description" content="Documentation for the Multi-Browser Automation Framework" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/your-repo-here" target="_blank" >GitHub Repo</a></h2><h3>Classes</h3><ul><li><a href="ActionOrchestrator.html">ActionOrchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getConstraintBlockedRoutines">getConstraintBlockedRoutines</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getNext">getNext</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getNextRoutine">getNextRoutine</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#record">record</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#reset">reset</a></li></ul></li><li><a href="module-connectors_baseDiscover-BaseDiscover.html">BaseDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_baseDiscover-BaseDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_ixbrowser-IxbrowserDiscover.html">IxbrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_ixbrowser-IxbrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html">LocalBraveDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html">RoxybrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_undetectable-UndetectableDiscover.html">UndetectableDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_undetectable-UndetectableDiscover.html#discover">discover</a></li></ul></li><li><a href="module-core_agent-connector-AgentConnector.html">AgentConnector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#getHealth">getHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#handleGenerateReply">handleGenerateReply</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#handleVisionRequest">handleVisionRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#logHealth">logHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#processRequest">processRequest</a></li></ul></li><li><a href="module-core_audit-verifier-AuditVerifier.html">AuditVerifier</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#calculateReliabilityMetric">calculateReliabilityMetric</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#postFlightCheck">postFlightCheck</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#preFlightCheck">preFlightCheck</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#waitForState">waitForState</a></li></ul></li><li><a href="module-core_automator-Automator.html">Automator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkConnectionHealth">checkConnectionHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkPageResponsive">checkPageResponsive</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#closeAll">closeAll</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#connectToBrowser">connectToBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getBrowser">getBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectedEndpoints">getConnectedEndpoints</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectionCount">getConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthSummary">getHealthSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthyConnectionCount">getHealthyConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#isHealthy">isHealthy</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#reconnect">reconnect</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#recoverConnection">recoverConnection</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#startHealthChecks">startHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#stopHealthChecks">stopHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#testConnection">testConnection</a></li></ul></li><li><a href="module-core_circuit-breaker-CircuitBreaker.html">CircuitBreaker</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#execute">execute</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#forceClose">forceClose</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#forceOpen">forceOpen</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getAllStatus">getAllStatus</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getBreaker">getBreaker</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getHealth">getHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#reset">reset</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#resetAll">resetAll</a></li></ul></li><li><a href="module-core_cloud-client-CloudClient.html">CloudClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#getMultiClient">getMultiClient</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#sendRequest">sendRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#testConnection">testConnection</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#testFreeModels">testFreeModels</a></li></ul></li><li><a href="module-core_discovery-Discovery.html">Discovery</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#discoverBrowsers">discoverBrowsers</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#getConnectorInfo">getConnectorInfo</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#loadConnectors">loadConnectors</a></li></ul></li><li><a href="module-core_history-compactor-HistoryCompactor.html">HistoryCompactor</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#compactHistory">compactHistory</a></li><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#generateNarrativeSummary">generateNarrativeSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#getStats">getStats</a></li></ul></li><li><a href="module-core_humanizer-engine-HumanizerEngine.html">HumanizerEngine</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#_easeOutCubic">_easeOutCubic</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#_generateComputedPath">_generateComputedPath</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generateKeystrokeTiming">generateKeystrokeTiming</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generateMousePath">generateMousePath</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generatePause">generatePause</a></li></ul></li><li><a href="module-core_idle-ghosting-IdleGhosting.html">IdleGhosting</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#isGhosting">isGhosting</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#setWiggleParams">setWiggleParams</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#start">start</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#stop">stop</a></li></ul></li><li><a href="module-core_intent-classifier-IntentClassifier.html">IntentClassifier</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#classify">classify</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#forceCloud">forceCloud</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#forceLocal">forceLocal</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#getStats">getStats</a></li></ul></li><li><a href="module-core_local-client-LocalClient.html">LocalClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#sendRequest">sendRequest</a></li></ul></li><li><a href="module-core_ollama-client-OllamaClient.html">OllamaClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_chatRequest">_chatRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_generateRequest">_generateRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_warmupModel">_warmupModel</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#applyHumanization">applyHumanization</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#applyTypos">applyTypos</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#generate">generate</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#initialize">initialize</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#isReady">isReady</a></li></ul></li><li><a href="module-core_orchestrator-Orchestrator.html">Orchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#_sleep">_sleep</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#addTask">addTask</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getMetrics">getMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#logMetrics">logMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#processTasks">processTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#startDiscovery">startDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#waitForTasksToComplete">waitForTasksToComplete</a></li></ul></li><li><a href="module-core_prompt-builder-PromptBuilder.html">PromptBuilder</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_prompt-builder-PromptBuilder.html#build">build</a></li></ul></li><li><a href="module-core_request-queue-RequestQueue.html">RequestQueue</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#enqueue">enqueue</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#pause">pause</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#resume">resume</a></li></ul></li><li><a href="module-core_semantic-parser-SemanticParser.html">SemanticParser</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#extractSemanticTree">extractSemanticTree</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#findElementByName">findElementByName</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#generateCompactRepresentation">generateCompactRepresentation</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#getTreeStats">getTreeStats</a></li></ul></li><li><a href="module-core_sessionManager-SessionManager.html">SessionManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#addSession">addSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#cleanupTimedOutSessions">cleanupTimedOutSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#findAndOccupyIdleWorker">findAndOccupyIdleWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getAllSessions">getAllSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getSessionMetadata">getSessionMetadata</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getStuckWorkers">getStuckWorkers</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getWorkerOccupancy">getWorkerOccupancy</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#loadSessionState">loadSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#registerPage">registerPage</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#releaseWorker">releaseWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#removeSession">removeSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#saveSessionState">saveSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#stopCleanupTimer">stopCleanupTimer</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#unregisterPage">unregisterPage</a></li></ul></li><li><a href="module-core_state-manager-StateManager.html">StateManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#addBreadcrumb">addBreadcrumb</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#calculateComplexityScore">calculateComplexityScore</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#clearSession">clearSession</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getBreadcrumbSummary">getBreadcrumbSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getBreadcrumbs">getBreadcrumbs</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getExecutionState">getExecutionState</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#updateExecutionState">updateExecutionState</a></li></ul></li><li><a href="module-core_stuck-detector-StuckDetector.html">StuckDetector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_stuck-detector-StuckDetector.html#check">check</a></li><li data-type='method' style='display: none;'><a href="module-core_stuck-detector-StuckDetector.html#reset">reset</a></li></ul></li><li><a href="module-core_vision-interpreter-VisionInterpreter.html">VisionInterpreter</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vision-interpreter-VisionInterpreter.html#buildPrompt">buildPrompt</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-interpreter-VisionInterpreter.html#parseResponse">parseResponse</a></li></ul></li><li><a href="module-core_vision-packager-VisionPackager.html">VisionPackager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#captureScreenshot">captureScreenshot</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#captureWithROI">captureWithROI</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#cleanupOldScreenshots">cleanupOldScreenshots</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#compressScreenshot">compressScreenshot</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#identifyROI">identifyROI</a></li></ul></li><li><a href="module-core_vllm-client-VLLMClient.html">VLLMClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#sendRequest">sendRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#testConnection">testConnection</a></li></ul></li><li><a href="module-utils_actions.ActionRunner.html">ActionRunner</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#calculateSmartProbabilities">calculateSmartProbabilities</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#executeAction">executeAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#getEngagementType">getEngagementType</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#isActionAvailable">isActionAvailable</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#selectAction">selectAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#tryExecute">tryExecute</a></li></ul></li><li><a href="module-utils_apiHandler-ApiHandler.html">ApiHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#post">post</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#put">put</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#request">request</a></li></ul></li><li><a href="module-utils_async-queue.DiveQueue.html">DiveQueue</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#addDive">addDive</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#canEngage">canEngage</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#disableQuickMode">disableQuickMode</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#enableQuickMode">enableQuickMode</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#getEngagementProgress">getEngagementProgress</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#getFullStatus">getFullStatus</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#recordEngagement">recordEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#resetEngagement">resetEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#updateEngagementLimits">updateEngagementLimits</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#updateEngagementLimits">updateEngagementLimits</a></li></ul></li><li><a href="module-utils_config-cache.ConfigCache.html">ConfigCache</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#cleanExpired">cleanExpired</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getEntries">getEntries</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getMemoryUsage">getMemoryUsage</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#has">has</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#set">set</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#updateMaxSize">updateMaxSize</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#updateTTL">updateTTL</a></li></ul></li><li><a href="module-utils_config-service-ConfigService.html">ConfigService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#_getWithDefaults">_getWithDefaults</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#ensureInit">ensureInit</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#getProfileConfig">getProfileConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#init">init</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#reload">reload</a></li></ul></li><li><a href="module-utils_config-validator.ConfigValidator.html">ConfigValidator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#getSchema">getSchema</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateConfig">validateConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateSectionConfig">validateSectionConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateWithReport">validateWithReport</a></li></ul></li><li><a href="module-utils_configLoader-ConfigLoader.html">ConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#getValue">getValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#loadConfig">loadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#reloadConfig">reloadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#validateConfig">validateConfig</a></li></ul></li><li><a href="module-utils_entropyController-EntropyController.html">EntropyController</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#applyFatigueToTiming">applyFatigueToTiming</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#calculateFatigueLevel">calculateFatigueLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#checkFatigue">checkFatigue</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#gaussian">gaussian</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#generateSessionProfile">generateSessionProfile</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#getFatigueModifiers">getFatigueModifiers</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#getSessionStats">getSessionStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#interActionGap">interActionGap</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#logAction">logAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#logNormal">logNormal</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#microBreakDuration">microBreakDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#pageLoadWait">pageLoadWait</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#poisson">poisson</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#postClickDelay">postClickDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#preDecisionDelay">preDecisionDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#reactionTime">reactionTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#readingTime">readingTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#resetSession">resetSession</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#retryDelay">retryDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#scrollDistance">scrollDistance</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#scrollSettleTime">scrollSettleTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#shouldMicroBreak">shouldMicroBreak</a></li></ul></li><li><a href="module-utils_environment-config.EnvironmentConfig.html">EnvironmentConfig</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#generateDocumentation">generateDocumentation</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getConfigPath">getConfigPath</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getCurrentEnvValues">getCurrentEnvValues</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getEnvOverrides">getEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getSupportedEnvVars">getSupportedEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#isSupportedEnvVar">isSupportedEnvVar</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#validateEnvValues">validateEnvValues</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.applyEnvOverrides">applyEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.getNestedValue">getNestedValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.logAppliedOverrides">logAppliedOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.parseEnvValue">parseEnvValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.setNestedValue">setNestedValue</a></li></ul></li><li><a href="module-utils_errors.AppError.html">AppError</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_errors.AppError.html#toJSON">toJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_errors.AppError.html#toString">toString</a></li></ul></li><li><a href="module-utils_errors.BrowserError.html">BrowserError</a></li><li><a href="module-utils_errors.CircuitBreakerError.html">CircuitBreakerError</a></li><li><a href="module-utils_errors.ConfigError.html">ConfigError</a></li><li><a href="module-utils_errors.ModelError.html">ModelError</a></li><li><a href="module-utils_errors.ProxyError.html">ProxyError</a></li><li><a href="module-utils_errors.RateLimitError.html">RateLimitError</a></li><li><a href="module-utils_errors.RouterError.html">RouterError</a></li><li><a href="module-utils_errors.TimeoutError.html">TimeoutError</a></li><li><a href="module-utils_errors.ValidationError.html">ValidationError</a></li><li><a href="module-utils_global-scroll-controller-GlobalScrollController.html">GlobalScrollController</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#apply">apply</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#applyRandom">applyRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#getMultiplier">getMultiplier</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#init">init</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#reload">reload</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollBy">scrollBy</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollDown">scrollDown</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollRandom">scrollRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollReplies">scrollReplies</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToBottom">scrollToBottom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToElement">scrollToElement</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToTop">scrollToTop</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollUp">scrollUp</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#smoothScroll">smoothScroll</a></li></ul></li><li><a href="module-utils_logger-BufferedLogger.html">BufferedLogger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_add">_add</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_startTimer">_startTimer</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_stopTimer">_stopTimer</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#flush">flush</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#success">success</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#warn">warn</a></li></ul></li><li></li><li><a href="module-utils_logger-Logger.html">Logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#_log">_log</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#colorizeTags">colorizeTags</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#success">success</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#warn">warn</a></li></ul></li><li><a href="module-utils_metrics-MetricsCollector.html">MetricsCollector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#exportToJSON">exportToJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#generateJsonReport">generateJsonReport</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getAvgAILatency">getAvgAILatency</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getAvgDiveDuration">getAvgDiveDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTwitterEngagementMetrics">getTwitterEngagementMetrics</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordAILatency">recordAILatency</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordApiCall">recordApiCall</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordBrowserDiscovery">recordBrowserDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordDiveDuration">recordDiveDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordError">recordError</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSessionEvent">recordSessionEvent</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSocialAction">recordSocialAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTaskExecution">recordTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTwitterEngagement">recordTwitterEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#reset">reset</a></li></ul></li><li><a href="module-utils_sentiment-integration.SentimentIntegration.html">SentimentIntegration</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#checkEngagementAction">checkEngagementAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#enrichContext">enrichContext</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#export">export</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#getReplyToneAdaptation">getReplyToneAdaptation</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#setEnabled">setEnabled</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#setPersonality">setPersonality</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#shouldQuoteCheck">shouldQuoteCheck</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#shouldReplyCheck">shouldReplyCheck</a></li></ul></li><li><a href="module-utils_sentiment-service.SentimentService.html">SentimentService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyze">analyze</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyzeBasic">analyzeBasic</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyzeForReplySelection">analyzeForReplySelection</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#calculateConfidence">calculateConfidence</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#deriveCompositeMetrics">deriveCompositeMetrics</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getEngagementRecommendations">getEngagementRecommendations</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getFromCache">getFromCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getNeutralAnalysis">getNeutralAnalysis</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getReplyRecommendations">getReplyRecommendations</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#hasNegativePattern">hasNegativePattern</a></li></ul></li><li><a href="module-utils_task-config-loader.TaskConfigLoader.html">TaskConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#loadAiTwitterActivityConfig">loadAiTwitterActivityConfig</a></li></ul></li><li><a href="utils_config-manager%250D%250DThis%2520is%2520a%2520NEW%2520module%2520for%2520Phase%25202%2520improvements.%2520It%2520does%2520not%2520replace%2520existing%2520config%2520loaders%250Dbut%2520provides%2520a%2520more%2520robust%2520alternative%2520for%2520new%2520code.module_-ConfigManager.html">ConfigManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#get">get</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getCacheStats">getCacheStats</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getSources">getSources</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getWithMeta">getWithMeta</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#has">has</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#init">init</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#keys">keys</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#reload">reload</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#set">set</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#toJSON">toJSON</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-connectors_baseDiscover.html">connectors/baseDiscover</a></li><li><a href="module-connectors_discovery_ixbrowser.html">connectors/discovery/ixbrowser</a></li><li><a href="module-connectors_discovery_localBrave.html">connectors/discovery/localBrave</a></li><li><a href="module-connectors_discovery_roxybrowser.html">connectors/discovery/roxybrowser</a></li><li><a href="module-connectors_discovery_undetectable.html">connectors/discovery/undetectable</a></li><li><a href="module-constants_twitter-timeouts.html">constants/twitter-timeouts</a></li><li><a href="module-core_agent-connector.html">core/agent-connector</a></li><li><a href="module-core_agent-cortex.html">core/agent-cortex</a></li><li><a href="module-core_audit-verifier.html">core/audit-verifier</a></li><li><a href="module-core_automator.html">core/automator</a></li><li><a href="module-core_circuit-breaker.html">core/circuit-breaker</a></li><li><a href="module-core_cloud-client.html">core/cloud-client</a></li><li><a href="module-core_discovery.html">core/discovery</a></li><li><a href="module-core_history-compactor.html">core/history-compactor</a></li><li><a href="module-core_humanizer-engine.html">core/humanizer-engine</a></li><li><a href="module-core_idle-ghosting.html">core/idle-ghosting</a></li><li><a href="module-core_intent-classifier.html">core/intent-classifier</a></li><li><a href="module-core_local-client.html">core/local-client</a></li><li><a href="module-core_ollama-client.html">core/ollama-client</a></li><li><a href="module-core_orchestrator.html">core/orchestrator</a></li><li><a href="module-core_prompt-builder.html">core/prompt-builder</a></li><li><a href="module-core_request-queue.html">core/request-queue</a></li><li><a href="module-core_semantic-parser.html">core/semantic-parser</a></li><li><a href="module-core_sessionManager.html">core/sessionManager</a></li><li><a href="module-core_state-manager.html">core/state-manager</a></li><li><a href="module-core_stuck-detector.html">core/stuck-detector</a></li><li><a href="module-core_vision-interpreter.html">core/vision-interpreter</a></li><li><a href="module-core_vision-packager.html">core/vision-packager</a></li><li><a href="module-core_vision_image-storage.html">core/vision/image-storage</a></li><li><a href="module-core_vision_roi-detector.html">core/vision/roi-detector</a></li><li><a href="module-core_vllm-client.html">core/vllm-client</a></li><li><a href="module-examples_simpleNavigate.html">examples/simpleNavigate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-examples_simpleNavigate.html#~simpleNavigate">simpleNavigate</a></li></ul></li><li><a href="module-local-agent_core_actionEngine.html">local-agent/core/actionEngine</a></li><li><a href="module-local-agent_core_agent.html">local-agent/core/agent</a></li><li><a href="module-local-agent_core_vision.html">local-agent/core/vision</a></li><li><a href="module-local-agent_network_llmClient.html">local-agent/network/llmClient</a></li><li><a href="module-main.html">main</a></li><li><a href="module-strategies_EntropyReferrer.html">strategies/EntropyReferrer</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-strategies_EntropyReferrer.html#~_extractContext">_extractContext</a></li></ul></li><li><a href="module-tasks_agentNavigate.html">tasks/agentNavigate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_agentNavigate.html#~agentNavigate">agentNavigate</a></li></ul></li><li><a href="module-tasks_ai-testertask.html">tasks/ai-testertask</a></li><li><a href="module-tasks_automationTask1.html">tasks/automationTask1</a></li><li><a href="module-tasks_automationTask2.html">tasks/automationTask2</a></li><li><a href="module-tasks_cookieBotRandom.html">tasks/cookieBotRandom</a></li><li><a href="module-tasks_runAgent.html">tasks/runAgent</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_runAgent.html#.run">run</a></li></ul></li><li><a href="module-tasks_testGoogleSearch.html">tasks/testGoogleSearch</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_testGoogleSearch.html#~testGoogleSearch">testGoogleSearch</a></li></ul></li><li><a href="module-tasks_twitterscroll.html">tasks/twitterscroll</a></li><li><a href="module-tests_test-core-modules.html">tests/test-core-modules</a></li><li><a href="module-utils_actions.html">utils/actions</a></li><li><a href="module-utils_actions_ai-twitter-bookmark.html">utils/actions/ai-twitter-bookmark</a></li><li><a href="module-utils_actions_ai-twitter-go-home.html">utils/actions/ai-twitter-go-home</a></li><li><a href="module-utils_actions_ai-twitter-like.html">utils/actions/ai-twitter-like</a></li><li><a href="module-utils_actions_ai-twitter-quote.html">utils/actions/ai-twitter-quote</a></li><li><a href="module-utils_actions_ai-twitter-reply.html">utils/actions/ai-twitter-reply</a></li><li><a href="module-utils_ai-context-engine.html">utils/ai-context-engine</a></li><li><a href="module-utils_ai-quote-engine.html">utils/ai-quote-engine</a></li><li><a href="module-utils_ai-reply-engine.html">utils/ai-reply-engine</a></li><li><a href="module-utils_ai-tools.html">utils/ai-tools</a></li><li><a href="module-utils_ai-twitterAgent.html">utils/ai-twitterAgent</a></li><li><a href="module-utils_api-key-timeout-tracker.html">utils/api-key-timeout-tracker</a></li><li><a href="module-utils_apiHandler.html">utils/apiHandler</a></li><li><a href="module-utils_async-queue.html">utils/async-queue</a></li><li><a href="module-utils_banner.html">utils/banner</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_banner.html#.showBanner">showBanner</a></li></ul></li><li><a href="module-utils_browserPatch.html">utils/browserPatch</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_browserPatch.html#.applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="module-utils_circuit-breaker.html">utils/circuit-breaker</a></li><li><a href="module-utils_config-cache.html">utils/config-cache</a></li><li><a href="module-utils_config-service.html">utils/config-service</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-service.html#~applyEnvOverrides">applyEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service.html#~getFromEnvOrSettings">getFromEnvOrSettings</a></li></ul></li><li><a href="module-utils_config-validator.html">utils/config-validator</a></li><li><a href="module-utils_configLoader.html">utils/configLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getBrowserAPI">getBrowserAPI</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeoutValue">getTimeoutValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeouts">getTimeouts</a></li></ul></li><li><a href="module-utils_content-depth.html">utils/content-depth</a></li><li><a href="module-utils_dockerLLM.html">utils/dockerLLM</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#.ensureDockerLLM">ensureDockerLLM</a></li><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#~isLocalLLMReady">isLocalLLMReady</a></li><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#~startLocalLLM">startLocalLLM</a></li></ul></li><li><a href="module-utils_engagement-limits.html">utils/engagement-limits</a></li><li><a href="module-utils_entropyController.html">utils/entropyController</a></li><li><a href="module-utils_envLoader.html">utils/envLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getEnv">getEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getLogLevel">getLogLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getNodeEnv">getNodeEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getRequiredEnv">getRequiredEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isDevelopment">isDevelopment</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isProduction">isProduction</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVars">resolveEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVarsInObject">resolveEnvVarsInObject</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.validateRequiredEnvVars">validateRequiredEnvVars</a></li></ul></li><li><a href="module-utils_environment-config.html">utils/environment-config</a></li><li><a href="module-utils_errors.html">utils/errors</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_errors.html#.classifyHttpError">classifyHttpError</a></li><li data-type='method' style='display: none;'><a href="module-utils_errors.html#.wrapError">wrapError</a></li></ul></li><li><a href="module-utils_free-api-router.html">utils/free-api-router</a></li><li><a href="module-utils_free-openrouter-helper.html">utils/free-openrouter-helper</a></li><li><a href="module-utils_global-scroll-controller.html">utils/global-scroll-controller</a></li><li><a href="module-utils_human-interaction.html">utils/human-interaction</a></li><li><a href="module-utils_human-timing.html">utils/human-timing</a></li><li><a href="module-utils_local-ollama-manager.html">utils/local-ollama-manager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.ensureOllama">ensureOllama</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.isOllamaRunning">isOllamaRunning</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.startOllama">startOllama</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#~doesModelExist">doesModelExist</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#~isOllamaProcessRunning">isOllamaProcessRunning</a></li></ul></li><li><a href="module-utils_logger.html">utils/logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createBufferedLogger">createBufferedLogger</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createLogger">createLogger</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#~initLogFile">initLogFile</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#~writeToLogFile">writeToLogFile</a></li></ul></li><li><a href="module-utils_metrics.html">utils/metrics</a></li><li><a href="module-utils_micro-interactions.html">utils/micro-interactions</a></li><li><a href="module-utils_mistake-engine.html">utils/mistake-engine</a></li><li><a href="module-utils_model-perf-tracker.html">utils/model-perf-tracker</a></li><li><a href="module-utils_motor-control.html">utils/motor-control</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_motor-control.html#~getXSelectors">getXSelectors</a></li><li data-type='method' style='display: none;'><a href="module-utils_motor-control.html#~smartSelector">smartSelector</a></li></ul></li><li><a href="module-utils_navigation-diversity.html">utils/navigation-diversity</a></li><li><a href="module-utils_proxy-agent.html">utils/proxy-agent</a></li><li><a href="module-utils_randomScrolling.html">utils/randomScrolling</a></li><li><a href="module-utils_randomZoom.html">utils/randomZoom</a></li><li><a href="module-utils_rate-limit-tracker.html">utils/rate-limit-tracker</a></li><li><a href="module-utils_request-dedupe.html">utils/request-dedupe</a></li><li><a href="module-utils_retry.html">utils/retry</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_retry.html#.withRetry">withRetry</a></li></ul></li><li><a href="module-utils_scroll-helper.html">utils/scroll-helper</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.getScrollMultiplier">getScrollMultiplier</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scroll">scroll</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollDown">scrollDown</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollRandom">scrollRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollToBottom">scrollToBottom</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollToTop">scrollToTop</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollUp">scrollUp</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollWheel">scrollWheel</a></li></ul></li><li><a href="module-utils_scroll-humanizer.html">utils/scroll-humanizer</a></li><li><a href="module-utils_sentiment-analyzer-multi.html">utils/sentiment-analyzer-multi</a></li><li><a href="module-utils_sentiment-analyzers.html">utils/sentiment-analyzers</a></li><li><a href="module-utils_sentiment-data.html">utils/sentiment-data</a></li><li><a href="module-utils_sentiment-decision-engine.html">utils/sentiment-decision-engine</a></li><li><a href="module-utils_sentiment-guard.html">utils/sentiment-guard</a></li><li><a href="module-utils_sentiment-integration.html">utils/sentiment-integration</a></li><li><a href="module-utils_sentiment-service.html">utils/sentiment-service</a></li><li><a href="module-utils_session-phases.html">utils/session-phases</a></li><li><a href="module-utils_task-config-loader.html">utils/task-config-loader</a></li><li><a href="module-utils_temporal-awareness.html">utils/temporal-awareness</a></li><li><a href="module-utils_twitter-interaction-methods.html">utils/twitter-interaction-methods</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_twitter-interaction-methods.html#.executeQuoteMethod">executeQuoteMethod</a></li><li data-type='method' style='display: none;'><a href="module-utils_twitter-interaction-methods.html#.executeReplyMethod">executeReplyMethod</a></li></ul></li><li><a href="module-utils_twitter-reply-prompt.html">utils/twitter-reply-prompt</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_twitter-reply-prompt.html#.buildEnhancedPrompt">buildEnhancedPrompt</a></li><li data-type='method' style='display: none;'><a href="module-utils_twitter-reply-prompt.html#.getStrategyInstruction">getStrategyInstruction</a></li></ul></li><li><a href="module-utils_urlReferrerGenerator.html">utils/urlReferrerGenerator</a></li><li><a href="module-utils_utils.html">utils/utils</a></li><li><a href="module-utils_validator.html">utils/validator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateApiResponse">validateApiResponse</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateBrowserConnection">validateBrowserConnection</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validatePayload">validatePayload</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateTaskExecution">validateTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#~convertSchemaToZod">convertSchemaToZod</a></li></ul></li><li><a href="tasks_twitterActivity.html#.module:js">tasks/twitterActivity.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterActivity.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterFollow.html#.module:js">tasks/twitterFollow.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterFollow.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterFollowLikeRetweet.html#.module:js">tasks/twitterFollowLikeRetweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterFollowLikeRetweet.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterTweet.html#.module:js">tasks/twitterTweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterTweet.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tests_integration_agent-connector-health.module_test.html">tests/integration/agent-connector-health.test</a></li><li><a href="tests_integration_agent-connector.module_test.html">tests/integration/agent-connector.test</a></li><li><a href="tests_integration_circuit-breaker.module_test.html">tests/integration/circuit-breaker.test</a></li><li><a href="tests_integration_cloud-client.module_test.html">tests/integration/cloud-client.test</a></li><li><a href="tests_integration_profile-manager.module_test.html">tests/integration/profile-manager.test</a></li><li><a href="tests_integration_request-queue.module_test.html">tests/integration/request-queue.test</a></li><li><a href="tests_integration_task-config-loader.module_test.html">tests/integration/task-config-loader.test</a></li><li><a href="tests_test-multiline-tweet.module_js.html">tests/test-multiline-tweet.js</a></li><li><a href="tests_unit_ai-twitter-activity.module_test.html">tests/unit/ai-twitter-activity.test</a></li><li><a href="tests_unit_ai-twitterAgent.module_test.html">tests/unit/ai-twitterAgent.test</a></li><li><a href="tests_unit_ai-twitterAgent.real.module_test.html">tests/unit/ai-twitterAgent.real.test</a></li><li><a href="tests_unit_apiHandler.module_test.html">tests/unit/apiHandler.test</a></li><li><a href="tests_unit_async-queue.module_test.html">tests/unit/async-queue.test</a></li><li><a href="tests_unit_banner.module_test.html">tests/unit/banner.test</a></li><li><a href="tests_unit_circuit-breaker.module_test.html">tests/unit/circuit-breaker.test</a></li><li><a href="tests_unit_config-service.module_test.html">tests/unit/config-service.test</a></li><li><a href="tests_unit_discovery.module_test.html">tests/unit/discovery.test</a></li><li><a href="tests_unit_dockerLLM.module_test.html">tests/unit/dockerLLM.test</a></li><li><a href="tests_unit_engagement-limits.module_test.html">tests/unit/engagement-limits.test</a></li><li><a href="tests_unit_envLoader.module_test.html">tests/unit/envLoader.test</a></li><li><a href="tests_unit_global-scroll-controller.module_test.html">tests/unit/global-scroll-controller.test</a></li><li><a href="tests_unit_human-interaction.module_test.html">tests/unit/human-interaction.test</a></li><li><a href="tests_unit_humanization-utils.module_test.html">tests/unit/humanization-utils.test</a></li><li><a href="tests_unit_ixbrowser.module_test.html">tests/unit/ixbrowser.test</a></li><li><a href="tests_unit_logging-config.module_test.html">tests/unit/logging-config.test</a></li><li><a href="tests_unit_request-queue.module_test.html">tests/unit/request-queue.test</a></li><li><a href="tests_unit_retry.module_test.html">tests/unit/retry.test</a></li><li><a href="tests_unit_roxybrowser.module_test.html">tests/unit/roxybrowser.test</a></li><li><a href="tests_unit_scroll-helper.module_test.html">tests/unit/scroll-helper.test</a></li><li><a href="tests_unit_session-manager.module_test.html">tests/unit/session-manager.test</a></li><li><a href="tests_unit_validator.module_test.html">tests/unit/validator.test</a></li><li><a href="tools_composeTweet.module_js.html">tools/composeTweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~composeTweet">composeTweet</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~main">main</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~showQueueStatus">showQueueStatus</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~viewQueue">viewQueue</a></li></ul></li><li><a href="utils_config-manager%250D%250DThis%2520is%2520a%2520NEW%2520module%2520for%2520Phase%25202%2520improvements.%2520It%2520does%2520not%2520replace%2520existing%2520config%2520loaders%250Dbut%2520provides%2520a%2520more%2520robust%2520alternative%2520for%2520new%2520code.module_.html">utils/config-managerThis is a NEW module for Phase 2 improvements. It does not replace existing config loadersbut provides a more robust alternative for new code.</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configDrivenReply">configDrivenReply</a></li><li><a href="global.html#ensureProfilesLoaded">ensureProfilesLoaded</a></li><li><a href="global.html#estimateConversationTokens">estimateConversationTokens</a></li><li><a href="global.html#estimateMessageTokens">estimateMessageTokens</a></li><li><a href="global.html#estimateTokens">estimateTokens</a></li><li><a href="global.html#formatEngagementLine">formatEngagementLine</a></li><li><a href="global.html#formatEngagementSummary">formatEngagementSummary</a></li><li><a href="global.html#generateProfiles">generateProfiles</a></li><li><a href="global.html#generateProgressBar">generateProgressBar</a></li><li><a href="global.html#getDefaultLoggingConfig">getDefaultLoggingConfig</a></li><li><a href="global.html#getLoggingConfig">getLoggingConfig</a></li><li><a href="global.html#loadProfiles">loadProfiles</a></li><li><a href="global.html#mathUtils">mathUtils</a></li><li><a href="global.html#postQuoteWithMethod">postQuoteWithMethod</a></li><li><a href="global.html#postReplyRandom">postReplyRandom</a></li><li><a href="global.html#postReplyWithFallback">postReplyWithFallback</a></li><li><a href="global.html#postReplyWithMethod">postReplyWithMethod</a></li><li><a href="global.html#resetLoggingConfig">resetLoggingConfig</a></li><li><a href="global.html#runAllEdgeCaseTests">runAllEdgeCaseTests</a></li><li><a href="global.html#runAllIntegrationTests">runAllIntegrationTests</a></li><li><a href="global.html#runAllTests">runAllTests</a></li><li><a href="global.html#runAllUnitTests">runAllUnitTests</a></li><li><a href="global.html#smartReply">smartReply</a></li><li><a href="global.html#takeScreenshot">takeScreenshot</a></li><li><a href="global.html#testStats">testStats</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">utils/ai-quote-engine.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * AI Quote Tweet Engine
+ * Handles AI quote generation, safety filtering, and posting
+ * @module utils/ai-quote-engine
+ */
+
+import { createLogger } from './logger.js';
+import { mathUtils } from './mathUtils.js';
+import { sentimentService } from './sentiment-service.js';
+import { scrollRandom } from './scroll-helper.js';
+import { config } from './config-service.js';
+import { HumanInteraction } from './human-interaction.js';
+import { getStrategyInstruction } from './twitter-reply-prompt.js';
+
+const logger = createLogger('ai-quote-engine.js');
+
+export const QUOTE_SYSTEM_PROMPT = `You are a real Twitter user crafting an authentic quote tweet.
+Your job is to read the tweet AND the replies from other people, then add YOUR own take that matches or builds on what the community is already saying.
+
+## CONSENSUS QUOTE STYLE
+
+1. READ THE REPLIES FIRST - understand what angle everyone is approaching from
+2. PICK UP ON THE CONSENSUS - what's the general sentiment or theme?
+3. ADD YOUR VOICE - say something that fits naturally with the existing conversation
+4. BE SPECIFIC - react to the actual content, not just generic praise
+
+## TONE ADAPTATION
+
+Match your quote tone to the conversation:
+
+### 🎭 HUMOROUS THREAD
+- Keep it playful, use light emojis naturally
+- Short punchy comments work best
+- Examples: "main character energy", "this is giving chaos", "copium overload"
+
+### 📢 NEWS/ANNOUNCEMENT THREAD  
+- More informative, acknowledge the news
+- Show awareness of implications
+- Examples: "this is bigger than people realize", "finally some good news", "waiting for the follow-up"
+
+### 💭 PERSONAL/EMOTIONAL THREAD
+- Show empathy without being preachy
+- Relate to the experience
+- Examples: "this hits different", "so real", "respect for sharing"
+
+### 💻 TECH/PRODUCT THREAD
+- Be specific about features or issues
+- Mention actual details if you have experience
+- Examples: "the battery optimization is actually great", "still waiting on the feature"
+
+## WHAT TO AVOID
+- Generic: "That's interesting", "Cool!", "Nice"
+- Generic praise without specifics
+- Questions (creates threads you don't want)
+- Being overly formal or try-hard
+- Contrarian takes just to be different
+- Hashtags, @mentions (unless organic)
+- Using emoji in every quote - match the vibe
+
+Write ONE quote tweet. Maximum 1 short sentence. Be specific and authentic.
+IMPORTANT: Return ONLY the final quote tweet text. Do NOT include:
+- Any reasoning, thinking, or internal monologue
+- Any prefixes like "Here's my quote:" or "My response:"
+- Any code blocks or markdown
+- Any explanation of your choice
+
+Just output the quote tweet itself.`;
+
+export class AIQuoteEngine {
+    constructor(agentConnector, options = {}) {
+        this.agent = agentConnector;
+        this.logger = createLogger('ai-quote-engine.js');
+        this.config = {
+            QUOTE_PROBABILITY: options.quoteProbability ?? 1.0,
+            MAX_QUOTE_LENGTH: 250,
+            MIN_QUOTE_LENGTH: 10,
+            MAX_RETRIES: options.maxRetries ?? 2,
+            SAFETY_FILTERS: {
+                minTweetLength: 10,
+                maxTweetLength: 280,
+                excludedKeywords: [
+                    'politics', 'political', 'vote', 'election', 'trump', 'biden', 'obama',
+                    'republican', 'democrat', 'congress', 'senate', 'president', 'policy',
+                    'nsfw', 'nude', 'naked', 'explicit', '18+', 'adult', 'xxx', 'porn',
+                    'follow back', 'fb', 'make money', 'drop link', 'free crypto',
+                    'dm me', 'send dm', 'join now', 'limited offer', 'act now'
+                ],
+                genericResponses: [
+                    'interesting',
+                    'so true',
+                    'agreed',
+                    'facts',
+                    'literally me',
+                    'mood',
+                    'relatable',
+                    'this 👏',
+                    'preach',
+                    'couldn\'t agree more',
+                    'absolutely',
+                    'can confirm',
+                    'same energy',
+                    'spot on',
+                    'big mood',
+                    'my life',
+                    'me rn',
+                    'real talk',
+                    'needed this',
+                    'speak louder',
+                    'says who',
+                    'waiting for this',
+                    'finally',
+                    'go off',
+                    'queen behavior',
+                    'king behavior',
+                    'didn\'t ask',
+                    'nobody asked',
+                    'who asked',
+                    '🤷',
+                    '💯',
+                    '🔥',
+                    '👏👏',
+                    '👏',
+                    '🤝',
+                    '✨',
+                    '🙏'
+                ]
+            }
+        };
+
+        this.stats = {
+            attempts: 0,
+            successes: 0,
+            skips: 0,
+            failures: 0,
+            safetyBlocks: 0,
+            errors: 0,
+            emptyContent: 0,
+            extractFailed: 0,
+            validationFailed: 0,
+            retriesUsed: 0,
+            fallbackUsed: 0
+        };
+
+        this.logger.info(`[AIQuoteEngine] Initialized (probability: ${this.config.QUOTE_PROBABILITY})`);
+    }
+
+    updateConfig(options) {
+        if (options.quoteProbability !== undefined) {
+            this.config.QUOTE_PROBABILITY = options.quoteProbability;
+        }
+        if (options.maxRetries !== undefined) {
+            this.config.MAX_RETRIES = options.maxRetries;
+        }
+    }
+
+    /**
+     * Detect primary language from text content
+     */
+    detectLanguage(text) {
+        if (!text || typeof text !== 'string') return 'en';
+
+        const textLower = text.toLowerCase();
+
+        // Language patterns (common words/phrases)
+        const languages = {
+            en: /\b(the|is|are|was|were|have|has|been|will|would|could|should|this|that|these|those|i|you|he|she|it|we|they|what|which|who|when|where|why|how)\b/i,
+            es: /\b(el|la|los|las|es|son|fue|fueron|tiene|tienen|será|sería|puede|podrían|esto|ese|esta|yo|tú|él|ella|ellos|qué|cualquién|cuando|dónde|por qué|cómo)\b/i,
+            fr: /\b(le|la|les|est|sont|était|étaient|a|ont|été|sera|serait|peuvent|cela|cette|ces|je|tu|il|elle|nous|vous|ils|elles|que|qui|quoi|quand|où|pourquoi|comment)\b/i,
+            de: /\b(der|die|das|den|dem|ist|sind|war|waren|hat|haben|wird|wäre|kann|können|dieser|diese|dieses|ich|du|er|sie|es|wir|sie|was|welcher|wer|wo|warum|wie)\b/i,
+            pt: /\b(o|a|os|as|é|são|foi|foram|tem|têm|será|seria|podem|isso|essa|esses|eu|você|ele|ela|nós|vocês|eles|elas|o quê|qual|quem|quando|onde|por quê|como)\b/i,
+            id: /\b(ini|itu|adalah|adalah|tersebut|dengan|untuk|dan|di|dari|yang|apa|siapa|apa|ketika|di mana|mengapa|bagai)\b/i,
+            ja: /\b(これ|それ|あれ|この|その|あの|です|だ|ある|いる|ます|か|の|に|を|と|が|は|だれの|何|いつ|どこ|なぜ|怎样)\b/i,
+            ko: /\b(이|그|저|이다|있다|하다|것|을|를|에|에서|과|와|는|은|다|吗|什么|何时|哪里|为什么)\b/i,
+            zh: /\b(这|那|是|的|在|有|和|与|对|就|都|而|及|与|着|或|什么|谁|何时|何地|为何|如何)\b/i
+        };
+
+        const scores = {};
+        let totalScore = 0;
+
+        for (const [lang, pattern] of Object.entries(languages)) {
+            const match = textLower.match(pattern);
+            const score = match ? match.length : 0;
+            scores[lang] = score;
+            totalScore += score;
+        }
+
+        if (totalScore === 0) return 'en';
+
+        // Find the language with highest score
+        let maxScore = 0;
+        let detectedLang = 'en';
+
+        for (const [lang, score] of Object.entries(scores)) {
+            if (score > maxScore) {
+                maxScore = score;
+                detectedLang = lang;
+            }
+        }
+
+        // Map to full language name
+        const langNames = {
+            en: 'English',
+            es: 'Spanish',
+            fr: 'French',
+            de: 'German',
+            pt: 'Portuguese',
+            id: 'Indonesian',
+            ja: 'Japanese',
+            ko: 'Korean',
+            zh: 'Chinese'
+        };
+
+        return langNames[detectedLang] || 'English';
+    }
+
+    /**
+     * Detect primary language from array of replies
+     */
+    detectReplyLanguage(replies) {
+        if (!replies || replies.length === 0) return 'English';
+
+        // Collect all reply text
+        const allText = replies
+            .map(r => r.text || r.content || '')
+            .join(' ');
+
+        // Sample up to 5 replies for language detection
+        const sampleText = replies
+            .slice(0, 5)
+            .map(r => (r.text || r.content || '').substring(0, 500))
+            .join(' ');
+
+        return this.detectLanguage(sampleText);
+    }
+
+    /**
+     * Build enhanced prompt with context (tweet, replies, screenshot)
+     */
+    buildEnhancedPrompt(tweetText, authorUsername, replies = [], url = '', sentimentContext = {}, hasImage = false, engagementLevel = 'unknown') {
+        // Detect language from replies
+        const detectedLanguage = this.detectReplyLanguage(replies);
+        this.logger.debug(`[AIQuote] Detected language: ${detectedLanguage}`);
+
+        // Get sentiment guidance
+        const sentiment = sentimentContext.engagementStyle || 'neutral';
+        const conversationType = sentimentContext.conversationType || 'general';
+        const valence = sentimentContext.valence || 0;
+        const sarcasmScore = sentimentContext.sarcasm || 0;
+
+        // Generate sentiment-aware tone guidance
+        const toneGuidance = this.getStyleGuidance(sentiment, sarcasmScore);
+        const lengthGuidance = this.getLengthGuidance(conversationType, valence);
+
+        // === STRATEGY SELECTION ===
+        // Use the improved strategy selector from twitter-reply-prompt.js
+        const strategyInstruction = getStrategyInstruction({
+            sentiment: valence &lt; -0.3 ? 'negative' : (valence > 0.3 ? 'positive' : 'neutral'),
+            type: conversationType,
+            engagement: engagementLevel
+        });
+
+        let prompt = `Tweet from @${authorUsername}:
+"${tweetText}"
+
+Tweet URL: ${url}
+
+`;
+
+        if (replies.length > 0) {
+            // Sort by length (longest first) and take top 30 for richer context
+            const sortedReplies = replies
+                .filter(r => r.text &amp;&amp; r.text.length > 5)
+                .sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))
+                .slice(0, 30);
+            
+            prompt += `Other replies to this tweet (in ${detectedLanguage}):
+`;
+            sortedReplies.forEach((reply, i) => {
+                const author = reply.author || 'User';
+                const text = reply.text || reply.content || '';
+                prompt += `${i + 1}. @${author}: "${text.substring(0, 200)}"
+`;
+            });
+            prompt += `
+`;
+        }
+
+        prompt += `Language detected: ${detectedLanguage}
+
+IMPORTANT: Keep it SHORT. Maximum 1 short sentence. No paragraphs.
+
+Tweet Analysis:
+  - Sentiment: ${sentiment}
+  - Conversation Type: ${conversationType}
+  - Valence: ${valence > 0 ? 'Positive' : valence &lt; 0 ? 'Negative' : 'Neutral'}
+  ${hasImage ? '- [IMAGE DETECTED] This tweet contains an image. Analyze it and comment on visual details.' : ''}
+
+  TONE GUIDANCE: ${toneGuidance}
+  STRATEGY INSTRUCTION: ${strategyInstruction}
+LENGTH: MAXIMUM 1 SHORT SENTENCE
+
+Write ONE short quote tweet (1 sentence max).
+IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with your own followers adding your commentary.
+`;
+
+        return {
+            text: prompt,
+            language: detectedLanguage,
+            replyCount: replies.length,
+            sentiment: {
+                engagementStyle: sentiment,
+                conversationType: conversationType,
+                valence,
+                sarcasmScore
+            }
+        };
+    }
+
+    /**
+     * Decide whether to quote a tweet
+     */
+    async shouldQuote(tweetText, authorUsername, context = {}) {
+        this.stats.attempts++;
+
+        const rolled = Math.random();
+        this.logger.debug(`[AI-Quote] Probability check: ${(this.config.QUOTE_PROBABILITY * 100).toFixed(1)}% threshold, rolled ${(rolled * 100).toFixed(1)}%`);
+
+        if (!mathUtils.roll(this.config.QUOTE_PROBABILITY)) {
+            this.stats.skips++;
+            return {
+                decision: 'skip',
+                reason: 'probability',
+                quote: null
+            };
+        }
+
+        return {
+            decision: 'proceed',
+            reason: 'eligible',
+            quote: null
+        };
+    }
+
+    /**
+      * Generate a quote tweet using AI
+      */
+    async generateQuote(tweetText, authorUsername, context = {}) {
+        const { url = '', replies = [] } = context;
+
+        // ================================================================
+        // FULL SENTIMENT ANALYSIS OF TWEET
+        // ================================================================
+        const tweetSentiment = sentimentService.analyze(tweetText);
+        
+        // Log comprehensive sentiment analysis
+        this.logger.info(`[AIQuote] Sentiment Analysis:`);
+        this.logger.info(`[AIQuote]   - Overall: ${tweetSentiment.isNegative ? 'NEGATIVE' : 'NEUTRAL/POSITIVE'} (score: ${tweetSentiment.score.toFixed(2)})`);
+        this.logger.info(`[AIQuote]   - Valence: ${tweetSentiment.dimensions?.valence?.valence?.toFixed(2) || 'N/A'}`);
+        this.logger.info(`[AIQuote]   - Arousal: ${tweetSentiment.dimensions?.arousal?.arousal?.toFixed(2) || 'N/A'}`);
+        this.logger.info(`[AIQuote]   - Dominance: ${tweetSentiment.dimensions?.dominance?.dominance?.toFixed(2) || 'N/A'}`);
+        this.logger.info(`[AIQuote]   - Sarcasm: ${tweetSentiment.dimensions?.sarcasm?.sarcasm?.toFixed(2) || 'N/A'}`);
+        this.logger.info(`[AIQuote]   - Toxicity: ${tweetSentiment.dimensions?.toxicity?.toxicity?.toFixed(2) || 'N/A'}`);
+        this.logger.info(`[AIQuote]   - Risk Level: ${tweetSentiment.composite?.riskLevel || 'N/A'}`);
+        this.logger.info(`[AIQuote]   - Engagement Style: ${tweetSentiment.composite?.engagementStyle || 'N/A'}`);
+        this.logger.info(`[AIQuote]   - Conversation Type: ${tweetSentiment.composite?.conversationType || 'N/A'}`);
+
+        // ================================================================
+        // SKIP HIGH-RISK CONVERSATIONS
+        // ================================================================
+        if (tweetSentiment.isNegative &amp;&amp; tweetSentiment.score > 0.3) {
+            this.logger.warn(`[AIQuote] Skipping negative content (score: ${tweetSentiment.score.toFixed(2)})`);
+            return { quote: null, success: false, reason: 'negative_content' };
+        }
+
+        if (tweetSentiment.composite?.riskLevel === 'high') {
+            this.logger.warn(`[AIQuote] Skipping high-risk conversation`);
+            return { quote: null, success: false, reason: 'high_risk_conversation' };
+        }
+
+        // Extract derived sentiment values
+        const sentiment = tweetSentiment.composite?.engagementStyle || 'neutral';
+        const conversationType = tweetSentiment.composite?.conversationType || 'general';
+        const valence = tweetSentiment.dimensions?.valence?.valence || 0;
+        const sarcasmScore = tweetSentiment.dimensions?.sarcasm?.sarcasm || 0;
+
+        // ================================================================
+        // SENTIMENT-BASED REPLY SELECTION
+        // ================================================================
+        let selectedReplies = replies;
+        if (replies &amp;&amp; replies.length > 0) {
+            const sentimentAnalysis = sentimentService.analyzeForReplySelection(replies);
+            this.logger.info(`[AIQuote] Reply selection strategy: ${sentimentAnalysis.strategy} ` +
+                        `(pos: ${sentimentAnalysis.distribution.positive}, ` +
+                        `neg: ${sentimentAnalysis.distribution.negative}, ` +
+                        `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`);
+            
+            const recs = sentimentAnalysis.recommendations;
+            if (recs.manualSelection) {
+                selectedReplies = recs.manualSelection;
+            } else {
+                selectedReplies = sentimentAnalysis.analyzed
+                    .filter(r => recs.filter(r))
+                    .sort(recs.sort)
+                    .slice(0, recs.max)
+                    .map(r => ({ author: r.author, text: r.text }));
+            }
+            
+            this.logger.info(`[AIQuote] Selected ${selectedReplies.length} replies for LLM context ` +
+                        `(filtered from ${replies.length})`);
+        }
+
+        // Build enhanced prompt with language detection
+        const sentimentContext = {
+            engagementStyle: sentiment,
+            conversationType: conversationType,
+            valence,
+            sarcasm: sarcasmScore
+        };
+        const hasImage = !!context.screenshot;
+        const engagementLevel = context.engagementLevel || 'unknown';
+        const promptData = this.buildEnhancedPrompt(tweetText, authorUsername, selectedReplies, url, sentimentContext, hasImage, engagementLevel);
+
+        const systemPrompt = QUOTE_SYSTEM_PROMPT;
+
+        // DEBUG: Log tweet and prompt being sent to LLM
+        this.logger.info(`[DEBUG] ============================================`);
+        this.logger.info(`[DEBUG] TWEET TO QUOTE:`);
+        this.logger.info(`[DEBUG] Author: @${authorUsername}`);
+        this.logger.info(`[DEBUG] URL: ${url}`);
+        this.logger.info(`[DEBUG] Tweet Text: "${tweetText}"`);
+        this.logger.info(`[DEBUG] Tweet Length: ${tweetText.length} chars`);
+        this.logger.info(`[DEBUG] Sentiment: ${sentiment}, Tone: ${conversationType}`);
+        this.logger.info(`[DEBUG] ----------------------------------------------`);
+        this.logger.info(`[DEBUG] REPLIES CONTEXT (${selectedReplies.length} selected from ${replies.length}):`);
+        selectedReplies.forEach((reply, idx) => {
+            const author = reply.author &amp;&amp; reply.author !== 'unknown' ? reply.author : 'User';
+            const text = (reply.text || '').substring(0, 80);
+            const ellipsis = (reply.text || '').length > 80 ? '...' : '';
+            this.logger.info(`[DEBUG] [${idx + 1}] Reply${idx + 1}: "@${author}: ${text}${ellipsis}"`);
+        });
+        this.logger.info(`[DEBUG] ----------------------------------------------`);
+        this.logger.info(`[DEBUG] FULL PROMPT SENT TO LLM:`);
+        this.logger.info(`[DEBUG] Language: ${promptData.language}`);
+        this.logger.info(`[DEBUG] System Prompt Length: ${systemPrompt.length} chars`);
+        this.logger.info(`[DEBUG] User Prompt Length: ${promptData.text.length} chars`);
+        this.logger.info(`[DEBUG] ============================================`);
+
+        try {
+            let lastError = null;
+            const maxRetries = this.config.MAX_RETRIES;
+
+            for (let attempt = 1; attempt &lt;= maxRetries; attempt++) {
+                this.logger.info(`[AI-Quote] Generating ${promptData.language} quote tweet (attempt ${attempt}/${maxRetries})...`);
+
+                try {
+                    const result = await this.agent.processRequest({
+                        action: 'generate_reply',
+                        sessionId: this.agent.sessionId || 'quote-engine',
+                        payload: {
+                            systemPrompt,
+                            userPrompt: promptData.text,
+                            tweetText,
+                            authorUsername,
+                            engagementType: 'quote',
+                            maxTokens: 75,
+                            context: {
+                                hasScreenshot: hasImage,
+                                replyCount: replies.length,
+                                detectedLanguage: promptData.language
+                            }
+                        }
+                    });
+
+                    // DEBUG: Log raw LLM response
+                    this.logger.info(`[DEBUG] ----------------------------------------------`);
+                    this.logger.info(`[DEBUG] LLM RAW RESPONSE (attempt ${attempt}):`);
+                    this.logger.info(`[DEBUG] ${result ? JSON.stringify(result).substring(0, 1000) : 'result is null/undefined'}`);
+                    this.logger.info(`[DEBUG] ----------------------------------------------`);
+
+                    // Detailed failure analysis
+                    if (!result) {
+                        this.logger.error(`[AIQuoteEngine] ❌ LLM result is null/undefined (attempt ${attempt})`);
+                        lastError = 'llm_result_null';
+                        continue;
+                    }
+
+                    if (!result.success) {
+                        this.logger.error(`[AIQuoteEngine] ❌ LLM request failed: ${result.error || 'unknown error'} (attempt ${attempt})`);
+                        lastError = `llm_failed: ${result.error || 'unknown'}`;
+                        continue;
+                    }
+
+                    // Extract content from nested response structure (result.data.content) or direct result.content
+                    const rawContent = result.data?.content || result.content || '';
+                    this.logger.info(`[DEBUG] Extracted content: "${rawContent.substring(0, 100)}..." (length: ${rawContent.length})`);
+
+                    if (!rawContent || rawContent.trim().length === 0) {
+                        this.logger.error(`[AIQuoteEngine] ❌ LLM returned empty content (attempt ${attempt}/${maxRetries})`);
+                        this.stats.emptyContent++;
+                        lastError = 'llm_empty_content';
+                        if (attempt &lt; maxRetries) {
+                            this.logger.info(`[AIQuoteEngine] Retrying...`);
+                            this.stats.retriesUsed++;
+                            continue;
+                        }
+                        return { quote: null, success: false, reason: 'llm_empty_content' };
+                    }
+
+                    this.logger.debug(`[DEBUG] Raw content length: ${rawContent.length} chars`);
+
+                    const reply = this.extractReplyFromResponse(rawContent);
+                    this.logger.debug(`[DEBUG] Extracted reply: "${reply?.substring(0, 100)}..."`);
+
+                    if (!reply) {
+                        this.logger.warn(`[AIQuoteEngine] ⚠️ Could not extract reply from LLM response patterns (attempt ${attempt})`);
+                        this.logger.warn(`[DEBUG] Full raw content:\n${rawContent}`);
+                        // Fallback: use raw content directly if it's a valid quote
+                        const fallbackReply = rawContent.trim();
+                        if (fallbackReply.length >= this.config.MIN_QUOTE_LENGTH) {
+                            this.logger.info(`[AIQuoteEngine] 🔄 Using raw content as fallback: "${fallbackReply.substring(0, 50)}..."`);
+                            this.stats.fallbackUsed++;
+                            return {
+                                quote: fallbackReply,
+                                success: true,
+                                note: 'fallback_content_used'
+                            };
+                        }
+                        this.stats.extractFailed++;
+                        lastError = 'extract_reply_failed';
+                        if (attempt &lt; maxRetries) {
+                            this.logger.info(`[AIQuoteEngine] Retrying...`);
+                            this.stats.retriesUsed++;
+                            continue;
+                        }
+                        return { quote: null, success: false, reason: 'extract_reply_failed' };
+                    }
+
+                    const cleaned = this.cleanQuote(reply);
+                    this.logger.info(`[AIQuoteEngine] ✨ Cleaned quote: "${cleaned}" (${cleaned.length} chars)`);
+
+                    if (cleaned.length &lt; this.config.MIN_QUOTE_LENGTH) {
+                        this.logger.error(`[AIQuoteEngine] ❌ Quote too short: ${cleaned.length} chars (min: ${this.config.MIN_QUOTE_LENGTH}) (attempt ${attempt})`);
+                        lastError = 'quote_too_short';
+                        if (attempt &lt; maxRetries) {
+                            this.logger.info(`[AIQuoteEngine] Retrying...`);
+                            this.stats.retriesUsed++;
+                            continue;
+                        }
+                        return { quote: null, success: false, reason: 'quote_too_short' };
+                    }
+
+                    const validation = this.validateQuote(cleaned);
+                    if (validation.valid) {
+                        this.stats.successes++;
+                        return {
+                            quote: cleaned,
+                            success: true,
+                            language: promptData.language
+                        };
+                    } else {
+                        this.logger.warn(`[AIQuoteEngine] ❌ Quote validation failed (${validation.reason}): "${cleaned}" (attempt ${attempt})`);
+                        this.stats.validationFailed++;
+                        lastError = `validation_failed: ${validation.reason}`;
+                        if (attempt &lt; maxRetries) {
+                            this.logger.info(`[AIQuoteEngine] Retrying...`);
+                            this.stats.retriesUsed++;
+                            continue;
+                        }
+                        return { quote: null, success: false, reason: `validation_failed: ${validation.reason}` };
+                    }
+
+                } catch (error) {
+                    this.logger.error(`[AIQuoteEngine] ❌ Generation error (attempt ${attempt}): ${error.message}`);
+                    this.stats.errors++;
+                    lastError = error.message;
+                    if (attempt &lt; maxRetries) {
+                        this.logger.info(`[AIQuoteEngine] Retrying...`);
+                        this.stats.retriesUsed++;
+                        continue;
+                    }
+                    return { quote: null, success: false, reason: error.message };
+                }
+            }
+
+            // All retries exhausted
+            this.logger.error(`[AIQuoteEngine] ❌ All ${maxRetries} attempts failed. Last error: ${lastError}`);
+            this.stats.failures++;
+            return { quote: null, success: false, reason: `all_attempts_failed: ${lastError}` };
+
+        } catch (error) {
+            this.logger.error(`[AIQuoteEngine] Generation failed: ${error.message}`);
+            this.stats.errors++;
+            return { quote: null, success: false, reason: error.message };
+        }
+    }
+
+    extractReplyFromResponse(content) {
+        if (!content) {
+            this.logger.warn(`[extractReplyFromResponse] Empty content received`);
+            return null;
+        }
+
+        const trimmed = content.trim();
+        this.logger.debug(`[extractReplyFromResponse] Processing content: "${trimmed.substring(0, 100)}..." (length: ${trimmed.length})`);
+
+        // ================================================================
+        // PATTERN 0: Direct content (already clean, most common case)
+        // ================================================================
+        if (trimmed.length >= 10 &amp;&amp; trimmed.length &lt; 300) {
+            // Check if it looks like a real tweet (not JSON, not thinking)
+            const isCleanResponse = !trimmed.startsWith('{') &amp;&amp; 
+                                    !trimmed.startsWith('[') &amp;&amp;
+                                    !trimmed.startsWith('```') &amp;&amp;
+                                    !trimmed.toLowerCase().includes('thinking') &amp;&amp;
+                                    !trimmed.toLowerCase().includes('reasoning') &amp;&amp;
+                                    !trimmed.toLowerCase().includes('&lt;thought>');
+
+            if (isCleanResponse) {
+                // Check for reasoning patterns
+                const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(trimmed) ||
+                                   /Let me|I'll|First|Then|So I|Now I/i.test(trimmed) ||
+                                   /This is my|My draft|Here's my|I think this/i.test(trimmed) ||
+                                   /It needs to be|My draft fits/i.test(trimmed) ||
+                                   /That'?s specific|It feels authentic/i.test(trimmed);
+
+                if (!isReasoning) {
+                    this.logger.debug(`[extractReplyFromResponse] ✓ Direct content used`);
+                    return trimmed;
+                }
+            }
+        }
+
+        // ================================================================
+        // PATTERN 1: Look for trailing quoted text (highest priority)
+        // ================================================================
+        const quotedMatch = trimmed.match(/"([^"]{10,280})"\s*$/);
+        if (quotedMatch) {
+            const quoted = quotedMatch[1].trim();
+            if (!/I (?:need to|should|want to|will|must) /i.test(quoted)) {
+                this.logger.debug(`[extractReplyFromResponse] ✓ Quoted text pattern matched`);
+                return quoted;
+            }
+        }
+
+        // Pattern 1b: Single quotes
+        const singleQuotedMatch = trimmed.match(/'([^']{10,280})'\s*$/);
+        if (singleQuotedMatch) {
+            const quoted = singleQuotedMatch[1].trim();
+            if (!/I (?:need to|should|want to|will|must) /i.test(quoted)) {
+                this.logger.debug(`[extractReplyFromResponse] ✓ Single-quoted text pattern matched`);
+                return quoted;
+            }
+        }
+
+        // ================================================================
+        // PATTERN 2: Look for content after last newline (often the actual response)
+        // ================================================================
+        const lines = trimmed.split('\n');
+        const lastLine = lines[lines.length - 1].trim();
+        
+        if (lastLine.length > 10 &amp;&amp; lastLine.length &lt; 300) {
+            // Check if it looks like a real response (not internal reasoning)
+            const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(lastLine) ||
+                               /Let me|I'll|First|Then|So I|Now I/i.test(lastLine) ||
+                               /This is my|My draft|Here's my/i.test(lastLine) ||
+                               /It needs to be|My draft fits|I think this/i.test(lastLine) ||
+                               /That'?s specific|It feels authentic/i.test(lastLine) ||
+                               /That's specific|My draft|Here's my|I think this/i.test(lastLine);
+            
+            if (!isReasoning) {
+                this.logger.debug(`[extractReplyFromResponse] ✓ Last line pattern matched`);
+                return lastLine;
+            }
+        }
+
+        // ================================================================
+        // PATTERN 3: Look for the last paragraph if it looks like a real response
+        // ================================================================
+        const paragraphs = trimmed.split(/\n\n+/);
+        for (let i = paragraphs.length - 1; i >= 0; i--) {
+            const para = paragraphs[i].trim();
+            if (para.length > 10 &amp;&amp; para.length &lt; 300) {
+                const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(para) ||
+                                   /Let me|I'll|First|Then|So I|Now I/i.test(para) ||
+                                   /This is my|My draft|Here's my/i.test(para) ||
+                                   /It needs to be|My draft fits|I think this/i.test(para);
+                if (!isReasoning) {
+                    this.logger.debug(`[extractReplyFromResponse] ✓ Paragraph pattern matched`);
+                    return para;
+                }
+            }
+        }
+
+        // ================================================================
+        // PATTERN 4: Look for content after "Answer:", "Response:", "Quote:", etc.
+        // ================================================================
+        const labelPatterns = [
+            /^(?:Answer|Response|Quote|Tweet|My response|Here's my):?\s*/i,
+            /^(?:The|Ma) quote:?\s*/i,
+            /^(?:I'd|I would|No) (?:say|think|respond):?\s*/i
+        ];
+
+        for (const pattern of labelPatterns) {
+            const match = trimmed.match(pattern);
+            if (match) {
+                const afterLabel = trimmed.substring(match[0].length).trim();
+                if (afterLabel.length >= 10 &amp;&amp; afterLabel.length &lt; 300) {
+                    this.logger.debug(`[extractReplyFromResponse] ✓ Label pattern matched`);
+                    return afterLabel;
+                }
+            }
+        }
+
+        // ================================================================
+        // PATTERN 5: Look for sentences in the content
+        // ================================================================
+        const sentenceMatch = trimmed.match(/^[^.!?]*[.!?]/);
+        if (sentenceMatch &amp;&amp; sentenceMatch[0].length >= 10 &amp;&amp; sentenceMatch[0].length &lt; 300) {
+            this.logger.debug(`[extractReplyFromResponse] ✓ Sentence pattern matched`);
+            return sentenceMatch[0].trim();
+        }
+
+        // ================================================================
+        // STANDARD EXTRACTION (for non-thinking models)
+        // ================================================================
+
+        let cleaned = content
+            .replace(/```json?\s*/gi, '')
+            .replace(/```\s*/gi, '')
+            .trim();
+
+        cleaned = cleaned.replace(/&lt;thinking>[\s\S]*?&lt;\/thinking>/gi, '');
+        cleaned = cleaned.replace(/&lt;\/?THINKING>/gi, '');
+        cleaned = cleaned.replace(/\[\/?THINKING\]/gi, '');
+        cleaned = cleaned.replace(/\[[\s]*REASONING[\s]*\][\s\S]*?$/gim, '');
+        cleaned = cleaned.replace(/^(?:First,?\s*)?I\s+(?:need to|should|want to|must|will|have to|can)\s+[\s\S]*?(?=\n\n|[.!?]\s*[A-Z][a-z]+)/gim, '');
+        cleaned = cleaned.replace(/(?:Let me|I'll|I will)\s+(?:think|reason|analyze)[\s\S]*?(?=\.\s*[A-Z]|\n\n)/gi, '');
+        cleaned = cleaned.replace(/^(?:My|Here's|The)\s+(?:draft|response|answer|output|suggestion):?\s*/gi, '');
+        cleaned = cleaned.replace(/^(?:Okay,?\s*)?I (?:need to|should|want to|will) [^\n]*/i, '');
+
+        if (cleaned.startsWith('{') || cleaned.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(cleaned);
+                if (parsed.reply) return parsed.reply;
+                if (parsed.content) return parsed.content;
+                if (parsed.text) return parsed.text;
+                if (parsed.message) return parsed.message;
+                if (parsed.output) return parsed.output;
+                // Try to find any string field
+                for (const key of Object.keys(parsed)) {
+                    if (typeof parsed[key] === 'string' &amp;&amp; parsed[key].length >= 10 &amp;&amp; parsed[key].length &lt; 300) {
+                        return parsed[key];
+                    }
+                }
+            } catch (e) {
+                // Not JSON, continue
+            }
+        }
+
+        cleaned = cleaned
+            .replace(/^(?:Okay,?\s*)?I (?:need to|should|want to|will) [^\n]*/i, '')
+            .trim();
+
+        if (cleaned &amp;&amp; cleaned.length >= 10 &amp;&amp; cleaned.length &lt; 300) {
+            this.logger.debug(`[extractReplyFromResponse] ✓ Cleaned content used`);
+            return cleaned;
+        }
+
+        this.logger.warn(`[extractReplyFromResponse] ❌ No pattern matched, returning null`);
+        this.logger.debug(`[DEBUG] Full content that failed to extract:\n${content}`);
+        return null;
+    }
+
+    /**
+     * Execute the quote tweet flow
+     * Method A: Keyboard Compose + Quote (40%)
+     * Method B: Retweet Menu -> Quote (35%)
+     * Method C: New Post with URL (25%)
+     */
+    async executeQuote(page, quoteText, options = {}) {
+        const { logger = console, humanTyping } = options;
+        this.logger.info(`[AIQuote] Executing quote (${quoteText.length} chars)...`);
+
+        const human = new HumanInteraction(page);
+        human.debugMode = true;
+
+        // If humanTyping function is provided, wrap it
+        if (humanTyping) {
+            // We can attach it to human interaction or use it directly in methods
+            // For now, let's assume methods use human.type or page.fill
+        }
+
+        const methods = [
+            { name: 'keyboard_compose', weight: 40, fn: () => this.quoteMethodA_Keyboard(page, quoteText, human, humanTyping) },
+            { name: 'retweet_menu', weight: 35, fn: () => this.quoteMethodB_Retweet(page, quoteText, human, humanTyping) },
+            { name: 'new_post', weight: 25, fn: () => this.quoteMethodC_Url(page, quoteText, human, humanTyping) }
+        ];
+
+        const selected = human.selectMethod(methods);
+        this.logger.info(`[AIQuote] Using method: ${selected.name}`);
+
+        try {
+            const result = await selected.fn();
+            
+            // Update stats based on result
+            if (result.success) {
+                this.stats.successes++;
+            } else {
+                this.stats.failures++;
+            }
+            
+            return result;
+        } catch (error) {
+            this.logger.error(`[AIQuote] Method ${selected.name} failed: ${error.message}`);
+            this.logger.warn(`[AIQuote] Trying fallback: retweet_menu`);
+            
+            // Fallback to Retweet Menu method
+            try {
+                const result = await this.quoteMethodB_Retweet(page, quoteText, human, humanTyping);
+                if (result.success) this.stats.successes++;
+                else this.stats.failures++;
+                return result;
+            } catch (fallbackError) {
+                this.stats.failures++;
+                return { success: false, reason: `fallback_failed: ${fallbackError.message}` };
+            }
+        }
+    }
+
+
+
+    getToneGuidance(tone) {
+        const tones = {
+            humorous: 'Be witty, add a clever observation, or a lighthearted take.',
+            informative: 'Share a relevant fact, statistic, or related information.',
+            emotional: 'Express genuine emotion - why does this resonate with you?',
+            supportive: 'Show enthusiasm and encourage the author.',
+            critical: 'Offer a thoughtful counterpoint or question.',
+            neutral: 'Ask a specific question or add a relevant observation.'
+        };
+        return tones[tone] || tones.neutral;
+    }
+
+    getEngagementGuidance(engagement) {
+        const engagements = {
+            low: 'Maximum 1 short sentence.',
+            medium: 'Maximum 1 short sentence.',
+            high: 'Maximum 1-2 short sentences.'
+        };
+        return engagements[engagement] || engagements.low;
+    }
+
+    cleanQuote(text) {
+        if (!text) return '';
+
+        let cleaned = text
+            .replace(/```[\s\S]*?```/g, '')
+            .replace(/`([^`]+)`/g, '$1')
+            .replace(/^\s*[-*]\s+/gm, '')
+            .replace(/^\s*\d+\.\s+/gm, '')
+            .replace(/\n+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .replace(/^["']+|["']+$/g, '') // Remove surrounding quotes
+            .substring(0, this.config.MAX_QUOTE_LENGTH);
+
+        if (Math.random() &lt; 0.30) {
+            cleaned = cleaned.toLowerCase();
+        }
+
+        if (Math.random() &lt; 0.80 &amp;&amp; cleaned.endsWith('.')) {
+            cleaned = cleaned.slice(0, -1);
+        }
+
+        return cleaned;
+    }
+
+    validateQuote(text) {
+        if (!text || text.length &lt; this.config.MIN_QUOTE_LENGTH) {
+            return { valid: false, reason: 'too_short' };
+        }
+
+        const lower = text.toLowerCase().trim();
+
+        for (const keyword of this.config.SAFETY_FILTERS.excludedKeywords) {
+            if (lower.includes(keyword)) {
+                return { valid: false, reason: `excluded_keyword:${keyword}` };
+            }
+        }
+
+        for (const pattern of this.config.SAFETY_FILTERS.genericResponses) {
+            if (lower === pattern || lower.startsWith(pattern + ' ') || lower.startsWith(pattern + '.')) {
+                return { valid: false, reason: `generic_response:${pattern}` };
+            }
+            
+            const patternIndex = lower.indexOf(' ' + pattern + ' ');
+            if (patternIndex !== -1) {
+                if (text.length &lt; 40 || (pattern.length / text.length) > 0.4) {
+                    return { valid: false, reason: `generic_response:${pattern}` };
+                }
+            }
+        }
+
+        const emojiRegex = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]*$/u;
+        if (emojiRegex.test(text) &amp;&amp; text.length &lt; 10) {
+            return { valid: false, reason: 'emoji_only' };
+        }
+
+        return { valid: true, reason: 'passed' };
+    }
+
+    getStats() {
+        return {
+            ...this.stats,
+            successRate: this.stats.attempts > 0
+                ? ((this.stats.successes / this.stats.attempts) * 100).toFixed(1) + '%'
+                : '0%'
+        };
+    }
+
+    getSentimentGuidance(tweetSentiment) {
+        const sentiment = tweetSentiment.composite?.engagementStyle || 'neutral';
+        const sarcasmScore = tweetSentiment.dimensions?.sarcasm?.sarcasm || 0;
+        const valence = tweetSentiment.dimensions?.valence?.valence || 0;
+
+        const guidance = {
+            enthusiastic: 'Show genuine excitement and energy. Use exclamation points naturally.',
+            humorous: 'Add a light, witty observation. Keep it fun and relatable.',
+            informative: 'Share a relevant fact, statistic, or related information.',
+            emotional: 'Express genuine emotion - why does this resonate with you?',
+            supportive: 'Show enthusiasm and encourage the author.',
+            thoughtful: 'Offer a considered perspective or ask a thoughtful question.',
+            critical: 'Present a thoughtful counterpoint or question respectfully.',
+            neutral: 'Ask a specific question or add a relevant observation.',
+            sarcastic: 'Use subtle irony, but keep it playful, not mean.',
+            ironic: 'Employ dry wit, but avoid being dismissive or condescending.',
+        };
+
+        if (sarcasmScore > 0.5 &amp;&amp; (sentiment === 'sarcastic' || sentiment === 'ironic')) {
+            return 'Match the ironic tone - subtle, playful, never mean-spirited.';
+        }
+
+        return guidance[sentiment] || guidance.neutral;
+    }
+
+    getLengthGuidance(conversationType, valence) {
+        const valenceMultiplier = Math.abs(valence) > 0.5 ? 1.2 : 1.0;
+
+        const lengthGuides = {
+            'heated-debate': 'CRITICAL: Maximum 1 short sentence.',
+            'casual-chat': 'Maximum 1 short sentence.',
+            'announcement': 'Maximum 1 sentence.',
+            'question': 'One short question or 1 sentence.',
+            'humor': 'Maximum 1 punchy sentence.',
+            'news': 'Maximum 1 short sentence.',
+            'personal': 'Maximum 1-2 short sentences.',
+            'controversial': 'CRITICAL: Maximum 1 short sentence.',
+            'general': 'Maximum 1 short sentence.',
+        };
+
+        const baseGuidance = lengthGuides[conversationType] || lengthGuides.general;
+
+        if (valenceMultiplier > 1.0) {
+            return baseGuidance + ' Be more expressive given the emotional content.';
+        }
+
+        return baseGuidance;
+    }
+
+    getStyleGuidance(sentiment, sarcasmScore) {
+        const styles = {
+            enthusiastic: 'Style: High energy, exclamation points allowed.',
+            humorous: 'Style: Witty, maybe use a common internet slang.',
+            informative: 'Style: Clear, factual, helpful.',
+            emotional: 'Style: Empathetic, personal.',
+            supportive: 'Style: Warm, encouraging.',
+            thoughtful: 'Style: Reflective, balanced.',
+            critical: 'Style: Sharp, questioning.',
+            neutral: 'Style: Conversational, casual.',
+            sarcastic: 'Style: Dry wit, playful irony.',
+            ironic: 'Style: Subtle humor, unexpected twist.'
+        };
+        return styles[sentiment] || styles.neutral;
+    }
+
+
+    /**
+     * Method A: Keyboard Compose + Quote (40%)
+     * Click Tweet Text → T → Down → Down → Enter → [type] → Ctrl+Enter
+     */
+    async quoteMethodA_Keyboard(page, quoteText, human) {
+        human.logStep('KEYBOARD_COMPOSE', 'Starting');
+
+        // Close any open menus
+        human.logStep('ESCAPE', 'Closing menus');
+        await page.keyboard.press('Escape');
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // STEP 1: Click on the main tweet text first (required for quote to work)
+        human.logStep('CLICK_TWEET', 'Clicking main tweet text');
+        const tweetTextSelector = '[data-testid="tweetText"]';
+        
+        let tweetClicked = false;
+        try {
+            const tweetEl = page.locator(tweetTextSelector).first();
+            if (await tweetEl.count() > 0) {
+                await tweetEl.click({ offset: { x: 10, y: 10 } });
+                await new Promise(resolve => setTimeout(resolve, 500));
+                tweetClicked = true;
+                human.logStep('CLICK_TWEET', 'Tweet text clicked');
+            } else {
+                human.logStep('CLICK_TWEET', 'Tweet text not found');
+            }
+        } catch (e) {
+            human.logStep('CLICK_TWEET', `Error: ${e.message}`);
+        }
+
+        // STEP 2: Press T to open compose with quote options
+        human.logStep('T_KEY', 'Opening quote composer');
+        await page.keyboard.press('t');
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Verify composer opened
+        let verify = await human.verifyComposerOpen(page);
+        if (!verify.open) {
+            human.logStep('VERIFY_FAILED', 'Composer did not open with T');
+            return { success: false, reason: 'composer_not_open', method: 'keyboard_compose' };
+        }
+
+        // STEP 3: Navigate to quote option (usually Down + Down)
+        human.logStep('NAVIGATE', 'Pressing Down to find quote option');
+        await page.keyboard.press('ArrowDown');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        await page.keyboard.press('ArrowDown');
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // STEP 4: Press Enter to select quote
+        human.logStep('ENTER', 'Selecting quote option');
+        await page.keyboard.press('Enter');
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Verify quote mode (check for quoted tweet preview using multiple strategies)
+        const quoteDetectionStrategies = [
+            // Strategy 1: Check standard quotedTweet selectors
+            async () => {
+                const selectors = [
+                    '[data-testid="quotedTweet"]',
+                    '[data-testid="quotedTweetPlaceholder"]',
+                    '[data-testid="tweetText"]',
+                    '[class*="quoted"]',
+                    '[class*="quoteCard"]',
+                    '[class*="QuotedTweet"]',
+                    '[class*="quotedTweet"]',
+                    '[aria-label*="Quoted"]',
+                    '[role="article"][tabindex]'
+                ];
+                for (const selector of selectors) {
+                    const count = await page.locator(selector).count();
+                    if (count > 0) {
+                        human.logStep('QUOTE_DETECTED', selector);
+                        return true;
+                    }
+                }
+                return false;
+            },
+            // Strategy 2: Check composer HTML for embedded quote
+            async () => {
+                const composerHTML = await page.evaluate(() => {
+                    const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
+                    return composer?.innerHTML || '';
+                });
+                const hasQuote = composerHTML.includes('quoted') ||
+                                composerHTML.includes('Pop Base') ||
+                                composerHTML.includes('tweet-') ||
+                                composerHTML.includes(' TweetText') ||
+                                composerHTML.length > 800;
+                if (hasQuote) {
+                    human.logStep('QUOTE_DETECTED', 'composer_content');
+                }
+                return hasQuote;
+            },
+            // Strategy 3: Check composer value for embedded tweet text
+            async () => {
+                const composerValue = await page.evaluate(() => {
+                    const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
+                    return composer?.value || composer?.textContent || '';
+                });
+                if (composerValue.length > 50) {
+                    human.logStep('QUOTE_DETECTED', 'composer_value');
+                    return true;
+                }
+                return false;
+            }
+        ];
+
+        let hasQuotePreview = false;
+        for (const strategy of quoteDetectionStrategies) {
+            try {
+                if (await strategy()) {
+                    hasQuotePreview = true;
+                    break;
+                }
+            } catch (e) {
+                human.logStep('DETECTION_ERROR', e.message);
+            }
+        }
+
+        if (!hasQuotePreview) {
+            human.logStep('FALLBACK', 'Trying retweet menu approach');
+            await page.keyboard.press('Escape');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return await this.quoteMethodB_Retweet(page, quoteText, human);
+        }
+
+        // Wait for quote preview to be fully loaded before typing
+        human.logStep('WAIT_QUOTE', 'Waiting for quote preview to load...');
+        await page.waitForSelector('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]', {
+            timeout: 5000,
+            state: 'visible'
+        }).catch(() => {
+            human.logStep('QUOTE_WAIT_TIMEOUT', 'Quote preview not visible, proceeding anyway');
+        });
+        await new Promise(resolve => setTimeout(resolve, 500));  // Additional settle time
+
+        // Find composer textarea
+        verify = await human.verifyComposerOpen(page);
+        const composer = page.locator(verify.selector).first();
+
+        // Verify quote preview is still present
+        const quotePreviewCheck = await page.locator('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]').first();
+        if (await quotePreviewCheck.count() > 0) {
+            human.logStep('QUOTE_READY', 'Quote preview confirmed');
+        } else {
+            human.logStep('QUOTE_WARN', 'Quote preview may not be loaded');
+        }
+
+        // Type quote
+        human.logStep('TYPE_QUOTE', `Typing ${quoteText.length} chars...`);
+        await human.typeText(page, quoteText, composer);
+
+        // Post with Ctrl+Enter
+        const postResult = await human.postTweet(page);
+
+        return {
+            success: postResult.success,
+            reason: postResult.reason || 'posted',
+            method: 'keyboard_compose',
+            quotePreview: hasQuotePreview
+        };
+    }
+
+    /**
+     * Method B: Retweet Menu (35%)
+     * Click Retweet → Find Quote → Click → [type] → Ctrl+Enter
+     */
+    async quoteMethodB_Retweet(page, quoteText, human) {
+        human.logStep('RETWEET_MENU', 'Starting');
+
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Close any open menus
+        await page.keyboard.press('Escape');
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // STEP 1: Find and click retweet button with specific selectors
+        human.logStep('FIND_RETWEET', 'Locating retweet button');
+        
+        const retweetBtnSelectors = [
+            '[data-testid="retweet"]',
+            '[aria-label*="Repost"]',
+            '[aria-label*="Retweet"]',
+            'button[aria-label*="repost"]',
+            'button[aria-label*="retweet"]'
+        ];
+
+        let retweetBtn = null;
+        for (const selector of retweetBtnSelectors) {
+            const elements = await page.locator(selector).all();
+            for (const el of elements) {
+                try {
+                    const isVisible = await el.isVisible();
+                    const ariaLabel = await el.getAttribute('aria-label') || '';
+                    const count = await el.count();
+                    if (count > 0 &amp;&amp; isVisible) {
+                        retweetBtn = el;
+                        human.logStep('RETWEET_FOUND', `${selector} (aria-label: ${ariaLabel})`);
+                        break;
+                    }
+                } catch {}
+            }
+            if (retweetBtn) break;
+        }
+
+        if (!retweetBtn) {
+            human.logStep('FIND_FAILED', 'Retweet button not found');
+            return { success: false, reason: 'retweet_button_not_found', method: 'retweet_menu' };
+        }
+
+        // Human-like click sequence
+        await retweetBtn.scrollIntoViewIfNeeded();
+        await human.fixation(300, 800);
+        await human.microMove(page, 20);
+        await retweetBtn.click({ timeout: 5000 });
+        human.logStep('CLICK', 'Clicked retweet button');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // STEP 2: Find and click Quote option in dropdown menu
+        human.logStep('FIND_QUOTE', 'Looking for Quote option in menu');
+        
+        const quoteOptionSelectors = [
+            'a[role="menuitem"]:has-text("Quote")',
+            '[role="menuitem"]:has-text("Quote")',
+            'a:has-text("Quote"):not([href])',
+            '[data-testid="retweetQuote"]',
+            'text=Quote'
+        ];
+
+        let quoteOption = null;
+        for (const selector of quoteOptionSelectors) {
+            try {
+                const elements = await page.locator(selector).all();
+                for (const el of elements) {
+                    try {
+                        const isVisible = await el.isVisible();
+                        const text = await el.innerText().catch(() => '');
+                        const count = await el.count();
+                        
+                        if (count > 0 &amp;&amp; isVisible &amp;&amp; text.toLowerCase().includes('quote')) {
+                            quoteOption = el;
+                            human.logStep('QUOTE_FOUND', `${selector} (text: "${text}")`);
+                            break;
+                        }
+                    } catch {}
+                }
+                if (quoteOption) break;
+            } catch (e) {
+                human.logStep('SELECTOR_ERROR', `${selector}: ${e.message}`);
+            }
+        }
+
+        if (!quoteOption) {
+            human.logStep('QUOTE_NOT_FOUND', 'Quote option not found in menu');
+            // Debug: show what's in the menu
+            const menuItems = await page.locator('[role="menuitem"]').all();
+            human.logStep('DEBUG', `Found ${menuItems.length} menu items`);
+            
+            // Fallback to keyboard method
+            await page.keyboard.press('Escape');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return await this.quoteMethodA_Keyboard(page, quoteText, human);
+        }
+
+        // Click Quote option with human-like behavior
+        await human.fixation(100, 300);
+        await human.microMove(page, 10);
+        await quoteOption.click({ timeout: 5000 });
+        human.logStep('QUOTE_CLICK', 'Clicked Quote option');
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Wait for quote preview to load before typing
+        human.logStep('WAIT_QUOTE', 'Waiting for quote preview...');
+        await page.waitForSelector('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]', {
+            timeout: 5000,
+            state: 'visible'
+        }).catch(() => {
+            human.logStep('QUOTE_WAIT_TIMEOUT', 'Quote preview not visible');
+        });
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // STEP 3: Verify composer is ready
+        const verify = await human.verifyComposerOpen(page);
+        if (!verify.open) {
+            human.logStep('VERIFY_FAILED', 'Composer did not open');
+            return { success: false, reason: 'composer_not_open', method: 'retweet_menu' };
+        }
+        human.logStep('COMPOSER_READY', verify.selector);
+
+        // STEP 4: Enhanced quote detection
+        const quoteDetectionStrategies = [
+            async () => {
+                const selectors = [
+                    '[data-testid="quotedTweet"]',
+                    '[data-testid="quotedTweetPlaceholder"]',
+                    '[class*="quoted"]',
+                    '[class*="quoteCard"]'
+                ];
+                for (const sel of selectors) {
+                    const count = await page.locator(sel).count();
+                    if (count > 0) return true;
+                }
+                return false;
+            },
+            async () => {
+                const composerValue = await page.evaluate(() => {
+                    const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
+                    return composer?.value || composer?.textContent || '';
+                });
+                return composerValue.length > 50;
+            }
+        ];
+
+        let hasQuotePreview = false;
+        for (const strategy of quoteDetectionStrategies) {
+            try {
+                if (await strategy()) {
+                    hasQuotePreview = true;
+                    break;
+                }
+            } catch {}
+        }
+
+        if (!hasQuotePreview) {
+            human.logStep('WARNING', 'Quote preview not detected - continuing anyway');
+        }
+
+        // STEP 5: Type and post
+        const composer = page.locator(verify.selector).first();
+        
+        // Clear and type
+        await composer.click();
+        await page.keyboard.press('Control+a');
+        await page.keyboard.press('Delete');
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        human.logStep('TYPING', `Entering ${quoteText.length} chars`);
+        await human.typeText(page, quoteText, composer);
+
+        // Post
+        const postResult = await human.postTweet(page);
+
+        return {
+            success: postResult.success,
+            reason: postResult.reason || 'posted',
+            method: 'retweet_menu',
+            quotePreview: hasQuotePreview
+        };
+    }
+
+    /**
+     * Method C: New Post Button → Paste URL → Type Comment (15%)
+     */
+    async quoteMethodC_Url(page, quoteText, human) {
+        human.logStep('NEW_POST_URL', 'Starting');
+
+        // Get current tweet URL
+        const currentUrl = page.url();
+        human.logStep('CURRENT_URL', currentUrl);
+
+        // Copy URL to clipboard for pasting
+        await page.evaluate((url) => {
+            navigator.clipboard.writeText(url);
+        }, currentUrl);
+        human.logStep('CLIPBOARD', 'URL copied to clipboard');
+
+        // Close any open menus
+        await page.keyboard.press('Escape');
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // STEP 1: Find and click Compose / New Post button
+        human.logStep('FIND_COMPOSE', 'Looking for Compose button');
+        const composeBtnSelectors = [
+            '[data-testid="SideNav_NewTweet_Button"]',
+            '[aria-label="Post"]',
+            '[aria-label="New post"]',
+            '[aria-label="Post your reply"]',
+            'button:has-text("Post")',
+            'button:has-text("New post")'
+        ];
+
+        let composeBtn = null;
+        for (const selector of composeBtnSelectors) {
+            const elements = await page.locator(selector).all();
+            for (const el of elements) {
+                try {
+                    const isVisible = await el.isVisible();
+                    const ariaLabel = await el.getAttribute('aria-label') || '';
+                    const count = await el.count();
+                    if (count > 0 &amp;&amp; isVisible) {
+                        composeBtn = el;
+                        human.logStep('COMPOSE_FOUND', `${selector} (aria-label: "${ariaLabel}")`);
+                        break;
+                    }
+                } catch {}
+            }
+            if (composeBtn) break;
+        }
+
+        if (!composeBtn) {
+            human.logStep('FIND_FAILED', 'Compose button not found');
+            return { success: false, reason: 'compose_button_not_found', method: 'new_post' };
+        }
+
+        // Human-like click sequence
+        await composeBtn.scrollIntoViewIfNeeded();
+        await human.fixation(300, 800);
+        await human.microMove(page, 20);
+        await composeBtn.click({ timeout: 5000 });
+        human.logStep('CLICK', 'Clicked Compose button');
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Wait for composer to be fully loaded
+        await page.waitForSelector('[data-testid="tweetTextarea_0"]', {
+            timeout: 5000,
+            state: 'visible'
+        }).catch(() => {
+            human.logStep('COMPOSER_WAIT_TIMEOUT', 'Composer not visible');
+        });
+
+        // STEP 2: Verify composer is open
+        const verify = await human.verifyComposerOpen(page);
+        if (!verify.open) {
+            human.logStep('VERIFY_FAILED', 'Composer did not open');
+            return { success: false, reason: 'composer_not_open', method: 'new_post' };
+        }
+        human.logStep('COMPOSER_READY', verify.selector);
+
+        // Additional wait for composer to be fully interactive
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // STEP 3: Type the comment FIRST
+        const composer = page.locator(verify.selector).first();
+        
+        human.logStep('TYPING', `Entering ${quoteText.length} chars`);
+        await human.typeText(page, quoteText, composer);
+
+        // Step 4: Create new line AFTER typing comment
+        human.logStep('NEWLINE', 'Creating new line...');
+        await page.keyboard.press('Enter');
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Verify new line was created
+        const contentAfterEnter = await page.evaluate(() => {
+            const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
+            return composer?.innerHTML || '';
+        });
+        
+        // If no &lt;br> or new div, try Enter again
+        if (!contentAfterEnter.includes('&lt;br>') &amp;&amp; !contentAfterEnter.includes('&lt;div>')) {
+            human.logStep('NEWLINE', 'Pressing Enter again...');
+            await page.keyboard.press('Enter');
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        // Step 5: Paste the URL LAST (appears as preview/card below comment)
+        human.logStep('PASTE_URL', 'Pasting tweet URL...');
+        await page.keyboard.press('Control+v');
+        await new Promise(resolve => setTimeout(resolve, 750));
+
+        // Verify URL was pasted
+        const finalContent = await page.evaluate(() => {
+            const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
+            return composer?.value || composer?.textContent || '';
+        });
+        if (finalContent.includes('x.com') || finalContent.includes('twitter.com')) {
+            human.logStep('URL_PASTED', 'URL pasted successfully');
+        } else {
+            human.logStep('PASTE_WARN', 'URL may not have pasted correctly');
+        }
+
+        // STEP 6: Post
+        const postResult = await human.postTweet(page);
+
+        return {
+            success: postResult.success,
+            reason: postResult.reason || 'posted',
+            method: 'new_post',
+            url: currentUrl
+        };
+    }
+}
+
+export default AIQuoteEngine;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Feb 14 2026 11:39:38 GMT+0700 (Indochina Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

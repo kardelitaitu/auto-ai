@@ -67,13 +67,19 @@ export class AIReplyAction {
 
     try {
       // STEP 1: Extract enhanced context (scroll down to read replies)
-      this.logger.info(`[AIReplyAction] Loading replies for context...`);
-      const enhancedContext = await this.agent.contextEngine.extractEnhancedContext(
-        this.agent.page,
-        tweetUrl,
-        tweetText,
-        username
-      );
+      let enhancedContext = context.enhancedContext;
+
+      if (!enhancedContext || Object.keys(enhancedContext).length === 0) {
+          this.logger.info(`[AIReplyAction] Loading replies for context...`);
+          enhancedContext = await this.agent.contextEngine.extractEnhancedContext(
+            this.agent.page,
+            tweetUrl,
+            tweetText,
+            username
+          );
+      } else {
+          this.logger.info(`[AIReplyAction] Using pre-calculated context`);
+      }
 
       this.logger.info(`[AIReplyAction] Context: ${enhancedContext.replies?.length || 0} replies, sentiment: ${enhancedContext.sentiment?.overall || 'unknown'}`);
 

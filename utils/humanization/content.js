@@ -10,7 +10,7 @@
  */
 
 import { mathUtils } from '../mathUtils.js';
-import { entropy } from '../entropyController.js';
+import { entropy as _entropy } from '../entropyController.js';
 import { scrollRandom } from '../scroll-helper.js';
 
 export class ContentSkimmer {

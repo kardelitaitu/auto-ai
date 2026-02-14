@@ -23,7 +23,7 @@ try {
     if (fs.existsSync(vedPath)) {
         REAL_VEDS = JSON.parse(fs.readFileSync(vedPath, 'utf8'));
     }
-} catch (e) {
+} catch {
     console.warn('[ReferrerEngine] VED Dictionary not loaded. Using synthetic fallback.');
 }
 
@@ -63,7 +63,7 @@ try {
     if (fs.existsSync(tcoPath)) {
         REAL_TCO = JSON.parse(fs.readFileSync(tcoPath, 'utf8')).filter(l => l.includes('t.co/'));
     }
-} catch (e) {
+} catch {
     console.warn('[ReferrerEngine] t.co Dictionary not loaded.');
 }
 
@@ -115,7 +115,7 @@ const _extractContext = (targetUrl) => {
         }
 
         return null;
-    } catch (e) {
+    } catch (_e) {
         return null;
     }
 };
@@ -352,7 +352,7 @@ class PrivacyEngine {
         try {
             const u = new URL(url);
             return u.origin + '/';
-        } catch (e) {
+        } catch (_e) {
             return url;
         }
     }
@@ -376,7 +376,7 @@ class HeaderEngine {
         try {
             refHost = new URL(refererUrl).hostname;
             targetHost = new URL(targetUrl).hostname;
-        } catch (e) {
+        } catch (_e) {
             return {};
         }
 
@@ -467,7 +467,7 @@ export class ReferrerEngine {
                     u.searchParams.set('utm_medium', 'messenger');
                 }
                 finalTarget = u.toString();
-            } catch (e) {
+            } catch (_e) {
                 // Ignore invalid URLs
             }
         }
@@ -483,7 +483,7 @@ export class ReferrerEngine {
     /**
      * Executes a "True Navigation" by spoofing the referrer via interception.
      * This creates a perfect history.length and navigation.type profile.
-     * @param {import('playwright').Page} page
+     * @param {object} page - Playwright Page
      * @param {string} targetUrl 
      * @param {object} [context] - Optional pre-generated context
      */
@@ -567,7 +567,7 @@ export class ReferrerEngine {
             // The click happens via script above, or we can force it:
             try {
                 await page.click('#trampoline', { timeout: 2000 });
-            } catch (e) {
+            } catch (_e) {
                 // Ignore if auto-click worked
             }
 

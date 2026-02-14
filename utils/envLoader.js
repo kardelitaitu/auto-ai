@@ -63,6 +63,10 @@ export function resolveEnvVars(str) {
  * @returns {object} The object with resolved values.
  */
 export function resolveEnvVarsInObject(obj) {
+  if (typeof obj === 'string') {
+    return resolveEnvVars(obj);
+  }
+
   if (typeof obj !== 'object' || obj === null) {
     return obj;
   }

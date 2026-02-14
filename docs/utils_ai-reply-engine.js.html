@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>utils/ai-reply-engine.js - MultiBrowseAutomation Docs</title>
+    
+    <meta name="description" content="Documentation for the Multi-Browser Automation Framework" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/your-repo-here" target="_blank" >GitHub Repo</a></h2><h3>Classes</h3><ul><li><a href="ActionOrchestrator.html">ActionOrchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getConstraintBlockedRoutines">getConstraintBlockedRoutines</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getNext">getNext</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#getNextRoutine">getNextRoutine</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#record">record</a></li><li data-type='method' style='display: none;'><a href="ActionOrchestrator.html#reset">reset</a></li></ul></li><li><a href="module-connectors_baseDiscover-BaseDiscover.html">BaseDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_baseDiscover-BaseDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_ixbrowser-IxbrowserDiscover.html">IxbrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_ixbrowser-IxbrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html">LocalBraveDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_localBrave-LocalBraveDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html">RoxybrowserDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_roxybrowser-RoxybrowserDiscover.html#discover">discover</a></li></ul></li><li><a href="module-connectors_discovery_undetectable-UndetectableDiscover.html">UndetectableDiscover</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-connectors_discovery_undetectable-UndetectableDiscover.html#discover">discover</a></li></ul></li><li><a href="module-core_agent-connector-AgentConnector.html">AgentConnector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#getHealth">getHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#handleGenerateReply">handleGenerateReply</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#handleVisionRequest">handleVisionRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#logHealth">logHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_agent-connector-AgentConnector.html#processRequest">processRequest</a></li></ul></li><li><a href="module-core_audit-verifier-AuditVerifier.html">AuditVerifier</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#calculateReliabilityMetric">calculateReliabilityMetric</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#postFlightCheck">postFlightCheck</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#preFlightCheck">preFlightCheck</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_audit-verifier-AuditVerifier.html#waitForState">waitForState</a></li></ul></li><li><a href="module-core_automator-Automator.html">Automator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkConnectionHealth">checkConnectionHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#checkPageResponsive">checkPageResponsive</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#closeAll">closeAll</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#connectToBrowser">connectToBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getBrowser">getBrowser</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectedEndpoints">getConnectedEndpoints</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getConnectionCount">getConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthSummary">getHealthSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getHealthyConnectionCount">getHealthyConnectionCount</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#isHealthy">isHealthy</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#reconnect">reconnect</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#recoverConnection">recoverConnection</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#startHealthChecks">startHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#stopHealthChecks">stopHealthChecks</a></li><li data-type='method' style='display: none;'><a href="module-core_automator-Automator.html#testConnection">testConnection</a></li></ul></li><li><a href="module-core_circuit-breaker-CircuitBreaker.html">CircuitBreaker</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#execute">execute</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#forceClose">forceClose</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#forceOpen">forceOpen</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getAllStatus">getAllStatus</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getBreaker">getBreaker</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#getHealth">getHealth</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#reset">reset</a></li><li data-type='method' style='display: none;'><a href="module-core_circuit-breaker-CircuitBreaker.html#resetAll">resetAll</a></li></ul></li><li><a href="module-core_cloud-client-CloudClient.html">CloudClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#getMultiClient">getMultiClient</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#sendRequest">sendRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#testConnection">testConnection</a></li><li data-type='method' style='display: none;'><a href="module-core_cloud-client-CloudClient.html#testFreeModels">testFreeModels</a></li></ul></li><li><a href="module-core_discovery-Discovery.html">Discovery</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#discoverBrowsers">discoverBrowsers</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#getConnectorInfo">getConnectorInfo</a></li><li data-type='method' style='display: none;'><a href="module-core_discovery-Discovery.html#loadConnectors">loadConnectors</a></li></ul></li><li><a href="module-core_history-compactor-HistoryCompactor.html">HistoryCompactor</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#compactHistory">compactHistory</a></li><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#generateNarrativeSummary">generateNarrativeSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_history-compactor-HistoryCompactor.html#getStats">getStats</a></li></ul></li><li><a href="module-core_humanizer-engine-HumanizerEngine.html">HumanizerEngine</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#_easeOutCubic">_easeOutCubic</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#_generateComputedPath">_generateComputedPath</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generateKeystrokeTiming">generateKeystrokeTiming</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generateMousePath">generateMousePath</a></li><li data-type='method' style='display: none;'><a href="module-core_humanizer-engine-HumanizerEngine.html#generatePause">generatePause</a></li></ul></li><li><a href="module-core_idle-ghosting-IdleGhosting.html">IdleGhosting</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#isGhosting">isGhosting</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#setWiggleParams">setWiggleParams</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#start">start</a></li><li data-type='method' style='display: none;'><a href="module-core_idle-ghosting-IdleGhosting.html#stop">stop</a></li></ul></li><li><a href="module-core_intent-classifier-IntentClassifier.html">IntentClassifier</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#classify">classify</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#forceCloud">forceCloud</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#forceLocal">forceLocal</a></li><li data-type='method' style='display: none;'><a href="module-core_intent-classifier-IntentClassifier.html#getStats">getStats</a></li></ul></li><li><a href="module-core_local-client-LocalClient.html">LocalClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_local-client-LocalClient.html#sendRequest">sendRequest</a></li></ul></li><li><a href="module-core_ollama-client-OllamaClient.html">OllamaClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_chatRequest">_chatRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_generateRequest">_generateRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#_warmupModel">_warmupModel</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#applyHumanization">applyHumanization</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#applyTypos">applyTypos</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#generate">generate</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#initialize">initialize</a></li><li data-type='method' style='display: none;'><a href="module-core_ollama-client-OllamaClient.html#isReady">isReady</a></li></ul></li><li><a href="module-core_orchestrator-Orchestrator.html">Orchestrator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#_sleep">_sleep</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#addTask">addTask</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getMetrics">getMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#logMetrics">logMetrics</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#processTasks">processTasks</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#startDiscovery">startDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-core_orchestrator-Orchestrator.html#waitForTasksToComplete">waitForTasksToComplete</a></li></ul></li><li><a href="module-core_prompt-builder-PromptBuilder.html">PromptBuilder</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_prompt-builder-PromptBuilder.html#build">build</a></li></ul></li><li><a href="module-core_request-queue-RequestQueue.html">RequestQueue</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#enqueue">enqueue</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#pause">pause</a></li><li data-type='method' style='display: none;'><a href="module-core_request-queue-RequestQueue.html#resume">resume</a></li></ul></li><li><a href="module-core_semantic-parser-SemanticParser.html">SemanticParser</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#extractSemanticTree">extractSemanticTree</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#findElementByName">findElementByName</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#generateCompactRepresentation">generateCompactRepresentation</a></li><li data-type='method' style='display: none;'><a href="module-core_semantic-parser-SemanticParser.html#getTreeStats">getTreeStats</a></li></ul></li><li><a href="module-core_sessionManager-SessionManager.html">SessionManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#addSession">addSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#cleanupTimedOutSessions">cleanupTimedOutSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#findAndOccupyIdleWorker">findAndOccupyIdleWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getAllSessions">getAllSessions</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getSessionMetadata">getSessionMetadata</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getStuckWorkers">getStuckWorkers</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#getWorkerOccupancy">getWorkerOccupancy</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#loadSessionState">loadSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#registerPage">registerPage</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#releaseWorker">releaseWorker</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#removeSession">removeSession</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#saveSessionState">saveSessionState</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#stopCleanupTimer">stopCleanupTimer</a></li><li data-type='method' style='display: none;'><a href="module-core_sessionManager-SessionManager.html#unregisterPage">unregisterPage</a></li></ul></li><li><a href="module-core_state-manager-StateManager.html">StateManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#addBreadcrumb">addBreadcrumb</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#calculateComplexityScore">calculateComplexityScore</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#clearSession">clearSession</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getBreadcrumbSummary">getBreadcrumbSummary</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getBreadcrumbs">getBreadcrumbs</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getExecutionState">getExecutionState</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-core_state-manager-StateManager.html#updateExecutionState">updateExecutionState</a></li></ul></li><li><a href="module-core_stuck-detector-StuckDetector.html">StuckDetector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_stuck-detector-StuckDetector.html#check">check</a></li><li data-type='method' style='display: none;'><a href="module-core_stuck-detector-StuckDetector.html#reset">reset</a></li></ul></li><li><a href="module-core_vision-interpreter-VisionInterpreter.html">VisionInterpreter</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vision-interpreter-VisionInterpreter.html#buildPrompt">buildPrompt</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-interpreter-VisionInterpreter.html#parseResponse">parseResponse</a></li></ul></li><li><a href="module-core_vision-packager-VisionPackager.html">VisionPackager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#captureScreenshot">captureScreenshot</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#captureWithROI">captureWithROI</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#cleanupOldScreenshots">cleanupOldScreenshots</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#compressScreenshot">compressScreenshot</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vision-packager-VisionPackager.html#identifyROI">identifyROI</a></li></ul></li><li><a href="module-core_vllm-client-VLLMClient.html">VLLMClient</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#resetStats">resetStats</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#sendRequest">sendRequest</a></li><li data-type='method' style='display: none;'><a href="module-core_vllm-client-VLLMClient.html#testConnection">testConnection</a></li></ul></li><li><a href="module-utils_actions.ActionRunner.html">ActionRunner</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#calculateSmartProbabilities">calculateSmartProbabilities</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#executeAction">executeAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#getEngagementType">getEngagementType</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#isActionAvailable">isActionAvailable</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#selectAction">selectAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_actions.ActionRunner.html#tryExecute">tryExecute</a></li></ul></li><li><a href="module-utils_apiHandler-ApiHandler.html">ApiHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#post">post</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#put">put</a></li><li data-type='method' style='display: none;'><a href="module-utils_apiHandler-ApiHandler.html#request">request</a></li></ul></li><li><a href="module-utils_async-queue.DiveQueue.html">DiveQueue</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#addDive">addDive</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#canEngage">canEngage</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#disableQuickMode">disableQuickMode</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#enableQuickMode">enableQuickMode</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#getEngagementProgress">getEngagementProgress</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#getFullStatus">getFullStatus</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#recordEngagement">recordEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#resetEngagement">resetEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#updateEngagementLimits">updateEngagementLimits</a></li><li data-type='method' style='display: none;'><a href="module-utils_async-queue.DiveQueue.html#updateEngagementLimits">updateEngagementLimits</a></li></ul></li><li><a href="module-utils_config-cache.ConfigCache.html">ConfigCache</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#cleanExpired">cleanExpired</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#delete">delete</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getEntries">getEntries</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getMemoryUsage">getMemoryUsage</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#has">has</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#set">set</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#updateMaxSize">updateMaxSize</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-cache.ConfigCache.html#updateTTL">updateTTL</a></li></ul></li><li><a href="module-utils_config-service-ConfigService.html">ConfigService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#_getWithDefaults">_getWithDefaults</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#ensureInit">ensureInit</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#get">get</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#getProfileConfig">getProfileConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#init">init</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service-ConfigService.html#reload">reload</a></li></ul></li><li><a href="module-utils_config-validator.ConfigValidator.html">ConfigValidator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#getSchema">getSchema</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateConfig">validateConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateSectionConfig">validateSectionConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-validator.ConfigValidator.html#validateWithReport">validateWithReport</a></li></ul></li><li><a href="module-utils_configLoader-ConfigLoader.html">ConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#getValue">getValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#loadConfig">loadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#reloadConfig">reloadConfig</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader-ConfigLoader.html#validateConfig">validateConfig</a></li></ul></li><li><a href="module-utils_entropyController-EntropyController.html">EntropyController</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#applyFatigueToTiming">applyFatigueToTiming</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#calculateFatigueLevel">calculateFatigueLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#checkFatigue">checkFatigue</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#gaussian">gaussian</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#generateSessionProfile">generateSessionProfile</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#getFatigueModifiers">getFatigueModifiers</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#getSessionStats">getSessionStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#interActionGap">interActionGap</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#logAction">logAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#logNormal">logNormal</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#microBreakDuration">microBreakDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#pageLoadWait">pageLoadWait</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#poisson">poisson</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#postClickDelay">postClickDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#preDecisionDelay">preDecisionDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#reactionTime">reactionTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#readingTime">readingTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#resetSession">resetSession</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#retryDelay">retryDelay</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#scrollDistance">scrollDistance</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#scrollSettleTime">scrollSettleTime</a></li><li data-type='method' style='display: none;'><a href="module-utils_entropyController-EntropyController.html#shouldMicroBreak">shouldMicroBreak</a></li></ul></li><li><a href="module-utils_environment-config.EnvironmentConfig.html">EnvironmentConfig</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#generateDocumentation">generateDocumentation</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getConfigPath">getConfigPath</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getCurrentEnvValues">getCurrentEnvValues</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getEnvOverrides">getEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#getSupportedEnvVars">getSupportedEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#isSupportedEnvVar">isSupportedEnvVar</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#validateEnvValues">validateEnvValues</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.applyEnvOverrides">applyEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.getNestedValue">getNestedValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.logAppliedOverrides">logAppliedOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.parseEnvValue">parseEnvValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_environment-config.EnvironmentConfig.html#.setNestedValue">setNestedValue</a></li></ul></li><li><a href="module-utils_errors.AppError.html">AppError</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_errors.AppError.html#toJSON">toJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_errors.AppError.html#toString">toString</a></li></ul></li><li><a href="module-utils_errors.BrowserError.html">BrowserError</a></li><li><a href="module-utils_errors.CircuitBreakerError.html">CircuitBreakerError</a></li><li><a href="module-utils_errors.ConfigError.html">ConfigError</a></li><li><a href="module-utils_errors.ModelError.html">ModelError</a></li><li><a href="module-utils_errors.ProxyError.html">ProxyError</a></li><li><a href="module-utils_errors.RateLimitError.html">RateLimitError</a></li><li><a href="module-utils_errors.RouterError.html">RouterError</a></li><li><a href="module-utils_errors.TimeoutError.html">TimeoutError</a></li><li><a href="module-utils_errors.ValidationError.html">ValidationError</a></li><li><a href="module-utils_global-scroll-controller-GlobalScrollController.html">GlobalScrollController</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#apply">apply</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#applyRandom">applyRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#getMultiplier">getMultiplier</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#init">init</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#reload">reload</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollBy">scrollBy</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollDown">scrollDown</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollRandom">scrollRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollReplies">scrollReplies</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToBottom">scrollToBottom</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToElement">scrollToElement</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollToTop">scrollToTop</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#scrollUp">scrollUp</a></li><li data-type='method' style='display: none;'><a href="module-utils_global-scroll-controller-GlobalScrollController.html#smoothScroll">smoothScroll</a></li></ul></li><li><a href="module-utils_logger-BufferedLogger.html">BufferedLogger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_add">_add</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_startTimer">_startTimer</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#_stopTimer">_stopTimer</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#flush">flush</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#shutdown">shutdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#success">success</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-BufferedLogger.html#warn">warn</a></li></ul></li><li></li><li><a href="module-utils_logger-Logger.html">Logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#_log">_log</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#colorizeTags">colorizeTags</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#debug">debug</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#error">error</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#info">info</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#success">success</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger-Logger.html#warn">warn</a></li></ul></li><li><a href="module-utils_metrics-MetricsCollector.html">MetricsCollector</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#exportToJSON">exportToJSON</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#generateJsonReport">generateJsonReport</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getAvgAILatency">getAvgAILatency</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getAvgDiveDuration">getAvgDiveDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getRecentTasks">getRecentTasks</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTaskBreakdown">getTaskBreakdown</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#getTwitterEngagementMetrics">getTwitterEngagementMetrics</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#logStats">logStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordAILatency">recordAILatency</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordApiCall">recordApiCall</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordBrowserDiscovery">recordBrowserDiscovery</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordDiveDuration">recordDiveDuration</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordError">recordError</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSessionEvent">recordSessionEvent</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordSocialAction">recordSocialAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTaskExecution">recordTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#recordTwitterEngagement">recordTwitterEngagement</a></li><li data-type='method' style='display: none;'><a href="module-utils_metrics-MetricsCollector.html#reset">reset</a></li></ul></li><li><a href="module-utils_sentiment-integration.SentimentIntegration.html">SentimentIntegration</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#checkEngagementAction">checkEngagementAction</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#enrichContext">enrichContext</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#export">export</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#getReplyToneAdaptation">getReplyToneAdaptation</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#setEnabled">setEnabled</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#setPersonality">setPersonality</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#shouldQuoteCheck">shouldQuoteCheck</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-integration.SentimentIntegration.html#shouldReplyCheck">shouldReplyCheck</a></li></ul></li><li><a href="module-utils_sentiment-service.SentimentService.html">SentimentService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyze">analyze</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyzeBasic">analyzeBasic</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#analyzeForReplySelection">analyzeForReplySelection</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#calculateConfidence">calculateConfidence</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#deriveCompositeMetrics">deriveCompositeMetrics</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getEngagementRecommendations">getEngagementRecommendations</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getFromCache">getFromCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getNeutralAnalysis">getNeutralAnalysis</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#getReplyRecommendations">getReplyRecommendations</a></li><li data-type='method' style='display: none;'><a href="module-utils_sentiment-service.SentimentService.html#hasNegativePattern">hasNegativePattern</a></li></ul></li><li><a href="module-utils_task-config-loader.TaskConfigLoader.html">TaskConfigLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#getStats">getStats</a></li><li data-type='method' style='display: none;'><a href="module-utils_task-config-loader.TaskConfigLoader.html#loadAiTwitterActivityConfig">loadAiTwitterActivityConfig</a></li></ul></li><li><a href="utils_config-manager%250D%250DThis%2520is%2520a%2520NEW%2520module%2520for%2520Phase%25202%2520improvements.%2520It%2520does%2520not%2520replace%2520existing%2520config%2520loaders%250Dbut%2520provides%2520a%2520more%2520robust%2520alternative%2520for%2520new%2520code.module_-ConfigManager.html">ConfigManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#clearCache">clearCache</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#get">get</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getCacheStats">getCacheStats</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getSources">getSources</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#getWithMeta">getWithMeta</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#has">has</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#init">init</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#keys">keys</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#reload">reload</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#set">set</a></li><li data-type='method' style='display: none;'><a href="utils_config-manager%25250D%25250DThis%252520is%252520a%252520NEW%252520module%252520for%252520Phase%2525202%252520improvements.%252520It%252520does%252520not%252520replace%252520existing%252520config%252520loaders%25250Dbut%252520provides%252520a%252520more%252520robust%252520alternative%252520for%252520new%252520code.module_-ConfigManager.html#toJSON">toJSON</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-connectors_baseDiscover.html">connectors/baseDiscover</a></li><li><a href="module-connectors_discovery_ixbrowser.html">connectors/discovery/ixbrowser</a></li><li><a href="module-connectors_discovery_localBrave.html">connectors/discovery/localBrave</a></li><li><a href="module-connectors_discovery_roxybrowser.html">connectors/discovery/roxybrowser</a></li><li><a href="module-connectors_discovery_undetectable.html">connectors/discovery/undetectable</a></li><li><a href="module-constants_twitter-timeouts.html">constants/twitter-timeouts</a></li><li><a href="module-core_agent-connector.html">core/agent-connector</a></li><li><a href="module-core_agent-cortex.html">core/agent-cortex</a></li><li><a href="module-core_audit-verifier.html">core/audit-verifier</a></li><li><a href="module-core_automator.html">core/automator</a></li><li><a href="module-core_circuit-breaker.html">core/circuit-breaker</a></li><li><a href="module-core_cloud-client.html">core/cloud-client</a></li><li><a href="module-core_discovery.html">core/discovery</a></li><li><a href="module-core_history-compactor.html">core/history-compactor</a></li><li><a href="module-core_humanizer-engine.html">core/humanizer-engine</a></li><li><a href="module-core_idle-ghosting.html">core/idle-ghosting</a></li><li><a href="module-core_intent-classifier.html">core/intent-classifier</a></li><li><a href="module-core_local-client.html">core/local-client</a></li><li><a href="module-core_ollama-client.html">core/ollama-client</a></li><li><a href="module-core_orchestrator.html">core/orchestrator</a></li><li><a href="module-core_prompt-builder.html">core/prompt-builder</a></li><li><a href="module-core_request-queue.html">core/request-queue</a></li><li><a href="module-core_semantic-parser.html">core/semantic-parser</a></li><li><a href="module-core_sessionManager.html">core/sessionManager</a></li><li><a href="module-core_state-manager.html">core/state-manager</a></li><li><a href="module-core_stuck-detector.html">core/stuck-detector</a></li><li><a href="module-core_vision-interpreter.html">core/vision-interpreter</a></li><li><a href="module-core_vision-packager.html">core/vision-packager</a></li><li><a href="module-core_vision_image-storage.html">core/vision/image-storage</a></li><li><a href="module-core_vision_roi-detector.html">core/vision/roi-detector</a></li><li><a href="module-core_vllm-client.html">core/vllm-client</a></li><li><a href="module-examples_simpleNavigate.html">examples/simpleNavigate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-examples_simpleNavigate.html#~simpleNavigate">simpleNavigate</a></li></ul></li><li><a href="module-local-agent_core_actionEngine.html">local-agent/core/actionEngine</a></li><li><a href="module-local-agent_core_agent.html">local-agent/core/agent</a></li><li><a href="module-local-agent_core_vision.html">local-agent/core/vision</a></li><li><a href="module-local-agent_network_llmClient.html">local-agent/network/llmClient</a></li><li><a href="module-main.html">main</a></li><li><a href="module-strategies_EntropyReferrer.html">strategies/EntropyReferrer</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-strategies_EntropyReferrer.html#~_extractContext">_extractContext</a></li></ul></li><li><a href="module-tasks_agentNavigate.html">tasks/agentNavigate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_agentNavigate.html#~agentNavigate">agentNavigate</a></li></ul></li><li><a href="module-tasks_ai-testertask.html">tasks/ai-testertask</a></li><li><a href="module-tasks_automationTask1.html">tasks/automationTask1</a></li><li><a href="module-tasks_automationTask2.html">tasks/automationTask2</a></li><li><a href="module-tasks_cookieBotRandom.html">tasks/cookieBotRandom</a></li><li><a href="module-tasks_runAgent.html">tasks/runAgent</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_runAgent.html#.run">run</a></li></ul></li><li><a href="module-tasks_testGoogleSearch.html">tasks/testGoogleSearch</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_testGoogleSearch.html#~testGoogleSearch">testGoogleSearch</a></li></ul></li><li><a href="module-tasks_twitterscroll.html">tasks/twitterscroll</a></li><li><a href="module-tests_test-core-modules.html">tests/test-core-modules</a></li><li><a href="module-utils_actions.html">utils/actions</a></li><li><a href="module-utils_actions_ai-twitter-bookmark.html">utils/actions/ai-twitter-bookmark</a></li><li><a href="module-utils_actions_ai-twitter-go-home.html">utils/actions/ai-twitter-go-home</a></li><li><a href="module-utils_actions_ai-twitter-like.html">utils/actions/ai-twitter-like</a></li><li><a href="module-utils_actions_ai-twitter-quote.html">utils/actions/ai-twitter-quote</a></li><li><a href="module-utils_actions_ai-twitter-reply.html">utils/actions/ai-twitter-reply</a></li><li><a href="module-utils_ai-context-engine.html">utils/ai-context-engine</a></li><li><a href="module-utils_ai-quote-engine.html">utils/ai-quote-engine</a></li><li><a href="module-utils_ai-reply-engine.html">utils/ai-reply-engine</a></li><li><a href="module-utils_ai-tools.html">utils/ai-tools</a></li><li><a href="module-utils_ai-twitterAgent.html">utils/ai-twitterAgent</a></li><li><a href="module-utils_api-key-timeout-tracker.html">utils/api-key-timeout-tracker</a></li><li><a href="module-utils_apiHandler.html">utils/apiHandler</a></li><li><a href="module-utils_async-queue.html">utils/async-queue</a></li><li><a href="module-utils_banner.html">utils/banner</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_banner.html#.showBanner">showBanner</a></li></ul></li><li><a href="module-utils_browserPatch.html">utils/browserPatch</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_browserPatch.html#.applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="module-utils_circuit-breaker.html">utils/circuit-breaker</a></li><li><a href="module-utils_config-cache.html">utils/config-cache</a></li><li><a href="module-utils_config-service.html">utils/config-service</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_config-service.html#~applyEnvOverrides">applyEnvOverrides</a></li><li data-type='method' style='display: none;'><a href="module-utils_config-service.html#~getFromEnvOrSettings">getFromEnvOrSettings</a></li></ul></li><li><a href="module-utils_config-validator.html">utils/config-validator</a></li><li><a href="module-utils_configLoader.html">utils/configLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getBrowserAPI">getBrowserAPI</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getSettings">getSettings</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeoutValue">getTimeoutValue</a></li><li data-type='method' style='display: none;'><a href="module-utils_configLoader.html#.getTimeouts">getTimeouts</a></li></ul></li><li><a href="module-utils_content-depth.html">utils/content-depth</a></li><li><a href="module-utils_dockerLLM.html">utils/dockerLLM</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#.ensureDockerLLM">ensureDockerLLM</a></li><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#~isLocalLLMReady">isLocalLLMReady</a></li><li data-type='method' style='display: none;'><a href="module-utils_dockerLLM.html#~startLocalLLM">startLocalLLM</a></li></ul></li><li><a href="module-utils_engagement-limits.html">utils/engagement-limits</a></li><li><a href="module-utils_entropyController.html">utils/entropyController</a></li><li><a href="module-utils_envLoader.html">utils/envLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getEnv">getEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getLogLevel">getLogLevel</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getNodeEnv">getNodeEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.getRequiredEnv">getRequiredEnv</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isDevelopment">isDevelopment</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.isProduction">isProduction</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVars">resolveEnvVars</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.resolveEnvVarsInObject">resolveEnvVarsInObject</a></li><li data-type='method' style='display: none;'><a href="module-utils_envLoader.html#.validateRequiredEnvVars">validateRequiredEnvVars</a></li></ul></li><li><a href="module-utils_environment-config.html">utils/environment-config</a></li><li><a href="module-utils_errors.html">utils/errors</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_errors.html#.classifyHttpError">classifyHttpError</a></li><li data-type='method' style='display: none;'><a href="module-utils_errors.html#.wrapError">wrapError</a></li></ul></li><li><a href="module-utils_free-api-router.html">utils/free-api-router</a></li><li><a href="module-utils_free-openrouter-helper.html">utils/free-openrouter-helper</a></li><li><a href="module-utils_global-scroll-controller.html">utils/global-scroll-controller</a></li><li><a href="module-utils_human-interaction.html">utils/human-interaction</a></li><li><a href="module-utils_human-timing.html">utils/human-timing</a></li><li><a href="module-utils_local-ollama-manager.html">utils/local-ollama-manager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.ensureOllama">ensureOllama</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.isOllamaRunning">isOllamaRunning</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#.startOllama">startOllama</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#~doesModelExist">doesModelExist</a></li><li data-type='method' style='display: none;'><a href="module-utils_local-ollama-manager.html#~isOllamaProcessRunning">isOllamaProcessRunning</a></li></ul></li><li><a href="module-utils_logger.html">utils/logger</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createBufferedLogger">createBufferedLogger</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#.createLogger">createLogger</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#~initLogFile">initLogFile</a></li><li data-type='method' style='display: none;'><a href="module-utils_logger.html#~writeToLogFile">writeToLogFile</a></li></ul></li><li><a href="module-utils_metrics.html">utils/metrics</a></li><li><a href="module-utils_micro-interactions.html">utils/micro-interactions</a></li><li><a href="module-utils_mistake-engine.html">utils/mistake-engine</a></li><li><a href="module-utils_model-perf-tracker.html">utils/model-perf-tracker</a></li><li><a href="module-utils_motor-control.html">utils/motor-control</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_motor-control.html#~getXSelectors">getXSelectors</a></li><li data-type='method' style='display: none;'><a href="module-utils_motor-control.html#~smartSelector">smartSelector</a></li></ul></li><li><a href="module-utils_navigation-diversity.html">utils/navigation-diversity</a></li><li><a href="module-utils_proxy-agent.html">utils/proxy-agent</a></li><li><a href="module-utils_randomScrolling.html">utils/randomScrolling</a></li><li><a href="module-utils_randomZoom.html">utils/randomZoom</a></li><li><a href="module-utils_rate-limit-tracker.html">utils/rate-limit-tracker</a></li><li><a href="module-utils_request-dedupe.html">utils/request-dedupe</a></li><li><a href="module-utils_retry.html">utils/retry</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_retry.html#.withRetry">withRetry</a></li></ul></li><li><a href="module-utils_scroll-helper.html">utils/scroll-helper</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.getScrollMultiplier">getScrollMultiplier</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scroll">scroll</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollDown">scrollDown</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollRandom">scrollRandom</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollToBottom">scrollToBottom</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollToTop">scrollToTop</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollUp">scrollUp</a></li><li data-type='method' style='display: none;'><a href="module-utils_scroll-helper.html#.scrollWheel">scrollWheel</a></li></ul></li><li><a href="module-utils_scroll-humanizer.html">utils/scroll-humanizer</a></li><li><a href="module-utils_sentiment-analyzer-multi.html">utils/sentiment-analyzer-multi</a></li><li><a href="module-utils_sentiment-analyzers.html">utils/sentiment-analyzers</a></li><li><a href="module-utils_sentiment-data.html">utils/sentiment-data</a></li><li><a href="module-utils_sentiment-decision-engine.html">utils/sentiment-decision-engine</a></li><li><a href="module-utils_sentiment-guard.html">utils/sentiment-guard</a></li><li><a href="module-utils_sentiment-integration.html">utils/sentiment-integration</a></li><li><a href="module-utils_sentiment-service.html">utils/sentiment-service</a></li><li><a href="module-utils_session-phases.html">utils/session-phases</a></li><li><a href="module-utils_task-config-loader.html">utils/task-config-loader</a></li><li><a href="module-utils_temporal-awareness.html">utils/temporal-awareness</a></li><li><a href="module-utils_twitter-interaction-methods.html">utils/twitter-interaction-methods</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_twitter-interaction-methods.html#.executeQuoteMethod">executeQuoteMethod</a></li><li data-type='method' style='display: none;'><a href="module-utils_twitter-interaction-methods.html#.executeReplyMethod">executeReplyMethod</a></li></ul></li><li><a href="module-utils_twitter-reply-prompt.html">utils/twitter-reply-prompt</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_twitter-reply-prompt.html#.buildEnhancedPrompt">buildEnhancedPrompt</a></li><li data-type='method' style='display: none;'><a href="module-utils_twitter-reply-prompt.html#.getStrategyInstruction">getStrategyInstruction</a></li></ul></li><li><a href="module-utils_urlReferrerGenerator.html">utils/urlReferrerGenerator</a></li><li><a href="module-utils_utils.html">utils/utils</a></li><li><a href="module-utils_validator.html">utils/validator</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateApiResponse">validateApiResponse</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateBrowserConnection">validateBrowserConnection</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validatePayload">validatePayload</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#.validateTaskExecution">validateTaskExecution</a></li><li data-type='method' style='display: none;'><a href="module-utils_validator.html#~convertSchemaToZod">convertSchemaToZod</a></li></ul></li><li><a href="tasks_twitterActivity.html#.module:js">tasks/twitterActivity.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterActivity.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterFollow.html#.module:js">tasks/twitterFollow.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterFollow.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterFollowLikeRetweet.html#.module:js">tasks/twitterFollowLikeRetweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterFollowLikeRetweet.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tasks_twitterTweet.html#.module:js">tasks/twitterTweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tasks_twitterTweet.html#.module:js#~applyHumanizationPatch">applyHumanizationPatch</a></li></ul></li><li><a href="tests_integration_agent-connector-health.module_test.html">tests/integration/agent-connector-health.test</a></li><li><a href="tests_integration_agent-connector.module_test.html">tests/integration/agent-connector.test</a></li><li><a href="tests_integration_circuit-breaker.module_test.html">tests/integration/circuit-breaker.test</a></li><li><a href="tests_integration_cloud-client.module_test.html">tests/integration/cloud-client.test</a></li><li><a href="tests_integration_profile-manager.module_test.html">tests/integration/profile-manager.test</a></li><li><a href="tests_integration_request-queue.module_test.html">tests/integration/request-queue.test</a></li><li><a href="tests_integration_task-config-loader.module_test.html">tests/integration/task-config-loader.test</a></li><li><a href="tests_test-multiline-tweet.module_js.html">tests/test-multiline-tweet.js</a></li><li><a href="tests_unit_ai-twitter-activity.module_test.html">tests/unit/ai-twitter-activity.test</a></li><li><a href="tests_unit_ai-twitterAgent.module_test.html">tests/unit/ai-twitterAgent.test</a></li><li><a href="tests_unit_ai-twitterAgent.real.module_test.html">tests/unit/ai-twitterAgent.real.test</a></li><li><a href="tests_unit_apiHandler.module_test.html">tests/unit/apiHandler.test</a></li><li><a href="tests_unit_async-queue.module_test.html">tests/unit/async-queue.test</a></li><li><a href="tests_unit_banner.module_test.html">tests/unit/banner.test</a></li><li><a href="tests_unit_circuit-breaker.module_test.html">tests/unit/circuit-breaker.test</a></li><li><a href="tests_unit_config-service.module_test.html">tests/unit/config-service.test</a></li><li><a href="tests_unit_discovery.module_test.html">tests/unit/discovery.test</a></li><li><a href="tests_unit_dockerLLM.module_test.html">tests/unit/dockerLLM.test</a></li><li><a href="tests_unit_engagement-limits.module_test.html">tests/unit/engagement-limits.test</a></li><li><a href="tests_unit_envLoader.module_test.html">tests/unit/envLoader.test</a></li><li><a href="tests_unit_global-scroll-controller.module_test.html">tests/unit/global-scroll-controller.test</a></li><li><a href="tests_unit_human-interaction.module_test.html">tests/unit/human-interaction.test</a></li><li><a href="tests_unit_humanization-utils.module_test.html">tests/unit/humanization-utils.test</a></li><li><a href="tests_unit_ixbrowser.module_test.html">tests/unit/ixbrowser.test</a></li><li><a href="tests_unit_logging-config.module_test.html">tests/unit/logging-config.test</a></li><li><a href="tests_unit_request-queue.module_test.html">tests/unit/request-queue.test</a></li><li><a href="tests_unit_retry.module_test.html">tests/unit/retry.test</a></li><li><a href="tests_unit_roxybrowser.module_test.html">tests/unit/roxybrowser.test</a></li><li><a href="tests_unit_scroll-helper.module_test.html">tests/unit/scroll-helper.test</a></li><li><a href="tests_unit_session-manager.module_test.html">tests/unit/session-manager.test</a></li><li><a href="tests_unit_validator.module_test.html">tests/unit/validator.test</a></li><li><a href="tools_composeTweet.module_js.html">tools/composeTweet.js</a><ul class='methods'><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~composeTweet">composeTweet</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~main">main</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~showQueueStatus">showQueueStatus</a></li><li data-type='method' style='display: none;'><a href="tools_composeTweet.module_js.html#~viewQueue">viewQueue</a></li></ul></li><li><a href="utils_config-manager%250D%250DThis%2520is%2520a%2520NEW%2520module%2520for%2520Phase%25202%2520improvements.%2520It%2520does%2520not%2520replace%2520existing%2520config%2520loaders%250Dbut%2520provides%2520a%2520more%2520robust%2520alternative%2520for%2520new%2520code.module_.html">utils/config-managerThis is a NEW module for Phase 2 improvements. It does not replace existing config loadersbut provides a more robust alternative for new code.</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configDrivenReply">configDrivenReply</a></li><li><a href="global.html#ensureProfilesLoaded">ensureProfilesLoaded</a></li><li><a href="global.html#estimateConversationTokens">estimateConversationTokens</a></li><li><a href="global.html#estimateMessageTokens">estimateMessageTokens</a></li><li><a href="global.html#estimateTokens">estimateTokens</a></li><li><a href="global.html#formatEngagementLine">formatEngagementLine</a></li><li><a href="global.html#formatEngagementSummary">formatEngagementSummary</a></li><li><a href="global.html#generateProfiles">generateProfiles</a></li><li><a href="global.html#generateProgressBar">generateProgressBar</a></li><li><a href="global.html#getDefaultLoggingConfig">getDefaultLoggingConfig</a></li><li><a href="global.html#getLoggingConfig">getLoggingConfig</a></li><li><a href="global.html#loadProfiles">loadProfiles</a></li><li><a href="global.html#mathUtils">mathUtils</a></li><li><a href="global.html#postQuoteWithMethod">postQuoteWithMethod</a></li><li><a href="global.html#postReplyRandom">postReplyRandom</a></li><li><a href="global.html#postReplyWithFallback">postReplyWithFallback</a></li><li><a href="global.html#postReplyWithMethod">postReplyWithMethod</a></li><li><a href="global.html#resetLoggingConfig">resetLoggingConfig</a></li><li><a href="global.html#runAllEdgeCaseTests">runAllEdgeCaseTests</a></li><li><a href="global.html#runAllIntegrationTests">runAllIntegrationTests</a></li><li><a href="global.html#runAllTests">runAllTests</a></li><li><a href="global.html#runAllUnitTests">runAllUnitTests</a></li><li><a href="global.html#smartReply">smartReply</a></li><li><a href="global.html#takeScreenshot">takeScreenshot</a></li><li><a href="global.html#testStats">testStats</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">utils/ai-reply-engine.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview AI Reply Engine
+ * Handles AI reply generation, safety filtering, and fallback behavior
+ * @module utils/ai-reply-engine
+ */
+
+import { createLogger } from './logger.js';
+import { REPLY_SYSTEM_PROMPT, buildReplyPrompt, getStrategyInstruction } from './twitter-reply-prompt.js';
+import { mathUtils } from './mathUtils.js';
+import { sentimentService } from './sentiment-service.js';
+import { config } from './config-service.js';
+import { HumanInteraction } from './human-interaction.js';
+
+const logger = createLogger('ai-reply-engine.js');
+
+export class AIReplyEngine {
+  constructor(agentConnector, options = {}) {
+    this.agent = agentConnector;
+    this.logger = createLogger('ai-reply-engine.js');
+    this.config = {
+      REPLY_PROBABILITY: options.replyProbability ?? 0.05,
+      MAX_REPLY_LENGTH: 280,
+      MIN_REPLY_LENGTH: 10,
+      MAX_RETRIES: options.maxRetries ?? 2,
+      SAFETY_FILTERS: {
+        minTweetLength: 10,  // Allow shorter tweets (was 20)
+        maxTweetLength: 500,
+        excludedKeywords: [
+          // Political
+          'politics', 'political', 'vote', 'election', 'trump', 'biden', 'obama',
+          'republican', 'democrat', 'congress', 'senate', 'president', 'policy',
+          'taxes', 'immigration', 'abortion', 'gun rights', 'protest',
+          // NSFW/Adult
+          'nsfw', 'nude', 'naked', 'explicit', '18+', 'adult', 'xxx', 'porn',
+          'sexual', 'erotic', 'dick', 'cock', 'pussy', 'fuck', 'shit', 'ass',
+          // Spam/Solicitation
+          'follow back', 'fb', 'make money', 'drop link', 'free crypto',
+          'dm me', 'send dm', 'join now', 'limited offer', 'act now',
+          // Controversial
+          'religion', 'god', 'atheist', 'belief', 'vaccine', 'climate change',
+          'conspiracy', 'wake up', 'sheep', 'brainwashed'
+        ]
+      }
+    };
+
+    this.stats = {
+      attempts: 0,
+      successes: 0,
+      skips: 0,
+      failures: 0,
+      safetyBlocks: 0,
+      errors: 0
+    };
+
+    this.logger.info(`[AIReplyEngine] Initialized (probability: ${this.config.REPLY_PROBABILITY})`);
+  }
+
+  /**
+   * Update configuration at runtime
+   */
+  updateConfig(options) {
+    if (options.replyProbability !== undefined) {
+      this.config.REPLY_PROBABILITY = options.replyProbability;
+    }
+    if (options.maxRetries !== undefined) {
+      this.config.MAX_RETRIES = options.maxRetries;
+    }
+  }
+
+  /**
+   * Main entry point: decide whether to reply to a tweet
+   * @param {string} tweetText - The tweet content
+   * @param {string} authorUsername - Tweet author username
+   * @param {object} context - Enhanced context (screenshot, replies)
+   * @returns {Promise&lt;object>} Reply decision
+   */
+  async shouldReply(tweetText, authorUsername, context = {}) {
+    this.stats.attempts++;
+
+    // Step 1: Roll dice for reply opportunity
+    if (!mathUtils.roll(this.config.REPLY_PROBABILITY)) {
+      this.stats.skips++;
+      return {
+        decision: 'skip',
+        reason: 'probability',
+        action: null
+      };
+    }
+
+    // Step 1b: Clip tweet text to 300 chars for AI processing
+    const clippedTweet = tweetText.length > 300 ? tweetText.substring(0, 300) + '...' : tweetText;
+    logger.debug(`[AIReply] Tweet clipped from ${tweetText.length} to ${clippedTweet.length} chars`);
+
+    // ================================================================
+    // FULL SENTIMENT ANALYSIS OF TWEET
+    // ================================================================
+    const tweetSentiment = sentimentService.analyze(tweetText);
+    
+    // Log comprehensive sentiment analysis
+    logger.info(`[AIReply] Sentiment Analysis:`);
+    logger.info(`[AIReply]   - Overall: ${tweetSentiment.isNegative ? 'NEGATIVE' : 'NEUTRAL/POSITIVE'} (score: ${tweetSentiment.score.toFixed(2)})`);
+    logger.info(`[AIReply]   - Valence: ${tweetSentiment.dimensions?.valence?.valence?.toFixed(2) || 'N/A'}`);
+    logger.info(`[AIReply]   - Arousal: ${tweetSentiment.dimensions?.arousal?.arousal?.toFixed(2) || 'N/A'}`);
+    logger.info(`[AIReply]   - Dominance: ${tweetSentiment.dimensions?.dominance?.dominance?.toFixed(2) || 'N/A'}`);
+    logger.info(`[AIReply]   - Sarcasm: ${tweetSentiment.dimensions?.sarcasm?.sarcasm?.toFixed(2) || 'N/A'}`);
+    logger.info(`[AIReply]   - Toxicity: ${tweetSentiment.dimensions?.toxicity?.toxicity?.toFixed(2) || 'N/A'}`);
+    logger.info(`[AIReply]   - Risk Level: ${tweetSentiment.composite?.riskLevel || 'N/A'}`);
+    logger.info(`[AIReply]   - Engagement Style: ${tweetSentiment.composite?.engagementStyle || 'N/A'}`);
+    logger.info(`[AIReply]   - Conversation Type: ${tweetSentiment.composite?.conversationType || 'N/A'}`);
+
+    // ================================================================
+    // SKIP HIGH-RISK CONVERSATIONS
+    // ================================================================
+    if (tweetSentiment.isNegative &amp;&amp; tweetSentiment.score > 0.3) {
+      this.stats.skips++;
+      logger.warn(`[AIReply] Skipping negative content (score: ${tweetSentiment.score.toFixed(2)})`);
+      return {
+        decision: 'skip',
+        reason: 'negative_content',
+        action: this.randomFallback()
+      };
+    }
+
+    if (tweetSentiment.composite?.riskLevel === 'high') {
+      this.stats.skips++;
+      logger.warn(`[AIReply] Skipping high-risk conversation`);
+      return {
+        decision: 'skip',
+        reason: 'high_risk_conversation',
+        action: this.randomFallback()
+      };
+    }
+
+    // Extract derived sentiment values for prompt enhancement
+    const sentiment = tweetSentiment.composite?.engagementStyle || 'neutral';
+    const conversationType = tweetSentiment.composite?.conversationType || 'general';
+
+    // Store sentiment in context for use in prompt generation
+    const enhancedContext = {
+      ...context,
+      sentiment: {
+        overall: tweetSentiment.isNegative ? 'negative' : 'neutral/positive',
+        score: tweetSentiment.score,
+        engagementStyle: sentiment,
+        conversationType: conversationType,
+        valence: tweetSentiment.dimensions?.valence?.valence || 0,
+        sarcasm: tweetSentiment.dimensions?.sarcasm?.sarcasm || 0,
+        toxicity: tweetSentiment.dimensions?.toxicity?.toxicity || 0,
+        riskLevel: tweetSentiment.composite?.riskLevel || 'low'
+      }
+    };
+
+    // Step 2: Apply safety filters on clipped text
+    const safetyResult = this.applySafetyFilters(clippedTweet);
+    if (!safetyResult.safe) {
+      this.stats.safetyBlocks++;
+      this.stats.skips++;
+      logger.debug(`[AIReply] Safety block: ${safetyResult.reason}`);
+      return {
+        decision: 'skip',
+        reason: 'safety',
+        action: this.randomFallback()
+      };
+    }
+
+    // Step 3: AI generate reply with context (use clipped tweet and enhanced context)
+    const aiResult = await this.generateReply(clippedTweet, authorUsername, enhancedContext);
+
+    if (!aiResult.success) {
+      this.stats.failures++;
+      this.stats.skips++;
+      return {
+        decision: 'skip',
+        reason: 'ai_failed',
+        action: this.randomFallback()
+      };
+    }
+
+    // Step 4: Validate reply
+    const validation = this.validateReply(aiResult.reply);
+    if (!validation.valid) {
+      this.stats.failures++;
+      this.stats.skips++;
+      logger.debug(`[AIReply] Reply validation failed: ${validation.reason}`);
+      return {
+        decision: 'skip',
+        reason: 'validation_failed',
+        action: this.randomFallback()
+      };
+    }
+
+    // Success
+    this.stats.successes++;
+    logger.info(`[AIReply] Generated reply: "${aiResult.reply.substring(0, 50)}..."`);
+
+    return {
+      decision: 'reply',
+      reason: 'success',
+      action: 'post_reply',
+      reply: aiResult.reply.trim()
+    };
+  }
+
+  /**
+   * Apply safety filters to tweet content
+   * @param {string} text - Tweet text
+   * @returns {object} { safe: boolean, reason: string }
+   */
+  applySafetyFilters(text) {
+    if (!text || typeof text !== 'string') {
+      return { safe: false, reason: 'empty_text' };
+    }
+
+    const lowerText = text.toLowerCase().trim();
+
+    // Length check
+    if (lowerText.length &lt; this.config.SAFETY_FILTERS.minTweetLength) {
+      return { safe: false, reason: 'too_short' };
+    }
+
+    if (lowerText.length > this.config.SAFETY_FILTERS.maxTweetLength) {
+      return { safe: false, reason: 'too_long' };
+    }
+
+    // Keyword exclusion check
+    const excluded = this.config.SAFETY_FILTERS.excludedKeywords;
+    for (const keyword of excluded) {
+      if (lowerText.includes(keyword)) {
+        return { safe: false, reason: `excluded_keyword:${keyword}` };
+      }
+    }
+
+    // Check for excessive caps (shouting)
+    const capsRatio = (text.match(/[A-Z]/g)?.length || 0) / text.length;
+    if (capsRatio > 0.7 &amp;&amp; text.length > 20) {
+      return { safe: false, reason: 'excessive_caps' };
+    }
+
+    // Check for excessive emojis
+    const emojiCount = (text.match(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu)?.length || 0);
+    if (emojiCount > 8) {
+      return { safe: false, reason: 'too_many_emojis' };
+    }
+
+    return { safe: true, reason: 'passed' };
+  }
+
+  /**
+    * Generate AI reply using the agent connector
+    * @param {string} tweetText - Tweet content
+    * @param {string} authorUsername - Author username
+    * @param {object} context - Additional context (screenshot, replies)
+     * @returns {Promise&lt;object>} { success: boolean, reply?: string, language?: string }
+    */
+  async generateReply(tweetText, authorUsername, context = {}) {
+    const maxAttempts = this.config.MAX_RETRIES;
+    let lastError = null;
+
+    const { screenshot = null, replies = [], url = '' } = context;
+
+    // ================================================================
+    // SENTIMENT-BASED REPLY SELECTION
+    // Analyze conversation sentiment and select best replies for LLM
+    // ================================================================
+    let selectedReplies = replies;
+    if (replies.length > 0) {
+      const sentimentAnalysis = sentimentService.analyzeForReplySelection(replies);
+      logger.info(`[AIReply] Reply selection strategy: ${sentimentAnalysis.strategy} ` +
+                  `(pos: ${sentimentAnalysis.distribution.positive}, ` +
+                  `neg: ${sentimentAnalysis.distribution.negative}, ` +
+                  `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`);
+      
+      const recs = sentimentAnalysis.recommendations;
+      if (recs.manualSelection) {
+        selectedReplies = recs.manualSelection;
+      } else {
+        selectedReplies = sentimentAnalysis.analyzed
+          .filter(r => recs.filter(r))
+          .sort(recs.sort)
+          .slice(0, recs.max)
+          .map(r => ({ author: r.author, text: r.text }));
+      }
+      
+      logger.info(`[AIReply] Selected ${selectedReplies.length} replies for LLM context ` +
+                  `(filtered from ${replies.length})`);
+    }
+
+    // Build enhanced prompt with language detection
+    const sentimentContext = context.sentiment || {};
+    const hasImage = !!screenshot;
+    const engagementLevel = context.engagementLevel || 'unknown';
+    const promptData = this.buildEnhancedPrompt(tweetText, authorUsername, selectedReplies, url, sentimentContext, hasImage, engagementLevel);
+
+    // DEBUG: Log tweet, replies, and prompt being sent to LLM
+    logger.info(`[DEBUG] ============================================`);
+    logger.info(`[DEBUG] TWEET TO REPLY TO:`);
+    logger.info(`[DEBUG] Author: @${authorUsername}`);
+    logger.info(`[DEBUG] URL: ${url}`);
+    logger.info(`[DEBUG] Tweet Text: "${tweetText}"`);
+    logger.info(`[DEBUG] Tweet Length: ${tweetText.length} chars`);
+    logger.info(`[DEBUG] Has Image: ${hasImage}`);
+    logger.info(`[DEBUG] ----------------------------------------------`);
+    logger.info(`[DEBUG] REPLIES CONTEXT (${replies.length} loaded, showing longest 30):`);
+    const sortedDebugReplies = replies
+      .filter(r => r.text &amp;&amp; r.text.length > 5)
+      .sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))
+      .slice(0, 30);
+    sortedDebugReplies.forEach((reply, idx) => {
+      const shortText = (reply.text || '').substring(0, 80);
+      const ellipsis = (reply.text || '').length > 80 ? '...' : '';
+      const authorName = reply.author &amp;&amp; reply.author !== 'unknown' ? reply.author : 'User';
+      logger.info(`[DEBUG] [${idx + 1}] Reply${idx + 1}: "@${authorName}: ${shortText}${ellipsis}"`);
+    });
+    logger.info(`[DEBUG] ----------------------------------------------`);
+    logger.info(`[DEBUG] FULL PROMPT SENT TO LLM:`);
+    logger.info(`[DEBUG] Language: ${promptData.language}`);
+    logger.info(`[DEBUG] System Prompt Length: ${REPLY_SYSTEM_PROMPT.length} chars`);
+    logger.info(`[DEBUG] User Prompt Length: ${promptData.text.length} chars`);
+    logger.info(`[DEBUG] Vision Mode: ${screenshot ? 'enabled' : 'disabled'}`);
+    logger.info(`[DEBUG] ============================================`);
+
+    for (let attempt = 1; attempt &lt;= maxAttempts; attempt++) {
+      try {
+        const request = {
+          action: 'generate_reply',
+          sessionId: this.agent.sessionId || 'reply-engine',
+          payload: {
+            systemPrompt: REPLY_SYSTEM_PROMPT,
+            userPrompt: promptData.text,
+            maxTokens: 50,
+            temperature: 0.7,
+            vision: screenshot, // Enabled if present
+            context: {
+              hasScreenshot: !!screenshot,
+              replyCount: replies.length,
+              detectedLanguage: promptData.language
+            }
+          }
+        };
+
+        logger.info(`[AIReply] Generating ${promptData.language} reply (attempt ${attempt}/${maxAttempts})...`);
+
+        const response = await this.agent.processRequest(request);
+
+        if (!response.success) {
+          lastError = response.error;
+          continue;
+        }
+
+        // DEBUG: Log raw LLM response with token estimation
+        const responseText = response.content || '';
+        const estimatedInputTokens = Math.ceil((REPLY_SYSTEM_PROMPT.length + promptData.text.length) / 4);
+        const estimatedOutputTokens = Math.ceil(responseText.length / 4);
+        const totalTokens = estimatedInputTokens + estimatedOutputTokens;
+
+        logger.info(`[DEBUG] ----------------------------------------------`);
+        logger.info(`[DEBUG] TOKEN ESTIMATION:`);
+        logger.info(`[DEBUG]   Input Tokens: ~${estimatedInputTokens} (system + prompt + ${replies.length} replies)`);
+        logger.info(`[DEBUG]   Output Tokens: ~${estimatedOutputTokens} (response)`);
+        logger.info(`[DEBUG]   Total Estimated: ~${totalTokens}`);
+        logger.info(`[DEBUG] ----------------------------------------------`);
+        logger.info(`[DEBUG] LLM RAW RESPONSE (attempt ${attempt}):`);
+        logger.info(`[DEBUG] ${responseText || 'empty'}`);
+        logger.info(`[DEBUG] ----------------------------------------------`);
+
+        // Extract reply from response
+        const reply = this.extractReplyFromResponse(response.content);
+
+        if (reply) {
+          logger.info(`[AIReply] Generated ${promptData.language} reply: "${reply.substring(0, 50)}..."`);
+          return {
+            success: true,
+            reply,
+            language: promptData.language,
+            replyCount: promptData.replyCount
+          };
+        }
+
+        lastError = 'No reply found in response';
+
+      } catch (error) {
+        lastError = error.message;
+        logger.warn(`[AIReply] Generate attempt ${attempt} failed: ${error.message}`);
+      }
+    }
+
+    logger.warn(`[AIReply] All ${maxAttempts} attempts failed: ${lastError}`);
+    return { success: false };
+  }
+
+  /**
+    * Detect primary language from text content
+    * @param {string} text - Text to analyze
+    * @returns {string} Detected language code
+    */
+  detectLanguage(text) {
+    if (!text || typeof text !== 'string') return 'en';
+
+    const textLower = text.toLowerCase();
+
+    // Language patterns (common words/phrases)
+    const languages = {
+      en: /\b(the|is|are|was|were|have|has|been|will|would|could|should|this|that|these|those|i|you|he|she|it|we|they|what|which|who|when|where|why|how)\b/i,
+      es: /\b(el|la|los|las|es|son|fue|fueron|tiene|tienen|será|sería|puede|podrían|esto|ese|esta|yo|tú|él|ella|ellos|qué|cualquién|cuando|dónde|por qué|cómo)\b/i,
+      fr: /\b(le|la|les|est|sont|était|étaient|a|ont|été|sera|serait|peuvent|cela|cette|ces|je|tu|il|elle|nous|vous|ils|elles|que|qui|quoi|quand|où|pourquoi|comment)\b/i,
+      de: /\b(der|die|das|den|dem|ist|sind|war|waren|hat|haben|wird|wäre|kann|können|dieser|diese|dieses|ich|du|er|sie|es|wir|sie|was|welcher|wer|wo|warum|wie)\b/i,
+      pt: /\b(o|a|os|as|é|são|foi|foram|tem|têm|será|seria|podem|isso|essa|esses|eu|você|ele|ela|nós|vocês|eles|elas|o quê|qual|quem|quando|onde|por quê|como)\b/i,
+      id: /\b(ini|itu|adalah|adalah|tersebut|dengan|untuk|dan|di|dari|yang|apa|siapa|apa|ketika|di mana|mengapa|bagai)\b/i,
+      ja: /\b(これ|それ|あれ|この|その|あの|です|だ|ある|いる|ます|か|の|に|を|と|が|は|だれの|何|いつ|どこ|なぜ|怎样)\b/i,
+      ko: /\b(이|그|저|이다|있다|하다|것|을|를|에|에서|과|와|는|은|다|吗|什么|何时|哪里|为什么)\b/i,
+      zh: /\b(这|那|是|的|在|有|和|与|对|就|都|而|及|与|着|或|什么|谁|何时|何地|为何|如何)\b/i
+    };
+
+    const scores = {};
+    let totalScore = 0;
+
+    for (const [lang, pattern] of Object.entries(languages)) {
+      const match = textLower.match(pattern);
+      const score = match ? match.length : 0;
+      scores[lang] = score;
+      totalScore += score;
+    }
+
+    if (totalScore === 0) return 'en';
+
+    // Find the language with highest score
+    let maxScore = 0;
+    let detectedLang = 'en';
+
+    for (const [lang, score] of Object.entries(scores)) {
+      if (score > maxScore) {
+        maxScore = score;
+        detectedLang = lang;
+      }
+    }
+
+    // Map to full language name
+    const langNames = {
+      en: 'English',
+      es: 'Spanish',
+      fr: 'French',
+      de: 'German',
+      pt: 'Portuguese',
+      id: 'Indonesian',
+      ja: 'Japanese',
+      ko: 'Korean',
+      zh: 'Chinese'
+    };
+
+    return langNames[detectedLang] || 'English';
+  }
+
+  /**
+    * Detect primary language from array of replies
+    * @param {Array} replies - Array of reply objects
+    * @returns {string} Detected language
+    */
+  detectReplyLanguage(replies) {
+    if (!replies || replies.length === 0) return 'English';
+
+    // Collect all reply text
+    const allText = replies
+      .map(r => r.text || r.content || '')
+      .join(' ');
+
+    // Sample up to 5 replies for language detection
+    const sampleText = replies
+      .slice(0, 5)
+      .map(r => (r.text || r.content || '').substring(0, 500))
+      .join(' ');
+
+    return this.detectLanguage(sampleText);
+  }
+
+  /**
+    * Build enhanced prompt with context (tweet, replies, screenshot)
+    * @param {string} tweetText - Original tweet
+    * @param {string} authorUsername - Author
+    * @param {Array} replies - Replies to include
+    * @param {string} url - Tweet URL
+    * @param {object} sentimentContext - Sentiment context
+   * @param {boolean} hasImage - Whether the tweet has an image
+   * @param {string} engagementLevel - Engagement level (viral, high, medium, low)
+   * @returns {object} Enhanced prompt with language info
+   */
+  buildEnhancedPrompt(tweetText, authorUsername, replies = [], url = '', sentimentContext = {}, hasImage = false, engagementLevel = 'unknown') {
+    // Detect language from replies
+    const detectedLanguage = this.detectReplyLanguage(replies);
+    logger.debug(`[AIReply] Detected language: ${detectedLanguage}`);
+
+    // Get sentiment guidance
+    const sentiment = sentimentContext.engagementStyle || 'neutral';
+    const conversationType = sentimentContext.conversationType || 'general';
+    const valence = sentimentContext.valence || 0;
+    const sarcasmScore = sentimentContext.sarcasm || 0;
+
+    // Generate sentiment-aware tone guidance
+    const toneGuidance = this.getSentimentGuidance(sentiment, conversationType, sarcasmScore);
+    const lengthGuidance = this.getReplyLengthGuidance(conversationType, valence);
+
+    // === STRATEGY SELECTION ===
+    // Use the improved strategy selector from twitter-reply-prompt.js
+    const strategyInstruction = getStrategyInstruction({
+      sentiment: valence &lt; -0.3 ? 'negative' : (valence > 0.3 ? 'positive' : 'neutral'),
+      type: conversationType,
+      engagement: engagementLevel
+    });
+
+    let prompt = `Tweet from @${authorUsername}:
+"${tweetText}"
+
+Tweet URL: ${url}
+
+`;
+
+    if (replies.length > 0) {
+      // Sort by length (longest first) and take top 30 for richer context
+      const sortedReplies = replies
+        .filter(r => r.text &amp;&amp; r.text.length > 5)
+        .sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))
+        .slice(0, 30);
+      
+      prompt += `Other replies to this tweet (in ${detectedLanguage}):
+ `;
+      sortedReplies.forEach((reply, i) => {
+        const author = reply.author || 'User';
+        const text = reply.text || reply.content || '';
+        prompt += `${i + 1}. @${author}: "${text.substring(0, 200)}"
+ `;
+      });
+      prompt += `
+ `;
+    }
+
+    prompt += `Language detected: ${detectedLanguage}
+
+IMPORTANT: Keep it SHORT. Maximum 1 short sentence. No paragraphs.
+
+Tweet Analysis:
+  - Sentiment: ${sentiment}
+  - Conversation Type: ${conversationType}
+  - Valence: ${valence > 0 ? 'Positive' : valence &lt; 0 ? 'Negative' : 'Neutral'}
+  ${hasImage ? '- [IMAGE DETECTED] This tweet contains an image. Analyze it and comment on visual details.' : ''}
+
+  TONE GUIDANCE: ${toneGuidance}
+  STRATEGY INSTRUCTION: ${strategyInstruction}
+LENGTH: MAXIMUM 1 SHORT SENTENCE
+
+Write ONE short reply (1 sentence max):`;
+
+    return {
+      text: prompt,
+      language: detectedLanguage,
+      replyCount: replies.length,
+      sentiment: {
+        engagementStyle: sentiment,
+        conversationType: conversationType,
+        valence,
+        sarcasmScore
+      }
+    };
+  }
+
+  getSentimentGuidance(sentiment, conversationType, sarcasmScore) {
+    const guidance = {
+      enthusiastic: 'Show genuine excitement and energy. Be warm and encouraging.',
+      humorous: 'Add a light, witty observation. Keep it fun and relatable.',
+      informative: 'Share a relevant fact, statistic, or related information.',
+      emotional: 'Express genuine emotion - why does this resonate with you?',
+      supportive: 'Show enthusiasm and encourage the author.',
+      thoughtful: 'Offer a considered perspective or ask a thoughtful question.',
+      critical: 'Present a thoughtful counterpoint or question respectfully.',
+      neutral: 'Ask a specific question or add a relevant observation.',
+      sarcastic: 'Use subtle irony, but keep it playful, never mean-spirited.',
+      ironic: 'Employ dry wit, but avoid being dismissive or condescending.',
+    };
+
+    if (sarcasmScore > 0.5 &amp;&amp; (sentiment === 'sarcastic' || sentiment === 'ironic')) {
+      return 'Match the ironic tone - subtle, playful, never mean-spirited.';
+    }
+
+    return guidance[sentiment] || guidance.neutral;
+  }
+
+  getReplyLengthGuidance(conversationType, valence) {
+    const valenceMultiplier = Math.abs(valence) > 0.5 ? 1.2 : 1.0;
+
+    const lengthGuides = {
+      'heated-debate': 'CRITICAL: Maximum 1 short sentence.',
+      'casual-chat': 'Maximum 1 short sentence.',
+      'announcement': 'Maximum 1 sentence.',
+      'question': 'One short question or 1 sentence.',
+      'humor': 'Maximum 1 punchy sentence.',
+      'news': 'Maximum 1 short sentence.',
+      'personal': 'Maximum 1-2 short sentences.',
+      'controversial': 'CRITICAL: Maximum 1 short sentence.',
+      'general': 'Maximum 1 short sentence.',
+    };
+
+    const baseGuidance = lengthGuides[conversationType] || lengthGuides.general;
+
+    if (valenceMultiplier > 1.0) {
+      return baseGuidance + ' Be more expressive given the emotional content.';
+    }
+
+    return baseGuidance;
+  }
+
+  /**
+    * Capture tweet context (text-based replies only - vision disabled)
+    * @param {object} page - Playwright page
+    * @param {string} tweetUrl - Current tweet URL
+    * @returns {Promise&lt;object>} Context object
+    */
+  async captureContext(page, tweetUrl = '') {
+    const context = {
+      url: tweetUrl,
+      screenshot: null, // Vision disabled - text focus only
+      replies: []
+    };
+
+    // Skip screenshot - not needed for text-based replies
+
+    try {
+      logger.debug(`[AIReply] Extracting replies with multiple strategies...`);
+
+      const extractedReplies = await this.extractRepliesMultipleStrategies(page);
+
+      // Extract up to 25 replies for consensus-based replies
+      context.replies = extractedReplies.slice(0, 50);
+      logger.debug(`[AIReply] Extracted ${context.replies.length} replies`);
+
+    } catch (error) {
+      logger.warn(`[AIReply] Reply extraction failed: ${error.message}`);
+    }
+
+    return context;
+  }
+
+/**
+     * Extract replies using multiple strategies for Twitter's complex DOM
+     * @param {object} page - Playwright page
+     * @returns {Promise&lt;Array>} Array of reply objects
+*/
+  async extractRepliesMultipleStrategies(page) {
+    const replies = [];
+    const seenTexts = new Set();
+
+    logger.debug(`[AIReply] Starting reply extraction...`);
+
+    // Step 1: Ensure we're on the tweet page and content is loaded
+    try {
+      await page.waitForSelector('[data-testid="tweetText"], article, [role="article"]', {
+        timeout: 5000
+      }).catch(() => {});
+      await page.waitForTimeout(mathUtils.randomInRange(500, 1000));
+      logger.debug(`[AIReply] Tweet page loaded`);
+    } catch (e) {
+      logger.debug(`[AIReply] Page load check: ${e.message}`);
+    }
+
+    // Helper functions (defined at top level for all strategies)
+    const uiPatterns = [
+      /keyboard shortcuts/i,
+      /press question mark/i,
+      /view keyboard/i,
+      /see new posts/i,
+      /view more/i,
+      /show more/i,
+      /read more/i,
+      /translated from/i,
+      /translate tweet/i,
+      /copy link/i,
+      /share tweet/i,
+      /report tweet/i,
+      /post.*see new/i,
+      /conversation/i,
+      /more options/i,
+      /view counts/i,
+      /highlight/i,
+      /bookmark tweet/i,
+      /like tweet/i,
+      /retweet/i,
+      /reply/i,
+      /^@\w+:\s*$/,
+      /^@\w+:[\s…]*$/,
+      /@\w+\s+@\w+\s+@\w+/
+    ];
+
+    const addReply = (author, text) => {
+      if (!text || text.length &lt; 3) return false;
+      const cleaned = text.replace(/^@\w+\s*/g, '').replace(/\n+/g, ' ').trim();
+
+      if (cleaned.length &lt; 2) return false;
+      if (cleaned.length > 280) return false;
+
+      if (cleaned.endsWith('...') || cleaned.endsWith('…') || cleaned.includes('Show less')) {
+        return false;
+      }
+
+      for (const pattern of uiPatterns) {
+        if (pattern.test(cleaned)) {
+          return false;
+        }
+      }
+
+      const mentionCount = (cleaned.match(/@\w+/g) || []).length;
+      const totalLength = cleaned.length;
+      if (mentionCount >= 2 &amp;&amp; mentionCount / totalLength > 0.5) {
+        return false;
+      }
+
+      const lowerKey = cleaned.toLowerCase();
+      if (seenTexts.has(lowerKey)) return false;
+      seenTexts.add(lowerKey);
+
+      replies.push({ author, text: cleaned.substring(0, 280) });
+      return true;
+    };
+
+    // Step 2: HUMAN-LIKE - Scroll to bottom FIRST to load all replies
+    try {
+      logger.debug(`[AIReply] Step 1: Scrolling to bottom to load replies...`);
+
+      // Scroll to bottom multiple times to trigger lazy loading (quicker)
+      for (let scroll = 0; scroll &lt; 6; scroll++) {
+        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        await page.waitForTimeout(mathUtils.randomInRange(150, 300));
+        logger.debug(`[AIReply] Scroll to bottom ${scroll + 1}/6`);
+      }
+
+      // Now scroll back up through the replies (fewer steps)
+      const scrollUpSteps = 15;
+      for (let i = 0; i &lt; scrollUpSteps; i++) {
+        // Extract visible replies at current scroll position
+        const visibleReplies = await page.evaluate(() => {
+          const found = [];
+          const elements = document.querySelectorAll('[data-testid="tweetText"]');
+          elements.forEach(el => {
+            const text = el.innerText?.trim();
+            if (text &amp;&amp; text.length > 3 &amp;&amp; text.length &lt; 300 &amp;&amp; text.includes('@')) {
+              found.push(text);
+            }
+          });
+          return found;
+        });
+
+        for (const text of visibleReplies) {
+          const mentionMatch = text.match(/@(\w+)/);
+          const author = mentionMatch ? mentionMatch[1] : 'unknown';
+          if (addReply(author, text)) {
+            logger.debug(`[AIReply] Extracted reply from @${author}: "${text.substring(0, 50)}..."`);
+          }
+        }
+
+        await page.evaluate((i) => {
+          const pos = (document.body.scrollHeight / 30) * i;
+          window.scrollTo(0, document.body.scrollHeight - pos);
+        }, i);
+        await page.waitForTimeout(mathUtils.randomInRange(100, 200));
+
+        if (replies.length >= 50) {
+          logger.debug(`[AIReply] Target reached: ${replies.length} replies`);
+          break;
+        }
+      }
+
+      // Final wait for all content
+      await page.waitForTimeout(mathUtils.randomInRange(800, 1200));
+
+    } catch (e) {
+      logger.debug(`[AIReply] Scroll extraction failed: ${e.message}`);
+    }
+
+    // Strategy 1: Use optimized selectors for current Twitter DOM
+    if (replies.length &lt; 50) {
+      try {
+        logger.debug(`[AIReply] Strategy 1: Querying optimized selectors...`);
+
+        const selectors = [
+          '[data-testid="tweetText"]',
+          '[class*="css-175oi2"]',
+          '[class*="tweetText"]',
+          '[class*="replyText"]',
+          'article [dir="auto"]',
+          '[role="article"] [dir="auto"]'
+        ];
+
+        for (const selector of selectors) {
+          try {
+            const elements = await page.$$(selector);
+            if (elements.length > 0) {
+              logger.debug(`[AIReply] Selector "${selector}": ${elements.length} elements`);
+
+              for (const el of elements.slice(0, 60)) {
+                try {
+                  const text = await el.innerText().catch(() => '');
+                  if (text &amp;&amp; text.includes('@') &amp;&amp; text.length > 3 &amp;&amp; text.length &lt; 300) {
+                    const mentionMatch = text.match(/@(\w+)/);
+                    const author = mentionMatch ? mentionMatch[1] : 'unknown';
+                    addReply(author, text);
+                  }
+                } catch {}
+              }
+            }
+          } catch (e) {
+            logger.debug(`[AIReply] Selector "${selector}" error: ${e.message}`);
+          }
+        }
+
+        if (replies.length >= 50) {
+          logger.debug(`[AIReply] Strategy 1 success: ${replies.length} replies`);
+          await this._returnToMainTweet(page);
+          return replies.slice(0, 50);
+        }
+      } catch (e) {
+        logger.debug(`[AIReply] Strategy 1 failed: ${e.message}`);
+      }
+    }
+
+    // Strategy 2: Extract from all article elements
+    if (replies.length &lt; 50) {
+      try {
+        logger.debug(`[AIReply] Strategy 2: Extracting from articles...`);
+
+        const articles = await page.$$('article');
+        logger.debug(`[AIReply] Found ${articles.length} articles`);
+
+        for (let i = 0; i &lt; Math.min(articles.length, 60); i++) {
+          try {
+            const article = articles[i];
+            const textEl = await article.$('[data-testid="tweetText"]');
+            if (textEl) {
+              const text = await textEl.innerText().catch(() => '');
+              addReply('unknown', text);
+            }
+          } catch {}
+        }
+
+        if (replies.length >= 50) {
+          logger.debug(`[AIReply] Strategy 2 success: ${replies.length} replies`);
+          await this._returnToMainTweet(page);
+          return replies.slice(0, 50);
+        }
+      } catch (e) {
+        logger.debug(`[AIReply] Strategy 2 failed: ${e.message}`);
+      }
+    }
+
+    // Strategy 3: Deep DOM extraction
+    if (replies.length &lt; 50) {
+      try {
+        logger.debug(`[AIReply] Strategy 3: Deep DOM extraction...`);
+
+        const bodyText = await page.evaluate(() => {
+          const textNodes = [];
+          const sections = document.querySelectorAll('[role="region"], main, [aria-label*="Timeline"]');
+
+          sections.forEach(section => {
+            const walker = document.createTreeWalker(
+              section,
+              NodeFilter.SHOW_TEXT,
+              null,
+              false
+            );
+
+            let node;
+            while ((node = walker.nextNode())) {
+              const text = node.textContent?.trim();
+              if (text &amp;&amp; text.length > 3 &amp;&amp; text.length &lt; 300 &amp;&amp; text.startsWith('@')) {
+                textNodes.push(text);
+              }
+            }
+          });
+
+          return [...new Set(textNodes)].slice(0, 100);
+        });
+
+        logger.debug(`[AIReply] Found ${bodyText.length} text nodes`);
+
+        for (const text of bodyText) {
+          const mentionMatch = text.match(/@(\w+)/);
+          const author = mentionMatch ? mentionMatch[1] : 'unknown';
+          addReply(author, text);
+        }
+      } catch (e) {
+        logger.debug(`[AIReply] Strategy 3 failed: ${e.message}`);
+      }
+    }
+
+    // Strategy 4: Final fallback
+    if (replies.length &lt; 50) {
+      try {
+        logger.debug(`[AIReply] Strategy 4: Final fallback...`);
+
+        const allMentions = await page.evaluate(() => {
+          const mentions = [];
+          const elements = document.querySelectorAll('*');
+
+          elements.forEach(el => {
+            const children = el.childNodes;
+            children.forEach(child => {
+              if (child.nodeType === Node.TEXT_NODE) {
+                const text = child.textContent?.trim();
+                if (text &amp;&amp; text.startsWith('@') &amp;&amp; text.length > 3 &amp;&amp; text.length &lt; 300) {
+                  mentions.push(text);
+                }
+              }
+            });
+          });
+
+          return [...new Set(mentions)].slice(0, 50);
+        });
+
+        logger.debug(`[AIReply] Found ${allMentions.length} mentions`);
+
+        for (const text of allMentions) {
+          const mentionMatch = text.match(/@(\w+)/);
+          const author = mentionMatch ? mentionMatch[1] : 'unknown';
+          addReply(author, text);
+        }
+      } catch (e) {
+        logger.debug(`[AIReply] Strategy 4 failed: ${e.message}`);
+      }
+    }
+
+    // Strategy 5: ULTRA AGGRESSIVE when few replies found
+    if (replies.length &lt; 10) {
+      logger.debug(`[AIReply] Strategy 5: ULTRA AGGRESSIVE - extracting any text from articles...`);
+
+      try {
+        const ultraAggressive = await page.evaluate(() => {
+          const found = [];
+
+          const articles = document.querySelectorAll('article');
+          articles.forEach(article => {
+            const text = article.innerText?.trim();
+            if (text &amp;&amp; text.length > 5 &amp;&amp; text.length &lt; 300 &amp;&amp;
+                !text.includes('http') &amp;&amp; !text.includes('www') &amp;&amp;
+                !text.includes('://') &amp;&amp;
+                !text.includes('keyboard') &amp;&amp;
+                !text.includes('shortcut') &amp;&amp;
+                !text.includes('View ') &amp;&amp;
+                !text.includes('Post ') &amp;&amp;
+                !text.includes('See ') &amp;&amp;
+                !text.includes('More ') &amp;&amp;
+                !text.includes('Menu')) {
+              const lines = text.split('\n').filter(l => l.trim().length > 3 &amp;&amp; l.trim().length &lt; 150);
+              found.push(...lines);
+            }
+          });
+
+          return [...new Set(found)].slice(0, 50);
+        });
+
+        logger.debug(`[AIReply] Strategy 5 found ${ultraAggressive.length} potential replies`);
+
+        for (const text of ultraAggressive) {
+          const cleaned = text.replace(/^@\w+\s*/g, '').trim();
+          if (cleaned.length > 3 &amp;&amp; cleaned.length &lt; 200) {
+            const mentionMatch = text.match(/@(\w+)/);
+            const author = mentionMatch ? mentionMatch[1] : 'ultra';
+            replies.push({ author, text: cleaned.substring(0, 280) });
+            logger.debug(`[AIReply] Added from Strategy 5: "${cleaned.substring(0, 40)}..."`);
+          }
+        }
+      } catch (e) {
+        logger.debug(`[AIReply] Strategy 5 failed: ${e.message}`);
+      }
+    }
+
+    // Return to main tweet
+    await this._returnToMainTweet(page);
+
+    logger.debug(`[AIReply] Total extracted: ${replies.length} replies`);
+    return replies.slice(0, 50);
+}
+
+  /**
+    * Return to main tweet after extracting replies
+    * @param {object} page - Playwright page
+    */
+  async _returnToMainTweet(page) {
+    try {
+      logger.debug(`[AIReply] Returning to main tweet...`);
+
+      // Wait a bit first
+      await page.waitForTimeout(mathUtils.randomInRange(500, 1000));
+
+      // Multiple approaches to return to top
+
+      // Approach 1: Press Home multiple times
+      for (let i = 0; i &lt; 3; i++) {
+        await page.keyboard.press('Home');
+        await page.waitForTimeout(mathUtils.randomInRange(200, 400));
+      }
+
+      // Approach 2: Scroll to top using JavaScript
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(mathUtils.randomInRange(300, 600));
+
+      // Approach 3: Also try focusing on main content
+      await page.evaluate(() => {
+        const main = document.querySelector('main, [role="main"]');
+        if (main) {
+          main.scrollTop = 0;
+        }
+      });
+
+      await page.waitForTimeout(mathUtils.randomInRange(400, 800));
+
+      // Verify we're near top
+      const scrollPos = await page.evaluate(() => window.scrollY);
+      if (scrollPos > 100) {
+        await page.evaluate(() => window.scrollTo(0, 0));
+      }
+
+      await page.waitForTimeout(mathUtils.randomInRange(300, 500));
+      logger.debug(`[AIReply] Returned to main tweet (scrollY: ${scrollPos})`);
+    } catch (e) {
+      logger.debug(`[AIReply] Return scroll failed: ${e.message}`);
+    }
+  }
+
+  /**
+    * Extract reply text and author from an article element
+    * @param {object} article - Playwright element
+    * @param {object} page - Playwright page
+    * @returns {Promise&lt;object>} Reply object with author and text
+    */
+  async extractReplyFromArticle(article, page) {
+    try {
+      // Get tweet text
+      const textEl = await article.$('[data-testid="tweetText"], [dir="auto"]');
+      if (!textEl) return null;
+
+      const text = await textEl.innerText().catch(() => '');
+      if (!text || text.length &lt; 5) return null;
+
+      // Extract author from article header (not from text content)
+      const author = await this.extractAuthorFromArticle(article);
+
+      // Clean up text - remove leading @mentions (keep other mentions in text)
+      let cleanedText = text;
+      const firstAtMatch = text.match(/^@\w+/);
+      if (firstAtMatch &amp;&amp; firstAtMatch[0] === author) {
+        // Remove author @mention from start
+        cleanedText = text.replace(/^@\w+\s*/, '').trim();
+      }
+      cleanedText = cleanedText.replace(/\n+/g, ' ').trim();
+
+      return { author, text: cleanedText.substring(0, 300) };
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+    * Extract author username from article header
+    * @param {object} article - Playwright article element
+    * @returns {Promise&lt;string>} Author username
+    */
+  async extractAuthorFromArticle(article) {
+    try {
+      // Look for author in article header - typically in a link with href="/username"
+      const headerLink = await article.$('a[href^="/"][role="link"], a[href*="/status/"]');
+      
+      if (headerLink) {
+        const href = await headerLink.getAttribute('href');
+        if (href &amp;&amp; href.startsWith('/')) {
+          const username = href.replace(/^\/|\/$/g, '').split('/')[0];
+          if (username &amp;&amp; username.length > 0 &amp;&amp; username.length &lt;= 20 &amp;&amp; !username.includes('?')) {
+            return username;
+          }
+        }
+      }
+
+      // Alternative: look for any link that looks like a username
+      const allLinks = await article.$$('a[href^="/"]');
+      for (const link of allLinks) {
+        const href = await link.getAttribute('href');
+        if (href &amp;&amp; href.startsWith('/') &amp;&amp; !href.includes('status')) {
+          const username = href.replace(/^\/|\/$/g, '').split('/')[0];
+          if (username &amp;&amp; username.length > 0 &amp;&amp; username.length &lt;= 20 &amp;&amp; /^[a-zA-Z0-9_]+$/.test(username)) {
+            return username;
+          }
+        }
+      }
+
+      return 'unknown';
+    } catch (error) {
+      return 'unknown';
+    }
+  }
+
+  /**
+    * Extract author username from a tweet text element
+    * @param {object} element - Playwright element
+    * @param {object} page - Playwright page
+    * @returns {Promise&lt;string>} Author username
+    */
+  async extractAuthorFromElement(element, page) {
+    try {
+      // Get the parent article to find author
+      const article = await element.$x('ancestor::article[1]');
+      if (article &amp;&amp; article[0]) {
+        return await this.extractAuthorFromArticle(article[0]);
+      }
+
+      // Fallback: Try to find @username in the text (less reliable for replies)
+      const mentionMatch = await element.evaluate((el) => {
+        const text = el.textContent || '';
+        const match = text.match(/@(\w{1,15})/);
+        return match ? match[1] : null;
+      });
+
+      if (mentionMatch) {
+        return mentionMatch;
+      }
+
+      return 'unknown';
+    } catch (error) {
+      return 'unknown';
+    }
+  }
+
+  /**
+   * Extract clean reply text from AI response
+   * @param {string} content - Raw AI response
+   * @returns {string|null} Clean reply or null
+   */
+  extractReplyFromResponse(content) {
+    if (!content) return null;
+
+    // Remove markdown code blocks
+    let cleaned = content
+      .replace(/```json?\s*/gi, '')
+      .replace(/```\s*/gi, '')
+      .trim();
+
+    // Remove any leading "Reply:" or similar prefixes
+    cleaned = cleaned
+      .replace(/^["']?(Reply|Response|Here|Output):?\s*/i, '')
+      .replace(/^["']|["']$/g, '');
+
+    // If it starts with { or [, try to parse as JSON
+    if (cleaned.startsWith('{') || cleaned.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(cleaned);
+        if (parsed.reply) {
+          cleaned = parsed.reply;
+        } else if (Array.isArray(parsed) &amp;&amp; parsed[0]) {
+          cleaned = typeof parsed[0] === 'string' ? parsed[0] : JSON.stringify(parsed[0]);
+        }
+      } catch (e) {
+        // Not JSON, continue with text
+      }
+    }
+
+    // Clean up whitespace
+    cleaned = cleaned
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .join(' ')
+      .trim();
+
+    // Remove broken/replacement characters and strip emojis
+    cleaned = this.cleanEmojis(cleaned);
+
+    // 30% chance to make all lowercase (human-like casual behavior)
+    if (Math.random() &lt; 0.30) {
+        cleaned = cleaned.toLowerCase();
+    }
+
+    // 80% chance to remove trailing period
+    if (Math.random() &lt; 0.80 &amp;&amp; cleaned.endsWith('.')) {
+        cleaned = cleaned.slice(0, -1);
+    }
+
+    return cleaned.length > 0 ? cleaned : null;
+  }
+
+  /**
+   * Clean emojis and broken characters from text
+   * @param {string} text - Text to clean
+   * @returns {string} Cleaned text
+   */
+  cleanEmojis(text) {
+    if (!text) return text;
+
+    // Remove replacement characters (broken emoji indicator)
+    let cleaned = text.replace(/[��]/g, '');
+
+    // Remove common broken emoji patterns
+    cleaned = cleaned.replace(/&lt;[a-z]+[^>]*>/gi, '');
+    cleaned = cleaned.replace(/&amp;[a-z]+;/gi, '');
+
+    // Remove emoji characters (unicode ranges)
+    cleaned = cleaned
+      .replace(/[\p{Extended_Pictographic}]/gu, '')
+      .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
+      .replace(/[\u{2600}-\u{26FF}]/gu, '')
+      .replace(/[\u{2700}-\u{27BF}]/gu, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    return cleaned;
+  }
+
+  /**
+   * Validate generated reply
+   * @param {string} reply - Generated reply
+   * @returns {object} { valid: boolean, reason?: string }
+   */
+  validateReply(reply) {
+    if (!reply || typeof reply !== 'string') {
+      return { valid: false, reason: 'empty' };
+    }
+
+    const trimmed = reply.trim();
+
+    if (trimmed.length &lt; this.config.MIN_REPLY_LENGTH) {
+      return { valid: false, reason: 'too_short' };
+    }
+
+    if (trimmed.length > this.config.MAX_REPLY_LENGTH) {
+      return { valid: false, reason: 'too_long' };
+    }
+
+    // Check for AI indicators
+    const aiIndicators = [
+      'as an ai', 'i am an ai', 'i\'m an ai', 'being an ai',
+      'language model', 'language model', 'artificial intelligence',
+      'i cannot', 'i can\'t', 'i do not', 'i don\'t',
+      'here is a', 'here\'s a', 'here are some'
+    ];
+
+    const lowerReply = reply.toLowerCase();
+    for (const indicator of aiIndicators) {
+      if (lowerReply.includes(indicator)) {
+        return { valid: false, reason: 'ai_indicator' };
+      }
+    }
+
+    return { valid: true };
+  }
+
+  /**
+   * Generate random fallback action when skipping AI reply
+   * @returns {object} Fallback action
+   */
+  randomFallback() {
+    const roll = Math.random();
+
+    // 30% no action, 35% bookmark, 35% like
+    if (roll &lt; 0.30) {
+      return {
+        action: 'none',
+        description: 'No action taken',
+        emoji: '➡️'
+      };
+    } else if (roll &lt; 0.65) {
+      return {
+        action: 'bookmark',
+        description: 'Bookmarked tweet',
+        emoji: '🔖'
+      };
+    } else {
+      return {
+        action: 'like',
+        description: 'Liked tweet',
+        emoji: '❤️'
+      };
+    }
+  }
+
+  /**
+   * Adaptive retry with exponential backoff and fallback strategies
+   * @param {Function} operation - Async operation to retry
+   * @param {object} options - Retry options
+   * @returns {Promise&lt;object>} Result with success flag and any error
+   */
+  async adaptiveRetry(operation, options = {}) {
+    const {
+      maxAttempts = 3,
+      baseDelay = 1000,
+      maxDelay = 10000,
+      backoffMultiplier = 2,
+      jitter = true,
+      fallbackOnFailure = null
+    } = options;
+
+    let lastError = null;
+
+    for (let attempt = 1; attempt &lt;= maxAttempts; attempt++) {
+      try {
+        const result = await operation(attempt);
+        if (result.success !== false) {
+          return { success: true, attempt, result };
+        }
+        lastError = result.error || 'Unknown error';
+        
+        // Calculate delay with exponential backoff
+        const delay = Math.min(baseDelay * Math.pow(backoffMultiplier, attempt - 1), maxDelay);
+        
+        // Add jitter if enabled
+        const finalDelay = jitter ? delay * (0.5 + Math.random() * 0.5) : delay;
+        
+        this.logger.debug(`[AIReply] Attempt ${attempt} failed: ${lastError}, retrying in ${Math.round(finalDelay)}ms...`);
+        await new Promise(resolve => setTimeout(resolve, finalDelay));
+        
+      } catch (error) {
+        lastError = error.message;
+        this.logger.warn(`[AIReply] Attempt ${attempt} exception: ${error.message}`);
+        
+        const delay = Math.min(baseDelay * Math.pow(backoffMultiplier, attempt - 1), maxDelay);
+        const finalDelay = jitter ? delay * (0.5 + Math.random() * 0.5) : delay;
+        
+        if (attempt &lt; maxAttempts) {
+          await new Promise(resolve => setTimeout(resolve, finalDelay));
+        }
+      }
+    }
+
+    // All attempts failed
+    this.logger.warn(`[AIReply] All ${maxAttempts} attempts failed: ${lastError}`);
+    
+    if (fallbackOnFailure !== null) {
+      return { success: false, fallback: fallbackOnFailure, error: lastError };
+    }
+    
+    return { success: false, error: lastError };
+  }
+
+  /**
+   * Quick fallback reply generator for when AI fails
+   * Generates a simple, safe response
+   */
+  generateQuickFallback(tweetText, authorUsername) {
+    const lowerTweet = tweetText.toLowerCase();
+    
+    // Question-based fallback patterns
+    if (lowerTweet.includes('?')) {
+      const responses = [
+        "Honestly still figuring that out myself 😅",
+        "That's the question isn't it",
+        "Wish I had a better answer",
+        "Same honestly",
+        "This is giving me questions"
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+    
+    // Positive sentiment patterns
+    if (lowerTweet.includes('love') || lowerTweet.includes('amazing') || lowerTweet.includes('great')) {
+      const responses = [
+        "This is so real",
+        "Exactly this",
+        "Can't argue with that",
+        "This hits different",
+        "So accurate"
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+    
+    // Negative/expressive patterns
+    if (lowerTweet.includes('hate') || lowerTweet.includes('worst') || lowerTweet.includes('why')) {
+      const responses = [
+        "It's giving rough",
+        "Too real",
+        "This is rough",
+        "Can't relate but also can",
+        "Oof"
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+    
+    // General reaction fallbacks
+    const generalResponses = [
+      "This is it, this is the tweet",
+      "Post made",
+      "Couldn't have said it better",
+      "Real recognize real",
+      "This one's for the algorithm",
+      "ngl this is true"
+    ];
+    
+    return generalResponses[Math.floor(Math.random() * generalResponses.length)];
+  }
+
+  /**
+   * Validate and sanitize reply with multiple checks
+   * @param {string} reply - Reply to validate
+   * @param {string} originalTweet - Original tweet for context
+   * @returns {object} Validation result
+   */
+  validateReplyAdvanced(reply, originalTweet = '') {
+    const result = this.validateReply(reply);
+    
+    if (!result.valid) {
+      return result;
+    }
+    
+    // Additional checks
+    
+    // Check for self-reference (AI admitting it's AI)
+    const aiPatterns = [
+      /as an ai/i,
+      /i am a language/i,
+      /i cannot/i,
+      /i'm an ai/i,
+      /being an ai/i,
+      /language model/i
+    ];
+    
+    for (const pattern of aiPatterns) {
+      if (pattern.test(reply)) {
+        return { valid: false, reason: 'ai_indicator' };
+      }
+    }
+    
+    // Check for template/generic responses
+    const genericPatterns = [
+      /^here'?s (a|my|your)/i,
+      /^below is/i,
+      /^as requested/i,
+      /^per your request/i
+    ];
+    
+    for (const pattern of genericPatterns) {
+      if (pattern.test(reply)) {
+        return { valid: false, reason: 'generic_template' };
+      }
+    }
+    
+    // Check for excessive length (more than needed)
+    if (reply.length > 250) {
+      this.logger.debug(`[AIReply] Long reply detected (${reply.length} chars), may need trimming`);
+    }
+    
+    // Check for very short replies
+    if (reply.length &lt; 5) {
+      this.logger.debug(`[AIReply] Very short reply detected (${reply.length} chars)`);
+    }
+    
+    // Check for mentions of the author (often weird in context)
+    if (originalTweet &amp;&amp; reply.includes('@')) {
+      const mentionMatch = originalTweet.match(/@(\w+)/);
+      if (mentionMatch &amp;&amp; reply.includes('@' + mentionMatch[1])) {
+        // It's okay to mention the author
+      } else if ((reply.match(/@\w+/g) || []).length > 1) {
+        // Too many mentions
+        return { valid: false, reason: 'excessive_mentions' };
+      }
+    }
+    
+    return { valid: true };
+  }
+
+  /**
+   * Clean and normalize reply text
+   * @param {string} reply - Raw reply
+   * @returns {string} Cleaned reply
+   */
+  normalizeReply(reply) {
+    if (!reply) return '';
+    
+    let cleaned = reply;
+    
+    // Remove leading/trailing whitespace and quotes (recursive)
+    cleaned = cleaned.trim().replace(/^["']+|["']+$/g, '');
+    
+    // Remove common prefixes
+    cleaned = cleaned.replace(/^(reply:|response:|my take:|answer:)/i, '').trim();
+    
+    // Remove any remaining markdown
+    cleaned = cleaned.replace(/```\w*\s*/g, '').replace(/```/g, '');
+    
+    // Normalize whitespace
+    cleaned = cleaned.replace(/\s+/g, ' ');
+    
+    // Remove broken characters
+    cleaned = cleaned.replace(/[�]/g, '');
+    
+    return cleaned.trim();
+  }
+
+  /**
+   * Get engine statistics
+   * @returns {object} Statistics
+   */
+  getStats() {
+    const total = this.stats.attempts;
+    return {
+      ...this.stats,
+      successRate: total > 0 ? ((this.stats.successes / total) * 100).toFixed(1) + '%' : '0%',
+      skipRate: total > 0 ? ((this.stats.skips / total) * 100).toFixed(1) + '%' : '0%'
+    };
+  }
+
+  /**
+   * Reset statistics
+   */
+  resetStats() {
+    this.stats = {
+      attempts: 0,
+      successes: 0,
+      skips: 0,
+      failures: 0,
+      safetyBlocks: 0
+    };
+  }
+
+  // ============================================================================
+  // HUMAN-LIKE REPLY EXECUTION (4 Methods)
+  // ============================================================================
+
+  /**
+   * Execute reply with human-like behavior
+   * Selects method randomly based on weights
+   */
+  async executeReply(page, replyText, options = {}) {
+    this.logger.info(`[AIReply] Executing reply (${replyText.length} chars)...`);
+
+    const human = new HumanInteraction(page);
+    human.debugMode = true;
+
+    // Define 4 reply methods with weights
+    const methods = [
+      { name: 'keyboard_shortcut', weight: 40, fn: () => this.replyMethodA_Keyboard(page, replyText, human) },
+      { name: 'button_click', weight: 35, fn: () => this.replyMethodB_Button(page, replyText, human) },
+      { name: 'tab_navigation', weight: 15, fn: () => this.replyMethodC_Tab(page, replyText, human) },
+      { name: 'right_click', weight: 10, fn: () => this.replyMethodD_RightClick(page, replyText, human) }
+    ];
+
+    const selected = human.selectMethod(methods);
+    this.logger.info(`[AIReply] Using method: ${selected.name}`);
+
+    try {
+      const result = await selected.fn();
+      return result;
+    } catch (error) {
+      this.logger.error(`[AIReply] Method ${selected.name} failed: ${error.message}`);
+      // Try fallback to button click
+      this.logger.warn(`[AIReply] Trying fallback: button_click`);
+      return await this.replyMethodB_Button(page, replyText, human);
+    }
+  }
+
+  /**
+   * Method A: Keyboard Shortcut (40%)
+   * Escape → R → [wait] → [type] → Ctrl+Enter
+   */
+   async replyMethodA_Keyboard(page, replyText, human) {
+     human.logStep('KEYBOARD_SHORTCUT', 'Starting');
+
+     // Check page state
+     const pageState = await page.evaluate(() => ({
+       url: window.location.href,
+       title: document.title,
+       activeTag: document.activeElement?.tagName,
+       activeAria: document.activeElement?.getAttribute('aria-label'),
+       hasComposer: !!document.querySelector('[data-testid="tweetTextarea_0"]')
+     }));
+     human.logStep('PAGE_STATE', `URL: ${pageState.url.substring(0, 50)}... Active: ${pageState.activeTag} aria="${pageState.activeAria}"`);
+
+     // Close any open menus
+     human.logStep('ESCAPE', 'Closing open menus');
+     await page.keyboard.press('Escape');
+     await new Promise(resolve => setTimeout(resolve, 300));
+
+     // Click on the page body first to ensure focus (using mouse for simple click)
+     await page.mouse.click(100, 100);
+     await new Promise(resolve => setTimeout(resolve, 200));
+
+     // Press R for reply
+     human.logStep('R_KEY', 'Opening reply composer');
+     await page.keyboard.press('r');
+     await new Promise(resolve => setTimeout(resolve, 2000));
+
+     // Verify composer opened
+     const verify = await human.verifyComposerOpen(page);
+     if (!verify.open) {
+       human.logStep('VERIFY_FAILED', 'Composer did not open');
+        // Try clicking on the page body again and pressing R
+        await page.mouse.click(100, 100);
+        await new Promise(resolve => setTimeout(resolve, 500));
+       await page.keyboard.press('r');
+       await new Promise(resolve => setTimeout(resolve, 1500));
+       const verify2 = await human.verifyComposerOpen(page);
+       if (!verify2.open) {
+         human.logStep('VERIFY_FAILED_2', 'Composer still not open after retry');
+         return { success: false, reason: 'composer_not_open', method: 'keyboard_shortcut' };
+       }
+       return { success: true, method: 'keyboard_shortcut', selector: verify2.selector };
+     }
+
+     // Type reply
+     const composer = page.locator(verify.selector).first();
+     await human.typeText(page, replyText, composer);
+
+     // Post with Ctrl+Enter
+     const postResult = await human.postTweet(page);
+
+     return {
+       success: postResult.success,
+       reason: postResult.reason || 'posted',
+       method: 'keyboard_shortcut',
+       selector: verify.selector
+     };
+   }
+
+   /**
+    * Method B: Button Click (35%)
+    * Scroll to top → Click main tweet → Find reply → Scroll → Fixation → Click → [type] → Ctrl+Enter
+    */
+   async replyMethodB_Button(page, replyText, human) {
+     human.logStep('BUTTON_CLICK', 'Starting');
+
+     // CRITICAL: Ensure we're at the TOP of the tweet page
+     human.logStep('SCROLL_TOP', 'Scrolling to top of tweet page');
+     await page.evaluate(() => window.scrollTo(0, 0));
+     await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Click on the main tweet text area to ensure we're focused on it
+      human.logStep('FOCUS_MAIN', 'Clicking main tweet to ensure focus');
+      const mainTweetSelectors = [
+        '[data-testid="tweetText"]',
+        '[class*="tweetText"]',
+        'article[role="article"] [dir="auto"]'
+      ];
+
+      let mainTweetClicked = false;
+      for (const selector of mainTweetSelectors) {
+        try {
+          const el = page.locator(selector).first();
+          if (await el.count() > 0) {
+            const success = await human.safeHumanClick(el, 'Main Tweet - Focus', 3);
+            if (success) {
+              await new Promise(resolve => setTimeout(resolve, 300));
+              mainTweetClicked = true;
+              human.logStep('FOCUS_MAIN', `Clicked with ${selector}`);
+              break;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (!mainTweetClicked) {
+        human.logStep('FOCUS_MAIN', 'Could not click main tweet, continuing anyway');
+      }
+
+     // Random delay before action
+     await human.hesitation(500, 1500);
+
+     // Find reply button - prioritize replyEdge (usually on main tweet)
+     human.logStep('FIND_BUTTON', 'Locating reply button on main tweet');
+     const replyBtnSelectors = [
+       '[data-testid="replyEdge"]',  // Edge reply button (definitely on main tweet)
+       '[data-testid="reply"]'       // Main reply button
+     ];
+
+     const btnResult = await human.findElement(page, replyBtnSelectors, { visibleOnly: true });
+     if (!btnResult.element) {
+       human.logStep('FIND_FAILED', 'Reply button not found');
+       return { success: false, reason: 'button_not_found', method: 'button_click' };
+     }
+
+     // Verify button is in the TOP half of viewport (main tweet area)
+     try {
+       const btnBox = await btnResult.element.boundingBox();
+       const viewportHeight = await page.evaluate(() => window.innerHeight);
+
+       if (btnBox &amp;&amp; btnBox.y > viewportHeight * 0.5) {
+         human.logStep('WARNING', `Button at y=${Math.round(btnBox.y)} > 50% of viewport - might be on reply thread`);
+         // Scroll to top and retry
+         await page.evaluate(() => window.scrollTo(0, 0));
+         await new Promise(resolve => setTimeout(resolve, 1000));
+
+         const btnResult2 = await human.findElement(page, replyBtnSelectors, { visibleOnly: true });
+         if (btnResult2.element) {
+           human.logStep('RETRY', 'Found button after scroll to top');
+         }
+       } else {
+         human.logStep('POSITION_OK', `Button at y=${Math.round(btnBox.y)} (top half of viewport)`);
+       }
+     } catch (e) {
+       human.logStep('POSITION_CHECK', `Could not check position: ${e.message}`);
+     }
+
+     // Scroll to make visible
+     human.logStep('SCROLL', 'Making button visible');
+     try {
+       await btnResult.element.scrollIntoViewIfNeeded();
+     } catch (e) {}
+
+    // Target fixation
+    await human.fixation(300, 800);
+
+    // Micro movement
+    await human.microMove(page, 20);
+
+    // Click using human-like interaction with retry
+    human.logStep('CLICK', `Clicking with ${btnResult.selector}`);
+    const clickSuccess = await human.safeHumanClick(btnResult.element, 'Reply Button', 3);
+    if (!clickSuccess) {
+      human.logStep('CLICK_FAILED', 'humanClick failed after retries, trying force click');
+      await btnResult.element.click({ force: true });
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Verify composer
+    const verify = await human.verifyComposerOpen(page);
+    if (!verify.open) {
+      return { success: false, reason: 'composer_not_open', method: 'button_click' };
+    }
+
+    // Type
+    const composer = page.locator(verify.selector).first();
+    await human.typeText(page, replyText, composer);
+
+    // Post
+    const postResult = await human.postTweet(page);
+
+    return {
+      success: postResult.success,
+      reason: postResult.reason || 'posted',
+      method: 'button_click',
+      selector: verify.selector
+    };
+  }
+
+  /**
+   * Method C: Tab Navigation (15%)
+   * Tab × N → Find reply → Enter → [type] → Ctrl+Enter
+   */
+  async replyMethodC_Tab(page, replyText, human) {
+    human.logStep('TAB_NAVIGATION', 'Starting');
+
+    // Press Tab multiple times to focus on reply button
+    human.logStep('TAB', 'Tabbing to find reply button');
+    let tabCount = 0;
+    const maxTabs = 20;
+
+    for (let i = 0; i &lt; maxTabs; i++) {
+      await page.keyboard.press('Tab');
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      // Check if we can find the reply button focused
+      const focused = await page.evaluate(() => {
+        const el = document.activeElement;
+        return {
+          tag: el?.tagName,
+          aria: el?.getAttribute('aria-label'),
+          role: el?.getAttribute('role')
+        };
+      });
+
+      tabCount++;
+
+      // Check if this looks like a reply button - STRICT check
+      const ariaLower = focused.aria?.toLowerCase() || '';
+      const isReplyButton = 
+        (ariaLower.includes('reply') &amp;&amp; !ariaLower.includes('more') &amp;&amp; !ariaLower.includes('replying')) ||
+        (focused.tag === 'BUTTON' &amp;&amp; ariaLower.includes('reply'));
+      
+      if (isReplyButton) {
+        human.logStep('TAB_SUCCESS', `Found reply button at tab ${tabCount}: aria="${focused.aria}"`);
+        break;
+      } else if (tabCount % 5 === 0) {
+        human.logStep('TAB_DEBUG', `Tab ${tabCount}: ${focused.tag} aria="${focused.aria}"`);
+      }
+    }
+
+    // Small hesitation before pressing Enter
+    await human.hesitation(200, 500);
+
+     // Press Enter
+     human.logStep('ENTER', 'Pressing Enter');
+     await page.keyboard.press('Enter');
+     await new Promise(resolve => setTimeout(resolve, 1500));
+
+     // Verify
+     const verify = await human.verifyComposerOpen(page);
+     if (!verify.open) {
+       human.logStep('ENTER_FAILED', 'Composer did not open with Enter, trying R key');
+       // Fallback: try pressing R
+       await page.keyboard.press('Escape');
+       await new Promise(resolve => setTimeout(resolve, 300));
+       await page.keyboard.press('r');
+       await new Promise(resolve => setTimeout(resolve, 2000));
+       const verify2 = await human.verifyComposerOpen(page);
+       if (!verify2.open) {
+         return { success: false, reason: 'composer_not_open', method: 'tab_navigation', tabCount };
+       }
+       // Continue with the opened composer
+       const composer = page.locator(verify2.selector).first();
+       await human.typeText(page, replyText, composer);
+       const postResult = await human.postTweet(page);
+       return {
+         success: postResult.success,
+         reason: postResult.reason || 'posted',
+         method: 'tab_navigation',
+         tabCount
+       };
+     }
+
+     // Type
+     const composer = page.locator(verify.selector).first();
+     await human.typeText(page, replyText, composer);
+
+     // Post
+     const postResult = await human.postTweet(page);
+
+     return {
+       success: postResult.success,
+       reason: postResult.reason || 'posted',
+       method: 'tab_navigation',
+       tabCount
+     };
+   }
+
+  /**
+   * Method D: Right-Click Context (10%)
+   * Hover → Right-click → Move → Click → [type] → Ctrl+Enter
+   */
+  async replyMethodD_RightClick(page, replyText, human) {
+    human.logStep('RIGHT_CLICK', 'Starting');
+
+    // Find reply button first
+    const replyBtnSelectors = [
+      '[data-testid="reply"]',
+      '[aria-label="Reply"]'
+    ];
+
+    const btnResult = await human.findElement(page, replyBtnSelectors, { visibleOnly: true });
+    if (!btnResult.element) {
+      human.logStep('FIND_FAILED', 'Reply button not found');
+      return { success: false, reason: 'button_not_found', method: 'right_click' };
+    }
+
+    // Get button position
+    const btnPos = await page.evaluate((sel) => {
+      const el = document.querySelector(sel);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+      }
+      return null;
+    }, btnResult.selector);
+
+    if (btnPos) {
+      // Move to button
+      human.logStep('MOVE', 'Moving to reply button');
+      await page.mouse.move(btnPos.x, btnPos.y);
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+
+    // Right-click
+    human.logStep('RIGHT_CLICK', 'Right-clicking reply button');
+    await page.mouse.click(btnPos?.x || 0, btnPos?.y || 0, { button: 'right' });
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Check if context menu opened
+    const contextMenuOpen = await page.locator('[role="menuitem"], [role="menu"]').count() > 0;
+    human.logStep('CONTEXT_MENU', contextMenuOpen ? 'Opened' : 'Not opened');
+
+    // Try clicking Reply from menu if visible
+    if (contextMenuOpen) {
+      const replyOption = page.locator('text=Reply', '[aria-label*="Reply"]').first();
+      if (await replyOption.count() > 0) {
+        human.logStep('MENU_CLICK', 'Clicking Reply from menu');
+        await human.safeHumanClick(replyOption, 'Reply Menu Option', 3);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    } else {
+      // Fallback to left click
+      human.logStep('LEFT_CLICK', 'Left-clicking as fallback');
+      if (btnPos) {
+        await page.mouse.click(btnPos.x, btnPos.y);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    // Verify
+    const verify = await human.verifyComposerOpen(page);
+    if (!verify.open) {
+      return { success: false, reason: 'composer_not_open', method: 'right_click' };
+    }
+
+    // Type
+    const composer = page.locator(verify.selector).first();
+    await human.typeText(page, replyText, composer);
+
+    // Post
+    const postResult = await human.postTweet(page);
+
+    return {
+      success: postResult.success,
+      reason: postResult.reason || 'posted',
+      method: 'right_click'
+    };
+  }
+}
+
+export default AIReplyEngine;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Feb 14 2026 11:39:38 GMT+0700 (Indochina Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

@@ -7,9 +7,9 @@
 import { createLogger } from './logger.js';
 import { getSettings } from './configLoader.js';
 import { exec } from 'child_process';
-import { promisify } from 'util';
+// import { promisify } from 'util';
 
-const execAsync = promisify(exec);
+// const execAsync = promisify(exec);
 const logger = createLogger('localLLM.js');
 
 /**
@@ -55,8 +55,16 @@ async function startLocalLLM() {
 
         if (provider === 'ollama') {
             // Try starting standard Ollama
-            logger.info('[LocalLLM] Attempting to start Ollama server...');
+            logger.info(`[LocalLLM] Attempting to start Ollama server and load model ${model}...`);
+            // 'ollama serve' starts the background service
+            // 'ollama run model' ensures the service is running AND the model is loaded/pulled
             exec('start /B ollama serve', { windowsHide: true });
+            
+            // Give the server a moment to start before asking for the model
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // This will pull if missing and load into memory
+            exec(`start /B ollama run ${model} ""`, { windowsHide: true });
         } else {
             // Docker model fallback
             logger.info(`[LocalLLM] Attempting to start docker model: ${model}`);

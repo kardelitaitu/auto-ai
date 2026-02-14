@@ -18,8 +18,8 @@ class DebugProfileFactory {
         const type = "DEBUG_TESTER";
 
         // Very short reading phase to trigger actions quickly (10s - 30s)
-        const baseDuration = 10000;
-        const durationBuffer = 20000;
+        // const baseDuration = 10000;
+        // const durationBuffer = 20000;
 
         // Fast scrolling to reach triggers
         const meanPause = 1000;

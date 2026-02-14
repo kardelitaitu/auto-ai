@@ -28,7 +28,7 @@ function extractUsername(tweetUrl) {
         if (pathParts.length >= 1) {
             return '@' + pathParts[0];
         }
-    } catch (e) {
+    } catch (_e) {
         return '(unknown)';
     }
     return '(unknown)';
@@ -36,12 +36,15 @@ function extractUsername(tweetUrl) {
 
 /**
  * Executes the Follow+Like+Retweet Task.
- * @param {import('playwright').Page} page
+ * @param {object} page - The Playwright page instance.
  * @param {object} payload
  * @param {string} payload.browserInfo
+ * @param {number} [payload.taskTimeoutMs]
+ * @param {string} [payload.profileId]
+ * @param {string} [payload.targetUrl]
  */
 export default async function twitterFollowLikeRetweetTask(page, payload) {
-    const startTime = process.hrtime.bigint();
+    const _startTime = process.hrtime.bigint();
     const browserInfo = payload.browserInfo || "unknown_profile";
     const logger = createLogger(`twitterFollowLikeRetweet [${browserInfo}]`);
     const taskTimeoutMs = payload.taskTimeoutMs || DEFAULT_TASK_TIMEOUT_MS;
@@ -57,10 +60,10 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                 // 1. Initialize Agent
                 // Allow manual profile override if passed in payload, else use starter
                 let profile;
-                if (payload.profileId) {
+                if (payload && payload.profileId) {
                     try {
                         profile = profileManager.getById(payload.profileId);
-                    } catch (e) {
+                    } catch (_e) {
                         profile = profileManager.getStarter();
                     }
                 } else {
@@ -90,7 +93,7 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                 // 5. Navigation with Advanced Referrer Engine
                 logger.info(`[followLikeRetweet] Initializing Referrer Engine...`);
 
-                const targetUrl = payload.targetUrl || TARGET_TWEET_URL;
+                const targetUrl = (payload && payload.targetUrl) || TARGET_TWEET_URL;
 
                 if (!targetUrl || targetUrl.length < 5) {
                     logger.error(`[followLikeRetweet] No targetUrl provided in payload and TARGET_TWEET_URL is invalid.`);
@@ -102,7 +105,7 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
 
                 // Manual Override Logic: 20% chance to use MANUAL_REFERRER if set
                 // (Only if MANUAL_REFERRER is defined)
-                if (MANUAL_REFERRER && MANUAL_REFERRER.length > 0 && Math.random() < 0.20) {
+                if (typeof MANUAL_REFERRER === 'string' && MANUAL_REFERRER !== '' && Math.random() < 0.20) {
                     logger.info(`[followLikeRetweet][Anti-Sybil] Using Manual Referrer (20% chance): ${MANUAL_REFERRER}`);
                     ctx = {
                         strategy: 'manual_override',
@@ -136,7 +139,7 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                     await page.waitForSelector('article[data-testid="tweet"]', { state: 'visible', timeout: 60000 });
                 } catch (e) {
                     logger.warn(`[followLikeRetweet] Timed out waiting for tweet selector. Page might be incomplete.`);
-                    throw new Error('Fatal: Tweet selector timeout - likely stuck or no internet');
+                    throw new Error('Fatal: Tweet selector timeout - likely stuck or no internet', { cause: e });
                 }
 
                 // 6. Simulate Reading (Tweet Thread)
@@ -235,12 +238,12 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                     const postFollowDelay = mathUtils.randomInRange(2000, 4000);
                     logger.info(`[followLikeRetweet] Lingering on profile for ${(postFollowDelay / 1000).toFixed(1)}s...`);
                     await page.waitForTimeout(postFollowDelay);
-                } else if (followResult.fatal) {
+                } else if (!followResult.success && typeof followResult.reason === 'string' && followResult.reason.includes('reload')) {
                     // If follow failed fatally, we might want to throw error, or just continue to like/retweet?
                     // twitterFollow task throws error. But here we have potential Partial Success (Follow fail, but Like might work).
                     // However, if follow failed fatally (e.g. reload failed), page is likely broken.
                     // Let's log heavily but TRY to continue to return to tweet.
-                    logger.warn(`[followLikeRetweet] ⚠️ Follow failed fatally: ${followResult.reason}. Attempting to continue...`);
+                    logger.warn(`[followLikeRetweet] ⚠️ Follow failed fatally (reload): ${followResult.reason}. Attempting to continue...`);
                 }
 
 
@@ -258,8 +261,8 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                     try {
                         await page.goBack();
                         await page.waitForTimeout(mathUtils.randomInRange(2000, 4000));
-                    } catch (e2) {
-                        logger.error(`[followLikeRetweet] Navigation back failed completely. Logic may drift.`);
+                } catch (e2) {
+                    logger.error(`[followLikeRetweet] Navigation back failed completely: ${e2.message}. Logic may drift.`);
                     }
                 }
 
@@ -411,8 +414,9 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
             logger.error(`[followLikeRetweet] Error: ${error.message}`, error);
         }
     } finally {
-        if (agent && agent.sessionStart) {
-            const duration = ((Date.now() - agent.sessionStart) / 1000 / 60).toFixed(1);
+        const sessionStart = (agent && typeof agent === 'object' && agent['sessionStart']) ? agent['sessionStart'] : null;
+        if (sessionStart) {
+            const duration = ((Date.now() - sessionStart) / 1000 / 60).toFixed(1);
             logger.info(`[Metrics] Task Finished. Duration: ${duration}m`);
         }
 
@@ -427,7 +431,7 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
 
 /**
  * Applies anti-detect and humanization patches.
- * @param {import('playwright').Page} page
+ * @param {object} page - The Playwright page instance.
  * @param {object} logger
  */
 async function applyHumanizationPatch(page, logger) {

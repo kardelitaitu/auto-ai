@@ -118,11 +118,22 @@ export class AsyncQueue {
             });
 
             // Process task with timeout
+            let timeoutId;
+            const timeoutPromise = new Promise((_, reject) => {
+                timeoutId = setTimeout(() => {
+                    logger.warn(`[AsyncQueue] ⚠ Task timeout reached: ${item.timeout}ms for ${item.taskName}`);
+                    reject(new Error('timeout'));
+                }, item.timeout);
+            });
+
             try {
                 const result = await Promise.race([
                     this._executeTask(item),
-                    this._createTimeout(item)
+                    timeoutPromise
                 ]);
+                
+                // Clear timeout since task completed successfully
+                clearTimeout(timeoutId);
 
                 const processingTime = Date.now() - startTime;
                 this.stats.totalCompleted++;
@@ -318,7 +329,7 @@ export class DiveQueue extends AsyncQueue {
      * Record engagement action (synchronous - optimized for performance)
      */
     recordEngagement(action) {
-        if (this.engagementCounters.hasOwnProperty(action)) {
+        if (Object.prototype.hasOwnProperty.call(this.engagementCounters, action)) {
             const limit = this.engagementLimits[action] ?? Infinity;
             const current = this.engagementCounters[action];
 
@@ -375,22 +386,29 @@ export class DiveQueue extends AsyncQueue {
                 const divePromise = diveFn();
 
                 // Create timeout promise with correct closure variables
+                let timeoutId;
                 const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => {
+                    timeoutId = setTimeout(() => {
                         logger.warn(`[DiveQueue] Dive timeout reached: ${timeout}ms for ${taskName}`);
                         reject(new Error('dive_timeout'));
                     }, timeout);
                 });
 
-                const result = await Promise.race([divePromise, timeoutPromise]);
+                try {
+                    const result = await Promise.race([divePromise, timeoutPromise]);
+                    clearTimeout(timeoutId); // Clear timeout on success
 
-                logger.debug(`[DiveQueue] Dive function completed: ${taskName}`);
-                return {
-                    success: true,
-                    result,
-                    fallbackUsed: false,
-                    taskName
-                };
+                    logger.debug(`[DiveQueue] Dive function completed: ${taskName}`);
+                    return {
+                        success: true,
+                        result,
+                        fallbackUsed: false,
+                        taskName
+                    };
+                } catch (error) {
+                    clearTimeout(timeoutId); // Clear timeout on error
+                    throw error;
+                }
 
             } catch (error) {
                 logger.warn(`[DiveQueue] Dive failed: ${error.message}, checking fallback...`);
@@ -471,13 +489,6 @@ export class DiveQueue extends AsyncQueue {
         logger.info(`[DiveQueue] Engagement counters reset`);
     }
 
-    /**
-     * Update engagement limits at runtime
-     */
-    updateEngagementLimits(newLimits) {
-        this.engagementLimits = { ...this.engagementLimits, ...newLimits };
-        logger.info(`[DiveQueue] Updated engagement limits: ${JSON.stringify(this.engagementLimits)}`);
-    }
 }
 
 export default AsyncQueue;

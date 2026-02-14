@@ -25,6 +25,7 @@ class SessionManager {
     this.nextSessionId = 1;
     this.sessionTimeoutMs = options.sessionTimeoutMs || 30 * 60 * 1000;
     this.cleanupIntervalMs = options.cleanupIntervalMs || 5 * 60 * 1000;
+    this.workerLockTimeoutMs = options.workerLockTimeoutMs || 10000;
     this.concurrencyPerBrowser = 1;
     this.cleanupInterval = null;
     
@@ -134,43 +135,48 @@ class SessionManager {
     }
     
     const lockPromise = this.workerLocks.get(sessionId);
-    
-    // Create a new promise that waits for the lock and then processes
-    const result = await new Promise((resolve) => {
-      lockPromise.then(async () => {
-        // We hold the lock - proceed with atomic operation
-        const session = this.sessions.find(s => s.id === sessionId);
-        if (!session) {
-          resolve(null);
-          return;
-        }
 
-        // Find first idle worker
-        const worker = session.workers.find(w => w.status === 'idle');
-        if (worker) {
-          // Double-check worker is still idle (defensive programming)
-          if (session.workers.find(w => w.id === worker.id && w.status === 'idle')) {
-            worker.status = 'busy';
-            worker.occupiedAt = Date.now();
-            worker.occupiedBy = this._getCurrentExecutionContext();
-            
-            // Track occupancy for debugging
-            const occupancyKey = `${sessionId}:${worker.id}`;
-            this.workerOccupancy.set(occupancyKey, {
-              startTime: Date.now(),
-              context: worker.occupiedBy
-            });
-            
-            logger.debug(`[ATOMIC] Occupied worker ${worker.id} in session ${sessionId} (context: ${worker.occupiedBy})`);
-            resolve(worker);
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Worker lock timeout')), this.workerLockTimeoutMs || 10000);
+    });
+
+    // Create a new promise that waits for the lock and then processes
+    const result = await Promise.race([
+      new Promise((resolve) => {
+        lockPromise.then(() => {
+          const session = this.sessions.find(s => s.id === sessionId);
+          if (!session) {
+            resolve(null);
             return;
           }
-        }
 
-        logger.debug(`[ATOMIC] No idle workers available in session ${sessionId}`);
-        resolve(null);
-      });
-    });
+          const worker = session.workers.find(w => w.status === 'idle');
+          if (worker) {
+            if (session.workers.find(w => w.id === worker.id && w.status === 'idle')) {
+              worker.status = 'busy';
+              worker.occupiedAt = Date.now();
+              worker.occupiedBy = this._getCurrentExecutionContext();
+              
+              const occupancyKey = `${sessionId}:${worker.id}`;
+              this.workerOccupancy.set(occupancyKey, {
+                startTime: Date.now(),
+                context: worker.occupiedBy
+              });
+              
+              logger.debug(`[ATOMIC] Occupied worker ${worker.id} in session ${sessionId} (context: ${worker.occupiedBy})`);
+              resolve(worker);
+              return;
+            }
+          }
+
+          logger.debug(`[ATOMIC] No idle workers available in session ${sessionId}`);
+          resolve(null);
+        }).catch(() => {
+          resolve(null);
+        });
+      }),
+      timeoutPromise
+    ]);
     
     return result;
   }
@@ -366,6 +372,7 @@ class SessionManager {
       const sessionAge = now - session.lastActivity;
       if (sessionAge > this.sessionTimeoutMs) {
         logger.info(`Session ${session.id} timed out after ${Math.round(sessionAge / 1000)}s. Removing...`);
+        this.closeManagedPages(session);
         this.closeSessionBrowser(session);
         return false;
       }
@@ -489,7 +496,7 @@ class SessionManager {
         session.managedPages.clear();
       }
     } catch (error) {
-      logger.error(`Error closing managed pages for session ${session.id}:`, error.message);
+      logger.error(`Error closing managed pages for session ${session.id}:`, error);
     }
   }
 

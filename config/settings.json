@@ -80,12 +80,12 @@
       "timeout": 120000
     },
     "local": {
-      "enabled": false,
+      "enabled": true,
       "provider": "ollama",
       "endpoint": "http://localhost:11434",
-      "model": "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q5_K_M",
-      "textModel": "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q5_K_M",
-      "timeout": 60000,
+      "model": "hermes3:8b",
+      "textModel": "hermes3:8b",
+      "timeout": 120000,
       "retryAttempts": 2,
       "warmup": true
     },
@@ -186,7 +186,7 @@
     "cleanupIntervalMs": 300000
   },
   "open_router_free_api": {
-    "enabled": true,
+    "enabled": false,
     "api_keys": [
       "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",
       "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",

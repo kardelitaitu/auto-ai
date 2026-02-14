@@ -5,7 +5,7 @@
 
 /**
  * Applies anti-detect and humanization patches to the page context.
- * @param {import('playwright').Page} page - The Playwright page instance.
+ * @param {object} page - The Playwright page instance.
  * @param {object} logger - The logger instance.
  */
 export async function applyHumanizationPatch(page, logger) {
@@ -22,12 +22,14 @@ export async function applyHumanizationPatch(page, logger) {
             else if (ua.includes('Linux')) platform = 'Linux x86_64';
 
             Object.defineProperty(navigator, 'platform', { get: () => platform });
-        } catch (e) { }
+        } catch (_e) { // Ignore error
+        }
 
         // 2. API Leak: Hide WebDriver
         try {
             Object.defineProperty(navigator, 'webdriver', { get: () => false });
-        } catch (e) { }
+        } catch (_e) { // Ignore error
+        }
 
         // 3. Canvas Fingerprint Noise
         try {
@@ -45,7 +47,8 @@ export async function applyHumanizationPatch(page, logger) {
                 }
                 return originalToDataURL.apply(this, args);
             };
-        } catch (e) { }
+        } catch (_e) { // Ignore error
+        }
 
 
 
@@ -63,7 +66,8 @@ export async function applyHumanizationPatch(page, logger) {
                 }
                 return originalAddEventListener.call(this, type, listener, options);
             };
-        } catch (e) { }
+        } catch (_e) { // Ignore error
+        }
     });
 
     if (logger) logger.info('[HumanizationPatch] Scripts injected.');

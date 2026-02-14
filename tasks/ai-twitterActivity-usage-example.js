@@ -9,6 +9,8 @@
 // STEP 1: Import the utility functions
 // ============================================================================
 import { replyMethods, quoteMethods, executeReplyMethod, executeQuoteMethod } from '../utils/twitter-interaction-methods.js';
+import { createLogger } from '../utils/logger.js';
+import HumanInteraction from '../utils/human-interaction.js';
 
 // ============================================================================
 // STEP 2: Example usage in your task

@@ -164,7 +164,7 @@ async function getScrollPosition(page) {
 async function scrollUntil(page, conditionFn, options = {}) {
     const {
         maxScrolls = 20,
-        delay = 1000
+        delay: _delay = 1000
     } = options;
 
     for (let i = 0; i < maxScrolls; i++) {

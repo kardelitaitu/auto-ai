@@ -12,7 +12,7 @@ const logger = createLogger('screenshot.js');
 
 /**
  * Captures a screenshot of the current page.
- * @param {import('playwright').Page} page - The Playwright page instance.
+ * @param {object} page - The Playwright page instance.
  * @param {string} sessionName - The session identifier (e.g., 'session-1').
  * @param {string} suffix - Optional suffix to append after session name (e.g., 'Task-1').
  * @returns {Promise<string|null>} The absolute path to the screenshot, or null if failed.

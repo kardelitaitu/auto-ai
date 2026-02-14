@@ -31,8 +31,12 @@ export default defineConfig({
     poolOptions: {
       threads: {
         singleThread: false,
+        minThreads: 16,
+        maxThreads: 28, 
+        useAtomics: true, // Speeds up communication between threads
       },
     },
+    isolate: false,
   },
   
   // Resolve configuration for module resolution with aliases

@@ -29,7 +29,7 @@ async function check(port, path) {
             });
         });
 
-        req.on('error', (e) => {
+        req.on('error', () => {
             resolve(false);
         });
 

@@ -129,7 +129,7 @@ export class AIContextEngine {
         const elements = document.querySelectorAll('[data-testid], [aria-label*="like"], [aria-label*="retweet"], [aria-label*="reply"], [aria-label*="view"]');
         return Array.from(elements).map(el => ({
           aria: el.getAttribute('aria-label') || '',
-          text: el.innerText || ''
+          text: el instanceof HTMLElement ? el.innerText : ''
         }));
       });
 
@@ -290,7 +290,7 @@ export class AIContextEngine {
           for (const selector of selectors) {
             const elements = document.querySelectorAll(selector);
             elements.forEach(el => {
-              const text = el.innerText?.trim();
+              const text = el instanceof HTMLElement ? el.innerText.trim() : '';
               // Relaxed requirement: allow any meaningful text, not just @mentions
               // This helps with Korean/Japanese tweets that may not use @mentions
               if (text && text.length > 3 && text.length < 300) {
@@ -429,7 +429,8 @@ export class AIContextEngine {
             const paragraphs = article.querySelectorAll('[data-testid="tweetText"], [dir="auto"]');
             
             paragraphs.forEach(p => {
-              const text = p.innerText?.trim();
+              if (!(p instanceof HTMLElement)) return;
+              const text = p.innerText.trim();
               if (text && text.length > 3 && text.length < 300) {
                 const key = text.substring(0, 30).toLowerCase();
                 if (!seen.has(key)) {
@@ -458,7 +459,7 @@ export class AIContextEngine {
             const author = mentionMatch ? mentionMatch[1] : 'unknown';
             
             // Filter out pure numbers/engagement metrics
-            if (!/^[\d,\.\sK]+$/.test(text)) {
+            if (!/^[\d,.\sK]+$/.test(text)) {
               replies.push({
                 author: author,
                 text: this.cleanReplyText(text),
@@ -504,7 +505,7 @@ export class AIContextEngine {
         const authorInfo = await page.evaluate((searchText) => {
           const elements = document.querySelectorAll('[data-testid="User-Name"], [class*="UserName"], [class*="author"]');
           for (const el of elements) {
-            const elText = el.innerText || '';
+            const elText = el instanceof HTMLElement ? el.innerText : '';
             if (elText.includes('@')) {
               const match = elText.match(/@([a-zA-Z0-9_]+)/);
               if (match) return match[1];
@@ -514,7 +515,8 @@ export class AIContextEngine {
         }, text);
         
         return authorInfo || 'unknown';
-      } catch {
+      } catch (error) {
+        this.logger.debug(`[Context] Visible author extraction: ${error.message}`);
         return 'unknown';
       }
     }
@@ -541,7 +543,7 @@ export class AIContextEngine {
        const cleaned = this.cleanReplyText(text);
 
        // Filter out engagement metrics (just numbers)
-       if (/^[\d,\.\sK]+$/.test(cleaned)) {
+       if (/^[\d,.\sK]+$/.test(cleaned)) {
          this.logger.debug(`[extractReplyFromArticle] Skipping engagement metrics: "${cleaned}"`);
          return null;
        }
@@ -655,7 +657,9 @@ export class AIContextEngine {
               text: this.cleanReplyText(text)
             });
           }
-        } catch {}
+        } catch (error) {
+          this.logger.debug(`[Context] Timeline item extraction: ${error.message}`);
+        }
       }
     } catch (error) {
       this.logger.debug(`[Context] Timeline extraction: ${error.message}`);

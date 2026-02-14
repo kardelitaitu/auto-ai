@@ -62,7 +62,7 @@ async function scrape() {
             const newLinks = await page.evaluate(() => {
                 const anchors = Array.from(document.querySelectorAll('a[href*="t.co"]'));
                 return anchors
-                    .map(a => a.href)
+                    .map(a => (a instanceof HTMLAnchorElement ? a.href : ''))
                     .filter(href => href.includes('t.co/')); // Basic validation
             });
 

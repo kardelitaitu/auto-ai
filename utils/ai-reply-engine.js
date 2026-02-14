@@ -5,7 +5,7 @@
  */
 
 import { createLogger } from './logger.js';
-import { REPLY_SYSTEM_PROMPT, buildReplyPrompt } from './twitter-reply-prompt.js';
+import { REPLY_SYSTEM_PROMPT, buildReplyPrompt, getStrategyInstruction } from './twitter-reply-prompt.js';
 import { mathUtils } from './mathUtils.js';
 import { sentimentService } from './sentiment-service.js';
 import { config } from './config-service.js';
@@ -287,7 +287,9 @@ export class AIReplyEngine {
 
     // Build enhanced prompt with language detection
     const sentimentContext = context.sentiment || {};
-    const promptData = this.buildEnhancedPrompt(tweetText, authorUsername, selectedReplies, url, sentimentContext);
+    const hasImage = !!screenshot;
+    const engagementLevel = context.engagementLevel || 'unknown';
+    const promptData = this.buildEnhancedPrompt(tweetText, authorUsername, selectedReplies, url, sentimentContext, hasImage, engagementLevel);
 
     // DEBUG: Log tweet, replies, and prompt being sent to LLM
     logger.info(`[DEBUG] ============================================`);
@@ -296,6 +298,7 @@ export class AIReplyEngine {
     logger.info(`[DEBUG] URL: ${url}`);
     logger.info(`[DEBUG] Tweet Text: "${tweetText}"`);
     logger.info(`[DEBUG] Tweet Length: ${tweetText.length} chars`);
+    logger.info(`[DEBUG] Has Image: ${hasImage}`);
     logger.info(`[DEBUG] ----------------------------------------------`);
     logger.info(`[DEBUG] REPLIES CONTEXT (${replies.length} loaded, showing longest 30):`);
     const sortedDebugReplies = replies
@@ -326,9 +329,9 @@ export class AIReplyEngine {
             userPrompt: promptData.text,
             maxTokens: 50,
             temperature: 0.7,
-            // vision: screenshot, // Disabled - text focus only
+            vision: screenshot, // Enabled if present
             context: {
-              hasScreenshot: false, // Vision disabled
+              hasScreenshot: !!screenshot,
               replyCount: replies.length,
               detectedLanguage: promptData.language
             }
@@ -475,9 +478,12 @@ export class AIReplyEngine {
     * @param {string} authorUsername - Author
     * @param {Array} replies - Replies to include
     * @param {string} url - Tweet URL
-    * @returns {object} Enhanced prompt with language info
-    */
-  buildEnhancedPrompt(tweetText, authorUsername, replies = [], url = '', sentimentContext = {}) {
+    * @param {object} sentimentContext - Sentiment context
+   * @param {boolean} hasImage - Whether the tweet has an image
+   * @param {string} engagementLevel - Engagement level (viral, high, medium, low)
+   * @returns {object} Enhanced prompt with language info
+   */
+  buildEnhancedPrompt(tweetText, authorUsername, replies = [], url = '', sentimentContext = {}, hasImage = false, engagementLevel = 'unknown') {
     // Detect language from replies
     const detectedLanguage = this.detectReplyLanguage(replies);
     logger.debug(`[AIReply] Detected language: ${detectedLanguage}`);
@@ -491,6 +497,14 @@ export class AIReplyEngine {
     // Generate sentiment-aware tone guidance
     const toneGuidance = this.getSentimentGuidance(sentiment, conversationType, sarcasmScore);
     const lengthGuidance = this.getReplyLengthGuidance(conversationType, valence);
+
+    // === STRATEGY SELECTION ===
+    // Use the improved strategy selector from twitter-reply-prompt.js
+    const strategyInstruction = getStrategyInstruction({
+      sentiment: valence < -0.3 ? 'negative' : (valence > 0.3 ? 'positive' : 'neutral'),
+      type: conversationType,
+      engagement: engagementLevel
+    });
 
     let prompt = `Tweet from @${authorUsername}:
 "${tweetText}"
@@ -523,11 +537,13 @@ Tweet URL: ${url}
 IMPORTANT: Keep it SHORT. Maximum 1 short sentence. No paragraphs.
 
 Tweet Analysis:
-- Sentiment: ${sentiment}
-- Conversation Type: ${conversationType}
-- Valence: ${valence > 0 ? 'Positive' : valence < 0 ? 'Negative' : 'Neutral'}
+  - Sentiment: ${sentiment}
+  - Conversation Type: ${conversationType}
+  - Valence: ${valence > 0 ? 'Positive' : valence < 0 ? 'Negative' : 'Neutral'}
+  ${hasImage ? '- [IMAGE DETECTED] This tweet contains an image. Analyze it and comment on visual details.' : ''}
 
-TONE GUIDANCE: ${toneGuidance}
+  TONE GUIDANCE: ${toneGuidance}
+  STRATEGY INSTRUCTION: ${strategyInstruction}
 LENGTH: MAXIMUM 1 SHORT SENTENCE
 
 Write ONE short reply (1 sentence max):`;
@@ -721,7 +737,7 @@ Write ONE short reply (1 sentence max):`;
           const found = [];
           const elements = document.querySelectorAll('[data-testid="tweetText"]');
           elements.forEach(el => {
-            const text = el.innerText?.trim();
+            const text = el.textContent?.trim();
             if (text && text.length > 3 && text.length < 300 && text.includes('@')) {
               found.push(text);
             }
@@ -777,14 +793,12 @@ Write ONE short reply (1 sentence max):`;
               logger.debug(`[AIReply] Selector "${selector}": ${elements.length} elements`);
 
               for (const el of elements.slice(0, 60)) {
-                try {
-                  const text = await el.innerText().catch(() => '');
-                  if (text && text.includes('@') && text.length > 3 && text.length < 300) {
-                    const mentionMatch = text.match(/@(\w+)/);
-                    const author = mentionMatch ? mentionMatch[1] : 'unknown';
-                    addReply(author, text);
-                  }
-                } catch {}
+                const text = await el.textContent().catch(() => '') || '';
+                if (text && text.includes('@') && text.length > 3 && text.length < 300) {
+                  const mentionMatch = text.match(/@(\w+)/);
+                  const author = mentionMatch ? mentionMatch[1] : 'unknown';
+                  addReply(author, text);
+                }
               }
             }
           } catch (e) {
@@ -811,14 +825,12 @@ Write ONE short reply (1 sentence max):`;
         logger.debug(`[AIReply] Found ${articles.length} articles`);
 
         for (let i = 0; i < Math.min(articles.length, 60); i++) {
-          try {
-            const article = articles[i];
-            const textEl = await article.$('[data-testid="tweetText"]');
-            if (textEl) {
-              const text = await textEl.innerText().catch(() => '');
-              addReply('unknown', text);
-            }
-          } catch {}
+          const article = articles[i];
+          const textEl = await article.$('[data-testid="tweetText"]');
+          if (textEl) {
+            const text = await textEl.textContent().catch(() => '') || '';
+            addReply('unknown', text);
+          }
         }
 
         if (replies.length >= 50) {
@@ -844,8 +856,7 @@ Write ONE short reply (1 sentence max):`;
             const walker = document.createTreeWalker(
               section,
               NodeFilter.SHOW_TEXT,
-              null,
-              false
+              null
             );
 
             let node;
@@ -1452,8 +1463,8 @@ Write ONE short reply (1 sentence max):`;
     
     let cleaned = reply;
     
-    // Remove leading/trailing whitespace and quotes
-    cleaned = cleaned.trim().replace(/^["']|["']$/g, '');
+    // Remove leading/trailing whitespace and quotes (recursive)
+    cleaned = cleaned.trim().replace(/^["']+|["']+$/g, '');
     
     // Remove common prefixes
     cleaned = cleaned.replace(/^(reply:|response:|my take:|answer:)/i, '').trim();
@@ -1492,7 +1503,8 @@ Write ONE short reply (1 sentence max):`;
       successes: 0,
       skips: 0,
       failures: 0,
-      safetyBlocks: 0
+      safetyBlocks: 0,
+      errors: 0
     };
   }
 
@@ -1580,6 +1592,19 @@ Write ONE short reply (1 sentence max):`;
        return { success: true, method: 'keyboard_shortcut', selector: verify2.selector };
      }
 
+     const replyContext = await page.evaluate(() => {
+       const el = document.querySelector('[data-testid="tweetTextarea_0"]') || document.querySelector('textarea[placeholder*="Post your reply"]');
+       const ph = el?.getAttribute('placeholder')?.toLowerCase() || '';
+       const hasReplyBtn = !!document.querySelector('[data-testid="reply"]');
+       return ph.includes('reply') || hasReplyBtn;
+     });
+     if (!replyContext) {
+       human.logStep('VERIFY_CONTEXT_FAILED', 'Composer not in reply context, switching to button flow');
+       await page.keyboard.press('Escape');
+       await new Promise(resolve => setTimeout(resolve, 300));
+       return await this.replyMethodB_Button(page, replyText, human);
+     }
+
      // Type reply
      const composer = page.locator(verify.selector).first();
      await human.typeText(page, replyText, composer);
@@ -1628,7 +1653,9 @@ Write ONE short reply (1 sentence max):`;
               break;
             }
           }
-        } catch (e) {}
+        } catch (e) {
+          human.logStep('FOCUS_MAIN_ERROR', e.message);
+        }
       }
 
       if (!mainTweetClicked) {
@@ -1675,9 +1702,11 @@ Write ONE short reply (1 sentence max):`;
 
      // Scroll to make visible
      human.logStep('SCROLL', 'Making button visible');
-     try {
-       await btnResult.element.scrollIntoViewIfNeeded();
-     } catch (e) {}
+    try {
+      await btnResult.element.scrollIntoViewIfNeeded();
+    } catch (e) {
+      human.logStep('SCROLL_ERROR', e.message);
+    }
 
     // Target fixation
     await human.fixation(300, 800);

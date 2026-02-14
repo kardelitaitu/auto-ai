@@ -101,7 +101,7 @@ export class TwitterAgent {
             // HUMAN-LIKE: Error recovery
             await this.human.recoverFromError('click_failed', { locator: target });
             
-            try { await target.click({ force: true }); } catch { }
+            try { await target.click({ force: true }); } catch { /* ignore force click error */ }
         }
     }
 
@@ -138,7 +138,7 @@ export class TwitterAgent {
 
     /**
      * Check if element is truly actionable (not covered by overlay)
-     * @param {Locator} element - Playwright locator
+     * @param {object} element - Playwright locator
      * @returns {Promise<boolean>}
      */
     async isElementActionable(element) {
@@ -163,7 +163,7 @@ export class TwitterAgent {
 
     /**
      * Scroll element to Golden Zone (30% from top of viewport)
-     * @param {Locator} element - Playwright locator
+     * @param {object} element - Playwright locator
      */
     async scrollToGoldenZone(element) {
         try {
@@ -238,7 +238,7 @@ export class TwitterAgent {
 
     /**
      * 6-Layer Click Strategy for maximum reliability
-     * @param {Locator} element - Element to click
+     * @param {object} element - Element to click
      * @param {string} logPrefix - Logging prefix
      * @returns {Promise<boolean>} - Whether click was performed
      */
@@ -297,7 +297,7 @@ export class TwitterAgent {
      * 6-layer click fallback, polling verification, page reload on failure
      * @param {string} [logPrefix='[Follow]'] - Optional prefix for log messages
      * @param {string|null} [reloadUrl=null] - Optional URL to force navigate to on reload
-     * @returns {Promise<{success: boolean, attempts: number, reason: string}>}
+     * @returns {Promise<{success: boolean, attempts: number, reason: string, fatal?: boolean}>}
      */
     async robustFollow(logPrefix = '[Follow]', reloadUrl = null) {
         const followBtnSelector = 'div[data-testid="placementTracking"] [data-testid$="-follow"], div[role="button"][data-testid$="-follow"]';
@@ -312,7 +312,7 @@ export class TwitterAgent {
         const preCheckUnfollow = this.page.locator(unfollowBtnSelector).first();
         if (await preCheckUnfollow.isVisible().catch(() => false)) {
             this.log(`${logPrefix} ✅ Already following.`);
-            return { success: true, attempts: 0, reason: 'already_following' };
+            return { success: true, attempts: 0, reason: 'already_following', fatal: false };
         }
 
         // Pre-check: Button text already says "Following" or "Pending"?
@@ -321,7 +321,7 @@ export class TwitterAgent {
             const preText = (await preCheckFollow.textContent() || '').toLowerCase();
             if (preText.includes('following')) {
                 this.log(`${logPrefix} ✅ Already following (button text).`);
-                return { success: true, attempts: 0, reason: 'already_following' };
+                return { success: true, attempts: 0, reason: 'already_following', fatal: false };
             }
             // Race Condition Fix #4: Handle Pending state
             if (preText.includes('pending')) {
@@ -330,7 +330,7 @@ export class TwitterAgent {
                 // Re-check after wait
                 if (await preCheckUnfollow.isVisible().catch(() => false)) {
                     this.log(`${logPrefix} ✅ Pending resolved to Following.`);
-                    return { success: true, attempts: 0, reason: 'pending_resolved' };
+                    return { success: true, attempts: 0, reason: 'pending_resolved', fatal: false };
                 }
             }
         }
@@ -544,7 +544,7 @@ export class TwitterAgent {
             }
 
             return { healthy: true, reason: '' };
-        } catch (e) {
+        } catch {
             // If we can't check, assume something is very wrong if network is also silent, 
             // but let's be conservative and return healthy if just the check fails but page is alive.
             return { healthy: true, reason: 'check_failed' };
@@ -659,7 +659,7 @@ export class TwitterAgent {
         if (roll < (sum += methods.wheelDown)) return 'WHEEL_DOWN';
         if (roll < (sum += methods.wheelUp)) return 'WHEEL_UP';
         if (roll < (sum += methods.space)) return 'SPACE';
-        if (roll < (sum += methods.keysDown)) return 'KEYS_DOWN';
+        if (roll < (sum + methods.keysDown)) return 'KEYS_DOWN';
         return 'KEYS_UP';
     }
 
@@ -768,7 +768,9 @@ export class TwitterAgent {
                     const safeX = Math.max(0, Math.min(viewport.width, x));
                     const safeY = Math.max(0, Math.min(viewport.height, y));
                     await this.ghost.move(safeX, safeY, mathUtils.randomInRange(8, 20));
-                } catch { }
+                } catch {
+                    // Ignore viewport calculation errors
+                }
             }
 
             // Micro: Fidgeting
@@ -915,7 +917,7 @@ export class TwitterAgent {
                 if (!dbgVP) {
                     try {
                         dbgVP = await this.page.evaluate(() => ({ width: window.innerWidth, height: window.innerHeight }));
-                    } catch (e) {
+                    } catch {
                         dbgVP = { width: 1280, height: 720 };
                     }
                 }
@@ -945,7 +947,7 @@ export class TwitterAgent {
                 await this.page.waitForURL('**/status/**', { timeout: 8000 });
                 this.log('[Success] Ghost Click navigated to tweet.');
                 expanded = true;
-            } catch (e) {
+            } catch {
                 this.log('[Fail] Ghost Click did not navigate. Retrying with NATIVE click...');
                 if (clickTarget) {
                     this.log('[Attempt] Native Click (Force)...');
@@ -955,7 +957,7 @@ export class TwitterAgent {
                     await this.page.waitForURL('**/status/**', { timeout: 8000 });
                     this.log('[Success] Native Click navigated to tweet.');
                     expanded = true;
-                } catch (e2) {
+                } catch {
                     this.log('[Fail] Failed to expand tweet after retry. Aborting dive.');
                     return;
                 }
@@ -1133,7 +1135,7 @@ export class TwitterAgent {
                 } else {
                     throw new Error('Url did not change to expected profile.');
                 }
-            } catch (e) {
+            } catch {
                 this.log('[Fail] Ghost Click did not navigate. Retrying with NATIVE click...');
                 try {
                     // Force click sometimes helps if element is covered
@@ -1236,7 +1238,7 @@ export class TwitterAgent {
                     this.log('[Navigation] Navigate to /home Success.');
                     await this.ensureForYouTab();
                     return;
-                } catch (e) {
+                } catch {
                     this.log('[Navigation] Ghost click did not trigger nav. Trying native...');
                     await target.click();
                     await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
@@ -1264,7 +1266,7 @@ export class TwitterAgent {
             // Wait for tablist to load (ensure page is ready)
             try {
                 await this.page.waitForSelector('div[role="tablist"]', { state: 'visible', timeout: 5000 });
-            } catch (e) {
+            } catch {
                 this.log('[Tab] Tablist not found within timeout.');
                 return;
             }
@@ -1318,7 +1320,7 @@ export class TwitterAgent {
                 try {
                     await this.safeHumanClick(target, 'For You Tab', 3);
                     await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
-                } catch (e) {
+                } catch {
                     this.log('[Tab] Ghost click failed, trying native...');
                     await target.click();
                 }
@@ -1372,7 +1374,7 @@ export class TwitterAgent {
                             break;
                         }
                     }
-                } catch (e) {
+                } catch {
                     // Continue to next selector
                 }
             }
@@ -1594,7 +1596,7 @@ export class TwitterAgent {
                 await this.page.waitForTimeout(Math.max(50, mathUtils.gaussian(1500, 600)));
             } else if (roll < (cursor += p.profileDive)) {
                 await this.diveProfile();
-            } else if (roll < (cursor += p.tweetDive)) {
+            } else if (roll < (cursor + p.tweetDive)) {
                 await this.diveTweet();
             } else {
                 this.log('[Branch] Idle (Staring at screen)');
@@ -1650,7 +1652,8 @@ export class TwitterAgent {
                             // Check vertical visibility with header safety margin (100px)
                             if (rect.top > 100 && rect.bottom < vpHeight) {
                                 // Optional: check if text is long enough
-                                if (all[i].innerText.length > 10) {
+                                const len = (all[i].textContent || '').length;
+                                if (len > 10) {
                                     valid.push(i);
                                 }
                             }
@@ -1668,7 +1671,7 @@ export class TwitterAgent {
 
                         // Double check (should be valid per evaluate)
                         if (box) {
-                            const text = await target.innerText();
+                            const text = await target.textContent().catch(() => '') || '';
                             const preview = text.substring(0, 20).replace(/\n/g, ' ');
                             this.log(`[Fidget] Selecting text: "${preview}..."`);
 

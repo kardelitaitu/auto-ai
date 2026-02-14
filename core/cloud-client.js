@@ -7,18 +7,19 @@
 import { createLogger } from '../utils/logger.js';
 import { getSettings } from '../utils/configLoader.js';
 import { MultiOpenRouterClient } from '../utils/multi-api.js';
-import { FreeApiRouter, setSharedHelper } from '../utils/free-api-router.js';
+import { FreeApiRouter } from '../utils/free-api-router.js';
 import { FreeOpenRouterHelper } from '../utils/free-openrouter-helper.js';
 
 const logger = createLogger('cloud-client.js');
 
 /**
   * @typedef {object} CloudRequest
-  * @property {string} prompt - The prompt to send to the model
-  * @property {object} [context] - Additional context (breadcrumbs, state)
-  * @property {string} [model] - Specific model to use (overrides default)
-  * @property {number} [maxTokens] - Maximum response tokens
-  * @property {number} [temperature] - Sampling temperature (0-1)
+  * @property {string} [prompt]
+  * @property {{ systemPrompt?: string, userPrompt?: string, prompt?: string }} [payload]
+  * @property {{ breadcrumbs?: string, state?: any }} [context]
+  * @property {string} [model]
+  * @property {number} [maxTokens]
+  * @property {number} [temperature]
   */
 
  /**
@@ -49,6 +50,9 @@ const logger = createLogger('cloud-client.js');
         /** @type {FreeApiRouter|null} Free API router for open_router_free_api config */
         this.freeApiRouter = null;
 
+        /** @type {boolean} Internal toggle used by tests to force free router path */
+        this.useFreeRouter = false;
+
         /** @type {string} OpenRouter API endpoint (single-key mode) */
         this.apiEndpoint = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -72,21 +76,42 @@ const logger = createLogger('cloud-client.js');
         };
 
         // Load configuration asynchronously
-        this._loadConfig();
+        this.initPromise = this._loadConfig();
     }
 
-    /**
-     * Load configuration from settings.json
+    isReady() {
+         return this.config !== null && (this.multiClient !== null || this.freeApiRouter !== null || (this.apiKey && this.apiKey !== 'your_openrouter_api_key_here'));
+     }
+
+     /**
+      * Load configuration from settings.json
      * @private
      */
      async _loadConfig() {
-         try {
-             const settings = await getSettings();
-             logger.debug(`[Cloud] _loadConfig called, keys in settings: ${Object.keys(settings || {}).join(', ')}`);
-             logger.debug(`[Cloud] llm.cloud exists: ${!!(settings?.llm?.cloud)}`);
-             
-             this.config = settings?.llm?.cloud || {};
-             logger.debug(`[Cloud] this.config after assignment: ${Object.keys(this.config).join(', ')}`);
+        if (this.config) return;
+
+        try {
+            const settings = await getSettings();
+            
+            // console.log('DEBUG: CloudClient _loadConfig settings:', JSON.stringify(settings, null, 2));
+            const cloudEnabled = settings?.llm?.cloud?.enabled === true;
+            const freeApiEnabled = settings?.open_router_free_api?.enabled === true;
+
+            // Return early if both cloud and free api are disabled
+            if (!cloudEnabled && !freeApiEnabled) {
+                if (!this._disabledLogged) {
+                    logger.info('[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization.');
+                    this._disabledLogged = true;
+                }
+                this._configLoaded = true;
+                return;
+            }
+
+            logger.debug(`[Cloud] _loadConfig called, keys in settings: ${Object.keys(settings || {}).join(', ')}`);
+            logger.debug(`[Cloud] llm.cloud exists: ${!!(settings?.llm?.cloud)}`);
+            
+            this.config = settings?.llm?.cloud || {};
+            logger.debug(`[Cloud] this.config after assignment: ${Object.keys(this.config).join(', ')}`);
 
              this.timeout = this.config.timeout || this.timeout;
              this.defaultModel = this.config.defaultModel || this.defaultModel;
@@ -101,6 +126,7 @@ const logger = createLogger('cloud-client.js');
                  const apiKeys = providers.map(p => p.apiKey);
                  const models = providers.map(p => p.model);
 
+                 // console.log('DEBUG: Instantiating MultiOpenRouterClient');
                  this.multiClient = new MultiOpenRouterClient({
                      apiKeys,
                      models,
@@ -174,8 +200,10 @@ const logger = createLogger('cloud-client.js');
                   logger.info(`[Cloud] Router: ${sessionInfo.primaryModel} (key ${sessionInfo.apiKeyIndex}/${sessionInfo.totalApiKeys})`);
               }
 
+              this._configLoaded = true;
+
           } catch (error) {
-              logger.error('[Cloud] Failed to load cloud client configuration:', error.message);
+              logger.error(`Failed to load cloud config: ${error.message}`);
           }
       }
 
@@ -186,10 +214,10 @@ const logger = createLogger('cloud-client.js');
         */
       async testFreeModels() {
           try {
-              const settings = await getSettings();
-              const freeApiConfig = settings?.open_router_free_api || {};
-
-              if (!freeApiConfig.enabled) {
+                const settings = await getSettings();
+                const freeApiConfig = settings?.open_router_free_api || {};
+  
+                if (!freeApiConfig.enabled) {
                   logger.info('[Cloud] Free API Router not enabled, skipping model test');
                   return { tested: false, reason: 'not_enabled' };
               }
@@ -320,7 +348,7 @@ const logger = createLogger('cloud-client.js');
             if (content.trim().startsWith('{') || content.trim().startsWith('[')) {
                 try {
                     data = JSON.parse(content);
-                } catch (e) {
+                } catch (_e) {
                     logger.debug('[Cloud] Response is not valid JSON');
                 }
             }
@@ -405,7 +433,7 @@ const logger = createLogger('cloud-client.js');
                 if (content.trim().startsWith('{') || content.trim().startsWith('[')) {
                     try {
                         data = JSON.parse(content);
-                    } catch (e) {
+                    } catch (_e) {
                         logger.debug('[Cloud] Response is not valid JSON');
                     }
                 }
@@ -415,7 +443,7 @@ const logger = createLogger('cloud-client.js');
                     content,
                     data,
                     metadata: {
-                        model: response.model || model,
+                        model: response.model || 'unknown',
                         duration,
                         tokens: response.tokens?.total || 0,
                         keyUsed: response.keyUsed,
@@ -506,7 +534,7 @@ const logger = createLogger('cloud-client.js');
                  if (content.trim().startsWith('{') || content.trim().startsWith('[')) {
                      try {
                          data = JSON.parse(content);
-                     } catch (e) {
+                    } catch (_e) {
                          logger.debug('[Cloud] Response is not valid JSON');
                      }
                  }
@@ -630,7 +658,7 @@ const logger = createLogger('cloud-client.js');
             clearTimeout(timeoutId);
 
             if (error.name === 'AbortError') {
-                throw new Error(`Request timeout after ${this.timeout}ms`);
+                throw new Error(`Request timeout after ${this.timeout}ms`, { cause: error });
             }
 
             throw error;

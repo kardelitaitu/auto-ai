@@ -10,7 +10,7 @@
  */
 
 import { mathUtils } from '../mathUtils.js';
-import { entropy } from '../entropyController.js';
+import { entropy as _entropy } from '../entropyController.js';
 
 export class HumanTiming {
     constructor(page, logger) {
@@ -169,7 +169,7 @@ export class HumanTiming {
     /**
      * Typing speed (variable)
      */
-    getTypingDelay(charIndex, totalChars, context = {}) {
+    getTypingDelay(charIndex, totalChars, _context = {}) {
         // First few characters: slower (warm-up)
         if (charIndex < 3) {
             return mathUtils.randomInRange(150, 300);

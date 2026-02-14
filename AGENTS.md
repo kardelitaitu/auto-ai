@@ -2,6 +2,15 @@
 
 This file provides guidance to agents when working with code in this repository.
 
+## Tooling (MCP)
+
+Agents are allowed to use MCP tools for filesystem access, code search, web fetch, and diagnostics when available.
+
+## Workflow Reminder
+
+Every time you make changes or modifications, append a new line to AGENTS-JOURNAL.md using this format:
+dd-mm-yyy--HH-MM > filename > changes description
+
 ## Project Overview
 
 **Auto-AI** is a multi-browser automation framework for orchestrating browser automation across multiple anti-detect browser profiles (ixBrowser, MoreLogin, Dolphin Anty, Undetectable, etc.) using Playwright's CDP (Chrome DevTools Protocol). It leverages AI (local Ollama/Docker LLMs and cloud OpenRouter) for intelligent decision-making and includes sophisticated human-like behavior patterns to avoid detection.
@@ -13,6 +22,15 @@ This file provides guidance to agents when working with code in this repository.
 - Error handling uses try/catch blocks with specific error messages including task names and session IDs
 - Dynamic imports are used for task modules (`import(\`../tasks/${task.taskName}.js\`)`)
 - Tasks export a default async function taking browser and payload parameters
+
+## Testing Strategy
+
+- **Framework**: Vitest is used for both unit and integration testing.
+- **Running Tests**: Run `npm test` to execute the full test suite.
+- **Structure**:
+  - `tests/unit/`: Unit tests for individual modules (e.g., `agent-connector.test.js`).
+  - `tests/integration/`: Integration tests for cross-module interactions (e.g., `cloud-client.test.js`).
+- **Mocks**: Use `vi.mock()` for external dependencies to ensure isolation and speed.
 
 ## Project Structure
 
@@ -129,19 +147,106 @@ Task → IntentClassifier.classify() → Decision: local vs cloud
 All browser connectors extend `BaseDiscover` and implement:
 - `async discover()` - Returns array of `{ws, http, windowName, port, etc.}`
 
-## Key Modules
+## # Auto-AI Codebase Map
 
-| Module | File | Responsibility |
-|--------|------|----------------|
-| Orchestrator | `core/orchestrator.js` | Task queue management, parallel execution across sessions, debouncing |
-| SessionManager | `core/sessionManager.js` | Session lifecycle, worker allocation, timeout cleanup, persistence |
-| Automator | `core/automator.js` | CDP connections, health checks, reconnection logic |
-| Discovery | `core/discovery.js` | Connector loading, parallel browser discovery |
-| IntentClassifier | `core/intent-classifier.js` | Analyzes task complexity to route to local/cloud |
-| AgentConnector | `core/agent-connector.js` | Routes AI requests, handles failover, vision task processing |
-| LocalClient | `core/local-client.js` | Facade for Ollama/Docker LLM |
-| CloudClient | `core/cloud-client.js` | OpenRouter API integration |
-| VisionInterpreter | `core/vision-interpreter.js` | Builds/parses vision prompts for page analysis |
+This map provides a high-level overview of the project structure, key modules, and their responsibilities to assist LLMs in navigating the codebase.
+
+## 1. Project Root (Entry Points)
+- `main.js`: Primary entry point. Initializes the Orchestrator and starts the automation loop.
+- `main-browser-use.js`: Alternative entry point using `browser-use` library (experimental).
+- `AGENTS.md`: Comprehensive guide for agents (rules, architecture, patterns).
+- `CONFIG.md`: Documentation for configuration files.
+
+## 2. Core System (`core/`)
+*The "Brain" and "Nervous System" of the framework.*
+
+### Orchestration & Lifecycle
+- `orchestrator.js`: Central manager. Handles task queues, worker allocation, and parallel execution across sessions.
+  - `startDiscovery(options)`: Starts the browser discovery process via Connectors.
+  - `addTask(taskName, payload)`: Adds a new task to the global queue.
+  - `processTasks()`: Main loop that assigns tasks to available workers in sessions.
+- `sessionManager.js`: Manages browser session lifecycle (start, stop, health checks, persistence).
+  - `addSession(browser, info)`: Registers a new connected browser session.
+  - `getSession(id)`: Retrieves session object by ID.
+  - `startCleanupTimer()`: Periodically cleans up stale sessions.
+- `state-manager.js`: Tracks state across sessions.
+- `automator.js`: Handles low-level Playwright CDP connections and health monitoring.
+  - `connectToBrowser(wsEndpoint)`: Establishes CDP connection with retry logic.
+  - `testConnection(browser)`: Verifies if the browser connection is still active.
+  - `reconnect(wsEndpoint)`: Attempts to re-establish a dropped connection.
+- `discovery.js`: Discovers running browser instances via Connectors.
+  - `loadConnectors(allowed)`: Dynamically imports connector modules.
+  - `discoverBrowsers()`: Aggregates browser endpoints from all loaded connectors.
+
+### AI & Intelligence
+- `agent-connector.js`: Router for AI requests. Decides between Local/Cloud LLMs and handles failover.
+  - `processRequest(request)`: Main entry point for AI tasks. Routes to Local or Cloud client based on complexity/availability.
+- `intent-classifier.js`: Analyzes task complexity to route to appropriate LLM (Local vs Cloud).
+  - `classify(task)`: Determines if a task needs "fast" (local) or "smart" (cloud) processing.
+- `local-client.js`: Facade for local LLMs (Ollama/Docker).
+- `cloud-client.js`: Interface for OpenRouter/Cloud APIs.
+- `vision-interpreter.js`: Processes images/screenshots for visual context.
+- `humanizer-engine.js`: Core engine for generating human-like behavior patterns.
+
+## 3. Browser Connectivity (`connectors/`)
+*Adapters for different anti-detect browsers.*
+
+- `baseDiscover.js`: Base class for all browser connectors.
+  - `discover()`: Abstract method that must be implemented by subclasses to return browser endpoints.
+- `discovery/`:
+  - `ixbrowser.js`, `morelogin.js`, etc.: Connectors for specific anti-detect browsers. Implement `discover()`.
+
+## 4. Task Modules (`tasks/`)
+*Specific jobs that agents perform. Dynamically loaded.*
+
+- `_template.js`: Template for creating new tasks.
+- `agent.js`: Generic agent task implementation.
+- `ai-twitterActivity.js`: **Critical**. Main task for AI-driven Twitter automation (replies, quotes, engagement).
+  - `default function(page, payload)`: Main execution loop. Handles initialization, profile loading, and agent lifecycle.
+- `twitterTweet.js`: Task for posting tweets.
+- `twitterFollow.js`: Task for following users.
+
+## 5. Utilities & Helpers (`utils/`)
+*The Toolbox. Extensive collection of helper modules.*
+
+### AI Components
+- `ai-twitterAgent.js`: **Core Logic**. Extends `twitterAgent.js`. Handles split-phase diving (Scan vs AI), queue management, and action execution.
+  - `diveTweet(tweetElement)`: Orchestrates the dive process. Splits into Scan Phase (no queue) and AI Phase (queue).
+  - `startDive(tweetUrl)`: Initiates the diving logic for a specific tweet.
+  - `executeAILogic(context)`: Runs the AI decision/action process inside the `DiveQueue`.
+- `ai-context-engine.js`: Extracts and enhances context from tweets (replies, sentiment).
+- `ai-reply-engine.js`: Generates replies using AI.
+- `async-queue.js`: **New**. Implements `DiveQueue` and `AsyncQueue` to manage concurrency and prevent race conditions.
+  - `addDive(taskFn, fallbackFn, options)`: Adds a task to the queue with timeout protection and optional fallback.
+  - `_processQueue()`: Internal method to serialize task execution.
+
+### AI Actions (`utils/actions/`)
+- `index.js`: `ActionRunner` logic for smart action selection.
+  - `selectAction()`: Probabilistically selects the next action (reply, like, quote) based on engagement limits.
+  - `executeAction(action, context)`: Routes the execution to the specific action handler.
+- `ai-twitter-reply.js`: `execute(agent, context)`: Generates and posts a reply.
+- `ai-twitter-quote.js`: `execute(agent, context)`: Generates and posts a quote tweet.
+
+### Humanization & Anti-Detection
+- `twitterAgent.js`: Base class for Twitter interactions. Implements 6-layer click strategy and human behaviors.
+  - `humanClick(target, description)`: Robust click method with scrolling, pausing, micro-movements, and ghost clicking.
+  - `scrollDown()`, `scrollUp()`, `scrollRandom()`: Natural scrolling helpers with variable speed.
+- `ghostCursor.js`: Simulates realistic mouse movements.
+  - `move(x, y)`: Moves mouse using Bezier curves.
+  - `click(selector)`: Human-like click sequence.
+- `browserPatch.js`: Spoofs visibility and other browser properties.
+  - `applyHumanizationPatch(page)`: Injects scripts to hide automation signals.
+
+## 6. Configuration (`config/`)
+- `settings.json`: Main configuration (LLM providers, humanization settings, timeouts).
+- `browserAPI.json`: API endpoints for different browser vendors.
+- `timeouts.json`: Centralized timeout definitions.
+
+## Key Relationships
+1.  **Task Execution**: `main.js` -> `Orchestrator.processTasks()` -> `SessionManager` -> `Task` (e.g., `ai-twitterActivity.js`).
+2.  **AI Flow**: `Task` -> `AITwitterAgent.diveTweet()` -> `DiveQueue` -> `AgentConnector` -> `LocalClient`/`CloudClient`.
+3.  **Concurrency**: `AITwitterAgent` uses `DiveQueue` (from `async-queue.js`) to serialize AI operations per session, ensuring thread safety during multi-browser runs.
+
 
 ## Supported Browsers
 

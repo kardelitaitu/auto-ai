@@ -22,12 +22,14 @@ const DEFAULT_TASK_TIMEOUT_MS = 6 * 60 * 1000; // 6 Minutes (Robustness takes ti
 
 /**
  * Executes the Tweet Task.
- * @param {import('playwright').Page} page
+ * @param {object} page - The Playwright page instance.
  * @param {object} payload
  * @param {string} payload.browserInfo
+ * @param {string} [payload.profileId]
+ * @param {number} [payload.taskTimeoutMs]
  */
 export default async function twitterTweetTask(page, payload) {
-    const startTime = process.hrtime.bigint();
+    const _startTime = process.hrtime.bigint();
     const browserInfo = payload.browserInfo || "unknown_profile";
     const logger = createLogger(`twitterTweet [${browserInfo}]`);
     const taskTimeoutMs = payload.taskTimeoutMs || DEFAULT_TASK_TIMEOUT_MS;
@@ -44,7 +46,7 @@ export default async function twitterTweetTask(page, payload) {
                 if (payload.profileId) {
                     try {
                         profile = profileManager.getById(payload.profileId);
-                    } catch (e) {
+                    } catch (_e) {
                         profile = profileManager.getStarter();
                     }
                 } else {
@@ -81,7 +83,7 @@ export default async function twitterTweetTask(page, payload) {
 
                 // 5. Prepare Tweet Content
                 logger.info(`[twitterTweet] Reading tweet content...`);
-                let tweetLine = '';
+                let tweetLine;
                 try {
                     if (!fs.existsSync(TWEET_SOURCE_FILE)) {
                         throw new Error(`Source file not found: ${TWEET_SOURCE_FILE}`);
@@ -109,9 +111,9 @@ export default async function twitterTweetTask(page, payload) {
                     fs.writeFileSync(TWEET_SOURCE_FILE, remainingLines.join('\n'), 'utf-8');
                     logger.info(`[twitterTweet] Picked tweet: "${originalLine.substring(0, 30)}..." (Remaining: ${remainingLines.length})`);
 
-                } catch (e) {
-                    logger.error(`[twitterTweet] Failed to read/write tweet file: ${e.message}`);
-                    throw e;
+                } catch (_e) {
+                    logger.error(`[twitterTweet] Failed to read/write tweet file: ${_e.message}`);
+                    throw _e;
                 }
 
                 // Safety Check before composing
@@ -160,7 +162,7 @@ export default async function twitterTweetTask(page, payload) {
                             composerOpen = true;
                             break;
                         }
-                    } catch (e) {
+                    } catch (_e) {
                         logger.warn(`[twitterTweet] Composer did not open on attempt ${i}. Retrying...`);
                     }
 
@@ -208,9 +210,8 @@ export default async function twitterTweetTask(page, payload) {
                             logger.info(`[twitterTweet] Post button disabled. Waiting for validation...`);
                             // Wait up to 5s for it to become enabled
                             try {
-                                const btnRef = page.locator(postBtn).first();
-                                await expect(btnRef).toBeEnabled({ timeout: 5000 }).catch(() => { });
-                            } catch (e) { }
+                                await page.waitForSelector(postBtn, { timeout: 5000 }).catch((_e) => null);
+                            } catch (_e) { void _e; }
 
                             // If still disabled, maybe content issue?
                             if (await btn.isDisabled()) {
@@ -279,8 +280,9 @@ export default async function twitterTweetTask(page, payload) {
             logger.error(`[twitterTweet] Error: ${error.message}`, error);
         }
     } finally {
-        if (agent && agent.sessionStart) {
-            const duration = ((Date.now() - agent.sessionStart) / 1000 / 60).toFixed(1);
+        const sessionStart = (agent && typeof agent === 'object' && agent['sessionStart']) ? agent['sessionStart'] : null;
+        if (sessionStart) {
+            const duration = ((Date.now() - sessionStart) / 1000 / 60).toFixed(1);
             logger.info(`[Metrics] Task Finished. Duration: ${duration}m`);
         }
         try {
@@ -293,7 +295,7 @@ export default async function twitterTweetTask(page, payload) {
 
 /**
  * Applies anti-detect and humanization patches.
- * @param {import('playwright').Page} page 
+ * @param {object} page - The Playwright page instance. 
  * @param {object} logger 
  */
 async function applyHumanizationPatch(page, logger) {

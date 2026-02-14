@@ -1,6 +1,8 @@
-const { chrome } = globalThis;
-
 document.addEventListener('DOMContentLoaded', () => {
+    const chromeApi = globalThis["chrome"];
+    if (!chromeApi) {
+        throw new Error('Chrome API unavailable');
+    }
     const totalCountEl = document.getElementById('totalCount');
     const statusMsg = document.getElementById('statusMsg');
 
@@ -8,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStats();
 
     // Listen for updates from background
-    chrome.storage.onChanged.addListener((changes, namespace) => {
+    chromeApi.storage.onChanged.addListener((changes, namespace) => {
         if (namespace === 'local' && changes.tco_links) {
             updateStats();
         }
@@ -18,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- BUTTON HANDLERS ---
 
     document.getElementById('downloadBtn').addEventListener('click', async () => {
-        const stored = await chrome.storage.local.get(['tco_links']);
+        const stored = await chromeApi.storage.local.get(['tco_links']);
         const allLinks = stored.tco_links || [];
 
         if (allLinks.length === 0) {
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 
-        chrome.downloads.download({
+        chromeApi.downloads.download({
             url: url,
             filename: `tco_links_${timestamp}.json`,
             saveAs: true
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('clearBtn').addEventListener('click', () => {
         if (confirm("Are you sure you want to clear all stored links?")) {
-            chrome.storage.local.set({ tco_links: [] }, () => {
+            chromeApi.storage.local.set({ tco_links: [] }, () => {
                 updateStats();
                 statusMsg.textContent = "Storage cleared.";
             });
@@ -53,14 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- HELPERS ---
 
     async function updateStats() {
-        const stored = await chrome.storage.local.get(['tco_links']);
+        const stored = await chromeApi.storage.local.get(['tco_links']);
         const count = stored.tco_links ? stored.tco_links.length : 0;
         totalCountEl.textContent = count;
     }
 
     async function saveLinks(newLinks) {
         return new Promise((resolve) => {
-            chrome.storage.local.get(['tco_links'], (result) => {
+            chromeApi.storage.local.get(['tco_links'], (result) => {
                 const existing = result.tco_links || [];
                 let added = 0;
 
@@ -71,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                chrome.storage.local.set({ tco_links: existing }, () => {
+                chromeApi.storage.local.set({ tco_links: existing }, () => {
                     resolve(added);
                 });
             });

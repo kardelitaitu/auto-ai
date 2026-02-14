@@ -68,6 +68,8 @@ class RequestQueue {
      * @private
      */
     _processQueue() {
+        if (this.paused) return;
+        
         while (this.running < this.maxConcurrent && this.queue.length > 0) {
             const item = this.queue.shift();
             this._executeTask(item);
@@ -96,7 +98,7 @@ class RequestQueue {
             item.reject({
                 success: false,
                 error: error.message,
-                attempts: item.retries,
+                attempts: item.retries + 1,
                 duration: Date.now() - startTime
             });
         } finally {
@@ -192,7 +194,7 @@ class RequestQueue {
             ...this.stats,
             running: this.running,
             queued: this.queue.length,
-            utilization: this.running / this.maxConcurrent
+            utilization: this.maxConcurrent > 0 ? this.running / this.maxConcurrent : 0
         };
     }
 
@@ -221,6 +223,7 @@ class RequestQueue {
      * Resume queue processing
      */
     resume() {
+        if (!this.paused) return;
         this.paused = false;
         this._processQueue();
         logger.info('Queue processing resumed');

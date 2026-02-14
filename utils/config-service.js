@@ -1,7 +1,6 @@
 /**
  * @fileoverview Centralized Config Service
  * Unifies config access across the codebase with environment variable override support
- * @module utils/config-service
  * 
  * Usage:
  *   import { config } from './utils/config-service.js';
@@ -10,6 +9,8 @@
  *   const limits = await config.getEngagementLimits();
  *   const timing = await config.getTiming();
  *   const humanization = await config.getHumanization();
+ * 
+ * @module utils/config-service
  */
 
 import { getSettings } from './configLoader.js';
@@ -171,31 +172,57 @@ function getFromEnvOrSettings(envKey, settingsValue, type = 'string') {
  * Apply environment overrides to a settings object
  */
 function applyEnvOverrides(settings, envMap, path = '') {
-  if (!settings || typeof settings !== 'object') {
-    return settings;
-  }
+  // Ensure settings is an object (initialize if null/undefined)
+  const safeSettings = settings || {};
   
-  const result = Array.isArray(settings) ? [...settings] : { ...settings };
+  const result = Array.isArray(safeSettings) ? [...safeSettings] : { ...safeSettings };
   
   for (const [key, value] of Object.entries(envMap)) {
     const currentPath = path ? `${path}.${key}` : key;
     
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       // Nested override - recurse
-      if (result[key] && typeof result[key] === 'object') {
+      // Create nested structure if missing
+      if (!result[key]) {
+        result[key] = {};
+      }
+      
+      if (typeof result[key] === 'object') {
         result[key] = applyEnvOverrides(result[key], value, currentPath);
       }
     } else if (typeof value === 'string') {
       // Direct env var mapping
-      if (result[key] !== undefined) {
-        const type = typeof result[key];
-        result[key] = getFromEnvOrSettings(value, result[key], type);
-      }
-    }
-  }
-  
-  return result;
-}
+      // If key doesn't exist, we can't infer type from value (undefined).
+      // Default to string, or check if we can infer from defaults? 
+      // Current implementation uses result[key] type.
+      // If result[key] is undefined, type is 'undefined'.
+      // getFromEnvOrSettings handles undefined?
+      
+      const currentValue = result[key];
+      const type = typeof currentValue !== 'undefined' ? typeof currentValue : 'string';
+      
+      // If value is missing in settings, we might want to try to cast based on env var content?
+      // But getFromEnvOrSettings takes a type.
+      // For now, let's stick to string if missing, or maybe we should look up DEFAULTS?
+      // Looking up defaults is hard here because we don't know where we are in the tree easily without mapping.
+      
+      // Improvement: Try to infer type from string value (true/false/numbers) if current value is undefined
+       let effectiveType = type;
+       if (currentValue === undefined) {
+           const envVal = process.env[value];
+           if (envVal === 'true' || envVal === 'false') effectiveType = 'boolean';
+           else if (!isNaN(parseFloat(envVal))) effectiveType = 'number';
+       }
+       
+       const newValue = getFromEnvOrSettings(value, currentValue, effectiveType);
+       if (newValue !== undefined) {
+           result[key] = newValue;
+       }
+     }
+   }
+   
+   return result;
+ }
 
 /**
  * Centralized Config Service
@@ -204,6 +231,7 @@ class ConfigService {
   constructor() {
     this._settings = null;
     this._initialized = false;
+    this._initPromise = null;
   }
   
   /**
@@ -211,17 +239,24 @@ class ConfigService {
    */
   async init() {
     if (this._initialized) return;
+    if (this._initPromise) return this._initPromise;
     
-    try {
-      const settings = await getSettings();
-      this._settings = settings || {};
-      this._initialized = true;
-      logger.info('[Config] Service initialized');
-    } catch (error) {
-      logger.warn(`[Config] Failed to load settings: ${error.message}`);
-      this._settings = {};
-      this._initialized = true;
-    }
+    this._initPromise = (async () => {
+      try {
+        const settings = await getSettings();
+        this._settings = settings || {};
+        this._initialized = true;
+        logger.info('[Config] Service initialized');
+      } catch (error) {
+        logger.warn(`[Config] Failed to load settings: ${error.message}`);
+        this._settings = {};
+        this._initialized = true;
+      } finally {
+        this._initPromise = null;
+      }
+    })();
+    
+    return this._initPromise;
   }
   
   /**
@@ -362,7 +397,6 @@ class ConfigService {
    * Get config for a specific profile type
    */
   async getProfileConfig(profileType) {
-    const activity = await this.getTwitterActivity();
     const profiles = {
       'NewsJunkie': { dive: 0.45, like: 0.60, follow: 0.05 },
       'Casual': { dive: 0.25, like: 0.35, follow: 0.02 },

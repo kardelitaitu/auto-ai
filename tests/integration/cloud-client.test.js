@@ -6,58 +6,51 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { createLogger } from '../../utils/logger.js';
+import { getSettings } from '../../utils/configLoader.js';
+import { MultiOpenRouterClient } from '../../utils/multi-api.js';
+import { FreeApiRouter } from '../../utils/free-api-router.js';
+import CloudClient from '../../core/cloud-client.js';
+
+const mocks = vi.hoisted(() => ({
+    getSettings: vi.fn()
+}));
+
+vi.mock('../../utils/configLoader.js', () => ({
+    getSettings: mocks.getSettings
+}));
+
+vi.mock('../../utils/multi-api.js', () => ({
+    MultiOpenRouterClient: vi.fn()
+}));
+
+vi.mock('../../utils/free-api-router.js', () => ({
+    FreeApiRouter: vi.fn(),
+    setSharedHelper: vi.fn()
+}));
+
+vi.mock('../../utils/free-openrouter-helper.js', () => ({
+    FreeOpenRouterHelper: {
+        getInstance: vi.fn(() => ({
+            testAllModelsInBackground: vi.fn(),
+            getOptimizedModelList: vi.fn(() => ({ primary: 'test-model', fallbacks: [] })),
+            getResults: vi.fn(() => ({ working: [], failed: [] })),
+            updateConfig: vi.fn(),
+            isCacheValid: vi.fn(() => true),
+            isTesting: vi.fn(() => false)
+        }))
+    }
+}));
 
 vi.mock('../../utils/logger.js', () => ({
     createLogger: vi.fn(() => ({
         info: vi.fn(),
-        success: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
         debug: vi.fn()
     }))
 }));
 
-vi.mock('../../utils/configLoader.js', () => ({
-    getSettings: vi.fn()
-}));
-
-vi.mock('../../utils/multi-api.js', () => ({
-    MultiOpenRouterClient: vi.fn().mockImplementation(() => ({
-        processRequest: vi.fn(),
-        getStats: vi.fn().mockReturnValue({ totalRequests: 0 })
-    }))
-}));
-
-vi.mock('../../utils/free-api-router.js', () => ({
-    FreeApiRouter: vi.fn().mockImplementation(() => ({
-        isReady: vi.fn().mockReturnValue(false),
-        processRequest: vi.fn(),
-        getStats: vi.fn().mockReturnValue({}),
-        getSessionInfo: vi.fn().mockReturnValue({}),
-        getModelsInfo: vi.fn().mockReturnValue({})
-    })),
-    setSharedHelper: vi.fn()
-}));
-
-vi.mock('../../utils/free-openrouter-helper.js', () => ({
-    FreeOpenRouterHelper: {
-        getInstance: vi.fn().mockReturnValue({
-            testAllModelsInBackground: vi.fn(),
-            getResults: vi.fn().mockReturnValue({ testDuration: 0 }),
-            isTesting: vi.fn().mockReturnValue(false),
-            getOptimizedModelList: vi.fn().mockReturnValue({ primary: null, fallbacks: [] }),
-            isCacheValid: vi.fn().mockReturnValue(true),
-            updateConfig: vi.fn()
-        })
-    }
-}));
-
-const { getSettings } = await import('../../utils/configLoader.js');
-const { MultiOpenRouterClient } = await import('../../utils/multi-api.js');
-const { FreeApiRouter } = await import('../../utils/free-api-router.js');
-
 describe('CloudClient Integration', () => {
-    let CloudClient;
     let cloudClient;
 
     beforeEach(async () => {
@@ -77,17 +70,20 @@ describe('CloudClient Integration', () => {
             }
         });
 
+        /*
         if (!CloudClient) {
             const module = await import('../../core/cloud-client.js');
             CloudClient = module.default;
         }
+        */
 
         cloudClient = new CloudClient();
+        await cloudClient.initPromise;
     });
 
     describe('Initialization', () => {
         it('should initialize with default values', async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await cloudClient.initPromise;
 
             expect(cloudClient.config).toBeDefined();
             expect(cloudClient.apiEndpoint).toBe('https://openrouter.ai/api/v1/chat/completions');
@@ -99,9 +95,10 @@ describe('CloudClient Integration', () => {
         });
 
         it('should load configuration from settings', async () => {
-            getSettings.mockResolvedValue({
+            mocks.getSettings.mockResolvedValue({
                 llm: {
                     cloud: {
+                        enabled: true,
                         timeout: 120000,
                         defaultModel: 'anthropic/claude-3-opus',
                         endpoint: 'https://custom.api.com/v1/chat',
@@ -111,7 +108,7 @@ describe('CloudClient Integration', () => {
             });
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             expect(client.timeout).toBe(120000);
             expect(client.defaultModel).toBe('anthropic/claude-3-opus');
@@ -119,19 +116,19 @@ describe('CloudClient Integration', () => {
         });
 
         it('should initialize with single provider', async () => {
-            getSettings.mockResolvedValue({
+            mocks.getSettings.mockResolvedValue({
                 llm: {
                     cloud: {
-                        providers: [{
-                            apiKey: 'test-key-123',
-                            model: 'anthropic/claude-3.5-sonnet'
-                        }]
+                        enabled: true,
+                        providers: [
+                            { apiKey: 'test-key-123', model: 'anthropic/claude-3.5-sonnet' }
+                        ]
                     }
                 }
             });
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             expect(client.apiKey).toBe('test-key-123');
             expect(client.defaultModel).toBe('anthropic/claude-3.5-sonnet');
@@ -139,9 +136,10 @@ describe('CloudClient Integration', () => {
         });
 
         it('should initialize with multiple providers for fallback', async () => {
-            getSettings.mockResolvedValue({
+            const settings = {
                 llm: {
                     cloud: {
+                        enabled: true,
                         providers: [
                             { apiKey: 'key-1', model: 'anthropic/claude-3.5-sonnet' },
                             { apiKey: 'key-2', model: 'anthropic/claude-3-haiku' },
@@ -149,10 +147,15 @@ describe('CloudClient Integration', () => {
                         ]
                     }
                 }
-            });
+            };
+            mocks.getSettings.mockResolvedValue(settings);
+            
+            // Verify mock
+            const mockedSettings = await mocks.getSettings();
+            // console.log('DEBUG: Mocked Settings in Test:', JSON.stringify(mockedSettings, null, 2));
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             expect(MultiOpenRouterClient).toHaveBeenCalledWith({
                 apiKeys: ['key-1', 'key-2', 'key-3'],
@@ -166,13 +169,13 @@ describe('CloudClient Integration', () => {
         });
 
         it('should handle no providers configured', async () => {
-            getSettings.mockResolvedValue({
+            mocks.getSettings.mockResolvedValue({
                 llm: { cloud: { providers: [] } },
                 open_router_free_api: { enabled: false }
             });
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             expect(client.apiKey).toBe('');
             expect(client.multiClient).toBeNull();
@@ -180,7 +183,7 @@ describe('CloudClient Integration', () => {
         });
 
         it('should initialize free API router when enabled', async () => {
-            getSettings.mockResolvedValue({
+            mocks.getSettings.mockResolvedValue({
                 llm: { cloud: { providers: [] } },
                 open_router_free_api: {
                     enabled: true,
@@ -196,7 +199,7 @@ describe('CloudClient Integration', () => {
             });
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             expect(FreeApiRouter).toHaveBeenCalled();
             expect(client.freeApiRouter).toBeDefined();
@@ -205,7 +208,7 @@ describe('CloudClient Integration', () => {
 
     describe('Prompt Building', () => {
         beforeEach(async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // No setup needed
         });
 
         it('should build prompt with system and user prompts', () => {
@@ -288,7 +291,7 @@ describe('CloudClient Integration', () => {
 
     describe('Statistics', () => {
         beforeEach(async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // No setup needed
         });
 
         it('should return initial stats', () => {
@@ -350,7 +353,7 @@ describe('CloudClient Integration', () => {
 
     describe('Connection Testing', () => {
         beforeEach(async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // No setup needed
         });
 
         it('should return false when no API key configured', async () => {
@@ -362,7 +365,7 @@ describe('CloudClient Integration', () => {
 
     describe('Free Model Testing', () => {
         beforeEach(async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // No setup needed
         });
 
         it('should return not_enabled when free API is disabled', async () => {
@@ -371,7 +374,7 @@ describe('CloudClient Integration', () => {
         });
 
         it('should return no_models when no models configured', async () => {
-            getSettings.mockResolvedValue({
+            mocks.getSettings.mockResolvedValue({
                 llm: { cloud: { providers: [] } },
                 open_router_free_api: {
                     enabled: true,
@@ -380,7 +383,7 @@ describe('CloudClient Integration', () => {
             });
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             const result = await client.testFreeModels();
             expect(result.tested).toBe(false);
@@ -388,7 +391,7 @@ describe('CloudClient Integration', () => {
         });
 
         it('should start background testing when enabled', async () => {
-            getSettings.mockResolvedValue({
+            mocks.getSettings.mockResolvedValue({
                 llm: { cloud: { providers: [] } },
                 open_router_free_api: {
                     enabled: true,
@@ -401,7 +404,7 @@ describe('CloudClient Integration', () => {
             });
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             const result = await client.testFreeModels();
             expect(result.tested).toBe(true);
@@ -411,17 +414,17 @@ describe('CloudClient Integration', () => {
 
     describe('Request Sending - Edge Cases', () => {
         beforeEach(async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // No setup needed
         });
 
         it('should handle missing API key gracefully', async () => {
-            getSettings.mockResolvedValue({
+            mocks.getSettings.mockResolvedValue({
                 llm: { cloud: { providers: [] } },
                 open_router_free_api: { enabled: false }
             });
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             const result = await client.sendRequest({
                 prompt: 'Test prompt'
@@ -453,7 +456,7 @@ describe('CloudClient Integration', () => {
 
     describe('JSON Response Parsing', () => {
         beforeEach(async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // No setup needed
         });
 
         it('should parse JSON responses starting with {', () => {
@@ -521,29 +524,29 @@ describe('CloudClient Integration', () => {
 
     describe('Error Handling', () => {
         beforeEach(async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
+            // No setup needed
         });
 
         it('should handle empty settings gracefully', async () => {
             getSettings.mockResolvedValue({});
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
-            expect(client.config).toEqual({});
+            expect(client.config).toBeNull();
         });
 
         it('should handle null settings gracefully', async () => {
-            getSettings.mockResolvedValue(null);
+            mocks.getSettings.mockResolvedValue(null);
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await client.initPromise;
 
             expect(client.config).toBeDefined();
         });
 
         it('should handle settings loading error', async () => {
-            getSettings.mockRejectedValue(new Error('Config load failed'));
+            mocks.getSettings.mockRejectedValue(new Error('Config load failed'));
 
             const client = new CloudClient();
             await new Promise(resolve => setTimeout(resolve, 50));
@@ -560,7 +563,7 @@ describe('CloudClient Request Queue Integration', () => {
     beforeEach(async () => {
         vi.clearAllMocks();
 
-        getSettings.mockResolvedValue({
+        mocks.getSettings.mockResolvedValue({
             llm: {
                 cloud: {
                     providers: [{
@@ -575,7 +578,7 @@ describe('CloudClient Request Queue Integration', () => {
         const module = await import('../../core/cloud-client.js');
         CloudClient = module.default;
         cloudClient = new CloudClient();
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await cloudClient.initPromise;
     });
 
     describe('Concurrent Request Handling', () => {

@@ -12,17 +12,17 @@ class ActionEngine {
 
     /**
      * Executes a single JSON action on the page
-     * @param {import('playwright').Page} page 
+     * @param {object} page - The Playwright page instance.
      * @param {object} action - { action: "click|type|press|scroll|navigate|wait|done", selector?, value?, key? }
      * @returns {Promise<{success: boolean, done: boolean, error: string}>}
      */
     async execute(page, action, sessionId = 'unknown') {
         if (!action || !action.action) {
-            return { success: false, error: "No action specified" };
+            return { success: false, done: false, error: "No action specified" };
         }
 
         // Ensure tab is focused (critical for multi-tab concurrency)
-        try { await page.bringToFront(); } catch (e) { /* ignore if already closed */ }
+        try { await page.bringToFront(); } catch (_e) { /* ignore if already closed */ }
 
         let target = action.selector;
         if (!target) {
@@ -62,14 +62,14 @@ class ActionEngine {
                     break;
                 case 'done':
                     logger.info('Agent indicates task completion.');
-                    return { done: true, success: true };
+                    return { done: true, success: true, error: "" };
                 default:
-                    return { success: false, error: `Unknown action: ${action.action}` };
+                    return { success: false, done: false, error: `Unknown action: ${action.action}` };
             }
-            return { success: true };
+            return { success: true, done: false, error: "" };
         } catch (e) {
             logger.error(`Action Execution Failed: ${e.message}`);
-            return { success: false, error: e.message };
+            return { success: false, done: false, error: e.message };
         }
     }
 

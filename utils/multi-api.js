@@ -4,7 +4,6 @@
  */
 
 import { createLogger } from './logger.js';
-import { mathUtils } from './mathUtils.js';
 
 const logger = createLogger('multi-api.js');
 

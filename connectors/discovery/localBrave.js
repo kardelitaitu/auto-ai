@@ -64,7 +64,7 @@ class LocalBraveDiscover extends BaseDiscover {
           } catch (versionError) {
             const firstTab = browserTabs[0];
             if (firstTab?.webSocketDebuggerUrl) {
-              const urlMatch = firstTab.webSocketDebuggerUrl.match(/(ws:\/\/[^\/]+:\d+)\/devtools\/page\/[^\/]+/);
+              const urlMatch = firstTab.webSocketDebuggerUrl.match(/(ws:\/\/[^/]+:\d+)\/devtools\/page\/[^/]+/);
               if (urlMatch) {
                 browserWsUrl = `${urlMatch[1]}/devtools/browser/${Date.now()}-${bravePort}`;
               }

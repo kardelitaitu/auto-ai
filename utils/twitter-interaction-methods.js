@@ -53,7 +53,7 @@ export const replyMethods = {
             const verify = await human.verifyComposerOpen(page);
             
             if (verify.open) {
-                composerOpened = true;
+                // composerOpened = true; // Unused assignment
                 logger.info(`[replyA] Composer opened with: ${verify.selector}`);
                 
                 await human.typeText(page, text, verify.locator || page.locator(verify.selector).first());
@@ -79,7 +79,7 @@ export const replyMethods = {
      * Method B: Reply button click
      * Flow: Click reply button → Type → Submit
      */
-    replyB: async (page, text, human, logger, options = {}) => {
+    replyB: async (page, text, human, logger, _options = {}) => {
         logger.info(`[replyB] Starting button click method`);
         
         await page.evaluate(() => window.scrollTo(0, 0));
@@ -131,7 +131,7 @@ export const replyMethods = {
      * Method C: Direct composer focus
      * Flow: Focus main tweet → Find reply box → Click → Type → Submit
      */
-    replyC: async (page, text, human, logger, options = {}) => {
+    replyC: async (page, text, human, logger, _options = {}) => {
         logger.info(`[replyC] Starting direct composer focus method`);
         
         await page.evaluate(() => window.scrollTo(0, 0));
@@ -221,7 +221,7 @@ export const quoteMethods = {
      * Method A: Keyboard compose (T key) + Quote option
      * Flow: Click tweet → Press T → ArrowDown → Enter → Type → Submit
      */
-    quoteA: async (page, text, human, logger, options = {}) => {
+    quoteA: async (page, text, human, logger, _options = {}) => {
         logger.info(`[quoteA] Starting keyboard compose method`);
         
         await page.evaluate(() => window.scrollTo(0, 0));
@@ -284,7 +284,7 @@ export const quoteMethods = {
      * Method B: Retweet menu → Quote
      * Flow: Click retweet button → Click Quote option → Type → Submit
      */
-    quoteB: async (page, text, human, logger, options = {}) => {
+    quoteB: async (page, text, human, logger, _options = {}) => {
         logger.info(`[quoteB] Starting retweet menu method`);
         
         await page.evaluate(() => window.scrollTo(0, 0));
@@ -315,7 +315,9 @@ export const quoteMethods = {
                         logger.info(`[quoteB] Found retweet button: ${selector}`);
                         break;
                     }
-                } catch {}
+                } catch {
+                    // Ignore element visibility check errors
+                }
             }
             if (retweetBtn) break;
         }
@@ -356,10 +358,14 @@ export const quoteMethods = {
                             logger.info(`[quoteB] Found Quote option: ${selector}`);
                             break;
                         }
-                    } catch {}
+                    } catch {
+                        // Ignore element check errors
+                    }
                 }
                 if (quoteOption) break;
-            } catch {}
+            } catch {
+                // Ignore selector errors
+            }
         }
 
         if (!quoteOption) {
@@ -406,7 +412,7 @@ export const quoteMethods = {
      * Method C: Type → New Line → Paste URL
      * Flow: Click Compose → Type comment → Enter → Paste URL → Submit
      */
-    quoteC: async (page, text, human, logger, options = {}) => {
+    quoteC: async (page, text, human, logger, _options = {}) => {
         logger.info(`[quoteC] Starting new post + paste URL method`);
         
         // Get current tweet URL
@@ -438,7 +444,9 @@ export const quoteMethods = {
                         logger.info(`[quoteC] Found Compose button: ${selector}`);
                         break;
                     }
-                } catch {}
+                } catch {
+                    // Ignore element visibility check errors
+                }
             }
             if (composeBtn) break;
         }

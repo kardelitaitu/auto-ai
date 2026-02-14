@@ -6,6 +6,8 @@
  * @module utils/navigation-diversity
  */
 
+import { mathUtils } from './mathUtils.js';
+
 export const NAV_STATES = {
     FEED: 'FEED',
     PROFILE: 'PROFILE',
@@ -234,13 +236,6 @@ function createNavigationManager(options = {}) {
     };
 }
 
-function mathUtils() {
-    return {
-        randomInRange(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-    };
-}
 
 export const navigationDiversity = {
     createNavigationManager,

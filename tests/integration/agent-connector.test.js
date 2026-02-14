@@ -6,6 +6,24 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+const mocks = vi.hoisted(() => ({
+    getSettings: vi.fn()
+}));
+
+vi.mock('../../utils/configLoader.js', () => ({
+    getSettings: mocks.getSettings
+}));
+
+vi.mock('../../utils/free-openrouter-helper.js', () => ({
+    FreeOpenRouterHelper: {
+        getInstance: vi.fn(() => ({
+            testAllModelsInBackground: vi.fn(),
+            getOptimizedModelList: vi.fn(() => ({ primary: 'test-model', fallbacks: [] })),
+            getResults: vi.fn(() => ({ working: [], failed: [] }))
+        }))
+    }
+}));
+
 vi.mock('../../utils/logger.js', () => ({
     createLogger: vi.fn(() => ({
         info: vi.fn(),
@@ -22,6 +40,19 @@ describe('AgentConnector Integration', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+
+        mocks.getSettings.mockResolvedValue({
+            llm: {
+                cloud: {
+                    enabled: true,
+                    providers: [],
+                    timeout: 60000
+                }
+            },
+            open_router_free_api: {
+                enabled: false
+            }
+        });
 
         const module = await import('../../core/agent-connector.js');
         AgentConnector = module.default;

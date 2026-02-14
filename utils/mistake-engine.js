@@ -6,6 +6,8 @@
  * @module utils/mistake-engine
  */
 
+import { mathUtils } from './mathUtils.js';
+
 const MISTAKE_CONFIG = {
     misclickChance: 0.05,
     misclickOffset: { min: 3, max: 8 },
@@ -33,7 +35,7 @@ function createMistakeEngine(options = {}) {
         },
         
         async simulateMisclick(page, targetSelector, options = {}) {
-            const { logger = console, actionName = 'action' } = options;
+            const { logger = console, actionName: _actionName = 'action' } = options;
             
             try {
                 const target = await page.$(targetSelector);
@@ -76,7 +78,7 @@ function createMistakeEngine(options = {}) {
         async simulateAbandonment(page, options = {}) {
             const { logger = console, reason = 'change of mind' } = options;
             
-            const delay = this.getAbandomentDelay();
+            const delay = this.getAbandonmentDelay();
             logger.info(`[MistakeEngine] Abandoning action (${reason}) for ${delay}ms...`);
             
             await page.waitForTimeout(delay);
@@ -88,8 +90,8 @@ function createMistakeEngine(options = {}) {
             return Math.random() < config.typingErrorChance;
         },
         
-        async simulateTypingError(page, text, inputEl, options = {}) {
-            const { logger = console } = options;
+        async simulateTypingError(page, _text, _inputEl, options = {}) {
+            const { logger: _logger = console } = options;
             
             const errorDelay = mathUtils.randomInRange(80, 200);
             await page.waitForTimeout(errorDelay);
@@ -105,8 +107,8 @@ function createMistakeEngine(options = {}) {
             return Math.random() < config.navigationErrorChance;
         },
         
-        async simulateNavigationError(page, targetUrl, options = {}) {
-            const { logger = console, intendedSelector, wrongSelector } = options;
+        async simulateNavigationError(page, _targetUrl, options = {}) {
+            const { logger = console, intendedSelector: _intendedSelector, wrongSelector } = options;
             
             logger.info(`[MistakeEngine] Navigation error simulation`);
             
@@ -173,13 +175,6 @@ function createMistakeEngine(options = {}) {
     };
 }
 
-function mathUtils() {
-    return {
-        randomInRange(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-    };
-}
 
 function createHumanizedClick(page, selector, options = {}) {
     const engine = createMistakeEngine();
@@ -216,7 +211,7 @@ function createHumanizedClick(page, selector, options = {}) {
         }
         
         await page.mouse.move(centerX, centerY);
-        await page.waitForTimeout(mathUtils().randomInRange(100, 300));
+        await page.waitForTimeout(mathUtils.randomInRange(100, 300));
         
         return { clicked: true, corrected: false, x: centerX, y: centerY };
     };

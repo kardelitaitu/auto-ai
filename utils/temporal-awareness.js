@@ -35,8 +35,8 @@ function getCurrentHour() {
 function getProxyHour(timezone = 'America/New_York') {
     try {
         const now = new Date();
-        const options = { timeZone: timezone, hour: 'numeric', hour12: false };
-        return parseInt(now.toLocaleTimeString(options));
+        const s = now.toLocaleTimeString('en-US', { timeZone: timezone, hour12: false });
+        return parseInt(s.split(':')[0], 10);
     } catch {
         return getCurrentHour();
     }
@@ -136,7 +136,7 @@ function createTemporalAwareness(options = {}) {
                 
                 return { quality, latency };
                 
-            } catch (error) {
+            } catch (_error) {
                 return { quality: 'unknown', latency: null };
             }
         },

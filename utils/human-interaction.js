@@ -6,7 +6,7 @@
 
 import { createLogger } from './logger.js';
 import { mathUtils } from './mathUtils.js';
-import { entropy } from './entropyController.js';
+import { entropy as _entropy } from './entropyController.js';
 import { GhostCursor } from './ghostCursor.js';
 
 const logger = createLogger('human-interaction.js');
@@ -189,7 +189,7 @@ export class HumanInteraction {
 
     /**
      * Find element with multiple selectors
-     * @returns {object} { element, selector, index }
+     * @returns {Promise<any>}
      */
     async findElement(page, selectors, options = {}) {
         const { visibleOnly = true, timeout = 5000 } = options;
@@ -280,7 +280,9 @@ export class HumanInteraction {
                     this.logDebug(`[Verify] Late detection: ${selector}`);
                     return { open: true, selector, locator: el };
                 }
-            } catch {}
+            } catch {
+                // Ignore error, continue to typing
+            }
         }
 
         this.logDebug(`[Verify] Composer not open`);
@@ -316,7 +318,9 @@ export class HumanInteraction {
                         return { sent: true, method: check.label };
                     }
                 }
-            } catch (e) {}
+            } catch (_e) {
+                // Ignore error, continue to next check
+            }
         }
 
         // Check URL changed back
@@ -379,7 +383,7 @@ export class HumanInteraction {
             const el = document.activeElement;
             return {
                 tagName: el?.tagName,
-                isContentEditable: el?.isContentEditable,
+                isContentEditable: el?.getAttribute('contenteditable') === 'true',
                 hasFocus: el === document.querySelector('[data-testid="tweetTextarea_0"]') || 
                           el === document.querySelector('[contenteditable="true"]')
             };
@@ -393,7 +397,9 @@ export class HumanInteraction {
             try {
                 await inputEl.click({ force: true });
                 await new Promise(resolve => setTimeout(resolve, 200));
-            } catch {}
+            } catch (_e) {
+                // Ignore error
+            }
         }
 
         // Human-like typing with variations
@@ -479,7 +485,7 @@ export class HumanInteraction {
                     // Verify focus worked
                     const isFocused = await page.evaluate(() => {
                         const el = document.activeElement;
-                        return el?.isContentEditable || 
+                        return (el?.getAttribute('contenteditable') === 'true') || 
                                el?.tagName === 'TEXTAREA' || 
                                el?.tagName === 'INPUT';
                     });
@@ -559,7 +565,7 @@ export class HumanInteraction {
      * @returns {Promise<object|null>} - Found element info or null
      */
     async findWithFallback(selectors, options = {}) {
-        const { visible = true, timeout = 5000, logLevel = 'debug' } = options;
+        const { visible = true, timeout = 5000, logLevel: _logLevel = 'debug' } = options;
         
         const startTime = Date.now();
         
@@ -710,7 +716,7 @@ export class HumanInteraction {
                     this.logDebug(`[WaitFallback] Found: ${selector}`);
                     return { element: element.first(), selector };
                 }
-            } catch (error) {
+            } catch (_error) {
                 this.logDebug(`[WaitFallback] Not found within timeout: ${selector}`);
                 continue;
             }

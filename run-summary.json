@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 23893,
-      "uptimeFormatted": "23s",
-      "timeSinceReset": 23893,
-      "timeSinceResetFormatted": "23s"
+      "uptime": 413291,
+      "uptimeFormatted": "6m 53s",
+      "timeSinceReset": 413291,
+      "timeSinceResetFormatted": "6m 53s"
     },
     "tasks": {
       "executed": 1,
       "failed": 0,
       "succeeded": 1,
       "successRate": 100,
-      "avgDuration": 21709,
-      "totalDuration": 21709,
+      "avgDuration": 411254,
+      "totalDuration": 411254,
       "durationPercentiles": {
-        "p50": 21709,
-        "p95": 21709,
-        "p99": 21709
+        "p50": 411254,
+        "p95": 411254,
+        "p99": 411254
       }
     },
     "browsers": {
@@ -61,17 +61,17 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-02-13T00:00:24.787Z"
+    "runEndTime": "2026-02-14T06:39:32.360Z"
   },
   "tasks": [
     {
       "taskName": "ai-twitteractivity",
-      "duration": 21709,
+      "duration": 411254,
       "success": true,
       "sessionId": "Brave-9002:9002",
       "error": null,
-      "startTime": "2026-02-13T00:00:03.053Z",
-      "timestamp": 1770940824762
+      "startTime": "2026-02-14T06:32:41.080Z",
+      "timestamp": 1771051172334
     }
   ]
 }

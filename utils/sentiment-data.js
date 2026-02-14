@@ -304,7 +304,7 @@ export const SARCASM_MARKERS = {
             { pattern: /✨ tragedy ✨/i, confidence: 0.9 },
             { pattern: /goals/i, context: 'negative_sentiment', confidence: 0.7 },
             { pattern: /living my best life/i, context: 'sarcastic_situation', confidence: 0.6 },
-            { pattern: /can\'t wait/i, context: 'clearly reluctant', confidence: 0.7 },
+            { pattern: /can't wait/i, context: 'clearly reluctant', confidence: 0.7 },
             { pattern: /so excited/i, context: 'obviously not', confidence: 0.6 }
         ]
     },
@@ -379,7 +379,7 @@ export const TOXICITY_MARKERS = {
         /go die/i,
         /kill yourself/i,
         /you suck/i,
-        /you\'re an idiot/i,
+        /you're an idiot/i,
         /what an asshole/i
     ],
     
@@ -407,9 +407,9 @@ export const EMOJI_SENTIMENT = {
     // Happiness/Positivity (0.3 to 0.7)
     '😊': 0.3, '😄': 0.4, '😁': 0.5, '😆': 0.4, '😍': 0.6,
     '🥰': 0.7, '😻': 0.5, '👍': 0.4, '🙌': 0.5, '✨': 0.3,
-    '🎉': 0.6, '🎊': 0.6, '💕': 0.5, '💖': 0.6, '⭐': 0.3,
-    '🌟': 0.4, '💫': 0.3, '✨': 0.3, '🌈': 0.5, '☀️': 0.4,
-    '😻': 0.5, '😄': 0.4, '🥳': 0.7, '🤗': 0.6, '😇': 0.5,
+    '🎉': 0.6, '🎊': 0.6, '💕': 0.5, '💖': 0.6,
+    '🌟': 0.4, '💫': 0.3, '🌈': 0.5, '☀️': 0.4,
+    '🥳': 0.7, '🤗': 0.6, '😇': 0.5,
     
     // Sadness/Negativity (-0.6 to -0.3)
     '😢': -0.5, '😭': -0.6, '😞': -0.4, '😔': -0.3, '💔': -0.6,
@@ -418,12 +418,12 @@ export const EMOJI_SENTIMENT = {
     '😳': -0.2, '😱': -0.4, '😵': -0.4, '🤐': 0, '😶': -0.2,
     
     // Neutral/Humor (varies)
-    '😐': 0, '🤐': 0, '😒': -0.2, '🙄': -0.1, '🤡': -0.3,
+    '😐': 0, '😒': -0.2, '🙄': -0.1, '🤡': -0.3,
     '💀': 0, '😂': 0.4, '🤣': 0.5, '😅': 0.2, '😬': -0.2,
     '🤔': 0, '🧐': 0, '👀': 0, '💭': 0, '🎭': 0, '🤷': 0,
     
     // Thinking/Contemplation (neutral)
-    '🤔': 0, '🧐': 0, '👀': 0, '💭': 0, '🎭': 0, '🙏': 0,
+    '🙏': 0,
     '🤝': 0, '✋': 0, '👋': 0, '🤲': 0,
     
     // Urgency/Energy (0.2 to 0.3)

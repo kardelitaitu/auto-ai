@@ -115,6 +115,7 @@ async function scrape() {
 
                 const hrefs = Array.from(document.querySelectorAll('a[href*="ved="]'))
                     .map(el => {
+                        if (!(el instanceof HTMLAnchorElement)) return null;
                         try { return new URL(el.href).searchParams.get('ved'); } catch (e) { return null; }
                     });
 

@@ -11,7 +11,7 @@ class Vision {
 
     /**
      * Captures the current page state as a base64 image and AXTree
-     * @param {import('playwright').Page} page 
+     * @param {object} page - The Playwright page instance. 
      * @returns {Promise<string>} Base64 image
      */
     async captureState(page) {
@@ -33,7 +33,7 @@ class Vision {
 
     /**
      * Captures a simplified Accessibility Tree
-     * @param {import('playwright').Page} page 
+     * @param {object} page - The Playwright page instance.
      * @returns {Promise<string>} Text representation of AXTree
      */
     async captureAXTree(page, sessionId) {

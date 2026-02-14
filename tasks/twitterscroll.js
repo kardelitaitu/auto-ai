@@ -7,7 +7,7 @@ import { createRandomScroller, createLogger } from '../utils/utils.js';
 
 /**
  * An automation task that navigates to Twitter/X and scrolls.
- * @param {import('playwright').Page} page - The Playwright page object.
+ * @param {object} page - The Playwright page object.
  * @param {object} payload - The payload data for the task.
  * @param {string} payload.browserInfo - A unique identifier for the browser.
  */

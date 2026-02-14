@@ -142,7 +142,7 @@ export class FreeOpenRouterHelper {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          const errorText = await response.text();
+          const _errorText = await response.text();
           throw new Error(`HTTP ${response.status}`);
         }
 
@@ -214,7 +214,6 @@ export class FreeOpenRouterHelper {
       this.testStartTime = Date.now();
 
       let successCount = 0;
-      let failCount = 0;
 
       // Process models in parallel batches
       for (let i = 0; i < this.models.length; i += this.batchSize) {
@@ -233,7 +232,6 @@ export class FreeOpenRouterHelper {
             successCount++;
           } else {
             this.results.failed.push({ model, error: result.error?.substring(0, 30) || 'Err', duration: result.duration });
-            failCount++;
           }
         });
 

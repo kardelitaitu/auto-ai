@@ -1,2 +1,6 @@
 node_modules
 .aider*
+.qodo
+*.log
+/ui
+/screenshot

@@ -344,6 +344,9 @@ export class AITwitterAgent extends TwitterAgent {
         // Release operation lock
         this.operationLock = false;
         this.diveLockAcquired = false;
+        
+        // Always re-enable scrolling when dive ends
+        this.scrollingEnabled = true;
 
         this.log(`[DiveLock] 🔓 Dive operation ended (success: ${success}, state: ${this.pageState})`);
     }
@@ -692,132 +695,61 @@ export class AITwitterAgent extends TwitterAgent {
     }
 
     /**
-          * Override diveTweet to use async queue for race-condition-free processing
-           * Uses DiveQueue instead of simple lock
-           */
+     * Override diveTweet to use split-phase processing
+     * Phase 1: Scan (Find & Extract) - Locked by simple boolean
+     * Phase 2: Process (AI & Action) - Locked by DiveQueue (Timeout monitored)
+     */
     async diveTweet() {
         const diveId = `dive_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
-        const startTime = Date.now();
+        
+        // PHASE 1: SCANNING (Quick, no heavy timeout needed)
+        // --------------------------------------------------
+        if (this.isScanning) {
+            this.log(`[DiveLock] ⚠️ Scan already in progress, skipping ${diveId}`);
+            return;
+        }
 
-        this.log(`[DiveQueue] Adding dive to queue: ${diveId}`);
-
+        this.isScanning = true;
+        
         try {
-            const result = await this.diveQueue.addDive(
-                // Primary dive function
-                async () => {
-                    return await this._executeDiveWithAI();
-                },
-                // Fallback engagement function
-                // Disable fallback engagement for AI-driven dives
-                null,
-                {
-                    taskName: diveId,
-                    timeout: this.quickModeEnabled ? TWITTER_TIMEOUTS.QUICK_MODE_TIMEOUT : TWITTER_TIMEOUTS.DIVE_TIMEOUT,
-                    priority: 0
-                }
-            );
+            this.log(`[DiveLock] 🔍 Starting SCAN phase for ${diveId}`);
+            
+            // Execute the dive logic. 
+            // We pass a callback that wraps ONLY the AI/Action part in the heavy DiveQueue.
+            // The rest of the function (scrolling, extracting) runs immediately.
+            await this._diveTweetWithAI(async (aiTask) => {
+                 this.log(`[DiveQueue] 🧠 Entering AI Processing Queue for ${diveId}`);
+                 return await this.diveQueue.addDive(
+                    aiTask,
+                    null, // No fallback for now
+                    {
+                        taskName: diveId,
+                        timeout: TWITTER_TIMEOUTS.DIVE_TIMEOUT, // 120s timeout applies ONLY here
+                        priority: 10
+                    }
+                );
+            });
+            return;
 
-            const duration = Date.now() - startTime;
-
-            if (result.success) {
-                this.log(`[DiveQueue] Dive completed successfully in ${duration}ms`);
-                return true;
-            } else {
-                this.log(`[DiveQueue] Dive failed without fallback: ${result.error} (${duration}ms)`);
-                return false;
+        } catch (error) {
+            this.log(`[DiveLock] ❌ Error in diveTweet: ${error.message}`);
+            return;
+        } finally {
+            this.isScanning = false;
+            // Note: _diveTweetWithAI handles endDive() internally, 
+            // but we ensure cleanup if something crashed before that.
+            if (this.diveLockAcquired) {
+                 await this.endDive(false, true);
             }
-
-        } catch (error) {
-            this.log(`[DiveQueue] Queue error: ${error.message}`);
-            return false;
         }
     }
 
     /**
-     * Execute the actual dive with AI processing
-     * This is the primary dive function
+     * Internal method: diveTweet with AI reply (original logic)
+     * Now includes dive locking to prevent scroller interference
+     * @param {Function} queueWrapper - Optional wrapper for the AI execution phase
      */
-    async _executeDiveWithAI() {
-        try {
-            this.log('[Branch] Tweet Dive (Expanding with AI via Queue)...');
-            return await this._diveTweetWithAI();
-        } catch (error) {
-            this.log(`[DiveQueue] AI dive execution failed: ${error.message}`);
-            throw error;
-        }
-    }
-
-    /**
-     * Quick fallback engagement when AI pipeline times out
-     * Performs basic engagement without AI processing
-     */
-    async _quickFallbackEngagement() {
-        try {
-            this.log('[DiveQueue-Fallback] Executing quick engagement (no AI)...');
-
-            const engagementRoll = Math.random();
-            const engagementType = engagementRoll < 0.4 ? 'like' :
-                engagementRoll < 0.7 ? 'bookmark' : 'none';
-
-            if (engagementType === 'like') {
-                if (this.diveQueue.canEngage('likes')) {
-                    await this.handleLike();
-                    this.diveQueue.recordEngagement('likes');
-                    return { engagementType: 'like', success: true };
-                }
-            } else if (engagementType === 'bookmark') {
-                if (this.diveQueue.canEngage('bookmarks')) {
-                    await this.handleBookmark();
-                    this.diveQueue.recordEngagement('bookmarks');
-                    return { engagementType: 'bookmark', success: true };
-                }
-            }
-
-            this.log('[DiveQueue-Fallback] No engagement performed (limits reached)');
-            return { engagementType: 'none', success: true };
-
-        } catch (error) {
-            this.log(`[DiveQueue-Fallback] Engagement failed: ${error.message}`);
-            return { engagementType: 'error', success: false, error: error.message };
-        }
-    }
-
-    /**
-         * Ensure sufficient exploration scroll before diving
-         * Prevents re-diving into the same feed area
-         */
-    async _ensureExplorationScroll() {
-        const currentY = await this.page.evaluate(() => window.scrollY);
-        const docHeight = await this.page.evaluate(() => document.body.scrollHeight);
-        const scrollDelta = currentY - this._lastScrollY;
-        const timeSinceLastScroll = Date.now() - this._lastScrollTime;
-
-        // If scrolled enough or near bottom, no need for extra scroll
-        if (scrollDelta >= this._minScrollPerDive || currentY > docHeight - 1500) {
-            return true;
-        }
-
-        // If at top (near 0), need to scroll significantly
-        if (currentY < 100) {
-            this.log(`[Scroll] Starting from top, performing exploration scroll (${this._scrollExplorationThreshold}px)...`);
-            // Scroll with variance (0.8x - 1.2x) for natural behavior
-            const variance = 0.8 + Math.random() * 0.4;
-            const scrollAmount = Math.floor(this._scrollExplorationThreshold * variance);
-            await scrollDown(this.page, scrollAmount);
-            await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
-            this._lastScrollY = await this.page.evaluate(() => window.scrollY);
-            this._lastScrollTime = Date.now();
-            return true;
-        }
-
-        return true;
-    }
-
-    /**
-       * Internal method: diveTweet with AI reply (original logic)
-       * Now includes dive locking to prevent scroller interference
-         */
-    async _diveTweetWithAI() {
+    async _diveTweetWithAI(queueWrapper = null) {
         try {
             // ================================================================
             // ACQUIRE DIVE LOCK - Prevents scroller interference
@@ -1011,7 +943,9 @@ export class AITwitterAgent extends TwitterAgent {
                     const url = this.page.url();
                     const match = url && url.match(/x\.com\/(\w+)\/status/);
                     if (match) username = match[1];
-                } catch (e) { }
+                } catch (error) {
+                    this.log(`[AI] Username extraction failed: ${error.message}`);
+                }
             }
 
             // Validate we have tweet text
@@ -1026,31 +960,82 @@ export class AITwitterAgent extends TwitterAgent {
             // ================================================================
             // AI DECISION: Use Action Runner for smart probability redistribution
             // ================================================================
-            const selectedAction = this.actionRunner.selectAction();
+            let selectedAction = null;
             let actionSuccess = false;
+            let enhancedContext = {};
 
-            if (!selectedAction) {
-                this.log(`[AI-Engage] No action selected (all at limits or disabled)`);
-            } else {
+            // 1. Select Action (Fast, probability based) - OUTSIDE QUEUE
+            // This prevents holding the queue lock just to decide what to do
+            selectedAction = this.actionRunner.selectAction();
+
+            if (selectedAction) {
                 this.log(`[AI-Engage] Selected: ${selectedAction.toUpperCase()}`);
 
-                const context = {
-                    tweetText,
-                    username,
-                    tweetUrl,
-                    enhancedContext: {}
-                };
-
-                const result = await this.actionRunner.executeAction(selectedAction, context);
-                actionSuccess = result.success && result.executed;
-
-                if (actionSuccess) {
-                    this.log(`[AI-Engage] ✅ ${selectedAction} executed: ${result.reason}`);
-                } else if (!result.executed) {
-                    this.log(`[AI-Engage] ⏭ ${selectedAction} skipped: ${result.reason}`);
-                } else {
-                    this.log(`[AI-Engage] ❌ ${selectedAction} failed: ${result.reason}`);
+                // 2. Pre-fetch Context (Heavy scrolling) - OUTSIDE QUEUE
+                // This ensures we only block the queue for actual AI generation
+                if (selectedAction === 'reply' || selectedAction === 'quote') {
+                    this.log(`[AI-Engage] Pre-fetching context for ${selectedAction}...`);
+                    try {
+                        enhancedContext = await this.contextEngine.extractEnhancedContext(
+                            this.page,
+                            tweetUrl,
+                            tweetText,
+                            username
+                        );
+                    } catch (err) {
+                        this.log(`[AI-Engage] Context extraction failed: ${err.message}`);
+                    }
                 }
+            } else {
+                this.log(`[AI-Engage] No action selected (all at limits or disabled)`);
+            }
+
+            // Define the AI logic as a standalone async function
+            const executeAILogic = async () => {
+                const action = selectedAction;
+                let success = false;
+                let reason;
+
+                if (!action) {
+                    // Already logged above
+                } else {
+                    const context = {
+                        tweetText,
+                        username,
+                        tweetUrl,
+                        enhancedContext: enhancedContext // Pass pre-fetched context
+                    };
+
+                    const result = await this.actionRunner.executeAction(action, context);
+                    success = result.success && result.executed;
+                    reason = result.reason;
+
+                    if (success) {
+                        this.log(`[AI-Engage] ✅ ${action} executed: ${reason}`);
+                    } else if (!result.executed) {
+                        this.log(`[AI-Engage] ⏭ ${action} skipped: ${reason}`);
+                    } else {
+                        this.log(`[AI-Engage] ❌ ${action} failed: ${reason}`);
+                    }
+                }
+                return { action, success };
+            };
+
+            // Execute via wrapper (Queue) or directly
+            if (queueWrapper) {
+                const wrapperResult = await queueWrapper(executeAILogic);
+                if (wrapperResult.success) {
+                    selectedAction = wrapperResult.result.action;
+                    actionSuccess = wrapperResult.result.success;
+                } else {
+                     this.log(`[AI-Engage] Queue/AI failed: ${wrapperResult.error}`);
+                     actionSuccess = false;
+                }
+            } else {
+                // Legacy mode / Direct execution
+                const res = await executeAILogic();
+                selectedAction = res.action;
+                actionSuccess = res.success;
             }
 
             // Store tweet context for Post-Dive engagement (if needed for fallbacks)
@@ -1070,9 +1055,6 @@ export class AITwitterAgent extends TwitterAgent {
             // ================================================================
             // RELEASE DIVE LOCK AND RETURN TO HOME
             // ================================================================
-            // ================================================================
-            // RELEASE DIVE LOCK AND RETURN TO HOME
-            // ================================================================
             // Only navigate home if action was NOT successful
             if (!actionSuccess) {
                 await this.endDive(true, true);
@@ -1086,6 +1068,72 @@ export class AITwitterAgent extends TwitterAgent {
             // Release lock on error
             await this.endDive(false, true);
         }
+    }
+
+    /**
+     * Quick fallback engagement when AI pipeline times out
+     * Performs basic engagement without AI processing
+     */
+    async _quickFallbackEngagement() {
+        try {
+            this.log('[DiveQueue-Fallback] Executing quick engagement (no AI)...');
+
+            const engagementRoll = Math.random();
+            const engagementType = engagementRoll < 0.4 ? 'like' :
+                engagementRoll < 0.7 ? 'bookmark' : 'none';
+
+            if (engagementType === 'like') {
+                if (this.diveQueue.canEngage('likes')) {
+                    await this.handleLike();
+                    this.diveQueue.recordEngagement('likes');
+                    return { engagementType: 'like', success: true };
+                }
+            } else if (engagementType === 'bookmark') {
+                if (this.diveQueue.canEngage('bookmarks')) {
+                    await this.handleBookmark();
+                    this.diveQueue.recordEngagement('bookmarks');
+                    return { engagementType: 'bookmark', success: true };
+                }
+            }
+
+            this.log('[DiveQueue-Fallback] No engagement performed (limits reached)');
+            return { engagementType: 'none', success: true };
+
+        } catch (error) {
+            this.log(`[DiveQueue-Fallback] Engagement failed: ${error.message}`);
+            return { engagementType: 'error', success: false, error: error.message };
+        }
+    }
+
+    /**
+         * Ensure sufficient exploration scroll before diving
+         * Prevents re-diving into the same feed area
+         */
+    async _ensureExplorationScroll() {
+        const currentY = await this.page.evaluate(() => window.scrollY);
+        const docHeight = await this.page.evaluate(() => document.body.scrollHeight);
+        const scrollDelta = currentY - this._lastScrollY;
+        const timeSinceLastScroll = Date.now() - this._lastScrollTime;
+
+        // If scrolled enough or near bottom, no need for extra scroll
+        if (scrollDelta >= this._minScrollPerDive || currentY > docHeight - 1500) {
+            return true;
+        }
+
+        // If at top (near 0), need to scroll significantly
+        if (currentY < 100) {
+            this.log(`[Scroll] Starting from top, performing exploration scroll (${this._scrollExplorationThreshold}px)...`);
+            // Scroll with variance (0.8x - 1.2x) for natural behavior
+            const variance = 0.8 + Math.random() * 0.4;
+            const scrollAmount = Math.floor(this._scrollExplorationThreshold * variance);
+            await scrollDown(this.page, scrollAmount);
+            await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
+            this._lastScrollY = await this.page.evaluate(() => window.scrollY);
+            this._lastScrollTime = Date.now();
+            return true;
+        }
+
+        return true;
     }
 
     /**
@@ -1380,16 +1428,18 @@ export class AITwitterAgent extends TwitterAgent {
 
             const p = this.normalizeProbabilities(this.twitterConfig.probabilities);
             const roll = Math.random();
-            let cursor = 0;
+            const refreshCutoff = p.refresh;
+            const profileCutoff = refreshCutoff + p.profileDive;
+            const tweetCutoff = profileCutoff + p.tweetDive;
 
-            if (roll < (cursor += p.refresh)) {
+            if (roll < refreshCutoff) {
                 this.log('[Branch] Refresh Feed');
                 this.state.lastRefreshAt = Date.now();
                 await this.navigateHome();
                 await this.page.waitForTimeout(Math.max(50, mathUtils.gaussian(1500, 600)));
-            } else if (roll < (cursor += p.profileDive)) {
+            } else if (roll < profileCutoff) {
                 await this.diveProfile();
-            } else if (roll < (cursor += p.tweetDive)) {
+            } else if (roll < tweetCutoff) {
                 await this.diveTweet();
                 // endDive(true, true) already handles: navigate to home, wait 500ms, release lock
                 // Just continue scrolling from home
@@ -1596,7 +1646,7 @@ export class AITwitterAgent extends TwitterAgent {
         // STEP 5: Execute decision
         // ================================================================
         switch (decision.decision) {
-            case 'reply':
+            case 'reply': {
                 // Check engagement limits from both systems
                 const canReply = this.engagementTracker.canPerform('replies') && this.diveQueue.canEngage('replies');
                 if (!canReply) {
@@ -1608,6 +1658,7 @@ export class AITwitterAgent extends TwitterAgent {
                 await this.executeAIReply(decision.reply);
                 this.aiStats.replies++;
                 break;
+            }
 
             case 'skip': {
                 this.log(`[AI-Replies] Skipped (${decision.reason})`);
@@ -1878,26 +1929,22 @@ export class AITwitterAgent extends TwitterAgent {
 
             if (makeError && errorType !== 'pause') {
                 switch (errorType) {
-                    case 'adjacent':
+                    case 'adjacent': {
                         const charLower = char.toLowerCase();
                         const adjacent = keyboardLayout[charLower];
                         if (adjacent && Math.random() < 0.7) {
                             const wrongChar = adjacent[Math.floor(Math.random() * adjacent.length)];
-                            // Type wrong char
                             await this.page.keyboard.type(wrongChar, { delay: baseDelay });
-                            // Pause like human noticing
                             await this.page.waitForTimeout(mathUtils.randomInRange(80, 200));
-                            // Backspace
                             await this.page.keyboard.press('Backspace', { delay: mathUtils.randomInRange(40, 100) });
-                            // Brief pause before correct
                             await this.page.waitForTimeout(mathUtils.randomInRange(30, 80));
-                            // Type correct
                             await this.page.keyboard.type(char, { delay: baseDelay + mathUtils.randomInRange(20, 60) });
                             consecutiveErrors++;
                         } else {
                             await this.page.keyboard.type(char, { delay: baseDelay });
                         }
                         break;
+                    }
 
                     case 'double':
                         // Type the same char twice by accident
@@ -1914,21 +1961,19 @@ export class AITwitterAgent extends TwitterAgent {
                         }
                         break;
 
-                    case 'skip':
-                        // Type next char instead of current (transposition)
+                    case 'skip': {
                         if (i < chars.length - 1 && Math.random() < 0.5) {
                             const nextCharTyped = chars[i + 1];
                             await this.page.keyboard.type(nextCharTyped, { delay: baseDelay });
                             await this.page.waitForTimeout(mathUtils.randomInRange(50, 120));
-                            // Notice and correct
                             await this.page.keyboard.press('Backspace', { delay: mathUtils.randomInRange(40, 100) });
-                            // Type correct char
                             await this.page.keyboard.type(char, { delay: baseDelay + mathUtils.randomInRange(20, 80) });
                             consecutiveErrors++;
                         } else {
                             await this.page.keyboard.type(char, { delay: baseDelay });
                         }
                         break;
+                    }
 
                     case 'transposition':
                         // Type char in wrong order (like "teh" for "the")
@@ -1974,7 +2019,7 @@ export class AITwitterAgent extends TwitterAgent {
     async handleFallback(action) {
         try {
             switch (action) {
-                case 'bookmark':
+                case 'bookmark': {
                     // Check engagement limits from both systems
                     const canBookmark = this.engagementTracker.canPerform('bookmarks') && this.diveQueue.canEngage('bookmarks');
                     if (!canBookmark) {
@@ -2000,6 +2045,7 @@ export class AITwitterAgent extends TwitterAgent {
                         }
                     }
                     break;
+                }
 
                 case 'like':
                     await this.handleLike();
@@ -2100,7 +2146,9 @@ export class AITwitterAgent extends TwitterAgent {
                         }
                         lastBoundingBox = bbox;
                     }
-                } catch { }
+                } catch (error) {
+                    this.log(`[Like] Element stability check failed: ${error.message}`);
+                }
 
                 if (stableCount < 3) {
                     await this.page.waitForTimeout(100);
@@ -2115,7 +2163,9 @@ export class AITwitterAgent extends TwitterAgent {
                     this.log(`[Skip] Tweet already liked (aria-label: ${ariaLabel})`);
                     return;
                 }
-            } catch { }
+            } catch (error) {
+                this.log(`[Like] Aria check failed: ${error.message}`);
+            }
 
             // Verify element is actionable (not covered by overlay)
             const isActionable = await this.isElementActionable(likeButton);
@@ -2124,7 +2174,9 @@ export class AITwitterAgent extends TwitterAgent {
                 try {
                     await likeButton.scrollIntoViewIfNeeded();
                     await this.page.waitForTimeout(500);
-                } catch { }
+                } catch (error) {
+                    this.log(`[Like] Scroll adjustment failed: ${error.message}`);
+                }
             }
 
             // ================================================================
@@ -2159,7 +2211,9 @@ export class AITwitterAgent extends TwitterAgent {
                         likeRegistered = true;
                         break;
                     }
-                } catch { }
+                } catch (error) {
+                    this.log(`[Like] Post-click verification error: ${error.message}`);
+                }
             }
 
             if (likeRegistered) {
@@ -2254,7 +2308,9 @@ export class AITwitterAgent extends TwitterAgent {
                         }
                         lastBoundingBox = bbox;
                     }
-                } catch { }
+                } catch (error) {
+                    this.log(`[Bookmark] Element stability check failed: ${error.message}`);
+                }
 
                 if (stableCount < 3) {
                     await this.page.waitForTimeout(100);
@@ -2269,7 +2325,9 @@ export class AITwitterAgent extends TwitterAgent {
                 try {
                     await bm.scrollIntoViewIfNeeded();
                     await this.page.waitForTimeout(500);
-                } catch { }
+                } catch (error) {
+                    this.log(`[Bookmark] Scroll adjustment failed: ${error.message}`);
+                }
             }
 
             // ================================================================
@@ -2304,7 +2362,9 @@ export class AITwitterAgent extends TwitterAgent {
                         bookmarkRegistered = true;
                         break;
                     }
-                } catch { }
+                } catch (error) {
+                    this.log(`[Bookmark] Post-click verification error: ${error.message}`);
+                }
             }
 
             if (bookmarkRegistered) {
@@ -2454,7 +2514,9 @@ export class AITwitterAgent extends TwitterAgent {
                 try {
                     await this.page.keyboard.press('Escape');
                     await this.page.waitForTimeout(500);
-                } catch (e) { }
+                } catch (e) {
+                    this.log(`[AI-Quote] Composer close failed: ${e.message}`);
+                }
             }
         } else {
             this.log(`[AI-Quote] Quote tweet failed: ${result.reason} (method: ${result.method})`);
@@ -2539,7 +2601,7 @@ export class AITwitterAgent extends TwitterAgent {
                 return { healthy: false, reason: 'unexpected_url' };
             }
 
-            return { healthy: true, pageState: pageHealth.readyState };
+            return { healthy: true, reason: '' };
 
         } catch (error) {
             this.logWarn(`[Health] Health check failed: ${error.message}`);
@@ -2547,21 +2609,6 @@ export class AITwitterAgent extends TwitterAgent {
         }
     }
 
-    /**
-      * Log current engagement status
-      */
-    getActionStats() {
-        if (this.actionRunner) {
-            return this.actionRunner.getStats();
-        }
-        const stats = {};
-        if (this.actions) {
-            for (const [name, action] of Object.entries(this.actions)) {
-                stats[name] = action.getStats();
-            }
-        }
-        return stats;
-    }
     //Get engagement stats
     getEngagementStats() {
         return {

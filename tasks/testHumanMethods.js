@@ -124,7 +124,9 @@ export default async function testHumanMethodsTask(page, payload) {
                         return { text, selector };
                     }
                 }
-            } catch {}
+            } catch {
+                continue;
+            }
         }
         return null;
     }
@@ -213,7 +215,9 @@ export default async function testHumanMethodsTask(page, payload) {
                             if (text && text.length > 2) {
                                 logger.info(`[TestHumanMethods]   - "${text.substring(0, 60)}..."`);
                             }
-                        } catch {}
+                        } catch {
+                            continue;
+                        }
                     }
                 }
             } catch (e) {
@@ -354,7 +358,7 @@ export default async function testHumanMethodsTask(page, payload) {
     } catch (error) {
         logger.error(`[TestHumanMethods] Error: ${error.message}`);
     } finally {
-        try { if (page && !page.isClosed()) await page.close(); } catch {}
+        try { if (page && !page.isClosed()) await page.close(); } catch { logger.warn('[TestHumanMethods] Failed to close page'); }
         logger.info(`[TestHumanMethods] Done.`);
     }
 }
@@ -375,7 +379,7 @@ async function testReplyMethod(page, method, text, engine, human, logger) {
 
     switch (method.toLowerCase()) {
         case 'replya':
-        case 'replya_keyboard':
+        case 'replya_keyboard': {
             logger.info(`[TestHumanMethods] Method A: Keyboard Shortcut (R key)`);
             
             let replyARetries = 0;
@@ -494,9 +498,10 @@ async function testReplyMethod(page, method, text, engine, human, logger) {
                 logger.error(`[TestHumanMethods] ✗ Failed to open composer after ${maxReplyARetries + 1} attempts`);
             }
             break;
+        }
 
         case 'replyb':
-        case 'replyb_button':
+        case 'replyb_button': {
             logger.info(`[TestHumanMethods] Method B: Button Click`);
             await page.evaluate(() => window.scrollTo(0, 0));
             await page.waitForTimeout(500);
@@ -539,6 +544,7 @@ async function testReplyMethod(page, method, text, engine, human, logger) {
                 logger.warn(`[TestHumanMethods] ✗ Reply button not found`);
             }
             break;
+        }
 
         default:
             logger.warn(`[TestHumanMethods] Unknown reply method: ${method}`);

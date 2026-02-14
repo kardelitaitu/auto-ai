@@ -5,7 +5,7 @@
  * @module utils/sentiment-service
  */
 
-import { createLogger } from './logger.js';
+// import { createLogger } from './logger.js';
 import { sentimentGuard } from './sentiment-guard.js';
 import {
   ValenceAnalyzer,
@@ -16,7 +16,9 @@ import {
   ToxicityAnalyzer
 } from './sentiment-analyzers.js';
 
-const logger = createLogger('sentiment-service.js');
+// const logger = createLogger('sentiment-service.js');
+// const logger = { info: () => {}, error: () => {}, warn: () => {}, debug: () => {} }; // Mock logger if needed or just remove usage
+
 
 /**
  * Unified Sentiment Service
@@ -283,7 +285,7 @@ export class SentimentService {
           max: 30
         };
 
-      case 'balanced':
+      case 'balanced': {
         // Pick 15 most positive + 15 most negative
         const positive = analyzed
           .filter(r => r.sentiment.dimensions.valence.valence > 0)
@@ -297,6 +299,7 @@ export class SentimentService {
           manualSelection: [...positive, ...negative],
           max: 30
         };
+      }
 
       case 'positive-biased':
         return {

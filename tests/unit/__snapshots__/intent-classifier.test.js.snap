@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`IntentClassifier > classify() > should route to CLOUD when payload requires error recovery (Priority 1) 1`] = `
+{
+  "complexityScore": 9,
+  "confidenceScore": 95,
+  "destination": "cloud",
+  "reason": "Error condition detected, requires advanced reasoning",
+}
+`;

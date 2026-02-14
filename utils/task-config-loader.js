@@ -94,7 +94,7 @@ export class TaskConfigLoader {
             
         } catch (error) {
             logger.error(`[ConfigLoader] Failed to load configuration: ${error.message}`);
-            throw new Error(`Configuration loading failed: ${error.message}`);
+            throw new Error(`Configuration loading failed: ${error.message}`, { cause: error });
         }
     }
     
@@ -214,7 +214,8 @@ export class TaskConfigLoader {
             minDuration: payload.minDuration,
             maxDuration: payload.maxDuration,
             theme: payload.theme,
-            debug: payload.debug
+            debug: payload.debug,
+            DEBUG_MODE: process.env.DEBUG_MODE // Include env var
         };
         return JSON.stringify(keyData);
     }
@@ -249,14 +250,15 @@ export class TaskConfigLoader {
      * Get configuration loading statistics
      */
     getStats() {
+        const stats = this.cache.getStats();
         return {
             cache: {
                 hitCount: this.hitCount,
                 loadCount: this.loadCount,
                 hitRate: this.loadCount > 0 ? (this.hitCount / (this.hitCount + this.loadCount) * 100).toFixed(2) + '%' : '0%'
             },
-            cacheSize: this.cache.size,
-            cacheMaxSize: this.cache.maxSize
+            cacheSize: stats.size,
+            cacheMaxSize: stats.maxSize
         };
     }
     

@@ -13,8 +13,9 @@ import { RequestDedupe } from './request-dedupe.js';
 import { ModelPerfTracker } from './model-perf-tracker.js';
 import { ConfigValidator } from './config-validator.js';
 import { ApiKeyTimeoutTracker } from './api-key-timeout-tracker.js';
-import { FreeOpenRouterHelper } from './free-openrouter-helper.js';
-import { RouterError, ProxyError, RateLimitError, ModelError, classifyHttpError } from './errors.js';
+// import { FreeOpenRouterHelper } from './free-openrouter-helper.js';
+import { RouterError, ProxyError, classifyHttpError } from './errors.js';
+// import { RateLimitError, ModelError } from './errors.js';
 
 const logger = createLogger('free-api-router.js');
 
@@ -143,19 +144,6 @@ export class FreeApiRouter {
     this.configValidator = new ConfigValidator();
   }
 
-  _selectSessionApiKey() {
-    if (this.config.apiKeys.length === 0) {
-      logger.warn('[FreeRouter] No API keys configured');
-      return;
-    }
-
-    const sessionKey = `${this.browserId}:${this.taskId}`;
-    const hash = this._hash(sessionKey);
-    this.sessionApiKeyIndex = hash % this.config.apiKeys.length;
-    this.sessionApiKey = this.config.apiKeys[this.sessionApiKeyIndex];
-    logger.info(`[FreeRouter] Session ${this.sessionId} -> API Key ${this.sessionApiKeyIndex + 1}/${this.config.apiKeys.length}`);
-  }
-
   _logInitialization() {
     logger.info(`[FreeRouter] Initialized for session: ${this.sessionId}`);
     logger.info(`[FreeRouter] API Keys: ${this.config.apiKeys.length}, Selected: ${this.sessionApiKeyIndex + 1}`);
@@ -235,7 +223,7 @@ export class FreeApiRouter {
      logger.info(`[FreeRouter] processRequest: calling _tryModelWithKey`);
 
     // Build list of models to try - prioritize working models from test results
-    let modelsToTry = [];
+    let modelsToTry;
     
     // Get tested working models if available
     const testResults = sharedHelper?.getResults();
@@ -408,7 +396,7 @@ export class FreeApiRouter {
     };
   }
 
-   async _tryModelWithKey(model, messages, maxTokens, temperature, startTime) {
+   async _tryModelWithKey(model, messages, maxTokens, temperature, _startTime) {
      logger.info(`[FreeRouter] _tryModelWithKey: model=${model}`);
      const proxyString = this._selectRequestProxy();
      logger.info(`[FreeRouter] _tryModelWithKey: proxy=${proxyString}`);
@@ -531,7 +519,7 @@ const data = await response.json();
         });
       }
 
-      const response = await fetch(this.endpoint, {
+      const fetchOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -542,7 +530,9 @@ const data = await response.json();
         body: JSON.stringify(payload),
         signal: controller.signal,
         agent: httpAgent
-      });
+      };
+
+      const response = await fetch(this.endpoint, fetchOptions);
 
       clearTimeout(timeoutId);
 
@@ -608,9 +598,7 @@ const data = await response.json();
   }
 
   async validateConfig(settings) {
-    const result = this.configValidator.validate(settings);
-    this.configValidator.logResults();
-    return result;
+    return this.configValidator.validateConfig(settings);
   }
 
   async refreshRateLimits() {

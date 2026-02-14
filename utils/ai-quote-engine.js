@@ -10,8 +10,61 @@ import { sentimentService } from './sentiment-service.js';
 import { scrollRandom } from './scroll-helper.js';
 import { config } from './config-service.js';
 import { HumanInteraction } from './human-interaction.js';
+import { getStrategyInstruction } from './twitter-reply-prompt.js';
 
 const logger = createLogger('ai-quote-engine.js');
+
+export const QUOTE_SYSTEM_PROMPT = `You are a real Twitter user crafting an authentic quote tweet.
+Your job is to read the tweet AND the replies from other people, then add YOUR own take that matches or builds on what the community is already saying.
+
+## CONSENSUS QUOTE STYLE
+
+1. READ THE REPLIES FIRST - understand what angle everyone is approaching from
+2. PICK UP ON THE CONSENSUS - what's the general sentiment or theme?
+3. ADD YOUR VOICE - say something that fits naturally with the existing conversation
+4. BE SPECIFIC - react to the actual content, not just generic praise
+
+## TONE ADAPTATION
+
+Match your quote tone to the conversation:
+
+### 🎭 HUMOROUS THREAD
+- Keep it playful, use light emojis naturally
+- Short punchy comments work best
+- Examples: "main character energy", "this is giving chaos", "copium overload"
+
+### 📢 NEWS/ANNOUNCEMENT THREAD  
+- More informative, acknowledge the news
+- Show awareness of implications
+- Examples: "this is bigger than people realize", "finally some good news", "waiting for the follow-up"
+
+### 💭 PERSONAL/EMOTIONAL THREAD
+- Show empathy without being preachy
+- Relate to the experience
+- Examples: "this hits different", "so real", "respect for sharing"
+
+### 💻 TECH/PRODUCT THREAD
+- Be specific about features or issues
+- Mention actual details if you have experience
+- Examples: "the battery optimization is actually great", "still waiting on the feature"
+
+## WHAT TO AVOID
+- Generic: "That's interesting", "Cool!", "Nice"
+- Generic praise without specifics
+- Questions (creates threads you don't want)
+- Being overly formal or try-hard
+- Contrarian takes just to be different
+- Hashtags, @mentions (unless organic)
+- Using emoji in every quote - match the vibe
+
+Write ONE quote tweet. Maximum 1 short sentence. Be specific and authentic.
+IMPORTANT: Return ONLY the final quote tweet text. Do NOT include:
+- Any reasoning, thinking, or internal monologue
+- Any prefixes like "Here's my quote:" or "My response:"
+- Any code blocks or markdown
+- Any explanation of your choice
+
+Just output the quote tweet itself.`;
 
 export class AIQuoteEngine {
     constructor(agentConnector, options = {}) {
@@ -98,6 +151,169 @@ export class AIQuoteEngine {
         if (options.maxRetries !== undefined) {
             this.config.MAX_RETRIES = options.maxRetries;
         }
+    }
+
+    /**
+     * Detect primary language from text content
+     */
+    detectLanguage(text) {
+        if (!text || typeof text !== 'string') return 'en';
+
+        const textLower = text.toLowerCase();
+
+        // Language patterns (common words/phrases)
+        const languages = {
+            en: /\b(the|is|are|was|were|have|has|been|will|would|could|should|this|that|these|those|i|you|he|she|it|we|they|what|which|who|when|where|why|how)\b/i,
+            es: /\b(el|la|los|las|es|son|fue|fueron|tiene|tienen|será|sería|puede|podrían|esto|ese|esta|yo|tú|él|ella|ellos|qué|cualquién|cuando|dónde|por qué|cómo)\b/i,
+            fr: /\b(le|la|les|est|sont|était|étaient|a|ont|été|sera|serait|peuvent|cela|cette|ces|je|tu|il|elle|nous|vous|ils|elles|que|qui|quoi|quand|où|pourquoi|comment)\b/i,
+            de: /\b(der|die|das|den|dem|ist|sind|war|waren|hat|haben|wird|wäre|kann|können|dieser|diese|dieses|ich|du|er|sie|es|wir|sie|was|welcher|wer|wo|warum|wie)\b/i,
+            pt: /\b(o|a|os|as|é|são|foi|foram|tem|têm|será|seria|podem|isso|essa|esses|eu|você|ele|ela|nós|vocês|eles|elas|o quê|qual|quem|quando|onde|por quê|como)\b/i,
+            id: /\b(ini|itu|adalah|adalah|tersebut|dengan|untuk|dan|di|dari|yang|apa|siapa|apa|ketika|di mana|mengapa|bagai)\b/i,
+            ja: /\b(これ|それ|あれ|この|その|あの|です|だ|ある|いる|ます|か|の|に|を|と|が|は|だれの|何|いつ|どこ|なぜ|怎样)\b/i,
+            ko: /\b(이|그|저|이다|있다|하다|것|을|를|에|에서|과|와|는|은|다|吗|什么|何时|哪里|为什么)\b/i,
+            zh: /\b(这|那|是|的|在|有|和|与|对|就|都|而|及|与|着|或|什么|谁|何时|何地|为何|如何)\b/i
+        };
+
+        const scores = {};
+        let totalScore = 0;
+
+        for (const [lang, pattern] of Object.entries(languages)) {
+            const match = textLower.match(pattern);
+            const score = match ? match.length : 0;
+            scores[lang] = score;
+            totalScore += score;
+        }
+
+        if (totalScore === 0) return 'en';
+
+        // Find the language with highest score
+        let maxScore = 0;
+        let detectedLang = 'en';
+
+        for (const [lang, score] of Object.entries(scores)) {
+            if (score > maxScore) {
+                maxScore = score;
+                detectedLang = lang;
+            }
+        }
+
+        // Map to full language name
+        const langNames = {
+            en: 'English',
+            es: 'Spanish',
+            fr: 'French',
+            de: 'German',
+            pt: 'Portuguese',
+            id: 'Indonesian',
+            ja: 'Japanese',
+            ko: 'Korean',
+            zh: 'Chinese'
+        };
+
+        return langNames[detectedLang] || 'English';
+    }
+
+    /**
+     * Detect primary language from array of replies
+     */
+    detectReplyLanguage(replies) {
+        if (!replies || replies.length === 0) return 'English';
+
+        // Collect all reply text
+        const allText = replies
+            .map(r => r.text || r.content || '')
+            .join(' ');
+
+        // Sample up to 5 replies for language detection
+        const sampleText = replies
+            .slice(0, 5)
+            .map(r => (r.text || r.content || '').substring(0, 500))
+            .join(' ');
+
+        return this.detectLanguage(sampleText);
+    }
+
+    /**
+     * Build enhanced prompt with context (tweet, replies, screenshot)
+     */
+    buildEnhancedPrompt(tweetText, authorUsername, replies = [], url = '', sentimentContext = {}, hasImage = false, engagementLevel = 'unknown') {
+        // Detect language from replies
+        const detectedLanguage = this.detectReplyLanguage(replies);
+        this.logger.debug(`[AIQuote] Detected language: ${detectedLanguage}`);
+
+        // Get sentiment guidance
+        const sentiment = sentimentContext.engagementStyle || 'neutral';
+        const conversationType = sentimentContext.conversationType || 'general';
+        const valence = sentimentContext.valence || 0;
+        const sarcasmScore = sentimentContext.sarcasm || 0;
+
+        // Generate sentiment-aware tone guidance
+        const toneGuidance = this.getStyleGuidance(sentiment, sarcasmScore);
+        const lengthGuidance = this.getLengthGuidance(conversationType, valence);
+
+        // === STRATEGY SELECTION ===
+        // Use the improved strategy selector from twitter-reply-prompt.js
+        const strategyInstruction = getStrategyInstruction({
+            sentiment: valence < -0.3 ? 'negative' : (valence > 0.3 ? 'positive' : 'neutral'),
+            type: conversationType,
+            engagement: engagementLevel
+        });
+
+        let prompt = `Tweet from @${authorUsername}:
+"${tweetText}"
+
+Tweet URL: ${url}
+
+`;
+
+        if (replies.length > 0) {
+            // Sort by length (longest first) and take top 30 for richer context
+            const sortedReplies = replies
+                .filter(r => r.text && r.text.length > 5)
+                .sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))
+                .slice(0, 30);
+            
+            prompt += `Other replies to this tweet (in ${detectedLanguage}):
+`;
+            sortedReplies.forEach((reply, i) => {
+                const author = reply.author || 'User';
+                const text = reply.text || reply.content || '';
+                prompt += `${i + 1}. @${author}: "${text.substring(0, 200)}"
+`;
+            });
+            prompt += `
+`;
+        }
+
+        prompt += `Language detected: ${detectedLanguage}
+
+IMPORTANT: Keep it SHORT. Maximum 1 short sentence. No paragraphs.
+
+Tweet Analysis:
+  - Sentiment: ${sentiment}
+  - Conversation Type: ${conversationType}
+  - Valence: ${valence > 0 ? 'Positive' : valence < 0 ? 'Negative' : 'Neutral'}
+  ${hasImage ? '- [IMAGE DETECTED] This tweet contains an image. Analyze it and comment on visual details.' : ''}
+
+  TONE GUIDANCE: ${toneGuidance}
+  STRATEGY INSTRUCTION: ${strategyInstruction}
+LENGTH: MAXIMUM 1 SHORT SENTENCE
+
+Write ONE short quote tweet (1 sentence max).
+IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with your own followers adding your commentary.
+`;
+
+        return {
+            text: prompt,
+            language: detectedLanguage,
+            replyCount: replies.length,
+            sentiment: {
+                engagementStyle: sentiment,
+                conversationType: conversationType,
+                valence,
+                sarcasmScore
+            }
+        };
     }
 
     /**
@@ -193,72 +409,18 @@ export class AIQuoteEngine {
                         `(filtered from ${replies.length})`);
         }
 
-        // Build replies context for the prompt
-        let repliesContext = '';
-        if (selectedReplies && selectedReplies.length > 0) {
-            repliesContext = `\n\nOther people's reactions:\n${selectedReplies.map((r, i) => {
-                const author = r.author && r.author !== 'unknown' ? r.author : 'User';
-                const text = (r.text || '').substring(0, 200);
-                return `[${i + 1}] @${author}: ${text}${r.text?.length > 200 ? '...' : ''}`;
-            }).join('\n')}`;
-        }
+        // Build enhanced prompt with language detection
+        const sentimentContext = {
+            engagementStyle: sentiment,
+            conversationType: conversationType,
+            valence,
+            sarcasm: sarcasmScore
+        };
+        const hasImage = !!context.screenshot;
+        const engagementLevel = context.engagementLevel || 'unknown';
+        const promptData = this.buildEnhancedPrompt(tweetText, authorUsername, selectedReplies, url, sentimentContext, hasImage, engagementLevel);
 
-        // ================================================================
-        // SENTIMENT-AWARE PROMPT GENERATION
-        // ================================================================
-        const toneGuidance = this.getSentimentGuidance(tweetSentiment);
-        const lengthGuidance = this.getLengthGuidance(conversationType, valence);
-        const styleGuidance = this.getStyleGuidance(sentiment, sarcasmScore);
-
-        const systemPrompt = `You are a real Twitter user crafting an authentic quote tweet.
-
-IMPORTANT: Keep it SHORT. Maximum 1 short sentence.
-
-TWEET ANALYSIS:
-- Sentiment: ${sentiment}
-- Conversation Type: ${conversationType}
-- Valence: ${valence > 0 ? 'Positive' : valence < 0 ? 'Negative' : 'Neutral'}
-- Tone Match Required: ${toneGuidance}
-- Style: ${styleGuidance}
-
-CRITICAL RULES:
-- NEVER use generic openers like "Interesting...", "So true!", "Agreed!", "facts", "literally me", "mood"
-- NEVER just say "Interesting" or "So true" or "facts" or "mood" or "relatable"
-- Add SPECIFIC insight, question, or perspective that shows you actually engaged
-- Reference something specific from the tweet or reply context
-- Be authentic - write like a real person, not an AI
-- KEEP IT SHORT: ${lengthGuidance}
-${toneGuidance}
-
-${styleGuidance}
-
-What makes a GOOD quote tweet:
-- Asks a specific question about the content, OR
-- Adds related information or context, OR
-- Shares a personal connection or experience, OR
-- Offers a different perspective or insight
-
-Write ONE quote tweet. Maximum 1 short sentence. Be specific and authentic.
-IMPORTANT: Return ONLY the final quote tweet text. Do NOT include:
-- Any reasoning, thinking, or internal monologue
-- Any prefixes like "Here's my quote:" or "My response:"
-- Any code blocks or markdown
-- Any explanation of your choice
-
-Just output the quote tweet itself.`;
-
-        const userPrompt = `Original tweet by @${authorUsername}:
-"${tweetText}"${repliesContext}
-
-IMPORTANT: Maximum 1 short sentence.
-
-Write ONE quote tweet that:
-- Matches the "${sentiment}" tone
-- Is appropriate for "${conversationType}" type content
-- ${toneGuidance}
-- KEEP IT SHORT: ${lengthGuidance}
-
-Output only the quote tweet text.`;
+        const systemPrompt = QUOTE_SYSTEM_PROMPT;
 
         // DEBUG: Log tweet and prompt being sent to LLM
         this.logger.info(`[DEBUG] ============================================`);
@@ -278,8 +440,9 @@ Output only the quote tweet text.`;
         });
         this.logger.info(`[DEBUG] ----------------------------------------------`);
         this.logger.info(`[DEBUG] FULL PROMPT SENT TO LLM:`);
+        this.logger.info(`[DEBUG] Language: ${promptData.language}`);
         this.logger.info(`[DEBUG] System Prompt Length: ${systemPrompt.length} chars`);
-        this.logger.info(`[DEBUG] User Prompt Length: ${userPrompt.length} chars`);
+        this.logger.info(`[DEBUG] User Prompt Length: ${promptData.text.length} chars`);
         this.logger.info(`[DEBUG] ============================================`);
 
         try {
@@ -287,7 +450,7 @@ Output only the quote tweet text.`;
             const maxRetries = this.config.MAX_RETRIES;
 
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                this.logger.info(`[AI-Quote] Generating quote tweet (attempt ${attempt}/${maxRetries})...`);
+                this.logger.info(`[AI-Quote] Generating ${promptData.language} quote tweet (attempt ${attempt}/${maxRetries})...`);
 
                 try {
                     const result = await this.agent.processRequest({
@@ -295,11 +458,16 @@ Output only the quote tweet text.`;
                         sessionId: this.agent.sessionId || 'quote-engine',
                         payload: {
                             systemPrompt,
-                            userPrompt,
+                            userPrompt: promptData.text,
                             tweetText,
                             authorUsername,
                             engagementType: 'quote',
-                            maxTokens: 75
+                            maxTokens: 75,
+                            context: {
+                                hasScreenshot: hasImage,
+                                replyCount: replies.length,
+                                detectedLanguage: promptData.language
+                            }
                         }
                     });
 
@@ -386,7 +554,8 @@ Output only the quote tweet text.`;
                         this.stats.successes++;
                         return {
                             quote: cleaned,
-                            success: true
+                            success: true,
+                            language: promptData.language
                         };
                     } else {
                         this.logger.warn(`[AIQuoteEngine] ❌ Quote validation failed (${validation.reason}): "${cleaned}" (attempt ${attempt})`);
@@ -604,173 +773,61 @@ Output only the quote tweet text.`;
 
     /**
      * Execute the quote tweet flow
+     * Method A: Keyboard Compose + Quote (40%)
+     * Method B: Retweet Menu -> Quote (35%)
+     * Method C: New Post with URL (25%)
      */
     async executeQuote(page, quoteText, options = {}) {
         const { logger = console, humanTyping } = options;
+        this.logger.info(`[AIQuote] Executing quote (${quoteText.length} chars)...`);
+
+        const human = new HumanInteraction(page);
+        human.debugMode = true;
+
+        // If humanTyping function is provided, wrap it
+        if (humanTyping) {
+            // We can attach it to human interaction or use it directly in methods
+            // For now, let's assume methods use human.type or page.fill
+        }
+
+        const methods = [
+            { name: 'keyboard_compose', weight: 40, fn: () => this.quoteMethodA_Keyboard(page, quoteText, human) },
+            { name: 'retweet_menu', weight: 35, fn: () => this.quoteMethodB_Retweet(page, quoteText, human) },
+            { name: 'new_post', weight: 25, fn: () => this.quoteMethodC_Url(page, quoteText, human) }
+        ];
+
+        const selected = human.selectMethod(methods);
+        this.logger.info(`[AIQuote] Using method: ${selected.name}`);
 
         try {
-            logger.info(`[AIQuote] Executing quote tweet...`);
-
-            const clickResult = await this.clickRetweetAndQuote(page, quoteText, { logger, humanTyping });
-
-            if (!clickResult || !clickResult.success) {
-                this.stats.failures++;
-                const reason = clickResult?.reason || 'unknown';
-                logger.warn(`[AIQuote] Quote tweet failed: ${reason}`);
-                return { success: false, reason };
-            }
-
-            logger.info(`[AIQuote] Step 3: Typing quote tweet...`);
-
-            const composer = page.locator('[data-testid="tweetTextarea_0"]').first();
-            if (await composer.count() === 0) {
-                logger.warn(`[AIQuote] Composer not found`);
-                return { success: false, reason: 'composer_not_found' };
-            }
-
-            const quoteReadTime = mathUtils.randomInRange(10000, 15000);
-            logger.info(`[AIQuote] Reading existing replies for ${Math.round(quoteReadTime / 1000)}s before composing...`);
-
-            if (Math.random() < 0.6) {
-                await scrollRandom(page, 150, 300);
-                await page.waitForTimeout(mathUtils.randomInRange(2000, 4000));
-                await scrollRandom(page, 100, 200);
-                await page.waitForTimeout(mathUtils.randomInRange(2000, 4000));
-            } else {
-                await page.waitForTimeout(quoteReadTime / 3);
-                await page.mouse.move(mathUtils.randomInRange(-10, 10), mathUtils.randomInRange(-5, 5));
-                await page.waitForTimeout(quoteReadTime / 3);
-                await page.mouse.move(mathUtils.randomInRange(-8, 8), mathUtils.randomInRange(-6, 6));
-                await page.waitForTimeout(quoteReadTime / 3);
-            }
-
-            logger.info(`[AIQuote] Done reading, now composing quote...`);
-            logger.info('[AIQuote] Returning to top of conversation...');
-            await page.evaluate(() => window.scrollTo(0, 0));
-            await page.waitForTimeout(mathUtils.randomInRange(500, 1000));
-
-            // Initialize human interaction for simulated clicking
-            const human = new HumanInteraction(page);
+            const result = await selected.fn();
             
-            if (humanTyping && typeof humanTyping === 'function') {
-                await human.safeHumanClick(composer, 'Quote Composer', 3);
-                await humanTyping(composer, quoteText);
-            } else {
-                await composer.fill(quoteText);
-            }
-            await page.waitForTimeout(mathUtils.randomInRange(500, 1000));
-
-            logger.info(`[AIQuote] Step 4: Posting with Ctrl+Enter...`);
-
-            // Use Ctrl+Enter to post (more reliable than clicking button)
-            await page.keyboard.press('Control+Enter');
-            await page.waitForTimeout(500);
-
-            // Verify post was attempted (check if composer closed)
-            const composerCheck = await page.locator('[data-testid="tweetTextarea_0"]').count();
-            
-            if (composerCheck === 0) {
-                logger.info(`[AIQuote] Quote tweet posted (composer closed)`);
+            // Update stats based on result
+            if (result.success) {
                 this.stats.successes++;
-                return { success: true };
+            } else {
+                this.stats.failures++;
             }
-
-            // Fallback: Try clicking button if Ctrl+Enter didn't work
-            logger.warn(`[AIQuote] Ctrl+Enter didn't close composer, trying button click...`);
-            const postBtn = page.locator('span:has-text("Post")').first();
-            if (await postBtn.count() > 0) {
-                const human = new HumanInteraction(page);
-                await human.safeHumanClick(postBtn, 'Quote Post Button', 3);
-                await page.waitForTimeout(mathUtils.randomInRange(1500, 2500));
-            }
-
-            logger.info(`[AIQuote] Quote tweet posted`);
-            this.stats.successes++;
-            return { success: true };
-
+            
+            return result;
         } catch (error) {
-            this.stats.errors++;
-            logger.error(`[AIQuote] Error: ${error.message}`);
-            return { success: false, reason: error.message };
+            this.logger.error(`[AIQuote] Method ${selected.name} failed: ${error.message}`);
+            this.logger.warn(`[AIQuote] Trying fallback: retweet_menu`);
+            
+            // Fallback to Retweet Menu method
+            try {
+                const result = await this.quoteMethodB_Retweet(page, quoteText, human);
+                if (result.success) this.stats.successes++;
+                else this.stats.failures++;
+                return result;
+            } catch (fallbackError) {
+                this.stats.failures++;
+                return { success: false, reason: `fallback_failed: ${fallbackError.message}` };
+            }
         }
     }
 
-     async clickRetweetAndQuote(page, quoteText, options = {}) {
-        const { logger = console } = options;
 
-        try {
-            logger.info(`[AIQuote] Step 1: Using keyboard sequence for quote...`);
-
-            // First press Escape to close any open menus
-            await page.keyboard.press('Escape');
-            await page.waitForTimeout(300);
-
-            // Press 'T' to open compose
-            logger.info(`[AIQuote] Pressing 'T' to open compose...`);
-            await page.keyboard.press('t');
-            await page.waitForTimeout(1000);
-
-            // Check if composer opened
-            let composer = page.locator('[data-testid="tweetTextarea_0"]').first();
-            if (await composer.count() === 0) {
-                logger.warn(`[AIQuote] Composer didn't open with 'T', trying alternative...`);
-                // Alternative: Go directly to tweet URL with compose
-                return { success: false, reason: 'keyboard_sequence_failed' };
-            }
-
-            logger.info(`[AIQuote] Composer opened, pressing Down + Enter to quote...`);
-
-            // Press Down Arrow to navigate to quote option
-            await page.keyboard.press('ArrowDown');
-            await page.waitForTimeout(500);
-
-            // Press Enter to select quote
-            await page.keyboard.press('Enter');
-            await page.waitForTimeout(1500);
-
-            // Verify we're in quote mode (should have quoted tweet preview)
-            const quotedPreview = await page.locator('[data-testid="quotedTweet"]', '[data-testid="tweetText"]').first();
-            const hasQuotedPreview = await quotedPreview.count() > 0;
-
-            if (!hasQuotedPreview) {
-                logger.warn(`[AIQuote] No quote preview detected, trying retweet menu approach...`);
-                // Fallback: Click retweet then find quote
-                await page.keyboard.press('Escape');
-                await page.waitForTimeout(300);
-
-                const retweetBtn = page.locator('[data-testid="retweet"]').first();
-                if (await retweetBtn.count() > 0) {
-                    await retweetBtn.click();
-                    await page.waitForTimeout(800);
-
-                    // Try to find quote option
-                    const quoteOption = page.locator('text=Quote').first();
-                    if (await quoteOption.count() > 0) {
-                        await quoteOption.click();
-                        await page.waitForTimeout(1500);
-                    } else {
-                        return { success: false, reason: 'quote_option_not_found' };
-                    }
-                } else {
-                    return { success: false, reason: 'retweet_button_not_found' };
-                }
-            }
-
-            // Now we should be in the quote composer
-            composer = page.locator('[data-testid="tweetTextarea_0"]').first();
-            if (await composer.count() === 0) {
-                logger.warn(`[AIQuote] Composer not found after quote sequence`);
-                return { success: false, reason: 'composer_not_found' };
-            }
-
-            logger.info(`[AIQuote] Successfully opened quote composer`);
-            return { success: true };
-
-        } catch (error) {
-            logger.error(`[AIQuote] Click flow error: ${error.message}`);
-            return { success: false, reason: `click_error: ${error.message}` };
-        }
-    }
 
     getToneGuidance(tone) {
         const tones = {
@@ -804,6 +861,7 @@ Output only the quote tweet text.`;
             .replace(/\n+/g, ' ')
             .replace(/\s+/g, ' ')
             .trim()
+            .replace(/^["']+|["']+$/g, '') // Remove surrounding quotes
             .substring(0, this.config.MAX_QUOTE_LENGTH);
 
         if (Math.random() < 0.30) {
@@ -886,16 +944,16 @@ Output only the quote tweet text.`;
     }
 
     getLengthGuidance(conversationType, valence) {
-        const valenceMultiplier = Math.abs(valence) > 0.5 ? 1.1 : 1.0;
+        const valenceMultiplier = Math.abs(valence) > 0.5 ? 1.2 : 1.0;
 
         const lengthGuides = {
             'heated-debate': 'CRITICAL: Maximum 1 short sentence.',
             'casual-chat': 'Maximum 1 short sentence.',
             'announcement': 'Maximum 1 sentence.',
-            'question': 'One short question.',
+            'question': 'One short question or 1 sentence.',
             'humor': 'Maximum 1 punchy sentence.',
             'news': 'Maximum 1 short sentence.',
-            'personal': 'Maximum 1 short sentence.',
+            'personal': 'Maximum 1-2 short sentences.',
             'controversial': 'CRITICAL: Maximum 1 short sentence.',
             'general': 'Maximum 1 short sentence.',
         };
@@ -903,7 +961,7 @@ Output only the quote tweet text.`;
         const baseGuidance = lengthGuides[conversationType] || lengthGuides.general;
 
         if (valenceMultiplier > 1.0) {
-            return baseGuidance + ' Slightly more expressive given emotional content.';
+            return baseGuidance + ' Be more expressive given the emotional content.';
         }
 
         return baseGuidance;
@@ -911,49 +969,20 @@ Output only the quote tweet text.`;
 
     getStyleGuidance(sentiment, sarcasmScore) {
         const styles = {
-            enthusiastic: '- Voice: Enthusiastic but authentic\n- Energy: High\n- Example: "This is exactly what I needed to see today!"',
-            humorous: '- Voice: Witty, playful\n- Energy: Light\n- Example: "My brain needed this take"',
-            informative: '- Voice: Knowledgeable but not preachy\n- Energy: Calm\n- Example: "Related: this connects to..."',
-            emotional: '- Voice: Genuine, vulnerable\n- Energy: Warm\n- Example: "This hits different..."',
-            supportive: '- Voice: Encouraging, warm\n- Energy: Positive\n- Example: "We love to see it!"',
-            thoughtful: '- Voice: Reflective, measured\n- Energy: Calm\n- Example: "Interesting perspective because..."',
-            critical: '- Voice: Skeptical but respectful\n- Energy: Measured\n- Example: "Counterpoint worth considering..."',
-            neutral: '- Voice: Curious, engaged\n- Energy: Neutral\n- Example: "Question about this..."',
-            sarcastic: '- Voice: Dry wit, subtle irony\n- Energy: Understated\n- Example: "Oh absolutely, that\'s exactly how it works"',
-            ironic: '- Voice: Ironic, sardonic\n- Energy: Dry\n- Example: "Sure, because that\'s realistic"',
+            enthusiastic: 'Style: High energy, exclamation points allowed.',
+            humorous: 'Style: Witty, maybe use a common internet slang.',
+            informative: 'Style: Clear, factual, helpful.',
+            emotional: 'Style: Empathetic, personal.',
+            supportive: 'Style: Warm, encouraging.',
+            thoughtful: 'Style: Reflective, balanced.',
+            critical: 'Style: Sharp, questioning.',
+            neutral: 'Style: Conversational, casual.',
+            sarcastic: 'Style: Dry wit, playful irony.',
+            ironic: 'Style: Subtle humor, unexpected twist.'
         };
-
-        if (sarcasmScore > 0.6 && (sentiment === 'sarcastic' || sentiment === 'ironic')) {
-            return styles.sarcastic;
-        }
-
         return styles[sentiment] || styles.neutral;
     }
 
-    async executeQuote(page, quoteText, options = {}) {
-        this.logger.info(`[AIQuote] Executing quote (${quoteText.length} chars)...`);
-
-        const human = new HumanInteraction();
-        human.debugMode = true;
-
-        const methods = [
-            { name: 'keyboard_compose', weight: 40, fn: () => this.quoteMethodA_Keyboard(page, quoteText, human) },
-            { name: 'retweet_menu', weight: 35, fn: () => this.quoteMethodB_Retweet(page, quoteText, human) },
-            { name: 'new_post', weight: 25, fn: () => this.quoteMethodC_Url(page, quoteText, human) }
-        ];
-
-        const selected = human.selectMethod(methods);
-        this.logger.info(`[AIQuote] Using method: ${selected.name}`);
-
-        try {
-            const result = await selected.fn();
-            return result;
-        } catch (error) {
-            this.logger.error(`[AIQuote] Method ${selected.name} failed: ${error.message}`);
-            this.logger.warn(`[AIQuote] Trying fallback: retweet_menu`);
-            return await this.quoteMethodB_Retweet(page, quoteText, human);
-        }
-    }
 
     /**
      * Method A: Keyboard Compose + Quote (40%)
@@ -998,17 +1027,23 @@ Output only the quote tweet text.`;
             return { success: false, reason: 'composer_not_open', method: 'keyboard_compose' };
         }
 
-        // STEP 3: Navigate to quote option (usually Down + Down)
-        human.logStep('NAVIGATE', 'Pressing Down to find quote option');
-        await page.keyboard.press('ArrowDown');
-        await new Promise(resolve => setTimeout(resolve, 300));
-        await page.keyboard.press('ArrowDown');
-        await new Promise(resolve => setTimeout(resolve, 300));
-
-        // STEP 4: Press Enter to select quote
-        human.logStep('ENTER', 'Selecting quote option');
-        await page.keyboard.press('Enter');
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // STEP 3: Navigate to quote option (usually Down + Enter)
+        const menuQuote = page.locator('div[role="menu"] >> text=/Quote/i').first();
+        if (await menuQuote.count() > 0) {
+            human.logStep('MENU_CLICK', 'Selecting quote');
+            await menuQuote.click();
+            await new Promise(resolve => setTimeout(resolve, 1200));
+        } else {
+            for (let i = 0; i < 1; i++) { //lets only do it once
+                human.logStep('NAVIGATE', 'Attempting selection via keys');
+                await page.keyboard.press('ArrowDown');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await page.keyboard.press('Enter');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                const found = await page.locator('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]').count();
+                if (found > 0) break;
+            }
+        }
 
         // Verify quote mode (check for quoted tweet preview using multiple strategies)
         const quoteDetectionStrategies = [
@@ -1052,15 +1087,17 @@ Output only the quote tweet text.`;
             },
             // Strategy 3: Check composer value for embedded tweet text
             async () => {
-                const composerValue = await page.evaluate(() => {
-                    const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
-                    return composer?.value || composer?.textContent || '';
-                });
-                if (composerValue.length > 50) {
-                    human.logStep('QUOTE_DETECTED', 'composer_value');
-                    return true;
+                try {
+                    const composer = page.locator('[data-testid="tweetTextarea_0"], [role="textbox"][contenteditable="true"]').first();
+                    const text = await composer.textContent().catch(() => '');
+                    if (text && text.length > 50) {
+                        human.logStep('QUOTE_DETECTED', 'composer_text');
+                        return true;
+                    }
+                    return false;
+                } catch (_e) {
+                    return false;
                 }
-                return false;
             }
         ];
 
@@ -1149,16 +1186,14 @@ Output only the quote tweet text.`;
         for (const selector of retweetBtnSelectors) {
             const elements = await page.locator(selector).all();
             for (const el of elements) {
-                try {
-                    const isVisible = await el.isVisible();
-                    const ariaLabel = await el.getAttribute('aria-label') || '';
-                    const count = await el.count();
-                    if (count > 0 && isVisible) {
-                        retweetBtn = el;
-                        human.logStep('RETWEET_FOUND', `${selector} (aria-label: ${ariaLabel})`);
-                        break;
-                    }
-                } catch {}
+                const isVisible = await el.isVisible().catch(() => false);
+                const ariaLabel = (await el.getAttribute('aria-label').catch(() => null)) || '';
+                const count = await el.count().catch(() => 0);
+                if (count > 0 && isVisible) {
+                    retweetBtn = el;
+                    human.logStep('RETWEET_FOUND', `${selector} (aria-label: ${ariaLabel})`);
+                    break;
+                }
             }
             if (retweetBtn) break;
         }
@@ -1174,7 +1209,21 @@ Output only the quote tweet text.`;
         await human.microMove(page, 20);
         await retweetBtn.click({ timeout: 5000 });
         human.logStep('CLICK', 'Clicked retweet button');
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        let menuReady = false;
+        for (let i = 0; i < 3; i++) {
+            const menu = page.locator('[role="menu"]').first();
+            const visible = await menu.isVisible().catch(() => false);
+            if (visible) {
+                menuReady = true;
+                break;
+            }
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await retweetBtn.click({ timeout: 5000 }).catch(() => {});
+            await new Promise(resolve => setTimeout(resolve, 600));
+        }
+        if (!menuReady) {
+            return { success: false, reason: 'retweet_menu_not_open', method: 'retweet_menu' };
+        }
 
         // STEP 2: Find and click Quote option in dropdown menu
         human.logStep('FIND_QUOTE', 'Looking for Quote option in menu');
@@ -1192,17 +1241,14 @@ Output only the quote tweet text.`;
             try {
                 const elements = await page.locator(selector).all();
                 for (const el of elements) {
-                    try {
-                        const isVisible = await el.isVisible();
-                        const text = await el.innerText().catch(() => '');
-                        const count = await el.count();
-                        
-                        if (count > 0 && isVisible && text.toLowerCase().includes('quote')) {
-                            quoteOption = el;
-                            human.logStep('QUOTE_FOUND', `${selector} (text: "${text}")`);
-                            break;
-                        }
-                    } catch {}
+                    const isVisible = await el.isVisible().catch(() => false);
+                    const text = await el.innerText().catch(() => '');
+                    const count = await el.count().catch(() => 0);
+                    if (count > 0 && isVisible && text.toLowerCase().includes('quote')) {
+                        quoteOption = el;
+                        human.logStep('QUOTE_FOUND', `${selector} (text: "${text}")`);
+                        break;
+                    }
                 }
                 if (quoteOption) break;
             } catch (e) {
@@ -1263,11 +1309,13 @@ Output only the quote tweet text.`;
                 return false;
             },
             async () => {
-                const composerValue = await page.evaluate(() => {
-                    const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
-                    return composer?.value || composer?.textContent || '';
-                });
-                return composerValue.length > 50;
+                try {
+                    const composer = page.locator('[data-testid="tweetTextarea_0"], [role="textbox"][contenteditable="true"]').first();
+                    const text = await composer.textContent().catch(() => '');
+                    return !!text && text.length > 50;
+                } catch (_e) {
+                    return false;
+                }
             }
         ];
 
@@ -1278,7 +1326,9 @@ Output only the quote tweet text.`;
                     hasQuotePreview = true;
                     break;
                 }
-            } catch {}
+            } catch (e) {
+                human.logStep('DETECTION_ERROR', e.message);
+            }
         }
 
         if (!hasQuotePreview) {
@@ -1343,16 +1393,14 @@ Output only the quote tweet text.`;
         for (const selector of composeBtnSelectors) {
             const elements = await page.locator(selector).all();
             for (const el of elements) {
-                try {
-                    const isVisible = await el.isVisible();
-                    const ariaLabel = await el.getAttribute('aria-label') || '';
-                    const count = await el.count();
-                    if (count > 0 && isVisible) {
-                        composeBtn = el;
-                        human.logStep('COMPOSE_FOUND', `${selector} (aria-label: "${ariaLabel}")`);
-                        break;
-                    }
-                } catch {}
+                const isVisible = await el.isVisible().catch(() => false);
+                const ariaLabel = (await el.getAttribute('aria-label').catch(() => null)) || '';
+                const count = await el.count().catch(() => 0);
+                if (count > 0 && isVisible) {
+                    composeBtn = el;
+                    human.logStep('COMPOSE_FOUND', `${selector} (aria-label: "${ariaLabel}")`);
+                    break;
+                }
             }
             if (composeBtn) break;
         }
@@ -1419,10 +1467,11 @@ Output only the quote tweet text.`;
         await new Promise(resolve => setTimeout(resolve, 750));
 
         // Verify URL was pasted
-        const finalContent = await page.evaluate(() => {
-            const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
-            return composer?.value || composer?.textContent || '';
-        });
+        const finalContent = await page
+            .locator('[data-testid="tweetTextarea_0"], [role="textbox"][contenteditable="true"]')
+            .first()
+            .textContent()
+            .catch(() => '');
         if (finalContent.includes('x.com') || finalContent.includes('twitter.com')) {
             human.logStep('URL_PASTED', 'URL pasted successfully');
         } else {

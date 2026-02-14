@@ -103,8 +103,11 @@ export class ErrorRecovery {
                     this._logRecovery(result.strategy);
                     return result;
                 }
-            } catch (e) {
-                // Continue to next recovery strategy
+            } catch (error) {
+                // Log failure and continue to next recovery strategy
+                if (this.logger) {
+                    this.logger.debug(`[Recovery] Action failed: ${error.message}`);
+                }
                 continue;
             }
         }
@@ -144,7 +147,7 @@ export class ErrorRecovery {
     /**
      * Click nearby element (mis-click recovery)
      */
-    async _clickNearby(context) {
+    async _clickNearby(_context) {
         this._logStrategy('click_nearby');
         
         // Find nearby clickable element
@@ -220,7 +223,7 @@ export class ErrorRecovery {
     /**
      * Go back and retry
      */
-    async _goBackAndRetry(context) {
+    async _goBackAndRetry(_context) {
         this._logStrategy('go_back');
         
         // Human-like: go back, then forward if needed
@@ -298,7 +301,7 @@ export class ErrorRecovery {
     // LOGGING UTILITIES
     // ==========================================
     
-    _logError(errorType, context) {
+    _logError(errorType, _context) {
         if (this.logger) {
             this.logger.warn(`[Error] ${errorType}`);
         }

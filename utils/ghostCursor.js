@@ -101,7 +101,7 @@ export class GhostCursor {
     /**
      * Move the mouse along a path with variable velocity
      */
-    async performMove(start, end, durationMs, steps = 30) {
+    async performMove(start, end, durationMs, _steps = 30) {
         // Control Points for Arc
         // Randomize the arc direction and intensity based on distance
         const distance = this.vecLen(this.vecSub(end, start));
@@ -157,7 +157,7 @@ export class GhostCursor {
   * Prevents clicking on animating elements
   * @param {object} locator - Playwright locator
   * @param {number} maxWaitMs - Maximum wait time (default: 3000ms)
-  * @returns {object|null} - Bounding box if stable, null if timed out
+  * @returns {Promise<object|null>} - Bounding box if stable, null if timed out
   */
 async waitForStableElement(locator, maxWaitMs = 3000) {
   const startTime = Date.now();
@@ -354,7 +354,7 @@ async hoverWithDrift(startX, startY, minDuration, maxDuration) {
  * Move the cursor with overshoot and correction
  * Maintains existing move() behavior for compatibility
  */
-async move(targetX, targetY) {
+async move(targetX, targetY, _speed = undefined) {
   const start = this.previousPos || { x: 0, y: 0 };
   const end = { x: targetX, y: targetY };
   const pathVector = this.vecSub(end, start);
@@ -407,7 +407,9 @@ async park() {
     const duration = Math.max(800, dist * 0.8);
 
     await this.performMove(current, { x: targetX, y: targetY }, duration);
-  } catch (e) {}
+  } catch (_e) {
+    // Ignore viewport error
+  }
 }
 
 /**
@@ -417,7 +419,7 @@ async click(selector, options = {}) {
   const {
     allowNativeFallback = false,
     maxStabilityWaitMs = 2000,
-    preClickStabilityMs = 300
+    preClickStabilityMs: _preClickStabilityMs = 300
   } = options;
 
   try {
@@ -425,7 +427,9 @@ async click(selector, options = {}) {
       if (allowNativeFallback && selector.click) await selector.click({ force: true }).catch(() => {});
       return;
     }
-  } catch {}
+  } catch (_e) {
+    // Ignore visibility check error
+  }
 
   let bbox = await selector.boundingBox();
   if (!bbox) {
@@ -501,7 +505,9 @@ async click(selector, options = {}) {
   if (allowNativeFallback && selector.click) {
     try {
       await selector.click({ force: true });
-    } catch {}
+    } catch {
+      // Ignore native fallback error
+    }
   }
 }
 }

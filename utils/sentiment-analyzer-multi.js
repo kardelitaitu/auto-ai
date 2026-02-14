@@ -276,7 +276,7 @@ export class MultiDimensionalSentimentAnalyzer {
     // ========================================================================
     calculateActionGates(aggregated) {
         const gates = {};
-        const { toxicity, valence, sarcasm, arousal } = aggregated.dimensions;
+        const { toxicity, valence, sarcasm, arousal: _arousal } = aggregated.dimensions;
         const actionGates = SentimentData.ACTION_GATES;
         
         // REPLY gate

@@ -11,7 +11,7 @@
 
 import { createLogger } from '../logger.js';
 import { mathUtils } from '../mathUtils.js';
-import { entropy } from '../entropyController.js';
+import { entropy as _entropy } from '../entropyController.js';
 import { HumanScroll } from './scroll.js';
 import { HumanTiming } from './timing.js';
 import { ContentSkimmer } from './content.js';

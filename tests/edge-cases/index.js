@@ -7,10 +7,12 @@
  *   import * as edgeCaseTests from '@tests/edge-cases';
  */
 
-export { default as phase1Validation } from './phase1-3-validation.js';
-export { default as multilineTweet } from './test-multiline-tweet.js';
-export { default as models } from './test-models.js';
-export { default as diveLock } from './test-dive-lock.js';
+import phase1Validation from './phase1-3-validation.js';
+import multilineTweet from './test-multiline-tweet.js';
+import models from './test-models.js';
+import diveLock from './test-dive-lock.js';
+
+export { phase1Validation, multilineTweet, models, diveLock };
 
 /**
  * Run all edge case tests

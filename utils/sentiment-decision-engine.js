@@ -5,7 +5,7 @@
  */
 
 import { createLogger } from './logger.js';
-import SentimentData from './sentiment-data.js';
+// import SentimentData from './sentiment-data.js';
 
 const logger = createLogger('sentiment-decision-engine.js');
 
@@ -188,11 +188,11 @@ export class SentimentDecisionEngine {
     // ========================================================================
     // ADAPTIVE ENGAGEMENT PROBABILITY
     // ========================================================================
-    getAdaptiveEngagementProbability(sentimentResult, action, context = {}) {
+    getAdaptiveEngagementProbability(sentimentResult, action, _context = {}) {
         let probability = this.config[`${action}Probability`] || 0.5;
         
         const { dimensions, derived } = sentimentResult;
-        const personality = context.personality || 'observer';
+        // const personality = context.personality || 'observer';
         
         // Adjust based on sentiment match
         switch (action) {
@@ -341,7 +341,7 @@ export class SentimentDecisionEngine {
     // ========================================================================
     // FALLBACK SUGGESTIONS
     // ========================================================================
-    suggestFallbackAction(sentimentResult, originalAction, blockType) {
+    suggestFallbackAction(sentimentResult, _originalAction, blockType) {
         const blockReasons = {
             grief: { actions: ['like', 'bookmark'], reason: 'Grief content detected' },
             toxicity: { actions: ['like', 'bookmark'], reason: 'Toxic content detected' },

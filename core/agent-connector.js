@@ -112,18 +112,24 @@ class AgentConnector {
     async _routeRequest(request, action) {
         const { payload, sessionId } = request;
 
-        // Route based on action type
-        if (action === 'analyze_page_with_vision') {
-            return this.handleVisionRequest(request);
-        }
-
         // Use LOCAL for simple text generation (Twitter replies)
         if (action === 'generate_reply') {
             return this.handleGenerateReply(request);
         }
 
-        // Default to cloud for complex logic
-        return this._sendToCloud(request, Date.now());
+        // Route based on action type
+        if (action === 'analyze_page_with_vision') {
+            return this.handleVisionRequest(request);
+        }
+
+        // Default to cloud for complex logic if cloud is enabled and ready
+        if (this.cloudClient.isReady()) {
+            return this._sendToCloud(request, Date.now());
+        }
+
+        // Fallback to local if cloud is disabled/unconfigured
+        logger.info(`[${sessionId}] Cloud is disabled or unconfigured, attempting local fallback for ${action}`);
+        return this.handleGenerateReply(request);
     }
 
     /**
@@ -301,7 +307,7 @@ class AgentConnector {
 
         const hasVision = payload.vision && payload.context?.hasScreenshot;
         let llmRequest;
-        let lastError = null;
+        let lastError;
         let usedVision = hasVision;
 
         if (hasVision) {
@@ -506,47 +512,59 @@ class AgentConnector {
         const { payload, sessionId } = request;
         const start = Date.now();
 
-        // 1. Construct prompt using VisionInterpreter (The Bridge)
-        const prompt = this.visionInterpreter.buildPrompt({
-            goal: payload.goal,
-            semanticTree: payload.semanticTree
-        });
+        try {
+            // 1. Construct prompt using VisionInterpreter (The Bridge)
+            const prompt = this.visionInterpreter.buildPrompt({
+                goal: payload.goal,
+                semanticTree: payload.semanticTree
+            });
 
-        // 2. Prepare request for Local Client
-        const llmRequest = {
-            prompt: prompt,
-            vision: payload.vision, // Base64 image
-            maxTokens: 1024,
-            temperature: 0.1 // Low temperature for consistent JSON
-        };
+            // 2. Prepare request for Local Client
+            const llmRequest = {
+                prompt: prompt,
+                vision: payload.vision, // Base64 image
+                maxTokens: 1024,
+                temperature: 0.1 // Low temperature for consistent JSON
+            };
 
-        let response = await this._sendToLocal(llmRequest, sessionId);
-        let usedProvider = 'local';
+            let response = await this._sendToLocal(llmRequest, sessionId);
+            let usedProvider = 'local';
 
-        // 3. Fallback to Cloud if local failed (not implemented fully yet, but logic placeholder)
-        if (!response.success) {
-            logger.warn(`[${sessionId}] Local vision failed: ${response.error}. Fallback to Cloud (not impl).`);
-            // return this.cloudClient.sendRequest(request); // Uncomment when cloud has vision
-            return response; // Return error for now
-        }
-
-        // 4. Parse the raw text response into JSON using VisionInterpreter
-        const parsed = this.visionInterpreter.parseResponse(response.content);
-
-        const duration = Date.now() - start;
-
-        // 5. Structure final response
-        return {
-            success: true,
-            content: response.content, // Raw text (thought process)
-            data: parsed.success ? parsed.data : null, // Structured actions
-            metadata: {
-                routedTo: usedProvider,
-                duration,
-                parsedSuccessfully: parsed.success,
-                model: response.metadata?.model
+            // 3. Fallback to Cloud if local failed (not implemented fully yet, but logic placeholder)
+            if (!response.success) {
+                logger.warn(`[${sessionId}] Local vision failed: ${response.error}. Fallback to Cloud (not impl).`);
+                // return this.cloudClient.sendRequest(request); // Uncomment when cloud has vision
+                return response; // Return error for now
             }
-        };
+
+            // 4. Parse the raw text response into JSON using VisionInterpreter
+            const parsed = this.visionInterpreter.parseResponse(response.content);
+
+            const duration = Date.now() - start;
+
+            // 5. Structure final response
+            return {
+                success: true,
+                content: response.content, // Raw text (thought process)
+                data: parsed.success ? parsed.data : null, // Structured actions
+                metadata: {
+                    routedTo: usedProvider,
+                    duration,
+                    parsedSuccessfully: parsed.success,
+                    model: response.metadata?.model
+                }
+            };
+        } catch (error) {
+            logger.error(`[${sessionId}] Vision request exception: ${error.message}`);
+            return {
+                success: false,
+                error: error.message || 'Unknown Error: Vision String Error',
+                metadata: {
+                    routedTo: 'local',
+                    duration: Date.now() - start
+                }
+            };
+        }
     }
 }
 

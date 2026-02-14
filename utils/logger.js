@@ -103,14 +103,14 @@ function writeToLogFile(level, scriptName, message, args) {
     const timestamp = new Date().toISOString();
     // Extract structured data if first arg is an object
     let structuredData = null;
-    let cleanArgs = [...args];
+    // let cleanArgs = [...args];
     if (args.length > 0 && typeof args[0] === 'object' && args[0] !== null) {
       structuredData = args[0];
-      cleanArgs = args.slice(1);
+      // cleanArgs = args.slice(1);
     }
     // Regex to strip ANSI codes
+    // eslint-disable-next-line no-control-regex
     const cleanMessage = message.replace(/\x1b\[[0-9;]*m/g, '');
-    const argsStr = cleanArgs.length > 0 ? ' ' + JSON.stringify(cleanArgs) : '';
     
     // Build structured log line
     const logEntry = {
@@ -123,7 +123,7 @@ function writeToLogFile(level, scriptName, message, args) {
     };
     
     fs.appendFileSync(LOG_FILE, JSON.stringify(logEntry) + '\n', 'utf8');
-  } catch (error) {
+  } catch {
     // Silently fail
   }
 }
@@ -203,7 +203,7 @@ class Logger {
     }
 
     // Colorize tags within the RAW message first (to avoid parsing ANSI codes as tags)
-    let coloredInnerMessage = message.replace(/\[(.*?)\]/g, (match, content) => {
+    let coloredInnerMessage = message.replace(/\[(.*?)\]/g, (match) => {
       const coloredTag = this.colorizeTags(match);
       // Re-apply msgColor after the tag's RESET so the rest of the string stays colored
       return `${coloredTag}${msgColor}`;

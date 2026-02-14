@@ -11,10 +11,11 @@ describe('CircuitBreaker', () => {
 
     beforeEach(() => {
         breaker = new CircuitBreaker({
-            failureThreshold: 3,
+            failureThreshold: 1, // 1% - extremely sensitive for testing
             successThreshold: 2,
-            halfOpenTime: 100,
-            monitoringWindow: 1000
+            halfOpenTime: 500, // Increased to prevent flaky HALF_OPEN transition
+            monitoringWindow: 1000,
+            minSamples: 1 // Require 1 sample to react immediately
         });
     });
 
@@ -59,6 +60,9 @@ describe('CircuitBreaker', () => {
                     // Expected
                 }
             }
+
+            // Verify it is open first
+            expect(breaker.getHealth('test-model').status).toBe('OPEN');
 
             try {
                 await breaker.execute('test-model', async () => 'success');

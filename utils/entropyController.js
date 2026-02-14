@@ -372,33 +372,6 @@ class EntropyController {
         return Math.floor(this.gaussian(650, 200, 400, 1200) * this.sessionEntropy.scrollIntensity);
     }
 
-/**
-     * Should we take a micro-break right now? (Legacy method, use fatigue-aware version)
-     * @returns {boolean}
-     */
-    shouldMicroBreak() {
-        if (this.fatigueActive) {
-            return Math.random() < this.getFatigueModifiers().microBreakChance;
-        }
-
-        const timeSinceLastAction = Date.now() - this.lastActionTimestamp;
-        const fatigueFactor = Math.min(timeSinceLastAction / 300000, 1);
-        return Math.random() < (this.sessionEntropy.microBreakProb + fatigueFactor * 0.08);
-    }
-
-    /**
-     * Micro-break duration
-     * @returns {number} Duration in milliseconds
-     */
-    microBreakDuration() {
-        // 80% short breaks, 20% longer
-        if (Math.random() < 0.8) {
-            return Math.floor(this.gaussian(3000, 1000, 1000, 8000));
-        }
-        // Longer break (put down phone, look away)
-        return Math.floor(this.logNormal(9.2, 0.5)); // ~10-60s typically
-    }
-
     // ============ AUDIT LOGGING ============
 
     /**

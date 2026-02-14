@@ -152,7 +152,12 @@ class Orchestrator extends EventEmitter {
    * @returns {Promise<void>}
    */
   async processTasks() {
-    if (this.isProcessingTasks || this.taskQueue.length === 0 || this.sessionManager.activeSessionsCount === 0) {
+    if (this.isProcessingTasks || this.taskQueue.length === 0) {
+      return;
+    }
+
+    if (this.sessionManager.activeSessionsCount === 0) {
+      logger.warn("No active sessions available to process tasks.");
       return;
     }
 
@@ -293,15 +298,26 @@ class Orchestrator extends EventEmitter {
   }
 
   /**
+   * Helper to import task modules (extracted for testing/mocking)
+   * @param {string} taskName 
+   * @returns {Promise<any>}
+   * @private
+   */
+  async _importTaskModule(taskName) {
+    const cacheBuster = isDevelopment() ? `?v=${Date.now()}` : '';
+    return import(`../tasks/${taskName}.js${cacheBuster}`);
+  }
+
+  /**
    * Loads and executes a single task.
    * @param {{taskName: string, payload: object}} task - The task object.
-   * @param {playwright.Page} page - The Playwright Page object to run the task in.
+   * @param {object} page - The Playwright Page object to run the task in.
    * @param {object} session - The session to use.
    * @private
    */
   async executeTask(task, page, session) {
     const startTime = Date.now();
-    let success = false;
+    let success;
     let error = null;
 
     try {
@@ -310,8 +326,7 @@ class Orchestrator extends EventEmitter {
         throw new Error(`Task execution validation failed: ${validation.errors.join(', ')}`);
       }
 
-      const cacheBuster = isDevelopment() ? `?v=${Date.now()}` : '';
-      const taskModule = await import(`../tasks/${task.taskName}.js${cacheBuster}`);
+      const taskModule = await this._importTaskModule(task.taskName);
       if (typeof taskModule.default === 'function') {
         const augmentedPayload = {
           ...task.payload,

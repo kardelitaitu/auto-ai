@@ -36,10 +36,12 @@ export default async function aiTesterTask(page, payload) {
     const browserInfo = payload.browserInfo || "unknown";
     const logger = createLogger(`ai-testertask.js [${browserInfo}]`);
     const connector = new AgentConnector();
+    const sessionId = payload.sessionId || browserInfo || 'ai-testertask';
 
     logger.info(`[ai-testertask] Starting LLM Integration Test...`);
 
-    let cursor = null;
+    let cursor;
+    let finalResult;
     const testResults = {
         searchTerm: '',
         searchUrl: '',
@@ -140,7 +142,12 @@ ${content.substring(0, 1500)}
 Please provide a brief 1-2 sentence summary of what appears on this search results page.`,
                 maxTokens: 150,
                 temperature: 0.5
-            }
+            },
+            context: {
+                pageUrl: testResults.searchUrl,
+                pageTitle: testResults.pageTitle
+            },
+            sessionId
         };
 
         const aiResponse = await connector.processRequest(summaryRequest);
@@ -184,11 +191,12 @@ Please provide a brief 1-2 sentence summary of what appears on this search resul
         }
         logger.info(`[ai-testertask] ===================`);
 
-        return {
+        finalResult = {
             status: testResults.success ? 'success' : 'failed',
             testResults,
             durationSeconds: parseFloat(duration),
             timestamp: new Date().toISOString()
         };
     }
+    return finalResult;
 }

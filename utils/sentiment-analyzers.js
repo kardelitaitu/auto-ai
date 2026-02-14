@@ -4,10 +4,10 @@
  * @module utils/sentiment-analyzers
  */
 
-import { createLogger } from './logger.js';
+// import { createLogger } from './logger.js';
 import SentimentData from './sentiment-data.js';
 
-const logger = createLogger('sentiment-analyzers.js');
+// const logger = createLogger('sentiment-analyzers.js');
 
 // ============================================================================
 // VALENCE ANALYZER (Positive/Negative Intensity)

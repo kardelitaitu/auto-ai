@@ -11,16 +11,26 @@ const STATE_CLOSED = 'CLOSED';
 const STATE_OPEN = 'OPEN';
 const STATE_HALF_OPEN = 'HALF_OPEN';
 
+class CircuitOpenError extends Error {
+    constructor(modelId, waitTime) {
+        super(`Circuit breaker OPEN for ${modelId}. Retry after ${Math.ceil(waitTime / 1000)}s`);
+        this.code = 'CIRCUIT_OPEN';
+        this.modelId = modelId;
+        this.retryAfter = waitTime;
+    }
+}
+
 /**
  * @class CircuitBreaker
  * @description Prevents cascading failures by monitoring model health and tripping when failure threshold reached
  */
 class CircuitBreaker {
     constructor(options = {}) {
-        this.failureThreshold = options.failureThreshold || 5;
+        this.failureThreshold = options.failureThreshold || 50;
         this.successThreshold = options.successThreshold || 2;
         this.halfOpenTime = options.halfOpenTime || 30000;
         this.monitoringWindow = options.monitoringWindow || 60000;
+        this.minSamples = options.minSamples || 5;
 
         this.breakers = new Map();
     }
@@ -63,20 +73,14 @@ class CircuitBreaker {
     async execute(modelId, fn, options = {}) {
         const breaker = this.getBreaker(modelId);
 
-        if (this._isOpen(breaker)) {
-            const waitTime = breaker.nextAttempt ? breaker.nextAttempt - Date.now() : 0;
-
-            if (waitTime > 0) {
-                const error = new Error(`Circuit breaker OPEN for ${modelId}. Retry after ${Math.ceil(waitTime / 1000)}s`);
-                error.code = 'CIRCUIT_OPEN';
-                error.modelId = modelId;
-                error.retryAfter = waitTime;
-
-                throw error;
+        if (breaker.state === STATE_OPEN) {
+            if (Date.now() < breaker.nextAttempt) {
+                const waitTime = breaker.nextAttempt - Date.now();
+                throw new CircuitOpenError(modelId, waitTime);
+            } else {
+                breaker.state = STATE_HALF_OPEN;
+                logger.info(`[${modelId}] Circuit breaker transitioning to HALF_OPEN`);
             }
-
-            breaker.state = STATE_HALF_OPEN;
-            logger.info(`[${modelId}] Circuit breaker transitioning to HALF_OPEN`);
         }
 
         try {
@@ -154,7 +158,7 @@ class CircuitBreaker {
         const windowStart = Date.now() - this.monitoringWindow;
         const recentHistory = breaker.history.filter(h => h.time >= windowStart);
 
-        if (recentHistory.length === 0) return 0;
+        if (recentHistory.length === 0 || recentHistory.length < this.minSamples) return 0;
 
         const failures = recentHistory.filter(h => h.type === 'failure').length;
         return Math.round((failures / recentHistory.length) * 100);

@@ -11,7 +11,7 @@ const logger = createLogger('runAgent.js');
 
 /**
  * Runs the agent task.
- * @param {import('playwright').Page} page 
+ * @param {object} page - The Playwright page instance. 
  * @param {string[]} args - Command line arguments (Goal is first arg)
  */
 export async function run(page, args = [], config = {}) {

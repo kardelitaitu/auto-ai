@@ -46,13 +46,14 @@ const CONFIG = {
 
 /**
  * Executes the Activity Agent.
- * @param {import('playwright').Page} page
+ * @param {object} page - The Playwright page instance.
  * @param {object} payload
  * @param {string} payload.browserInfo
  * @param {number} [payload.cycles=10] - Number of cycles to run
  * @param {string} [payload.profileId]
  * @param {number} [payload.minDuration]
  * @param {number} [payload.maxDuration]
+ * @param {number} [payload.taskTimeoutMs]
  */
 export default async function twitterActivityTask(page, payload) {
     const startTime = process.hrtime.bigint();
@@ -63,6 +64,7 @@ export default async function twitterActivityTask(page, payload) {
 
     let profile = null;
     let agent = null;
+    let finalResult;
 
     try {
         // Wrap execution in a Promise.race to enforce hard time limit
@@ -320,14 +322,16 @@ export default async function twitterActivityTask(page, payload) {
     } finally {
         // Report all social actions to global metrics (safe: validates internally)
         if (agent) {
-            if (agent.state.follows > 0) metricsCollector.recordSocialAction('follow', agent.state.follows);
-            if (agent.state.likes > 0) metricsCollector.recordSocialAction('like', agent.state.likes);
-            if (agent.state.retweets > 0) metricsCollector.recordSocialAction('retweet', agent.state.retweets);
-            if (agent.state.tweets > 0) metricsCollector.recordSocialAction('tweet', agent.state.tweets);
+            const s = (agent && typeof agent === 'object' && agent['state']) ? agent['state'] : {};
+            if ((s.follows || 0) > 0) metricsCollector.recordSocialAction('follow', s.follows || 0);
+            if ((s.likes || 0) > 0) metricsCollector.recordSocialAction('like', s.likes || 0);
+            if ((s.retweets || 0) > 0) metricsCollector.recordSocialAction('retweet', s.retweets || 0);
+            if ((s.tweets || 0) > 0) metricsCollector.recordSocialAction('tweet', s.tweets || 0);
 
-            const duration = ((Date.now() - agent.sessionStart) / 1000 / 60).toFixed(1);
+            const sessionStart = (agent && typeof agent === 'object' && agent['sessionStart']) ? agent['sessionStart'] : Date.now();
+            const duration = ((Date.now() - sessionStart) / 1000 / 60).toFixed(1);
             logger.info(`[Metrics] Task Finished. Duration: ${duration}m`);
-            logger.info(`[Metrics] Engagements: Likes=${agent.state.likes} | Follows=${agent.state.follows} | Retweets=${agent.state.retweets} | Tweets=${agent.state.tweets} | Errors=${agent.state.consecutiveLoginFailures}`);
+            logger.info(`[Metrics] Engagements: Likes=${s.likes || 0} | Follows=${s.follows || 0} | Retweets=${s.retweets || 0} | Tweets=${s.tweets || 0} | Errors=${s.consecutiveLoginFailures || 0}`);
         }
         logger.info(`[twitterActivity] --- Reached FINALLY block ---`);
         try {
@@ -356,23 +360,26 @@ export default async function twitterActivityTask(page, payload) {
         const durationInSeconds = (Number(endTime - startTime) / 1_000_000_000).toFixed(2);
         logger.info(`[twitterActivity.js] Finished task. Task duration: ${durationInSeconds} seconds.`);
 
-        return {
+        const m = (agent && typeof agent === 'object' && agent['state']) ? agent['state'] : {};
+        const profileIdValue = (profile && typeof profile === 'object' && profile['id']) ? profile['id'] : 'unknown';
+        finalResult = {
             status: 'success',
-            profileId: profile?.id || 'unknown',
+            profileId: profileIdValue,
             durationSeconds: parseFloat(durationInSeconds),
             metrics: {
-                likes: agent?.state?.likes || 0,
-                follows: agent?.state?.follows || 0,
-                retweets: agent?.state?.retweets || 0,
-                engagements: agent?.state?.engagements || 0
+                likes: m.likes || 0,
+                follows: m.follows || 0,
+                retweets: m.retweets || 0,
+                engagements: m.engagements || 0
             }
         };
     }
+    return finalResult;
 }
 
 /**
  * Applies anti-detect and humanization patches to the page context.
- * @param {import('playwright').Page} page 
+ * @param {object} page - The Playwright page instance. 
  * @param {object} logger 
  */
 async function applyHumanizationPatch(page, logger) {

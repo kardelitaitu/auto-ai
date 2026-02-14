@@ -22,7 +22,7 @@ export class ConfigCache {
         this.missCount = 0;
         this.evictionCount = 0;
         
-        logger.info(`[ConfigCache] Initialized with TTL: ${this.ttl}ms, maxSize: ${this.maxSize}`);
+        logger.debug(`[ConfigCache] Initialized with TTL: ${this.ttl}ms, maxSize: ${this.maxSize}`);
     }
     
     /**
@@ -255,6 +255,7 @@ export class ConfigCache {
 
 // Export singleton instance with default options
 export const configCache = new ConfigCache();
+logger.info(`[ConfigCache] Service initialized (TTL: ${configCache.ttl}ms)`);
 
 // Convenience functions for backward compatibility
 export const getFromCache = (key) => configCache.get(key);

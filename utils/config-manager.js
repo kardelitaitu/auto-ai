@@ -7,7 +7,7 @@
  * but provides a more robust alternative for new code.
  */
 
-import { ConfigError, ValidationError } from './errors.js';
+import { ConfigError } from './errors.js';
 import { createLogger } from './logger.js';
 import fs from 'fs';
 import path from 'path';
@@ -101,6 +101,7 @@ class ConfigManager {
     this.cacheHits = 0;
     this.cacheMisses = 0;
     this.initialized = false;
+    this.initPromise = null;
     this.sources = [];
     this.warnings = [];
   }
@@ -118,33 +119,40 @@ class ConfigManager {
       logger.debug('[ConfigManager] Already initialized, skipping');
       return this;
     }
+    
+    if (this.initPromise) return this.initPromise;
 
     const { validate = true, cache = true } = options;
 
-    logger.info('[ConfigManager] Initializing...');
-    
-    // Load configuration from all sources
-    await this._loadAllSources();
-    
-    // Validate if requested
-    if (validate) {
-      this._validateAll();
-    }
-    
-    // Enable caching
-    if (cache) {
-      this._enableCache();
-    }
+    this.initPromise = (async () => {
+      logger.info('[ConfigManager] Initializing...');
+      
+      // Load configuration from all sources
+      await this._loadAllSources();
+      
+      // Validate if requested
+      if (validate) {
+        this._validateAll();
+      }
+      
+      // Enable caching
+      if (cache) {
+        this._enableCache();
+      }
 
-    this.initialized = true;
-    logger.info(`[ConfigManager] Initialized with ${Object.keys(this.config).length} config values`);
-    
-    if (this.warnings.length > 0) {
-      logger.warn(`[ConfigManager] ${this.warnings.length} configuration warnings`);
-      this.warnings.forEach(w => logger.warn(`  - ${w}`));
-    }
+      this.initialized = true;
+      this.initPromise = null;
+      logger.info(`[ConfigManager] Initialized with ${Object.keys(this.config).length} config values`);
+      
+      if (this.warnings.length > 0) {
+        logger.warn(`[ConfigManager] ${this.warnings.length} configuration warnings`);
+        this.warnings.forEach(w => logger.warn(`  - ${w}`));
+      }
 
-    return this;
+      return this;
+    })();
+
+    return this.initPromise;
   }
 
   /**
@@ -285,9 +293,10 @@ class ConfigManager {
     switch (schema.type) {
       case 'boolean':
         return value === 'true' || value === '1';
-      case 'number':
+      case 'number': {
         const num = parseFloat(value);
         return isNaN(num) ? schema.default : num;
+      }
       case 'string':
       default:
         return value;

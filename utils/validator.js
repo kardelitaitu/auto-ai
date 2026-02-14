@@ -3,100 +3,123 @@
  * @module utils/validator
  */
 
+import { z } from 'zod';
 import { createLogger } from './logger.js';
 
 const logger = createLogger('validator.js');
 
 /**
- * Validates a single value against a set of rules.
- * @param {string} field - The name of the field being validated.
- * @param {any} value - The value to validate.
- * @param {object} rules - The validation rules.
- * @returns {string[]} An array of error messages.
- * @private
+ * Converts a legacy schema object to a Zod schema.
+ * @param {object} schema - The legacy schema object.
+ * @returns {z.ZodObject} The Zod schema.
  */
-function validateField(field, value, rules) {
-  const errors = [];
+function convertSchemaToZod(schema) {
+  const shape = {};
 
-  if (rules.required && (value === undefined || value === null)) {
-    errors.push(`Required field '${field}' is missing`);
-    return errors;
-  }
+  for (const [field, rules] of Object.entries(schema)) {
+    let validator;
 
-  if (value === undefined || value === null) {
-    return errors;
-  }
-
-  if (rules.type && typeof value !== rules.type) {
-    errors.push(`Field '${field}' must be of type ${rules.type}, got ${typeof value}`);
-    return errors;
-  }
-
-  if (rules.type === 'number') {
-    if (rules.min !== undefined && value < rules.min) {
-      errors.push(`Field '${field}' must be at least ${rules.min}, got ${value}`);
-    }
-    if (rules.max !== undefined && value > rules.max) {
-      errors.push(`Field '${field}' must be at most ${rules.max}, got ${value}`);
-    }
-  }
-
-  if (rules.type === 'string') {
-    if (rules.minLength !== undefined && value.length < rules.minLength) {
-      errors.push(`Field '${field}' must be at least ${rules.minLength} characters long`);
-    }
-    if (rules.maxLength !== undefined && value.length > rules.maxLength) {
-      errors.push(`Field '${field}' must be at most ${rules.maxLength} characters long`);
-    }
-    if (rules.pattern && !new RegExp(rules.pattern).test(value)) {
-      errors.push(`Field '${field}' does not match required pattern`);
-    }
-  }
-
-  if (rules.type === 'array') {
-    if (!Array.isArray(value)) {
-      errors.push(`Field '${field}' must be an array`);
-    } else if (rules.nonEmpty && value.length === 0) {
-      errors.push(`Field '${field}' must be a non-empty array`);
-    } else if (rules.itemSchema) {
-      value.forEach((item, index) => {
-        const itemErrors = validate(item, rules.itemSchema);
-        if (!itemErrors.isValid) {
-          itemErrors.errors.forEach(error => {
-            errors.push(`Error in '${field}[${index}]': ${error}`);
-          });
+    switch (rules.type) {
+      case 'string':
+        validator = z.string({
+          invalid_type_error: `Field '${field}' must be of type string`,
+          required_error: `Required field '${field}' is missing`
+        });
+        if (rules.minLength !== undefined) {
+          validator = validator.min(rules.minLength, `Field '${field}' must be at least ${rules.minLength} characters long`);
         }
-      });
+        if (rules.maxLength !== undefined) {
+          validator = validator.max(rules.maxLength, `Field '${field}' must be at most ${rules.maxLength} characters long`);
+        }
+        if (rules.pattern) {
+          validator = validator.regex(new RegExp(rules.pattern), `Field '${field}' does not match required pattern`);
+        }
+        break;
+      
+      case 'number':
+        validator = z.number({
+          invalid_type_error: `Field '${field}' must be of type number`,
+          required_error: `Required field '${field}' is missing`
+        });
+        if (rules.min !== undefined) {
+          validator = validator.min(rules.min, `Field '${field}' must be at least ${rules.min}`);
+        }
+        if (rules.max !== undefined) {
+          validator = validator.max(rules.max, `Field '${field}' must be at most ${rules.max}`);
+        }
+        break;
+
+      case 'array': {
+        const itemSchema = rules.itemSchema ? convertSchemaToZod(rules.itemSchema) : z.any();
+        validator = z.array(itemSchema, {
+          invalid_type_error: `Field '${field}' must be of type array`,
+          required_error: `Required field '${field}' is missing`
+        });
+        if (rules.nonEmpty) {
+          validator = validator.nonempty(`Field '${field}' must be a non-empty array`);
+        }
+        break;
+      }
+
+      case 'object':
+         validator = z.object({}).passthrough();
+         break;
+
+      default:
+        // If no type is specified, it matches anything.
+        // However, if required is true, it must not be null or undefined.
+        // We use z.unknown().refine(...) to enforce this for the required case.
+        validator = z.unknown().refine(val => val !== undefined && val !== null, { 
+             message: `Required field '${field}' is missing` 
+        });
     }
+
+    if (!rules.required) {
+      // Allow optional and nullable/undefined
+      validator = validator.optional().nullable();
+    }
+
+    shape[field] = validator;
   }
 
-  return errors;
+  // Allow unknown keys (passthrough) to match legacy behavior which ignored extra fields
+  return z.object(shape).passthrough();
 }
 
 /**
- * Validates an object against a schema.
+ * Validates an object against a schema using Zod.
  * @param {object} data - The object to validate.
- * @param {object} schema - The validation schema.
+ * @param {object} schema - The validation schema (legacy format).
  * @returns {{isValid: boolean, errors: string[]}} An object indicating whether the data is valid, and an array of any validation errors.
  * @private
  */
 function validate(data, schema) {
-  const errors = [];
-
   if (!data || typeof data !== 'object') {
-    errors.push('Data must be a valid object');
-    return { isValid: false, errors };
+    return { isValid: false, errors: ['Data must be a valid object'] };
   }
 
-  for (const [field, rules] of Object.entries(schema)) {
-    const value = data[field];
-    const fieldErrors = validateField(field, value, rules);
-    if (fieldErrors.length > 0) {
-      errors.push(...fieldErrors);
+  // Note: convertSchemaToZod might throw if the schema is invalid (e.g. bad regex).
+  // We let it throw to maintain legacy behavior where schema errors are fatal/exceptions.
+  const zodSchema = convertSchemaToZod(schema);
+
+  try {
+    zodSchema.parse(data);
+    return { isValid: true, errors: [] };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      // Compatibility: use error.issues if error.errors is undefined
+      const issues = error.errors || error.issues || [];
+      const errors = issues.map(err => {
+        // Enhance error message with path for nested errors if possible
+        if (err.path && err.path.length > 1) {
+           return `${err.message} (at ${err.path.join('.')})`;
+        }
+        return err.message;
+      });
+      return { isValid: false, errors };
     }
+    throw error;
   }
-
-  return { isValid: errors.length === 0, errors };
 }
 
 /**

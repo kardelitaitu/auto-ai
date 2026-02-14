@@ -1,7 +1,6 @@
 /**
  * @fileoverview Scroll Helper - Drop-in replacement for page.mouse.wheel()
  * Applies global scroll multiplier automatically
- * @module utils/scroll-helper
  * 
  * Usage:
  *   // OLD: await page.mouse.wheel(0, 300);
@@ -9,6 +8,8 @@
  * 
  *   // OLD: await page.mouse.wheel(0, mathUtils.randomInRange(150, 300));
  *   // NEW: await scrollWheelRandom(page, 150, 300);
+ * 
+ * @module utils/scroll-helper
  */
 
 import { globalScroll } from './global-scroll-controller.js';

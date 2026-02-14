@@ -17,7 +17,7 @@ export async function getLoggingConfig() {
     const settings = await getSettings();
     loggingConfig = settings?.logging || getDefaultLoggingConfig();
     return loggingConfig;
-  } catch (error) {
+  } catch {
     console.warn('[logging-config] Failed to load logging config, using defaults');
     return getDefaultLoggingConfig();
   }

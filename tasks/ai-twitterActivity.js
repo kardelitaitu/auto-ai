@@ -14,6 +14,8 @@ import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
 import { config } from '../utils/config-service.js';
 import { createLogger } from '../utils/logger.js';
 import { loadAiTwitterActivityConfig } from '../utils/task-config-loader.js';
+import OllamaClient from '../core/ollama-client.js';
+import PopupCloser from '../utils/popup-closer.js';
 
 const TARGET_URL = 'https://x.com';
 const DEFAULT_CYCLES = 20;
@@ -37,6 +39,22 @@ export default async function aiTwitterActivityTask(page, payload) {
 
     logger.info(`[ai-twitterActivity] Initializing AI-Enhanced Agent...`);
 
+    try {
+        if (await config.isLocalLLMEnabled()) {
+            const client = new OllamaClient();
+            await client.wakeLocal();
+            await client.checkModel('Warmup: Reply with OK then a short 30-word sentence about reading a social feed.');
+        }
+    } catch (warmErr) {
+        logger.warn(`[ai-twitterActivity] Local LLM warmup: ${warmErr.message}`);
+    }
+
+    // STAGGER STARTUP: Random delay to desynchronize multiple agents running in parallel
+    // This prevents "thundering herd" on the local LLM and makes traffic look more natural
+    const startupJitter = Math.floor(Math.random() * 10000); // 0-10 seconds
+    logger.info(`[ai-twitterActivity] ⏳ Startup Jitter: Waiting ${startupJitter}ms to desynchronize...`);
+    await new Promise(resolve => setTimeout(resolve, startupJitter));
+
     // Optimized config loading.
     let taskConfig;
     try {
@@ -48,13 +66,22 @@ export default async function aiTwitterActivityTask(page, payload) {
         }
     } catch (configError) {
         logger.error(`[ai-twitterActivity] Configuration loading failed: ${configError.message}`);
-        throw new Error(`Task initialization failed due to configuration error: ${configError.message}`);
+        throw new Error(`Task initialization failed due to configuration error: ${configError.message}`, { cause: configError });
     }
 
     let profile = null;
-    let agent = null;
+    let agent;
+    let hasAgent = false;
+    let agentState = { follows: 0, likes: 0, retweets: 0, tweets: 0 };
+    let getAIStats = () => null;
+    let getQueueStats = () => null;
+    let getEngagementProgress = () => null;
+    let sessionStart;
     let cursor = null;
     let cleanupPerformed = false;
+    let popupCloser;
+    let hasPopupCloser = false;
+    let stopPopupCloser = () => {};
 
     try {
         const hardTimeoutMs = payload.taskTimeoutMs || (DEFAULT_MIN_DURATION + DEFAULT_MAX_DURATION) * 1000;
@@ -86,6 +113,12 @@ export default async function aiTwitterActivityTask(page, payload) {
                             engagementLimits: taskConfig.engagement.limits,
                             config: taskConfig  // Pass full task config for actions
                         });
+                        hasAgent = true;
+                        agentState = agent.state;
+                        getAIStats = agent.getAIStats.bind(agent);
+                        getQueueStats = () => agent.diveQueue?.getFullStatus?.();
+                        getEngagementProgress = () => agent.diveQueue?.getEngagementProgress?.();
+                        sessionStart = agent.sessionStart;
 
                         // Debug mode logs agent init.
                         if (taskConfig.system.debugMode) {
@@ -100,6 +133,12 @@ export default async function aiTwitterActivityTask(page, payload) {
                         await page.emulateMedia({ colorScheme: theme });
 
                         await applyHumanizationPatch(page, logger);
+                        if (!popupCloser) {
+                            popupCloser = new PopupCloser(page, logger);
+                            stopPopupCloser = popupCloser.stop.bind(popupCloser);
+                            hasPopupCloser = true;
+                            popupCloser.start();
+                        }
 
                         const wakeUp = humanTiming.getWarmupDelay({
                             min: taskConfig.timing.warmup.min,
@@ -201,21 +240,23 @@ export default async function aiTwitterActivityTask(page, payload) {
         // CRITICAL: Cleanup flag set first to prevent race conditions and ensure single execution.
         cleanupPerformed = true;
 
-        if (agent) {
-            if (agent.state.follows > 0) metricsCollector.recordSocialAction('follow', agent.state.follows);
-            if (agent.state.likes > 0) metricsCollector.recordSocialAction('like', agent.state.likes);
-            if (agent.state.retweets > 0) metricsCollector.recordSocialAction('retweet', agent.state.retweets);
-            if (agent.state.tweets > 0) metricsCollector.recordSocialAction('tweet', agent.state.tweets);
+        if (hasAgent) {
+            if (agentState.follows > 0) metricsCollector.recordSocialAction('follow', agentState.follows);
+            if (agentState.likes > 0) metricsCollector.recordSocialAction('like', agentState.likes);
+            if (agentState.retweets > 0) metricsCollector.recordSocialAction('retweet', agentState.retweets);
+            if (agentState.tweets > 0) metricsCollector.recordSocialAction('tweet', agentState.tweets);
 
-            const aiStats = agent.getAIStats();
-            logger.info(`[ai-twitterActivity] Final AI Stats: ${JSON.stringify(aiStats)}`);
+            if (getAIStats) {
+                const aiStats = getAIStats();
+                logger.info(`[ai-twitterActivity] Final AI Stats: ${JSON.stringify(aiStats)}`);
+            }
 
             // Defer non-critical logging (engagement progress) to unblock cleanup.
-            if (agent.diveQueue) {
-                const queueStats = agent.diveQueue.getFullStatus();
+            if (getQueueStats) {
+                const queueStats = getQueueStats();
 
                 // Record session duration.
-                const sessionStartTime = agent.sessionStart || Date.now();
+                const sessionStartTime = sessionStart || Date.now();
                 const duration = ((Date.now() - sessionStartTime) / 1000 / 60).toFixed(1);
 
                 // Defer non-critical logging for faster cleanup.
@@ -223,16 +264,18 @@ export default async function aiTwitterActivityTask(page, payload) {
                     try {
                         const logConfig = await getLoggingConfig();
 
-                        if (logConfig?.finalStats?.showQueueStatus !== false) {
+                        if (queueStats && logConfig?.finalStats?.showQueueStatus !== false) {
                             logger.info(`[ai-twitterActivity] DiveQueue: queue=${queueStats.queue.queueLength}, active=${queueStats.queue.activeCount}, utilization=${queueStats.queue.utilizationPercent}%`);
                         }
 
                         if (logConfig?.finalStats?.showEngagement !== false && logConfig?.engagementProgress?.enabled) {
-                            const engagementProgress = agent.diveQueue.getEngagementProgress();
+                            const engagementProgress = getEngagementProgress ? getEngagementProgress() : null;
                             const progressConfig = logConfig.engagementProgress;
 
-                            const summary = formatEngagementSummary(engagementProgress, progressConfig);
-                            logger.info(`[ai-twitterActivity] Engagement Progress: ${summary}`);
+                            if (engagementProgress) {
+                                const summary = formatEngagementSummary(engagementProgress, progressConfig);
+                                logger.info(`[ai-twitterActivity] Engagement Progress: ${summary}`);
+                            }
                         }
                     } catch (loggingError) {
                         logger.warn(`[ai-twitterActivity] Deferred logging error: ${loggingError.message}`);
@@ -245,6 +288,11 @@ export default async function aiTwitterActivityTask(page, payload) {
 
         // Close page with error logging.
         try {
+            if (hasPopupCloser) {
+                stopPopupCloser();
+                stopPopupCloser = () => {};
+                hasPopupCloser = false;
+            }
             if (page && !page.isClosed()) {
                 await page.close();
             }

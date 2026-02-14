@@ -169,7 +169,7 @@ export class MultitaskEngine {
     /**
      * Move to a specific area (human-like trajectory)
      */
-    async _moveToArea(targetX, targetY, context) {
+    async _moveToArea(targetX, targetY, _context) {
         // Get current position (approximate)
         const currentX = 400 + mathUtils.randomInRange(-50, 50);
         const currentY = 400 + mathUtils.randomInRange(-50, 50);

@@ -7,18 +7,33 @@
  *   import * as integrationTests from '@tests/integration';
  */
 
-export { default as agentConnectorHealth } from './agent-connector-health.test.js';
-export { default as circuitBreaker } from './circuit-breaker.test.js';
-export { default as requestQueue } from './request-queue.test.js';
-export { default as coreModules } from './test-core-modules.js';
-export { default as dedupe } from './test-dedupe.js';
-export { default as aiReplyEngine } from './test-ai-reply-engine.js';
-export { default as cloudPromptFix } from './test-cloud-prompt-fix.js';
-export { default as cloudClientMulti } from './test-cloud-client-multi.js';
-export { default as multiApi } from './test-multi-api.js';
-export { default as cloudApi } from './test-cloud-api.js';
-export { default as cloudClient } from './cloud-client.test.js';
-export { default as agentConnector } from './agent-connector.test.js';
+import agentConnectorHealth from './agent-connector-health.test.js';
+import circuitBreaker from './circuit-breaker.test.js';
+import requestQueue from './request-queue.test.js';
+import coreModules from './test-core-modules.js';
+import dedupe from './test-dedupe.js';
+import aiReplyEngine from './test-ai-reply-engine.js';
+import cloudPromptFix from './test-cloud-prompt-fix.js';
+import cloudClientMulti from './test-cloud-client-multi.js';
+import multiApi from './test-multi-api.js';
+import cloudApi from './test-cloud-api.js';
+import cloudClient from './cloud-client.test.js';
+import agentConnector from './agent-connector.test.js';
+
+export {
+  agentConnectorHealth,
+  circuitBreaker,
+  requestQueue,
+  coreModules,
+  dedupe,
+  aiReplyEngine,
+  cloudPromptFix,
+  cloudClientMulti,
+  multiApi,
+  cloudApi,
+  cloudClient,
+  agentConnector
+};
 
 /**
  * Run all integration tests

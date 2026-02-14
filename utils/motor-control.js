@@ -28,7 +28,7 @@ const MOTOR_CONFIG = {
 
 function createMotorController(options = {}) {
     const config = { ...MOTOR_CONFIG, ...options };
-    let trackedElements = new Map();
+    // let trackedElements = new Map();
 
     return {
         config,
@@ -152,7 +152,7 @@ function createMotorController(options = {}) {
         },
 
         async getStableTarget(page, selector, options = {}) {
-            const { timeout = config.targetTimeout, scrollFirst = true } = options;
+            const { timeout = config.targetTimeout, scrollFirst: _scrollFirst = true } = options;
 
             const startTime = Date.now();
             let lastBox = null;
@@ -193,7 +193,7 @@ function createMotorController(options = {}) {
                     lastBox = box;
                     await page.waitForTimeout(50);
 
-                } catch (error) {
+                } catch (_error) {
                     await page.waitForTimeout(config.retryDelay);
                 }
             }
@@ -208,7 +208,7 @@ function createMotorController(options = {}) {
                 }, x, y);
 
                 return element;
-            } catch (error) {
+            } catch (_error) {
                 return null;
             }
         },
@@ -283,7 +283,7 @@ function createMotorController(options = {}) {
                     return { success: false, reason: 'no_stable_target' };
                 }
 
-                const element = await page.$(selector);
+                const _element = await page.$(selector);
                 const box = stable.box;
                 const targetX = box.x + box.width / 2;
                 const targetY = box.y + box.height / 2;

@@ -740,7 +740,7 @@ describe('ai-twitterActivity Integration Scenarios', () => {
       let interval = setInterval(() => {}, 1000);
       
       // Simulate session start
-      monitoringActive = true;
+      expect(monitoringActive).toBe(true);
       
       // Simulate session end
       clearInterval(interval);
@@ -867,7 +867,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
     it('should handle session error and attempt recovery', async () => {
       // Simulate session error with recovery attempt
       let sessionError = new Error('Test session error');
-      let recoveryAttempted = false;
+      let recoveryAttempted;
       
       try {
         throw sessionError;
@@ -882,7 +882,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
     it('should handle page close error gracefully', () => {
       // Simulate page close error
       const closeError = new Error('Page close failed');
-      let errorLogged = false;
+      let errorLogged;
       
       try {
         throw closeError;
@@ -896,7 +896,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
     it('should handle navigation error during recovery', () => {
       // Simulate navigation error during recovery
       const navError = new Error('Navigation failed');
-      let errorCaught = false;
+      let errorCaught;
       
       try {
         throw navError;
@@ -910,7 +910,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
     it('should not crash when agent is null during cleanup', () => {
       // Simulate cleanup with null agent
       const agent = null;
-      let cleanupSafe = false;
+      let cleanupSafe;
       
       if (agent) {
         // This should not execute
@@ -925,7 +925,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
     it('should handle page.isClosed() error gracefully', () => {
       // Simulate page.isClosed() error
       const pageError = new Error('Page context error');
-      let errorHandled = false;
+      let errorHandled;
       
       try {
         throw pageError;
@@ -967,15 +967,15 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
     });
 
     it('should handle nested error scenarios', () => {
-      let innerErrorCaught = false;
-      let outerErrorCaught = false;
+      let innerErrorCaught;
+      let outerErrorCaught;
 
       try {
         throw new Error('Inner error');
       } catch (inner) {
         innerErrorCaught = true;
         try {
-          throw new Error('Outer error');
+          throw new Error('Outer error', { cause: inner });
         } catch (outer) {
           outerErrorCaught = true;
         }
@@ -1027,7 +1027,7 @@ describe('ai-twitterActivity Queue Monitoring Scenarios', () => {
     it('should handle queue status error gracefully', () => {
       // Simulate queue status error
       const queueError = new Error('Queue status unavailable');
-      let errorHandled = false;
+      let errorHandled;
 
       try {
         throw queueError;
@@ -1053,7 +1053,7 @@ describe('ai-twitterActivity Queue Monitoring Scenarios', () => {
     it('should handle getFullStatus error', () => {
       // Simulate getFullStatus error
       const statusError = new Error('getFullStatus failed');
-      let errorHandled = false;
+      let errorHandled;
 
       try {
         throw statusError;
@@ -1069,7 +1069,7 @@ describe('ai-twitterActivity Queue Monitoring Scenarios', () => {
     it('should clear existing interval before starting new one', () => {
       // Simulate clearing existing interval
       let existingInterval = setInterval(() => {}, 30000);
-      let intervalCleared = false;
+      let intervalCleared;
 
       // Clear before starting new
       clearInterval(existingInterval);
@@ -1079,8 +1079,8 @@ describe('ai-twitterActivity Queue Monitoring Scenarios', () => {
     });
 
     it('should track monitoring state correctly', () => {
-      let queueMonitorInterval = null;
-      let monitoringActive = false;
+      let queueMonitorInterval;
+      let monitoringActive;
 
       // Start monitoring
       queueMonitorInterval = setInterval(() => {}, 30000);
@@ -1169,7 +1169,7 @@ describe('ai-twitterActivity Session Duration Edge Cases', () => {
 describe('ai-twitterActivity Cleanup Scenarios', () => {
   describe('Cleanup Race Condition Prevention', () => {
     it('should set cleanupPerformed flag before cleanup logic', () => {
-      let cleanupPerformed = false;
+      let cleanupPerformed;
       let cleanupLogicRan = false;
 
       // Simulate correct order: flag first, then cleanup
@@ -1205,7 +1205,7 @@ describe('ai-twitterActivity Cleanup Scenarios', () => {
 
     it('should handle cleanup with null agent', () => {
       let agent = null;
-      let cleanupSafe = false;
+      let cleanupSafe;
 
       if (agent) {
         cleanupSafe = false;
@@ -1218,7 +1218,7 @@ describe('ai-twitterActivity Cleanup Scenarios', () => {
 
     it('should handle cleanup with null diveQueue', () => {
       const agent = { diveQueue: null };
-      let diveQueueExists = false;
+      let diveQueueExists;
 
       if (agent.diveQueue) {
         diveQueueExists = true;

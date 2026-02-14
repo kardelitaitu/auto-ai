@@ -40,20 +40,22 @@ class LocalClient {
      * @private
      */
     async _loadConfig() {
+        if (this._configLoaded) return;
+        
         try {
             const settings = await getSettings();
             const localConfig = settings.llm?.local || {};
             const vllmConfig = settings.llm?.vllm || {};
 
             this.vllmEnabled = vllmConfig.enabled === true;
-            this.ollamaEnabled = localConfig.enabled !== false;
+            this.ollamaEnabled = localConfig.enabled === true;
 
-            if (this.vllmEnabled) {
+            if (this.vllmEnabled && !this.vllmClient) {
                 this.vllmClient = new VLLMClient();
                 logger.info('[Local] vLLM client initialized');
             }
 
-            if (this.ollamaEnabled) {
+            if (this.ollamaEnabled && !this.ollamaClient) {
                 this.ollamaClient = new OllamaClient();
                 await this.ollamaClient.initialize();
                 logger.info('[Local] Ollama client initialized');
@@ -62,6 +64,8 @@ class LocalClient {
             if (!this.vllmEnabled && !this.ollamaEnabled) {
                 logger.info('[Local] All local clients are disabled');
             }
+
+            this._configLoaded = true;
 
         } catch (error) {
             logger.error('[Local] Failed to load config:', error.message);
@@ -189,6 +193,7 @@ class LocalClient {
             ollamaRequests: 0
         };
         if (this.vllmClient) this.vllmClient.resetStats();
+        if (this.ollamaClient) this.ollamaClient.resetStats();
         logger.info('[Local] Statistics reset');
     }
 }

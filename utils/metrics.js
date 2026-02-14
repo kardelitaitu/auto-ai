@@ -445,7 +445,7 @@ class MetricsCollector {
       }
     }
 
-    for (const [taskName, stats] of Object.entries(breakdown)) {
+    for (const [_taskName, stats] of Object.entries(breakdown)) {
       stats.avgDuration = (stats.totalDuration / stats.executions).toFixed(2);
       stats.successRate = ((stats.successes / stats.executions) * 100).toFixed(2);
       delete stats.durations;
@@ -514,9 +514,24 @@ class MetricsCollector {
       totalLikes: 0,
       totalRetweets: 0,
       totalTweets: 0,
+      // Twitter engagement metrics
+      totalReplies: 0,
+      totalQuotes: 0,
+      totalBookmarks: 0,
+      // Performance metrics
+      totalDiveDuration: 0,
+      diveCount: 0,
+      diveDurations: [],
+      totalAILatency: 0,
+      aiRequestCount: 0,
+      aiLatencies: [],
+      // Error tracking
+      errorsByType: {},
       startTime: this.metrics.startTime,
       lastResetTime: Date.now()
     };
+
+    this.taskHistory = [];
 
     logger.info('Metrics reset', previousStats);
   }
