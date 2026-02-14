@@ -82,7 +82,9 @@ async function scrape() {
                     await acceptBtn.click();
                     await sleep(1000, 2000);
                 }
-            } catch (e) { }
+            } catch (e) {
+                console.warn('[VED-Scraper] Cookie consent handling failed:', e);
+            }
 
             // Type Query Human-like
             const searchBox = page.locator('textarea[name="q"], input[name="q"]').first();

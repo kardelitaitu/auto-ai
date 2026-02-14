@@ -95,6 +95,13 @@ export class AIContextEngine {
       // Analyze replies
       context.replySentiment = this.analyzeReplySentiment(context.replies);
 
+      // Check for images and capture screenshot if present
+      const hasImage = await this.checkForTweetImage(page);
+      if (hasImage) {
+        context.screenshot = await this.captureTweetScreenshot(page);
+        this.logger.info(`[Context] Captured screenshot of tweet with image`);
+      }
+
       this.logger.info(`[Context] Enhanced context: ${context.sentiment?.overall}, tone: ${context.tone?.primary}, ${context.replies.length} replies, ${context.engagementLevel} engagement`);
 
     } catch (error) {
@@ -185,6 +192,55 @@ export class AIContextEngine {
     if (total > 100) return 'medium';
     if (total > 10) return 'low';
     return 'minimal';
+  }
+
+  /**
+   * Check if the main tweet contains an image
+   * @param {object} page - Playwright page
+   * @returns {Promise<boolean>}
+   */
+  async checkForTweetImage(page) {
+    try {
+      return await page.evaluate(() => {
+        // Check for tweet photos or video thumbnails in the first article (main tweet)
+        const mainTweet = document.querySelector('article');
+        if (!mainTweet) return false;
+        
+        const hasPhoto = mainTweet.querySelector('[data-testid="tweetPhoto"]') !== null;
+        const hasVideo = mainTweet.querySelector('[data-testid="videoPlayer"]') !== null;
+        const hasCard = mainTweet.querySelector('[data-testid="card.wrapper"]') !== null;
+        
+        return hasPhoto || hasVideo || hasCard;
+      });
+    } catch (error) {
+      this.logger.debug(`[Context] Image check failed: ${error.message}`);
+      return false;
+    }
+  }
+
+  /**
+   * Capture screenshot of the main tweet
+   * @param {object} page - Playwright page
+   * @returns {Promise<Buffer>}
+   */
+  async captureTweetScreenshot(page) {
+    try {
+      // Scroll to top to ensure tweet is visible
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(500); // Wait for scroll/render
+      
+      // Try to capture just the tweet element first
+      const tweetElement = await page.$('article');
+      if (tweetElement) {
+        return await tweetElement.screenshot({ type: 'jpeg', quality: 80 });
+      }
+      
+      // Fallback to viewport screenshot
+      return await page.screenshot({ type: 'jpeg', quality: 80, fullPage: false });
+    } catch (error) {
+      this.logger.warn(`[Context] Screenshot capture failed: ${error.message}`);
+      return null;
+    }
   }
 
   /**
@@ -345,7 +401,9 @@ export class AIContextEngine {
                 });
               }
             }
-          } catch {}
+          } catch (error) {
+            this.logger.debug(`[Context] Tweet text extraction failed: ${error.message}`);
+          }
         }
       }
 
@@ -530,7 +588,9 @@ export class AIContextEngine {
                 }
               }
             }
-          } catch {}
+          } catch (error) {
+            this.logger.debug(`[Context] Header selector lookup failed: ${error.message}`);
+          }
         }
 
         // Strategy 2: Extract from display name containing @username

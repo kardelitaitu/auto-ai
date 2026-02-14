@@ -30,7 +30,9 @@ async function scrape() {
         try {
             JSON.parse(fs.readFileSync(outputPath, 'utf8')).forEach(l => allLinks.add(l));
             console.log(`[t.co-Scraper] Loaded ${allLinks.size} existing links.`);
-        } catch (e) { }
+        } catch (e) {
+            console.warn('[t.co-Scraper] Failed to load existing links:', e);
+        }
     }
 
     try {

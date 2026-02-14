@@ -1,4 +1,5 @@
 // content.js
+const { chrome } = globalThis;
 (() => {
     let collectedLinks = new Set();
     let debounceTimer = null;

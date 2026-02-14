@@ -1,4 +1,5 @@
 // background.js
+const { chrome } = globalThis;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'LINKS_FOUND') {
         const newLinks = request.links;
