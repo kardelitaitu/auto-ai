@@ -48,6 +48,12 @@
 - Clear timeout handles on success and failure
 - Add periodic cleanup for orphaned pages and stale sessions
 
+## Task Breakdown
+- Task A: Centralized task assignment with worker semaphores (branch: feat/scheduler-queue)
+- Task B: Page pooling and context reuse (branch: feat/page-pooling)
+- Task C: Retry and timeout unification (branch: feat/retry-timeout)
+- Task D: Memory bounds and cleanup hardening (branch: feat/memory-hardening)
+
 ## Metrics and Success Criteria
 - P50 and P95 task latency reduced by 30–50%
 - Queue wait time reduced by 40–60%
