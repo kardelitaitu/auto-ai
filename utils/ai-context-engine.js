@@ -600,7 +600,9 @@ export class AIContextEngine {
             const nameText = await nameEl.innerText();
             const match = nameText.match(/@([a-zA-Z0-9_]+)/);
             if (match && match[1].length >= 4) return match[1];
-          } catch {}
+          } catch (error) {
+            this.logger.debug(`[Context] Display name lookup failed: ${error.message}`);
+          }
         }
 
         // Strategy 3: Look for any link with /username pattern
@@ -615,14 +617,18 @@ export class AIContextEngine {
               }
             }
           }
-        } catch {}
+        } catch (error) {
+          this.logger.debug(`[Context] Username link scan failed: ${error.message}`);
+        }
 
         // Strategy 4: Fallback - try to find any @mention in the article
         try {
           const articleText = await article.innerText();
           const match = articleText.match(/@([a-zA-Z0-9_]{4,15})/);
           if (match) return match[1];
-        } catch {}
+        } catch (error) {
+          this.logger.debug(`[Context] Timeline reply extraction failed: ${error.message}`);
+        }
 
         return 'unknown';
       } catch {

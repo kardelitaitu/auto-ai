@@ -1,3 +1,5 @@
+const { chrome } = globalThis;
+
 document.addEventListener('DOMContentLoaded', () => {
     const totalCountEl = document.getElementById('totalCount');
     const statusMsg = document.getElementById('statusMsg');
