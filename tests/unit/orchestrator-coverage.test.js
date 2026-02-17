@@ -72,7 +72,7 @@ describe('Orchestrator Coverage Extensions', () => {
       get: vi.fn(() => 0),
     });
     mockSessionManager.getAllSessions.mockReturnValue([]);
-    mockSessionManager.findAndOccupyIdleWorker.mockResolvedValue({ id: 'w1' });
+    mockSessionManager.acquireWorker.mockResolvedValue({ id: 'w1' });
     mockSessionManager.releaseWorker.mockResolvedValue();
     mockSessionManager.registerPage.mockResolvedValue();
     mockSessionManager.unregisterPage.mockResolvedValue();
@@ -230,6 +230,8 @@ describe('Orchestrator Coverage Extensions', () => {
         },
         workers: [{ id: 'w1' }] 
       };
+      mockSessionManager.acquirePage.mockResolvedValue({ close: vi.fn() });
+      mockSessionManager.releasePage.mockResolvedValue();
 
       await orchestrator.processChecklistForSession(mockSession, []);
       
@@ -256,13 +258,15 @@ describe('Orchestrator Coverage Extensions', () => {
         },
         workers: [{ id: 'w1' }] 
       };
+      mockSessionManager.acquirePage.mockResolvedValue(mockPage);
+      mockSessionManager.releasePage.mockResolvedValue();
 
       // Mock executeTask to succeed so we reach finally block
       vi.spyOn(orchestrator, 'executeTask').mockResolvedValue();
 
       await orchestrator.processChecklistForSession(mockSession, [{ taskName: 't1' }]);
       
-      expect(mockPage.close).toHaveBeenCalled();
+      expect(mockSessionManager.releasePage).toHaveBeenCalledWith('s1', mockPage);
       // Should not throw
     });
 
@@ -280,13 +284,12 @@ describe('Orchestrator Coverage Extensions', () => {
         workers: [{ id: 'w1' }] 
       };
       
-      // Mock sleep to be fast
-      vi.spyOn(orchestrator, '_sleep').mockResolvedValue();
-      
-      // Mock findAndOccupyIdleWorker: null first, then worker
-      mockSessionManager.findAndOccupyIdleWorker
+      // Mock acquireWorker: null first, then worker
+      mockSessionManager.acquireWorker
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce({ id: 'w1' });
+      mockSessionManager.acquirePage.mockResolvedValue({ close: vi.fn() });
+      mockSessionManager.releasePage.mockResolvedValue();
         
       // Mock executeTask to finish
       vi.spyOn(orchestrator, 'executeTask').mockResolvedValue();
@@ -294,7 +297,7 @@ describe('Orchestrator Coverage Extensions', () => {
       await orchestrator.processChecklistForSession(mockSession, [{ taskName: 't1' }]);
       
       expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining("No idle workers available"));
-      expect(mockSessionManager.findAndOccupyIdleWorker).toHaveBeenCalledTimes(2);
+      expect(mockSessionManager.acquireWorker).toHaveBeenCalledTimes(2);
     });
 
     it('should handle critical error in worker loop', async () => {
@@ -304,6 +307,7 @@ describe('Orchestrator Coverage Extensions', () => {
         browser: { contexts: () => [], newContext: vi.fn().mockResolvedValue({ newPage: vi.fn().mockRejectedValue(new Error("Context Crash")), close: vi.fn() }) },
         workers: [{ id: 'w1' }] 
       };
+      mockSessionManager.acquirePage.mockRejectedValue(new Error("Context Crash"));
       
       await orchestrator.processChecklistForSession(mockSession, [{ taskName: 't1' }]);
       
@@ -320,8 +324,8 @@ describe('Orchestrator Coverage Extensions', () => {
        orchestrator.isProcessingTasks = false;
        
        let callCount = 0;
-       // Mock processChecklistForSession to add a task
-       vi.spyOn(orchestrator, 'processChecklistForSession').mockImplementation(async () => {
+       // Mock processSharedChecklistForSession to add a task
+       vi.spyOn(orchestrator, 'processSharedChecklistForSession').mockImplementation(async () => {
          // Only add task if it's the first call to avoid infinite recursion in test
          callCount++;
          if (callCount === 1) {
@@ -389,8 +393,8 @@ describe('Orchestrator Coverage Extensions', () => {
         workers: [] 
       }]);
       
-      // Spy on processChecklistForSession
-      vi.spyOn(orchestrator, 'processChecklistForSession').mockResolvedValue();
+      // Spy on processSharedChecklistForSession
+      vi.spyOn(orchestrator, 'processSharedChecklistForSession').mockResolvedValue();
       
       const tasksProcessedSpy = vi.fn();
       const allTasksCompleteSpy = vi.fn();
@@ -627,11 +631,13 @@ describe('Orchestrator Coverage Extensions', () => {
         };
 
         vi.spyOn(orchestrator, 'executeTask').mockResolvedValue();
+        mockSessionManager.acquirePage.mockResolvedValue({ close: vi.fn() });
+        mockSessionManager.releasePage.mockResolvedValue();
 
         await orchestrator.processChecklistForSession(mockSession, [{ taskName: 't1' }]);
 
         expect(mockSession.browser.newContext).not.toHaveBeenCalled();
-        expect(mockContext.newPage).toHaveBeenCalled();
+        expect(mockSessionManager.acquirePage).toHaveBeenCalledWith('s1', mockContext);
     });
 
     it('should default browserInfo to unknown_profile if missing in session', async () => {

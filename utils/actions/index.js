@@ -4,15 +4,14 @@
  * @module utils/actions
  */
 
-import { createLogger } from '../logger.js';
+import { createLogger } from "../logger.js";
 
-const logger = createLogger('actions/index.js');
-
-export { AIReplyAction } from './ai-twitter-reply.js';
-export { AIQuoteAction } from './ai-twitter-quote.js';
-export { LikeAction } from './ai-twitter-like.js';
-export { BookmarkAction } from './ai-twitter-bookmark.js';
-export { GoHomeAction } from './ai-twitter-go-home.js';
+export { AIReplyAction } from "./ai-twitter-reply.js";
+export { AIQuoteAction } from "./ai-twitter-quote.js";
+export { LikeAction } from "./ai-twitter-like.js";
+export { BookmarkAction } from "./ai-twitter-bookmark.js";
+export { RetweetAction } from "./ai-twitter-retweet.js";
+export { GoHomeAction } from "./ai-twitter-go-home.js";
 
 /**
  * Smart Action Runner
@@ -23,7 +22,7 @@ export class ActionRunner {
     this.agent = agent;
     this.actions = actions;
 
-    this.logger = createLogger('actions/index.js');
+    this.logger = this.agent?.logger || createLogger("actions/index.js");
 
     this.loadConfig();
   }
@@ -31,18 +30,21 @@ export class ActionRunner {
   loadConfig() {
     const actionConfig = this.agent?.twitterConfig?.actions || {};
     this.config = {
-      reply: actionConfig.reply || { probability: 0.60, enabled: true },
-      quote: actionConfig.quote || { probability: 0.20, enabled: true },
+      reply: actionConfig.reply || { probability: 0.6, enabled: true },
+      quote: actionConfig.quote || { probability: 0.2, enabled: true },
       like: actionConfig.like || { probability: 0.15, enabled: true },
       bookmark: actionConfig.bookmark || { probability: 0.05, enabled: true },
-      goHome: actionConfig.goHome || { enabled: true }
+      retweet: actionConfig.retweet || { probability: 0.2, enabled: true },
+      goHome: actionConfig.goHome || { enabled: true },
     };
 
     const totalProb = Object.entries(this.config)
-      .filter(([k]) => k !== 'goHome')
+      .filter(([k]) => k !== "goHome")
       .reduce((sum, [_, v]) => sum + v.probability, 0);
 
-    this.logger.info(`[ActionRunner] Initialized: reply=${this.config.reply.probability}, quote=${this.config.quote.probability}, like=${this.config.like.probability}, bookmark=${this.config.bookmark.probability} (total: ${(totalProb * 100).toFixed(0)}%)`);
+    this.logger.info(
+      `[ActionRunner] Initialized: reply=${this.config.reply.probability}, quote=${this.config.quote.probability}, like=${this.config.like.probability}, bookmark=${this.config.bookmark.probability}, retweet=${this.config.retweet.probability} (total: ${(totalProb * 100).toFixed(0)}%)`,
+    );
   }
 
   /**
@@ -50,10 +52,11 @@ export class ActionRunner {
    */
   getEngagementType(actionName) {
     const mapping = {
-      reply: 'replies',
-      quote: 'quotes',
-      like: 'likes',
-      bookmark: 'bookmarks'
+      reply: "replies",
+      quote: "quotes",
+      like: "likes",
+      bookmark: "bookmarks",
+      retweet: "retweets",
     };
     return mapping[actionName] || actionName;
   }
@@ -71,7 +74,9 @@ export class ActionRunner {
     if (engagementType !== actionName) {
       const canEngage = this.agent.diveQueue?.canEngage(engagementType);
       if (!canEngage) {
-        this.logger.debug(`[ActionRunner] ${actionName} at limit (${engagementType})`);
+        this.logger.debug(
+          `[ActionRunner] ${actionName} at limit (${engagementType})`,
+        );
         return false;
       }
     }
@@ -84,7 +89,7 @@ export class ActionRunner {
    * If an action is at limit, its probability is redistributed proportionally to remaining actions
    */
   calculateSmartProbabilities() {
-    const baseActions = ['reply', 'quote', 'like', 'bookmark'];
+    const baseActions = ["reply", "quote", "like", "bookmark", "retweet"];
 
     let totalBaseWeight = 0;
     const baseWeights = {};
@@ -106,7 +111,10 @@ export class ActionRunner {
       return {};
     }
 
-    const availableTotal = Object.values(availableWeights).reduce((a, b) => a + b, 0);
+    const availableTotal = Object.values(availableWeights).reduce(
+      (a, b) => a + b,
+      0,
+    );
 
     const smartProbs = {};
     for (const action of baseActions) {
@@ -117,8 +125,20 @@ export class ActionRunner {
     }
 
     if (Object.keys(smartProbs).length > 0) {
-      const redistributedTotal = Object.values(smartProbs).reduce((a, b) => a + b, 0);
-      this.logger.debug(`[ActionRunner] Smart probabilities (total redistributed: ${(redistributedTotal * 100).toFixed(1)}%): ${JSON.stringify(smartProbs)}`);
+      const redistributedTotal = Object.values(smartProbs).reduce(
+        (a, b) => a + b,
+        0,
+      );
+      // Format for compact logging (3 decimal places)
+      const formattedProbs = Object.fromEntries(
+        Object.entries(smartProbs).map(([k, v]) => [
+          k,
+          Math.floor(v * 1000) / 1000,
+        ]),
+      );
+      this.logger.debug(
+        `[ActionRunner] Smart probabilities (total redistributed: ${(redistributedTotal * 100).toFixed(1)}%): ${JSON.stringify(formattedProbs)}`,
+      );
     }
 
     return smartProbs;
@@ -133,7 +153,9 @@ export class ActionRunner {
 
     const availableActions = Object.keys(probabilities);
     if (availableActions.length === 0) {
-      this.logger.debug(`[ActionRunner] No actions available (all at limits or disabled)`);
+      this.logger.debug(
+        `[ActionRunner] No actions available (all at limits or disabled)`,
+      );
       return null;
     }
 
@@ -143,7 +165,9 @@ export class ActionRunner {
     for (const action of availableActions) {
       cumulative += probabilities[action];
       if (roll < cumulative) {
-        this.logger.debug(`[ActionRunner] Selected: ${action} (roll: ${(roll * 100).toFixed(1)}%, prob: ${(probabilities[action] * 100).toFixed(1)}%)`);
+        this.logger.debug(
+          `[ActionRunner] Selected: ${action} (roll: ${(roll * 100).toFixed(1)}%, prob: ${(probabilities[action] * 100).toFixed(1)}%)`,
+        );
         return action;
       }
     }
@@ -157,7 +181,7 @@ export class ActionRunner {
   async executeAction(actionName, context = {}) {
     const action = this.actions[actionName];
     if (!action) {
-      return { success: false, reason: 'unknown_action', actionName };
+      return { success: false, reason: "unknown_action", actionName };
     }
 
     return await action.execute(context);
@@ -169,7 +193,7 @@ export class ActionRunner {
   async tryExecute(actionName, context = {}) {
     const action = this.actions[actionName];
     if (!action) {
-      return { success: false, reason: 'unknown_action', actionName };
+      return { success: false, reason: "unknown_action", actionName };
     }
 
     return await action.tryExecute(context);
@@ -186,4 +210,3 @@ export class ActionRunner {
     return stats;
   }
 }
-

@@ -89,6 +89,59 @@ describe('Orchestrator', () => {
     });
   });
 
+  describe('Task Processing Modes', () => {
+    it('should dispatch tasks in centralized mode by default', async () => {
+      const sessionA = { id: 'A' };
+      const sessionB = { id: 'B' };
+
+      vi.spyOn(mockSessionManager, 'activeSessionsCount', 'get').mockReturnValue(2);
+      mockSessionManager.getAllSessions.mockReturnValue([sessionA, sessionB]);
+
+      const tasks = [
+        { taskName: 'taskA', payload: {} },
+        { taskName: 'taskB', payload: {} }
+      ];
+      orchestrator.taskQueue = [...tasks];
+
+      const processSpy = vi.spyOn(orchestrator, 'processSharedChecklistForSession').mockResolvedValue();
+
+      await orchestrator.processTasks();
+
+      expect(processSpy).toHaveBeenCalledTimes(2);
+      const firstTasks = processSpy.mock.calls[0][1];
+      const secondTasks = processSpy.mock.calls[1][1];
+      expect(firstTasks).not.toBe(secondTasks);
+      expect(firstTasks).toEqual(tasks);
+      expect(secondTasks).toEqual(tasks);
+    });
+
+    it('should fall back to centralized assignment when non-centralized mode configured', async () => {
+      const sessionA = { id: 'A' };
+      const sessionB = { id: 'B' };
+
+      vi.spyOn(mockSessionManager, 'activeSessionsCount', 'get').mockReturnValue(2);
+      mockSessionManager.getAllSessions.mockReturnValue([sessionA, sessionB]);
+
+      const tasks = [
+        { taskName: 'taskA', payload: {} },
+        { taskName: 'taskB', payload: {} }
+      ];
+      orchestrator.taskQueue = [...tasks];
+      orchestrator.taskDispatchMode = 'broadcast';
+
+      const processSpy = vi.spyOn(orchestrator, 'processSharedChecklistForSession').mockResolvedValue();
+
+      await orchestrator.processTasks();
+
+      expect(processSpy).toHaveBeenCalledTimes(2);
+      const firstTasks = processSpy.mock.calls[0][1];
+      const secondTasks = processSpy.mock.calls[1][1];
+      expect(firstTasks).not.toBe(secondTasks);
+      expect(firstTasks).toEqual(tasks);
+      expect(secondTasks).toEqual(tasks);
+    });
+  });
+
     it('should sleep for specified duration', async () => {
       vi.useRealTimers(); // Ensure real timers for this test if needed, but spy is safer
       const setTimeoutSpy = vi.spyOn(global, 'setTimeout');
@@ -278,6 +331,11 @@ describe('Orchestrator', () => {
   });
 
   describe('processTasks', () => {
+    beforeEach(async () => {
+      const configLoader = await import('../../utils/configLoader.js');
+      configLoader.getSettings.mockResolvedValue({});
+    });
+
     it('should do nothing if already processing', async () => {
       orchestrator.isProcessingTasks = true;
       await orchestrator.processTasks();
@@ -307,12 +365,12 @@ describe('Orchestrator', () => {
       };
       mockSessionManager.getAllSessions.mockReturnValue([mockSession]);
       
-      // Mock processChecklistForSession to avoid complex logic in this test
-      const checklistSpy = vi.spyOn(orchestrator, 'processChecklistForSession').mockResolvedValue();
+      // Mock processSharedChecklistForSession to avoid complex logic in this test
+      const checklistSpy = vi.spyOn(orchestrator, 'processSharedChecklistForSession').mockResolvedValue();
       
       await orchestrator.processTasks();
       
-      expect(checklistSpy).toHaveBeenCalledWith(mockSession, [{ taskName: 'mockTask' }]);
+      expect(checklistSpy).toHaveBeenCalledWith(mockSession, [{ taskName: 'mockTask', payload: {} }], { reuseSharedContext: false });
       expect(orchestrator.taskQueue).toHaveLength(0);
       expect(orchestrator.isProcessingTasks).toBe(false);
     });
@@ -326,8 +384,8 @@ describe('Orchestrator', () => {
       };
       mockSessionManager.getAllSessions.mockReturnValue([mockSession]);
       
-      // Mock processChecklistForSession to simulate adding a new task while processing
-      const checklistSpy = vi.spyOn(orchestrator, 'processChecklistForSession').mockImplementation(async () => {
+      // Mock processSharedChecklistForSession to simulate adding a new task while processing
+      const checklistSpy = vi.spyOn(orchestrator, 'processSharedChecklistForSession').mockImplementation(async () => {
         if (orchestrator.taskQueue.length === 0 && !orchestrator.addedExtra) {
           orchestrator.taskQueue.push({ taskName: 'delayedTask' });
           orchestrator.addedExtra = true;
@@ -337,8 +395,8 @@ describe('Orchestrator', () => {
       await orchestrator.processTasks();
       
       expect(checklistSpy).toHaveBeenCalledTimes(2); // Initial batch + recursive batch
-      expect(checklistSpy).toHaveBeenNthCalledWith(1, mockSession, [{ taskName: 'initialTask' }]);
-      expect(checklistSpy).toHaveBeenNthCalledWith(2, mockSession, [{ taskName: 'delayedTask' }]);
+      expect(checklistSpy).toHaveBeenNthCalledWith(1, mockSession, [{ taskName: 'initialTask', payload: {} }], { reuseSharedContext: false });
+      expect(checklistSpy).toHaveBeenNthCalledWith(2, mockSession, [{ taskName: 'delayedTask', payload: {} }], { reuseSharedContext: false });
     });
   });
   
@@ -456,7 +514,9 @@ describe('Orchestrator', () => {
         workers: [mockWorker] 
       };
       
-      mockSessionManager.findAndOccupyIdleWorker.mockResolvedValue(mockWorker);
+      mockSessionManager.acquireWorker.mockResolvedValue(mockWorker);
+      mockSessionManager.acquirePage.mockResolvedValue(mockPage);
+      mockSessionManager.releasePage.mockResolvedValue();
     });
 
     it('should process tasks using workers', async () => {
@@ -465,12 +525,10 @@ describe('Orchestrator', () => {
       
       await orchestrator.processChecklistForSession(mockSession, tasks);
       
-      expect(mockSessionManager.findAndOccupyIdleWorker).toHaveBeenCalledWith('s1');
-      expect(mockContext.newPage).toHaveBeenCalled();
-      expect(mockSessionManager.registerPage).toHaveBeenCalledWith('s1', mockPage);
+      expect(mockSessionManager.acquireWorker).toHaveBeenCalledWith('s1', { timeoutMs: 10000 });
+      expect(mockSessionManager.acquirePage).toHaveBeenCalledWith('s1', mockContext);
       expect(executeTaskSpy).toHaveBeenCalledWith(tasks[0], mockPage, mockSession);
-      expect(mockPage.close).toHaveBeenCalled();
-      expect(mockSessionManager.unregisterPage).toHaveBeenCalledWith('s1', mockPage);
+      expect(mockSessionManager.releasePage).toHaveBeenCalledWith('s1', mockPage);
       expect(mockSessionManager.releaseWorker).toHaveBeenCalledWith('s1', 'w1');
       
       // Verify shared context is closed
@@ -478,17 +536,15 @@ describe('Orchestrator', () => {
     });
 
     it('should retry if no workers available', async () => {
-      mockSessionManager.findAndOccupyIdleWorker
+      mockSessionManager.acquireWorker
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(mockWorker);
         
-      vi.spyOn(orchestrator, '_sleep').mockResolvedValue();
       vi.spyOn(orchestrator, 'executeTask').mockResolvedValue();
       
       await orchestrator.processChecklistForSession(mockSession, [{ taskName: 'testTask' }]);
       
-      expect(orchestrator._sleep).toHaveBeenCalledWith(100);
-      expect(mockSessionManager.findAndOccupyIdleWorker).toHaveBeenCalledTimes(2);
+      expect(mockSessionManager.acquireWorker).toHaveBeenCalledTimes(2);
     });
 
     it('should stop processing on shutdown signal', async () => {
@@ -500,12 +556,11 @@ describe('Orchestrator', () => {
       expect(executeTaskSpy).not.toHaveBeenCalled();
     });
     it('should handle critical error in worker loop', async () => {
-      // Make newPage throw an error
-      mockContext.newPage.mockRejectedValue(new Error('Tab Crash'));
+      mockSessionManager.acquirePage.mockRejectedValue(new Error('Tab Crash'));
       
       await orchestrator.processChecklistForSession(mockSession, [{ taskName: 'testTask' }]);
       
-      expect(mockContext.newPage).toHaveBeenCalled();
+      expect(mockSessionManager.acquirePage).toHaveBeenCalled();
       // Should catch error and continue/finish
       expect(mockSessionManager.releaseWorker).toHaveBeenCalledWith('s1', 'w1');
     });
@@ -518,17 +573,14 @@ describe('Orchestrator', () => {
       await orchestrator.processChecklistForSession(mockSession, [{ taskName: 'testTask' }]);
 
       expect(mockSession.browser.newContext).not.toHaveBeenCalled();
-      expect(existingContext.newPage).toHaveBeenCalled();
+      expect(mockSessionManager.acquirePage).toHaveBeenCalledWith('s1', existingContext);
     });
 
     it('should handle error when closing page', async () => {
-      mockPage.close.mockRejectedValue(new Error('Close failed'));
-      
       await orchestrator.processChecklistForSession(mockSession, [{ taskName: 'testTask' }]);
       
-      // Should catch error and proceed
-      expect(mockPage.close).toHaveBeenCalled();
-      expect(mockSessionManager.releaseWorker).toHaveBeenCalled();
+      expect(mockSessionManager.releasePage).toHaveBeenCalled();
+      expect(mockSessionManager.releaseWorker).toHaveBeenCalledWith('s1', 'w1');
     });
   });
 

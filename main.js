@@ -104,7 +104,7 @@ const logger = createLogger('main.js');
           // Add previous task to queue
           orchestrator.addTask(currentTask, currentPayload);
         }
-        currentTask = arg;
+        currentTask = arg.endsWith('.js') ? arg.slice(0, -3) : arg;
         currentPayload = {};
       }
     });

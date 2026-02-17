@@ -8,7 +8,7 @@ import { createLogger } from '../utils/logger.js';
 import LocalClient from './local-client.js';
 import CloudClient from './cloud-client.js';
 import VisionInterpreter from './vision-interpreter.js';
-import { getSettings } from '../utils/configLoader.js';
+import { getSettings, getTimeouts } from '../utils/configLoader.js';
 import RequestQueue from './request-queue.js';
 import CircuitBreaker from './circuit-breaker.js';
 
@@ -36,6 +36,8 @@ class AgentConnector {
             visionRequests: 0,
             startTime: Date.now()
         };
+
+        this._loadTimeoutConfig();
     }
 
     /**
@@ -102,7 +104,23 @@ class AgentConnector {
 
         return this.circuitBreaker.execute(modelId, async () => {
             return this._routeRequest(request, action);
-        }, { retries: 3 });
+        });
+    }
+
+    async _loadTimeoutConfig() {
+        try {
+            const timeouts = await getTimeouts();
+            const apiTimeouts = timeouts?.api || {};
+
+            if (typeof apiTimeouts.retryDelayMs === 'number') {
+                this.requestQueue.retryDelay = apiTimeouts.retryDelayMs;
+            }
+            if (typeof apiTimeouts.maxRetries === 'number') {
+                this.requestQueue.maxRetries = apiTimeouts.maxRetries;
+            }
+        } catch (error) {
+            logger.warn(`[AgentConnector] Failed to load timeout config: ${error.message}`);
+        }
     }
 
     /**
@@ -137,10 +155,10 @@ class AgentConnector {
      * @param {string} sessionId
      * @returns {object}
      */
-    getStats(sessionId) {
+    getStats(sessionId = null) {
         const { totalRequests, successfulRequests, failedRequests, totalDuration, localRequests, cloudRequests, visionRequests, startTime } = this.stats;
 
-        const successRate = totalRequests > 0 ? ((successfulRequests / totalRequests) * 100).toFixed(2) : 0;
+        const successRate = totalRequests > 0 ? Number(((successfulRequests / totalRequests) * 100).toFixed(2)) : 0;
         const avgDuration = totalRequests > 0 ? Math.round(totalDuration / totalRequests) : 0;
         const uptime = Date.now() - startTime;
 
@@ -149,7 +167,7 @@ class AgentConnector {
                 total: totalRequests,
                 successful: successfulRequests,
                 failed: failedRequests,
-                successRate: parseFloat(successRate),
+                successRate,
                 avgDuration,
                 local: localRequests,
                 cloud: cloudRequests,

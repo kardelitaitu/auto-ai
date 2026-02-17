@@ -530,4 +530,223 @@ describe('SessionManager', () => {
         expect(sessionManager.nextSessionId).toBe(1);
     });
   });
+
+  describe('Page Pool Management', () => {
+    let sessionId;
+    let mockBrowser;
+    let mockContext;
+    let mockPage;
+
+    beforeEach(() => {
+      mockBrowser = { close: vi.fn() };
+      mockPage = { 
+        close: vi.fn(),
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockResolvedValue({ documentReady: 'complete', bodyExists: true })
+      };
+      mockContext = {
+        newPage: vi.fn().mockResolvedValue(mockPage)
+      };
+      sessionId = sessionManager.addSession(mockBrowser);
+    });
+
+    it('should acquire a new page when pool is empty', async () => {
+      const page = await sessionManager.acquirePage(sessionId, mockContext);
+      expect(page).toBeDefined();
+      expect(mockContext.newPage).toHaveBeenCalled();
+    });
+
+    it('should return null for invalid session in acquirePage', async () => {
+      const page = await sessionManager.acquirePage('invalid-session', mockContext);
+      expect(page).toBeNull();
+    });
+
+    it('should return null when context is missing', async () => {
+      const page = await sessionManager.acquirePage(sessionId, null);
+      expect(page).toBeNull();
+    });
+
+    it('should reuse pooled page', async () => {
+      const page1 = await sessionManager.acquirePage(sessionId, mockContext);
+      await sessionManager.releasePage(sessionId, page1);
+      const page2 = await sessionManager.acquirePage(sessionId, mockContext);
+      expect(page2).toBeDefined();
+      expect(mockContext.newPage).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not reuse closed pooled pages', async () => {
+      const closedPage = { 
+        close: vi.fn(), 
+        isClosed: vi.fn().mockReturnValue(true) 
+      };
+      sessionManager.sessions[0].pagePool.push(closedPage);
+      const page = await sessionManager.acquirePage(sessionId, mockContext);
+      expect(page).toBeDefined();
+      expect(mockContext.newPage).toHaveBeenCalled();
+    });
+
+    it('should close unhealthy pooled page on acquire', async () => {
+      const unhealthyPage = {
+        close: vi.fn(),
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockRejectedValue(new Error('Health check failed'))
+      };
+      sessionManager.sessions[0].pagePool.push(unhealthyPage);
+      const page = await sessionManager.acquirePage(sessionId, mockContext);
+      expect(page).toBeDefined();
+    });
+
+    it('should close unhealthy page on release', async () => {
+      const unhealthyPage = {
+        close: vi.fn(),
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockRejectedValue(new Error('Health check failed'))
+      };
+      await sessionManager.releasePage(sessionId, unhealthyPage);
+      expect(unhealthyPage.close).toHaveBeenCalled();
+    });
+
+    it('should not release closed page', async () => {
+      mockPage.isClosed = vi.fn().mockReturnValue(true);
+      await sessionManager.releasePage(sessionId, mockPage);
+      expect(mockPage.close).not.toHaveBeenCalled();
+    });
+
+    it('should close pooled page if idle timeout exceeded', async () => {
+      const oldPage = {
+        close: vi.fn(),
+        isClosed: vi.fn().mockReturnValue(false)
+      };
+      sessionManager.sessions[0].pagePool.push({
+        page: oldPage,
+        lastUsedAt: Date.now() - (sessionManager.pagePoolIdleTimeoutMs + 1000),
+        lastHealthCheckAt: 0
+      });
+      await sessionManager.cleanupIdlePages();
+      expect(oldPage.close).toHaveBeenCalled();
+    });
+  });
+
+  describe('Worker Waiter', () => {
+    let sessionId;
+    let mockBrowser;
+
+    beforeEach(() => {
+      mockBrowser = { close: vi.fn() };
+      sessionManager.workerWaiterMaxPerSession = 3;
+    });
+
+    it('should return null when waiter limit exceeded', async () => {
+      sessionManager.concurrencyPerBrowser = 1;
+      sessionManager.workerWaiterMaxPerSession = 1;
+      sessionId = sessionManager.addSession(mockBrowser);
+      await sessionManager.findAndOccupyIdleWorker(sessionId);
+      const worker = await sessionManager.acquireWorker(sessionId, { timeoutMs: 50 });
+      expect(worker).toBeNull();
+    }, 200);
+
+    it('should handle waiter timeout', async () => {
+      sessionManager.concurrencyPerBrowser = 1;
+      sessionManager.workerWaiterMaxPerSession = 5;
+      sessionId = sessionManager.addSession(mockBrowser);
+      await sessionManager.findAndOccupyIdleWorker(sessionId);
+      const worker = await sessionManager.acquireWorker(sessionId, { timeoutMs: 50 });
+      expect(worker).toBeNull();
+    }, 200);
+
+    it('should get worker when available', async () => {
+      sessionManager.concurrencyPerBrowser = 2;
+      sessionManager.workerWaiterMaxPerSession = 5;
+      sessionId = sessionManager.addSession(mockBrowser);
+      const worker = await sessionManager.acquireWorker(sessionId);
+      expect(worker).toBeDefined();
+      expect(worker.status).toBe('busy');
+    });
+  });
+
+  describe('_normalizePoolEntry', () => {
+    let mockBrowser;
+
+    beforeEach(() => {
+      mockBrowser = { close: vi.fn() };
+    });
+
+    it('should normalize pool entry with page property', () => {
+      const entry = { page: {}, lastUsedAt: 1000 };
+      const now = Date.now();
+      const result = sessionManager._normalizePoolEntry(entry, now);
+      expect(result.page).toBeDefined();
+      expect(result.lastUsedAt).toBe(1000);
+    });
+
+    it('should normalize pool entry without page property', () => {
+      const page = {};
+      const now = Date.now();
+      const result = sessionManager._normalizePoolEntry(page, now);
+      expect(result.page).toBe(page);
+      expect(result.lastUsedAt).toBe(now);
+      expect(result.lastHealthCheckAt).toBe(0);
+    });
+  });
+
+  describe('_isPageHealthy', () => {
+    let mockBrowser;
+
+    beforeEach(() => {
+      mockBrowser = { close: vi.fn() };
+    });
+
+    it('should return false for closed page', async () => {
+      const closedPage = { isClosed: vi.fn().mockReturnValue(true) };
+      const result = await sessionManager._isPageHealthy(closedPage);
+      expect(result).toBe(false);
+    });
+
+    it('should return false for null page', async () => {
+      const result = await sessionManager._isPageHealthy(null);
+      expect(result).toBe(false);
+    });
+
+    it('should return true for page without isClosed method', async () => {
+      const page = {};
+      const result = await sessionManager._isPageHealthy(page);
+      expect(result).toBe(true);
+    });
+
+    it('should return false for unhealthy page', async () => {
+      const unhealthyPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockResolvedValue({ documentReady: 'loading', bodyExists: false })
+      };
+      const result = await sessionManager._isPageHealthy(unhealthyPage);
+      expect(result).toBe(false);
+    });
+
+    it('should return true for healthy page with complete state', async () => {
+      const healthyPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockResolvedValue({ documentReady: 'complete', bodyExists: true })
+      };
+      const result = await sessionManager._isPageHealthy(healthyPage);
+      expect(result).toBe(true);
+    });
+
+    it('should return true for healthy page with interactive state', async () => {
+      const healthyPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockResolvedValue({ documentReady: 'interactive', bodyExists: true })
+      };
+      const result = await sessionManager._isPageHealthy(healthyPage);
+      expect(result).toBe(true);
+    });
+
+    it('should return false when evaluate throws', async () => {
+      const badPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockRejectedValue(new Error('Evaluate failed'))
+      };
+      const result = await sessionManager._isPageHealthy(badPage);
+      expect(result).toBe(false);
+    });
+  });
 });

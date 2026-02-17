@@ -600,7 +600,7 @@ class MetricsCollector {
     console.log(`${prefix} ${BRIGHT_YELLOW}================== System Metrics ==================${RESET}`);
     console.log(`${prefix} ${BRIGHT_YELLOW}Uptime       : ${BRIGHT_CYAN}${stats.system.uptimeFormatted}${RESET}`);
     console.log(`${prefix} ${BRIGHT_YELLOW}Tasks        : ${BRIGHT_WHITE}${stats.tasks.executed} executed, ${stats.tasks.succeeded} succeeded, ${stats.tasks.failed} failed ${BRIGHT_GREEN}(${stats.tasks.successRate}% success rate)${RESET}`);
-    console.log(`${prefix} ${BRIGHT_YELLOW}Twitter      : ${BRIGHT_GREEN}${stats.social.follows}${BRIGHT_YELLOW} follows, ${BRIGHT_GREEN}${stats.social.likes}${BRIGHT_YELLOW} likes, ${BRIGHT_GREEN}${stats.social.retweets}${BRIGHT_YELLOW} retweets, ${BRIGHT_GREEN}${stats.social.tweets}${BRIGHT_YELLOW} tweets${RESET}`);
+    console.log(`${prefix} ${BRIGHT_YELLOW}Twitter      : ${BRIGHT_GREEN}${stats.twitter.actions.total}${BRIGHT_YELLOW} total (f=${stats.twitter.actions.follows}, l=${stats.twitter.actions.likes}, r=${stats.twitter.actions.retweets}, rp=${stats.twitter.actions.replies}, q=${stats.twitter.actions.quotes}, bm=${stats.twitter.actions.bookmarks}, t=${stats.twitter.actions.tweets})${RESET}`);
     console.log(`${prefix} ${BRIGHT_YELLOW}Browsers     : ${BRIGHT_MAGENTA}${stats.browsers.connected}/${stats.browsers.discovered} connected ${BRIGHT_GREEN}(${stats.browsers.connectionRate}%)${RESET}`);
     console.log(`${prefix} ${BRIGHT_YELLOW}Sessions     : ${BRIGHT_BLUE}${stats.sessions.active} active, ${stats.sessions.created} total created${RESET}`);
     console.log(`${prefix} ${BRIGHT_YELLOW}API          : ${BRIGHT_RED}${stats.api.calls} calls, ${stats.api.avgResponseTime}ms avg response time ${BRIGHT_GREEN}(${stats.api.successRate}% success rate)${RESET}`);

@@ -27,6 +27,7 @@ describe('ActionRunner', () => {
                     quote: { probability: 0.2, enabled: true },
                     like: { probability: 0.2, enabled: true },
                     bookmark: { probability: 0.1, enabled: true },
+                    retweet: { probability: 0, enabled: false }, // Disable to keep total prob simple
                     goHome: { enabled: true }
                 }
             },
@@ -110,6 +111,7 @@ describe('ActionRunner', () => {
             // New weights should be doubled: 0.4, 0.4, 0.2
             
             actionRunner.config.reply.enabled = false;
+            if (actionRunner.config.retweet) actionRunner.config.retweet.enabled = false;
             
             const probs = actionRunner.calculateSmartProbabilities();
             
@@ -124,6 +126,7 @@ describe('ActionRunner', () => {
             actionRunner.config.quote.enabled = false;
             actionRunner.config.like.enabled = false;
             actionRunner.config.bookmark.enabled = false;
+            if (actionRunner.config.retweet) actionRunner.config.retweet.enabled = false;
             
             const probs = actionRunner.calculateSmartProbabilities();
             expect(Object.keys(probs).length).toBe(0);

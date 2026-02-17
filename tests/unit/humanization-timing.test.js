@@ -114,6 +114,12 @@ describe('HumanTiming', () => {
              const time = humanTiming.getThinkTime('like');
              expect(time).toBe(1500);
         });
+
+        it('should apply fatigue variation at higher cycle counts', () => {
+            mathUtils.gaussian.mockImplementation((mean, dev) => mean);
+            const time = humanTiming.getThinkTime('general', { cycleCount: 60 });
+            expect(time).toBe(900);
+        });
     });
 
     describe('getNaturalPause', () => {
@@ -127,6 +133,11 @@ describe('HumanTiming', () => {
             // Micro gaussian is 180
             const pause = humanTiming.getNaturalPause('micro');
             expect(pause).toBe(180);
+        });
+
+        it('should return default pause for unknown context', () => {
+            const pause = humanTiming.getNaturalPause('unknown');
+            expect(pause).toBe(350);
         });
     });
 
@@ -146,6 +157,12 @@ describe('HumanTiming', () => {
 
         it('should return lower multiplier for high cycle count', () => {
             expect(humanTiming.getFatigueMultiplier(100)).toBe(0.8);
+        });
+
+        it('should return mid-range multipliers', () => {
+            expect(humanTiming.getFatigueMultiplier(20)).toBe(0.95);
+            expect(humanTiming.getFatigueMultiplier(40)).toBe(0.9);
+            expect(humanTiming.getFatigueMultiplier(70)).toBe(0.85);
         });
     });
 
@@ -174,6 +191,67 @@ describe('HumanTiming', () => {
             
             const delay = humanTiming.getTypingDelay(50, 100);
             expect(delay).toBe(300);
+        });
+
+        it('should type fast when variation is high', () => {
+            mathUtils.randomInRange.mockReturnValue(25);
+            vi.spyOn(Math, 'random').mockReturnValue(0.95);
+            
+            const delay = humanTiming.getTypingDelay(50, 100);
+            expect(delay).toBe(25);
+        });
+
+        it('should slow down at the end', () => {
+            mathUtils.randomInRange.mockReturnValue(80);
+            const delay = humanTiming.getTypingDelay(90, 100);
+            expect(delay).toBe(80);
+        });
+    });
+
+    describe('getHoverTime', () => {
+        it('should return hover time for default action', () => {
+            const hover = humanTiming.getHoverTime();
+            expect(hover).toBe(350);
+        });
+    });
+
+    describe('getReadingTime', () => {
+        it('should compute reading time with multipliers', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.5);
+            const time = humanTiming.getReadingTime(200, 'thread');
+            expect(time).toBeGreaterThan(0);
+        });
+
+        it('should use default multiplier for unknown type', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.5);
+            const time = humanTiming.getReadingTime(200, 'unknown');
+            expect(time).toBeGreaterThan(0);
+        });
+    });
+
+    describe('withJitter', () => {
+        it('should apply jitter around base', () => {
+            const value = humanTiming.withJitter(1000, 0.1);
+            expect(value).toBe(1000);
+        });
+    });
+
+    describe('humanBackoff', () => {
+        it('should return capped value when attempt exceeds max', () => {
+            const value = humanTiming.humanBackoff(6, 1000, 5);
+            expect(value).toBe(5000);
+        });
+
+        it('should compute backoff within cap', () => {
+            const value = humanTiming.humanBackoff(2, 1000, 5);
+            expect(value).toBe(2250);
+        });
+    });
+
+    describe('random', () => {
+        it('should return random range value', () => {
+            const value = humanTiming.random(10, 20);
+            expect(value).toBe(10);
         });
     });
 });

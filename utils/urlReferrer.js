@@ -93,6 +93,10 @@ const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
  * Extracts username and status ID from target URL.
  * Supports: x.com/user, twitter.com/user/status/id, etc.
  */
+// Pre-create Set for O(1) lookup instead of O(n) Array.includes()
+const RESERVED_WORDS = new Set(['home', 'explore', 'notifications', 'messages', 'search', 'settings']);
+const PROFILE_SUBPAGES = new Set(['media', 'with_replies', 'highlights', 'likes']);
+
 const _extractContext = (targetUrl) => {
     try {
         const u = new URL(targetUrl);
@@ -105,11 +109,10 @@ const _extractContext = (targetUrl) => {
         }
 
         // Case 2: /username (Profile) or /username/media
-        // Filter out reserved words
-        const reserved = ['home', 'explore', 'notifications', 'messages', 'search', 'settings'];
-        if (parts.length >= 1 && !reserved.includes(parts[0])) {
+        // Filter out reserved words - O(1) Set lookup instead of O(n) Array.includes()
+        if (parts.length >= 1 && !RESERVED_WORDS.has(parts[0])) {
             // Check if it's a profile or profile sub-page
-            if (parts.length === 1 || (parts.length === 2 && ['media', 'with_replies', 'highlights', 'likes'].includes(parts[1]))) {
+            if (parts.length === 1 || (parts.length === 2 && PROFILE_SUBPAGES.has(parts[1]))) {
                 return { type: 'profile', username: parts[0] };
             }
         }

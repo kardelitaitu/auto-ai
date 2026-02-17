@@ -72,6 +72,8 @@ const CONFIG_SCHEMA = {
   'llm.cloud.timeout': { type: 'number', default: 120000, min: 1000, max: 300000 },
   'llm.cloud.retryAttempts': { type: 'number', default: 1, min: 0, max: 10 },
   'llm.cloud.retryDelay': { type: 'number', default: 3000, min: 100, max: 30000 },
+  'llm.cloud.requestQueue.enabled': { type: 'boolean', default: false },
+  'llm.cloud.requestQueue.interval': { type: 'number', default: 300, min: 0, max: 60000 },
   
   // Open Router Free API
   'open_router_free_api.enabled': { type: 'boolean', default: true },

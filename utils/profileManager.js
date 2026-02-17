@@ -23,7 +23,10 @@ function loadProfiles() {
             
             if (Array.isArray(loaded)) {
                 const validProfiles = loaded.filter(p => {
-                    if (!p) return false;
+                    if (!p) {
+                        console.warn('[WARN] Profile validation issues: Empty profile entry');
+                        return false;
+                    }
                     if (!p.id || !p.timings || !p.probabilities) {
                         console.warn(`[WARN] Profile validation issues: Missing required fields for ${p?.id || 'unknown'}`);
                         return false;
@@ -45,11 +48,14 @@ function loadProfiles() {
                 PROFILES = validProfiles;
                 return PROFILES.length > 0;
             }
+            PROFILES = [];
             return false;
         }
+        PROFILES = [];
         return false;
     } catch (e) {
         console.error("[ERROR] Failed to load profiles", e);
+        PROFILES = [];
         return false;
     }
 }

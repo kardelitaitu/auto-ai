@@ -199,7 +199,22 @@ export class ConfigValidator {
     validateSection(data, schema, sectionName) {
         const errors = [];
         
-        if (schema.type === 'object') {
+        // Handle schemas that are plain objects with field definitions (no type property)
+        // This is the case for session, timing, humanization, etc. schemas
+        if (schema.cycles !== undefined || schema.enabled !== undefined || 
+            schema.limits !== undefined || schema.warmup !== undefined ||
+            schema.mouse !== undefined || schema.theme !== undefined ||
+            schema.queueMonitor !== undefined || schema.debugMode !== undefined) {
+            // This is a field-based schema (not type: 'object')
+            for (const [field, rules] of Object.entries(schema)) {
+                if (data[field] !== undefined) {
+                    const fieldErrors = this.validateField(data[field], rules, `${sectionName}.${field}`);
+                    errors.push(...fieldErrors);
+                } else if (rules.required) {
+                    errors.push(`${sectionName}.${field} is required but missing`);
+                }
+            }
+        } else if (schema.type === 'object') {
             // Validate object properties
             for (const [field, rules] of Object.entries(schema.properties || {})) {
                 if (data[field] !== undefined) {

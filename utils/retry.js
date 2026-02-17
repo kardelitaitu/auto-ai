@@ -7,6 +7,23 @@ import { createLogger } from './logger.js';
 
 const logger = createLogger('retry.js');
 
+export function calculateBackoffDelay(attempt, options = {}) {
+  const {
+    baseDelay = 1000,
+    maxDelay = 30000,
+    factor = 2,
+    jitterMin = 1,
+    jitterMax = 1
+  } = options;
+
+  const delay = Math.min(baseDelay * Math.pow(factor, attempt), maxDelay);
+  const min = Math.min(jitterMin, jitterMax);
+  const max = Math.max(jitterMin, jitterMax);
+  const jitterMultiplier = min === max ? min : min + Math.random() * (max - min);
+
+  return Math.floor(delay * jitterMultiplier);
+}
+
 /**
  * Retries an async operation with exponential backoff.
  * @param {Function} operation - The async function to be executed.

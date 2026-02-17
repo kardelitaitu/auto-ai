@@ -12,6 +12,7 @@
 
 import { mathUtils } from '../mathUtils.js';
 import { scrollRandom } from '../scroll-helper.js';
+import { GhostCursor } from '../ghostCursor.js';
 
 export class ActionPredictor {
     constructor(logger) {
@@ -113,6 +114,7 @@ export class ActionPredictor {
     
     async _actionClick(page) {
         // Find and click a tweet
+        const ghost = new GhostCursor(page);
         const tweets = await page.$$('article[data-testid="tweet"]');
         if (tweets.length > 0) {
             const index = Math.floor(Math.random() * Math.min(tweets.length, 5));
@@ -125,7 +127,7 @@ export class ActionPredictor {
                 // Click on tweet text or time
                 const textEl = await tweet.$('[data-testid="tweetText"]');
                 if (textEl) {
-                    await textEl.click();
+                    await ghost.click(textEl);
                 }
             }
         }
@@ -143,10 +145,11 @@ export class ActionPredictor {
     
     async _actionProfile(page) {
         // Click on a random profile
+        const ghost = new GhostCursor(page);
         const profileLinks = await page.$$('a[href*="/"][role="link"]:not([href*="search"]');
         if (profileLinks.length > 0) {
             const index = Math.floor(Math.random() * Math.min(profileLinks.length, 10));
-            await profileLinks[index].click().catch(() => {});
+            await ghost.click(profileLinks[index]).catch(() => {});
             await page.waitForTimeout(2000);
         }
     }

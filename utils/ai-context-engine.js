@@ -474,14 +474,16 @@ export class AIContextEngine {
 
       // Filter and sort replies - take longest for richer LLM context
       // Also allow shorter replies (2+ chars) to capture emoji reactions, short confirmations
+      const seen = new Set();
       const finalReplies = replies
         .filter(r => r.text && r.text.length > 2 && r.text.length < 280)
-        // Remove duplicates based on text content
-        .filter((reply, index, self) => 
-          index === self.findIndex((r) => 
-            r.text.toLowerCase().substring(0, 50) === reply.text.toLowerCase().substring(0, 50)
-          )
-        )
+        // Remove duplicates based on text content - O(n) using Set instead of O(n²) findIndex
+        .filter((reply) => {
+          const key = reply.text.toLowerCase().substring(0, 50);
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
         .sort((a, b) => b.text.length - a.text.length)
         .slice(0, 30);
 

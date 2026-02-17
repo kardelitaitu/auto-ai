@@ -178,8 +178,6 @@ export class FreeOpenRouterHelper {
     }
 
     if (this.results && this.results.testDuration > 0 && this.isCacheValid()) {
-      const cacheAge = this.cacheTimestamp ? Math.round((Date.now() - this.cacheTimestamp) / 1000) : 'unknown';
-      logger.info(`[FreeRouter] Cache: ${cacheAge}s old, ${this.results.working.length}/${this.results.total} working`);
       return this.results;
     }
 

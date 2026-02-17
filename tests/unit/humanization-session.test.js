@@ -90,6 +90,22 @@ describe('SessionManager', () => {
              expect(config.targetMs).toBe(300000);
              expect(config.reason).toContain('late night');
         });
+
+        it('should return evening peak config', () => {
+            vi.setSystemTime(new Date('2024-01-01T19:00:00'));
+            
+            const config = sessionManager.getOptimalLength();
+            expect(config.targetMs).toBe(900000);
+            expect(config.reason).toContain('evening');
+        });
+
+        it('should return normal hours config', () => {
+            vi.setSystemTime(new Date('2024-01-01T16:00:00'));
+            
+            const config = sessionManager.getOptimalLength();
+            expect(config.targetMs).toBe(480000);
+            expect(config.reason).toContain('weekday');
+        });
     });
 
     describe('shouldTakeBreak', () => {
@@ -117,6 +133,14 @@ describe('SessionManager', () => {
         });
     });
 
+    describe('getBreakDuration', () => {
+        it('should return random break duration', () => {
+            mathUtils.randomInRange.mockReturnValue(3600000);
+            const duration = sessionManager.getBreakDuration();
+            expect(duration).toBe(3600000);
+        });
+    });
+
     describe('boredomPause', () => {
         it('should execute random behavior and wait', async () => {
              // sample returns first behavior (scrollRandom)
@@ -138,6 +162,89 @@ describe('SessionManager', () => {
              
              expect(scrollHelper.scrollRandom).toHaveBeenCalled();
              expect(mockPage.waitForTimeout).toHaveBeenCalled();
+        });
+
+        it('should execute bookmark behavior', async () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.6);
+            
+            await sessionManager.wrapUp(mockPage);
+            
+            expect(mockPage.mouse.move).toHaveBeenCalledWith(800, 300);
+            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+        });
+
+        it('should execute mentions behavior', async () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.9);
+            
+            await sessionManager.wrapUp(mockPage);
+            
+            expect(mockPage.mouse.move).toHaveBeenCalledWith(100, 100);
+            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+        });
+    });
+
+    describe('getTimeUntilBreak', () => {
+        it('should return remaining time until break', () => {
+            const remaining = sessionManager.getTimeUntilBreak(100000);
+            expect(remaining).toBe(476000);
+        });
+
+        it('should not return negative remaining time', () => {
+            const remaining = sessionManager.getTimeUntilBreak(9999999);
+            expect(remaining).toBe(0);
+        });
+    });
+
+    describe('shouldEndSession', () => {
+        it('should end when past max', () => {
+            const result = sessionManager.shouldEndSession(2000000);
+            expect(result).toBe(true);
+        });
+
+        it('should end based on target threshold roll', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.2);
+            const result = sessionManager.shouldEndSession(700000);
+            expect(result).toBe(true);
+        });
+
+        it('should end based on extended threshold roll', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.5);
+            const result = sessionManager.shouldEndSession(800000);
+            expect(result).toBe(false);
+        });
+
+        it('should continue when below target', () => {
+            const result = sessionManager.shouldEndSession(100000);
+            expect(result).toBe(false);
+        });
+    });
+
+    describe('getSessionPhase', () => {
+        it('should return warmup phase', () => {
+            const phase = sessionManager.getSessionPhase(100000);
+            expect(phase.phase).toBe('warmup');
+        });
+
+        it('should return active phase', () => {
+            const phase = sessionManager.getSessionPhase(400000);
+            expect(phase.phase).toBe('active');
+        });
+
+        it('should return winding down phase', () => {
+            const phase = sessionManager.getSessionPhase(600000);
+            expect(phase.phase).toBe('winding_down');
+        });
+
+        it('should return ending phase', () => {
+            const phase = sessionManager.getSessionPhase(700000);
+            expect(phase.phase).toBe('ending');
+        });
+    });
+
+    describe('getActivityMultiplier', () => {
+        it('should return default multiplier for unknown phase', () => {
+            const multiplier = sessionManager.getActivityMultiplier('unknown');
+            expect(multiplier).toBe(0.9);
         });
     });
 });

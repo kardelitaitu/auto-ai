@@ -158,25 +158,24 @@ export class RateLimitTracker {
   }
 
   async getAllKeyStatus(apiKeys) {
-    const results = [];
-
-    for (const key of apiKeys) {
-      const status = {
+    const statuses = await Promise.all(
+      apiKeys.map(key => ({
         key: this._maskKey(key),
         remaining: this.getRemaining(key),
         usageToday: this.getUsageToday(key),
         warning: this.getWarningStatus(key),
         isFreeTier: this.getIsFreeTier(key)
-      };
-      results.push(status);
-    }
+      }))
+    );
 
-    return results;
+    return statuses;
   }
 
   getStats() {
-    const totalRequests = Array.from(this.requestHistory.values())
-      .reduce((sum, h) => sum + h.total, 0);
+    let totalRequests = 0;
+    for (const history of this.requestHistory.values()) {
+      totalRequests += history.total;
+    }
 
     return {
       cachedKeys: this.cache.size,

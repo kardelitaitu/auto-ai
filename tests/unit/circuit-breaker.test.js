@@ -186,5 +186,110 @@ describe('core/circuit-breaker', () => {
             breaker.forceClose('m1');
             expect(breaker.getHealth('m1').status).toBe('CLOSED');
         });
+
+        it('should force open breaker', () => {
+            breaker.forceOpen('m1');
+            const health = breaker.getHealth('m1');
+            expect(health.status).toBe('OPEN');
+            expect(health.nextAttempt).toBeGreaterThan(Date.now());
+        });
+
+        it('should create new breaker when forceOpen called on non-existent', () => {
+            breaker.forceOpen('newModel');
+            expect(breaker.breakers.has('newModel')).toBe(true);
+        });
+
+        it('should create new breaker when forceClose called on non-existent', () => {
+            breaker.forceClose('newModel');
+            const health = breaker.getHealth('newModel');
+            expect(health.status).toBe('CLOSED');
+        });
+    });
+
+    describe('Edge Cases', () => {
+        it('should handle multiple models independently', async () => {
+            const fn1 = vi.fn().mockRejectedValue(new Error('fail'));
+            const fn2 = vi.fn().mockResolvedValue('ok');
+
+            // Fail model1 multiple times
+            await expect(breaker.execute('model1', fn1)).rejects.toThrow();
+            await expect(breaker.execute('model1', fn1)).rejects.toThrow();
+            await expect(breaker.execute('model1', fn1)).rejects.toThrow();
+
+            // model2 should still work
+            const result = await breaker.execute('model2', fn2);
+            expect(result).toBe('ok');
+
+            expect(breaker.getHealth('model1').status).toBe('OPEN');
+            expect(breaker.getHealth('model2').status).toBe('CLOSED');
+        });
+
+        it('should calculate failure rate correctly with mixed history', async () => {
+            const b = breaker.getBreaker('m1');
+            b.history = [
+                { time: Date.now(), type: 'success' },
+                { time: Date.now(), type: 'success' },
+                { time: Date.now(), type: 'failure' },
+                { time: Date.now(), type: 'failure' }
+            ];
+
+            const rate = breaker._calculateFailureRate(b);
+            expect(rate).toBe(50);
+        });
+
+        it('should return 0 failure rate when history is empty', () => {
+            const b = breaker.getBreaker('m1');
+            b.history = [];
+
+            const rate = breaker._calculateFailureRate(b);
+            expect(rate).toBe(0);
+        });
+
+        it('should return 0 failure rate when below minSamples', () => {
+            const b = breaker.getBreaker('m1');
+            b.history = [
+                { time: Date.now(), type: 'failure' },
+                { time: Date.now(), type: 'failure' }
+            ];
+
+            // minSamples is 3, so should return 0
+            const rate = breaker._calculateFailureRate(b);
+            expect(rate).toBe(0);
+        });
+
+        it('should calculate failure rate only for recent history', () => {
+            const b = breaker.getBreaker('m1');
+            const now = Date.now();
+            
+            // 3 recent failures (meets minSamples=3)
+            // 3 old successes (should be ignored)
+            b.history = [
+                { time: now, type: 'failure' },
+                { time: now, type: 'failure' },
+                { time: now, type: 'failure' },
+                { time: now - 600000, type: 'success' },
+                { time: now - 600000, type: 'success' },
+                { time: now - 600000, type: 'success' }
+            ];
+
+            const rate = breaker._calculateFailureRate(b);
+            expect(rate).toBe(100);
+        });
+    });
+
+    describe('CircuitOpenError', () => {
+        it('should have correct error code and properties', async () => {
+            // Test through actual execution
+            breaker.forceOpen('testModel');
+            
+            try {
+                await breaker.execute('testModel', async () => 'ok');
+            } catch (error) {
+                expect(error.code).toBe('CIRCUIT_OPEN');
+                expect(error.modelId).toBe('testModel');
+                expect(error.message).toContain('testModel');
+                expect(error.message).toContain('s');
+            }
+        });
     });
 });

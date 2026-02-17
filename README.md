@@ -109,6 +109,28 @@ LOCAL_LLM_ENDPOINT=http://localhost:12434/api/generate
 LOCAL_LLM_MODEL=ai/qwen3-vl:4B-UD-Q4_K_XL
 ```
 
+**settings.json:**
+```json
+{
+  "orchestration": {
+    "taskDispatchMode": "broadcast",
+    "reuseSharedContext": false,
+    "pagePoolMaxPerSession": 2
+  }
+}
+```
+
+**taskDispatchMode options:**
+- broadcast: send full task list to every session (default)
+- centralized: share a single task list across sessions
+
+**reuseSharedContext options:**
+- false: create and close a shared context per checklist (default)
+- true: reuse a shared context across checklists
+
+**pagePoolMaxPerSession options:**
+- number: maximum pooled pages per session (defaults to concurrencyPerBrowser)
+
 ## Testing the Setup
 
 ```bash

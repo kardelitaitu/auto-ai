@@ -81,6 +81,23 @@ const COLORS = {
 // Global flag to track if log file has been initialized
 let logFileInitialized = false;
 
+// Buffered async logging - improves performance by batching writes
+const LOG_BUFFER = [];
+const FLUSH_INTERVAL = 1000; // Flush every 1 second
+let flushTimer = null;
+
+// Flush buffer on process exit to ensure no logs are lost
+process.on('exit', () => {
+  if (LOG_BUFFER.length > 0) {
+    const entries = LOG_BUFFER.splice(0, LOG_BUFFER.length);
+    const data = entries.map(e => JSON.stringify(e)).join('\n') + '\n';
+    fs.appendFileSync(LOG_FILE, data, 'utf8');
+  }
+});
+
+// Pre-compile ANSI regex once for performance
+const ANSI_REGEX = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g");
+
 /**
  * Initialize the log file (clear it)
  */
@@ -96,21 +113,33 @@ function initLogFile() {
 }
 
 /**
+ * Flush buffered logs to file (async)
+ */
+function flushLogBuffer() {
+  if (LOG_BUFFER.length === 0) return;
+  
+  const entries = LOG_BUFFER.splice(0, LOG_BUFFER.length);
+  const data = entries.map(e => JSON.stringify(e)).join('\n') + '\n';
+  
+  fs.appendFile(LOG_FILE, data, 'utf8', (err) => {
+    if (err) console.error('Failed to write log buffer:', err.message);
+  });
+}
+
+/**
  * Write to log file (strips ANSI codes for clean text logs)
+ * Uses buffered async writes for better performance
  */
 function writeToLogFile(level, scriptName, message, args) {
   try {
     const timestamp = new Date().toISOString();
     // Extract structured data if first arg is an object
     let structuredData = null;
-    // let cleanArgs = [...args];
     if (args.length > 0 && typeof args[0] === 'object' && args[0] !== null) {
       structuredData = args[0];
-      // cleanArgs = args.slice(1);
     }
-    // Regex to strip ANSI codes
-    // eslint-disable-next-line no-control-regex
-    const cleanMessage = message.replace(/\x1b\[[0-9;]*m/g, '');
+    // Use pre-compiled regex
+    const cleanMessage = message.replace(ANSI_REGEX, '');
     
     // Build structured log line
     const logEntry = {
@@ -122,7 +151,16 @@ function writeToLogFile(level, scriptName, message, args) {
       ...(structuredData && { data: structuredData })
     };
     
-    fs.appendFileSync(LOG_FILE, JSON.stringify(logEntry) + '\n', 'utf8');
+    // Buffer the log entry instead of sync write
+    LOG_BUFFER.push(logEntry);
+    
+    // Start flush timer on first entry
+    if (!flushTimer) {
+      flushTimer = setTimeout(() => {
+        flushLogBuffer();
+        flushTimer = null;
+      }, FLUSH_INTERVAL);
+    }
   } catch {
     // Silently fail
   }

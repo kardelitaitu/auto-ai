@@ -8,7 +8,7 @@ import SessionManager from './sessionManager.js';
 import Discovery from './discovery.js';
 import Automator from './automator.js';
 import { createLogger } from '../utils/logger.js';
-import { getTimeoutValue, getSettings } from '../utils/configLoader.js';
+import { getSettings } from '../utils/configLoader.js';
 import { validateTaskExecution, validatePayload } from '../utils/validator.js';
 import { isDevelopment } from '../utils/envLoader.js';
 import metricsCollector from '../utils/metrics.js';
@@ -31,9 +31,16 @@ class Orchestrator extends EventEmitter {
     this.taskQueue = [];
     this.isProcessingTasks = false;
     this.processTimeout = null;
+    this.maxTaskQueueSize = 500;
+    this.taskDispatchMode = 'centralized';
+    this.reuseSharedContext = false;
+    this.workerWaitTimeoutMs = 10000;
+    this.sessionFailureScores = new Map();
     /** @type {Discovery} */
     this.discovery = new Discovery();
     this.isShuttingDown = false;
+
+    this._loadConfig();
   }
 
   /**
@@ -43,6 +50,18 @@ class Orchestrator extends EventEmitter {
    */
   _sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async _loadConfig() {
+    try {
+      const settings = await getSettings();
+      this.taskDispatchMode = 'centralized';
+      this.reuseSharedContext = settings?.orchestration?.reuseSharedContext || false;
+      this.maxTaskQueueSize = settings?.orchestration?.maxTaskQueueSize || settings?.maxTaskQueueSize || this.maxTaskQueueSize;
+      this.workerWaitTimeoutMs = settings?.orchestration?.workerWaitTimeoutMs || settings?.workerWaitTimeoutMs || this.workerWaitTimeoutMs;
+    } catch (error) {
+      logger.warn(`Failed to load orchestrator config: ${error.message}`);
+    }
   }
 
   /**
@@ -55,6 +74,7 @@ class Orchestrator extends EventEmitter {
     logger.info("Starting browser discovery...");
 
     try {
+      await this.sessionManager.loadConfiguration();
       await this.discovery.loadConnectors(options.browsers || []);
 
       const endpoints = await this.discovery.discoverBrowsers();
@@ -94,7 +114,7 @@ class Orchestrator extends EventEmitter {
             if (port) {
               displayName = `${browserName}:${port}`;
             }
-          } catch (e) { /* ignore URL parse error */ }
+          } catch (_e) { /* ignore URL parse error */ }
 
           this.sessionManager.addSession(browser, displayName);
           logger.info(`Successfully connected and added session for ${displayName}.`);
@@ -136,6 +156,11 @@ class Orchestrator extends EventEmitter {
       throw new Error(`Invalid task payload: ${payloadValidation.errors.join(', ')}`);
     }
 
+    if (this.maxTaskQueueSize && this.taskQueue.length >= this.maxTaskQueueSize) {
+      logger.warn(`Task queue full (max: ${this.maxTaskQueueSize}). Dropping task '${taskName}'.`);
+      throw new Error(`Task queue full (max: ${this.maxTaskQueueSize})`);
+    }
+
     this.taskQueue.push({ taskName, payload });
     logger.info(`Task '${taskName}' added to queue. Queue size: ${this.taskQueue.length}. Queue contents: ${this.taskQueue.map(t => t.taskName).join(', ')}`);
 
@@ -164,14 +189,22 @@ class Orchestrator extends EventEmitter {
     this.isProcessingTasks = true;
     logger.info("Starting concurrent checklist processing for all sessions...");
 
-    const tasksToReplicate = [...this.taskQueue];
-    logger.info(`Broadcasting ${tasksToReplicate.length} tasks to all sessions: ${tasksToReplicate.map(t => t.taskName).join(', ')}`);
+    const sessions = this.sessionManager.getAllSessions();
+    const reuseSharedContext = this.reuseSharedContext || false;
+
+    const sharedTasks = [...this.taskQueue];
+    logger.info(`Dispatching ${sharedTasks.length} tasks across sessions using centralized mode: ${sharedTasks.map(t => t.taskName).join(', ')}`);
     this.taskQueue.length = 0;
 
-    const sessions = this.sessionManager.getAllSessions();
-    const allSessionPromises = sessions.map(session =>
-      this.processChecklistForSession(session, tasksToReplicate)
-    );
+    const orderedSessions = [...sessions].sort((a, b) => this._getSessionFailureScore(a.id) - this._getSessionFailureScore(b.id));
+
+    const allSessionPromises = orderedSessions.map(session => {
+      const tasksForSession = sharedTasks.map(task => ({
+        ...task,
+        payload: { ...task.payload }
+      }));
+      return this.processSharedChecklistForSession(session, tasksForSession, { reuseSharedContext });
+    });
 
     await Promise.allSettled(allSessionPromises);
 
@@ -194,12 +227,33 @@ class Orchestrator extends EventEmitter {
    * @param {Array<object>} tasks - The array of task objects to execute.
    * @private
    */
-  async processChecklistForSession(session, tasks) {
+  async processChecklistForSession(session, tasks, options = {}) {
     logger.info(`[${session.id}] Starting checklist of ${tasks.length} tasks with up to ${session.workers.length} parallel tabs.`);
 
-    const taskList = [...tasks];
+    const taskQueue = tasks.slice();
+    let taskIndex = 0;
+    const retryStack = [];
+    const takeTask = () => {
+      if (retryStack.length > 0) {
+        return retryStack.pop();
+      }
+      if (taskIndex >= taskQueue.length) {
+        return null;
+      }
+      const task = taskQueue[taskIndex];
+      taskIndex += 1;
+      return task;
+    };
+    const requeueTask = (task) => {
+      retryStack.push(task);
+    };
+    const reuseSharedContext = options.reuseSharedContext || false;
+    if (reuseSharedContext && !session.sharedContext) {
+      const contexts = session.browser.contexts();
+      session.sharedContext = contexts.length > 0 ? contexts[0] : await session.browser.newContext();
+    }
     const contexts = session.browser.contexts();
-    const sharedContext = contexts.length > 0 ? contexts[0] : await session.browser.newContext();
+    const sharedContext = reuseSharedContext ? session.sharedContext : (contexts.length > 0 ? contexts[0] : await session.browser.newContext());
 
     try {
       const workerPromises = session.workers.map(async (worker) => {
@@ -212,26 +266,24 @@ class Orchestrator extends EventEmitter {
             break;
           }
 
-          const task = taskList.shift();
+          const task = takeTask();
           if (!task) {
             logger.debug(`[${session.id}][Worker ${worker.id}] No more tasks. Exiting.`);
             break;
           }
 
           // Use atomic worker allocation with await
-          const allocatedWorker = await this.sessionManager.findAndOccupyIdleWorker(session.id);
+          const allocatedWorker = await this.sessionManager.acquireWorker(session.id, { timeoutMs: this.workerWaitTimeoutMs });
           if (!allocatedWorker) {
             logger.warn(`[${session.id}] No idle workers available, retrying...`);
             // Put task back at the front of the list
-            taskList.unshift(task);
-            await this._sleep(100);
+            requeueTask(task);
             continue;
           }
           
           let page = null;
           try {
-            page = await sharedContext.newPage();
-            this.sessionManager.registerPage(session.id, page);
+            page = await this.sessionManager.acquirePage(session.id, sharedContext);
 
             logger.info(`[${session.id}][Worker ${worker.id}] Starting task '${task.taskName}' in new tab.`);
             await this.executeTask(task, page, session);
@@ -239,8 +291,7 @@ class Orchestrator extends EventEmitter {
             logger.error(`[${session.id}][Worker ${worker.id}] Critical error during task '${task.taskName}':`, e);
           } finally {
             if (page) {
-              await page.close().catch(() => { });
-              this.sessionManager.unregisterPage(session.id, page);
+              await this.sessionManager.releasePage(session.id, page);
             }
             // Use atomic worker release with await
             await this.sessionManager.releaseWorker(session.id, allocatedWorker.id);
@@ -254,13 +305,94 @@ class Orchestrator extends EventEmitter {
       // Only close context if we are NOT shutting down globally, 
       // because sessionManager.shutdown() handles context closing more gracefully now.
       // Or we can leave it, as double closing is usually fine.
-      if (!this.isShuttingDown) {
+      if (!this.isShuttingDown && !reuseSharedContext) {
         await sharedContext.close();
         logger.info(`[${session.id}] All tasks complete. Closed shared browser context.`);
       }
     }
 
     logger.info(`[${session.id}] Completed all tasks in the checklist.`);
+  }
+
+  async processSharedChecklistForSession(session, tasks, options = {}) {
+    logger.info(`[${session.id}] Starting shared checklist with ${tasks.length} tasks and up to ${session.workers.length} parallel tabs.`);
+
+    const reuseSharedContext = options.reuseSharedContext || false;
+    if (reuseSharedContext && !session.sharedContext) {
+      const contexts = session.browser.contexts();
+      session.sharedContext = contexts.length > 0 ? contexts[0] : await session.browser.newContext();
+    }
+    const contexts = session.browser.contexts();
+    const sharedContext = reuseSharedContext ? session.sharedContext : (contexts.length > 0 ? contexts[0] : await session.browser.newContext());
+
+    try {
+    const taskQueue = tasks.slice();
+    let taskIndex = 0;
+    const retryStack = [];
+    const takeTask = () => {
+      if (retryStack.length > 0) {
+        return retryStack.pop();
+      }
+      if (taskIndex >= taskQueue.length) {
+        return null;
+      }
+      const task = taskQueue[taskIndex];
+      taskIndex += 1;
+      return task;
+    };
+    const requeueTask = (task) => {
+      retryStack.push(task);
+    };
+
+    const workerPromises = session.workers.map(async (worker) => {
+        logger.debug(`[${session.id}][Worker ${worker.id}] Starting...`);
+
+        while (true) {
+          if (this.isShuttingDown) {
+            logger.debug(`[${session.id}][Worker ${worker.id}] Shutdown signal received. Exiting loop.`);
+            break;
+          }
+
+          const task = takeTask();
+          if (!task) {
+            logger.debug(`[${session.id}][Worker ${worker.id}] No more tasks. Exiting.`);
+            break;
+          }
+
+          const allocatedWorker = await this.sessionManager.acquireWorker(session.id, { timeoutMs: this.workerWaitTimeoutMs });
+          if (!allocatedWorker) {
+            logger.warn(`[${session.id}] No idle workers available, retrying...`);
+            requeueTask(task);
+            continue;
+          }
+          
+          let page = null;
+          try {
+            page = await this.sessionManager.acquirePage(session.id, sharedContext);
+
+            logger.info(`[${session.id}][Worker ${worker.id}] Starting task '${task.taskName}' in new tab.`);
+            await this.executeTask(task, page, session);
+          } catch (e) {
+            logger.error(`[${session.id}][Worker ${worker.id}] Critical error during task '${task.taskName}':`, e);
+          } finally {
+            if (page) {
+              await this.sessionManager.releasePage(session.id, page);
+            }
+            await this.sessionManager.releaseWorker(session.id, allocatedWorker.id);
+            logger.info(`[${session.id}][Worker ${worker.id}] Finished task '${task.taskName}'. Worker is now idle.`);
+          }
+        }
+      });
+
+      await Promise.all(workerPromises);
+    } finally {
+      if (!this.isShuttingDown && !reuseSharedContext) {
+        await sharedContext.close();
+        logger.info(`[${session.id}] Shared checklist complete. Closed shared browser context.`);
+      }
+    }
+
+    logger.info(`[${session.id}] Completed shared checklist.`);
   }
 
   /**
@@ -350,8 +482,28 @@ class Orchestrator extends EventEmitter {
       logger.error(`Error executing task '${task.taskName}' on session ${session.id}:`, err);
     } finally {
       const duration = Date.now() - startTime;
-      metricsCollector.recordTaskExecution(task.taskName, duration, success, session.id, error);
+      const wasSuccessful = success === true;
+      metricsCollector.recordTaskExecution(task.taskName, duration, wasSuccessful, session.id, error);
+      this._recordSessionOutcome(session.id, wasSuccessful);
     }
+  }
+
+  _getSessionFailureScore(sessionId) {
+    return this.sessionFailureScores.get(sessionId) || 0;
+  }
+
+  _recordSessionOutcome(sessionId, success) {
+    const current = this.sessionFailureScores.get(sessionId) || 0;
+    if (success) {
+      const next = Math.max(0, current - 1);
+      if (next === 0) {
+        this.sessionFailureScores.delete(sessionId);
+      } else {
+        this.sessionFailureScores.set(sessionId, next);
+      }
+      return;
+    }
+    this.sessionFailureScores.set(sessionId, current + 1);
   }
 
   /**
@@ -394,6 +546,10 @@ class Orchestrator extends EventEmitter {
   async shutdown(force = false) {
     logger.info(`Orchestrator shutting down... (Force: ${force})`);
     this.isShuttingDown = true;
+    if (this.processTimeout) {
+      clearTimeout(this.processTimeout);
+      this.processTimeout = null;
+    }
 
     if (!force) {
       logger.info("Waiting for task processing to complete...");

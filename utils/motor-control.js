@@ -9,6 +9,8 @@
  * @module utils/motor-control
  */
 
+import { calculateBackoffDelay } from './retry.js';
+
 const MOTOR_CONFIG = {
     layoutShiftThreshold: 5,
     spiralSearchAttempts: 4,
@@ -376,7 +378,14 @@ function createMotorController(options = {}) {
         },
 
         async retryWithBackoff(page, fn, options = {}) {
-            const { maxRetries = config.maxRetries, baseDelay = 500, factor = 2 } = options;
+            const {
+                maxRetries = config.maxRetries,
+                baseDelay = 500,
+                factor = 2,
+                maxDelay = 30000,
+                jitterMin = 0.9,
+                jitterMax = 1.1
+            } = options;
 
             let lastError;
 
@@ -385,7 +394,13 @@ function createMotorController(options = {}) {
                     return await fn(attempt);
                 } catch (error) {
                     lastError = error;
-                    const delay = baseDelay * Math.pow(factor, attempt);
+                    const delay = calculateBackoffDelay(attempt, {
+                        baseDelay,
+                        maxDelay,
+                        factor,
+                        jitterMin,
+                        jitterMax
+                    });
 
                     if (attempt < maxRetries - 1) {
                         await page.waitForTimeout(delay);

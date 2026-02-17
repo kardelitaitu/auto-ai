@@ -16,17 +16,9 @@ export class AITools {
         this.connector = new AgentConnector();
         this.logger = logger;
 
-        // State management
-        this.isProcessing = false;
-        this.queue = [];
-        this.currentRequest = null;
-
         // Configuration
         this.config = {
-            timeout: options.timeout ?? 30000,
-            maxRetries: options.maxRetries ?? 2,
-            retryDelay: options.retryDelay ?? 1000,
-            enableQueue: options.enableQueue ?? true
+            timeout: options.timeout ?? 30000
         };
 
         // Statistics
@@ -34,11 +26,11 @@ export class AITools {
             totalRequests: 0,
             successfulRequests: 0,
             failedRequests: 0,
-            avgResponseTime: 0,
-            queueSize: 0
+            avgResponseTime: 0
         };
 
         this.logger.info('[AITools] Initialized');
+
     }
 
     /**
@@ -46,47 +38,7 @@ export class AITools {
      * Prevents race conditions by serializing requests
      */
     async queueRequest(request) {
-        if (!this.config.enableQueue) {
-            return this.processRequest(request);
-        }
-
-        return new Promise((resolve, reject) => {
-            this.queue.push({
-                request,
-                resolve,
-                reject,
-                timestamp: Date.now()
-            });
-            this.stats.queueSize = this.queue.length;
-            this.logger.debug(`[AITools] Queued request (queue: ${this.queue.length})`);
-            this.processQueue();
-        });
-    }
-
-    /**
-     * Process queued requests one at a time
-     */
-    async processQueue() {
-        if (this.isProcessing || this.queue.length === 0) {
-            return;
-        }
-
-        const item = this.queue.shift();
-        if (!item) return;
-
-        this.isProcessing = true;
-        this.stats.queueSize = this.queue.length;
-
-        try {
-            const result = await this.processRequest(item.request);
-            item.resolve(result);
-        } catch (error) {
-            item.reject(error);
-        } finally {
-            this.isProcessing = false;
-            // Process next item
-            setTimeout(() => this.processQueue(), 50);
-        }
+        return this.processRequest(request);
     }
 
     /**
@@ -157,14 +109,20 @@ export class AITools {
      * Send request with timeout
      */
     async sendWithTimeout(request) {
-        return Promise.race([
-            this.connector.processRequest(request),
-            new Promise((_, reject) => {
-                const timeoutId = setTimeout(() => {
-                    reject(new Error(`Request timeout after ${this.config.timeout}ms`));
-                }, this.config.timeout);
-            })
-        ]);
+        let timeoutId;
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => {
+                reject(new Error(`Request timeout after ${this.config.timeout}ms`));
+            }, this.config.timeout);
+        });
+
+        const requestPromise = this.connector.processRequest(request).finally(() => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        });
+
+        return Promise.race([requestPromise, timeoutPromise]);
     }
 
     /**
@@ -295,21 +253,8 @@ Rules:
             successRate: this.stats.totalRequests > 0
                 ? ((this.stats.successfulRequests / this.stats.totalRequests) * 100).toFixed(1) + '%'
                 : '0%',
-            avgResponseTime: Math.round(this.stats.avgResponseTime) + 'ms',
-            queueLength: this.queue.length,
-            isProcessing: this.isProcessing
+            avgResponseTime: Math.round(this.stats.avgResponseTime) + 'ms'
         };
-    }
-
-    /**
-     * Clear the request queue
-     */
-    clearQueue() {
-        const dropped = this.queue.length;
-        this.queue = [];
-        this.stats.queueSize = 0;
-        this.logger.info(`[AITools] Cleared queue (dropped ${dropped} requests)`);
-        return dropped;
     }
 
     /**
@@ -318,15 +263,6 @@ Rules:
     updateConfig(options) {
         if (options.timeout !== undefined) {
             this.config.timeout = options.timeout;
-        }
-        if (options.maxRetries !== undefined) {
-            this.config.maxRetries = options.maxRetries;
-        }
-        if (options.retryDelay !== undefined) {
-            this.config.retryDelay = options.retryDelay;
-        }
-        if (options.enableQueue !== undefined) {
-            this.config.enableQueue = options.enableQueue;
         }
         this.logger.info(`[AITools] Config updated: ${JSON.stringify(options)}`);
     }
@@ -351,8 +287,7 @@ Rules:
             totalRequests: 0,
             successfulRequests: 0,
             failedRequests: 0,
-            avgResponseTime: 0,
-            queueSize: 0
+            avgResponseTime: 0
         };
         this.logger.info('[AITools] Statistics reset');
     }

@@ -11,13 +11,20 @@ const TARGET_TWEET_URL = 'https://x.com/_nadiku/status/1998218314703852013';
 // Set to '' to disable. When set, has 20% chance to be used instead of dynamic engine.
 const MANUAL_REFERRER = ''; // Example: 'https://www.reddit.com/r/technology/'
 
-import { createLogger } from '../utils/utils.js';
-import { TwitterAgent } from '../utils/twitterAgent.js';
+import { createLogger } from '../utils/logger.js';
+import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
 import { mathUtils } from '../utils/mathUtils.js';
 import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
 import { takeScreenshot } from '../utils/screenshot.js';
+import { applyHumanizationPatch } from '../utils/browserPatch.js';
+import { humanTiming } from '../utils/human-timing.js';
+import { entropy } from '../utils/entropyController.js';
+import { GhostCursor } from '../utils/ghostCursor.js';
+import PopupCloser from '../utils/popup-closer.js';
+import OllamaClient from '../core/ollama-client.js';
+import { config } from '../utils/config-service.js';
 
 // Helper: Extract username from tweet URL
 function extractUsername(tweetUrl) {
@@ -49,16 +56,17 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
     const logger = createLogger(`twitterFollowLikeRetweet [${browserInfo}]`);
     const taskTimeoutMs = payload.taskTimeoutMs || DEFAULT_TASK_TIMEOUT_MS;
 
-    logger.info(`[followLikeRetweet] Initializing Entropy Agent... (Timeout: ${(taskTimeoutMs / 1000 / 60).toFixed(1)}m)`);
-
     let agent = null;
+
+    const startupJitter = Math.floor(Math.random() * 6000);
+    logger.info(`[followLikeRetweet] Warming up for ${startupJitter}ms...`);
+    await page.waitForTimeout(startupJitter);
 
     try {
         // Wrap execution in a Promise.race to enforce hard time limit
         await Promise.race([
             (async () => {
                 // 1. Initialize Agent
-                // Allow manual profile override if passed in payload, else use starter
                 let profile;
                 if (payload && payload.profileId) {
                     try {
@@ -70,7 +78,7 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                     profile = profileManager.getStarter();
                 }
 
-                agent = new TwitterAgent(page, profile, logger);
+                agent = new AITwitterAgent(page, profile, logger);
 
                 // Enforce Theme
                 if (profile.theme) {
@@ -427,14 +435,4 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
             logger.warn(`[followLikeRetweet] Failed to close page: ${closeError.message}`);
         }
     }
-}
-
-/**
- * Applies anti-detect and humanization patches.
- * @param {object} page - The Playwright page instance.
- * @param {object} logger
- */
-async function applyHumanizationPatch(page, logger) {
-    const { applyHumanizationPatch: sharedPatch } = await import('../utils/browserPatch.js');
-    await sharedPatch(page, logger);
 }

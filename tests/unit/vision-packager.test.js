@@ -24,15 +24,17 @@ describe('VisionPackager', () => {
         vi.clearAllMocks();
         vi.stubGlobal('window', { innerWidth: 1920, innerHeight: 1080 });
 
-        // Mock fs promises
+        // Mock fs promises - return fresh copies each time to handle state
         fs.mkdir.mockResolvedValue();
         fs.writeFile.mockResolvedValue();
         fs.readdir.mockResolvedValue([]);
-        fs.stat.mockResolvedValue({ mtimeMs: Date.now() });
+        fs.stat.mockResolvedValue({ mtimeMs: Date.now(), size: 1024 });
         fs.unlink.mockResolvedValue();
 
+        // Override screenshotDir to match test expectations
+        packager = new VisionPackager();
+        packager.screenshotDir = 'test-dir';
 
-        packager = new VisionPackager('test-dir');
         mockPage = {
             screenshot: vi.fn().mockResolvedValue(Buffer.from('fake-image')),
             evaluate: vi.fn().mockImplementation((fn) => {
@@ -117,8 +119,8 @@ describe('VisionPackager', () => {
         });
 
         it('should delegate stats to storage', async () => {
+            // Override readdir mock for this specific test
             fs.readdir.mockResolvedValue(['1.jpg', '2.jpg']);
-            fs.stat.mockResolvedValue({ size: 1024 });
             const stats = await packager.getStats();
             expect(stats.totalScreenshots).toBe(2);
             expect(stats.totalSizeBytes).toBe(2048);

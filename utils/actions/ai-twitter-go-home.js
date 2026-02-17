@@ -7,7 +7,7 @@
 import { createLogger } from '../logger.js';
 
 export class GoHomeAction {
-  constructor(agent, options = {}) {
+  constructor(agent, _options = {}) {
     this.agent = agent;
     this.logger = createLogger('ai-twitter-go-home.js');
 
@@ -30,7 +30,7 @@ export class GoHomeAction {
     this.logger.info(`[GoHomeAction] Initialized (enabled: ${this.enabled})`);
   }
 
-  async canExecute(context = {}) {
+  async canExecute(_context = {}) {
     if (!this.agent) {
       return { allowed: false, reason: 'agent_not_initialized' };
     }
@@ -42,12 +42,23 @@ export class GoHomeAction {
     return { allowed: true, reason: null };
   }
 
-  async execute(context = {}) {
+  async execute(_context = {}) {
     this.stats.attempts++;
 
     this.logger.info(`[GoHomeAction] Executing navigation to home`);
 
     try {
+      if (this.agent?.scrollToGoldenZone && this.agent?.page) {
+        const page = this.agent.page;
+        const homeTarget = page.locator('[data-testid="AppTabBar_Home_Link"], [aria-label="X"]').first();
+        if (await homeTarget.isVisible().catch(() => false)) {
+          try {
+            await this.agent.scrollToGoldenZone(homeTarget);
+          } catch (_error) {
+            void _error;
+          }
+        }
+      }
       await this.agent.navigateHome();
       this.stats.successes++;
 

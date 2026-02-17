@@ -22,6 +22,8 @@ class OllamaClient {
         this.timeout = 180000;  // Increased to 3 minutes for vision
         this.config = null;
         this._warmedUp = false;
+        this._recentOllamaListAt = 0;
+        this._warmupInFlight = null;
     }
 
     /**
@@ -63,16 +65,28 @@ class OllamaClient {
         const startTime = Date.now();
 
         // Check if this is a vision request - use chat endpoint for LLaVA
-        const isVision = !!request.vision || !!request.images;
+        let isVision = !!request.vision || !!request.images;
+
+        // Respect config setting - disable vision if explicitly set to false
+        if (this.config && this.config.vision === false && isVision) {
+            logger.debug(`[Ollama] Vision disabled in config for model ${this.model}, ignoring image data`);
+            isVision = false;
+        }
 
         // Warmup model on first vision request
         if (isVision && !this._warmedUp) {
             logger.info(`[Ollama] Warming up ${this.model}...`);
-            try {
-                await this._warmupModel();
-                this._warmedUp = true;
-            } catch (e) {
-                logger.warn(`[Ollama] Warmup failed: ${e.message}`);
+            if (!this._warmupInFlight) {
+                this._warmupInFlight = this._warmupModel()
+                    .then(() => {
+                        this._warmedUp = true;
+                    })
+                    .catch((e) => {
+                        logger.warn(`[Ollama] Warmup failed: ${e.message}`);
+                    })
+                    .finally(() => {
+                        this._warmupInFlight = null;
+                    });
             }
         }
 
@@ -89,18 +103,25 @@ class OllamaClient {
       * Warmup the model by making a simple request
       */
     async _warmupModel() {
-        const endpoint = `${this.baseUrl}/api/generate`;
-        const payload = {
-            model: this.model,
-            prompt: 'Hello',
-            stream: false,
-            options: {
-                num_predict: 5
+        const isVisionModel = this.model.toLowerCase().includes('llava') || this.model.toLowerCase().includes('vision');
+        const endpoint = isVisionModel ? `${this.baseUrl}/api/chat` : `${this.baseUrl}/api/generate`;
+        const payload = isVisionModel
+            ? {
+                model: this.model,
+                messages: [{ role: 'user', content: 'hi' }],
+                stream: false,
+                options: { temperature: 0.1, num_predict: 1 }
             }
-        };
+            : {
+                model: this.model,
+                prompt: 'hi',
+                stream: false,
+                options: { temperature: 0.1, num_predict: 1 }
+            };
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 60000);
+        const warmupTimeoutMs = Math.min(this.timeout, 8000);
+        const timeoutId = setTimeout(() => controller.abort(), warmupTimeoutMs);
 
         try {
             const response = await fetch(endpoint, {
@@ -277,6 +298,7 @@ class OllamaClient {
                 return { success: false, error: 'Request timeout', duration };
             }
 
+            this._triggerOllamaList(error.message);
             logger.error(`[Ollama] Chat request failed: ${error.message}`);
             return { success: false, error: error.message, duration };
         }
@@ -359,18 +381,28 @@ class OllamaClient {
             'good morning': 'gm'
         };
         
+        // Pre-compile regexes once for performance (was creating 64 regex objects per call)
+        if (!this._abbrRegexes) {
+            this._abbrRegexes = Object.entries(abbreviations).map(([full]) => 
+                new RegExp(`\\b${full}\\b`, 'gi')
+            );
+        }
+        
         // Simple word replacement with low probability
         let processed = text;
-        Object.entries(abbreviations).forEach(([full, abbr]) => {
-            // Use regex with word boundaries, case insensitive
-            const regex = new RegExp(`\\b${full}\\b`, 'gi');
+        const abbrEntries = Object.entries(abbreviations);
+        for (let i = 0; i < abbrEntries.length; i++) {
+            const [full, abbr] = abbrEntries[i];
+            const regex = this._abbrRegexes[i];
+            regex.lastIndex = 0; // Reset regex state
             if (regex.test(processed)) {
                 // 15% chance to abbreviate each found word
                 if (Math.random() < 0.15) {
+                    regex.lastIndex = 0;
                     processed = processed.replace(regex, abbr);
                 }
             }
-        });
+        }
 
         // 2. Lazy "I" Replacer (20% chance)
         // Replaces standalone "I" with "i" for casual feel
@@ -555,6 +587,7 @@ class OllamaClient {
                 return { success: false, error: 'Request timeout', duration };
             }
 
+            this._triggerOllamaList(error.message);
             logger.error(`[Ollama] Generate request failed: ${error.message}`);
             return { success: false, error: error.message, duration };
         }
@@ -579,6 +612,38 @@ class OllamaClient {
     resetStats() {
         // No internal stats to reset currently, but method required by interface
         logger.info('[Ollama] Statistics reset');
+    }
+
+    _triggerOllamaList(errorMessage) {
+        if (!this._shouldTriggerOllamaList(errorMessage)) {
+            return false;
+        }
+        const now = Date.now();
+        if (now - this._recentOllamaListAt < 10000) {
+            return false;
+        }
+        this._recentOllamaListAt = now;
+        logger.warn(`[Ollama] ${errorMessage} Triggering 'ollama list'...`);
+        exec('ollama list', { windowsHide: true }, (err, stdout, stderr) => {
+            if (err) {
+                logger.warn(`[Ollama] 'ollama list' failed: ${err.message}`);
+                return;
+            }
+            const output = stdout?.trim();
+            if (output) {
+                const preview = output.split('\n').slice(0, 5).join(' | ');
+                logger.info(`[Ollama] 'ollama list' output: ${preview}`);
+            } else if (stderr?.trim()) {
+                logger.warn(`[Ollama] 'ollama list' stderr: ${stderr.trim()}`);
+            }
+        });
+        return true;
+    }
+
+    _shouldTriggerOllamaList(errorMessage) {
+        if (!errorMessage) return false;
+        const msg = String(errorMessage).toLowerCase();
+        return msg.includes('model') && (msg.includes('not found') || msg.includes('not loaded') || msg.includes('unknown') || msg.includes('pull'));
     }
 
     async wakeLocal() {

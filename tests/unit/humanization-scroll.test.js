@@ -115,6 +115,34 @@ describe('HumanScroll', () => {
             
             expect(mockAgent.log).toHaveBeenCalled();
         });
+
+        it('should handle random direction', async () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.6);
+            
+            await humanScroll.execute('random');
+            
+            expect(scrollHelper.scrollRandom).toHaveBeenCalled();
+        });
+
+        it('should fallback to normal intensity for unknown', async () => {
+            mathUtils.randomInRange.mockReturnValue(100);
+            
+            await humanScroll.execute('down', 'unknown');
+            
+            expect(scrollHelper.scrollRandom).toHaveBeenCalled();
+        });
+
+        it('should scroll back slightly on roll when not first burst', async () => {
+            mathUtils.randomInRange.mockImplementation((min, max) => {
+                if (min === 2 && max === 4) return 2;
+                return 100;
+            });
+            mathUtils.roll.mockReturnValue(true);
+            
+            await humanScroll.execute('down', 'normal');
+            
+            expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(mockPage, 20, 50);
+        });
     });
 
     describe('toElement', () => {
@@ -163,6 +191,14 @@ describe('HumanScroll', () => {
             expect(scrollHelper.scrollRandom).not.toHaveBeenCalled();
         });
 
+        it('should return when element has no bounding box', async () => {
+            mockElement.boundingBox.mockResolvedValue(null);
+            
+            await humanScroll.toElement(mockLocator);
+            
+            expect(scrollHelper.scrollRandom).not.toHaveBeenCalled();
+        });
+
         it('should fallback to direct scroll on error', async () => {
             mockLocator.first.mockRejectedValue(new Error('Locator error'));
             
@@ -200,6 +236,18 @@ describe('HumanScroll', () => {
             
             // 3 quick jumps + 1 fine adjustment = 4 calls
             expect(scrollHelper.scrollRandom).toHaveBeenCalledTimes(4);
+        });
+    });
+
+    describe('deepScroll', () => {
+        it('should perform multiple scroll sessions', async () => {
+            mathUtils.randomInRange.mockReturnValue(3);
+            mathUtils.roll.mockReturnValue(true);
+            
+            await humanScroll.deepScroll();
+            
+            expect(scrollHelper.scrollRandom).toHaveBeenCalled();
+            expect(mockPage.waitForTimeout).toHaveBeenCalled();
         });
     });
 });

@@ -12,7 +12,7 @@ export function createProxyAgent(proxyUrl) {
   return new ProxyAgent(proxyUrl);
 }
 
-class ProxyAgent {
+export class ProxyAgent {
   constructor(proxyUrl) {
     this.proxyUrl = proxyUrl;
     this.agent = null;

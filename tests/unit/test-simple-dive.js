@@ -2,7 +2,7 @@
  * Simple dive queue test
  */
 
-import { DiveQueue } from './utils/async-queue.js';
+import { DiveQueue } from '../../utils/async-queue.js';
 
 async function testDiveQueue() {
   console.log('Testing DiveQueue...\n');

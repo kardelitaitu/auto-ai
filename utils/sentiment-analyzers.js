@@ -380,6 +380,8 @@ export class ToxicityAnalyzer {
     constructor() {
         this.profanities = ['fuck', 'shit', 'damn', 'ass', 'crap', 'bitch',
                            'asshole', 'bastard', 'goddamn', 'hell', 'piss'];
+        // Pre-compile regexes once for performance (was creating 11 regex objects per analyze call)
+        this._profanityRegexes = this.profanities.map(p => new RegExp(`\\b${p}\\b`, 'i'));
     }
     
     analyze(text) {
@@ -440,11 +442,10 @@ export class ToxicityAnalyzer {
             score += 0.1;
         }
         
-        // Profanity detection
-        for (const profanity of this.profanities) {
-            const regex = new RegExp(`\\b${profanity}\\b`, 'i');
-            if (regex.test(text)) {
-                markers.profanities.push(profanity);
+        // Profanity detection - use pre-compiled regexes
+        for (let i = 0; i < this.profanities.length; i++) {
+            if (this._profanityRegexes[i].test(text)) {
+                markers.profanities.push(this.profanities[i]);
                 score += 0.1;
             }
         }

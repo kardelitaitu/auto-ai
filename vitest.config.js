@@ -5,41 +5,50 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    
+    setupFiles: ['./tests/vitest.setup.js'], 
     include: ['**/*.{test,spec}.{js,ts}'],
     exclude: ['node_modules', 'dist', '.git'],
     
-    // Coverage configuration
+    testTimeout: 10000,
+    hookTimeout: 10000,
+    
+    cache: true,
+    
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        isolate: false
+      }
+    },
+    
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['**/*.js'],
+      include: ['core/**/*.js', 'utils/**/*.js', 'tasks/**/*.js'],
       exclude: [
         'node_modules/',
         'dist/',
         '.git/',
         'tests/',
+        'backup/',
         '**/*.test.js',
         '**/*.spec.js',
+        'local-agent/',
       ],
+      thresholds: {
+        lines: 80.00,
+        functions: 80.00,
+        branches: 80.00,
+        statements: 80.00,
+        autoUpdate: true
+      }
     },
     
-    // Reporter configuration
-    reporters: ['default', 'verbose'],
-    
-    // Pool configuration for parallel execution
-    pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: false,
-        minThreads: 16,
-        maxThreads: 28, 
-        useAtomics: true, // Speeds up communication between threads
-      },
-    },
+    reporters: ['default', 'verbose'], 
     isolate: false,
   },
   
-  // Resolve configuration for module resolution with aliases
   resolve: {
     alias: {
       '@tests': resolve(__dirname, './tests'),

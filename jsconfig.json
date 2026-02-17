@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "es2022",
     "target": "es2022",
-    "checkJs": true,
+    "checkJs": false,
     "allowJs": true,
     "noEmit": true,
     "strict": false,

@@ -11,6 +11,36 @@ describe('mathUtils', () => {
                 expect(val).toBeLessThanOrEqual(120);
             }
         });
+
+        it('should handle zero random values and apply min only', () => {
+            vi.spyOn(Math, 'random')
+                .mockReturnValueOnce(0)
+                .mockReturnValueOnce(0.5)
+                .mockReturnValueOnce(0)
+                .mockReturnValueOnce(0.5);
+            const val = mathUtils.gaussian(10, 5, 12);
+            expect(val).toBeGreaterThanOrEqual(12);
+        });
+
+        it('should apply max only when provided', () => {
+            vi.spyOn(Math, 'random')
+                .mockReturnValueOnce(0.5)
+                .mockReturnValueOnce(0.5);
+            const val = mathUtils.gaussian(100, 100, undefined, 50);
+            expect(val).toBeLessThanOrEqual(50);
+        });
+
+        it('should return floored value without bounds', () => {
+            vi.spyOn(Math, 'random')
+                .mockReturnValueOnce(0.25)
+                .mockReturnValueOnce(0.75);
+            const val = mathUtils.gaussian(0, 1);
+            expect(Number.isInteger(val)).toBe(true);
+        });
+
+        afterEach(() => {
+            vi.restoreAllMocks();
+        });
     });
 
     describe('randomInRange', () => {
@@ -20,6 +50,18 @@ describe('mathUtils', () => {
                 expect(val).toBeGreaterThanOrEqual(10);
                 expect(val).toBeLessThanOrEqual(20);
             }
+        });
+
+        it('should return min when random is 0', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0);
+            expect(mathUtils.randomInRange(5, 9)).toBe(5);
+            vi.restoreAllMocks();
+        });
+
+        it('should return max when random is near 1', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.999999);
+            expect(mathUtils.randomInRange(5, 9)).toBe(9);
+            vi.restoreAllMocks();
         });
     });
 
@@ -32,6 +74,16 @@ describe('mathUtils', () => {
         it('should return false if over threshold', () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.6);
             expect(mathUtils.roll(0.5)).toBe(false);
+        });
+
+        it('should return false when threshold is 0', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.0);
+            expect(mathUtils.roll(0)).toBe(false);
+        });
+
+        it('should return true when threshold is 1', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.9999);
+            expect(mathUtils.roll(1)).toBe(true);
         });
         
         afterEach(() => {
@@ -49,6 +101,27 @@ describe('mathUtils', () => {
         it('should return null for empty array', () => {
             expect(mathUtils.sample([])).toBeNull();
             expect(mathUtils.sample(null)).toBeNull();
+        });
+
+        it('should return first element when random is 0', () => {
+            const arr = [9, 8, 7];
+            vi.spyOn(Math, 'random').mockReturnValue(0);
+            expect(mathUtils.sample(arr)).toBe(9);
+            vi.restoreAllMocks();
+        });
+
+        it('should return last element when random is near 1', () => {
+            const arr = [9, 8, 7];
+            vi.spyOn(Math, 'random').mockReturnValue(0.9999);
+            expect(mathUtils.sample(arr)).toBe(7);
+            vi.restoreAllMocks();
+        });
+
+        it('should return the only element in a single-item array', () => {
+            const arr = [42];
+            vi.spyOn(Math, 'random').mockReturnValue(0.75);
+            expect(mathUtils.sample(arr)).toBe(42);
+            vi.restoreAllMocks();
         });
     });
 });

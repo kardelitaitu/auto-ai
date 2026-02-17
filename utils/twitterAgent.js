@@ -5,13 +5,18 @@ import { GhostCursor } from './ghostCursor.js';
 import { HumanizationEngine } from './humanization/index.js';
 import { scrollDown, scrollRandom } from './scroll-helper.js';
 
+// Import modular handlers
+import { NavigationHandler } from './twitter-agent/NavigationHandler.js';
+import { EngagementHandler } from './twitter-agent/EngagementHandler.js';
+import { SessionHandler } from './twitter-agent/SessionHandler.js';
+
 
 export class TwitterAgent {
     constructor(page, initialProfile, logger) {
         this.page = page;
         this.config = initialProfile;
         this.logger = logger;
-        this.ghost = new GhostCursor(page);
+        this.ghost = new GhostCursor(page, logger);
 
         // Humanization Engine
         this.human = new HumanizationEngine(page, this);
@@ -41,6 +46,11 @@ export class TwitterAgent {
         this.fatigueThreshold = mathUtils.randomInRange(3 * 60 * 1000, 8 * 60 * 1000);
 
         this.log(`Initialized [${this.config.description}]. Fatigue scheduled for T+${(this.fatigueThreshold / 60000).toFixed(1)}m`);
+
+        // Initialize modular handlers
+        this.navigation = new NavigationHandler(this);
+        this.engagement = new EngagementHandler(this);
+        this.session = new SessionHandler(this);
 
         // --- HEALTH MONITORING ---
         this.lastNetworkActivity = Date.now();
@@ -75,33 +85,28 @@ export class TwitterAgent {
         await this.human.think(description);
         
         try {
-            // 1. Aggressive Scroll: Center the element
             await target.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
-
-            // 2. HUMAN-LIKE: Target fixation - pause before moving mouse (200-500ms)
             const fixationDelay = mathUtils.randomInRange(200, 500);
             await this.page.waitForTimeout(fixationDelay);
-
-            // 3. HUMAN-LIKE: Micro-movement before clicking (overshoot and correct)
-            const overshoot = mathUtils.randomInRange(20, 50);
-            const direction = Math.random() > 0.5 ? 1 : -1;
-            await this.page.mouse.move(overshoot * direction, overshoot * direction);
-            await this.page.waitForTimeout(mathUtils.randomInRange(100, 200));
-            await this.page.mouse.move(-overshoot * direction / 2, -overshoot * direction / 2);
-
-            // 4. Visual confirmation pause (Reaction time)
             await this.page.waitForTimeout(mathUtils.randomInRange(300, 600));
-
-            // 5. Execute Ghost Click
-            await this.ghost.click(target, { allowNativeFallback: true });
+            const ghostResult = await this.ghost.click(target, {
+                label: description,
+                hoverBeforeClick: true
+            });
+            if (ghostResult?.success && ghostResult?.x != null && ghostResult?.y != null) {
+                const x = Math.round(ghostResult.x);
+                const y = Math.round(ghostResult.y);
+                this.log(`[ai-twitterActivity][GhostClick] Clicked x=${x} y=${y}`);
+            } else if (ghostResult?.success === false) {
+                throw new Error('ghost_click_failed');
+            }
 
         } catch (e) {
             this.log(`[Interaction] humanClick failed on ${description}: ${e.message}`);
             
             // HUMAN-LIKE: Error recovery
             await this.human.recoverFromError('click_failed', { locator: target });
-            
-            try { await target.click({ force: true }); } catch { /* ignore force click error */ }
+            throw e;
         }
     }
 
@@ -244,33 +249,7 @@ export class TwitterAgent {
      */
     async sixLayerClick(element, logPrefix) {
         const layers = [
-            { name: 'Ghost Click', fn: async () => await this.safeHumanClick(element, 'Follow Button', 2) },
-            { name: 'Native Click', fn: async () => await element.click({ timeout: 8000 }) },
-            { name: 'Force Click', fn: async () => await element.click({ force: true, timeout: 8000 }) },
-            {
-                name: 'JS Dispatch', fn: async () => {
-                    const handle = await element.elementHandle();
-                    if (handle) await this.page.evaluate(el => el.click(), handle);
-                }
-            },
-            {
-                name: 'MouseEvent', fn: async () => {
-                    const handle = await element.elementHandle();
-                    if (handle) {
-                        await this.page.evaluate(el => {
-                            const event = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
-                            el.dispatchEvent(event);
-                        }, handle);
-                    }
-                }
-            },
-            {
-                name: 'Keyboard', fn: async () => {
-                    await element.focus();
-                    await this.page.waitForTimeout(100);
-                    await this.page.keyboard.press('Enter');
-                }
-            }
+            { name: 'Ghost Click', fn: async () => await this.safeHumanClick(element, 'Follow Button', 2) }
         ];
 
         for (let i = 0; i < layers.length; i++) {
@@ -687,7 +666,9 @@ export class TwitterAgent {
 
         // ensure each is within [0,1]
         for (const k of Object.keys(merged)) merged[k] = this.clamp(merged[k], 0, 1);
-        if (merged.likeTweetAfterDive != null && merged.likeTweetafterDive == null) {
+        if (p && p.likeTweetAfterDive != null) {
+            merged.likeTweetafterDive = p.likeTweetAfterDive;
+        } else if (merged.likeTweetAfterDive != null && merged.likeTweetafterDive == null) {
             merged.likeTweetafterDive = merged.likeTweetAfterDive;
         }
 

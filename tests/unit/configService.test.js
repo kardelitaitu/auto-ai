@@ -1,6 +1,5 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { config } from '../../utils/config-service.js';
 import * as configLoader from '../../utils/configLoader.js';
 
 vi.mock('../../utils/configLoader.js');
@@ -15,10 +14,13 @@ vi.mock('../../utils/logger.js', () => ({
 
 describe('ConfigService', () => {
     const originalEnv = process.env;
+    let config;
 
     beforeEach(async () => {
         vi.resetAllMocks();
+        vi.resetModules();
         process.env = { ...originalEnv };
+        ({ config } = await import('../../utils/config-service.js'));
         await config.reload();
     });
 

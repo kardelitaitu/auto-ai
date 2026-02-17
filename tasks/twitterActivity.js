@@ -3,8 +3,8 @@
  * @module tasks/twitterActivity.js
  */
 
-import { createLogger } from '../utils/utils.js';
-import { TwitterAgent } from '../utils/twitterAgent.js';
+import { createLogger } from '../utils/logger.js';
+import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
 import { mathUtils } from '../utils/mathUtils.js';
 import { scrollRandom } from '../utils/scroll-helper.js';
@@ -12,6 +12,7 @@ import fs from 'fs';
 import path from 'path';
 import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
+import { applyHumanizationPatch } from '../utils/browserPatch.js';
 
 // Helper to extract username
 const extractUsername = (url) => {
@@ -66,6 +67,10 @@ export default async function twitterActivityTask(page, payload) {
     let agent = null;
     let finalResult;
 
+    const startupJitter = Math.floor(Math.random() * 10000);
+    logger.info(`[twitterActivity.js] Warming up for ${startupJitter}ms...`);
+    await page.waitForTimeout(startupJitter);
+
     try {
         // Wrap execution in a Promise.race to enforce hard time limit
         // Default to 12 minutes if not specified, since activity tasks are long-running
@@ -101,7 +106,7 @@ export default async function twitterActivityTask(page, payload) {
                         }
 
                         // 2. Initialize Agent with Logger injection
-                        agent = new TwitterAgent(page, profile, logger);
+                        agent = new AITwitterAgent(page, profile, logger);
 
                         // Enforce Theme early (before navigation)
                         const theme = profile.theme || 'dark';
@@ -334,6 +339,7 @@ export default async function twitterActivityTask(page, payload) {
             logger.info(`[Metrics] Engagements: Likes=${s.likes || 0} | Follows=${s.follows || 0} | Retweets=${s.retweets || 0} | Tweets=${s.tweets || 0} | Errors=${s.consecutiveLoginFailures || 0}`);
         }
         logger.info(`[twitterActivity] --- Reached FINALLY block ---`);
+        
         try {
             if (!page) {
                 logger.debug(`[twitterActivity.js] Page object is null/undefined. Nothing to close.`);
@@ -375,15 +381,4 @@ export default async function twitterActivityTask(page, payload) {
         };
     }
     return finalResult;
-}
-
-/**
- * Applies anti-detect and humanization patches to the page context.
- * @param {object} page - The Playwright page instance. 
- * @param {object} logger 
- */
-async function applyHumanizationPatch(page, logger) {
-    // Forward to shared utility
-    const { applyHumanizationPatch: sharedPatch } = await import('../utils/browserPatch.js');
-    await sharedPatch(page, logger);
 }

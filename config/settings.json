@@ -35,7 +35,7 @@
     },
     "timing": {
       "warmupMin": 2000,
-      "warmupMax": 15000,
+      "warmupMax": 10000,
       "scrollMin": 300,
       "scrollMax": 700,
       "scrollPauseMin": 1500,
@@ -52,11 +52,11 @@
     },
     "actions": {
       "reply": {
-        "probability": 0.60,
+        "probability": 0.6,
         "enabled": true
       },
       "quote": {
-        "probability": 0.20,
+        "probability": 0.2,
         "enabled": true
       },
       "like": {
@@ -65,6 +65,10 @@
       },
       "bookmark": {
         "probability": 0.05,
+        "enabled": true
+      },
+      "retweet": {
+        "probability": 0.2,
         "enabled": true
       },
       "goHome": {
@@ -87,7 +91,8 @@
       "textModel": "hermes3:8b",
       "timeout": 120000,
       "retryAttempts": 2,
-      "warmup": true
+      "warmup": true,
+      "vision": false
     },
     "cloud": {
       "provider": "openrouter",
@@ -96,6 +101,10 @@
       "enabled": false,
       "retryAttempts": 1,
       "retryDelay": 3000,
+      "requestQueue": {
+        "enabled": true,
+        "interval": 300
+      },
       "providers": [
         {
           "name": "openrouter1",
@@ -185,6 +194,7 @@
     "sessionTimeoutMs": 1800000,
     "cleanupIntervalMs": 300000
   },
+  "concurrencyPerBrowser": 2,
   "open_router_free_api": {
     "enabled": false,
     "api_keys": [
@@ -249,9 +259,9 @@
         "45.39.73.220:5635:KingAirdrop:kiNgdom77",
         "45.39.73.113:5528:KingAirdrop:kiNgdom77",
         "45.39.73.151:5566:KingAirdrop:kiNgdom77"
-        ]
-      }
-    },
+      ]
+    }
+  },
 
   "logging": {
     "engagementProgress": {

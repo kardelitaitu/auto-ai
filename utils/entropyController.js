@@ -6,6 +6,7 @@
  */
 
 import { createLogger } from './logger.js';
+import { calculateBackoffDelay } from './retry.js';
 
 /**
  * EntropyController Class
@@ -226,19 +227,14 @@ class EntropyController {
       * @returns {number} Delay in milliseconds
       */
     retryDelay(attempt = 0, baseMs = 1500) {
-        // Exponential backoff
-        const exponential = baseMs * Math.pow(1.8, attempt);
-        
-        // Simple percentage jitter (±30%)
-        const jitterPercent = (Math.random() - 0.5) * 0.6;
-        const jitter = exponential * jitterPercent;
-        
-        const result = exponential + jitter;
-        
-        // Clamp to reasonable bounds (500ms to 30s)
-        const clamped = Math.max(500, Math.min(30000, result));
-        
-        return Math.floor(clamped);
+        const delay = calculateBackoffDelay(attempt, {
+            baseDelay: baseMs,
+            maxDelay: 30000,
+            factor: 1.8,
+            jitterMin: 0.7,
+            jitterMax: 1.3
+        });
+        return Math.max(500, delay);
     }
 
     /**

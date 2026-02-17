@@ -7,7 +7,7 @@
 import { createLogger } from '../logger.js';
 
 export class AIQuoteAction {
-  constructor(agent, options = {}) {
+  constructor(agent, _options = {}) {
     this.agent = agent;
     this.logger = createLogger('ai-twitter-quote.js');
     this.engagementType = 'quotes';
@@ -65,11 +65,18 @@ export class AIQuoteAction {
   async execute(context = {}) {
     this.stats.attempts++;
 
-    const { tweetText, username, tweetUrl } = context;
+    const { tweetText, username, tweetUrl, tweetElement } = context;
 
     this.logger.info(`[AIQuoteAction] Executing quote for @${username}`);
 
     try {
+      if (tweetElement && this.agent?.scrollToGoldenZone) {
+        try {
+          await this.agent.scrollToGoldenZone(tweetElement);
+        } catch (_error) {
+          void _error;
+        }
+      }
       // STEP 1: Extract enhanced context (scroll down to read replies)
       let enhancedContext = context.enhancedContext;
 

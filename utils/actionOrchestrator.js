@@ -70,13 +70,13 @@ export class ActionOrchestrator {
         for (const [routine, weight] of Object.entries(adjustedWeights)) {
             random -= weight;
             if (random <= 0) {
-                this.recordRoutine(routine);
+                this.record(routine);
                 return routine;
             }
         }
 
         const fallback = ACTION_ROUTINES.TIMELINE_BROWSE;
-        this.recordRoutine(fallback);
+        this.record(fallback);
         return fallback;
     }
 

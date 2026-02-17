@@ -133,18 +133,200 @@ describe('MetricsCollector', () => {
             expect(stats.tasks.executed).toBe(0);
             expect(collector.taskHistory.length).toBe(0);
         });
-        
-        // Mocking generateJsonReport dynamic imports is tricky in Vitest if not using global mocks
-        // Since we mocked 'fs/promises' globally above, it might work if the code does `import('fs/promises')`.
-        // Vitest mocks usually affect dynamic imports too.
+
         it('should generate JSON report', async () => {
             await collector.generateJsonReport();
-            // We need to check if fs.writeFile was called. 
-            // However, since the code uses `await import('fs/promises')`, we need to make sure `vi.mock` covers that.
-            // Vitest hoisting usually handles `import ... from ...` but dynamic `import(...)` resolves to the module.
-            // If we mocked the module, it should resolve to the mock.
+        });
+
+        it('should export to JSON', () => {
+            collector.recordTaskExecution('t1', 100, true, 's1');
+            const json = collector.exportToJSON();
+            expect(json).toContain('stats');
+            expect(json).toContain('recentTasks');
+        });
+
+        it('should log stats', () => {
+            collector.recordTaskExecution('t1', 100, true, 's1');
+            expect(() => collector.logStats()).not.toThrow();
+        });
+    });
+
+    describe('Browser Discovery', () => {
+        it('should record browser discovery', () => {
+            collector.recordBrowserDiscovery(5, 3, 2);
+            const stats = collector.getStats();
+            expect(stats.browsers.discovered).toBe(5);
+            expect(stats.browsers.connected).toBe(3);
+            expect(stats.browsers.failed).toBe(2);
+        });
+    });
+
+    describe('API Calls', () => {
+        it('should record successful API call', () => {
+            collector.recordApiCall(150, true);
+            const stats = collector.getStats();
+            expect(stats.api.calls).toBe(1);
+            expect(stats.api.failures).toBe(0);
+            expect(stats.api.avgResponseTime).toBe(150);
+        });
+
+        it('should record failed API call', () => {
+            collector.recordApiCall(150, false);
+            const stats = collector.getStats();
+            expect(stats.api.calls).toBe(1);
+            expect(stats.api.failures).toBe(1);
+        });
+    });
+
+    describe('Session Events', () => {
+        it('should record session created', () => {
+            collector.recordSessionEvent('created', 1);
+            const stats = collector.getStats();
+            expect(stats.sessions.created).toBe(1);
+            expect(stats.sessions.active).toBe(1);
+        });
+
+        it('should record session closed', () => {
+            collector.recordSessionEvent('created', 1);
+            collector.recordSessionEvent('closed', 0);
+            const stats = collector.getStats();
+            expect(stats.sessions.closed).toBe(1);
+            expect(stats.sessions.active).toBe(0);
+        });
+    });
+
+    describe('Dive Duration', () => {
+        it('should handle invalid dive duration', () => {
+            collector.recordDiveDuration(-1);
+            collector.recordDiveDuration(NaN);
+            collector.recordDiveDuration('invalid');
+            expect(collector.getAvgDiveDuration()).toBe(0);
+        });
+    });
+
+    describe('AI Latency', () => {
+        it('should handle invalid AI latency', () => {
+            collector.recordAILatency(-1);
+            collector.recordAILatency(NaN);
+            collector.recordAILatency('invalid');
+            expect(collector.getAvgAILatency()).toBe(0);
+        });
+
+        it('should record failed AI request', () => {
+            collector.recordAILatency(100, false);
+            const twitterStats = collector.getTwitterEngagementMetrics();
+            expect(twitterStats.errors.ai_request_failure).toBeDefined();
+        });
+    });
+
+    describe('Error Recording', () => {
+        it('should record errors by type', () => {
+            collector.recordError('test_error', 'Test message 1');
+            collector.recordError('test_error', 'Test message 2');
+            collector.recordError('test_error', 'Test message 3');
+            collector.recordError('test_error', 'Test message 4');
+            collector.recordError('test_error', 'Test message 5');
+            collector.recordError('test_error', 'Test message 6'); // Should be ignored
             
-            // NOTE: This test might be flaky if dynamic import mocking isn't perfect, but let's try.
+            const twitterStats = collector.getTwitterEngagementMetrics();
+            expect(twitterStats.errors.test_error.count).toBe(6);
+            expect(twitterStats.errors.test_error.messages.length).toBe(5); // Max 5 messages
+        });
+    });
+
+    describe('Task Breakdown', () => {
+        it('should get task breakdown', () => {
+            collector.recordTaskExecution('task1', 100, true, 's1');
+            collector.recordTaskExecution('task1', 200, false, 's1');
+            collector.recordTaskExecution('task2', 150, true, 's1');
+            
+            const breakdown = collector.getTaskBreakdown();
+            expect(breakdown.task1.executions).toBe(2);
+            expect(breakdown.task1.successes).toBe(1);
+            expect(breakdown.task1.failures).toBe(1);
+            expect(breakdown.task2.executions).toBe(1);
+        });
+    });
+
+    describe('Recent Tasks', () => {
+        it('should get recent tasks with limit', () => {
+            for (let i = 0; i < 15; i++) {
+                collector.recordTaskExecution(`task${i}`, 100, true, 's1');
+            }
+            
+            const recent = collector.getRecentTasks(5);
+            expect(recent.length).toBe(5);
+            expect(recent[0].taskName).toBe('task14');
+        });
+    });
+
+    describe('Twitter Engagement Edge Cases', () => {
+        it('should handle invalid engagement type', () => {
+            collector.recordTwitterEngagement('invalid', 1);
+            collector.recordTwitterEngagement('reply', -1);
+            collector.recordTwitterEngagement('reply', NaN);
+            
+            const stats = collector.getTwitterEngagementMetrics();
+            expect(stats.actions.replies).toBe(0);
+            expect(stats.errors).toBeDefined();
+        });
+    });
+
+    describe('Social Action Edge Cases', () => {
+        it('should handle invalid action type', () => {
+            collector.recordSocialAction(123, 1);
+            collector.recordSocialAction('like', 0);
+            
+            const stats = collector.getStats();
+            expect(stats.social.likes).toBe(0);
+        });
+    });
+
+    describe('Percentile Calculation', () => {
+        it('should calculate percentiles', () => {
+            collector.recordTaskExecution('t1', 10, true, 's1');
+            collector.recordTaskExecution('t1', 20, true, 's1');
+            collector.recordTaskExecution('t1', 30, true, 's1');
+            collector.recordTaskExecution('t1', 40, true, 's1');
+            collector.recordTaskExecution('t1', 50, true, 's1');
+            
+            const stats = collector.getStats();
+            expect(stats.tasks.durationPercentiles.p50).toBe(30);
+            expect(stats.tasks.durationPercentiles.p95).toBe(50);
+            expect(stats.tasks.durationPercentiles.p99).toBe(50);
+        });
+
+        it('should handle empty durations', () => {
+            const p50 = collector.getPercentile([], 50);
+            expect(p50).toBe(0);
+        });
+    });
+
+    describe('Duration Formatting', () => {
+        it('should format milliseconds', () => {
+            expect(collector.formatDuration(500)).toBe('500ms');
+        });
+
+        it('should format seconds', () => {
+            expect(collector.formatDuration(5000)).toBe('5s');
+        });
+
+        it('should format minutes', () => {
+            expect(collector.formatDuration(120000)).toBe('2m 0s');
+        });
+
+        it('should format hours', () => {
+            expect(collector.formatDuration(3600000)).toBe('1h 0m 0s');
+        });
+
+        it('should format days', () => {
+            expect(collector.formatDuration(90000000)).toBe('1d 1h 0m');
+        });
+
+        it('should handle edge cases', () => {
+            expect(collector.formatDuration(0)).toBe('0ms');
+            expect(collector.formatDuration(null)).toBe('0ms');
+            expect(collector.formatDuration(-1)).toBe('0ms');
         });
     });
 });

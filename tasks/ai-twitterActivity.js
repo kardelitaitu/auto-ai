@@ -28,8 +28,48 @@ const MAX_RETRIES = 2;
 const LOGIN_CHECK_LOOPS = 3;
 const LOGIN_CHECK_DELAY = 3000;
 const PAGE_TIMEOUT_MS = 60000;
+const ENTRY_POINTS = [
+    { url: 'https://x.com/', weight: 80 },
+    { url: 'https://x.com/explore', weight: 5 },
+    { url: 'https://x.com/notifications', weight: 5 },
+    { url: 'https://x.com/notifications/mentions', weight: 3 },
+    { url: 'https://x.com/explore/tabs/for_you', weight: 1 },
+    { url: 'https://x.com/explore/tabs/trending', weight: 1 },
+    { url: 'https://x.com/explore/tabs/news', weight: 1 },
+    { url: 'https://x.com/explore/tabs/sports', weight: 1 },
+    { url: 'https://x.com/explore/tabs/entertai', weight: 1 },
+    { url: 'https://x.com/i/connect_people?show_topics=false', weight: 1 },
+    { url: 'https://x.com/i/connect_people?is_creator_only=true', weight: 1 }
+];
 
 // Env vars examples: TWITTER_ACTIVITY_CYCLES, TWITTER_REPLY_PROBABILITY.
+
+const createAsyncLock = () => {
+    let chain = Promise.resolve();
+    return async (task) => {
+        const previous = chain;
+        let release = () => {};
+        chain = new Promise(resolve => {
+            release = resolve;
+        });
+        try {
+            await previous.catch(() => {});
+            return await task();
+        } finally {
+            release();
+        }
+    };
+};
+
+const selectEntryPoint = () => {
+    const total = ENTRY_POINTS.reduce((sum, entry) => sum + entry.weight, 0);
+    let roll = Math.random() * total;
+    for (const entry of ENTRY_POINTS) {
+        roll -= entry.weight;
+        if (roll <= 0) return entry.url;
+    }
+    return ENTRY_POINTS[0].url;
+};
 
 /** AI-Enhanced Twitter Activity Task. Config priority: Env Vars > settings.json > defaults. */
 export default async function aiTwitterActivityTask(page, payload) {
@@ -39,37 +79,54 @@ export default async function aiTwitterActivityTask(page, payload) {
 
     logger.info(`[ai-twitterActivity] Initializing AI-Enhanced Agent...`);
 
-    try {
-        if (await config.isLocalLLMEnabled()) {
-            const client = new OllamaClient();
-            await client.wakeLocal();
-            await client.checkModel('Warmup: Reply with OK then a short 30-word sentence about reading a social feed.');
+    // --- INITIALIZATION HELPERS ---
+    const handleLLMWarmup = async () => {
+        try {
+            if (await config.isLocalLLMEnabled()) {
+                const client = new OllamaClient();
+                await client.wakeLocal();
+                await client.checkModel('Warmup: Reply with OK then a short 30-word sentence about reading a social feed.');
+                return true;
+            }
+        } catch (warmErr) {
+            logger.warn(`[ai-twitterActivity] Local LLM warmup: ${warmErr.message}`);
         }
-    } catch (warmErr) {
-        logger.warn(`[ai-twitterActivity] Local LLM warmup: ${warmErr.message}`);
-    }
+        return false;
+    };
 
-    // STAGGER STARTUP: Random delay to desynchronize multiple agents running in parallel
-    // This prevents "thundering herd" on the local LLM and makes traffic look more natural
+    const resolveProfile = () => {
+        const resolved = payload.profileId
+            ? (profileManager.getById(payload.profileId) || profileManager.getStarter())
+            : profileManager.getStarter();
+        
+        if (resolved) {
+            const profileDesc = `${resolved.id}-${resolved.type} | Input: ${resolved.inputMethod} (${resolved.inputMethodPct}%) | Dive: ${resolved.probabilities.dive}% | Like: ${resolved.probabilities.like}% | Follow: ${resolved.probabilities.follow}%`;
+            logger.info(`[ai-twitterActivity] Profile: ${profileDesc}`);
+        }
+        return resolved;
+    };
+
     const startupJitter = Math.floor(Math.random() * 10000); // 0-10 seconds
-    logger.info(`[ai-twitterActivity] ⏳ Startup Jitter: Waiting ${startupJitter}ms to desynchronize...`);
-    await new Promise(resolve => setTimeout(resolve, startupJitter));
+    logger.info(`[ai-twitterActivity] ⏳ Startup: Running parallel initialization (Jitter: ${startupJitter}ms)...`);
 
-    // Optimized config loading.
-    let taskConfig;
+    // --- PARALLEL INITIALIZATION ---
+    let taskConfig, profile, warmupResult;
     try {
-        taskConfig = await loadAiTwitterActivityConfig(payload);
+        [taskConfig, profile, warmupResult] = await Promise.all([
+            loadAiTwitterActivityConfig(payload),
+            Promise.resolve().then(resolveProfile),
+            handleLLMWarmup(),
+            new Promise(resolve => setTimeout(resolve, startupJitter))
+        ]);
 
-        // Debug mode enables verbose config logging.
         if (taskConfig.system.debugMode) {
             logger.info(`[ai-twitterActivity] Config loaded: ${taskConfig.session.cycles} cycles, reply=${taskConfig.engagement.probabilities.reply}`);
         }
-    } catch (configError) {
-        logger.error(`[ai-twitterActivity] Configuration loading failed: ${configError.message}`);
-        throw new Error(`Task initialization failed due to configuration error: ${configError.message}`, { cause: configError });
+    } catch (initError) {
+        logger.error(`[ai-twitterActivity] Initialization failed: ${initError.message}`);
+        throw new Error(`Task initialization failed: ${initError.message}`, { cause: initError });
     }
 
-    let profile = null;
     let agent;
     let hasAgent = false;
     let agentState = { follows: 0, likes: 0, retweets: 0, tweets: 0 };
@@ -82,157 +139,186 @@ export default async function aiTwitterActivityTask(page, payload) {
     let popupCloser;
     let hasPopupCloser = false;
     let stopPopupCloser = () => {};
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
+    const withPageLock = createAsyncLock();
+
+    const throwIfAborted = () => {
+        if (abortSignal.aborted) {
+            const reason = abortSignal.reason instanceof Error ? abortSignal.reason : new Error('Aborted');
+            throw reason;
+        }
+    };
 
     try {
         const hardTimeoutMs = payload.taskTimeoutMs || (DEFAULT_MIN_DURATION + DEFAULT_MAX_DURATION) * 1000;
+        let timeoutId;
 
-        await Promise.race([
-            (async () => {
-                for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-                    try {
-                        if (attempt > 0) {
-                            // Exponential backoff.
-                            const delay = Math.pow(2, attempt) * 1000;
-                            logger.info(`[ai-twitterActivity] Retry ${attempt}/${MAX_RETRIES} in ${delay}ms...`);
-                            await page.waitForTimeout(delay);
-                        }
-
-                        profile = payload.profileId
-                            ? (profileManager.getById(payload.profileId) || profileManager.getStarter())
-                            : profileManager.getStarter();
-
-                        if (profile) {
-                            const profileDesc = `${profile.id}-${profile.type} | Input: ${profile.inputMethod} (${profile.inputMethodPct}%) | Dive: ${profile.probabilities.dive}% | Like: ${profile.probabilities.like}% | Follow: ${profile.probabilities.follow}%`;
-                            logger.info(`[ai-twitterActivity] Profile: ${profileDesc}`);
-                        }
-
-                        cursor = new GhostCursor(page);
-                        agent = new AITwitterAgent(page, profile, logger, {
-                            replyProbability: taskConfig.engagement.probabilities.reply,
-                            quoteProbability: taskConfig.engagement.probabilities.quote,
-                            engagementLimits: taskConfig.engagement.limits,
-                            config: taskConfig  // Pass full task config for actions
-                        });
-                        hasAgent = true;
-                        agentState = agent.state;
-                        getAIStats = agent.getAIStats.bind(agent);
-                        getQueueStats = () => agent.diveQueue?.getFullStatus?.();
-                        getEngagementProgress = () => agent.diveQueue?.getEngagementProgress?.();
-                        sessionStart = agent.sessionStart;
-
-                        // Debug mode logs agent init.
-                        if (taskConfig.system.debugMode) {
-                            logger.info(`[ai-twitterActivity] AITwitterAgent initialized with reply=${taskConfig.engagement.probabilities.reply}`);
-                        }
-
-                        // Agent uses AI for method selection, avoiding overrides and race conditions.
-
-                        // Enforce dark theme immediately.
-                        const theme = profile?.theme || 'dark';
-                        logger.info(`[ai-twitterActivity] Enforcing theme: ${theme}`);
-                        await page.emulateMedia({ colorScheme: theme });
-
-                        await applyHumanizationPatch(page, logger);
-                        if (!popupCloser) {
-                            popupCloser = new PopupCloser(page, logger);
-                            stopPopupCloser = popupCloser.stop.bind(popupCloser);
-                            hasPopupCloser = true;
-                            popupCloser.start();
-                        }
-
-                        const wakeUp = humanTiming.getWarmupDelay({
-                            min: taskConfig.timing.warmup.min,
-                            max: taskConfig.timing.warmup.max
-                        });
-                        logger.info(`[ai-twitterActivity] Warm-up ${humanTiming.formatDuration(wakeUp)}...`);
-                        await page.waitForTimeout(wakeUp);
-
-                        const referrerEngine = new ReferrerEngine({ addUTM: true });
-                        const ctx = referrerEngine.generateContext(TARGET_URL);
-
-                        await page.setExtraHTTPHeaders({
-                            ...ctx.headers,
-                            'Sec-Fetch-Site': 'none',
-                            'Sec-Fetch-Mode': 'navigate'
-                        });
-
-                        logger.info(`[ai-twitterActivity] Navigating to ${TARGET_URL} (bookmark style)`);
-                        await page.goto(TARGET_URL, { waitUntil: WAIT_UNTIL, timeout: PAGE_TIMEOUT_MS });
-
-                        // Wait for X.com to load (multi-selector for reliability).
-                        const xLoaded = await Promise.race([
-                            page.waitForSelector('[data-testid="AppTabBar_Home_Link"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'home'),
-                            page.waitForSelector('[data-testid="loginButton"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'login'),
-                            page.waitForSelector('[role="main"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'main'),
-                            new Promise((_, reject) => setTimeout(() => reject(new Error('X.com load timeout')), TWITTER_TIMEOUTS.NAVIGATION))
-                        ]).catch(() => null);
-
-                        logger.info(`[ai-twitterActivity] X.com loaded (${xLoaded || 'partial'})`);
-
-                        // Optimize network idle wait based on load state; prevents long waits.
-                        const idleTimeout = xLoaded ? 4000 : 10000;
-                        logger.info(`[ai-twitterActivity] Waiting for network settlement (${idleTimeout}ms)...`);
-
+        try {
+            await Promise.race([
+                (async () => {
+                    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
                         try {
-                            await page.waitForLoadState('networkidle', { timeout: idleTimeout });
-                            logger.info(`[ai-twitterActivity] Network idle reached.`);
-                        } catch (e) {
-                            // Network idle timeout expected due to X.com background polling.
-                            logger.info(`[ai-twitterActivity] Network active, proceeding after ${idleTimeout}ms...`);
-                        }
-
-                        // Adaptive login check.
-                        logger.info(`[ai-twitterActivity] Checking login state...`);
-                        let loginCheckDelay = LOGIN_CHECK_DELAY;
-                        for (let i = 0; i < LOGIN_CHECK_LOOPS; i++) {
-                            const loggedIn = await agent.checkLoginState();
-                            if (loggedIn) {
-                                logger.info(`[ai-twitterActivity] ✅ Logged in (check ${i + 1}/${LOGIN_CHECK_LOOPS})`);
-                                break;
+                            throwIfAborted();
+                            if (attempt > 0) {
+                                const delay = Math.pow(2, attempt) * 1000;
+                                logger.info(`[ai-twitterActivity] Retry ${attempt}/${MAX_RETRIES} in ${delay}ms...`);
+                                await page.waitForTimeout(delay);
                             }
-                            if (i < LOGIN_CHECK_LOOPS - 1) {
-                                logger.info(`[ai-twitterActivity] Not logged in yet, waiting ${loginCheckDelay}ms...`);
-                                await page.waitForTimeout(loginCheckDelay);
-                                // Progressive delay increase.
-                                loginCheckDelay = Math.min(loginCheckDelay + 1000, 5000);
+
+                            throwIfAborted();
+                            
+                            cursor = new GhostCursor(page, logger);
+                            agent = new AITwitterAgent(page, profile, logger, {
+                                replyProbability: taskConfig.engagement.probabilities.reply,
+                                quoteProbability: taskConfig.engagement.probabilities.quote,
+                                engagementLimits: taskConfig.engagement.limits,
+                                config: taskConfig
+                            });
+                            hasAgent = true;
+                            agentState = agent.state;
+                            getAIStats = agent.getAIStats.bind(agent);
+                            getQueueStats = () => agent.diveQueue?.getFullStatus?.();
+                            getEngagementProgress = () => agent.diveQueue?.getEngagementProgress?.();
+                            sessionStart = agent.sessionStart;
+
+                            if (taskConfig.system.debugMode) {
+                                logger.info(`[ai-twitterActivity] AITwitterAgent initialized with reply=${taskConfig.engagement.probabilities.reply}`);
                             }
-                        }
 
-                        const cycles = typeof payload.cycles === 'number' ? payload.cycles : DEFAULT_CYCLES;
-                        const minDuration = typeof payload.minDuration === 'number' ? payload.minDuration : DEFAULT_MIN_DURATION;
-                        const maxDuration = typeof payload.maxDuration === 'number' ? payload.maxDuration : DEFAULT_MAX_DURATION;
+                            const theme = profile?.theme || 'dark';
+                            logger.info(`[ai-twitterActivity] Enforcing theme: ${theme}`);
+                            await withPageLock(async () => page.emulateMedia({ colorScheme: theme }));
 
-                        logger.info(`[ai-twitterActivity] Starting session (${cycles} cycles, ${minDuration}-${maxDuration}s)...`);
+                            await withPageLock(async () => applyHumanizationPatch(page, logger));
+                            if (!popupCloser) {
+                                popupCloser = new PopupCloser(page, logger, {
+                                    lock: withPageLock,
+                                    signal: abortSignal
+                                });
+                                stopPopupCloser = popupCloser.stop.bind(popupCloser);
+                                hasPopupCloser = true;
+                                popupCloser.start();
+                            }
 
-                        // ERROR BOUNDARY: Graceful session error handling.
-                        try {
-                            await agent.runSession(cycles, minDuration, maxDuration);
-                            logger.info(`[ai-twitterActivity] Session completed successfully`);
-                        } catch (sessionError) {
-                            logger.warn(`[ai-twitterActivity] Session error: ${sessionError.message}`);
-                            // Attempt graceful recovery.
+                            const wakeUp = humanTiming.getWarmupDelay({
+                                min: taskConfig.timing.warmup.min,
+                                max: taskConfig.timing.warmup.max
+                            });
+                            logger.info(`[ai-twitterActivity] Warm-up ${humanTiming.formatDuration(wakeUp)}...`);
+                            await page.waitForTimeout(wakeUp);
+
+                            throwIfAborted();
+                            const referrerEngine = new ReferrerEngine({ addUTM: true });
+                            const ctx = referrerEngine.generateContext(TARGET_URL);
+
+                            await withPageLock(async () => page.setExtraHTTPHeaders({
+                                ...ctx.headers,
+                                'Sec-Fetch-Site': 'none',
+                                'Sec-Fetch-Mode': 'navigate'
+                            }));
+
+                            const entryUrl = selectEntryPoint();
+                            logger.info(`[ai-twitterActivity] Navigating to ${entryUrl} (random entry point)`);
+                            await withPageLock(async () => page.goto(entryUrl, { waitUntil: WAIT_UNTIL, timeout: PAGE_TIMEOUT_MS }));
+
+                            const xLoaded = await withPageLock(async () => Promise.race([
+                                page.waitForSelector('[data-testid="AppTabBar_Home_Link"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'home'),
+                                page.waitForSelector('[data-testid="loginButton"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'login'),
+                                page.waitForSelector('[role="main"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'main'),
+                                new Promise((_, reject) => setTimeout(() => reject(new Error('X.com load timeout')), TWITTER_TIMEOUTS.NAVIGATION))
+                            ])).catch(() => null);
+
+                            logger.info(`[ai-twitterActivity] X.com loaded (${xLoaded || 'partial'})`);
+
+                            const idleTimeout = xLoaded ? 4000 : 10000;
+                            logger.info(`[ai-twitterActivity] Waiting for network settlement (${idleTimeout}ms)...`);
+
                             try {
-                                if (agent && agent.page && !agent.page.isClosed()) {
-                                    await agent.navigateHome();
-                                    logger.info('[ai-twitterActivity] Recovered to home page after session error');
-                                }
-                            } catch (recoveryError) {
-                                logger.warn(`[ai-twitterActivity] Recovery attempt failed: ${recoveryError.message}`);
+                                await withPageLock(async () => page.waitForLoadState('networkidle', { timeout: idleTimeout }));
+                                logger.info(`[ai-twitterActivity] Network idle reached.`);
+                            } catch (e) {
+                                logger.info(`[ai-twitterActivity] Network active, proceeding after ${idleTimeout}ms...`);
                             }
+
+                            const currentUrl = page.url();
+                            const onHome = currentUrl.includes('/home') || currentUrl === 'https://x.com/' || currentUrl === 'https://x.com';
+                            if (!onHome) {
+                                const scrollDuration = mathUtils.randomInRange(3000, 5000);
+                                const scrollStart = Date.now();
+                                while (Date.now() - scrollStart < scrollDuration) {
+                                    const delta = mathUtils.randomInRange(200, 600);
+                                    await withPageLock(async () => page.mouse.wheel(0, delta));
+                                    await page.waitForTimeout(mathUtils.randomInRange(200, 500));
+                                }
+                                await withPageLock(async () => agent.navigateHome());
+                            }
+
+                            throwIfAborted();
+                            logger.info(`[ai-twitterActivity] Checking login state...`);
+                            let loginCheckDelay = LOGIN_CHECK_DELAY;
+                            for (let i = 0; i < LOGIN_CHECK_LOOPS; i++) {
+                                throwIfAborted();
+                                const loggedIn = await withPageLock(async () => agent.checkLoginState());
+                                if (loggedIn) {
+                                    logger.info(`[ai-twitterActivity] ✅ Logged in (check ${i + 1}/${LOGIN_CHECK_LOOPS})`);
+                                    break;
+                                }
+                                if (i < LOGIN_CHECK_LOOPS - 1) {
+                                    logger.info(`[ai-twitterActivity] Not logged in yet, waiting ${loginCheckDelay}ms...`);
+                                    await page.waitForTimeout(loginCheckDelay);
+                                    loginCheckDelay = Math.min(loginCheckDelay + 1000, 5000);
+                                }
+                            }
+
+                            throwIfAborted();
+                            const cycles = typeof payload.cycles === 'number' ? payload.cycles : DEFAULT_CYCLES;
+                            const minDuration = typeof payload.minDuration === 'number' ? payload.minDuration : DEFAULT_MIN_DURATION;
+                            const maxDuration = typeof payload.maxDuration === 'number' ? payload.maxDuration : DEFAULT_MAX_DURATION;
+
+                            logger.info(`[ai-twitterActivity] Starting session (${cycles} cycles, ${minDuration}-${maxDuration}s)...`);
+
+                            try {
+                                await agent.runSession(cycles, minDuration, maxDuration, { abortSignal });
+                                logger.info(`[ai-twitterActivity] Session completed successfully`);
+                            } catch (sessionError) {
+                                if (abortSignal.aborted) {
+                                    throw sessionError;
+                                }
+                                logger.warn(`[ai-twitterActivity] Session error: ${sessionError.message}`);
+                                try {
+                                    if (agent && agent.page && !agent.page.isClosed()) {
+                                        await agent.navigateHome();
+                                        logger.info('[ai-twitterActivity] Recovered to home page after session error');
+                                    }
+                                } catch (recoveryError) {
+                                    logger.warn(`[ai-twitterActivity] Recovery attempt failed: ${recoveryError.message}`);
+                                }
+                            }
+
+                            logger.info(`[ai-twitterActivity] Session completed`);
+                            return;
+
+                        } catch (innerError) {
+                            logger.warn(`[ai-twitterActivity] Attempt ${attempt + 1} failed: ${innerError.message}`);
+                            if (attempt === MAX_RETRIES) throw innerError;
                         }
-
-                        logger.info(`[ai-twitterActivity] Session completed`);
-                        return;
-
-                    } catch (innerError) {
-                        logger.warn(`[ai-twitterActivity] Attempt ${attempt + 1} failed: ${innerError.message}`);
-                        if (attempt === MAX_RETRIES) throw innerError;
                     }
-                }
 
-            })(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error(`Timeout`)), hardTimeoutMs))
-        ]);
+                })(),
+                new Promise((_, reject) => {
+                    timeoutId = setTimeout(() => {
+                        const timeoutError = new Error('Timeout');
+                        abortController.abort(timeoutError);
+                        reject(timeoutError);
+                    }, hardTimeoutMs);
+                })
+            ]);
+        } finally {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        }
 
     } catch (error) {
         logger.error(`[ai-twitterActivity] Error: ${error.message}`);
@@ -241,39 +327,44 @@ export default async function aiTwitterActivityTask(page, payload) {
         cleanupPerformed = true;
 
         if (hasAgent) {
-            if (agentState.follows > 0) metricsCollector.recordSocialAction('follow', agentState.follows);
-            if (agentState.likes > 0) metricsCollector.recordSocialAction('like', agentState.likes);
-            if (agentState.retweets > 0) metricsCollector.recordSocialAction('retweet', agentState.retweets);
-            if (agentState.tweets > 0) metricsCollector.recordSocialAction('tweet', agentState.tweets);
+            const agentStateSnapshot = { ...agentState };
+            if (agentStateSnapshot.follows > 0) metricsCollector.recordSocialAction('follow', agentStateSnapshot.follows);
+            if (agentStateSnapshot.likes > 0) metricsCollector.recordSocialAction('like', agentStateSnapshot.likes);
+            if (agentStateSnapshot.retweets > 0) metricsCollector.recordSocialAction('retweet', agentStateSnapshot.retweets);
+            if (agentStateSnapshot.tweets > 0) metricsCollector.recordSocialAction('tweet', agentStateSnapshot.tweets);
+            const engagementProgressSnapshot = getEngagementProgress ? getEngagementProgress() : null;
+            const completedReplies = engagementProgressSnapshot?.replies?.current ?? 0;
+            const completedQuotes = engagementProgressSnapshot?.quotes?.current ?? 0;
+            const completedBookmarks = engagementProgressSnapshot?.bookmarks?.current ?? 0;
+            if (completedReplies > 0) metricsCollector.recordTwitterEngagement('reply', completedReplies);
+            if (completedQuotes > 0) metricsCollector.recordTwitterEngagement('quote', completedQuotes);
+            if (completedBookmarks > 0) metricsCollector.recordTwitterEngagement('bookmark', completedBookmarks);
 
-            if (getAIStats) {
-                const aiStats = getAIStats();
-                logger.info(`[ai-twitterActivity] Final AI Stats: ${JSON.stringify(aiStats)}`);
+            const aiStatsSnapshot = getAIStats ? getAIStats() : null;
+            if (aiStatsSnapshot) {
+                logger.info(`[ai-twitterActivity] Final AI Stats: ${JSON.stringify(aiStatsSnapshot)}`);
             }
 
-            // Defer non-critical logging (engagement progress) to unblock cleanup.
             if (getQueueStats) {
-                const queueStats = getQueueStats();
-
-                // Record session duration.
+                const queueStatsSnapshot = getQueueStats();
+                const engagementProgressSnapshot = getEngagementProgress ? getEngagementProgress() : null;
                 const sessionStartTime = sessionStart || Date.now();
                 const duration = ((Date.now() - sessionStartTime) / 1000 / 60).toFixed(1);
 
-                // Defer non-critical logging for faster cleanup.
                 setTimeout(async () => {
+                    if (abortSignal.aborted) return;
                     try {
                         const logConfig = await getLoggingConfig();
 
-                        if (queueStats && logConfig?.finalStats?.showQueueStatus !== false) {
-                            logger.info(`[ai-twitterActivity] DiveQueue: queue=${queueStats.queue.queueLength}, active=${queueStats.queue.activeCount}, utilization=${queueStats.queue.utilizationPercent}%`);
+                        if (queueStatsSnapshot && logConfig?.finalStats?.showQueueStatus !== false) {
+                            logger.info(`[ai-twitterActivity] DiveQueue: queue=${queueStatsSnapshot.queue.queueLength}, active=${queueStatsSnapshot.queue.activeCount}, utilization=${queueStatsSnapshot.queue.utilizationPercent}%`);
                         }
 
                         if (logConfig?.finalStats?.showEngagement !== false && logConfig?.engagementProgress?.enabled) {
-                            const engagementProgress = getEngagementProgress ? getEngagementProgress() : null;
                             const progressConfig = logConfig.engagementProgress;
 
-                            if (engagementProgress) {
-                                const summary = formatEngagementSummary(engagementProgress, progressConfig);
+                            if (engagementProgressSnapshot) {
+                                const summary = formatEngagementSummary(engagementProgressSnapshot, progressConfig);
                                 logger.info(`[ai-twitterActivity] Engagement Progress: ${summary}`);
                             }
                         }

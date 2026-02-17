@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fs from 'fs';
 import { exec, execSync } from 'child_process';
-import { profileManager } from '../../utils/profileManager.js';
+let profileManager;
 
 // Mock dependencies
 vi.mock('fs');
@@ -16,11 +16,13 @@ describe('profileManager', () => {
         { id: 'slow', type: 'engagement', timings: { scrollPause: { mean: 5000 } }, probabilities: { dive: 50, like: 30 } }
     ];
 
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.clearAllMocks();
+        vi.resetModules();
         vi.mocked(fs.existsSync).mockReturnValue(true);
         vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(mockProfiles));
-        // Force a clear load to reset internal state
+        const module = await import('../../utils/profileManager.js');
+        profileManager = module.profileManager;
         profileManager.reload();
     });
 

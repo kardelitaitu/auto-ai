@@ -7,7 +7,7 @@
 import { createLogger } from '../logger.js';
 
 export class BookmarkAction {
-  constructor(agent, options = {}) {
+  constructor(agent, _options = {}) {
     this.agent = agent;
     this.logger = createLogger('ai-twitter-bookmark.js');
     this.engagementType = 'bookmarks';
@@ -34,7 +34,7 @@ export class BookmarkAction {
     this.logger.info(`[BookmarkAction] Initialized (enabled: ${this.enabled}, probability: ${(this.probability * 100).toFixed(0)}%)`);
   }
 
-  async canExecute(context = {}) {
+  async canExecute(_context = {}) {
     if (!this.agent) {
       return { allowed: false, reason: 'agent_not_initialized' };
     }
@@ -54,6 +54,13 @@ export class BookmarkAction {
     this.logger.info(`[BookmarkAction] Executing bookmark`);
 
     try {
+      if (tweetElement && this.agent?.scrollToGoldenZone) {
+        try {
+          await this.agent.scrollToGoldenZone(tweetElement);
+        } catch (_error) {
+          void _error;
+        }
+      }
       await this.agent.handleBookmark(tweetElement);
       this.stats.successes++;
 

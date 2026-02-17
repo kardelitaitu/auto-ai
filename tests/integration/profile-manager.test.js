@@ -4,10 +4,17 @@
  * @module tests/integration/profile-manager.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
-import { profileManager } from '../../utils/profileManager.js';
+import { describe, it, expect, vi, beforeAll } from 'vitest';
+
+let profileManager;
 
 describe('profileManager Integration', () => {
+    beforeAll(async () => {
+        vi.resetModules();
+        vi.unmock('fs');
+        vi.unmock('child_process');
+        ({ profileManager } = await import('../../utils/profileManager.js'));
+    });
     describe('Module Export', () => {
         it('should export profileManager object', () => {
             expect(profileManager).toBeDefined();

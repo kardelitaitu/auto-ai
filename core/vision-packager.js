@@ -211,24 +211,24 @@ class VisionPackager {
         try {
             const files = await fs.readdir(this.screenshotDir);
             const now = Date.now();
-            let deletedCount = 0;
 
-            for (const file of files) {
-                const filepath = path.join(this.screenshotDir, file);
-                const stats = await fs.stat(filepath);
-                const age = now - stats.mtimeMs;
+            const filesWithStats = await Promise.all(
+                files.map(async (file) => {
+                    const filepath = path.join(this.screenshotDir, file);
+                    const stats = await fs.stat(filepath);
+                    return { filepath, mtimeMs: stats.mtimeMs };
+                })
+            );
 
-                if (age > maxAgeMs) {
-                    await fs.unlink(filepath);
-                    deletedCount++;
-                }
+            const toDelete = filesWithStats.filter(f => now - f.mtimeMs > maxAgeMs);
+
+            await Promise.all(toDelete.map(f => fs.unlink(f.filepath)));
+
+            if (toDelete.length > 0) {
+                logger.info(`[VisionPackager] Cleaned up ${toDelete.length} old screenshot(s)`);
             }
 
-            if (deletedCount > 0) {
-                logger.info(`[VisionPackager] Cleaned up ${deletedCount} old screenshot(s)`);
-            }
-
-            return deletedCount;
+            return toDelete.length;
 
         } catch (error) {
             logger.warn(`[VisionPackager] Cleanup failed:`, error.message);
@@ -255,13 +255,16 @@ class VisionPackager {
     async getStats() {
         try {
             const files = await fs.readdir(this.screenshotDir);
-            let totalSize = 0;
 
-            for (const file of files) {
-                const filepath = path.join(this.screenshotDir, file);
-                const stats = await fs.stat(filepath);
-                totalSize += stats.size;
-            }
+            const sizes = await Promise.all(
+                files.map(async (file) => {
+                    const filepath = path.join(this.screenshotDir, file);
+                    const stats = await fs.stat(filepath);
+                    return stats.size;
+                })
+            );
+
+            const totalSize = sizes.reduce((sum, size) => sum + size, 0);
 
             return {
                 totalScreenshots: files.length,

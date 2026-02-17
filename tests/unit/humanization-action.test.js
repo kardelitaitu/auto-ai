@@ -17,6 +17,19 @@ vi.mock('../../utils/scroll-helper.js', () => ({
     scrollRandom: vi.fn()
 }));
 
+vi.mock('../../utils/ghostCursor.js', () => ({
+    GhostCursor: class {
+        constructor(page) {
+            this.page = page;
+        }
+        async click(element) {
+            if (element && element.click) await element.click();
+        }
+        async move() {}
+        async moveTo() {}
+    }
+}));
+
 describe('ActionPredictor', () => {
     let actionPredictor;
     let mockPage;
@@ -90,6 +103,16 @@ describe('ActionPredictor', () => {
         });
     });
 
+    describe('getProbabilities', () => {
+        it('should return adjusted probabilities based on cycle count', () => {
+            actionPredictor.cycleCount = 60;
+            const probs = actionPredictor.getProbabilities();
+            expect(probs.scroll).toBeDefined();
+            expect(probs.click).toBeDefined();
+            expect(probs.idle).toBeDefined();
+        });
+    });
+
     describe('selectAction', () => {
         it('should return an action type', () => {
             const action = actionPredictor.selectAction();
@@ -148,12 +171,24 @@ describe('ActionPredictor', () => {
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
             expect(mockPage.waitForTimeout).toHaveBeenCalled();
         });
+
+        it('should use random direction when Math.random is low', async () => {
+            vi.spyOn(Math, 'random')
+                .mockReturnValueOnce(0.2)
+                .mockReturnValueOnce(0.8)
+                .mockReturnValue(0.6);
+            
+            await actionPredictor._actionScroll(mockPage);
+            
+            expect(scrollHelper.scrollRandom).toHaveBeenCalled();
+        });
     });
 
     describe('_actionClick', () => {
         it('should click tweet if found', async () => {
+            const scrollIntoView = vi.fn();
             const mockTweet = {
-                evaluate: vi.fn(),
+                evaluate: vi.fn((fn) => fn({ scrollIntoView })),
                 $: vi.fn().mockResolvedValue({ click: vi.fn() })
             };
             mockPage.$$.mockResolvedValue([mockTweet]);
@@ -161,6 +196,7 @@ describe('ActionPredictor', () => {
             await actionPredictor._actionClick(mockPage);
             
             expect(mockTweet.evaluate).toHaveBeenCalled();
+            expect(scrollIntoView).toHaveBeenCalled();
             expect(mockTweet.$).toHaveBeenCalled();
         });
 
@@ -178,6 +214,14 @@ describe('ActionPredictor', () => {
             await actionPredictor._actionBack(mockPage);
             
             expect(mockPage.goBack).toHaveBeenCalled();
+            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+        });
+
+        it('should tolerate goBack rejection', async () => {
+            mockPage.goBack.mockRejectedValue(new Error('fail'));
+            
+            await actionPredictor._actionBack(mockPage);
+            
             expect(mockPage.waitForTimeout).toHaveBeenCalled();
         });
     });
@@ -201,6 +245,15 @@ describe('ActionPredictor', () => {
             expect(mockLink.click).toHaveBeenCalled();
             expect(mockPage.waitForTimeout).toHaveBeenCalled();
         });
+
+        it('should tolerate profile click rejection', async () => {
+            const mockLink = { click: vi.fn().mockRejectedValue(new Error('fail')) };
+            mockPage.$$.mockResolvedValue([mockLink]);
+            
+            await actionPredictor._actionProfile(mockPage);
+            
+            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+        });
     });
 
     describe('_actionIdle', () => {
@@ -212,6 +265,35 @@ describe('ActionPredictor', () => {
             
             expect(mockPage.waitForTimeout).toHaveBeenCalled();
             expect(mockPage.mouse.move).toHaveBeenCalled();
+        });
+    });
+
+    describe('_humanScroll', () => {
+        it('should handle unknown intensity and up direction', async () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.8);
+            
+            await actionPredictor._humanScroll(mockPage, 'up', 'unknown');
+            
+            expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(mockPage, -100, -100);
+            expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(mockPage, -20, -50);
+        });
+    });
+
+    describe('_weightedRandom', () => {
+        it('should fall back to first item on invalid weights', () => {
+            const result = actionPredictor._weightedRandom({
+                first: { weight: Number.NaN },
+                second: { weight: Number.NaN }
+            });
+            expect(result).toBe('first');
+        });
+    });
+
+    describe('_calculateConfidence', () => {
+        it('should cap confidence at 0.95 and handle missing max', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0);
+            const confidence = actionPredictor._calculateConfidence({ weight: 1 });
+            expect(confidence).toBe(0.95);
         });
     });
 });

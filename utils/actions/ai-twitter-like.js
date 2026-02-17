@@ -7,7 +7,7 @@
 import { createLogger } from '../logger.js';
 
 export class LikeAction {
-  constructor(agent, options = {}) {
+  constructor(agent, _options = {}) {
     this.agent = agent;
     this.logger = createLogger('ai-twitter-like.js');
     this.engagementType = 'likes';
@@ -34,7 +34,7 @@ export class LikeAction {
     this.logger.info(`[LikeAction] Initialized (enabled: ${this.enabled}, probability: ${(this.probability * 100).toFixed(0)}%)`);
   }
 
-  async canExecute(context = {}) {
+  async canExecute(_context = {}) {
     if (!this.agent) {
       return { allowed: false, reason: 'agent_not_initialized' };
     }
@@ -54,6 +54,13 @@ export class LikeAction {
     this.logger.info(`[LikeAction] Executing like`);
 
     try {
+      if (tweetElement && this.agent?.scrollToGoldenZone) {
+        try {
+          await this.agent.scrollToGoldenZone(tweetElement);
+        } catch (_error) {
+          void _error;
+        }
+      }
       await this.agent.handleLike(tweetElement);
       this.stats.successes++;
 

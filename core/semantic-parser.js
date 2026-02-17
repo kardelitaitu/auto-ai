@@ -86,7 +86,7 @@ class SemanticParser {
                 pageTitle,
                 metadata: {
                     timestamp: Date.now(),
-                    url: page.url(),
+                    url: await page.url(),
                     totalElements: interactiveElements.length + landmarks.length
                 }
             };
@@ -164,8 +164,8 @@ class SemanticParser {
                 });
             });
 
-            // Filter to visible and enabled elements
-            return elements.filter(el => el.visible && el.enabled);
+            // Filter to visible and enabled elements - check enabled first for short-circuit
+            return elements.filter(el => el.enabled && el.visible);
 
         } catch (error) {
             logger.error('[SemanticParser] Interactive element extraction failed:', error.message);
@@ -226,21 +226,30 @@ class SemanticParser {
      * @returns {string} Text representation.
      */
     generateCompactRepresentation(tree, maxElements = 50) {
-        let output = `Page: ${tree.pageTitle}\nURL: ${tree.metadata.url}\n\n`;
+        if (!tree) {
+            return 'Page: undefined\nURL: undefined\n\n\n';
+        }
+
+        const pageTitle = tree.pageTitle || 'undefined';
+        const url = tree.metadata && tree.metadata.url ? tree.metadata.url : 'undefined';
+        const landmarks = tree.landmarks || [];
+        const interactiveElements = tree.interactiveElements || [];
+
+        let output = `Page: ${pageTitle}\nURL: ${url}\n\n`;
 
         // Add landmarks
-        if (tree.landmarks.length > 0) {
+        if (landmarks.length > 0) {
             output += `Landmarks:\n`;
-            tree.landmarks.slice(0, 10).forEach((landmark, idx) => {
+            landmarks.slice(0, 10).forEach((landmark, idx) => {
                 output += `  ${idx + 1}. ${landmark.role}: "${landmark.name}"\n`;
             });
             output += '\n';
         }
 
         // Add interactive elements
-        if (tree.interactiveElements.length > 0) {
-            output += `Interactive Elements (${tree.interactiveElements.length} total, showing ${Math.min(maxElements, tree.interactiveElements.length)}):\n`;
-            tree.interactiveElements.slice(0, maxElements).forEach((element, idx) => {
+        if (interactiveElements.length > 0) {
+            output += `Interactive Elements (${interactiveElements.length} total, showing ${Math.min(maxElements, interactiveElements.length)}):\n`;
+            interactiveElements.slice(0, maxElements).forEach((element, idx) => {
                 output += `  [${idx + 1}] ${element.role}: "${element.name}" @ (${element.coordinates.x}, ${element.coordinates.y})\n`;
             });
         }
@@ -255,10 +264,14 @@ class SemanticParser {
      * @returns {SemanticElement|null} Matching element or null.
      */
     findElementByName(tree, searchName) {
+        if (!tree) {
+            return null;
+        }
+
         const normalized = searchName.toLowerCase();
 
-        const match = tree.interactiveElements.find(el =>
-            el.name.toLowerCase().includes(normalized)
+        const match = tree.interactiveElements && tree.interactiveElements.find(el =>
+            el.name && el.name.toLowerCase().includes(normalized)
         );
 
         return match || null;
@@ -270,13 +283,24 @@ class SemanticParser {
      * @returns {object} Statistics object.
      */
     getTreeStats(tree) {
+        if (!tree) {
+            return {
+                pageTitle: undefined,
+                url: undefined,
+                totalElements: undefined,
+                interactiveElements: undefined,
+                landmarks: undefined,
+                roleBreakdown: {}
+            };
+        }
+
         return {
             pageTitle: tree.pageTitle,
-            url: tree.metadata.url,
-            totalElements: tree.metadata.totalElements,
-            interactiveElements: tree.interactiveElements.length,
-            landmarks: tree.landmarks.length,
-            roleBreakdown: this._getRoleBreakdown(tree.interactiveElements)
+            url: tree.metadata && tree.metadata.url,
+            totalElements: tree.metadata && tree.metadata.totalElements,
+            interactiveElements: tree.interactiveElements && tree.interactiveElements.length,
+            landmarks: tree.landmarks && tree.landmarks.length,
+            roleBreakdown: this._getRoleBreakdown(tree.interactiveElements || [])
         };
     }
 

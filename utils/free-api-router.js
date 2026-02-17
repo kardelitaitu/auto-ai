@@ -85,6 +85,16 @@ export class FreeApiRouter {
     return Math.abs(hash);
   }
 
+  // Cache for hash results to avoid recomputing
+  _hashCache = new Map();
+
+  _getCachedHash(str) {
+    if (!this._hashCache.has(str)) {
+      this._hashCache.set(str, this._hash(str));
+    }
+    return this._hashCache.get(str);
+  }
+
   _selectSessionApiKey() {
     if (this.config.apiKeys.length === 0) {
       logger.warn('[FreeRouter] No API keys configured');
@@ -92,7 +102,7 @@ export class FreeApiRouter {
     }
 
     const sessionKey = `${this.browserId}:${this.taskId}`;
-    const hash = this._hash(sessionKey);
+    const hash = this._getCachedHash(sessionKey);
     this.sessionApiKeyIndex = hash % this.config.apiKeys.length;
     this.sessionApiKey = this.config.apiKeys[this.sessionApiKeyIndex];
 

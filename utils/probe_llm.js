@@ -1,15 +1,16 @@
 
 import http from 'http';
+import { fileURLToPath } from 'url';
 
-const PORTS = [12434, 11434, 8080, 5000];
-const PATHS = [
+export const PORTS = [12434, 11434, 8080, 5000];
+export const PATHS = [
     '/v1/models',
     '/api/tags', // Ollama
     '/models',
     '/v1/chat/completions'
 ];
 
-async function check(port, path) {
+export async function check(port, path) {
     return new Promise((resolve) => {
         const req = http.get({
             hostname: 'localhost',
@@ -40,7 +41,7 @@ async function check(port, path) {
     });
 }
 
-(async () => {
+export async function probeAll() {
     console.log("Probing LLM endpoints...");
     for (const port of PORTS) {
         let portAlive = false;
@@ -50,4 +51,9 @@ async function check(port, path) {
         }
         if (!portAlive) console.log(`[Checking] Port ${port} seems closed or unresponsive.`);
     }
-})();
+}
+
+// Run if main module
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    probeAll();
+}

@@ -4,6 +4,7 @@
  */
 
 import { createLogger } from '../utils/logger.js';
+import { calculateBackoffDelay } from '../utils/retry.js';
 
 const logger = createLogger('request-queue.js');
 
@@ -17,10 +18,12 @@ class RequestQueue {
         this.retryDelay = options.retryDelay || 1000;
         this.maxRetries = options.maxRetries || 3;
         this.maxQueueSize = options.maxQueueSize || 100;
+        this.intervalMs = options.intervalMs ?? options.interval ?? 0;
 
         this.running = 0;
         this.queue = [];
         this.pending = new Map();
+        this.lastStartAt = 0;
         this.stats = {
             enqueued: 0,
             dequeued: 0,
@@ -82,9 +85,11 @@ class RequestQueue {
      */
     async _executeTask(item) {
         this.running++;
-        const startTime = Date.now();
+        let startTime = Date.now();
 
         try {
+            await this._waitForInterval();
+            startTime = Date.now();
             const result = await this._executeWithRetry(item);
             this.stats.completed++;
             item.resolve({
@@ -121,6 +126,10 @@ class RequestQueue {
             try {
                 return await taskFn();
             } catch (error) {
+                if (this._isFatalError(error)) {
+                    throw error;
+                }
+
                 const isRetryable = this._isRetryableError(error);
                 const shouldRetry = attempt < maxRetries && isRetryable;
 
@@ -164,17 +173,28 @@ class RequestQueue {
         return retryableMessages.some(msg => errorMessage.includes(msg));
     }
 
+    _isFatalError(error) {
+        if (!error) {
+            return false;
+        }
+        if (error.code === 'CIRCUIT_OPEN') {
+            return true;
+        }
+        return error.fatal === true;
+    }
+
     /**
      * Calculate exponential backoff delay
      * @private
      */
     _calculateBackoff(attempt) {
-        const baseDelay = this.retryDelay;
-        const maxDelay = 30000;
-        const delay = Math.min(baseDelay * Math.pow(2, attempt), maxDelay);
-        const jitter = Math.random() * 0.3 * delay;
-
-        return Math.floor(delay + jitter);
+        return calculateBackoffDelay(attempt, {
+            baseDelay: this.retryDelay,
+            maxDelay: 30000,
+            factor: 2,
+            jitterMin: 1,
+            jitterMax: 1.3
+        });
     }
 
     /**
@@ -183,6 +203,20 @@ class RequestQueue {
      */
     _sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async _waitForInterval() {
+        if (!this.intervalMs || this.intervalMs <= 0) {
+            this.lastStartAt = Date.now();
+            return;
+        }
+
+        const now = Date.now();
+        const elapsed = this.lastStartAt ? now - this.lastStartAt : this.intervalMs;
+        if (elapsed < this.intervalMs) {
+            await this._sleep(this.intervalMs - elapsed);
+        }
+        this.lastStartAt = Date.now();
     }
 
     /**

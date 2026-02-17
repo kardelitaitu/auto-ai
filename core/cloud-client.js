@@ -9,6 +9,7 @@ import { getSettings } from '../utils/configLoader.js';
 import { MultiOpenRouterClient } from '../utils/multi-api.js';
 import { FreeApiRouter } from '../utils/free-api-router.js';
 import { FreeOpenRouterHelper } from '../utils/free-openrouter-helper.js';
+import RequestQueue from './request-queue.js';
 
 const logger = createLogger('cloud-client.js');
 
@@ -75,6 +76,8 @@ const logger = createLogger('cloud-client.js');
             keyFallbacks: 0
         };
 
+        this.requestQueue = null;
+
         // Load configuration asynchronously
         this.initPromise = this._loadConfig();
     }
@@ -116,6 +119,16 @@ const logger = createLogger('cloud-client.js');
              this.timeout = this.config.timeout || this.timeout;
              this.defaultModel = this.config.defaultModel || this.defaultModel;
              this.apiEndpoint = this.config.endpoint || this.apiEndpoint;
+            const queueConfig = this.config.requestQueue || {};
+            if (queueConfig.enabled === true) {
+                const interval = queueConfig.interval ?? 300;
+                this.requestQueue = new RequestQueue({
+                    maxConcurrent: 1,
+                    intervalMs: interval
+                });
+            } else {
+                this.requestQueue = null;
+            }
 
              // Check for multi-provider configuration
              const providers = this.config.providers || [];
@@ -276,11 +289,28 @@ const logger = createLogger('cloud-client.js');
       * @returns {Promise<CloudResponse>} The response from the cloud model.
       */
      async sendRequest(request) {
-         const startTime = Date.now();
-         this.stats.totalRequests++;
-
          // Ensure config is loaded before checking
          await this._loadConfig();
+        if (this.requestQueue) {
+            try {
+                const queued = await this.requestQueue.enqueue(() => this._sendRequestInternal(request));
+                return queued.data;
+            } catch (error) {
+                const message = error?.error || error?.message || 'Queue request failed';
+                return {
+                    success: false,
+                    error: message,
+                    metadata: { duration: error?.duration }
+                };
+            }
+        }
+
+        return this._sendRequestInternal(request);
+    }
+
+    async _sendRequestInternal(request) {
+        const startTime = Date.now();
+        this.stats.totalRequests++;
 
          // Check if free API router is enabled and use it
          if (this.freeApiRouter && this.freeApiRouter.isReady()) {

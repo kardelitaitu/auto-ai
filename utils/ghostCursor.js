@@ -5,6 +5,9 @@
  */
 
 import { mathUtils } from './mathUtils.js';
+import { createLogger } from './logger.js';
+
+const logger = createLogger('ghostCursor');
 
 // Twitter-specific click profiles for different engagement types
 export const TWITTER_CLICK_PROFILES = {
@@ -53,8 +56,9 @@ export const TWITTER_CLICK_PROFILES = {
 };
 
 export class GhostCursor {
-    constructor(page) {
+    constructor(page, logger = null) {
         this.page = page;
+        this.logger = logger || createLogger('ghostCursor.js');
         this.previousPos = { x: 0, y: 0 };
         this.init();
     }
@@ -166,7 +170,8 @@ async waitForStableElement(locator, maxWaitMs = 3000) {
   const requiredStableChecks = 3; // Need 3 consecutive stable checks
 
   while (Date.now() - startTime < maxWaitMs) {
-    const bbox = await locator.boundingBox().catch(() => null);
+    const bboxPromise = locator.boundingBox ? locator.boundingBox() : null;
+    const bbox = await Promise.resolve(bboxPromise).catch(() => null);
     if (!bbox) {
       return null;
     }
@@ -419,40 +424,27 @@ async click(selector, options = {}) {
   const {
     allowNativeFallback = false,
     maxStabilityWaitMs = 2000,
-    preClickStabilityMs: _preClickStabilityMs = 300
+    preClickStabilityMs: _preClickStabilityMs = 300,
+    label = '',
+    hoverBeforeClick = false,
+    hoverMinMs = 120,
+    hoverMaxMs = 280
   } = options;
+  const labelSuffix = label ? ` [${label}]` : '';
 
   try {
     if (selector.isVisible && !(await selector.isVisible().catch(() => false))) {
       if (allowNativeFallback && selector.click) await selector.click({ force: true }).catch(() => {});
-      return;
+      return { success: false, usedFallback: true };
     }
   } catch (_e) {
     // Ignore visibility check error
   }
 
-  let bbox = await selector.boundingBox();
+  let bbox = await this.waitForStableElement(selector, maxStabilityWaitMs);
   if (!bbox) {
     if (allowNativeFallback && selector.click) await selector.click({ force: true }).catch(() => {});
-    return;
-  }
-
-  // Stability wait
-  let prevBox = bbox;
-  const stabilityStart = Date.now();
-  while ((Date.now() - stabilityStart) < maxStabilityWaitMs) {
-    await new Promise(r => setTimeout(r, 80));
-    const currentBox = await selector.boundingBox();
-    if (!currentBox) {
-      if (allowNativeFallback && selector.click) await selector.click({ force: true }).catch(() => {});
-      return;
-    }
-    const delta = Math.abs(currentBox.x - prevBox.x) + Math.abs(currentBox.y - prevBox.y);
-    if (delta < 3) {
-      bbox = currentBox;
-      break;
-    }
-    prevBox = currentBox;
+    return { success: false, usedFallback: true };
   }
 
   // Tracking loop
@@ -473,11 +465,12 @@ async click(selector, options = {}) {
       bbox.y + marginY, bbox.y + bbox.height - marginY
     );
 
-    await this.move(targetX, targetY);
+    this.logger.info(`ghostCursor moving to x=${Math.round(targetX)} y=${Math.round(targetY)}${labelSuffix}`);
+    await this.moveWithHesitation(targetX, targetY);
     await new Promise(r => setTimeout(r, mathUtils.randomInRange(100, 400)));
 
     const newBox = await selector.boundingBox();
-    if (!newBox) return;
+    if (!newBox) return { success: false, usedFallback: false };
 
     const currentPos = this.previousPos;
     const insideX = currentPos.x >= newBox.x && currentPos.x <= newBox.x + newBox.width;
@@ -489,11 +482,15 @@ async click(selector, options = {}) {
       const holdTime = mathUtils.gaussian(60, 20, 20, 150);
 
       try {
+        if (hoverBeforeClick) {
+          await this.hoverWithDrift(finalX, finalY, hoverMinMs, hoverMaxMs);
+        }
         await this.page.mouse.move(finalX, finalY);
         await this.page.mouse.down();
         await new Promise(r => setTimeout(r, holdTime));
         await this.page.mouse.up();
-        return;
+        this.logger.info(`ghostCursor clicked x=${Math.round(finalX)} y=${Math.round(finalY)}${labelSuffix}`);
+        return { success: true, usedFallback: false, x: finalX, y: finalY };
       } catch {
         break;
       }
@@ -508,6 +505,8 @@ async click(selector, options = {}) {
     } catch {
       // Ignore native fallback error
     }
+    return { success: false, usedFallback: true };
   }
+  return { success: false, usedFallback: false };
 }
 }

@@ -23,26 +23,91 @@ function isOllamaProcessRunning() {
     }
 }
 
+function resolveOllamaCommand() {
+    if (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test') {
+        return 'ollama';
+    }
+
+    try {
+        const output = execSync('where ollama', { encoding: 'utf8' });
+        const firstPath = output.split('\n').map(line => line.trim()).find(Boolean);
+        if (firstPath) {
+            return `"${firstPath}"`;
+        }
+    } catch {
+        null;
+    }
+
+    if (process.env.LOCALAPPDATA) {
+        return `"${process.env.LOCALAPPDATA}\\Programs\\Ollama\\ollama.exe"`;
+    }
+
+    return 'ollama';
+}
+
+function isLocalBaseUrl(baseUrl) {
+    try {
+        const url = new URL(baseUrl);
+        const host = url.hostname.toLowerCase();
+        return host === 'localhost' || host === '127.0.0.1' || host === '::1';
+    } catch {
+        return true;
+    }
+}
+
+async function getOllamaBaseUrl() {
+    const settings = await getSettings();
+    const endpoint = settings.llm?.local?.endpoint || 'http://localhost:11434';
+    return endpoint.replace(/\/api\/.*$/, '').replace(/\/$/, '');
+}
+
+async function isOllamaEndpointReady(baseUrl) {
+    try {
+        const rootResponse = await fetch(`${baseUrl}/`, {
+            signal: AbortSignal.timeout(1500)
+        });
+        if (rootResponse.ok) {
+            return true;
+        }
+    } catch {
+        null;
+    }
+
+    try {
+        const tagsResponse = await fetch(`${baseUrl}/api/tags`, {
+            signal: AbortSignal.timeout(1500)
+        });
+        return tagsResponse.ok;
+    } catch {
+        return false;
+    }
+}
+
+async function waitForOllamaReady(baseUrl, attempts = 12, delayMs = 2000) {
+    for (let i = 0; i < attempts; i++) {
+        if (await isOllamaEndpointReady(baseUrl)) {
+            return true;
+        }
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+    return false;
+}
+
 /**
  * Check if the Ollama service is reachable at the configured endpoint.
  * @returns {Promise<boolean>}
  */
 export async function isOllamaRunning() {
-    // First check process
-    if (!isOllamaProcessRunning()) {
-        return false;
-    }
-
     try {
-        const settings = await getSettings();
-        const endpoint = settings.llm?.local?.endpoint || 'http://localhost:11434';
-        const baseUrl = endpoint.replace(/\/api\/.*$/, '');
-
-        const response = await fetch(`${baseUrl}/`, {
-            signal: AbortSignal.timeout(1000)
-        });
-
-        return response.ok;
+        const baseUrl = await getOllamaBaseUrl();
+        const isLocal = isLocalBaseUrl(baseUrl);
+        if (!isLocal) {
+            return await isOllamaEndpointReady(baseUrl);
+        }
+        if (!isOllamaProcessRunning()) {
+            return false;
+        }
+        return await isOllamaEndpointReady(baseUrl);
     } catch {
         return false;
     }
@@ -72,46 +137,35 @@ export async function startOllama() {
     try {
         const settings = await getSettings();
         const model = settings.llm?.local?.model || 'hermes3:8b';
+        const skipModelOps = (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test')
+            && process.env.ALLOW_OLLAMA_MODEL_OPS !== 'true';
+        const baseUrl = await getOllamaBaseUrl();
+        const ollamaCmd = resolveOllamaCommand();
 
-        // 1. Ensure Process is running
         if (!isOllamaProcessRunning()) {
             logger.info(`[OllamaManager] Process not found. Triggering via 'ollama list'...`);
             
-            // Attempt to start service using 'ollama list' (effective on Windows)
-            exec('ollama list', (err) => {
+            exec(`${ollamaCmd} list`, (err) => {
                 if (err) {
-                    // It might fail if service is just starting, which is fine, we just want to trigger it
                     logger.debug(`[OllamaManager] 'ollama list' trigger result: ${err.message}`);
                 }
             });
 
-            // Give it a moment to register
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // If still not running, try explicit launch
             if (!isOllamaProcessRunning()) {
                 logger.info(`[OllamaManager] 'ollama list' didn't start process. Trying "ollama app.exe"...`);
                 exec('start "" "ollama app.exe"', (err) => {
                     if (err) {
                         logger.debug('[OllamaManager] Failed to start via "ollama app.exe", trying "ollama serve"');
-                        exec('start /B ollama serve', { windowsHide: true });
+                        exec(`start /B "" ${ollamaCmd} serve`, { windowsHide: true });
                     }
                 });
-                // Wait for process to appear and tray to settle
                 await new Promise(resolve => setTimeout(resolve, 6000));
             }
         }
         
-        // 2. Wait for API to be ready
-        let apiReady = false;
-        for (let i = 0; i < 10; i++) {
-            if (await isOllamaRunning()) {
-                apiReady = true;
-                break;
-            }
-            await new Promise(resolve => setTimeout(resolve, 2000));
-        }
-
+        const apiReady = await waitForOllamaReady(baseUrl, 12, 2000);
         if (!apiReady) {
             logger.error('[OllamaManager] API failed to respond after start.');
             return false;
@@ -120,24 +174,26 @@ export async function startOllama() {
         // 3. Ensure Model exists (Pull if missing)
         if (!doesModelExist(model)) {
             logger.warn(`[OllamaManager] Model '${model}' not found in local library. Pulling...`);
-            // Using execSync for pull to ensure it finishes or at least starts properly
-            // but since pull can be large, we'll use a promise-wrapped exec
-            await new Promise((resolve, reject) => {
-                const child = exec(`ollama pull ${model}`);
-                child.on('exit', (code) => {
-                    if (code === 0) {
-                        logger.success(`[OllamaManager] Successfully pulled ${model}`);
-                        resolve();
-                    } else {
-                        reject(new Error(`Pull failed with code ${code}`));
-                    }
+            if (!skipModelOps) {
+                await new Promise((resolve, reject) => {
+                    const child = exec(`${ollamaCmd} pull ${model}`);
+                    child.on('exit', (code) => {
+                        if (code === 0) {
+                            logger.success(`[OllamaManager] Successfully pulled ${model}`);
+                            resolve();
+                        } else {
+                            reject(new Error(`Pull failed with code ${code}`));
+                        }
+                    });
                 });
-            });
+            }
         }
 
         // 4. Load model into memory
-        logger.info(`[OllamaManager] Loading model into memory: ${model}...`);
-        exec(`ollama run ${model} ""`, { windowsHide: true });
+        if (!skipModelOps) {
+            logger.info(`[OllamaManager] Loading model into memory: ${model}...`);
+            exec(`${ollamaCmd} run ${model} ""`, { windowsHide: true });
+        }
         
         return true;
     } catch (error) {

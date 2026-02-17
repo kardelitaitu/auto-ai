@@ -4,27 +4,18 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-const mockGlobalScroll = {
-    scrollBy: vi.fn(),
-    scrollDown: vi.fn(),
-    scrollUp: vi.fn(),
-    scrollRandom: vi.fn(),
-    scrollToTop: vi.fn(),
-    scrollToBottom: vi.fn(),
-    getMultiplier: vi.fn().mockReturnValue(1.0)
-};
-
-vi.mock('../../utils/global-scroll-controller.js', () => ({
-    globalScroll: mockGlobalScroll
-}));
+import { globalScroll } from '../../utils/global-scroll-controller.js';
+import * as scrollHelper from '../../utils/scroll-helper.js';
 
 describe('utils/scroll-helper', () => {
-    let scrollHelper;
-
-    beforeEach(async () => {
-        vi.clearAllMocks();
-        scrollHelper = await import('../../utils/scroll-helper.js');
+    beforeEach(() => {
+        vi.spyOn(globalScroll, 'scrollBy').mockImplementation(() => Promise.resolve());
+        vi.spyOn(globalScroll, 'scrollDown').mockImplementation(() => Promise.resolve());
+        vi.spyOn(globalScroll, 'scrollUp').mockImplementation(() => Promise.resolve());
+        vi.spyOn(globalScroll, 'scrollRandom').mockImplementation(() => Promise.resolve());
+        vi.spyOn(globalScroll, 'scrollToTop').mockImplementation(() => Promise.resolve());
+        vi.spyOn(globalScroll, 'scrollToBottom').mockImplementation(() => Promise.resolve());
+        vi.spyOn(globalScroll, 'getMultiplier').mockReturnValue(1.0);
     });
 
     afterEach(() => {
@@ -34,48 +25,48 @@ describe('utils/scroll-helper', () => {
     it('scrollWheel should call globalScroll.scrollBy', async () => {
         const page = {};
         await scrollHelper.scrollWheel(page, 100, { delay: 10 });
-        expect(mockGlobalScroll.scrollBy).toHaveBeenCalledWith(page, 100, { delay: 10 });
+        expect(globalScroll.scrollBy).toHaveBeenCalledWith(page, 100, { delay: 10 });
     });
 
     it('scrollDown should call globalScroll.scrollDown', async () => {
         const page = {};
         await scrollHelper.scrollDown(page, 200);
-        expect(mockGlobalScroll.scrollDown).toHaveBeenCalledWith(page, 200, {});
+        expect(globalScroll.scrollDown).toHaveBeenCalledWith(page, 200, {});
     });
 
     it('scrollUp should call globalScroll.scrollUp', async () => {
         const page = {};
         await scrollHelper.scrollUp(page, 150);
-        expect(mockGlobalScroll.scrollUp).toHaveBeenCalledWith(page, 150, {});
+        expect(globalScroll.scrollUp).toHaveBeenCalledWith(page, 150, {});
     });
 
     it('scrollRandom should call globalScroll.scrollRandom', async () => {
         const page = {};
         await scrollHelper.scrollRandom(page, 100, 300);
-        expect(mockGlobalScroll.scrollRandom).toHaveBeenCalledWith(page, 100, 300, {});
+        expect(globalScroll.scrollRandom).toHaveBeenCalledWith(page, 100, 300, {});
     });
 
     it('scrollToTop should call globalScroll.scrollToTop', async () => {
         const page = {};
         await scrollHelper.scrollToTop(page);
-        expect(mockGlobalScroll.scrollToTop).toHaveBeenCalledWith(page, {});
+        expect(globalScroll.scrollToTop).toHaveBeenCalledWith(page, {});
     });
 
     it('scrollToBottom should call globalScroll.scrollToBottom', async () => {
         const page = {};
         await scrollHelper.scrollToBottom(page);
-        expect(mockGlobalScroll.scrollToBottom).toHaveBeenCalledWith(page, {});
+        expect(globalScroll.scrollToBottom).toHaveBeenCalledWith(page, {});
     });
 
     it('scroll should call globalScroll.scrollBy', async () => {
         const page = {};
         await scrollHelper.scroll(page, 500);
-        expect(mockGlobalScroll.scrollBy).toHaveBeenCalledWith(page, 500);
+        expect(globalScroll.scrollBy).toHaveBeenCalledWith(page, 500);
     });
 
     it('getScrollMultiplier should call globalScroll.getMultiplier', () => {
         const result = scrollHelper.getScrollMultiplier();
-        expect(mockGlobalScroll.getMultiplier).toHaveBeenCalled();
+        expect(globalScroll.getMultiplier).toHaveBeenCalled();
         expect(result).toBe(1.0);
     });
 });

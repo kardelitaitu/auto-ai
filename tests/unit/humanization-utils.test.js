@@ -12,6 +12,9 @@ import { ErrorRecovery } from '../../utils/humanization/error.js';
 import { SessionManager } from '../../utils/humanization/session.js';
 import { MultitaskEngine } from '../../utils/humanization/multitask.js';
 import { ActionPredictor } from '../../utils/humanization/action.js';
+import { scrollRandom } from '../../utils/scroll-helper.js';
+import { mathUtils } from '../../utils/mathUtils.js';
+import HumanizationDefault, * as humanizationExports from '../../utils/humanization/index.js';
 
 // Mock dependencies
 vi.mock('../../utils/logger.js', () => ({
@@ -74,23 +77,49 @@ describe('HumanizationEngine', () => {
         HumanScroll.mockImplementation(function() {
             return {
                 setAgent: vi.fn(),
-                execute: vi.fn().mockResolvedValue()
+                execute: vi.fn().mockResolvedValue(),
+                toElement: vi.fn().mockResolvedValue()
             };
         });
         HumanTiming.mockImplementation(function() {
             return {
-                getThinkTime: vi.fn().mockReturnValue(1000)
+                getThinkTime: vi.fn().mockReturnValue(1000),
+                sessionRampUp: vi.fn().mockResolvedValue(),
+                getNaturalPause: vi.fn().mockReturnValue(500)
             };
         });
         ContentSkimmer.mockImplementation(function() {
             return {
-                setAgent: vi.fn()
+                setAgent: vi.fn(),
+                skipping: vi.fn().mockResolvedValue(),
+                reading: vi.fn().mockResolvedValue()
             };
         });
-        ErrorRecovery.mockImplementation(function() { return {}; });
-        SessionManager.mockImplementation(function() { return {}; });
-        MultitaskEngine.mockImplementation(function() { return {}; });
-        ActionPredictor.mockImplementation(function() { return {}; });
+        ErrorRecovery.mockImplementation(function() {
+            return {
+                handle: vi.fn().mockResolvedValue({ success: true })
+            };
+        });
+        SessionManager.mockImplementation(function() {
+            return {
+                wrapUp: vi.fn().mockResolvedValue(),
+                getOptimalLength: vi.fn().mockReturnValue({ targetMs: 1000 }),
+                boredomPause: vi.fn().mockResolvedValue()
+            };
+        });
+        MultitaskEngine.mockImplementation(function() {
+            return {
+                checkNotifications: vi.fn().mockResolvedValue(),
+                glanceTrending: vi.fn().mockResolvedValue(),
+                shiftPosition: vi.fn().mockResolvedValue(),
+                glanceMentions: vi.fn().mockResolvedValue()
+            };
+        });
+        ActionPredictor.mockImplementation(function() {
+            return {
+                predict: vi.fn().mockReturnValue({ type: 'scroll' })
+            };
+        });
 
         engine = new HumanizationEngine(mockPage, mockAgent);
     });
@@ -126,6 +155,90 @@ describe('HumanizationEngine', () => {
             expect(engine._timingEngine.getThinkTime).toHaveBeenCalledWith('like', {});
             expect(mockPage.waitForTimeout).toHaveBeenCalledWith(1000);
         });
+
+        it('should consume content with defaults', async () => {
+            await engine.consumeContent();
+            expect(engine._contentEngine.skipping).toHaveBeenCalledWith('tweet', 'normal');
+        });
+
+        it('should recover from error using error engine', async () => {
+            await engine.recoverFromError('timeout', { action: 'click' });
+            expect(engine._errorEngine.handle).toHaveBeenCalledWith('timeout', { action: 'click' });
+        });
+
+        it('should execute multitask behavior', async () => {
+            await engine.multitask();
+            expect(engine._multitaskEngine.checkNotifications).toHaveBeenCalled();
+        });
+
+        it('should skip multitask when already active', async () => {
+            engine.isMultitasking = true;
+            await engine.multitask();
+            expect(engine._multitaskEngine.checkNotifications).not.toHaveBeenCalled();
+        });
+
+        it('should predict next action', () => {
+            const prediction = engine.predictNextAction();
+            expect(prediction.type).toBe('scroll');
+        });
+
+        it('should start session with warmup and scroll', async () => {
+            const scrollSpy = vi.spyOn(engine, 'scroll');
+            
+            await engine.sessionStart();
+            
+            expect(engine._timingEngine.sessionRampUp).toHaveBeenCalled();
+            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(scrollSpy).toHaveBeenCalledWith('down', 'light');
+        });
+
+        it('should end session with wrap up', async () => {
+            await engine.sessionEnd();
+            
+            expect(engine._sessionEngine.wrapUp).toHaveBeenCalledWith(mockPage);
+            expect(scrollRandom).toHaveBeenCalledWith(mockPage, -50, 100);
+        });
+
+        it('should return session duration config', () => {
+            const config = engine.getSessionDuration();
+            expect(config.targetMs).toBe(1000);
+        });
+
+        it('should update cycle count and trigger boredom pause', async () => {
+            engine.cycleCount = 2;
+            await engine.cycleComplete();
+            expect(engine._sessionEngine.boredomPause).toHaveBeenCalledWith(mockPage);
+        });
+
+        it('should trigger multitask on even cycle with roll', async () => {
+            engine.cycleCount = 1;
+            mathUtils.roll.mockReturnValue(true);
+            await engine.cycleComplete();
+            expect(engine._multitaskEngine.checkNotifications).toHaveBeenCalled();
+        });
+
+        it('should return activity info', () => {
+            const info = engine.getActivityInfo();
+            expect(info).toHaveProperty('cycleCount');
+            expect(info).toHaveProperty('lastActivity');
+        });
+
+        it('should scroll to element using scroll engine', async () => {
+            const locator = { first: vi.fn() };
+            await engine.scrollToElement(locator, 'view');
+            expect(engine._scrollEngine.toElement).toHaveBeenCalledWith(locator, 'view');
+        });
+
+        it('should perform natural pause', async () => {
+            await engine.naturalPause('transition');
+            expect(engine._timingEngine.getNaturalPause).toHaveBeenCalledWith('transition');
+            expect(mockPage.waitForTimeout).toHaveBeenCalledWith(500);
+        });
+
+        it('should perform read behavior', async () => {
+            await engine.readBehavior('long');
+            expect(engine._contentEngine.reading).toHaveBeenCalledWith('long');
+        });
     });
 
     describe('Logging', () => {
@@ -140,5 +253,30 @@ describe('HumanizationEngine', () => {
             // We can't easily check the internal logger call here without exposing it or mocking createLogger return value more accessibly
             // But checking no error is thrown is a start
         });
+    });
+
+    describe('Accessors', () => {
+        it('should expose session engine', () => {
+            expect(engine.session).toBe(engine._sessionEngine);
+        });
+    });
+});
+
+describe('Humanization Index Exports', () => {
+    it('should export all humanization modules', () => {
+        expect(humanizationExports).toHaveProperty('HumanizationEngine');
+        expect(humanizationExports).toHaveProperty('HumanScroll');
+        expect(humanizationExports).toHaveProperty('HumanTiming');
+        expect(humanizationExports).toHaveProperty('ContentSkimmer');
+        expect(humanizationExports).toHaveProperty('ErrorRecovery');
+        expect(humanizationExports).toHaveProperty('SessionManager');
+        expect(humanizationExports).toHaveProperty('MultitaskEngine');
+        expect(humanizationExports).toHaveProperty('ActionPredictor');
+        expect(HumanizationDefault).toBeDefined();
+    });
+
+    it('should load index module dynamically', async () => {
+        const module = await import('../../utils/humanization/index.js');
+        expect(module.HumanizationEngine).toBeDefined();
     });
 });

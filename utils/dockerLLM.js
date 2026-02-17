@@ -50,6 +50,8 @@ async function startLocalLLM() {
         const settings = await getSettings();
         const provider = settings.llm?.local?.provider || 'ollama';
         const model = settings.llm?.local?.model || 'llama3.2-vision';
+        const skipModelOps = (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test')
+            && process.env.ALLOW_OLLAMA_MODEL_OPS !== 'true';
 
         logger.info(`[LocalLLM] Starting service for provider: ${provider}...`);
 
@@ -64,7 +66,9 @@ async function startLocalLLM() {
             await new Promise(resolve => setTimeout(resolve, 2000));
             
             // This will pull if missing and load into memory
-            exec(`start /B ollama run ${model} ""`, { windowsHide: true });
+            if (!skipModelOps) {
+                exec(`start /B ollama run ${model} ""`, { windowsHide: true });
+            }
         } else {
             // Docker model fallback
             logger.info(`[LocalLLM] Attempting to start docker model: ${model}`);

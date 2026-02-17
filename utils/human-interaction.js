@@ -36,51 +36,26 @@ export class HumanInteraction {
      */
     async humanClick(element, description = 'Target') {
         if (!this.page || !this.ghost) {
-            this.logWarn(`[humanClick] No page/ghost initialized, falling back to native click`);
-            try {
-                await element.click({ allowNativeFallback: true });
-            } catch (e) {
-                this.logDebug(`[humanClick] Fallback click failed: ${e.message}`);
-                throw e;
-            }
-            return;
+            this.logWarn(`[humanClick] No page/ghost initialized`);
+            throw new Error('ghost_not_initialized');
         }
 
         this.logDebug(`[humanClick] Starting human-like click on ${description}`);
         
         try {
-            // 1. Scroll element into view
             await element.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
             await new Promise(resolve => setTimeout(resolve, mathUtils.randomInRange(300, 600)));
-
-            // 2. Get element position for ghost cursor
-            const box = await element.boundingBox();
-            if (!box) {
-                throw new Error('Element not visible or no bounding box');
+            const ghostResult = await this.ghost.click(element, {
+                label: description,
+                hoverBeforeClick: true
+            });
+            if (!ghostResult?.success) {
+                throw new Error('ghost_click_failed');
             }
-
-            // 3. Move cursor to vicinity first (not directly on target)
-            const offsetX = mathUtils.randomInRange(-30, 30);
-            const offsetY = mathUtils.randomInRange(-20, 20);
-            const targetX = box.x + box.width / 2 + offsetX;
-            const targetY = box.y + box.height / 2 + offsetY;
-            
-            await this.ghost.move(targetX, targetY, mathUtils.randomInRange(15, 25));
-            await new Promise(resolve => setTimeout(resolve, mathUtils.randomInRange(400, 800)));
-
-            // 4. Use GhostCursor for the actual click
-            await this.ghost.click(element, { allowNativeFallback: true });
-            
             this.logDebug(`[humanClick] Successfully clicked ${description}`);
         } catch (e) {
-            this.logDebug(`[humanClick] Failed on ${description}: ${e.message}, trying fallback`);
-            // Fallback to native click
-            try {
-                await element.click({ force: true });
-            } catch (e2) {
-                this.logDebug(`[humanClick] Fallback also failed: ${e2.message}`);
-                throw e2;
-            }
+            this.logDebug(`[humanClick] Failed on ${description}: ${e.message}`);
+            throw e;
         }
     }
 
@@ -406,6 +381,9 @@ export class HumanInteraction {
         const baseDelay = mathUtils.randomInRange(80, 150);
         const punctuationPause = mathUtils.randomInRange(200, 400);
         const spacePause = mathUtils.randomInRange(100, 200);
+        
+        // Pre-create Set for O(1) lookup instead of O(n) Array.includes()
+        const punctuationSet = new Set(['.', '!', '?', ',', ';', ':']);
 
         this.logDebug(`[Type] Starting to type ${text.length} chars...`);
 
@@ -414,7 +392,7 @@ export class HumanInteraction {
 
             if (char === ' ') {
                 await new Promise(resolve => setTimeout(resolve, spacePause));
-            } else if (['.', '!', '?', ',', ';', ':'].includes(char)) {
+            } else if (punctuationSet.has(char)) {
                 await new Promise(resolve => setTimeout(resolve, punctuationPause));
             } else {
                 await new Promise(resolve => setTimeout(resolve, baseDelay));
@@ -466,16 +444,6 @@ export class HumanInteraction {
                     return false;
                 }
             },
-            // Strategy 3: Force click as fallback
-            async () => {
-                try {
-                    await element.click({ force: true });
-                    await new Promise(resolve => setTimeout(resolve, 200));
-                    return true;
-                } catch {
-                    return false;
-                }
-            }
         ];
 
         for (let i = 0; i < focusStrategies.length; i++) {

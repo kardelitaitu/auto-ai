@@ -1,16 +1,5 @@
-/**
- * @fileoverview An automation task that navigates to a climate-related website and performs random scrolling and zooming.
- * @module tasks/automationTask2
- */
-
 import { createRandomScroller, createRandomZoomer, createLogger } from '../utils/utils.js';
 
-/**
- * The main function for the automation task.
- * @param {object} browser - The Playwright browser instance.
- * @param {object} payload - The payload data for the task.
- * @param {string} payload.browserInfo - A unique identifier for the browser.
- */
 export default async function automationTask2(page, payload) {
   const startTime = process.hrtime.bigint();
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,7 +7,6 @@ export default async function automationTask2(page, payload) {
   const logger = createLogger(`automationTask2.js [${browserInfo}]`);
   logger.info(`Starting task...`);
 
-  // Apply visibility spoofing
   const { applyHumanizationPatch } = await import('../utils/browserPatch.js');
   await applyHumanizationPatch(page, logger);
 
@@ -71,4 +59,3 @@ export default async function automationTask2(page, payload) {
     logger.info(`[climatecocentre.org] Finished task. Task duration: ${durationInSeconds} seconds.`);
   }
 }
-

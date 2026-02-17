@@ -21,7 +21,10 @@ class RoxybrowserDiscover extends BaseDiscover {
     super();
     this.browserType = 'roxybrowser';
     this.apiBaseUrl = getEnv('ROXYBROWSER_API_URL', 'http://127.0.0.1:50000/');
-    this.API_KEY = getEnv('ROXYBROWSER_API_KEY');
+    if (this.apiBaseUrl && !this.apiBaseUrl.endsWith('/')) {
+      this.apiBaseUrl += '/';
+    }
+    this.API_KEY = getEnv('ROXYBROWSER_API_KEY','d43d36808b2bf291d76c62cd2f02b236');
 
     if (this.API_KEY) {
       logger.info(`Initialized RoxybrowserDiscover with API URL: ${this.apiBaseUrl}`);

@@ -1146,8 +1146,8 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         human.logStep('TYPE_QUOTE', `Typing ${quoteText.length} chars...`);
         await human.typeText(page, quoteText, composer);
 
-        // Post with Ctrl+Enter
-        const postResult = await human.postTweet(page);
+        // Post with Ctrl+Enter or Post Button
+        const postResult = await human.postTweet(page, 'quote');
 
         return {
             success: postResult.success,
@@ -1340,7 +1340,11 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         
         // Clear and type
         await composer.click();
-        await page.keyboard.press('Control+a');
+        
+        const isMac = process.platform === 'darwin';
+        const modifier = isMac ? 'Meta' : 'Control';
+        await page.keyboard.press(`${modifier}+a`);
+        
         await page.keyboard.press('Delete');
         await new Promise(resolve => setTimeout(resolve, 200));
         
@@ -1348,7 +1352,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         await human.typeText(page, quoteText, composer);
 
         // Post
-        const postResult = await human.postTweet(page);
+        const postResult = await human.postTweet(page, 'quote');
 
         return {
             success: postResult.success,
@@ -1463,7 +1467,11 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // Step 5: Paste the URL LAST (appears as preview/card below comment)
         human.logStep('PASTE_URL', 'Pasting tweet URL...');
-        await page.keyboard.press('Control+v');
+        
+        const isMac = process.platform === 'darwin';
+        const modifier = isMac ? 'Meta' : 'Control';
+        await page.keyboard.press(`${modifier}+v`);
+        
         await new Promise(resolve => setTimeout(resolve, 750));
 
         // Verify URL was pasted
@@ -1479,7 +1487,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         // STEP 6: Post
-        const postResult = await human.postTweet(page);
+        const postResult = await human.postTweet(page, 'quote');
 
         return {
             success: postResult.success,

@@ -1,4 +1,3 @@
-
-export default async function(page, payload) {
-  return { success: true, payload };
+export default async function coverageValidTask() {
+  return { success: true };
 }

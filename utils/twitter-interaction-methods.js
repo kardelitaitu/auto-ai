@@ -514,7 +514,11 @@ export const quoteMethods = {
  * @returns {Promise<object>} Result object
  */
 export async function executeReplyMethod(methodName, page, text, human, logger, options = {}) {
-    const method = replyMethods[methodName.toLowerCase()];
+    const normalizedName = methodName.toLowerCase();
+    const method =
+        replyMethods[methodName] ||
+        replyMethods[normalizedName] ||
+        Object.entries(replyMethods).find(([name]) => name.toLowerCase() === normalizedName)?.[1];
     if (!method) {
         logger.error(`[executeReplyMethod] Unknown method: ${methodName}`);
         return { success: false, method: methodName, reason: 'unknown_method' };
@@ -535,7 +539,11 @@ export async function executeReplyMethod(methodName, page, text, human, logger, 
  * @returns {Promise<object>} Result object
  */
 export async function executeQuoteMethod(methodName, page, text, human, logger, options = {}) {
-    const method = quoteMethods[methodName.toLowerCase()];
+    const normalizedName = methodName.toLowerCase();
+    const method =
+        quoteMethods[methodName] ||
+        quoteMethods[normalizedName] ||
+        Object.entries(quoteMethods).find(([name]) => name.toLowerCase() === normalizedName)?.[1];
     if (!method) {
         logger.error(`[executeQuoteMethod] Unknown method: ${methodName}`);
         return { success: false, method: methodName, reason: 'unknown_method' };

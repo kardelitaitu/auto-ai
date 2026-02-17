@@ -8,15 +8,28 @@ import SessionManager from '../../core/sessionManager.js';
 import fs from 'fs/promises';
 import { getTimeoutValue, getSettings } from '../../utils/configLoader.js';
 
-// Mocks
-vi.mock('fs/promises');
-vi.mock('../../utils/logger.js', () => ({
-    createLogger: vi.fn(() => ({
+const mocks = vi.hoisted(() => ({
+    fs: {
+        writeFile: vi.fn(),
+        readFile: vi.fn(),
+        mkdir: vi.fn()
+    },
+    logger: {
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
         debug: vi.fn()
-    }))
+    }
+}));
+
+vi.mock('fs/promises', () => ({
+    default: mocks.fs,
+    writeFile: mocks.fs.writeFile,
+    readFile: mocks.fs.readFile,
+    mkdir: mocks.fs.mkdir
+}));
+vi.mock('../../utils/logger.js', () => ({
+    createLogger: vi.fn(() => mocks.logger)
 }));
 vi.mock('../../utils/configLoader.js', () => ({
     getTimeoutValue: vi.fn(),
@@ -133,6 +146,55 @@ describe('core/sessionManager', () => {
         });
     });
 
+    describe('Page Pooling', () => {
+        it('should reuse pages from the pool', async () => {
+            const browser = { close: vi.fn() };
+            const id = manager.addSession(browser);
+            const context = { newPage: vi.fn() };
+            const page = { close: vi.fn(), isClosed: vi.fn(() => false) };
+            context.newPage.mockResolvedValue(page);
+
+            const firstPage = await manager.acquirePage(id, context);
+            await manager.releasePage(id, firstPage);
+            const secondPage = await manager.acquirePage(id, context);
+
+            expect(firstPage).toBe(page);
+            expect(secondPage).toBe(page);
+            expect(context.newPage).toHaveBeenCalledTimes(1);
+        });
+
+        it('should create a new page when pooled pages are closed', async () => {
+            const browser = { close: vi.fn() };
+            const id = manager.addSession(browser);
+            const context = { newPage: vi.fn() };
+            const closedPage = { close: vi.fn(), isClosed: vi.fn(() => true) };
+            const newPage = { close: vi.fn(), isClosed: vi.fn(() => false) };
+            context.newPage.mockResolvedValue(newPage);
+
+            manager.sessions[0].pagePool.push(closedPage);
+            const page = await manager.acquirePage(id, context);
+
+            expect(page).toBe(newPage);
+            expect(context.newPage).toHaveBeenCalledTimes(1);
+        });
+
+        it('should close pages when pool is full', async () => {
+            const browser = { close: vi.fn() };
+            const id = manager.addSession(browser);
+            const context = { newPage: vi.fn() };
+            const pageA = { close: vi.fn(), isClosed: vi.fn(() => false) };
+            const pageB = { close: vi.fn(), isClosed: vi.fn(() => false) };
+            context.newPage.mockResolvedValueOnce(pageA).mockResolvedValueOnce(pageB);
+
+            const firstPage = await manager.acquirePage(id, context);
+            await manager.releasePage(id, firstPage);
+            manager.pagePoolMaxPerSession = 1;
+            await manager.releasePage(id, pageB);
+
+            expect(pageB.close).toHaveBeenCalled();
+        });
+    });
+
     describe('Worker Allocation', () => {
         it('should occupy and release worker', async () => {
             const id = manager.addSession({});
@@ -182,6 +244,7 @@ describe('core/sessionManager', () => {
         it('should detect stuck workers', async () => {
             const id = manager.addSession({});
             await manager.findAndOccupyIdleWorker(id);
+            manager.sessionTimeoutMs = 120000;
             vi.advanceTimersByTime(70000);
             const stuck = manager.getStuckWorkers(60000);
             expect(stuck.length).toBe(1);

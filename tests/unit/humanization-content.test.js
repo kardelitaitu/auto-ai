@@ -21,9 +21,9 @@ vi.mock('../../utils/entropyController.js', () => ({
 }));
 
 vi.mock('../../utils/scroll-helper.js', () => ({
-    scrollRandom: vi.fn(),
-    scrollDown: vi.fn(),
-    scrollUp: vi.fn()
+    scrollRandom: vi.fn().mockResolvedValue(undefined),
+    scrollDown: vi.fn().mockResolvedValue(undefined),
+    scrollUp: vi.fn().mockResolvedValue(undefined)
 }));
 
 describe('ContentSkimmer', () => {
@@ -37,7 +37,8 @@ describe('ContentSkimmer', () => {
         mockPage = {
             waitForTimeout: vi.fn().mockResolvedValue(undefined),
             mouse: {
-                move: vi.fn().mockResolvedValue(undefined)
+                move: vi.fn().mockResolvedValue(undefined),
+                wheel: vi.fn().mockResolvedValue(undefined)
             }
         };
 
@@ -100,6 +101,18 @@ describe('ContentSkimmer', () => {
                 pause: 2500
             }));
         });
+
+        it('should fallback to default type and duration', async () => {
+            const spy = vi.spyOn(contentSkimmer, '_skimTweet');
+            
+            await contentSkimmer.skipping('unknown', 'unknown');
+            
+            expect(spy).toHaveBeenCalledWith(expect.objectContaining({
+                read: 2500,
+                scroll: 100,
+                pause: 1000
+            }));
+        });
     });
 
     describe('reading', () => {
@@ -137,6 +150,37 @@ describe('ContentSkimmer', () => {
         });
     });
 
+    describe('_skimThread', () => {
+        it('should scroll back when roll is true', async () => {
+            mathUtils.randomInRange.mockReturnValue(2);
+            mathUtils.roll.mockReturnValue(true);
+            
+            await contentSkimmer._skimThread({ read: 100, scroll: 50, pause: 50 });
+            
+            expect(scrollHelper.scrollRandom).toHaveBeenCalled();
+        });
+    });
+
+    describe('_skimMedia', () => {
+        it('should perform closer look when roll is true', async () => {
+            mathUtils.roll.mockReturnValue(true);
+            
+            await contentSkimmer._skimMedia({ read: 100, scroll: 50, pause: 50 });
+            
+            expect(scrollHelper.scrollRandom).toHaveBeenCalled();
+        });
+    });
+
+    describe('_skimProfile', () => {
+        it('should pause for pinned tweet when roll is true', async () => {
+            mathUtils.roll.mockReturnValue(true);
+            
+            await contentSkimmer._skimProfile({ read: 100, scroll: 50, pause: 50 });
+            
+            expect(mockPage.waitForTimeout).toHaveBeenCalledWith(2000);
+        });
+    });
+
     describe('skimFeed', () => {
         it('should cycle through feed items', async () => {
             mathUtils.randomInRange.mockReturnValue(2); // 2 cycles
@@ -145,6 +189,15 @@ describe('ContentSkimmer', () => {
             
             expect(scrollHelper.scrollRandom).toHaveBeenCalledTimes(2);
             expect(mockPage.waitForTimeout).toHaveBeenCalled();
+        });
+
+        it('should pause on interesting content', async () => {
+            mathUtils.randomInRange.mockReturnValue(1);
+            mathUtils.roll.mockReturnValue(true);
+            
+            await contentSkimmer.skimFeed();
+            
+            expect(mockPage.waitForTimeout).toHaveBeenCalledTimes(2);
         });
     });
 
@@ -157,6 +210,14 @@ describe('ContentSkimmer', () => {
              // Initial wait + reading wait
              expect(mockPage.waitForTimeout).toHaveBeenCalledTimes(2);
         });
+
+        it('should simulate bookmarking when roll is true', async () => {
+            mathUtils.roll.mockReturnValue(true);
+            
+            await contentSkimmer.deepRead();
+            
+            expect(mockPage.waitForTimeout).toHaveBeenCalledWith(2000);
+        });
     });
 
     describe('quickGlance', () => {
@@ -168,5 +229,10 @@ describe('ContentSkimmer', () => {
             expect(mockPage.waitForTimeout).toHaveBeenCalled();
             expect(mockPage.mouse.move).toHaveBeenCalled();
         });
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+        vi.resetModules();
     });
 });

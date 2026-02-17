@@ -39,91 +39,462 @@ describe('Automator', () => {
     vi.useRealTimers();
   });
 
-  it('connectToBrowser should connect and test the browser', async () => {
-    const mockBrowser = {
-      isConnected: vi.fn().mockReturnValue(true),
-      close: vi.fn().mockResolvedValue(),
-    };
-    chromium.connectOverCDP.mockResolvedValue(mockBrowser);
-    getTimeoutValue.mockResolvedValue(5000);
-
-    const wsEndpoint = 'ws://localhost:1234';
-    const browser = await automator.connectToBrowser(wsEndpoint);
-
-    expect(browser).toBe(mockBrowser);
-    expect(chromium.connectOverCDP).toHaveBeenCalledWith(wsEndpoint, { timeout: 5000 });
-    expect(automator.connections.has(wsEndpoint)).toBe(true);
+  describe('constructor', () => {
+    it('should initialize with empty connections', () => {
+      expect(automator.connections).toBeInstanceOf(Map);
+      expect(automator.connections.size).toBe(0);
+      expect(automator.healthCheckInterval).toBeNull();
+      expect(automator.isShuttingDown).toBe(false);
+    });
   });
 
-  it('testConnection should throw if browser is disconnected', async () => {
-    const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
-    await expect(automator.testConnection(mockBrowser)).rejects.toThrow('Browser is not connected');
-  });
+  describe('connectToBrowser', () => {
+    it('should connect and test the browser', async () => {
+      const mockBrowser = {
+        isConnected: vi.fn().mockReturnValue(true),
+        close: vi.fn().mockResolvedValue(),
+      };
+      chromium.connectOverCDP.mockResolvedValue(mockBrowser);
+      getTimeoutValue.mockResolvedValue(5000);
 
-  it('reconnect should close old and open new connection', async () => {
-    const oldBrowser = { close: vi.fn().mockResolvedValue(), isConnected: vi.fn().mockReturnValue(true) };
-    const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
-    const wsEndpoint = 'ws://localhost:1234';
+      const wsEndpoint = 'ws://localhost:1234';
+      const browser = await automator.connectToBrowser(wsEndpoint);
 
-    automator.connections.set(wsEndpoint, { browser: oldBrowser });
-    chromium.connectOverCDP.mockResolvedValue(newBrowser);
-
-    const reconnected = await automator.reconnect(wsEndpoint);
-
-    expect(oldBrowser.close).toHaveBeenCalled();
-    expect(reconnected).toBe(newBrowser);
-    expect(automator.connections.get(wsEndpoint).browser).toBe(newBrowser);
-  });
-
-  it('startHealthChecks should periodically check healthy connections', async () => {
-    const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
-    const wsEndpoint = 'ws://localhost:1234';
-    automator.connections.set(wsEndpoint, {
-      browser: mockBrowser,
-      lastHealthCheck: Date.now() - 20000, // Trigger check
-      healthy: true
+      expect(browser).toBe(mockBrowser);
+      expect(chromium.connectOverCDP).toHaveBeenCalledWith(wsEndpoint, { timeout: 5000 });
+      expect(automator.connections.has(wsEndpoint)).toBe(true);
     });
 
-    getTimeoutValue.mockResolvedValue(1000);
-    await automator.startHealthChecks(1000);
+    it('should store connection info with correct metadata', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      chromium.connectOverCDP.mockResolvedValue(mockBrowser);
+      getTimeoutValue.mockResolvedValue(5000);
 
-    vi.advanceTimersByTime(1500);
-    expect(mockBrowser.isConnected).toHaveBeenCalled();
+      const wsEndpoint = 'ws://localhost:1234';
+      await automator.connectToBrowser(wsEndpoint);
+
+      const connInfo = automator.connections.get(wsEndpoint);
+      expect(connInfo.browser).toBe(mockBrowser);
+      expect(connInfo.endpoint).toBe(wsEndpoint);
+      expect(connInfo.connectedAt).toBeDefined();
+      expect(connInfo.lastHealthCheck).toBeDefined();
+      expect(connInfo.healthy).toBe(true);
+      expect(connInfo.reconnectAttempts).toBe(0);
+    });
   });
 
-  it('checkPageResponsive should evaluate script in page', async () => {
-    const mockPage = {
-      isClosed: vi.fn().mockReturnValue(false),
-      evaluate: vi.fn().mockResolvedValue({ documentReady: 'complete', title: 'Test', bodyExists: true })
-    };
+  describe('testConnection', () => {
+    it('should return true when browser is connected', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const result = await automator.testConnection(mockBrowser);
+      expect(result).toBe(true);
+    });
 
-    const result = await automator.checkPageResponsive(mockPage);
-    expect(result.healthy).toBe(true);
-    expect(result.title).toBe('Test');
+    it('should throw when browser is disconnected', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
+      await expect(automator.testConnection(mockBrowser)).rejects.toThrow('Browser is not connected');
+    });
   });
 
-  it('recoverConnection should attempt reload or reconnect', async () => {
-    const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
-    const wsEndpoint = 'ws://localhost:1234';
-    automator.connections.set(wsEndpoint, { browser: mockBrowser });
+  describe('reconnect', () => {
+    it('should close old and open new connection', async () => {
+      const oldBrowser = { close: vi.fn().mockResolvedValue(), isConnected: vi.fn().mockReturnValue(true) };
+      const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
 
-    const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
-    chromium.connectOverCDP.mockResolvedValue(newBrowser);
+      automator.connections.set(wsEndpoint, { browser: oldBrowser });
+      chromium.connectOverCDP.mockResolvedValue(newBrowser);
 
-    const result = await automator.recoverConnection(wsEndpoint);
-    expect(result.successful).toBe(true);
-    expect(result.steps.some(s => s.step === 'reconnect' && s.success)).toBe(true);
+      const reconnected = await automator.reconnect(wsEndpoint);
+
+      expect(oldBrowser.close).toHaveBeenCalled();
+      expect(reconnected).toBe(newBrowser);
+      expect(automator.connections.get(wsEndpoint).browser).toBe(newBrowser);
+    });
+
+    it('should handle error when closing old connection', async () => {
+      const oldBrowser = { 
+        close: vi.fn().mockRejectedValue(new Error('Already closed')), 
+        isConnected: vi.fn().mockReturnValue(true) 
+      };
+      const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
+
+      automator.connections.set(wsEndpoint, { browser: oldBrowser });
+      chromium.connectOverCDP.mockResolvedValue(newBrowser);
+
+      const reconnected = await automator.reconnect(wsEndpoint);
+      expect(reconnected).toBe(newBrowser);
+    });
+
+    it('should reconnect when no existing connection', async () => {
+      const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
+
+      // No connection set
+      chromium.connectOverCDP.mockResolvedValue(newBrowser);
+
+      const reconnected = await automator.reconnect(wsEndpoint);
+      expect(reconnected).toBe(newBrowser);
+    });
   });
 
-  it('closeAll should close all browsers and clear connections', async () => {
-    const mockBrowser = { close: vi.fn().mockResolvedValue() };
-    automator.connections.set('ws1', { browser: mockBrowser, endpoint: 'ws1' });
-    automator.connections.set('ws2', { browser: mockBrowser, endpoint: 'ws2' });
+  describe('startHealthChecks', () => {
+    it('should start health check monitoring', async () => {
+      getTimeoutValue.mockResolvedValue(1000);
+      await automator.startHealthChecks();
+      expect(automator.healthCheckInterval).not.toBeNull();
+    });
 
-    await automator.closeAll();
+    it('should not start if already running', async () => {
+      getTimeoutValue.mockResolvedValue(1000);
+      await automator.startHealthChecks();
+      await automator.startHealthChecks(); // Should not start again
+      // healthCheckInterval should still be the same (not null)
+      expect(automator.healthCheckInterval).not.toBeNull();
+    });
 
-    expect(mockBrowser.close).toHaveBeenCalledTimes(2);
-    expect(automator.connections.size).toBe(0);
-    expect(automator.isShuttingDown).toBe(true);
+    it('should periodically check healthy connections', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, {
+        browser: mockBrowser,
+        lastHealthCheck: Date.now() - 20000,
+        healthy: true
+      });
+
+      getTimeoutValue.mockResolvedValue(1000);
+      await automator.startHealthChecks(1000);
+
+      vi.advanceTimersByTime(1500);
+      expect(mockBrowser.isConnected).toHaveBeenCalled();
+    });
+
+    it('should skip check if recently checked', async () => {
+      const mockBrowser = { isConnected: vi.fn() };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, {
+        browser: mockBrowser,
+        lastHealthCheck: Date.now(), // Just checked
+        healthy: true
+      });
+
+      getTimeoutValue.mockResolvedValue(1000);
+      await automator.startHealthChecks(1000);
+
+      vi.advanceTimersByTime(1500);
+      expect(mockBrowser.isConnected).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('attemptBackgroundReconnect', () => {
+    it('should attempt reconnection', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, {
+        browser: mockBrowser,
+        reconnectAttempts: 0
+      });
+      const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      chromium.connectOverCDP.mockResolvedValue(newBrowser);
+
+      await automator.attemptBackgroundReconnect(wsEndpoint, automator.connections.get(wsEndpoint));
+      // Connection info is updated
+    });
+
+    it('should handle reconnection failure gracefully', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, {
+        browser: mockBrowser,
+        reconnectAttempts: 0
+      });
+      chromium.connectOverCDP.mockRejectedValue(new Error('Connection failed'));
+
+      await automator.attemptBackgroundReconnect(wsEndpoint, automator.connections.get(wsEndpoint));
+      // Should not throw
+    });
+  });
+
+  describe('stopHealthChecks', () => {
+    it('should stop running health checks', async () => {
+      getTimeoutValue.mockResolvedValue(1000);
+      await automator.startHealthChecks();
+      expect(automator.healthCheckInterval).not.toBeNull();
+
+      automator.stopHealthChecks();
+      expect(automator.healthCheckInterval).toBeNull();
+    });
+
+    it('should do nothing if not running', () => {
+      automator.stopHealthChecks();
+      expect(automator.healthCheckInterval).toBeNull();
+    });
+  });
+
+  describe('getBrowser', () => {
+    it('should return browser for existing endpoint', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { browser: mockBrowser });
+
+      const browser = automator.getBrowser(wsEndpoint);
+      expect(browser).toBe(mockBrowser);
+    });
+
+    it('should return null for unknown endpoint', () => {
+      const browser = automator.getBrowser('unknown');
+      expect(browser).toBeNull();
+    });
+  });
+
+  describe('isHealthy', () => {
+    it('should return healthy status', () => {
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { healthy: true });
+      expect(automator.isHealthy(wsEndpoint)).toBe(true);
+    });
+
+    it('should return false for unhealthy', () => {
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { healthy: false });
+      expect(automator.isHealthy(wsEndpoint)).toBe(false);
+    });
+
+    it('should return false for unknown endpoint', () => {
+      expect(automator.isHealthy('unknown')).toBe(false);
+    });
+  });
+
+  describe('getConnectedEndpoints', () => {
+    it('should return all endpoints', () => {
+      automator.connections.set('ws1', { browser: {} });
+      automator.connections.set('ws2', { browser: {} });
+
+      const endpoints = automator.getConnectedEndpoints();
+      expect(endpoints).toContain('ws1');
+      expect(endpoints).toContain('ws2');
+    });
+  });
+
+  describe('getConnectionCount', () => {
+    it('should return connection count', () => {
+      automator.connections.set('ws1', { browser: {} });
+      automator.connections.set('ws2', { browser: {} });
+
+      expect(automator.getConnectionCount()).toBe(2);
+    });
+  });
+
+  describe('getHealthyConnectionCount', () => {
+    it('should count healthy connections', () => {
+      automator.connections.set('ws1', { healthy: true });
+      automator.connections.set('ws2', { healthy: false });
+      automator.connections.set('ws3', { healthy: true });
+
+      expect(automator.getHealthyConnectionCount()).toBe(2);
+    });
+  });
+
+  describe('closeAll', () => {
+    it('should close all browsers and clear connections', async () => {
+      const mockBrowser = { close: vi.fn().mockResolvedValue() };
+      automator.connections.set('ws1', { browser: mockBrowser, endpoint: 'ws1' });
+      automator.connections.set('ws2', { browser: mockBrowser, endpoint: 'ws2' });
+
+      await automator.closeAll();
+
+      expect(mockBrowser.close).toHaveBeenCalledTimes(2);
+      expect(automator.connections.size).toBe(0);
+      expect(automator.isShuttingDown).toBe(true);
+    });
+
+    it('should handle browser without close method', async () => {
+      const conn = { browser: {}, endpoint: 'ws1' };
+      automator.connections.set('ws1', conn);
+
+      await automator.closeAll();
+      expect(automator.connections.size).toBe(0);
+    });
+
+    it('should handle close error', async () => {
+      const mockBrowser = { 
+        close: vi.fn().mockRejectedValue(new Error('Close failed')),
+        isConnected: vi.fn().mockReturnValue(true)
+      };
+      automator.connections.set('ws1', { browser: mockBrowser, endpoint: 'ws1' });
+
+      await automator.closeAll();
+      expect(automator.connections.size).toBe(0);
+    });
+  });
+
+  describe('checkPageResponsive', () => {
+    it('should return healthy for responsive page', async () => {
+      const mockPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockResolvedValue({ documentReady: 'complete', title: 'Test', bodyExists: true })
+      };
+
+      const result = await automator.checkPageResponsive(mockPage);
+      expect(result.healthy).toBe(true);
+      expect(result.title).toBe('Test');
+    });
+
+    it('should return unhealthy for closed page', async () => {
+      const mockPage = { isClosed: vi.fn().mockReturnValue(true) };
+
+      const result = await automator.checkPageResponsive(mockPage);
+      expect(result.healthy).toBe(false);
+      expect(result.error).toBe('Page is closed or null');
+    });
+
+    it('should return unhealthy for null page', async () => {
+      const result = await automator.checkPageResponsive(null);
+      expect(result.healthy).toBe(false);
+    });
+
+    it('should return unhealthy for loading page', async () => {
+      const mockPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockResolvedValue({ documentReady: 'loading', title: '', bodyExists: false })
+      };
+
+      const result = await automator.checkPageResponsive(mockPage);
+      expect(result.healthy).toBe(false);
+    });
+
+    it('should handle evaluation error', async () => {
+      const mockPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockRejectedValue(new Error('Eval failed'))
+      };
+
+      const result = await automator.checkPageResponsive(mockPage);
+      expect(result.healthy).toBe(false);
+    });
+  });
+
+  describe('checkConnectionHealth', () => {
+    it('should return health status for existing connection', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { 
+        browser: mockBrowser, 
+        healthy: true,
+        lastHealthCheck: Date.now()
+      });
+
+      const result = await automator.checkConnectionHealth(wsEndpoint);
+      expect(result.endpoint).toBe(wsEndpoint);
+      expect(result.checks.browserConnection).toBe(true);
+    });
+
+    it('should return unhealthy for missing connection', async () => {
+      const result = await automator.checkConnectionHealth('unknown');
+      expect(result.healthy).toBe(false);
+    });
+
+    it('should check page when provided', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const mockPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        evaluate: vi.fn().mockResolvedValue({ documentReady: 'complete', title: 'Test', bodyExists: true })
+      };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { 
+        browser: mockBrowser, 
+        healthy: true,
+        lastHealthCheck: Date.now()
+      });
+
+      const result = await automator.checkConnectionHealth(wsEndpoint, mockPage);
+      expect(result.checks.page).toBeDefined();
+      expect(result.checks.page.healthy).toBe(true);
+    });
+  });
+
+  describe('recoverConnection', () => {
+    it('should recover when browser is connected', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { browser: mockBrowser });
+
+      const result = await automator.recoverConnection(wsEndpoint);
+      expect(result.successful).toBe(true);
+      expect(result.steps).toContainEqual(expect.objectContaining({ step: 'browser_check', success: true }));
+    });
+
+    it('should reconnect when browser disconnected', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
+      const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { browser: mockBrowser });
+      chromium.connectOverCDP.mockResolvedValue(newBrowser);
+
+      const result = await automator.recoverConnection(wsEndpoint);
+      expect(result.steps).toContainEqual(expect.objectContaining({ step: 'reconnect' }));
+    });
+
+    it('should recover with page reload', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const mockPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        reload: vi.fn().mockResolvedValue()
+      };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { browser: mockBrowser });
+
+      const result = await automator.recoverConnection(wsEndpoint, mockPage);
+      expect(result.steps).toContainEqual(expect.objectContaining({ step: 'page_reload', success: true }));
+    });
+
+    it('should handle missing connection gracefully', async () => {
+      const result = await automator.recoverConnection('unknown');
+      // The function returns some result even without a connection
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe('getHealthSummary', () => {
+    it('should return health summary for connections', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      automator.connections.set('ws1', { browser: mockBrowser, healthy: true, lastHealthCheck: Date.now() });
+
+      const summary = await automator.getHealthSummary();
+      expect(summary.total).toBeGreaterThan(0);
+      expect(summary.connections).toBeDefined();
+    });
+  });
+
+  describe('getStats', () => {
+    it('should return connection statistics', async () => {
+      automator.connections.set('ws1', { 
+        browser: {}, 
+        endpoint: 'ws1',
+        healthy: true,
+        connectedAt: Date.now() - 1000,
+        lastHealthCheck: Date.now() - 500,
+        reconnectAttempts: 0
+      });
+
+      const stats = automator.getStats();
+      expect(stats.totalConnections).toBe(1);
+      expect(stats.healthyConnections).toBe(1);
+      expect(stats.unhealthyConnections).toBe(0);
+      expect(stats.connections).toHaveLength(1);
+    });
+  });
+
+  describe('shutdown', () => {
+    it('should shutdown gracefully', async () => {
+      const mockBrowser = { close: vi.fn().mockResolvedValue() };
+      automator.connections.set('ws1', { browser: mockBrowser, endpoint: 'ws1' });
+
+      await automator.shutdown();
+
+      expect(mockBrowser.close).toHaveBeenCalled();
+      expect(automator.connections.size).toBe(0);
+    });
   });
 });

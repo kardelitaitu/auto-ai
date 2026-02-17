@@ -1,0 +1,24 @@
+{"timestamp":"2026-02-17T11:20:59.727Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=125 y=125"}
+{"timestamp":"2026-02-17T11:21:00.274Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=225 y=225"}
+{"timestamp":"2026-02-17T11:21:00.277Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=125 y=125"}
+{"timestamp":"2026-02-17T11:21:00.382Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=175 y=175"}
+{"timestamp":"2026-02-17T11:21:00.552Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=275 y=275"}
+{"timestamp":"2026-02-17T11:21:02.348Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[humanClick] No page/ghost initialized"}
+{"timestamp":"2026-02-17T11:21:02.351Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[humanClick] No page/ghost initialized"}
+{"timestamp":"2026-02-17T11:21:02.351Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[safeHumanClick] [RetryFail] Attempt 1/2 failed: fail"}
+{"timestamp":"2026-02-17T11:21:03.351Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[safeHumanClick] [RetryFail] Attempt 2/2 failed: fail"}
+{"timestamp":"2026-02-17T11:21:03.351Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[safeHumanClick] [RetryFail] All retries exhausted. Errors: Attempt 1: fail; Attempt 2: fail"}
+{"timestamp":"2026-02-17T11:21:02.364Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[Type] Could not focus element, trying alternative approach..."}
+{"timestamp":"2026-02-17T11:21:05.244Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[Fallback] All 1 selectors failed"}
+{"timestamp":"2026-02-17T11:21:05.245Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[Fallback] All 1 selectors failed"}
+{"timestamp":"2026-02-17T11:21:05.246Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[Fallback] Timeout reached after 10ms, stopping search"}
+{"timestamp":"2026-02-17T11:21:05.246Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[Fallback] All 1 selectors failed"}
+{"timestamp":"2026-02-17T11:21:05.249Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[ClickFallback] All selectors failed for: Target"}
+{"timestamp":"2026-02-17T11:21:05.250Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[ClickFallback] All selectors failed for: Target"}
+{"timestamp":"2026-02-17T11:21:05.251Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[ClickFallback] All selectors failed for: Target"}
+{"timestamp":"2026-02-17T11:21:05.253Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"warn"}
+{"timestamp":"2026-02-17T11:21:05.254Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"test message"}
+{"timestamp":"2026-02-17T11:21:05.255Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[STEP] TestStep: details"}
+{"timestamp":"2026-02-17T11:21:05.255Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[STEP] TestStep"}
+{"timestamp":"2026-02-17T11:20:58.590Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1771327258589-0m2j3pgug] Session initialized with paceMultiplier=1.20"}
+{"timestamp":"2026-02-17T11:20:58.591Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1771327258589-0m2j3pgug] Fatigue scheduled for T+4.1m"}

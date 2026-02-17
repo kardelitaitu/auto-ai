@@ -10,6 +10,7 @@ describe('HumanInteraction', () => {
   let human;
 
   beforeEach(() => {
+    vi.useRealTimers();
     human = new HumanInteraction();
   });
 
@@ -109,6 +110,25 @@ describe('HumanInteraction', () => {
 
       vi.restoreAllMocks();
     });
+
+    it('should scroll in negative direction when roll selects it', async () => {
+      const windowSpy = vi.fn();
+      global.window = { scrollBy: windowSpy };
+      const mockPage = {
+        evaluate: vi.fn().mockImplementation((fn, y) => fn(y))
+      };
+      vi.spyOn(Math, 'random')
+        .mockReturnValueOnce(0.1)
+        .mockReturnValueOnce(0.1)
+        .mockReturnValueOnce(0.9);
+
+      const result = await human.maybeScroll(mockPage, 100, 100);
+
+      expect(result).toBe(true);
+      expect(windowSpy).toHaveBeenCalledWith(0, -100);
+      vi.restoreAllMocks();
+      delete global.window;
+    });
   });
 
   describe('microMove', () => {
@@ -150,6 +170,66 @@ describe('HumanInteraction', () => {
       expect(result.selector).toBe('.selector1');
       expect(result.index).toBe(0);
     });
+
+    it('should return element even when visibility check is disabled', async () => {
+      const mockElement = { isVisible: vi.fn().mockResolvedValue(false) };
+      const mockPage = {
+        locator: vi.fn().mockReturnValue({
+          all: vi.fn().mockResolvedValue([mockElement])
+        })
+      };
+
+      const result = await human.findElement(mockPage, ['.selector1'], { visibleOnly: false });
+
+      expect(result.element).toBe(mockElement);
+      expect(result.selector).toBe('.selector1');
+      expect(result.index).toBe(0);
+    });
+
+    it('should handle element visibility errors', async () => {
+      const mockElement = { isVisible: vi.fn().mockRejectedValue(new Error('boom')) };
+      const mockPage = {
+        locator: vi.fn().mockReturnValue({
+          all: vi.fn().mockResolvedValue([mockElement])
+        })
+      };
+
+      const result = await human.findElement(mockPage, ['.selector1']);
+
+      expect(result.element).toBe(null);
+      expect(result.selector).toBe(null);
+    });
+
+    it('should handle locator errors and continue searching', async () => {
+      const mockElement = { isVisible: vi.fn().mockResolvedValue(true) };
+      const mockPage = {
+        locator: vi.fn()
+          .mockImplementationOnce(() => { throw new Error('bad selector'); })
+          .mockReturnValue({
+            all: vi.fn().mockResolvedValue([mockElement])
+          })
+      };
+
+      const result = await human.findElement(mockPage, ['.bad', '.good']);
+
+      expect(result.element).toBe(mockElement);
+      expect(result.selector).toBe('.good');
+    });
+
+    it('should stop searching when timeout is exceeded', async () => {
+      const nowSpy = vi.spyOn(Date, 'now');
+      nowSpy.mockReturnValueOnce(0).mockReturnValueOnce(6000);
+      const mockPage = {
+        locator: vi.fn().mockReturnValue({
+          all: vi.fn().mockResolvedValue([])
+        })
+      };
+
+      const result = await human.findElement(mockPage, ['.selector1'], { timeout: 5000 });
+
+      expect(result.element).toBe(null);
+      nowSpy.mockRestore();
+    });
   });
 
   describe('verifyComposerOpen', () => {
@@ -161,6 +241,17 @@ describe('HumanInteraction', () => {
             isVisible: vi.fn().mockResolvedValue(false)
           })
         })
+      };
+
+      const result = await human.verifyComposerOpen(mockPage);
+
+      expect(result.open).toBe(false);
+      expect(result.selector).toBe(null);
+    });
+
+    it('should handle selector errors while checking composer', async () => {
+      const mockPage = {
+        locator: vi.fn().mockImplementation(() => { throw new Error('bad selector'); })
       };
 
       const result = await human.verifyComposerOpen(mockPage);
@@ -191,6 +282,778 @@ describe('HumanInteraction', () => {
       const result = await human.verifyPostSent(mockPage);
 
       expect(result.sent).toBe(false);
+    });
+
+    it('should confirm send when url changes after checks', async () => {
+      const mockElementBuilder = (count, visible) => ({
+        count: vi.fn().mockResolvedValue(count),
+        innerText: vi.fn().mockResolvedValue(''),
+        isVisible: vi.fn().mockResolvedValue(visible)
+      });
+
+      const mockPage = {
+        locator: vi.fn().mockImplementation((selector) => {
+          if (selector === '[data-testid="tweetTextarea_0"]') {
+            return mockElementBuilder(1, true);
+          }
+          return mockElementBuilder(0, false);
+        }),
+        url: vi.fn().mockReturnValue('https://x.com/home')
+      };
+
+      const result = await human.verifyPostSent(mockPage);
+
+      expect(result.method).toBe('url_change');
+    });
+  });
+
+  describe('humanClick without ghost', () => {
+    it('should throw when no page or ghost', async () => {
+      const element = { click: vi.fn().mockResolvedValue(undefined) };
+      await expect(human.humanClick(element, 'NoGhost')).rejects.toThrow('ghost_not_initialized');
+    });
+
+    it('should throw when no page or ghost even if click exists', async () => {
+      const element = { click: vi.fn().mockRejectedValue(new Error('fail')) };
+      await expect(human.humanClick(element, 'NoGhostFail')).rejects.toThrow('ghost_not_initialized');
+    });
+  });
+
+  describe('safeHumanClick failures', () => {
+    it('should return false after retries', async () => {
+      vi.useFakeTimers();
+      vi.spyOn(human, 'humanClick').mockRejectedValue(new Error('fail'));
+      const resultPromise = human.safeHumanClick({}, 'RetryFail', 2);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+      expect(result).toBe(false);
+      expect(human.humanClick).toHaveBeenCalledTimes(2);
+      vi.useRealTimers();
+    });
+  });
+
+  describe('verifyComposerOpen success paths', () => {
+    it('should return open: true when composer is visible and valid', async () => {
+      const mockPage = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(1),
+            isVisible: vi.fn().mockResolvedValue(true),
+            boundingBox: vi.fn().mockResolvedValue({ width: 80, height: 40 }),
+            inputValue: vi.fn().mockResolvedValue('draft')
+          })
+        })
+      };
+
+      const result = await human.verifyComposerOpen(mockPage);
+      expect(result.open).toBe(true);
+      expect(result.selector).not.toBe(null);
+    });
+
+    it('should continue when box is too small and then succeed', async () => {
+      let call = 0;
+      const mockPage = {
+        locator: vi.fn().mockImplementation(() => {
+          call += 1;
+          return {
+            first: vi.fn().mockReturnValue({
+              count: vi.fn().mockResolvedValue(1),
+              isVisible: vi.fn().mockResolvedValue(true),
+              boundingBox: vi.fn().mockResolvedValue(call === 1 ? { width: 10, height: 10 } : { width: 80, height: 40 }),
+              inputValue: vi.fn().mockRejectedValue(new Error('no value'))
+            })
+          };
+        })
+      };
+
+      const result = await human.verifyComposerOpen(mockPage);
+      expect(result.open).toBe(true);
+    });
+
+    it('should detect composer on second pass', async () => {
+      vi.useFakeTimers();
+      const selectors = [
+        '[data-testid="tweetTextarea_0"]',
+        '[contenteditable="true"][role="textbox"]',
+        '[data-testid="tweetTextarea"]',
+        '[class*="composer"] textarea',
+        'textarea[placeholder*="Post your reply"]',
+        'textarea[placeholder*="What\'s happening"]',
+        '[role="textbox"][contenteditable="true"]'
+      ];
+      let callCount = 0;
+      const mockPage = {
+        locator: vi.fn().mockImplementation(() => {
+          callCount += 1;
+          const isLate = callCount > selectors.length;
+          return {
+            first: vi.fn().mockReturnValue({
+              count: vi.fn().mockResolvedValue(isLate ? 1 : 0),
+              isVisible: vi.fn().mockResolvedValue(isLate),
+              boundingBox: vi.fn().mockResolvedValue(isLate ? { width: 80, height: 40 } : null),
+              inputValue: vi.fn().mockResolvedValue('')
+            })
+          };
+        })
+      };
+
+      const resultPromise = human.verifyComposerOpen(mockPage);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+      expect(result.open).toBe(true);
+      vi.useRealTimers();
+    });
+  });
+
+  describe('verifyPostSent success paths', () => {
+    it('should return sent: true when toast is found', async () => {
+      const mockPage = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '[data-testid="toast"]' ? 1 : 0),
+            innerText: vi.fn().mockResolvedValue('sent'),
+            isVisible: vi.fn().mockResolvedValue(true)
+          })
+        })),
+        url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
+      };
+
+      const result = await human.verifyPostSent(mockPage);
+      expect(result.sent).toBe(true);
+    });
+
+    it('should handle innerText errors when toast is found', async () => {
+      const mockPage = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '[data-testid="toast"]' ? 1 : 0),
+            innerText: vi.fn().mockRejectedValue(new Error('fail')),
+            isVisible: vi.fn().mockResolvedValue(true)
+          })
+        })),
+        url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
+      };
+
+      const result = await human.verifyPostSent(mockPage);
+      expect(result.sent).toBe(true);
+    });
+
+    it('should return sent: true when composer is closed', async () => {
+      const mockPage = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 0 : 0),
+            innerText: vi.fn().mockResolvedValue(''),
+            isVisible: vi.fn().mockResolvedValue(false)
+          })
+        })),
+        url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
+      };
+
+      const result = await human.verifyPostSent(mockPage);
+      expect(result.sent).toBe(true);
+    });
+
+    it('should return sent: true when url changes', async () => {
+      const mockPage = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 1 : 0),
+            innerText: vi.fn().mockResolvedValue(''),
+            isVisible: vi.fn().mockResolvedValue(false)
+          })
+        })),
+        url: vi.fn().mockReturnValue('https://x.com/home')
+      };
+
+      const result = await human.verifyPostSent(mockPage);
+      expect(result.sent).toBe(true);
+    });
+
+    it('should return sent: true when composer closes after wait', async () => {
+      vi.useFakeTimers();
+      const mockPage = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 1 : 0),
+            innerText: vi.fn().mockResolvedValue(''),
+            isVisible: vi.fn().mockResolvedValue(false)
+          }),
+          isVisible: vi.fn().mockResolvedValue(selector !== '[data-testid="tweetTextarea_0"]')
+        })),
+        url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
+      };
+
+      const resultPromise = human.verifyPostSent(mockPage);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+      expect(result.method).toBe('composer_closed');
+      vi.useRealTimers();
+    });
+
+    it('should confirm composer closed after wait when initial checks fail', async () => {
+      vi.useFakeTimers();
+      const mockPage = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 1 : 0),
+            innerText: vi.fn().mockResolvedValue(''),
+            isVisible: vi.fn().mockResolvedValue(false)
+          }),
+          isVisible: vi.fn().mockResolvedValue(false)
+        })),
+        url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
+      };
+
+      const resultPromise = human.verifyPostSent(mockPage);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+      expect(result.method).toBe('composer_closed');
+      vi.useRealTimers();
+    });
+
+    it('should treat composer visibility errors as closed after wait', async () => {
+      vi.useFakeTimers();
+      const mockPage = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(0),
+            innerText: vi.fn().mockResolvedValue(''),
+            isVisible: vi.fn().mockResolvedValue(false)
+          }),
+          isVisible: vi.fn().mockRejectedValue(new Error('vis fail'))
+        })),
+        url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
+      };
+
+      const resultPromise = human.verifyPostSent(mockPage);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+      expect(result.sent).toBe(true);
+      vi.useRealTimers();
+    });
+
+    it('should return sent: true when timeline return is detected', async () => {
+      vi.useFakeTimers();
+      const urlSpy = vi.fn()
+        .mockReturnValueOnce('https://x.com/compose/tweet')
+        .mockReturnValueOnce('https://x.com/home');
+      const mockPage = {
+        locator: vi.fn().mockImplementation(() => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(1),
+            innerText: vi.fn().mockResolvedValue(''),
+            isVisible: vi.fn().mockResolvedValue(true)
+          }),
+          isVisible: vi.fn().mockResolvedValue(true)
+        })),
+        url: urlSpy
+      };
+
+      const resultPromise = human.verifyPostSent(mockPage);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+      expect(result.sent).toBe(true);
+      vi.useRealTimers();
+    });
+  });
+
+  describe('typeText', () => {
+    it('should type text and use fallback click when not focused', async () => {
+      vi.useFakeTimers();
+      vi.spyOn(Math, 'random').mockReturnValue(0.99);
+      const page = {
+        keyboard: { press: vi.fn(), type: vi.fn() },
+        evaluate: vi.fn().mockResolvedValue({
+          tagName: 'DIV',
+          isContentEditable: false,
+          hasFocus: false
+        })
+      };
+      const inputEl = { click: vi.fn().mockResolvedValue(undefined) };
+      vi.spyOn(human, 'ensureFocus').mockResolvedValue(false);
+
+      const resultPromise = human.typeText(page, 'ab', inputEl);
+      await vi.runAllTimersAsync();
+      await resultPromise;
+
+      expect(inputEl.click).toHaveBeenCalled();
+      expect(page.keyboard.type).toHaveBeenCalledTimes(2);
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+    });
+
+    it('should apply punctuation and thinking pauses', async () => {
+      vi.useFakeTimers();
+      vi.spyOn(Math, 'random').mockReturnValue(0.01);
+      const page = {
+        keyboard: { press: vi.fn(), type: vi.fn() },
+        evaluate: vi.fn().mockResolvedValue({
+          tagName: 'TEXTAREA',
+          isContentEditable: true,
+          hasFocus: true
+        })
+      };
+      const inputEl = { click: vi.fn().mockResolvedValue(undefined) };
+      vi.spyOn(human, 'ensureFocus').mockResolvedValue(true);
+
+      const resultPromise = human.typeText(page, 'a b!', inputEl);
+      await vi.runAllTimersAsync();
+      await resultPromise;
+
+      expect(page.keyboard.type).toHaveBeenCalledTimes(4);
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+    });
+
+    it('should log when clear text fails', async () => {
+      vi.useFakeTimers();
+      const page = {
+        keyboard: { press: vi.fn(), type: vi.fn() },
+        evaluate: vi.fn().mockResolvedValue({
+          tagName: 'TEXTAREA',
+          isContentEditable: true,
+          hasFocus: true
+        })
+      };
+      const inputEl = { click: vi.fn().mockResolvedValue(undefined) };
+      vi.spyOn(human, 'humanClick').mockRejectedValue(new Error('clear fail'));
+      vi.spyOn(human, 'ensureFocus').mockResolvedValue(true);
+
+      const resultPromise = human.typeText(page, 'a', inputEl);
+      await vi.runAllTimersAsync();
+      await resultPromise;
+
+      vi.useRealTimers();
+    });
+
+    it('should use active element data when evaluate executes in test context', async () => {
+      vi.useFakeTimers();
+      vi.spyOn(Math, 'random').mockReturnValue(0.99);
+      global.document = {
+        activeElement: {
+          tagName: 'TEXTAREA',
+          getAttribute: () => 'true'
+        },
+        querySelector: () => global.document.activeElement
+      };
+      const page = {
+        keyboard: { press: vi.fn(), type: vi.fn() },
+        evaluate: vi.fn().mockImplementation((fn) => fn())
+      };
+      const inputEl = { click: vi.fn().mockResolvedValue(undefined) };
+      vi.spyOn(human, 'ensureFocus').mockResolvedValue(true);
+
+      const resultPromise = human.typeText(page, 'a', inputEl);
+      await vi.runAllTimersAsync();
+      await resultPromise;
+
+      expect(page.evaluate).toHaveBeenCalled();
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+      delete global.document;
+    });
+  });
+
+  describe('ensureFocus', () => {
+    it('should succeed with strategy 1', async () => {
+      const page = {
+        evaluate: vi.fn().mockResolvedValue(true)
+      };
+      const element = { focus: vi.fn(), click: vi.fn() };
+      human.page = page;
+      vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
+      const result = await human.ensureFocus(page, element);
+      expect(result).toBe(true);
+    });
+
+    it('should succeed with strategy 2', async () => {
+      const page = {
+        evaluate: vi.fn().mockResolvedValue(true)
+      };
+      const element = { focus: vi.fn().mockResolvedValue(undefined), click: vi.fn() };
+      human.page = page;
+      vi.spyOn(human, 'humanClick').mockRejectedValue(new Error('fail'));
+      const result = await human.ensureFocus(page, element);
+      expect(result).toBe(true);
+    });
+
+    it('should fail when all strategies fail', async () => {
+      const page = {
+        evaluate: vi.fn().mockResolvedValue(false)
+      };
+      const element = {
+        focus: vi.fn().mockRejectedValue(new Error('fail')),
+        click: vi.fn().mockRejectedValue(new Error('fail'))
+      };
+      human.page = page;
+      vi.spyOn(human, 'humanClick').mockRejectedValue(new Error('fail'));
+      const result = await human.ensureFocus(page, element);
+      expect(result).toBe(false);
+    });
+
+    it('should succeed with strategy 3 after other strategies fail', async () => {
+      vi.useFakeTimers();
+      global.document = {
+        activeElement: {
+          tagName: 'INPUT',
+          getAttribute: () => null
+        }
+      };
+      const page = {
+        evaluate: vi.fn().mockImplementation((fn) => fn())
+      };
+      const element = {
+        focus: vi.fn().mockRejectedValue(new Error('fail')),
+        click: vi.fn().mockResolvedValue(undefined)
+      };
+      human.page = page;
+      vi.spyOn(human, 'humanClick').mockRejectedValue(new Error('fail'));
+
+      const resultPromise = human.ensureFocus(page, element);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+      expect(result).toBe(false);
+      vi.useRealTimers();
+      delete global.document;
+    });
+
+    it('should set page reference when different page is provided', async () => {
+      const page = {
+        evaluate: vi.fn().mockResolvedValue(true)
+      };
+      const element = { focus: vi.fn(), click: vi.fn() };
+      const setPageSpy = vi.spyOn(human, 'setPage');
+      vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
+
+      const result = await human.ensureFocus(page, element);
+
+      expect(result).toBe(true);
+      expect(setPageSpy).toHaveBeenCalledWith(page);
+    });
+
+    it('should handle evaluate errors during focus verification', async () => {
+      const page = {
+        evaluate: vi.fn().mockRejectedValue(new Error('eval fail'))
+      };
+      const element = { focus: vi.fn().mockRejectedValue(new Error('fail')), click: vi.fn() };
+      human.page = page;
+      vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
+
+      const result = await human.ensureFocus(page, element);
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('postTweet', () => {
+    it('should return success when ctrl+enter works', async () => {
+      const page = { keyboard: { press: vi.fn() } };
+      vi.spyOn(human, 'verifyPostSent').mockResolvedValue({ sent: true, method: 'ctrl_enter' });
+      const result = await human.postTweet(page);
+      expect(result.success).toBe(true);
+    });
+
+    it('should fallback to button click when ctrl+enter fails', async () => {
+      const page = {
+        keyboard: { press: vi.fn() },
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(1),
+            isVisible: vi.fn().mockResolvedValue(true)
+          })
+        })
+      };
+      vi.spyOn(human, 'verifyPostSent')
+        .mockResolvedValueOnce({ sent: false })
+        .mockResolvedValueOnce({ sent: true });
+      vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
+      const result = await human.postTweet(page);
+      expect(result.success).toBe(true);
+    });
+
+    it('should return failure when button click throws and no method works', async () => {
+      const page = {
+        keyboard: { press: vi.fn() },
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetButton"]' ? 1 : 0),
+            isVisible: vi.fn().mockResolvedValue(true)
+          })
+        }))
+      };
+      vi.spyOn(human, 'verifyPostSent').mockResolvedValue({ sent: false });
+      vi.spyOn(human, 'humanClick').mockRejectedValue(new Error('click fail'));
+
+      const result = await human.postTweet(page);
+
+      expect(result.success).toBe(false);
+      expect(result.reason).toBe('post_failed');
+    });
+  });
+
+  describe('fallback helpers', () => {
+    it('should find element with fallback selectors', async () => {
+      human.page = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '.hit' ? 1 : 0),
+            isVisible: vi.fn().mockResolvedValue(true)
+          })
+        }))
+      };
+      const result = await human.findWithFallback(['.miss', '.hit']);
+      expect(result.selector).toBe('.hit');
+    });
+
+    it('should skip invisible elements and try next selector', async () => {
+      let call = 0;
+      human.page = {
+        locator: vi.fn().mockImplementation(() => {
+          call += 1;
+          return {
+            first: vi.fn().mockReturnValue({
+              count: vi.fn().mockResolvedValue(1),
+              isVisible: vi.fn().mockResolvedValue(call !== 1)
+            })
+          };
+        })
+      };
+      const result = await human.findWithFallback(['.first', '.second']);
+      expect(result.selector).toBe('.second');
+    });
+
+    it('should return element when visibility checks are disabled', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(1),
+            isVisible: vi.fn().mockResolvedValue(false)
+          })
+        })
+      };
+      const result = await human.findWithFallback(['.hit'], { visible: false });
+      expect(result.selector).toBe('.hit');
+    });
+
+    it('should handle errors when searching fallback selectors', async () => {
+      human.page = {
+        locator: vi.fn().mockImplementation(() => {
+          throw new Error('bad selector');
+        })
+      };
+      const result = await human.findWithFallback(['.bad']);
+      expect(result).toBe(null);
+    });
+
+    it('should treat visibility errors as not visible in fallback search', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(1),
+            isVisible: vi.fn().mockRejectedValue(new Error('vis fail'))
+          })
+        })
+      };
+      const result = await human.findWithFallback(['.hit']);
+      expect(result).toBe(null);
+    });
+
+    it('should return null when fallback selectors fail', async () => {
+      const nowSpy = vi.spyOn(Date, 'now');
+      nowSpy.mockReturnValueOnce(0).mockReturnValueOnce(10);
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(0),
+            isVisible: vi.fn().mockResolvedValue(false)
+          })
+        })
+      };
+      const result = await human.findWithFallback(['.miss'], { timeout: 5 });
+      expect(result).toBe(null);
+      nowSpy.mockRestore();
+    });
+
+    it('should find all visible elements with fallback', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          count: vi.fn().mockResolvedValue(2),
+          nth: vi.fn().mockImplementation(() => ({
+            isVisible: vi.fn().mockResolvedValue(true)
+          }))
+        })
+      };
+      const result = await human.findAllWithFallback(['.hit']);
+      expect(result.length).toBe(2);
+    });
+
+    it('should include elements when visibility check is disabled', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          count: vi.fn().mockResolvedValue(2),
+          nth: vi.fn().mockImplementation(() => ({
+            isVisible: vi.fn().mockResolvedValue(false)
+          }))
+        })
+      };
+      const result = await human.findAllWithFallback(['.hit'], { visible: false });
+      expect(result.length).toBe(2);
+    });
+
+    it('should handle selector errors when finding all fallback elements', async () => {
+      human.page = {
+        locator: vi.fn().mockImplementation(() => { throw new Error('bad selector'); })
+      };
+      const result = await human.findAllWithFallback(['.bad']);
+      expect(result).toEqual([]);
+    });
+
+    it('should skip invisible elements when visibility is required', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          count: vi.fn().mockResolvedValue(2),
+          nth: vi.fn().mockImplementation(() => ({
+            isVisible: vi.fn().mockRejectedValue(new Error('vis fail'))
+          }))
+        })
+      };
+      const result = await human.findAllWithFallback(['.hit'], { visible: true });
+      expect(result.length).toBe(0);
+    });
+
+    it('should return empty list when no elements found', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          count: vi.fn().mockResolvedValue(0),
+          nth: vi.fn()
+        })
+      };
+      const result = await human.findAllWithFallback(['.miss']);
+      expect(result).toEqual([]);
+    });
+
+    it('should click with fallback selectors', async () => {
+      human.page = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '.hit' ? 1 : 0),
+            isVisible: vi.fn().mockResolvedValue(selector === '.hit')
+          })
+        }))
+      };
+      vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
+      const result = await human.clickWithFallback(['.miss', '.hit'], 'Target');
+      expect(result).toBe(true);
+    });
+
+    it('should handle selector errors during click fallback', async () => {
+      human.page = {
+        locator: vi.fn().mockImplementation(() => { throw new Error('bad selector'); })
+      };
+      const result = await human.clickWithFallback(['.bad'], 'Target');
+      expect(result).toBe(false);
+    });
+
+    it('should return false when click fallback fails', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(0),
+            isVisible: vi.fn().mockResolvedValue(false)
+          })
+        })
+      };
+      const result = await human.clickWithFallback(['.miss'], 'Target');
+      expect(result).toBe(false);
+    });
+
+    it('should skip elements that error on visibility check in click fallback', async () => {
+      human.page = {
+        locator: vi.fn().mockImplementation((selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(selector === '.hit' ? 1 : 0),
+            isVisible: vi.fn().mockRejectedValue(new Error('vis fail'))
+          })
+        }))
+      };
+      const result = await human.clickWithFallback(['.hit'], 'Target');
+      expect(result).toBe(false);
+    });
+
+    it('should wait for element with fallback', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            waitFor: vi.fn().mockResolvedValue(undefined),
+            isVisible: vi.fn().mockResolvedValue(true)
+          })
+        })
+      };
+      const result = await human.waitForWithFallback(['.hit']);
+      expect(result.selector).toBe('.hit');
+    });
+
+    it('should return element when wait fallback is visible', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            waitFor: vi.fn().mockResolvedValue(undefined),
+            isVisible: vi.fn().mockResolvedValue(true)
+          })
+        })
+      };
+      const result = await human.waitForWithFallback(['.hit'], { visible: true });
+      expect(result.selector).toBe('.hit');
+    });
+
+    it('should return element when visibility is disabled for wait fallback', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            waitFor: vi.fn().mockResolvedValue(undefined),
+            isVisible: vi.fn().mockResolvedValue(false)
+          })
+        })
+      };
+      const result = await human.waitForWithFallback(['.hit'], { visible: false });
+      expect(result.selector).toBe('.hit');
+    });
+
+    it('should continue when wait fallback element is not visible', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            waitFor: vi.fn().mockResolvedValue(undefined),
+            isVisible: vi.fn().mockResolvedValue(false)
+          })
+        })
+      };
+      const result = await human.waitForWithFallback(['.miss'], { visible: true });
+      expect(result).toBe(null);
+    });
+
+    it('should return null when wait fallback fails', async () => {
+      human.page = {
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
+            waitFor: vi.fn().mockRejectedValue(new Error('fail')),
+            isVisible: vi.fn().mockResolvedValue(false)
+          })
+        })
+      };
+      const result = await human.waitForWithFallback(['.miss']);
+      expect(result).toBe(null);
+    });
+  });
+
+  describe('logWarn', () => {
+    it('should log warn messages', () => {
+      const originalLog = console.log;
+      console.log = vi.fn();
+      human.logWarn('warn');
+      expect(console.log).toHaveBeenCalled();
+      console.log = originalLog;
     });
   });
 
@@ -228,6 +1091,17 @@ describe('HumanInteraction', () => {
       expect(console.log).toHaveBeenCalled();
       console.log = originalLog;
     });
+
+    it('should log step without details', () => {
+      human.debugMode = true;
+      const originalLog = console.log;
+      console.log = vi.fn();
+
+      human.logStep('TestStep');
+
+      expect(console.log).toHaveBeenCalled();
+      console.log = originalLog;
+    });
   });
 });
 
@@ -237,6 +1111,7 @@ describe('HumanInteraction with GhostCursor', () => {
   let mockElement;
 
   beforeEach(() => {
+    vi.useRealTimers();
     mockPage = {
       mouse: { move: vi.fn(), click: vi.fn() },
       evaluate: vi.fn(),
@@ -255,37 +1130,44 @@ describe('HumanInteraction with GhostCursor', () => {
 
   describe('humanClick', () => {
     it('should scroll element into view before clicking', async () => {
+      human.ghost = { click: vi.fn().mockResolvedValue({ success: true }) };
       await human.humanClick(mockElement, 'Test Element');
 
       expect(mockElement.evaluate).toHaveBeenCalled();
     });
 
-    it('should get bounding box before clicking', async () => {
+    it('should call ghost click', async () => {
+      human.ghost = { click: vi.fn().mockResolvedValue({ success: true }) };
       await human.humanClick(mockElement, 'Test Element');
 
-      expect(mockElement.boundingBox).toHaveBeenCalled();
+      expect(human.ghost.click).toHaveBeenCalled();
     });
 
-    it('should call fallback when element has no bounding box', async () => {
-      mockElement.boundingBox.mockResolvedValue(null);
-      mockElement.click = vi.fn().mockResolvedValue(undefined);
-
-      await human.humanClick(mockElement, 'Test Element');
-
-      expect(mockElement.click).toHaveBeenCalled();
+    it('should reject when ghost click fails', async () => {
+      human.ghost = { click: vi.fn().mockResolvedValue({ success: false }) };
+      await expect(human.humanClick(mockElement, 'Test Element')).rejects.toThrow('ghost_click_failed');
     });
 
-    it('should fallback to native click when ghost click fails', async () => {
-      mockElement.click.mockResolvedValue(undefined);
+    it('should execute element evaluate callback when provided', async () => {
+      const scrollSpy = vi.fn();
+      mockElement.evaluate = vi.fn().mockImplementation((fn) => fn({ scrollIntoView: scrollSpy }));
+      human.ghost = { click: vi.fn().mockResolvedValue({ success: true }) };
 
       await human.humanClick(mockElement, 'Test Element');
 
-      expect(mockElement.click).toHaveBeenCalled();
+      expect(scrollSpy).toHaveBeenCalled();
+    });
+
+    it('should throw when ghost click throws', async () => {
+      human.ghost = { click: vi.fn().mockRejectedValue(new Error('ghost fail')) };
+
+      await expect(human.humanClick(mockElement, 'Test Element')).rejects.toThrow('ghost fail');
     });
   });
 
   describe('safeHumanClick', () => {
     it('should return true on successful click', async () => {
+      human.ghost = { click: vi.fn().mockResolvedValue({ success: true }) };
       const result = await human.safeHumanClick(mockElement, 'Test Element', 3);
 
       expect(result).toBe(true);

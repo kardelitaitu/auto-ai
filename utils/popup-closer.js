@@ -1,13 +1,17 @@
 import { createLogger } from './logger.js';
 
 class PopupCloser {
-  constructor(page, logger) {
+  constructor(page, logger, options = {}) {
     this.page = page;
     this.logger = logger || createLogger('popup-closer.js');
-    this.intervalMs = 10000;
+    this.intervalMs = 120000;
     this.timer = null;
     this.lastClosedAt = Date.now();
     this.nextNotifyMinutes = 2;
+    this.lock = options.lock;
+    this.signal = options.signal;
+    this.shouldSkip = options.shouldSkip;
+    this.running = false;
   }
 
   start() {
@@ -26,6 +30,23 @@ class PopupCloser {
 
   async runOnce() {
     if (!this.page || this.page.isClosed()) return;
+    if (this.signal?.aborted) return;
+    if (this.shouldSkip?.()) return;
+    if (this.running) return;
+    this.running = true;
+    try {
+      if (this.lock) {
+        return await this.lock(async () => this._runOnceInternal());
+      }
+      return await this._runOnceInternal();
+    } finally {
+      this.running = false;
+    }
+  }
+
+  async _runOnceInternal() {
+    if (!this.page || this.page.isClosed()) return;
+    if (this.signal?.aborted) return;
     try {
       const btn = this.page.getByRole('button', { name: /Keep less relevant ads/i }).first();
       const count = await btn.count();
@@ -47,11 +68,6 @@ class PopupCloser {
         this.nextNotifyMinutes = 2;
         this.logger.info('[popup-closer] Popup closed');
         return true;
-      }
-      const minutes = Math.floor((Date.now() - this.lastClosedAt) / 60000);
-      if (minutes >= this.nextNotifyMinutes) {
-        this.logger.info(`[popup-closer] No popup in the last ${this.nextNotifyMinutes} minutes`);
-        this.nextNotifyMinutes += 2;
       }
       return false;
     } catch (e) {

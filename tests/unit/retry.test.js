@@ -25,6 +25,55 @@ describe('utils/retry', () => {
         withRetry = module.withRetry;
     });
 
+    describe('calculateBackoffDelay', () => {
+        let calculateBackoffDelay;
+
+        beforeEach(async () => {
+            const module = await import('../../utils/retry.js');
+            calculateBackoffDelay = module.calculateBackoffDelay;
+        });
+
+        it('should calculate delay correctly with default options', () => {
+            const delay = calculateBackoffDelay(1);
+            // attempt 1: baseDelay 1000 * factor 2 ^ 1 = 2000
+            // jitterMultiplier: min(1) === max(1) ? 1 : ... = 1
+            expect(delay).toBe(2000);
+        });
+
+        it('should calculate delay correctly with custom options', () => {
+            const delay = calculateBackoffDelay(2, { baseDelay: 500, factor: 3 });
+            // attempt 2: baseDelay 500 * factor 3 ^ 2 = 500 * 9 = 4500
+            expect(delay).toBe(4500);
+        });
+
+        it('should cap delay at maxDelay', () => {
+            const delay = calculateBackoffDelay(10, { baseDelay: 1000, maxDelay: 5000 });
+            expect(delay).toBe(5000);
+        });
+
+        it('should handle jitter range correctly', () => {
+            const delay = calculateBackoffDelay(1, { 
+                baseDelay: 1000, 
+                jitterMin: 0.5, 
+                jitterMax: 1.5 
+            });
+            // attempt 1: 1000 * 2^1 = 2000
+            // delay * jitterMultiplier: 2000 * [0.5, 1.5] = [1000, 3000]
+            expect(delay).toBeGreaterThanOrEqual(1000);
+            expect(delay).toBeLessThanOrEqual(3000);
+        });
+
+        it('should handle jitter range when jitterMin > jitterMax', () => {
+            const delay = calculateBackoffDelay(1, { 
+                baseDelay: 1000, 
+                jitterMin: 1.5, 
+                jitterMax: 0.5 
+            });
+            expect(delay).toBeGreaterThanOrEqual(1000);
+            expect(delay).toBeLessThanOrEqual(3000);
+        });
+    });
+
     describe('withRetry', () => {
         it('should execute operation successfully on first attempt', async () => {
             const operation = vi.fn().mockResolvedValue('success');

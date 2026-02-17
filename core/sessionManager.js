@@ -26,12 +26,19 @@ class SessionManager {
     this.sessionTimeoutMs = options.sessionTimeoutMs || 30 * 60 * 1000;
     this.cleanupIntervalMs = options.cleanupIntervalMs || 5 * 60 * 1000;
     this.workerLockTimeoutMs = options.workerLockTimeoutMs || 10000;
+    this.workerWaitTimeoutMs = options.workerWaitTimeoutMs || 10000;
+    this.workerWaiterMaxPerSession = options.workerWaiterMaxPerSession || 50;
     this.concurrencyPerBrowser = 1;
+    this.pagePoolMaxPerSession = options.pagePoolMaxPerSession || null;
+    this.pagePoolIdleTimeoutMs = options.pagePoolIdleTimeoutMs || 5 * 60 * 1000;
+    this.pagePoolHealthCheckIntervalMs = options.pagePoolHealthCheckIntervalMs || 30000;
+    this.pagePoolHealthCheckTimeoutMs = options.pagePoolHealthCheckTimeoutMs || 5000;
     this.cleanupInterval = null;
     
     // Worker allocation lock - prevents race conditions
     this.workerLocks = new Map(); // sessionId -> Promise
     this.workerOccupancy = new Map(); // Track worker occupancy for debugging
+    this.workerWaiters = new Map(); // sessionId -> Array of waiters
     
     this.startCleanupTimer();
     this.loadConfiguration();
@@ -49,6 +56,12 @@ class SessionManager {
 
       const settings = await getSettings();
       this.concurrencyPerBrowser = settings.concurrencyPerBrowser || 1;
+      this.pagePoolMaxPerSession = settings?.orchestration?.pagePoolMaxPerSession || settings?.pagePoolMaxPerSession || this.concurrencyPerBrowser;
+      this.pagePoolIdleTimeoutMs = settings?.orchestration?.pagePoolIdleTimeoutMs || settings?.pagePoolIdleTimeoutMs || this.pagePoolIdleTimeoutMs;
+      this.pagePoolHealthCheckIntervalMs = settings?.orchestration?.pagePoolHealthCheckIntervalMs || settings?.pagePoolHealthCheckIntervalMs || this.pagePoolHealthCheckIntervalMs;
+      this.pagePoolHealthCheckTimeoutMs = settings?.orchestration?.pagePoolHealthCheckTimeoutMs || settings?.pagePoolHealthCheckTimeoutMs || this.pagePoolHealthCheckTimeoutMs;
+      this.workerWaitTimeoutMs = settings?.orchestration?.workerWaitTimeoutMs || settings?.workerWaitTimeoutMs || this.workerWaitTimeoutMs;
+      this.workerWaiterMaxPerSession = settings?.orchestration?.workerWaiterMaxPerSession || settings?.workerWaiterMaxPerSession || this.workerWaiterMaxPerSession;
 
       logger.info(`Loaded configuration: session=${this.sessionTimeoutMs}ms, cleanup=${this.cleanupIntervalMs}ms, concurrency=${this.concurrencyPerBrowser}`);
 
@@ -84,7 +97,8 @@ class SessionManager {
       workers,
       createdAt: now,
       lastActivity: now,
-      managedPages: new Set() // Track pages created by this session
+      managedPages: new Set(),
+      pagePool: []
     });
 
     if (browserInfo) {
@@ -122,6 +136,127 @@ class SessionManager {
     }
   }
 
+  _normalizePoolEntry(entry, now) {
+    if (entry && typeof entry === 'object' && 'page' in entry) {
+      return {
+        page: entry.page,
+        lastUsedAt: entry.lastUsedAt ?? now,
+        lastHealthCheckAt: entry.lastHealthCheckAt ?? 0
+      };
+    }
+    return {
+      page: entry,
+      lastUsedAt: now,
+      lastHealthCheckAt: 0
+    };
+  }
+
+  async _isPageHealthy(page) {
+    if (!page || (typeof page.isClosed === 'function' && page.isClosed())) {
+      return false;
+    }
+    if (typeof page.evaluate !== 'function') {
+      return true;
+    }
+
+    const timeoutMs = this.pagePoolHealthCheckTimeoutMs || 5000;
+
+    try {
+      const result = await Promise.race([
+        page.evaluate(() => ({
+          documentReady: document.readyState,
+          bodyExists: !!document.body
+        })),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Page health check timeout')), timeoutMs))
+      ]);
+
+      return result?.documentReady === 'complete' || result?.documentReady === 'interactive' || result?.bodyExists === true;
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  _closePooledPage(sessionId, page) {
+    if (!page) {
+      return;
+    }
+    if (typeof page.close === 'function') {
+      Promise.resolve(page.close()).catch(() => { });
+    }
+    this.unregisterPage(sessionId, page);
+  }
+
+  async acquirePage(sessionId, context) {
+    const session = this.sessions.find(s => s.id === sessionId);
+    if (!session || !context) {
+      return null;
+    }
+
+    const now = Date.now();
+    while (session.pagePool.length > 0) {
+      const entry = this._normalizePoolEntry(session.pagePool.pop(), now);
+      const pooledPage = entry.page;
+      if (!pooledPage) {
+        continue;
+      }
+      if (typeof pooledPage.isClosed === 'function' && pooledPage.isClosed()) {
+        this.unregisterPage(sessionId, pooledPage);
+        continue;
+      }
+      if (this.pagePoolIdleTimeoutMs && now - entry.lastUsedAt > this.pagePoolIdleTimeoutMs) {
+        this._closePooledPage(sessionId, pooledPage);
+        continue;
+      }
+
+      const shouldCheckHealth = this.pagePoolHealthCheckIntervalMs == null || now - entry.lastHealthCheckAt > this.pagePoolHealthCheckIntervalMs;
+      if (shouldCheckHealth) {
+        const healthy = await this._isPageHealthy(pooledPage);
+        if (!healthy) {
+          this._closePooledPage(sessionId, pooledPage);
+          continue;
+        }
+      }
+      return pooledPage;
+    }
+
+    const page = await context.newPage();
+    this.registerPage(sessionId, page);
+    return page;
+  }
+
+  async releasePage(sessionId, page) {
+    const session = this.sessions.find(s => s.id === sessionId);
+    if (!session || !page) {
+      return;
+    }
+
+    if (typeof page.isClosed === 'function' && page.isClosed()) {
+      this.unregisterPage(sessionId, page);
+      return;
+    }
+
+    const maxPoolSize = this.pagePoolMaxPerSession || this.concurrencyPerBrowser || 1;
+    if (session.pagePool.length >= maxPoolSize) {
+      if (typeof page.close === 'function') {
+        await Promise.resolve(page.close()).catch(() => { });
+      }
+      this.unregisterPage(sessionId, page);
+      return;
+    }
+
+    const healthy = await this._isPageHealthy(page);
+    if (!healthy) {
+      this._closePooledPage(sessionId, page);
+      return;
+    }
+
+    session.pagePool.push({
+      page,
+      lastUsedAt: Date.now(),
+      lastHealthCheckAt: Date.now()
+    });
+  }
+
   /**
     * Finds an idle worker in a specific session, marks it as busy, and returns it.
     * Uses atomic locking to prevent race conditions.
@@ -136,49 +271,96 @@ class SessionManager {
     
     const lockPromise = this.workerLocks.get(sessionId);
 
+    let timeoutId;
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Worker lock timeout')), this.workerLockTimeoutMs || 10000);
+      timeoutId = setTimeout(() => reject(new Error('Worker lock timeout')), this.workerLockTimeoutMs || 10000);
     });
 
-    // Create a new promise that waits for the lock and then processes
-    const result = await Promise.race([
-      new Promise((resolve) => {
-        lockPromise.then(() => {
-          const session = this.sessions.find(s => s.id === sessionId);
-          if (!session) {
-            resolve(null);
-            return;
-          }
-
-          const worker = session.workers.find(w => w.status === 'idle');
-          if (worker) {
-            if (session.workers.find(w => w.id === worker.id && w.status === 'idle')) {
-              worker.status = 'busy';
-              worker.occupiedAt = Date.now();
-              worker.occupiedBy = this._getCurrentExecutionContext();
-              
-              const occupancyKey = `${sessionId}:${worker.id}`;
-              this.workerOccupancy.set(occupancyKey, {
-                startTime: Date.now(),
-                context: worker.occupiedBy
-              });
-              
-              logger.debug(`[ATOMIC] Occupied worker ${worker.id} in session ${sessionId} (context: ${worker.occupiedBy})`);
-              resolve(worker);
+    try {
+      const result = await Promise.race([
+        new Promise((resolve) => {
+          lockPromise.then(() => {
+            const session = this.sessions.find(s => s.id === sessionId);
+            if (!session) {
+              resolve(null);
               return;
             }
-          }
 
-          logger.debug(`[ATOMIC] No idle workers available in session ${sessionId}`);
-          resolve(null);
-        }).catch(() => {
-          resolve(null);
-        });
-      }),
-      timeoutPromise
-    ]);
-    
-    return result;
+            const worker = session.workers.find(w => w.status === 'idle');
+            if (worker) {
+              if (session.workers.find(w => w.id === worker.id && w.status === 'idle')) {
+                worker.status = 'busy';
+                worker.occupiedAt = Date.now();
+                worker.occupiedBy = this._getCurrentExecutionContext();
+                
+                const occupancyKey = `${sessionId}:${worker.id}`;
+                this.workerOccupancy.set(occupancyKey, {
+                  startTime: Date.now(),
+                  context: worker.occupiedBy
+                });
+                
+                logger.debug(`[ATOMIC] Occupied worker ${worker.id} in session ${sessionId} (context: ${worker.occupiedBy})`);
+                resolve(worker);
+                return;
+              }
+            }
+
+            logger.debug(`[ATOMIC] No idle workers available in session ${sessionId}`);
+            resolve(null);
+          }).catch(() => {
+            resolve(null);
+          });
+        }),
+        timeoutPromise
+      ]);
+      
+      return result;
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    }
+  }
+
+  _getWorkerWaiters(sessionId) {
+    if (!this.workerWaiters.has(sessionId)) {
+      this.workerWaiters.set(sessionId, []);
+    }
+    return this.workerWaiters.get(sessionId);
+  }
+
+  async acquireWorker(sessionId, options = {}) {
+    const timeoutMs = options.timeoutMs ?? this.workerWaitTimeoutMs;
+    let worker;
+    try {
+      worker = await this.findAndOccupyIdleWorker(sessionId);
+    } catch (error) {
+      logger.warn(`Worker lock failure for session ${sessionId}: ${error.message}`);
+      return null;
+    }
+    if (worker) {
+      return worker;
+    }
+
+    return new Promise(resolve => {
+      const waiters = this._getWorkerWaiters(sessionId);
+      if (this.workerWaiterMaxPerSession && waiters.length >= this.workerWaiterMaxPerSession) {
+        resolve(null);
+        return;
+      }
+      const entry = {
+        resolve,
+        timeoutId: null
+      };
+      entry.timeoutId = setTimeout(() => {
+        const index = waiters.indexOf(entry);
+        if (index !== -1) {
+          waiters.splice(index, 1);
+        }
+        resolve(null);
+      }, timeoutMs);
+      waiters.push(entry);
+    });
   }
 
   /**
@@ -229,6 +411,29 @@ class SessionManager {
         } else {
           logger.warn(`Session ${sessionId} not found to release a worker.`);
         }
+
+        const waiters = this.workerWaiters.get(sessionId);
+        if (waiters && waiters.length > 0) {
+          const next = waiters.shift();
+          if (next?.timeoutId) {
+            clearTimeout(next.timeoutId);
+          }
+          const sessionForWaiter = this.sessions.find(s => s.id === sessionId);
+          const idleWorker = sessionForWaiter?.workers.find(w => w.status === 'idle');
+          if (idleWorker) {
+            idleWorker.status = 'busy';
+            idleWorker.occupiedAt = Date.now();
+            idleWorker.occupiedBy = this._getCurrentExecutionContext();
+            const occupancyKey = `${sessionId}:${idleWorker.id}`;
+            this.workerOccupancy.set(occupancyKey, {
+              startTime: Date.now(),
+              context: idleWorker.occupiedBy
+            });
+            next.resolve(idleWorker);
+          } else {
+            next.resolve(null);
+          }
+        }
         
         resolve();
       });
@@ -248,7 +453,7 @@ class SessionManager {
         const lines = stack.split('\n').slice(2, 4); // Skip Error and this function
         return lines.map(line => line.trim()).join(' | ');
       }
-    } catch (e) {
+    } catch (_e) {
       // Fallback to basic info
     }
     return 'unknown';
@@ -298,6 +503,25 @@ class SessionManager {
     return stuck;
   }
 
+  _cleanupSessionMaps(sessionId) {
+    this.workerLocks.delete(sessionId);
+    for (const key of this.workerOccupancy.keys()) {
+      if (key.startsWith(`${sessionId}:`)) {
+        this.workerOccupancy.delete(key);
+      }
+    }
+    const waiters = this.workerWaiters.get(sessionId);
+    if (waiters && waiters.length > 0) {
+      for (const waiter of waiters) {
+        if (waiter.timeoutId) {
+          clearTimeout(waiter.timeoutId);
+        }
+        waiter.resolve(null);
+      }
+    }
+    this.workerWaiters.delete(sessionId);
+  }
+
   /**
    * Removes a session from the manager.
    * @param {string} id - The ID of the session to remove.
@@ -308,6 +532,7 @@ class SessionManager {
     this.sessions = this.sessions.filter(session => session.id !== id);
     if (this.sessions.length < initialLength) {
       logger.info(`Removed session: ${id}`);
+      this._cleanupSessionMaps(id);
 
       metricsCollector.recordSessionEvent('closed', this.sessions.length);
 
@@ -374,6 +599,7 @@ class SessionManager {
         logger.info(`Session ${session.id} timed out after ${Math.round(sessionAge / 1000)}s. Removing...`);
         this.closeManagedPages(session);
         this.closeSessionBrowser(session);
+        this._cleanupSessionMaps(session.id);
         return false;
       }
       return true;
@@ -384,7 +610,50 @@ class SessionManager {
       logger.info(`Cleanup completed. Removed ${removedCount} timed-out sessions.`);
     }
 
+    this.cleanupIdlePages();
     return removedCount;
+  }
+
+  cleanupIdlePages() {
+    const now = Date.now();
+    let closedCount = 0;
+
+    for (const session of this.sessions) {
+      if (!session.pagePool || session.pagePool.length === 0) {
+        continue;
+      }
+
+      const retained = [];
+      for (const entry of session.pagePool) {
+        const normalized = this._normalizePoolEntry(entry, now);
+        const page = normalized.page;
+        if (!page) {
+          continue;
+        }
+
+        if (typeof page.isClosed === 'function' && page.isClosed()) {
+          this.unregisterPage(session.id, page);
+          closedCount += 1;
+          continue;
+        }
+
+        if (this.pagePoolIdleTimeoutMs && now - normalized.lastUsedAt > this.pagePoolIdleTimeoutMs) {
+          this._closePooledPage(session.id, page);
+          closedCount += 1;
+          continue;
+        }
+
+        retained.push({
+          page,
+          lastUsedAt: normalized.lastUsedAt,
+          lastHealthCheckAt: normalized.lastHealthCheckAt
+        });
+      }
+
+      session.pagePool = retained;
+    }
+
+    return closedCount;
   }
 
   /**
@@ -483,12 +752,12 @@ class SessionManager {
       if (session.managedPages && session.managedPages.size > 0) {
         logger.info(`Closing ${session.managedPages.size} managed pages for session ${session.id}...`);
 
-        const closePromises = Array.from(session.managedPages).map(async (page, index) => {
+        const closePromises = Array.from(session.managedPages).map(async (page, _index) => {
           try {
             await page.close();
-          } catch (e) {
+          } catch (_e) {
             // Ignore errors if page is already closed
-            logger.debug(`[${session.id}] Error closing managed page: ${e.message}`);
+            logger.debug(`[${session.id}] Error closing managed page: ${_e.message}`);
           }
         });
 
@@ -520,6 +789,9 @@ class SessionManager {
     await Promise.allSettled(closePromises);
 
     this.sessions = [];
+    this.workerLocks.clear();
+    this.workerOccupancy.clear();
+    this.workerWaiters.clear();
     logger.info(`Shutdown completed`);
   }
 }
