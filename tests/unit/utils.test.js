@@ -1,48 +1,81 @@
-import { describe, it, expect, vi } from 'vitest';
+/**
+ * @fileoverview Tests for utils.js re-export module
+ * @module tests/unit/utils.test
+ */
 
-describe('utils/utils.js re-exports', () => {
-    it('should export createRandomScroller', async () => {
-        const mod = await import('../../utils/utils.js');
-        expect(mod.createRandomScroller).toBeDefined();
-        expect(typeof mod.createRandomScroller).toBe('function');
+import { describe, it, expect } from 'vitest';
+import {
+  createRandomScroller,
+  createRandomZoomer,
+  createLogger,
+  ApiHandler,
+  metricsCollector,
+  MetricsCollector,
+  getEnv,
+  isDevelopment,
+  isProduction
+} from '../../utils/utils.js';
+
+describe('utils.js re-exports', () => {
+  describe('randomScrolling', () => {
+    it('should export createRandomScroller function', () => {
+      expect(typeof createRandomScroller).toBe('function');
+    });
+  });
+
+  describe('randomZoom', () => {
+    it('should export createRandomZoomer function', () => {
+      expect(typeof createRandomZoomer).toBe('function');
+    });
+  });
+
+  describe('logger', () => {
+    it('should export createLogger function', () => {
+      expect(typeof createLogger).toBe('function');
+    });
+  });
+
+  describe('apiHandler', () => {
+    it('should export ApiHandler class', () => {
+      expect(typeof ApiHandler).toBe('function');
+      // Check if it's a constructor (class)
+      expect(ApiHandler.prototype).toBeDefined();
+    });
+  });
+
+  describe('metrics', () => {
+    it('should export metricsCollector as default', () => {
+      expect(metricsCollector).toBeDefined();
+      expect(typeof metricsCollector).toBe('object');
     });
 
-    it('should export createRandomZoomer', async () => {
-        const mod = await import('../../utils/utils.js');
-        expect(mod.createRandomZoomer).toBeDefined();
-        expect(typeof mod.createRandomZoomer).toBe('function');
+    it('should export MetricsCollector class', () => {
+      expect(typeof MetricsCollector).toBe('function');
+      expect(MetricsCollector.prototype).toBeDefined();
+    });
+  });
+
+  describe('envLoader', () => {
+    it('should export getEnv function', () => {
+      expect(typeof getEnv).toBe('function');
     });
 
-    it('should export createLogger', async () => {
-        const { createLogger } = await import('../../utils/utils.js');
-        expect(createLogger).toBeDefined();
-        expect(typeof createLogger).toBe('function');
+    it('should export isDevelopment function', () => {
+      expect(typeof isDevelopment).toBe('function');
     });
 
-    it('should export ApiHandler', async () => {
-        const { ApiHandler } = await import('../../utils/utils.js');
-        expect(ApiHandler).toBeDefined();
-        expect(typeof ApiHandler).toBe('function');
+    it('should export isProduction function', () => {
+      expect(typeof isProduction).toBe('function');
     });
 
-    it('should export metricsCollector', async () => {
-        const mod = await import('../../utils/utils.js');
-        expect(mod.metricsCollector).toBeDefined();
+    it('isDevelopment should return a boolean', () => {
+      const result = isDevelopment();
+      expect(typeof result).toBe('boolean');
     });
 
-    it('should export MetricsCollector', async () => {
-        const { MetricsCollector } = await import('../../utils/utils.js');
-        expect(MetricsCollector).toBeDefined();
-        expect(typeof MetricsCollector).toBe('function');
+    it('isProduction should return a boolean', () => {
+      const result = isProduction();
+      expect(typeof result).toBe('boolean');
     });
-
-    it('should export env functions', async () => {
-        const { getEnv, isDevelopment, isProduction } = await import('../../utils/utils.js');
-        expect(getEnv).toBeDefined();
-        expect(typeof getEnv).toBe('function');
-        expect(isDevelopment).toBeDefined();
-        expect(typeof isDevelopment).toBe('function');
-        expect(isProduction).toBeDefined();
-        expect(typeof isProduction).toBe('function');
-    });
+  });
 });

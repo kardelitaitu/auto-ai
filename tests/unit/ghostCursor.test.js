@@ -158,8 +158,112 @@ describe('GhostCursor', () => {
         });
 
         it('should use native fallback when element not visible', async () => {
-            // Skip this complex test that depends on specific timing
-            expect(true).toBe(true);
+            const locator = {
+                boundingBox: vi.fn().mockResolvedValue(null),
+                isVisible: vi.fn().mockResolvedValue(false),
+                click: vi.fn().mockResolvedValue()
+            };
+            
+            const result = await cursor.click(locator, { allowNativeFallback: true });
+            
+            expect(result.success).toBe(false);
+            expect(result.usedFallback).toBe(true);
+            expect(locator.click).toHaveBeenCalledWith({ force: true, button: 'left' });
+        });
+
+        it('should use high precision targeting', async () => {
+            const locator = {
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }),
+                isVisible: vi.fn().mockResolvedValue(true)
+            };
+            
+            cursor.previousPos = { x: 110, y: 110 };
+            
+            await cursor.click(locator, { precision: 'high' });
+            
+            expect(page.mouse.down).toHaveBeenCalled();
+        });
+
+        it('should handle click with different mouse buttons', async () => {
+            const locator = {
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }),
+                isVisible: vi.fn().mockResolvedValue(true)
+            };
+            
+            cursor.previousPos = { x: 110, y: 110 };
+            
+            await cursor.click(locator, { button: 'right' });
+            
+            expect(page.mouse.down).toHaveBeenCalledWith({ button: 'right' });
+        });
+
+        it('should handle isVisible error gracefully', async () => {
+            const locator = {
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }),
+                isVisible: vi.fn().mockRejectedValue(new Error('Visibility check failed'))
+            };
+            
+            cursor.previousPos = { x: 110, y: 110 };
+            
+            // Should not throw - error is caught and execution continues
+            await expect(cursor.click(locator)).resolves.not.toThrow();
+        });
+
+        it('should break loop when click throws error', async () => {
+            const locator = {
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }),
+                isVisible: vi.fn().mockResolvedValue(true)
+            };
+            
+            cursor.previousPos = { x: 110, y: 110 };
+            page.mouse.down.mockRejectedValue(new Error('Click failed'));
+            
+            const result = await cursor.click(locator);
+            
+            expect(result.success).toBe(false);
+        });
+
+        it('should use fallback when all tracking attempts exhausted', async () => {
+            const locator = {
+                boundingBox: vi.fn().mockResolvedValue({ x: 1000, y: 1000, width: 50, height: 50 }),
+                isVisible: vi.fn().mockResolvedValue(true),
+                click: vi.fn().mockResolvedValue()
+            };
+            
+            // Mock moveWithHesitation to NOT update position (stay outside box)
+            vi.spyOn(cursor, 'moveWithHesitation').mockImplementation(async () => {
+                // Don't update previousPos - stays at initialization value
+            });
+            
+            // Position outside the box
+            cursor.previousPos = { x: 0, y: 0 };
+            
+            const result = await cursor.click(locator, { allowNativeFallback: true });
+            
+            expect(result.success).toBe(false);
+            expect(result.usedFallback).toBe(true);
+        });
+
+        it('should handle fallback click error', async () => {
+            const locator = {
+                boundingBox: vi.fn().mockResolvedValue({ x: 1000, y: 1000, width: 50, height: 50 }),
+                isVisible: vi.fn().mockResolvedValue(true),
+                click: vi.fn().mockRejectedValue(new Error('Fallback click failed'))
+            };
+            
+            // Mock moveWithHesitation to NOT update position
+            vi.spyOn(cursor, 'moveWithHesitation').mockImplementation(async () => {
+                // Don't update previousPos
+            });
+            
+            // Position outside the box
+            cursor.previousPos = { x: 0, y: 0 };
+            
+            // Should not throw even if fallback fails
+            const result = await cursor.click(locator, { allowNativeFallback: true });
+            
+            expect(result.success).toBe(false);
+            expect(result.usedFallback).toBe(true);
         });
 
         it('should return fallback when bounding box is null', async () => {
