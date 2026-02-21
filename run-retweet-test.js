@@ -11,10 +11,8 @@ async function main() {
     await orchestrator.startDiscovery();
     
     if (orchestrator.sessionManager.activeSessionsCount === 0) {
-        logger.warn("No active browser sessions found. Attempting to launch a new browser instance if possible, or please ensure a browser is running with debugging enabled.");
-        // If discovery failed to find any, we might be stuck. 
-        // But let's try to proceed, maybe Orchestrator has a fallback or we can use Automator directly to launch.
-        // For now, let's assume the user has a browser running as per standard workflow in this project.
+        logger.error("No active browser sessions found. Please ensure a browser is running with debugging enabled (e.g. chrome --remote-debugging-port=9222).");
+        process.exit(1);
     }
     
     // Add the task

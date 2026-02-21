@@ -165,7 +165,7 @@ export class SentimentIntegration {
             
             return {
                 allowed: decision.allowed && decision.shouldEngage,
-                reason: decision.reason,
+                reason: decision.reason || 'Approved by multi-dimensional sentiment analysis',
                 probability: decision.probability,
                 riskLevel: decision.riskLevel,
                 fallback: decision.fallback,

@@ -33,12 +33,12 @@ export const replyMethods = {
             logger.info(`[replyA] Focusing main tweet...`);
             const timeElement = page.locator('article time').first();
             if (await timeElement.count() > 0) {
-                await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3);
+                await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });
                 logger.info(`[replyA] Clicked tweet timestamp`);
             } else {
                 const tweetText = page.locator('[data-testid="tweetText"]').first();
                 if (await tweetText.count() > 0) {
-                    await human.safeHumanClick(tweetText, 'Tweet Text', 3);
+                    await human.safeHumanClick(tweetText, 'Tweet Text', 3, { precision: 'high' });
                     logger.info(`[replyA] Clicked tweet text (fallback)`);
                 }
             }
@@ -51,14 +51,14 @@ export const replyMethods = {
 
             // Verify composer opened
             const verify = await human.verifyComposerOpen(page);
-            
+
             if (verify.open) {
                 // composerOpened = true; // Unused assignment
                 logger.info(`[replyA] Composer opened with: ${verify.selector}`);
-                
+
                 await human.typeText(page, text, verify.locator || page.locator(verify.selector).first());
                 const postResult = await human.postTweet(page);
-                
+
                 if (postResult.success) {
                     logger.info(`[replyA] Reply posted successfully`);
                     return { success: true, method: 'replyA' };
@@ -67,7 +67,7 @@ export const replyMethods = {
                     return { success: false, method: 'replyA', reason: postResult.reason };
                 }
             }
-            
+
             logger.warn(`[replyA] Composer did not open on attempt ${attempt + 1}`);
             attempt++;
         }
@@ -81,12 +81,13 @@ export const replyMethods = {
      */
     replyB: async (page, text, human, logger, _options = {}) => {
         logger.info(`[replyB] Starting button click method`);
-        
+
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.waitForTimeout(500);
 
-        const btnResult = await human.findElement(page, 
-            ['[data-testid="replyEdge"]', '[data-testid="reply"]'], 
+        // Enhanced button finding with more detailed logging
+        const btnResult = await human.findElement(page,
+            ['[data-testid="replyEdge"]', '[data-testid="reply"]', '[aria-label*="Reply"]', '[role="button"][data-testid="reply"]'],
             { visibleOnly: true }
         );
 
@@ -95,29 +96,70 @@ export const replyMethods = {
             return { success: false, method: 'replyB', reason: 'button_not_found' };
         }
 
+        // Get detailed element info for logging
+        const elementInfo = await btnResult.element.evaluate(el => {
+            return {
+                tagName: el.tagName,
+                text: el.innerText,
+                ariaLabel: el.getAttribute('aria-label'),
+                disabled: el.disabled || el.getAttribute('aria-disabled') === 'true',
+                rect: el.getBoundingClientRect()
+            };
+        });
+
+        const box = await btnResult.element.boundingBox();
         logger.info(`[replyB] Found button: ${btnResult.selector}`);
-        
+        logger.info(`[replyB] Button Details: Tag=${elementInfo.tagName}, Label="${elementInfo.ariaLabel}", Text="${elementInfo.text}", Disabled=${elementInfo.disabled}`);
+        logger.info(`[replyB] Bounding Box: x=${box?.x}, y=${box?.y}, w=${box?.width}, h=${box?.height}`);
+
+        if (elementInfo.disabled) {
+            logger.warn(`[replyB] Reply button is disabled! Waiting...`);
+            await page.waitForTimeout(1000);
+            const isDisabled = await btnResult.element.evaluate(el => el.disabled || el.getAttribute('aria-disabled') === 'true');
+            if (isDisabled) {
+                logger.warn(`[replyB] Reply button still disabled. Attempting to click anyway.`);
+            } else {
+                logger.info(`[replyB] Reply button became enabled.`);
+            }
+        }
+
         await btnResult.element.scrollIntoViewIfNeeded();
         await human.fixation(300, 800);
         await human.microMove(page, 20);
-        await human.safeHumanClick(btnResult.element, 'Reply Button', 3);
-        
-        logger.info(`[replyB] Clicked reply button`);
+
+        // Use high precision for the small reply icon
+        logger.info(`[replyB] Attempting safeHumanClick with high precision...`);
+        const clickResult = await human.safeHumanClick(btnResult.element, 'Reply Button', 3, { precision: 'high' });
+
+        if (!clickResult) {
+            logger.warn(`[replyB] safeHumanClick returned false (failed). Trying force click fallback...`);
+            try {
+                await btnResult.element.click({ force: true });
+                logger.info(`[replyB] Force click executed.`);
+            } catch (e) {
+                logger.error(`[replyB] Force click failed: ${e.message}`);
+                return { success: false, method: 'replyB', reason: 'click_failed' };
+            }
+        } else {
+            logger.info(`[replyB] safeHumanClick successful.`);
+        }
+
         await page.waitForTimeout(2000);
 
         const verify = await human.verifyComposerOpen(page);
         if (!verify.open) {
-            logger.warn(`[replyB] Composer did not open`);
+            logger.warn(`[replyB] Composer did not open after click`);
+            // One retry for click?
             return { success: false, method: 'replyB', reason: 'composer_not_opened' };
         }
 
         logger.info(`[replyB] Composer opened with: ${verify.selector}`);
-        
+
         const composer = verify.locator || page.locator(verify.selector).first();
         await human.typeText(page, text, composer);
-        
-        const postResult = await human.postTweet(page);
-        
+
+        const postResult = await human.postTweet(page, 'reply');
+
         if (postResult.success) {
             logger.info(`[replyB] Reply posted successfully`);
             return { success: true, method: 'replyB' };
@@ -133,7 +175,7 @@ export const replyMethods = {
      */
     replyC: async (page, text, human, logger, _options = {}) => {
         logger.info(`[replyC] Starting direct composer focus method`);
-        
+
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.waitForTimeout(500);
 
@@ -141,7 +183,7 @@ export const replyMethods = {
         logger.info(`[replyC] Focusing main tweet...`);
         const timeElement = page.locator('article time').first();
         if (await timeElement.count() > 0) {
-            await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3);
+            await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });
             logger.info(`[replyC] Clicked tweet timestamp`);
         }
         await page.waitForTimeout(500);
@@ -150,7 +192,7 @@ export const replyMethods = {
         logger.info(`[replyC] Looking for reply box...`);
         const replyBox = page.locator('[data-testid="tweetTextarea_0"]').first();
         let count = await replyBox.count();
-        
+
         if (count === 0) {
             logger.warn(`[replyC] Reply box not visible, scrolling...`);
             await page.evaluate(async () => {
@@ -165,23 +207,23 @@ export const replyMethods = {
         // Re-check after scroll
         const replyBoxAfter = page.locator('[data-testid="tweetTextarea_0"]').first();
         count = await replyBoxAfter.count();
-        
+
         if (count === 0) {
             logger.warn(`[replyC] Reply box still not found`);
             return { success: false, method: 'replyC', reason: 'reply_box_not_found' };
         }
-        
+
         // Verify it has "Post your reply" placeholder
         const placeholderText = await page.evaluate(() => {
             const el = document.querySelector('[data-testid="tweetTextarea_0"]');
             const placeholder = el?.querySelector('#placeholder-tb0p, .public-DraftEditorPlaceholder-inner');
             return placeholder?.textContent || '';
         });
-        
+
         if (!placeholderText.includes('Post your reply')) {
             logger.warn(`[replyC] Placeholder text mismatch: "${placeholderText}"`);
         }
-        
+
         logger.info(`[replyC] Found reply box (placeholder: "${placeholderText}")`);
 
         // Step 3: Click the reply box
@@ -191,8 +233,8 @@ export const replyMethods = {
 
         await replyBoxAfter.scrollIntoViewIfNeeded();
         await page.waitForTimeout(300);
-        
-        await human.safeHumanClick(replyBoxAfter, 'Reply Box', 3);
+
+        await human.safeHumanClick(replyBoxAfter, 'Reply Box', 3, { precision: 'high' });
         logger.info(`[replyC] Clicked reply box`);
         await page.waitForTimeout(300);
 
@@ -200,16 +242,16 @@ export const replyMethods = {
         logger.info(`[replyC] Typing...`);
         await human.typeText(page, text, replyBoxAfter);
 
-        // Step 5: Submit with Ctrl+Enter
+        // Step 5: Submit via ghost-click on the post/reply button
         logger.info(`[replyC] Submitting...`);
-        await page.keyboard.down('Control');
-        await page.keyboard.press('Enter');
-        await page.keyboard.up('Control');
-        
-        await page.waitForTimeout(2000);
-        logger.info(`[replyC] Reply submitted`);
-        
-        return { success: true, method: 'replyC' };
+        const postC = await human.postTweet(page, 'reply');
+        if (postC.success) {
+            logger.info(`[replyC] Reply posted successfully`);
+            return { success: true, method: 'replyC' };
+        } else {
+            logger.warn(`[replyC] Post failed: ${postC.reason}`);
+            return { success: false, method: 'replyC', reason: postC.reason };
+        }
     }
 };
 
@@ -223,14 +265,14 @@ export const quoteMethods = {
      */
     quoteA: async (page, text, human, logger, _options = {}) => {
         logger.info(`[quoteA] Starting keyboard compose method`);
-        
+
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.waitForTimeout(500);
 
         // Click time element to focus tweet
         const quoteTimeElement = page.locator('article time').first();
         if (await quoteTimeElement.count() > 0) {
-            await human.safeHumanClick(quoteTimeElement, 'Tweet Timestamp', 3);
+            await human.safeHumanClick(quoteTimeElement, 'Tweet Timestamp', 3, { precision: 'high' });
             logger.info(`[quoteA] Clicked tweet timestamp`);
         }
         await page.waitForTimeout(500);
@@ -261,14 +303,14 @@ export const quoteMethods = {
 
         // Clear any existing text first
         const composerA = verifyA.locator || page.locator(verifyA.selector).first();
-        await human.safeHumanClick(composerA, 'Quote Composer', 3);
+        await human.safeHumanClick(composerA, 'Quote Composer', 3, { precision: 'high' });
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Delete');
         await page.waitForTimeout(200);
 
         // Type the quote text
         await human.typeText(page, text, composerA);
-        
+
         // Post the quote
         const postA = await human.postTweet(page);
         if (postA.success) {
@@ -286,7 +328,7 @@ export const quoteMethods = {
      */
     quoteB: async (page, text, human, logger, _options = {}) => {
         logger.info(`[quoteB] Starting retweet menu method`);
-        
+
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.waitForTimeout(500);
 
@@ -305,6 +347,7 @@ export const quoteMethods = {
         ];
 
         let retweetBtn = null;
+        let retweetSelector = null;
         for (const selector of retweetSelectors) {
             const elements = await page.locator(selector).all();
             for (const el of elements) {
@@ -312,7 +355,7 @@ export const quoteMethods = {
                     const isVisible = await el.isVisible();
                     if (isVisible) {
                         retweetBtn = el;
-                        logger.info(`[quoteB] Found retweet button: ${selector}`);
+                        retweetSelector = selector;
                         break;
                     }
                 } catch {
@@ -327,17 +370,47 @@ export const quoteMethods = {
             return { success: false, method: 'quoteB', reason: 'retweet_button_not_found' };
         }
 
+        // Get detailed element info for logging
+        const elementInfo = await retweetBtn.evaluate(el => {
+            return {
+                tagName: el.tagName,
+                text: el.innerText,
+                ariaLabel: el.getAttribute('aria-label'),
+                disabled: el.disabled || el.getAttribute('aria-disabled') === 'true',
+                rect: el.getBoundingClientRect()
+            };
+        });
+
+        const box = await retweetBtn.boundingBox();
+        logger.info(`[quoteB] Found retweet button: ${retweetSelector}`);
+        logger.info(`[quoteB] Button Details: Tag=${elementInfo.tagName}, Label="${elementInfo.ariaLabel}", Disabled=${elementInfo.disabled}`);
+        logger.info(`[quoteB] Bounding Box: x=${box?.x}, y=${box?.y}, w=${box?.width}, h=${box?.height}`);
+
         // Click retweet button
         await retweetBtn.scrollIntoViewIfNeeded();
         await human.fixation(300, 800);
         await human.microMove(page, 20);
-        await human.safeHumanClick(retweetBtn, 'Retweet Button', 3);
-        logger.info(`[quoteB] Clicked retweet button`);
+
+        logger.info(`[quoteB] Clicking Retweet button...`);
+        const rtClickResult = await human.safeHumanClick(retweetBtn, 'Retweet Button', 3, { precision: 'high' });
+
+        if (!rtClickResult) {
+            logger.warn(`[quoteB] Failed to click Retweet button (safeHumanClick false). Trying force click...`);
+            try {
+                await retweetBtn.click({ force: true });
+                logger.info(`[quoteB] Force click executed.`);
+            } catch (e) {
+                logger.error(`[quoteB] Force click failed: ${e.message}`);
+                return { success: false, method: 'quoteB', reason: 'retweet_click_failed' };
+            }
+        }
+
         await page.waitForTimeout(1000);
 
-        // Find Quote option in menu
+        // Verify menu opened (look for Quote option)
         logger.info(`[quoteB] Looking for Quote option...`);
         const quoteMenuSelectors = [
+            'a[role="menuitem"][href*="/retweet"]',
             'a[role="menuitem"]:has-text("Quote")',
             '[role="menuitem"]:has-text("Quote")',
             '[data-testid="retweetQuote"]',
@@ -345,6 +418,11 @@ export const quoteMethods = {
         ];
 
         let quoteOption = null;
+        let quoteSelector = null;
+
+        // Wait a bit for menu animation
+        await page.waitForTimeout(500);
+
         for (const selector of quoteMenuSelectors) {
             try {
                 const elements = await page.locator(selector).all();
@@ -352,10 +430,10 @@ export const quoteMethods = {
                     try {
                         const isVisible = await el.isVisible();
                         const text = await el.innerText().catch(() => '');
-                        
+
                         if (isVisible && text.toLowerCase().includes('quote')) {
                             quoteOption = el;
-                            logger.info(`[quoteB] Found Quote option: ${selector}`);
+                            quoteSelector = selector;
                             break;
                         }
                     } catch {
@@ -369,15 +447,31 @@ export const quoteMethods = {
         }
 
         if (!quoteOption) {
-            logger.warn(`[quoteB] Quote option not found in menu`);
+            logger.warn(`[quoteB] Quote option not found in menu. Menu might not have opened.`);
+            // Retry clicking retweet button? For now just fail.
             return { success: false, method: 'quoteB', reason: 'quote_option_not_found' };
         }
+
+        const quoteBox = await quoteOption.boundingBox();
+        logger.info(`[quoteB] Found Quote option: ${quoteSelector} | Box: ${JSON.stringify(quoteBox)}`);
 
         // Click Quote option
         await human.fixation(100, 300);
         await human.microMove(page, 10);
-        await human.safeHumanClick(quoteOption, 'Quote Menu Option', 3);
-        logger.info(`[quoteB] Clicked Quote option`);
+
+        logger.info(`[quoteB] Clicking Quote option...`);
+        const quoteClickResult = await human.safeHumanClick(quoteOption, 'Quote Menu Option', 3, { precision: 'high' });
+        if (!quoteClickResult) {
+            logger.warn(`[quoteB] Failed to click Quote option. Trying force click...`);
+            try {
+                await quoteOption.click({ force: true });
+                logger.info(`[quoteB] Force click executed on Quote option.`);
+            } catch (e) {
+                logger.error(`[quoteB] Force click failed: ${e.message}`);
+                return { success: false, method: 'quoteB', reason: 'quote_click_failed' };
+            }
+        }
+
         await page.waitForTimeout(1500);
 
         // Verify composer is open
@@ -387,18 +481,18 @@ export const quoteMethods = {
             return { success: false, method: 'quoteB', reason: 'composer_not_opened' };
         }
 
-        logger.info(`[quoteB] Quote composer ready`);
+        logger.info(`[quoteB] Quote composer ready with: ${verifyB.selector}`);
 
         // Type and post
         const composerB = verifyB.locator || page.locator(verifyB.selector).first();
-        await human.safeHumanClick(composerB, 'Quote Composer', 3);
+        await human.safeHumanClick(composerB, 'Quote Composer', 3, { precision: 'high' });
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Delete');
         await page.waitForTimeout(200);
-        
+
         await human.typeText(page, text, composerB);
-        
-        const postB = await human.postTweet(page);
+
+        const postB = await human.postTweet(page, 'quote');
         if (postB.success) {
             logger.info(`[quoteB] Quote posted successfully`);
             return { success: true, method: 'quoteB' };
@@ -414,11 +508,11 @@ export const quoteMethods = {
      */
     quoteC: async (page, text, human, logger, _options = {}) => {
         logger.info(`[quoteC] Starting new post + paste URL method`);
-        
+
         // Get current tweet URL
         const currentUrl = page.url();
         logger.info(`[quoteC] Current URL: ${currentUrl}`);
-        
+
         // Close any open menus
         await page.keyboard.press('Escape');
         await page.waitForTimeout(300);
@@ -460,7 +554,7 @@ export const quoteMethods = {
         await composeBtn.scrollIntoViewIfNeeded();
         await human.fixation(300, 800);
         await human.microMove(page, 20);
-        await human.safeHumanClick(composeBtn, 'Compose Button', 3);
+        await human.safeHumanClick(composeBtn, 'Compose Button', 3, { precision: 'high' });
         logger.info(`[quoteC] Clicked Compose button`);
         await page.waitForTimeout(1500);
 
@@ -523,7 +617,7 @@ export async function executeReplyMethod(methodName, page, text, human, logger, 
         logger.error(`[executeReplyMethod] Unknown method: ${methodName}`);
         return { success: false, method: methodName, reason: 'unknown_method' };
     }
-    
+
     logger.info(`[executeReplyMethod] Executing ${methodName}...`);
     return await method(page, text, human, logger, options);
 }
@@ -548,7 +642,7 @@ export async function executeQuoteMethod(methodName, page, text, human, logger, 
         logger.error(`[executeQuoteMethod] Unknown method: ${methodName}`);
         return { success: false, method: methodName, reason: 'unknown_method' };
     }
-    
+
     logger.info(`[executeQuoteMethod] Executing ${methodName}...`);
     return await method(page, text, human, logger, options);
 }

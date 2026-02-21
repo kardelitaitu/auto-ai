@@ -82,8 +82,8 @@ async function scrape() {
                     await acceptBtn.click();
                     await sleep(1000, 2000);
                 }
-            } catch (e) {
-                console.warn('[VED-Scraper] Cookie consent handling failed:', e);
+            } catch (_error) {
+                console.warn('[VED-Scraper] Cookie consent handling failed:', _error);
             }
 
             // Type Query Human-like
@@ -116,7 +116,7 @@ async function scrape() {
                 const hrefs = Array.from(document.querySelectorAll('a[href*="ved="]'))
                     .map(el => {
                         if (!(el instanceof HTMLAnchorElement)) return null;
-                        try { return new URL(el.href).searchParams.get('ved'); } catch (e) { return null; }
+                        try { return new URL(el.href).searchParams.get('ved'); } catch (_error) { return null; }
                     });
 
                 return [...direct, ...hrefs].filter(v => v && v.length > 5);
@@ -145,7 +145,7 @@ async function scrape() {
                     const combined = new Set([...existing, ...cleanList]);
                     cleanList = Array.from(combined);
                 }
-            } catch (e) { console.warn('Could not read existing VEDs, starting fresh.'); }
+            } catch (_error) { console.warn('Could not read existing VEDs, starting fresh.'); }
         }
 
         fs.mkdirSync(path.dirname(outputPath), { recursive: true });
@@ -153,8 +153,8 @@ async function scrape() {
 
         console.log(`[VED-Scraper] Success! Total: ${cleanList.length} unique VEDs saved to ${outputPath}`);
 
-    } catch (e) {
-        console.error('[VED-Scraper] Error:', e);
+    } catch (_error) {
+        console.error('[VED-Scraper] Error:', _error);
     } finally {
         console.log('[VED-Scraper] Closing...');
         await browser.close();

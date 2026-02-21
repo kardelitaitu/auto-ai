@@ -4,9 +4,9 @@
  * @module tests/unit/discovery.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { fileURLToPath } from 'url';
-import path from 'path';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+// import { fileURLToPath } from 'url';
+// import path from 'path';
 
 // Mock dependencies
 vi.mock('fs', () => {

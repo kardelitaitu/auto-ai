@@ -6,11 +6,15 @@
 
 import { createLogger } from './logger.js';
 import { mathUtils } from './mathUtils.js';
-import { config } from './config-service.js';
 
-const logger = createLogger('ai-context-engine.js');
-
+/**
+ * AIContextEngine - Extracts enhanced context from tweets
+ */
 export class AIContextEngine {
+  /**
+   * Creates a new AIContextEngine instance
+   * @param {object} options - Configuration options
+   */
   constructor(options = {}) {
     this.logger = createLogger('ai-context-engine.js');
     
@@ -504,7 +508,7 @@ export class AIContextEngine {
     async extractAuthorFromVisibleText(page, text) {
       try {
         // Try to find the author from the DOM context near tweet text
-        const authorInfo = await page.evaluate((searchText) => {
+        const authorInfo = await page.evaluate((_searchText) => {
           const elements = document.querySelectorAll('[data-testid="User-Name"], [class*="UserName"], [class*="author"]');
           for (const el of elements) {
             const elText = el instanceof HTMLElement ? el.innerText : '';
@@ -846,7 +850,7 @@ export class AIContextEngine {
    * Build enhanced prompt with all context
    */
   buildEnhancedPrompt(context, systemPrompt) {
-    const { tweetText, author, replies, sentiment, tone, conversationType, replySentiment, engagementLevel, metrics } = context;
+    const { author, replies, sentiment, tone, conversationType, replySentiment, engagementLevel, metrics } = context;
 
     let enhancedPrompt = systemPrompt + '\n\n=== CONTEXT ===\n';
 

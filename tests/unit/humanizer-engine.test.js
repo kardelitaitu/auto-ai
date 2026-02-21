@@ -79,8 +79,6 @@ describe('HumanizerEngine', () => {
         });
 
         it('should add extra delay for spaces and punctuation', () => {
-            const spaceTiming = engine._generateKeyDelay(' ');
-            const alphaTiming = engine._generateKeyDelay('a');
             // Since _generateKeyDelay uses gaussianRandom, this might be flaky, 
             // but the logic adds 40ms to the same base.
             // Let's mock gaussianRandom for stability.

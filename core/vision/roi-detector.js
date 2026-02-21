@@ -28,7 +28,7 @@ class RoIDetector {
                 }
             }
             return null;
-        } catch (error) {
+        } catch (_error) {
             return null;
         }
     }

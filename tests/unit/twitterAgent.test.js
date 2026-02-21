@@ -923,11 +923,12 @@ describe('twitterAgent', () => {
 
       expect(mockElement.fill).toHaveBeenCalledWith('Hello');
     });
+    afterEach(() => { vi.useRealTimers(); });
   });
 
   describe('simulateFidget', () => {
     beforeEach(() => {
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.mouse = {
         move: vi.fn().mockResolvedValue(undefined),
         down: vi.fn().mockResolvedValue(undefined),
@@ -960,6 +961,8 @@ describe('twitterAgent', () => {
   });
 
   describe('diveProfile', () => {
+    beforeEach(() => { vi.useFakeTimers(); });
+    afterEach(() => { vi.useRealTimers(); });
     it('should dive into a profile', async () => {
       agent.page.$$eval = vi.fn().mockResolvedValue([0]);
       agent.page.locator = vi.fn().mockImplementation((selector) => {
@@ -982,7 +985,7 @@ describe('twitterAgent', () => {
         };
       });
       agent.page.waitForLoadState = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.url = vi.fn().mockReturnValue('https://x.com/testuser');
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.page.evaluate = vi.fn().mockResolvedValue(undefined);
@@ -1015,15 +1018,20 @@ describe('twitterAgent', () => {
 
   describe('diveTweet', () => {
     beforeEach(() => {
+      vi.useFakeTimers();
       agent.safeHumanClick = vi.fn().mockResolvedValue(undefined);
       agent.navigateHome = vi.fn().mockResolvedValue(undefined);
       agent.ensureForYouTab = vi.fn().mockResolvedValue(undefined);
       agent.page.waitForURL = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       agent.page.goto = vi.fn().mockResolvedValue(undefined);
       agent.page.viewportSize = vi.fn().mockReturnValue({ width: 1280, height: 720 });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
     });
 
     it('should dive into a tweet', async () => {
@@ -1237,15 +1245,20 @@ describe('twitterAgent', () => {
 
   describe('runSession', () => {
     beforeEach(() => {
+      vi.useFakeTimers();
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       agent.page.emulateMedia = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.checkLoginState = vi.fn().mockResolvedValue(true);
       agent.simulateReading = vi.fn().mockResolvedValue(undefined);
       agent.human.sessionStart = vi.fn().mockResolvedValue(undefined);
       agent.human.sessionEnd = vi.fn().mockResolvedValue(undefined);
       agent.human.cycleComplete = vi.fn().mockResolvedValue(undefined);
       agent.human.session = { shouldEndSession: vi.fn().mockReturnValue(true) };
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
     });
 
     it('should run session initialization', async () => {
@@ -1327,7 +1340,7 @@ describe('twitterAgent', () => {
       agent.navigateHome = vi.fn().mockResolvedValue(undefined);
       agent.page.goto = vi.fn().mockResolvedValue(undefined);
       agent.ensureForYouTab = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       
       agent.human.session.shouldEndSession = vi.fn().mockReturnValueOnce(false).mockReturnValue(true);
       
@@ -1347,8 +1360,9 @@ describe('twitterAgent', () => {
 
   describe('simulateReading', () => {
     beforeEach(() => {
+      vi.useFakeTimers();
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.viewportSize = vi.fn().mockReturnValue({ width: 1280, height: 720 });
       agent.page.evaluate = vi.fn().mockResolvedValue(undefined);
       agent.ghost.move = vi.fn().mockResolvedValue(undefined);
@@ -1558,7 +1572,7 @@ describe('twitterAgent', () => {
 
   describe('simulateFidget', () => {
     beforeEach(() => {
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.mouse = {
         move: vi.fn().mockResolvedValue(undefined),
         down: vi.fn().mockResolvedValue(undefined),
@@ -1709,7 +1723,7 @@ describe('twitterAgent', () => {
       agent.pollForFollowState = vi.fn().mockResolvedValue(true);
       agent.checkAndHandleSoftError = vi.fn().mockResolvedValue(false);
       agent.performHealthCheck = vi.fn().mockResolvedValue({ healthy: true, reason: '' });
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.reload = vi.fn().mockResolvedValue(undefined);
       
       mockPage.locator = vi.fn().mockImplementation((selector) => {
@@ -1826,7 +1840,7 @@ describe('twitterAgent', () => {
       
       agent.safeHumanClick = vi.fn().mockResolvedValue(undefined);
       agent.humanType = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.waitForSelector = vi.fn().mockResolvedValue(undefined);
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       
@@ -1873,7 +1887,7 @@ describe('twitterAgent', () => {
       
       agent.safeHumanClick = vi.fn().mockResolvedValue(undefined);
       agent.humanType = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.waitForSelector = vi.fn().mockResolvedValue(undefined);
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       
@@ -2117,7 +2131,7 @@ describe('twitterAgent', () => {
         all: vi.fn().mockResolvedValue([mockElement])
       });
       agent.page.evaluate = vi.fn().mockResolvedValue([]); // No visible indices
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       
       await expect(agent.simulateFidget()).resolves.not.toThrow();
@@ -2151,7 +2165,7 @@ describe('twitterAgent', () => {
         };
       });
       agent.page.waitForLoadState = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.url = vi.fn().mockReturnValue('https://x.com/testuser');
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.page.evaluate = vi.fn().mockResolvedValue(undefined);
@@ -2242,7 +2256,7 @@ describe('twitterAgent', () => {
       
       agent.page.waitForURL = vi.fn().mockResolvedValue(undefined);
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.navigateHome = vi.fn().mockResolvedValue(undefined);
       agent.safeHumanClick = vi.fn().mockResolvedValue(undefined);
@@ -2258,7 +2272,7 @@ describe('twitterAgent', () => {
         elementHandle: vi.fn().mockResolvedValue(null),
         focus: vi.fn().mockRejectedValue(new Error('Failed'))
       };
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.page.evaluate = vi.fn().mockResolvedValue(undefined);
       
@@ -2274,7 +2288,7 @@ describe('twitterAgent', () => {
         elementHandle: vi.fn().mockResolvedValue(null),
         focus: vi.fn().mockRejectedValue(new Error('Failed'))
       };
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.keyboard = { press: vi.fn().mockRejectedValue(new Error('Failed')) };
       agent.page.evaluate = vi.fn().mockRejectedValue(new Error('Failed'));
       
@@ -2289,7 +2303,7 @@ describe('twitterAgent', () => {
       agent.pollForFollowState = vi.fn().mockResolvedValue(true);
       agent.checkAndHandleSoftError = vi.fn().mockResolvedValue(false);
       agent.performHealthCheck = vi.fn().mockResolvedValue({ healthy: true, reason: '' });
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.reload = vi.fn().mockResolvedValue(undefined);
       
       let textCallCount = 0;
@@ -2337,7 +2351,7 @@ describe('twitterAgent', () => {
       agent.dismissOverlays = vi.fn().mockResolvedValue(undefined);
       agent.checkAndHandleSoftError = vi.fn().mockResolvedValue(false);
       agent.performHealthCheck = vi.fn().mockResolvedValue({ healthy: true, reason: '' });
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.reload = vi.fn().mockResolvedValue(undefined);
       
       mockPage.locator = vi.fn().mockImplementation((selector) => {
@@ -2377,7 +2391,7 @@ describe('twitterAgent', () => {
 
     it('should handle robustFollow with button text indicating already following', async () => {
       // Simplified test - just verify it handles the case gracefully
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.reload = vi.fn().mockResolvedValue(undefined);
       agent.performHealthCheck = vi.fn().mockResolvedValue({ healthy: true, reason: '' });
       agent.checkAndHandleSoftError = vi.fn().mockResolvedValue(false);
@@ -2419,7 +2433,7 @@ describe('twitterAgent', () => {
       agent.dismissOverlays = vi.fn().mockResolvedValue(undefined);
       agent.sixLayerClick = vi.fn().mockResolvedValue(true);
       agent.pollForFollowState = vi.fn().mockResolvedValue(true);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.reload = vi.fn().mockResolvedValue(undefined);
       agent.performHealthCheck = vi.fn().mockResolvedValue({ healthy: true, reason: '' });
       agent.checkAndHandleSoftError = vi.fn().mockResolvedValue(false);
@@ -2459,7 +2473,7 @@ describe('twitterAgent', () => {
     it('should handle robustFollow with page reload on failure', async () => {
       // Simplified test - verify robustFollow handles retry logic
       agent.sixLayerClick = vi.fn().mockResolvedValue(false);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.reload = vi.fn().mockResolvedValue(undefined);
       agent.performHealthCheck = vi.fn().mockResolvedValue({ healthy: true, reason: '' });
       agent.checkAndHandleSoftError = vi.fn().mockResolvedValue(false);
@@ -2503,7 +2517,7 @@ describe('twitterAgent', () => {
       
       agent.safeHumanClick = vi.fn().mockResolvedValue(undefined);
       agent.humanType = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.waitForSelector = vi.fn().mockResolvedValue(undefined);
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       
@@ -2541,7 +2555,7 @@ describe('twitterAgent', () => {
     it('should handle postTweet when UI button not found', async () => {
       vi.spyOn(Math, 'random').mockReturnValue(0.9);
       
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       
       agent.page.locator = vi.fn().mockImplementation((selector) => {
@@ -2574,7 +2588,7 @@ describe('twitterAgent', () => {
     it('should handle simulateReading with viewport calculation error', async () => {
       agent.page.viewportSize = vi.fn().mockReturnValue(null);
       agent.page.evaluate = vi.fn().mockResolvedValue({ width: 1280, height: 720 });
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.ghost.move = vi.fn().mockResolvedValue(undefined);
       agent.checkAndHandleSoftError = vi.fn().mockResolvedValue(false);
@@ -2601,7 +2615,7 @@ describe('twitterAgent', () => {
     it('should handle diveTweet with viewport size fallback', async () => {
       agent.page.viewportSize = vi.fn().mockReturnValue(null);
       agent.page.evaluate = vi.fn().mockResolvedValue({ width: 1280, height: 720 });
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.waitForURL = vi.fn().mockResolvedValue(undefined);
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
@@ -2750,7 +2764,7 @@ describe('twitterAgent', () => {
     it('should handle humanClick with mouse movement errors', async () => {
       agent.human.think = vi.fn().mockResolvedValue(undefined);
       agent.human.recoverFromError = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.ghost.click = vi.fn().mockRejectedValue(new Error('Ghost error'));
       
       const mockTarget = {
@@ -2817,7 +2831,7 @@ describe('twitterAgent', () => {
         };
       });
       agent.page.waitForLoadState = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.url = vi.fn().mockReturnValue('https://x.com/testuser');
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.page.evaluate = vi.fn().mockResolvedValue(undefined);
@@ -2862,7 +2876,7 @@ describe('twitterAgent', () => {
         };
       });
       agent.page.waitForLoadState = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.url = vi.fn().mockReturnValue('https://x.com/testuser');
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.page.evaluate = vi.fn().mockResolvedValue(undefined);
@@ -2888,7 +2902,7 @@ describe('twitterAgent', () => {
       agent.safeHumanClick = vi.fn().mockResolvedValue(undefined);
       agent.navigateHome = vi.fn().mockResolvedValue(undefined);
       agent.page.waitForURL = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       agent.page.goto = vi.fn().mockResolvedValue(undefined);
@@ -2939,7 +2953,7 @@ describe('twitterAgent', () => {
     });
 
     it('should handle robustFollow with pending state resolution', async () => {
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.reload = vi.fn().mockResolvedValue(undefined);
       agent.performHealthCheck = vi.fn().mockResolvedValue({ healthy: true, reason: '' });
       agent.checkAndHandleSoftError = vi.fn().mockResolvedValue(false);
@@ -3007,7 +3021,7 @@ describe('twitterAgent', () => {
       
       agent.safeHumanClick = vi.fn().mockResolvedValue(undefined);
       agent.humanType = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.waitForSelector = vi.fn().mockResolvedValue(undefined);
       agent.page.keyboard = { press: vi.fn().mockResolvedValue(undefined) };
       
@@ -3067,7 +3081,7 @@ describe('twitterAgent', () => {
 
     it('should handle diveTweet with failed ghost and native click', async () => {
       agent.safeHumanClick = vi.fn().mockRejectedValue(new Error('Ghost failed'));
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.waitForURL = vi.fn().mockRejectedValue(new Error('Timeout'));
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       agent.navigateHome = vi.fn().mockResolvedValue(undefined);
@@ -3105,7 +3119,7 @@ describe('twitterAgent', () => {
         all: vi.fn().mockResolvedValue([mockElement, mockElement])
       });
       agent.page.evaluate = vi.fn().mockResolvedValue([0, 1]); // Both visible
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       agent.page.mouse = { move: vi.fn().mockResolvedValue(undefined) };
       
@@ -3124,7 +3138,7 @@ describe('twitterAgent', () => {
       
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       agent.page.mouse = { move: vi.fn().mockResolvedValue(undefined) };
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       
       await expect(agent.simulateFidget()).resolves.not.toThrow();
     });
@@ -3141,7 +3155,7 @@ describe('twitterAgent', () => {
       
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       agent.page.goto = vi.fn().mockResolvedValue(undefined);
-      agent.page.waitForTimeout = vi.fn().mockResolvedValue(undefined);
+      agent.page.waitForTimeout = vi.fn().mockImplementation(async (ms) => { if (typeof vi.advanceTimersByTime === 'function') { vi.advanceTimersByTime(ms || 10); } });
       
       await expect(agent.simulateFidget()).resolves.not.toThrow();
     });

@@ -1,6 +1,6 @@
 /**
- * Humanization Module Index
- * All humanization utilities exported from here
+ * @fileoverview Humanization Module Index - All humanization utilities exported from here
+ * @module utils/humanization
  */
 
 export { HumanizationEngine } from './engine.js';

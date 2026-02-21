@@ -5,8 +5,17 @@
  */
 
 import { createLogger } from "../logger.js";
+import { mathUtils } from "../mathUtils.js";
 
+/**
+ * RetweetAction - Handles retweet operations
+ */
 export class RetweetAction {
+  /**
+   * Creates a new RetweetAction instance
+   * @param {object} agent - Agent instance
+   * @param {object} options - Configuration options
+   */
   constructor(agent, _options = {}) {
     this.agent = agent;
     this.logger = createLogger("ai-twitter-retweet.js");
@@ -54,6 +63,17 @@ export class RetweetAction {
     const { tweetElement, tweetUrl } = context;
 
     this.logger.info(`[RetweetAction] Executing retweet`);
+
+    if (!tweetElement) {
+      this.logger.warn(`[RetweetAction] Missing tweetElement in context`);
+      return {
+        success: false,
+        executed: false,
+        reason: "missing_element",
+        data: { tweetUrl },
+        engagementType: this.engagementType,
+      };
+    }
 
     try {
       const result = await this.handleRetweet(tweetElement);
@@ -121,136 +141,210 @@ export class RetweetAction {
   }
 
   /**
+   * Selects a strategy for retweeting
+   * @returns {'keyboard' | 'click'}
+   */
+  selectStrategy() {
+    const configStrategy = this.agent?.twitterConfig?.actions?.retweet?.strategy;
+    if (configStrategy === 'keyboard' || configStrategy === 'click') {
+      return configStrategy;
+    }
+    return Math.random() > 0.5 ? 'keyboard' : 'click';
+  }
+
+  async waitRandomDelay(min, max, mean, dev) {
+    const delay = mean !== undefined && dev !== undefined
+      ? mathUtils.gaussian(mean, dev, min, max)
+      : mathUtils.randomInRange(min, max);
+    await this.agent.page.waitForTimeout(delay);
+    return delay;
+  }
+
+  /**
    * Handle retweet action on a tweet element
    * @param {Object} tweetElement - Playwright element handle for the tweet
    * @returns {Promise<{success: boolean, reason: string}>}
    */
   async handleRetweet(tweetElement) {
-    const page = this.agent.page;
-
+    // --- Pre-check: Is it already retweeted? ---
     try {
-      try {
-        if (this.agent.scrollToGoldenZone) {
-          await this.agent.scrollToGoldenZone(tweetElement);
-        } else {
-          await tweetElement.scrollIntoViewIfNeeded();
-        }
-        await page.waitForTimeout(300);
-      } catch (scrollError) {
-        this.logger.warn(`[RetweetAction] Failed to scroll element into view: ${scrollError.message}`);
+      if (this.agent.scrollToGoldenZone) {
+        await this.agent.scrollToGoldenZone(tweetElement);
+      } else {
+        await tweetElement.scrollIntoViewIfNeeded();
       }
+      await this.waitRandomDelay(250, 650, 420, 140);
 
-      // 1. ROBUST CHECK: Is it already retweeted?
-      // Look for the "unretweet" testid which appears when a tweet is already retweeted
-      // User snippet: <button ... data-testid="unretweet" aria-label="... Reposted" ...>
       const unretweetBtnSelector = '[data-testid="unretweet"]';
       const unretweetBtn = tweetElement.locator(unretweetBtnSelector).first();
-      if (this.agent.scrollToGoldenZone) {
-        try {
-          if ((await unretweetBtn.count()) > 0) {
-            await this.agent.scrollToGoldenZone(unretweetBtn);
-          } else {
-            const retweetBtnCandidate = tweetElement.locator('[data-testid="retweet"]').first();
-            if ((await retweetBtnCandidate.count()) > 0) {
-              await this.agent.scrollToGoldenZone(retweetBtnCandidate);
-            }
-          }
-          await page.waitForTimeout(200);
-        } catch (_error) {
-          void _error;
-        }
-      }
-      const isAlreadyRetweeted = await unretweetBtn.isVisible().catch(() => false);
 
-      if (isAlreadyRetweeted) {
+      // Check 1: unretweet button
+      if (await unretweetBtn.isVisible().catch(() => false)) {
         this.logger.info("[RetweetAction] Checker: Tweet is already retweeted (unretweet button visible)");
         return { success: true, reason: "already_retweeted" };
       }
-      
-      // Secondary check: Look for aria-label containing "Reposted" just in case testid is missing/changed
+
+      // Check 2: Reposted label
       const repostedLabel = tweetElement.locator('[aria-label*="Reposted"]').first();
       if (await repostedLabel.isVisible().catch(() => false)) {
         this.logger.info("[RetweetAction] Checker: Tweet is already retweeted (aria-label match)");
         return { success: true, reason: "already_retweeted" };
       }
+    } catch (err) {
+      this.logger.warn(`[RetweetAction] Pre-check failed: ${err.message}`);
+    }
 
-      // 2. LOCATE BUTTON: Find the retweet/repost button
-      // User snippet: <button ... data-testid="retweet" aria-label="... Repost" ...>
-      const retweetBtnSelector = '[data-testid="retweet"]';
-      let retweetBtn = tweetElement.locator(retweetBtnSelector).first();
+    // --- Execute Strategy ---
+    const strategy = this.selectStrategy();
+    this.logger.info(`[RetweetAction] Selected Strategy: ${strategy}`);
 
-      if ((await retweetBtn.count()) === 0) {
-        // Fallback: Try searching by aria-label "Repost" or "Retweet"
-        const ariaRepost = tweetElement.locator('[aria-label*="Repost"], [aria-label*="Retweet"]').first();
-        if (await ariaRepost.isVisible()) {
-             this.logger.info("[RetweetAction] Found button via aria-label fallback");
-             retweetBtn = ariaRepost;
-        } else {
-            return { success: false, reason: "retweet_button_not_found" };
+    if (strategy === 'keyboard') {
+      return await this.executeKeyboardStrategy(tweetElement);
+    } else {
+      return await this.executeClickStrategy(tweetElement);
+    }
+  }
+
+  /**
+   * Strategy 1: Keyboard Shortcut
+   * Step 1: Scroll to golden view (target element)
+   * Step 2: Click element
+   * Step 3: Keyboard 'T' + Enter
+   */
+  async executeKeyboardStrategy(tweetElement) {
+    const page = this.agent.page;
+    try {
+      // --- Step 1: Scroll to Golden Zone ---
+      const specificSelector = '[data-testid="retweet"] [data-testid="app-text-transition-container"]';
+      let target = tweetElement.locator(specificSelector).first();
+
+      if (await target.count() === 0) {
+        // Fallback to retweet button itself
+        target = tweetElement.locator('[data-testid="retweet"]').first();
+        if (await target.count() === 0) {
+          // Fallback to tweet element
+          target = tweetElement;
         }
       }
 
-      // 3. INTERACTION STEP 1: Click the retweet button
       if (this.agent.scrollToGoldenZone) {
-        try {
-          await this.agent.scrollToGoldenZone(retweetBtn);
-        } catch (_error) {
-          void _error;
-        }
+        await this.agent.scrollToGoldenZone(target);
+      } else {
+        await target.scrollIntoViewIfNeeded();
       }
-      await this.agent.humanClick(retweetBtn, "Retweet/Repost Button");
-      this.logger.info("[RetweetAction] Clicked retweet button");
+      await this.waitRandomDelay(300, 900, 520, 180);
 
-      // WAIT: User requested 1s wait before confirming
-      await page.waitForTimeout(1000);
-
-      // 4. MENU HANDLING STEP 2: Click the confirm option
-      // User snippet: <div ... data-testid="retweetConfirm" ...>
-      const retweetConfirmSelector = '[data-testid="retweetConfirm"]';
-      
-      try {
-        const confirmBtn = page.locator(retweetConfirmSelector).first();
-        await confirmBtn.waitFor({ state: 'visible', timeout: 3000 });
-        
-        if (this.agent.scrollToGoldenZone) {
-          try {
-            await this.agent.scrollToGoldenZone(confirmBtn);
-          } catch (_error) {
-            void _error;
-          }
-        }
-        await this.agent.humanClick(confirmBtn, "Retweet Confirm");
-        this.logger.info("[RetweetAction] Confirmed retweet via menu");
-        
-      } catch (menuError) {
-        this.logger.warn(`[RetweetAction] Retweet menu did not appear or confirm button missing: ${menuError.message}`);
-        // Attempt to close any open menus/modals to reset state
-        await page.keyboard.press("Escape");
-        return { success: false, reason: "retweet_menu_failed" };
+      // --- Step 2: Click to focus ---
+      this.logger.info(`[RetweetAction] Keyboard Strategy: Clicking element to focus`);
+      if (this.agent.humanClick) {
+        await this.agent.humanClick(target, "Focus Element", { precision: 'high' });
+      } else {
+        await target.click();
       }
 
-      // 6. VERIFICATION CHECKER: Wait for state change
-      // The "retweet" button should disappear and "unretweet" should appear
+      await this.waitRandomDelay(450, 1200, 760, 220);
+
+      // --- Step 3: Keyboard 'T' ---
+      this.logger.info(`[RetweetAction] Keyboard Strategy: Pressing 'T'`);
+      await page.keyboard.press('t');
+
+      await this.waitRandomDelay(420, 1100, 720, 210);
+
+      // --- Step 4: Confirm (Enter) ---
+      this.logger.info(`[RetweetAction] Keyboard Strategy: Pressing 'Enter' to confirm`);
+      await page.keyboard.press('Enter');
+      await this.waitRandomDelay(320, 900, 540, 170);
+
+      // --- Step 5: Verify ---
+      const unretweetBtnSelector = '[data-testid="unretweet"]';
       try {
         await tweetElement.locator(unretweetBtnSelector).first().waitFor({ state: 'visible', timeout: 5000 });
-        
-        // Success! Record engagement
+
         if (this.agent.diveQueue) {
           this.agent.diveQueue.recordEngagement("retweets");
         }
-        
-        return { success: true, reason: "retweet_successful" };
-        
-      } catch (_verifyError) {
-        this.logger.warn("[RetweetAction] Verification failed - 'unretweet' state did not appear");
+        return { success: true, reason: "retweet_keyboard_success" };
+      } catch (e) {
+        this.logger.warn(`[RetweetAction] Keyboard verification failed: ${e.message}`);
         return { success: false, reason: "retweet_verification_failed" };
       }
 
     } catch (error) {
-      this.logger.error(
-        `[RetweetAction] Error during retweet: ${error.message}`,
-      );
-      return { success: false, reason: `error: ${error.message}` };
+      this.logger.error(`[RetweetAction] Keyboard Strategy Error: ${error.message}`);
+      return { success: false, reason: `keyboard_error: ${error.message}` };
+    }
+  }
+
+  /**
+   * Strategy 2: Click (Legacy)
+   * Original implementation using humanClick on buttons
+   */
+  async executeClickStrategy(tweetElement) {
+    const page = this.agent.page;
+    try {
+      // Locate Button
+      const retweetBtnSelector = '[data-testid="retweet"]';
+      let retweetBtn = tweetElement.locator(retweetBtnSelector).first();
+
+      if ((await retweetBtn.count()) === 0) {
+        const ariaRepost = tweetElement.locator('[aria-label*="Repost"], [aria-label*="Retweet"]').first();
+        if (await ariaRepost.isVisible()) {
+          this.logger.info("[RetweetAction] Found button via aria-label fallback");
+          retweetBtn = ariaRepost;
+        } else {
+          return { success: false, reason: "retweet_button_not_found" };
+        }
+      }
+
+      // Click Retweet Button
+      if (this.agent.scrollToGoldenZone) {
+        try {
+          await this.agent.scrollToGoldenZone(retweetBtn);
+        } catch (_error) { void _error; }
+      }
+      await this.agent.humanClick(retweetBtn, "Retweet/Repost Button", { precision: 'high' });
+      this.logger.info("[RetweetAction] Clicked retweet button");
+
+      await this.waitRandomDelay(600, 1400, 920, 240);
+
+      // Click Confirm
+      const retweetConfirmSelector = '[data-testid="retweetConfirm"]';
+      try {
+        const confirmBtn = page.locator(retweetConfirmSelector).first();
+        await confirmBtn.waitFor({ state: 'visible', timeout: 3000 });
+
+        if (this.agent.scrollToGoldenZone) {
+          try {
+            await this.agent.scrollToGoldenZone(confirmBtn);
+          } catch (_error) { void _error; }
+        }
+        await this.agent.humanClick(confirmBtn, "Retweet Confirm", { precision: 'high' });
+        this.logger.info("[RetweetAction] Confirmed retweet via menu");
+        await this.waitRandomDelay(350, 900, 560, 160);
+
+      } catch (menuError) {
+        this.logger.warn(`[RetweetAction] Retweet menu did not appear: ${menuError.message}`);
+        await page.keyboard.press("Escape");
+        return { success: false, reason: "retweet_menu_failed" };
+      }
+
+      // Verification
+      const unretweetBtnSelector = '[data-testid="unretweet"]';
+      try {
+        await tweetElement.locator(unretweetBtnSelector).first().waitFor({ state: 'visible', timeout: 5000 });
+
+        if (this.agent.diveQueue) {
+          this.agent.diveQueue.recordEngagement("retweets");
+        }
+        return { success: true, reason: "retweet_successful" };
+      } catch (_verifyError) {
+        this.logger.warn("[RetweetAction] Verification failed");
+        return { success: false, reason: "retweet_verification_failed" };
+      }
+
+    } catch (error) {
+      this.logger.error(`[RetweetAction] Click Strategy Error: ${error.message}`);
+      return { success: false, reason: `click_error: ${error.message}` };
     }
   }
 

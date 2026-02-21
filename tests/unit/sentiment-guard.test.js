@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import sentimentGuard from '../../utils/sentiment-guard.js';
 
 const { analyzeSentiment, shouldSkipAction, getSkipReason, getSafeActions, formatSentimentReport, shouldProcessContent } = sentimentGuard;

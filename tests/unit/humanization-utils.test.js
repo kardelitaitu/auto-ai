@@ -3,7 +3,7 @@
  * @module tests/unit/humanization-utils.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HumanizationEngine } from '../../utils/humanization/engine.js';
 import { HumanScroll } from '../../utils/humanization/scroll.js';
 import { HumanTiming } from '../../utils/humanization/timing.js';
@@ -28,7 +28,7 @@ vi.mock('../../utils/logger.js', () => ({
 
 vi.mock('../../utils/mathUtils.js', () => ({
     mathUtils: {
-        randomInRange: vi.fn((min, max) => min),
+        randomInRange: vi.fn((min, _max) => min),
         gaussian: vi.fn((mean) => mean),
         roll: vi.fn(() => false),
         sample: vi.fn((arr) => arr[0])

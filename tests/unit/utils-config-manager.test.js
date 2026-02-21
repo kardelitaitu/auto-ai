@@ -3,10 +3,9 @@
  * @module tests/unit/utils-config-manager.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ConfigManager, configManager, CONFIG_SCHEMA } from '../../utils/config-manager.js';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { ConfigManager, CONFIG_SCHEMA } from '../../utils/config-manager.js';
 import * as fs from 'fs';
-import * as path from 'path';
 
 vi.mock('fs', () => ({
     existsSync: vi.fn(),

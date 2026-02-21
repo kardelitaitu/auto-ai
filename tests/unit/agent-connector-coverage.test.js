@@ -1,6 +1,5 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import AgentConnector from '../../core/agent-connector.js';
 
 // Mock dependencies
 const mocks = vi.hoisted(() => ({
@@ -364,13 +363,18 @@ describe('AgentConnector Coverage Extensions', () => {
         });
 
         it('should fallback to cloud when all local providers disabled', async () => {
-             // Mock config to disable local
              const configLoader = await import('../../utils/configLoader.js');
              configLoader.getSettings.mockResolvedValueOnce({
-                 llm: { local: { enabled: false }, vllm: { enabled: false } }
+                 llm: {
+                     local: { enabled: false },
+                     vllm: { enabled: false },
+                     cloud: { enabled: true }
+                 }
              });
 
-             vi.spyOn(connector, '_sendToCloud').mockResolvedValue({ 
+             const AgentConnector = (await import('../../core/agent-connector.js')).default;
+             const localConnector = new AgentConnector();
+             vi.spyOn(localConnector, '_sendToCloud').mockResolvedValue({ 
                  success: true, 
                  metadata: { routedTo: 'cloud' } 
              });
@@ -381,10 +385,10 @@ describe('AgentConnector Coverage Extensions', () => {
                  sessionId: 'cloud-fallback'
              };
 
-             const result = await connector.handleGenerateReply(request);
+             const result = await localConnector.handleGenerateReply(request);
              
              expect(result.success).toBe(true);
-             expect(connector._sendToCloud).toHaveBeenCalled();
+             expect(localConnector._sendToCloud).toHaveBeenCalled();
         });
     });
 

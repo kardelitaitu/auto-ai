@@ -45,7 +45,7 @@ const logger = createLogger('test-core-modules.js');
         // Test CloudClient (no actual API call)
         logger.info('[Test] CloudClient...');
         const cloudClient = new CloudClient();
-        const cloudStats = cloudClient.getStats();
+        cloudClient.getStats();
         logger.success(`[Test] CloudClient initialized`);
 
         // Test LocalClient (stub)
@@ -69,7 +69,7 @@ const logger = createLogger('test-core-modules.js');
         // Test AuditVerifier
         logger.info('[Test] AuditVerifier...');
         const auditor = new AuditVerifier();
-        const auditorStats = auditor.getStats();
+        auditor.getStats();
         logger.success(`[Test] AuditVerifier: Reliability metric initialized`);
 
         // Test AgentConnector (this integrates all the above)

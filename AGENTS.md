@@ -10,6 +10,7 @@ Agents are allowed to use MCP tools for filesystem access, code search, web fetc
 
 Every time you make changes or modifications, append a new line to AGENTS-JOURNAL.md using this format:
 dd-mm-yyy--HH-MM > filename > changes description
+Always check 'npx eslint .' after doing large code changes
 
 ## Project Overview
 
@@ -26,11 +27,66 @@ dd-mm-yyy--HH-MM > filename > changes description
 ## Testing Strategy
 
 - **Framework**: Vitest is used for both unit and integration testing.
-- **Running Tests**: Run `npm test` to execute the full test suite.
+- **Running Tests**: Run `npm run test:coverage` to execute the full test suite.
+- **Test Individual Files**:
+
+```powershell
+npm run test:coverage -- file1.test.js file2.test.js | Select-String -Pattern "%|file1|file2"
+```
+
+```bash
+npm run test:coverage -- tests/unit/async-queue.test.js 2>&1 | grep -E "(async-queue|% coverage|Branch|Statement|Line|Function)" | head -20
+```
+
+- **Coverage**: Aim for 98%+ code coverage using Vitest's built-in coverage reporter.
 - **Structure**:
   - `tests/unit/`: Unit tests for individual modules (e.g., `agent-connector.test.js`).
   - `tests/integration/`: Integration tests for cross-module interactions (e.g., `cloud-client.test.js`).
 - **Mocks**: Use `vi.mock()` for external dependencies to ensure isolation and speed.
+
+## MCP Tools Usage Guidelines
+
+You have access to a specific set of tools. You must use the most appropriate tool for the task to save resources and ensure accuracy.
+
+### Reasoning & Memory
+* **Sequential Thinking**:
+    * **Use when:** You face a complex, multi-step problem (e.g., debugging a race condition, planning a new feature architecture).
+    * **Action:** Break down your thought process into steps before writing any code.
+* **Memory**:
+    * **Use when:** You need to remember user preferences, project-specific facts, or architectural decisions for *future* conversations.
+    * **Action:** Read from memory to check for established patterns; write to memory when new key facts are decided.
+* **context7 (Upstash)**:
+    * **Use when:** You need to retrieve high-volume context or historical data that doesn't fit in the standard "Memory" graph.
+
+### Coding & Navigation (The "Roo Code" Workflow)
+* **code-index**:
+    * **Use when:** You are exploring the codebase and don't know where files are located. (e.g., "Where is the authentication logic?").
+    * **Action:** Query this *first* to find relevant file paths.
+* **tree-sitter**:
+    * **Use when:** You know the file path but need to read a specific function or class without reading the entire file.
+    * **Action:** Use this to extract code signatures or specific blocks to save context window space.
+* **filesystem**:
+    * **Use when:** You need to read full file contents or write changes to the disk.
+    * **Scope:** Limited to `C:\My Script\auto-ai`.
+* **File Context Server**:
+    * **Use when:** You need to list files, get a directory overview, or manage the active file context efficiently.
+
+### Research & Internet
+* **Tavily**:
+    * **Use when:** You need deep, complex research (e.g., "Find the latest documentation for Vercel AI SDK 3.0" or "Compare 3 different libraries").
+    * **Action:** Use this for multi-source synthesis.
+* **DuckDuckGo Search Server**:
+    * **Use when:** You need a quick fact check or need to find a specific URL (e.g., "What is the URL for the React docs?").
+    * **Action:** Use this for simple, single-query lookups (faster/cheaper than Tavily).
+* **Fetch**:
+    * **Use when:** You have a specific URL (found via Search) and need to read its content.
+    * **Action:** Retrieve the text of a webpage for analysis.
+
+### System Interaction
+* **Desktop Commander**:
+    * **Use when:** You need to interact with the OS UI (e.g., take a screenshot to verify a UI layout). *Use with caution.*
+
+---
 
 ## Project Structure
 

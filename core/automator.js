@@ -15,11 +15,15 @@ const logger = createLogger('automator.js');
  * @description Manages browser connections with health monitoring and reconnection capabilities.
  */
 class Automator {
+  /**
+   * Creates a new Automator instance
+   */
   constructor() {
     /** @type {Map<string, object>} */
     this.connections = new Map();
     this.healthCheckInterval = null;
     this.isShuttingDown = false;
+    this.onReconnect = null;
   }
 
   /**
@@ -86,7 +90,17 @@ class Automator {
 
     this.connections.delete(wsEndpoint);
 
-    return this.connectToBrowser(wsEndpoint);
+    const newBrowser = await this.connectToBrowser(wsEndpoint);
+
+    if (typeof this.onReconnect === 'function') {
+      try {
+        await this.onReconnect(wsEndpoint, newBrowser);
+      } catch (error) {
+        logger.warn(`onReconnect handler failed for ${wsEndpoint}: ${error.message}`);
+      }
+    }
+
+    return newBrowser;
   }
 
   /**
@@ -351,7 +365,7 @@ class Automator {
       if (connectionInfo?.browser?.isConnected()) {
         checks.browserConnection = true;
       }
-    } catch (error) {
+    } catch (_error) {
       checks.browserConnection = false;
     }
 

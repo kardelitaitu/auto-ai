@@ -109,7 +109,7 @@ vi.mock('../../utils/async-queue.js', () => ({
       };
     }
     enableQuickMode() {}
-    async addDive(task, fallback, options) {
+    async addDive(task, _fallback, _options) {
       try {
         const result = await task();
         return { success: true, result };
@@ -173,7 +173,7 @@ vi.mock('../../utils/actions/index.js', () => ({
       this.actions = actions;
     }
     selectAction() { return 'reply'; }
-    async executeAction(action, context) {
+    async executeAction(_action, _context) {
       return { success: true, executed: true, reason: 'test' };
     }
   }
@@ -187,14 +187,14 @@ vi.mock('../../utils/human-interaction.js', () => ({
 }));
 
 vi.mock('../../utils/logger.js', () => ({
-  createBufferedLogger: (name, config) => ({
+  createBufferedLogger: (_name, _config) => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
     debug: vi.fn(),
     shutdown: vi.fn().mockResolvedValue(undefined)
   }),
-  createLogger: (name) => ({
+  createLogger: (_name) => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
@@ -211,7 +211,7 @@ vi.mock('../../utils/scroll-helper.js', () => ({
 vi.mock('../../utils/mathUtils.js', () => ({
   mathUtils: {
     randomInRange: vi.fn((min, max) => min + (max - min) / 2),
-    gaussian: vi.fn((mean, dev) => mean),
+    gaussian: vi.fn((mean, _dev) => mean),
     roll: vi.fn((prob) => Math.random() < prob)
   }
 }));
@@ -263,11 +263,11 @@ vi.mock('../../utils/twitterAgent.js', () => ({
       if (this.logger) this.logger.info(msg);
     }
     
-    async humanClick(target, description) {
+    async humanClick(_target, _description) {
       return true;
     }
     
-    async safeHumanClick(target, description, retries = 3) {
+    async safeHumanClick(_target, _description, _retries = 3) {
       return true;
     }
     
@@ -299,11 +299,11 @@ vi.mock('../../utils/twitterAgent.js', () => ({
       return true;
     }
     
-    async postTweet(text) {
+    async postTweet(_text) {
       return true;
     }
     
-    async runSession(cycles, minDuration, maxDuration) {
+    async runSession(_cycles, _minDuration, _maxDuration) {
       return true;
     }
     

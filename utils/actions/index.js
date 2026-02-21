@@ -18,6 +18,11 @@ export { GoHomeAction } from "./ai-twitter-go-home.js";
  * Manages action probabilities with automatic redistribution when limits are reached
  */
 export class ActionRunner {
+  /**
+   * Creates a new ActionRunner instance
+   * @param {object} agent - Agent instance
+   * @param {object} actions - Action instances
+   */
   constructor(agent, actions = {}) {
     this.agent = agent;
     this.actions = actions;

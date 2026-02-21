@@ -8,7 +8,7 @@
 // ============================================================================
 // STEP 1: Import the utility functions
 // ============================================================================
-import { replyMethods, quoteMethods, executeReplyMethod, executeQuoteMethod } from '../utils/twitter-interaction-methods.js';
+import { executeReplyMethod, executeQuoteMethod } from '../utils/twitter-interaction-methods.js';
 import { createLogger } from '../utils/logger.js';
 import HumanInteraction from '../utils/human-interaction.js';
 
@@ -149,14 +149,14 @@ async function configDrivenReply(page, text, human, logger, settings) {
 /**
  * Example integration in the main task flow
  */
-export default async function aiTwitterActivityTask(page, payload) {
+export default async function aiTwitterActivityTask(page, _payload) {
     const logger = createLogger('ai-twitterActivity.js');
     const human = new HumanInteraction();
     
     // ... existing setup code ...
     
     // When you want to reply to a tweet:
-    async function handleReply(tweetText, generatedReply) {
+    async function _handleReply(tweetText, generatedReply) {
         // Option 1: Use random method
         const result = await postReplyRandom(page, generatedReply, human, logger);
         
@@ -174,7 +174,7 @@ export default async function aiTwitterActivityTask(page, payload) {
     }
     
     // When you want to quote a tweet:
-    async function handleQuote(tweetText, generatedQuote) {
+    async function _handleQuote(tweetText, generatedQuote) {
         // Use quote method
         const result = await postQuoteWithMethod(page, generatedQuote, human, logger, 'quoteA');
         

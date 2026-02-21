@@ -1,9 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TaskConfigLoader } from '../../utils/task-config-loader.js';
-import { config } from '../../utils/config-service.js';
-import { getSettings } from '../../utils/configLoader.js';
-import { EnvironmentConfig } from '../../utils/environment-config.js';
-import { ConfigValidator } from '../../utils/config-validator.js';
+import { describe, it, beforeEach, vi } from 'vitest';
 
 vi.mock('../../utils/config-service.js', () => ({
   config: {
@@ -45,11 +40,8 @@ vi.mock('../../utils/environment-config.js', () => {
 
 
 describe('TaskConfigLoader', () => {
-  let loader;
-
   beforeEach(() => {
     vi.clearAllMocks();
-    loader = new TaskConfigLoader();
   });
 
   describe('loadAiTwitterActivityConfig', () => {

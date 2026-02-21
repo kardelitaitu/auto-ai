@@ -49,7 +49,7 @@ class Discovery {
             logger.info(`[DISCOVERY DEBUG] Loading connector: ${connectorName}`);
 
             // Use absolute file URL with cache busting to ensure fresh load
-            const importUrl = fileURLToPath(import.meta.url); // Current file path
+            // const importUrl = fileURLToPath(import.meta.url); // Current file path
             // We need to construct the file URL for the connector
             // Since we already have the absolute path in connectorPath
             const connectorFileUrl = `file://${connectorPath.replace(/\\/g, '/')}`;

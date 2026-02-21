@@ -19,11 +19,14 @@ const logger = createLogger('agent-connector.js');
  * @description Orchestrates AI requests, handling failover and context management.
  */
 class AgentConnector {
+    /**
+     * Creates a new AgentConnector instance
+     */
     constructor() {
         this.localClient = new LocalClient();
         this.cloudClient = new CloudClient();
         this.visionInterpreter = new VisionInterpreter();
-        this.requestQueue = new RequestQueue({ maxConcurrent: 3, maxRetries: 3 });
+        this.requestQueue = new RequestQueue({ maxConcurrent: 3, maxRetries: 1 });
         this.circuitBreaker = new CircuitBreaker({ failureThreshold: 5, halfOpenTime: 30000 });
 
         this.stats = {
@@ -68,7 +71,6 @@ class AgentConnector {
                 return this._executeWithCircuitBreaker(request, action);
             }, { priority });
 
-            const duration = Date.now() - startTime;
             this.stats.successfulRequests++;
 
             // Unwrap the result from request queue (it's wrapped in { success: true, data: result })
@@ -99,7 +101,6 @@ class AgentConnector {
      * @private
      */
     async _executeWithCircuitBreaker(request, action) {
-        const { sessionId } = request;
         const modelId = `agent-${action}`;
 
         return this.circuitBreaker.execute(modelId, async () => {
@@ -128,7 +129,7 @@ class AgentConnector {
      * @private
      */
     async _routeRequest(request, action) {
-        const { payload, sessionId } = request;
+        const { sessionId } = request;
 
         // Use LOCAL for simple text generation (Twitter replies)
         if (action === 'generate_reply') {
@@ -155,7 +156,7 @@ class AgentConnector {
      * @param {string} sessionId
      * @returns {object}
      */
-    getStats(sessionId = null) {
+    getStats(_sessionId = null) {
         const { totalRequests, successfulRequests, failedRequests, totalDuration, localRequests, cloudRequests, visionRequests, startTime } = this.stats;
 
         const successRate = totalRequests > 0 ? Number(((successfulRequests / totalRequests) * 100).toFixed(2)) : 0;
@@ -189,7 +190,7 @@ class AgentConnector {
         const cbStatus = stats.circuitBreaker;
 
         let circuitHealth = 'healthy';
-        for (const [model, status] of Object.entries(cbStatus)) {
+        for (const [_model, status] of Object.entries(cbStatus)) {
             if (status.state === 'OPEN') {
                 circuitHealth = 'degraded';
                 break;
@@ -246,7 +247,7 @@ class AgentConnector {
             score -= 10;
         }
 
-        for (const [model, status] of Object.entries(stats.circuitBreaker)) {
+        for (const [_model, status] of Object.entries(stats.circuitBreaker)) {
             if (status.state === 'OPEN') {
                 score -= 30;
             } else if (status.state === 'HALF_OPEN') {
@@ -276,7 +277,7 @@ class AgentConnector {
      * Execute local client request with circuit breaker
      * @private
      */
-    async _sendToLocal(llmRequest, sessionId) {
+    async _sendToLocal(llmRequest, _sessionId) {
         return this.circuitBreaker.execute('local-model', async () => {
             return this.localClient.sendRequest(llmRequest);
         });
@@ -311,7 +312,7 @@ class AgentConnector {
             const settings = await getSettings();
             localEnabled = settings.llm?.local?.enabled === true;
             vllmEnabled = settings.llm?.vllm?.enabled === true;
-        } catch (e) {
+        } catch (_e) {
             logger.warn(`[${sessionId}] Could not load settings, defaulting to cloud only`);
         }
 

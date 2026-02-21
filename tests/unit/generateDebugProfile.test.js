@@ -1,20 +1,38 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const OUTPUT_FILE = path.join(__dirname, '../../data/twitterActivityProfiles.json');
 
 describe('generateDebugProfile', () => {
-    it('should generate profile file with correct structure', () => {
-        const data = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
-        
-        expect(Array.isArray(data)).toBe(true);
-        expect(data.length).toBeGreaterThanOrEqual(1);
-        
-        const profile = data[0];
+    let writeFileSync;
+    let consoleLog;
+    let consoleError;
+
+    beforeEach(() => {
+        writeFileSync = vi.fn();
+        consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+        consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        vi.resetModules();
+        vi.clearAllMocks();
+        consoleLog.mockRestore();
+        consoleError.mockRestore();
+    });
+
+    it('should generate profile file with correct structure', async () => {
+        vi.doMock('fs', () => ({
+            default: { writeFileSync },
+            writeFileSync
+        }));
+
+        await import('../../utils/generateDebugProfile.js');
+
+        expect(writeFileSync).toHaveBeenCalledTimes(1);
+        const written = JSON.parse(writeFileSync.mock.calls[0][1]);
+
+        expect(Array.isArray(written)).toBe(true);
+        expect(written.length).toBe(1);
+
+        const profile = written[0];
         expect(profile).toHaveProperty('id');
         expect(profile).toHaveProperty('description');
         expect(profile).toHaveProperty('timings');
@@ -25,10 +43,15 @@ describe('generateDebugProfile', () => {
         expect(profile).toHaveProperty('theme');
     });
 
-    it('should have correct probability fields', () => {
-        const data = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
-        const profile = data[0];
-        
+    it('should have correct probability and timing fields', async () => {
+        vi.doMock('fs', () => ({
+            default: { writeFileSync },
+            writeFileSync
+        }));
+
+        const module = await import('../../utils/generateDebugProfile.js');
+        const profile = module.DebugProfileFactory.create();
+
         expect(profile.probabilities).toHaveProperty('refresh');
         expect(profile.probabilities).toHaveProperty('profileDive');
         expect(profile.probabilities).toHaveProperty('tweetDive');
@@ -36,14 +59,24 @@ describe('generateDebugProfile', () => {
         expect(profile.probabilities).toHaveProperty('bookmarkAfterDive');
         expect(profile.probabilities).toHaveProperty('followOnProfile');
         expect(profile.probabilities).toHaveProperty('idle');
-    });
 
-    it('should have correct timing fields', () => {
-        const data = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
-        const profile = data[0];
-        
         expect(profile.timings).toHaveProperty('readingPhase');
         expect(profile.timings).toHaveProperty('scrollPause');
         expect(profile.timings).toHaveProperty('actionSpecific');
+    });
+
+    it('should log error when file write fails', async () => {
+        writeFileSync.mockImplementation(() => {
+            throw new Error('disk full');
+        });
+
+        vi.doMock('fs', () => ({
+            default: { writeFileSync },
+            writeFileSync
+        }));
+
+        await import('../../utils/generateDebugProfile.js');
+
+        expect(consoleError).toHaveBeenCalled();
     });
 });

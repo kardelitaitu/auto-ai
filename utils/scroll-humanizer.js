@@ -139,16 +139,18 @@ async function scrollToElement(page, selector, options = {}) {
     return false;
 }
 
-async function scrollToTop(page) {
-    await page.evaluate((smooth) => {
-        window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
-    }, true);
+async function scrollToTop(page, options = {}) {
+    const { smooth = true } = options;
+    await page.evaluate((isSmooth) => {
+        window.scrollTo({ top: 0, behavior: isSmooth ? 'smooth' : 'auto' });
+    }, smooth);
 }
 
-async function scrollToBottom(page) {
-    await page.evaluate((smooth) => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
-    }, true);
+async function scrollToBottom(page, options = {}) {
+    const { smooth = true } = options;
+    await page.evaluate((isSmooth) => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: isSmooth ? 'smooth' : 'auto' });
+    }, smooth);
 }
 
 async function getScrollPosition(page) {

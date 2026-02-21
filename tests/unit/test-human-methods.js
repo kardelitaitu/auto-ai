@@ -3,15 +3,11 @@
  * Usage: HUMAN_DEBUG=true node test-human-methods.js
  */
 
-import { createLogger } from './utils/logger.js';
-import { getSettings } from './utils/configLoader.js';
 import { HumanInteraction } from './utils/human-interaction.js';
 import { AIReplyEngine } from './utils/ai-reply-engine.js';
 import { AIQuoteEngine } from './utils/ai-quote-engine.js';
 import { AsyncQueue } from './utils/async-queue.js';
 import { DiveQueue } from './utils/async-queue.js';
-
-const logger = createLogger('test-human-methods.js');
 
 async function main() {
     console.log('\n' + '='.repeat(70));

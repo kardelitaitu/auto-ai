@@ -4,7 +4,7 @@
  * @module tests/unit/config-service.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // Mock environment variables
 const mockEnv = {
@@ -223,7 +223,7 @@ describe('ConfigService', () => {
     });
     
     it('should auto-initialize if not initialized', async () => {
-      const activity = await config.getTwitterActivity();
+      await config.getTwitterActivity();
       expect(config.isInitialized()).toBe(true);
     });
     

@@ -60,7 +60,7 @@ export async function runAllIntegrationTests() {
     { name: 'agent-connector', module: agentConnector }
   ];
 
-  for (const { name, module } of testModules) {
+  for (const { name } of testModules) {
     try {
       // Module is loaded, tests will be discovered by vitest
       results.tests.push({ name, status: 'loaded' });

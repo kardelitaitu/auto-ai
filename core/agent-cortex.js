@@ -18,6 +18,12 @@ const HISTORY_WINDOW = 5;            // Number of recent actions to keep in cont
 const MAX_HISTORY_SIZE = 50;         // Maximum total history entries
 
 class AgentCortex {
+    /**
+     * Creates a new AgentCortex instance
+     * @param {string} sessionId - Session identifier
+     * @param {string} goal - Agent goal
+     * @param {Array} steps - Methodology steps
+     */
     constructor(sessionId, goal, steps = []) {
         this.sessionId = sessionId;
         this.goal = goal;

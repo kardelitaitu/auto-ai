@@ -31,14 +31,14 @@ import { getSettings } from '../utils/configLoader.js';
 import { AIReplyEngine } from '../utils/ai-reply-engine.js';
 import { AIQuoteEngine } from '../utils/ai-quote-engine.js';
 import { AIContextEngine } from '../utils/ai-context-engine.js';
-import { profileManager } from '../utils/profileManager.js';
-import { mathUtils } from '../utils/mathUtils.js';
+// import { profileManager } from '../utils/profileManager.js';
+// import { mathUtils } from '../utils/mathUtils.js';
 import { HumanInteraction } from '../utils/human-interaction.js';
 import { applyHumanizationPatch } from '../utils/browserPatch.js';
 import { config } from '../utils/config-service.js';
 import AgentConnector from '../core/agent-connector.js';
 import { FreeOpenRouterHelper } from '../utils/free-openrouter-helper.js';
-import { replyMethods, quoteMethods, executeReplyMethod, executeQuoteMethod } from '../utils/twitter-interaction-methods.js';
+import { executeReplyMethod, executeQuoteMethod } from '../utils/twitter-interaction-methods.js';
 
 const logger = createLogger('testHumanMethods.js');
 

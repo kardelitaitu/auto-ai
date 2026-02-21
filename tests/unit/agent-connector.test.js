@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import AgentConnector from '../../core/agent-connector.js';
+import { getSettings } from '../../utils/configLoader.js';
 
 // Hoist mocks
 const mocks = vi.hoisted(() => {
@@ -104,13 +105,20 @@ describe('AgentConnector', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+        vi.mocked(getSettings).mockResolvedValue({
+            llm: {
+                local: { enabled: true },
+                vllm: { enabled: false },
+                cloud: { enabled: true }
+            }
+        });
         
         // Re-import to get fresh mocks if needed (but class is instantiated in beforeEach)
-        const LocalClient = (await import('../../core/local-client.js')).default;
-        const CloudClient = (await import('../../core/cloud-client.js')).default;
-        const VisionInterpreter = (await import('../../core/vision-interpreter.js')).default;
-        const RequestQueue = (await import('../../core/request-queue.js')).default;
-        const CircuitBreaker = (await import('../../core/circuit-breaker.js')).default;
+        const _LocalClient = (await import('../../core/local-client.js')).default;
+        const _CloudClient = (await import('../../core/cloud-client.js')).default;
+        const _VisionInterpreter = (await import('../../core/vision-interpreter.js')).default;
+        const _RequestQueue = (await import('../../core/request-queue.js')).default;
+        const _CircuitBreaker = (await import('../../core/circuit-breaker.js')).default;
 
         connector = new AgentConnector();
         
@@ -281,8 +289,7 @@ describe('AgentConnector', () => {
         });
 
         it('should fallback to cloud if local providers disabled', async () => {
-            const configLoader = await import('../../utils/configLoader.js');
-            configLoader.getSettings.mockResolvedValueOnce({
+            vi.mocked(getSettings).mockResolvedValueOnce({
                 llm: { local: { enabled: false }, vllm: { enabled: false } }
             });
 
@@ -359,7 +366,6 @@ describe('AgentConnector', () => {
         });
 
         it('should handle settings load failure', async () => {
-            const { getSettings } = await import('../../utils/configLoader.js');
             vi.mocked(getSettings).mockRejectedValueOnce(new Error('Config error'));
             
             const request = {

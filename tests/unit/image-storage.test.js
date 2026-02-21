@@ -1,7 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ImageStorage from '../../core/vision/image-storage.js';
 import fs from 'fs/promises';
-import path from 'path';
 
 vi.mock('fs/promises');
 

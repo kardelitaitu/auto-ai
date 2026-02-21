@@ -61,7 +61,7 @@ class HumanizerEngine {
      * @returns {BezierCurve} The Bezier curve path.
      */
     generateMousePath(start, end, options = {}) {
-        const { addJitter = true, overshoot = true } = options;
+        const { addJitter: _addJitter = true, overshoot = true } = options;
 
         const distance = this._calculateDistance(start, end);
         const duration = this._calculateDuration(distance);

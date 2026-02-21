@@ -21,30 +21,38 @@ export async function takeScreenshot(page, sessionName = 'unknown', suffix = '')
     try {
         const screenshotDir = path.resolve(process.cwd(), 'screenshot');
 
-        // Ensure directory exists
         if (!fs.existsSync(screenshotDir)) {
             fs.mkdirSync(screenshotDir, { recursive: true });
         }
 
-        // Generate Timestamp: yyyy-mm-dd-hh-mm-ss
+        let actualSize = { width: 0, height: 0 };
+        if (page && typeof page.evaluate === 'function') {
+            actualSize = await page.evaluate(() => ({
+                width: window.innerWidth,
+                height: window.innerHeight
+            }));
+        }
+
+        if (page && typeof page.setViewportSize === 'function' && actualSize.width && actualSize.height) {
+            await page.setViewportSize({ width: actualSize.width, height: actualSize.height });
+        }
+
         const now = new Date();
         const pad = (n) => n.toString().padStart(2, '0');
         const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}h-${pad(now.getMinutes())}m-${pad(now.getSeconds())}s`;
 
-        // Sanitize sessionName for filename (replace : with - and remove other invalid chars)
         const safeSessionName = sessionName.replace(/[:\\/<>:"|?*]/g, '-');
         const filename = suffix ? `${timestamp}-[${safeSessionName}]${suffix}.jpg` : `${timestamp}-[${safeSessionName}].jpg`;
         const filepath = path.join(screenshotDir, filename);
 
-        // Take Screenshot (JPEG, 40% Quality)
         await page.screenshot({
             path: filepath,
             type: 'jpeg',
             quality: 30,
-            fullPage: false // Capture viewport only (what the user/bot sees)
+            fullPage: false
         });
 
-        logger.info(`📸 Screenshot saved: ${filename}`);
+        logger.info(`📸 Screenshot saved: ${filename} (${actualSize.width}x${actualSize.height})`);
         return filepath;
 
     } catch (error) {

@@ -4,7 +4,7 @@
  * @module tests/unit/retry.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock logger
 vi.mock('../../utils/logger.js', () => ({
@@ -186,7 +186,6 @@ describe('utils/retry', () => {
         });
 
         it('should use exponential backoff with factor', async () => {
-            const delays = [];
             const operation = vi.fn().mockImplementation(() => {
                 throw new Error('Failure');
             });

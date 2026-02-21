@@ -4,7 +4,7 @@
  * @module tests/integration/task-config-loader.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { taskConfigLoader, TaskConfigLoader, loadAiTwitterActivityConfig } from '../../utils/task-config-loader.js';
 
 describe('taskConfigLoader Integration', () => {
@@ -171,7 +171,7 @@ describe('taskConfigLoader Integration', () => {
             taskConfigLoader.clearCache();
             
             // First load
-            const config1 = await taskConfigLoader.loadAiTwitterActivityConfig({});
+            await taskConfigLoader.loadAiTwitterActivityConfig({});
             
             // Get stats
             const stats = taskConfigLoader.getStats();

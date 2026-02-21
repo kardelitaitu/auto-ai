@@ -4,9 +4,9 @@
  * @module core/vision-interpreter
  */
 
-import { createLogger } from '../utils/logger.js';
+// import { createLogger } from '../utils/logger.js';
 
-const logger = createLogger('vision-interpreter.js');
+// const logger = createLogger('vision-interpreter.js');
 
 /**
  * @class VisionInterpreter

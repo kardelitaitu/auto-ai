@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { RequestDedupe } from '../../../utils/request-dedupe.js';
 
 vi.mock('../../../utils/logger.js', () => ({

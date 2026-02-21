@@ -4,7 +4,7 @@
  * @module tests/unit/tasks-runAgent.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../local-agent/core/agent.js', () => ({
   default: class MockAgent {
@@ -30,14 +30,10 @@ vi.mock('../../utils/logger.js', () => ({
 
 describe('tasks/runAgent.js', () => {
   let runAgent;
-  let MockAgent;
-
   beforeEach(async () => {
     vi.clearAllMocks();
     vi.resetModules();
     runAgent = await import('../../tasks/runAgent.js');
-    const agentModule = await import('../../local-agent/core/agent.js');
-    MockAgent = agentModule.default;
   });
 
   describe('Module Export', () => {

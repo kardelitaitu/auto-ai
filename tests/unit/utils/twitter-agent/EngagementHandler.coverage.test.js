@@ -259,10 +259,8 @@ describe('EngagementHandler Coverage', () => {
             handler.isElementActionable.mockResolvedValue(true);
             
             const result = await handler.robustFollow('[Test]');
-            // Should break loop but not count as success unless verified? 
-            // The code breaks but success depends on unfollow button check which returns false here
-            // Wait, code says: if (await this.page.locator(unfollowBtnSelector).first().isVisible().catch(() => false)) { result.success = true; break; }
             
+            expect(result.skipped).toBe(true);
             expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Already in following/pending state'));
         });
 

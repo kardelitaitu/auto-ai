@@ -56,7 +56,7 @@ export class EngagementHandler extends BaseHandler {
         const layers = [
             { name: 'Ghost Click (Primary)', method: async (el) => {
                 try {
-                    const handle = await element.elementHandle();
+                    const handle = await el.elementHandle();
                     if (handle) {
                         await this.page.evaluate(el => {
                             el.scrollIntoView({ block: 'center', inline: 'center' });
@@ -120,7 +120,7 @@ export class EngagementHandler extends BaseHandler {
                     return true;
                 }
                 this.log(`${logPrefix} ❌ Layer ${i + 1} failed: ${result.error || 'Unknown error'}`);
-            } catch (error) {
+            } catch (_error) {
                 // Should be unreachable
             }
 
@@ -247,17 +247,19 @@ export class EngagementHandler extends BaseHandler {
                             continue;
                         }
 
-                        // Pre-click text check
-                        const preClickTextRaw = await freshFollowBtn.textContent().catch(() => '');
-                        const preClickText = preClickTextRaw.toLowerCase();
-                        if (preClickText.includes('following') || preClickText.includes('pending')) {
-                            this.log(`${logPrefix} ⚠️ Already in following/pending state: '${preClickTextRaw}'.`);
-                            if (await this.page.locator(unfollowBtnSelector).first().isVisible().catch(() => false)) {
-                                result.success = true;
-                                break;
-                            }
-                            continue;
-                        }
+                         // Pre-click text check
+                         const preClickTextRaw = await freshFollowBtn.textContent().catch(() => '');
+                         const preClickText = preClickTextRaw.toLowerCase();
+                         if (preClickText.includes('following') || preClickText.includes('pending')) {
+                             this.log(`${logPrefix} ⚠️ Already in following/pending state: '${preClickTextRaw}'.`);
+                             if (await this.page.locator(unfollowBtnSelector).first().isVisible().catch(() => false)) {
+                                 result.success = true;
+                                 break;
+                             }
+                             // If unfollow not visible, we're in a pending state - treat as skipped
+                             result.skipped = true;
+                             break;
+                         }
 
                         // Perform the click using six-layer strategy
                         const clickPerformed = await this.sixLayerClick(freshFollowBtn, logPrefix);

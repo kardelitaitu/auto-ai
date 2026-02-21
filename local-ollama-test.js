@@ -59,14 +59,14 @@ async function runTest() {
             const lines = prompt.split('\n');
             console.log(lines.slice(-6).join('\n'));
             
-            const startTime = Date.now();
+            // const startTime = Date.now();
             const response = await client.generate({
                 prompt: prompt,
                 systemPrompt: systemPrompt,
                 temperature: 0.7,
                 maxTokens: 150
             });
-            const duration = Date.now() - startTime;
+            // const duration = Date.now() - startTime;
 
             if (response.success) {
                 logger.success(`Run #${i} successful!`);

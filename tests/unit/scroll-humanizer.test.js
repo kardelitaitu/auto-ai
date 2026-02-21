@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { scrollHumanizer } from '../../utils/scroll-humanizer.js';
 import { humanTiming } from '../../utils/human-timing.js';
 
@@ -13,6 +13,10 @@ vi.mock('../../utils/human-timing.js', () => ({
 describe('scroll-humanizer.js', () => {
   let mockPage;
   let mockElement;
+  let originalWindow;
+  let originalDocument;
+  let originalRequestAnimationFrame;
+  let originalPerformance;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -22,9 +26,57 @@ describe('scroll-humanizer.js', () => {
     };
 
     mockPage = {
-      evaluate: vi.fn().mockResolvedValue(undefined),
+      evaluate: vi.fn().mockImplementation((fn, ...args) => {
+        // Execute the function in the current context if it's a function
+        // This simulates the browser execution for coverage
+        if (typeof fn === 'function') {
+           return fn(...args);
+        }
+        return Promise.resolve();
+      }),
       $: vi.fn().mockResolvedValue(mockElement)
     };
+
+    // Mock browser globals
+    originalWindow = global.window;
+    originalDocument = global.document;
+    originalRequestAnimationFrame = global.requestAnimationFrame;
+    originalPerformance = global.performance;
+
+    global.window = {
+      scrollY: 0,
+      scrollX: 0,
+      innerHeight: 768,
+      scrollTo: vi.fn(),
+      scrollBy: vi.fn(),
+    };
+
+    global.document = {
+      body: {
+        scrollHeight: 2000
+      }
+    };
+
+    global.requestAnimationFrame = vi.fn((cb) => {
+        // execute callback
+        cb(performance.now());
+        return 1; 
+    });
+
+    let currentTime = 1000;
+    global.performance = {
+        now: vi.fn(() => {
+            currentTime += 50; // Increment time to simulate progress
+            return currentTime;
+        })
+    };
+  });
+
+  afterEach(() => {
+    global.window = originalWindow;
+    global.document = originalDocument;
+    global.requestAnimationFrame = originalRequestAnimationFrame;
+    global.performance = originalPerformance;
   });
 
   describe('scrollHumanizer', () => {
@@ -157,12 +209,33 @@ describe('scroll-humanizer.js', () => {
         expect(mockPage.$).toHaveBeenCalledTimes(2);
         expect(result).toBe(true);
       });
+
+      it('should scroll without smooth behavior if smooth is false', async () => {
+        const result = await scrollHumanizer.scrollToElement(mockPage, '#target', { smooth: false });
+        expect(mockPage.evaluate).toHaveBeenCalled();
+        expect(result).toBe(true);
+        expect(global.window.scrollTo).toHaveBeenCalledWith(0, expect.any(Number));
+      });
+
+      it('should retry if boundingBox is null', async () => {
+         mockElement.boundingBox.mockResolvedValueOnce(null).mockResolvedValueOnce({ x: 0, y: 500, width: 100, height: 100 });
+         const result = await scrollHumanizer.scrollToElement(mockPage, '#target', { timeout: 1000 });
+         expect(mockElement.boundingBox).toHaveBeenCalledTimes(2);
+         expect(result).toBe(true);
+      });
     });
 
     describe('scrollToTop', () => {
       it('should scroll to top of page', async () => {
         await scrollHumanizer.scrollToTop(mockPage);
         expect(mockPage.evaluate).toHaveBeenCalled();
+        expect(global.window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+      });
+
+      it('should scroll to top without smooth behavior', async () => {
+        await scrollHumanizer.scrollToTop(mockPage, { smooth: false });
+        expect(mockPage.evaluate).toHaveBeenCalled();
+        expect(global.window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
       });
     });
 
@@ -170,6 +243,13 @@ describe('scroll-humanizer.js', () => {
       it('should scroll to bottom of page', async () => {
         await scrollHumanizer.scrollToBottom(mockPage);
         expect(mockPage.evaluate).toHaveBeenCalled();
+        expect(global.window.scrollTo).toHaveBeenCalledWith({ top: 2000, behavior: 'smooth' });
+      });
+
+      it('should scroll to bottom without smooth behavior', async () => {
+        await scrollHumanizer.scrollToBottom(mockPage, { smooth: false });
+        expect(mockPage.evaluate).toHaveBeenCalled();
+        expect(global.window.scrollTo).toHaveBeenCalledWith({ top: 2000, behavior: 'auto' });
       });
     });
 

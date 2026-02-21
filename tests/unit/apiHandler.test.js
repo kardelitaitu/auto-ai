@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock the retry module
 vi.mock('../../utils/retry.js', () => ({
-    withRetry: vi.fn((operation, options) => operation())
+    withRetry: vi.fn((operation, _options) => operation())
 }));
 
 describe('utils/apiHandler', () => {

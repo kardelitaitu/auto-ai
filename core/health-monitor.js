@@ -81,9 +81,9 @@ class HealthMonitor {
 
     /**
      * Check overall browser health including connection and optional page responsiveness.
-     * @param {import('playwright').Browser} browser - The browser instance.
-     * @param {object} [page] - Optional page to check (Playwright Page).
-     * @returns {Promise<object>} Browser health status.
+     * @param {Object} browser - The browser instance.
+     * @param {Object} [page] - Optional page to check (Playwright Page).
+     * @returns {Promise<Object>} Browser health status.
      */
     async checkBrowserHealth(browser, page = null) {
         const checks = {

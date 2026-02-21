@@ -26,6 +26,7 @@ describe('NavigationHandler', () => {
     let mockGhost;
 
     beforeEach(() => {
+        vi.clearAllMocks();
         mockPage = {
             waitForTimeout: vi.fn().mockResolvedValue(),
             goto: vi.fn().mockResolvedValue(),
@@ -59,7 +60,8 @@ describe('NavigationHandler', () => {
             logger: mockLogger,
             state: {},
             human: mockHuman,
-            ghost: mockGhost
+            ghost: mockGhost,
+            mathUtils
         };
 
         handler = new NavigationHandler(mockAgent);
@@ -85,7 +87,7 @@ describe('NavigationHandler', () => {
         });
 
         it('should handle direct URL failure and fallback to click', async () => {
-            mathUtils.roll.mockReturnValue(true);
+            handler.mathUtils.roll.mockReturnValue(true);
             mockPage.goto.mockRejectedValue(new Error('Goto failed'));
             
             // Should fall through to click logic
@@ -189,7 +191,7 @@ describe('NavigationHandler', () => {
             const mockBtn = { isVisible: vi.fn().mockResolvedValue(false) };
             mockPage.locator.mockReturnValue({ first: () => mockBtn });
             
-            mockPage.locator.mockImplementation(sel => {
+            mockPage.locator.mockImplementation(_sel => {
                 return { first: () => ({ isVisible: vi.fn().mockResolvedValue(false) }) };
             });
             

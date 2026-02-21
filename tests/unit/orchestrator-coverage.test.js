@@ -1,12 +1,11 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Orchestrator from '../../core/orchestrator.js';
 import { validatePayload, validateTaskExecution } from '../../utils/validator.js';
 import { isDevelopment } from '../../utils/envLoader.js';
-import metricsCollector from '../../utils/metrics.js';
 
 // Mock Logger Singleton using vi.hoisted
 const { mockLogger, mockMetrics } = vi.hoisted(() => {
@@ -126,7 +125,7 @@ describe('Orchestrator Coverage Extensions', () => {
       // So we expect it to throw or we catch it, but we verify that isDevelopment was called.
       try {
         await orchestrator._importTaskModule('coverage_valid_task');
-      } catch (e) {
+      } catch (_e) {
         // Expected failure in test environment due to query param on import
       }
       
@@ -438,7 +437,7 @@ describe('Orchestrator Coverage Extensions', () => {
       
       await orchestrator.startDiscovery();
       
-      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'Chrome:1234');
+      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'Chrome:1234', 'ws://127.0.0.1:1234/devtools/browser/xyz');
     });
 
     it('should handle URL parsing error for port', async () => {
@@ -451,7 +450,7 @@ describe('Orchestrator Coverage Extensions', () => {
       await orchestrator.startDiscovery();
       
       // Should still add session, just maybe without port in name
-      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'BadURL');
+      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'BadURL', 'invalid-url');
     });
 
     it('should handle top-level discovery error', async () => {
@@ -478,14 +477,21 @@ describe('Orchestrator Coverage Extensions', () => {
       await orchestrator.startDiscovery();
       
       expect(mockSessionManager.addSession).toHaveBeenCalledTimes(1);
-      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'Success');
+      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'Success', 'ws://success');
     });
   });
 
   describe('Metrics Passthrough', () => {
     it('should delegate getMetrics', () => {
       mockMetrics.getStats.mockReturnValue({ total: 10 });
-      expect(orchestrator.getMetrics()).toEqual({ total: 10 });
+      mockMetrics.metrics = {
+        startTime: Date.now(),
+        lastResetTime: Date.now()
+      };
+      const result = orchestrator.getMetrics();
+      expect(result).toHaveProperty('total', 10);
+      expect(result).toHaveProperty('startTime');
+      expect(result).toHaveProperty('lastResetTime');
     });
 
     it('should delegate getRecentTasks', () => {
@@ -599,7 +605,7 @@ describe('Orchestrator Coverage Extensions', () => {
       
       await orchestrator.startDiscovery();
       
-      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), '123');
+      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), '123', 'ws://test');
     });
 
     it('should use "Unnamed Profile" if both windowName and sortNum are missing', async () => {
@@ -610,7 +616,7 @@ describe('Orchestrator Coverage Extensions', () => {
       
       await orchestrator.startDiscovery();
       
-      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'Unnamed Profile');
+      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'Unnamed Profile', 'ws://test');
     });
 
     it('should reuse existing browser context if available', async () => {
@@ -679,7 +685,7 @@ describe('Orchestrator Coverage Extensions', () => {
                 const taskName = file.replace('.js', '');
                 try {
                     await orchestrator._importTaskModule(taskName);
-                } catch (e) {
+                } catch (_e) {
                     // Ignore errors, we just want to hit the line
                 }
             }));

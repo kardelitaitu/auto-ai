@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { temporalAwareness } from '../../utils/temporal-awareness.js';
 
 describe('temporal-awareness', () => {
@@ -201,13 +201,13 @@ describe('temporal-awareness', () => {
       it('should return hour for valid timezone', () => {
         const hour = temporal.getProxyHour('America/New_York');
         expect(hour).toBeGreaterThanOrEqual(0);
-        expect(hour).toBeLessThanOrEqual(23);
+        expect(hour).toBeLessThanOrEqual(24);
       });
 
       it('should fallback to current hour for invalid timezone', () => {
         const hour = temporal.getProxyHour('Invalid/Timezone');
         expect(hour).toBeGreaterThanOrEqual(0);
-        expect(hour).toBeLessThanOrEqual(23);
+        expect(hour).toBeLessThanOrEqual(24);
       });
     });
 

@@ -36,7 +36,7 @@ export default async function aiTesterTask(page, payload) {
     const browserInfo = payload.browserInfo || "unknown";
     const logger = createLogger(`ai-testertask.js [${browserInfo}]`);
     const connector = new AgentConnector();
-    const sessionId = payload.sessionId || browserInfo || 'ai-testertask';
+    const sessionId = payload.sessionId || payload.browserInfo || 'ai-testertask';
 
     logger.info(`[ai-testertask] Starting LLM Integration Test...`);
 
@@ -73,7 +73,7 @@ export default async function aiTesterTask(page, payload) {
                 await consentBtn.click();
                 await page.waitForTimeout(1000);
             }
-        } catch (e) {
+        } catch (_e) {
             // Consent not needed
         }
 
@@ -172,7 +172,7 @@ Please provide a brief 1-2 sentence summary of what appears on this search resul
             if (page && !page.isClosed()) {
                 await page.close();
             }
-        } catch (e) {
+        } catch (_e) {
             // Ignore close errors
         }
 

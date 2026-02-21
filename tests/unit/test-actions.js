@@ -24,7 +24,7 @@ const mockAgent = {
         generateQuote: async () => ({ success: true, quote: 'Test quote' })
     },
     diveQueue: {
-        canEngage: (type) => true,
+        canEngage: (_type) => true,
         recordEngagement: () => {}
     },
     page: {

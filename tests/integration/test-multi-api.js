@@ -36,7 +36,7 @@ async function testSingleRequest() {
   console.log(`Model: ${CONFIG.model}`);
   console.log('');
 
-  const startTime = Date.now();
+  // const startTime = Date.now();
 
   const result = await client.processRequest({
     messages: [
@@ -48,8 +48,6 @@ async function testSingleRequest() {
     maxTokens: 50,
     temperature: 0.7
   });
-
-  const duration = (Date.now() - startTime) / 1000;
 
   console.log('RESULT:');
   if (result.success) {

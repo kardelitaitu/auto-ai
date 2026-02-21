@@ -204,6 +204,13 @@ describe('PopupCloser', () => {
     expect(closer.timer).toBeNull();
   });
 
+  it('does nothing when stop called without timer', () => {
+    const closer = new PopupCloser(page, mockLogger);
+    closer.timer = null;
+    closer.stop();
+    expect(closer.timer).toBeNull();
+  });
+
   it('does not start if timer already exists', () => {
     const closer = new PopupCloser(page, mockLogger);
     closer.timer = 'existing';
@@ -229,5 +236,85 @@ describe('PopupCloser', () => {
     const result = await closer._runOnceInternal();
 
     expect(result).toBeUndefined();
+  });
+
+  it('executes runOnce on interval', async () => {
+    vi.useFakeTimers();
+    const closer = new PopupCloser(page, mockLogger);
+    const runOnceSpy = vi.spyOn(closer, 'runOnce').mockResolvedValue(undefined);
+    
+    closer.start();
+    
+    await vi.advanceTimersByTimeAsync(120000);
+    
+    expect(runOnceSpy).toHaveBeenCalled();
+    
+    closer.stop();
+    vi.useRealTimers();
+  });
+
+  it('handles error in interval execution', async () => {
+    vi.useFakeTimers();
+    const closer = new PopupCloser(page, mockLogger);
+    const runOnceSpy = vi.spyOn(closer, 'runOnce').mockRejectedValue(new Error('Interval error'));
+    
+    closer.start();
+    
+    // Should not throw
+    await vi.advanceTimersByTimeAsync(120000);
+    
+    expect(runOnceSpy).toHaveBeenCalled();
+    
+    closer.stop();
+    vi.useRealTimers();
+  });
+
+  it('handles isVisible error for first button', async () => {
+    const button = {
+      count: vi.fn().mockResolvedValue(1),
+      isVisible: vi.fn().mockRejectedValue(new Error('Visibility check failed')),
+      first: vi.fn().mockReturnValue({
+          count: vi.fn().mockResolvedValue(1),
+          isVisible: vi.fn().mockRejectedValue(new Error('Visibility check failed')),
+      })
+    };
+    page.getByRole = vi.fn().mockReturnValue(button);
+    
+    // Mock locator to return empty so it doesn't try the second path successfully
+    page.locator = vi.fn().mockReturnValue({
+        first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(0)
+        })
+    });
+    
+    const closer = new PopupCloser(page, mockLogger);
+    const result = await closer._runOnceInternal();
+    
+    expect(result).toBe(false);
+  });
+
+  it('handles isVisible error for alternative button', async () => {
+    // First button not found
+    page.getByRole = vi.fn().mockReturnValue({
+        first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(0)
+        })
+    });
+
+    // Alt button found but visibility check fails
+    const altButton = {
+      count: vi.fn().mockResolvedValue(1),
+      isVisible: vi.fn().mockRejectedValue(new Error('Visibility check failed')),
+      first: vi.fn().mockReturnValue({
+          count: vi.fn().mockResolvedValue(1),
+          isVisible: vi.fn().mockRejectedValue(new Error('Visibility check failed')),
+      })
+    };
+    page.locator = vi.fn().mockReturnValue(altButton);
+    
+    const closer = new PopupCloser(page, mockLogger);
+    const result = await closer._runOnceInternal();
+    
+    expect(result).toBe(false);
   });
 });

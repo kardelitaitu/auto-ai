@@ -7,8 +7,6 @@
 import { mathUtils } from './mathUtils.js';
 import { createLogger } from './logger.js';
 
-const logger = createLogger('ghostCursor');
-
 // Twitter-specific click profiles for different engagement types
 export const TWITTER_CLICK_PROFILES = {
   like: {
@@ -428,13 +426,15 @@ async click(selector, options = {}) {
     label = '',
     hoverBeforeClick = false,
     hoverMinMs = 120,
-    hoverMaxMs = 280
+    hoverMaxMs = 280,
+    precision = 'normal',
+    button = 'left'
   } = options;
   const labelSuffix = label ? ` [${label}]` : '';
 
   try {
     if (selector.isVisible && !(await selector.isVisible().catch(() => false))) {
-      if (allowNativeFallback && selector.click) await selector.click({ force: true }).catch(() => {});
+      if (allowNativeFallback && selector.click) await selector.click({ force: true, button }).catch(() => {});
       return { success: false, usedFallback: true };
     }
   } catch (_e) {
@@ -443,7 +443,7 @@ async click(selector, options = {}) {
 
   let bbox = await this.waitForStableElement(selector, maxStabilityWaitMs);
   if (!bbox) {
-    if (allowNativeFallback && selector.click) await selector.click({ force: true }).catch(() => {});
+    if (allowNativeFallback && selector.click) await selector.click({ force: true, button }).catch(() => {});
     return { success: false, usedFallback: true };
   }
 
@@ -454,14 +454,23 @@ async click(selector, options = {}) {
   while (attempt < maxTrackingAttempts) {
     attempt++;
 
-    const marginX = bbox.width * 0.15;
-    const marginY = bbox.height * 0.15;
+    // Adjust targeting based on precision
+    let marginFactor = 0.15;
+    let sigmaDivisor = 6;
+
+    if (precision === 'high') {
+      marginFactor = 0.35; // Target central 30%
+      sigmaDivisor = 12;   // Tighter spread
+    }
+
+    const marginX = bbox.width * marginFactor;
+    const marginY = bbox.height * marginFactor;
     const targetX = mathUtils.gaussian(
-      bbox.x + bbox.width / 2, bbox.width / 6,
+      bbox.x + bbox.width / 2, bbox.width / sigmaDivisor,
       bbox.x + marginX, bbox.x + bbox.width - marginX
     );
     const targetY = mathUtils.gaussian(
-      bbox.y + bbox.height / 2, bbox.height / 6,
+      bbox.y + bbox.height / 2, bbox.height / sigmaDivisor,
       bbox.y + marginY, bbox.y + bbox.height - marginY
     );
 
@@ -486,9 +495,9 @@ async click(selector, options = {}) {
           await this.hoverWithDrift(finalX, finalY, hoverMinMs, hoverMaxMs);
         }
         await this.page.mouse.move(finalX, finalY);
-        await this.page.mouse.down();
+        await this.page.mouse.down({ button });
         await new Promise(r => setTimeout(r, holdTime));
-        await this.page.mouse.up();
+        await this.page.mouse.up({ button });
         this.logger.info(`ghostCursor clicked x=${Math.round(finalX)} y=${Math.round(finalY)}${labelSuffix}`);
         return { success: true, usedFallback: false, x: finalX, y: finalY };
       } catch {
@@ -501,7 +510,7 @@ async click(selector, options = {}) {
 
   if (allowNativeFallback && selector.click) {
     try {
-      await selector.click({ force: true });
+      await selector.click({ force: true, button });
     } catch {
       // Ignore native fallback error
     }

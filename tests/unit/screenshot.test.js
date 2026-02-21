@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { takeScreenshot } from '../../../utils/screenshot.js';
-import fs from 'fs';
-import path from 'path';
 
 vi.mock('fs', async () => {
   const actual = await vi.importActual('fs');

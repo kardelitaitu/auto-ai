@@ -1,3 +1,8 @@
+/**
+ * @fileoverview LLM Endpoint Probe Utility
+ * Probes common local LLM ports and paths to find running services
+ * @module utils/probe_llm
+ */
 
 import http from 'http';
 import { fileURLToPath } from 'url';

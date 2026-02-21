@@ -1,19 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import VisionPackager from '../../core/vision-packager.js';
-import RoIDetector from '../../core/vision/roi-detector.js';
-import ImageStorage from '../../core/vision/image-storage.js';
 import fs from 'fs/promises';
+import path from 'path';
 
 vi.mock('fs/promises');
 vi.mock('../../core/vision/roi-detector.js');
-vi.mock('../../core/vision/image-storage.js');
+vi.mock('../../core/vision/image-storage.js', () => ({
+    ImageStorage: {
+        instance: null,
+        getInstance: vi.fn(() => null)
+    }
+}));
 vi.mock('../../utils/logger.js', () => ({
-    createLogger: () => ({
+    createLogger: vi.fn(() => ({
         debug: vi.fn(),
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn()
-    })
+    }))
 }));
 
 describe('VisionPackager', () => {
@@ -25,18 +29,18 @@ describe('VisionPackager', () => {
         vi.stubGlobal('window', { innerWidth: 1920, innerHeight: 1080 });
 
         // Mock fs promises - return fresh copies each time to handle state
-        fs.mkdir.mockResolvedValue();
-        fs.writeFile.mockResolvedValue();
+        fs.mkdir.mockResolvedValue(undefined);
+        fs.writeFile.mockResolvedValue(undefined);
         fs.readdir.mockResolvedValue([]);
         fs.stat.mockResolvedValue({ mtimeMs: Date.now(), size: 1024 });
-        fs.unlink.mockResolvedValue();
+        fs.unlink.mockResolvedValue(undefined);
 
         // Override screenshotDir to match test expectations
         packager = new VisionPackager();
         packager.screenshotDir = 'test-dir';
 
         mockPage = {
-            screenshot: vi.fn().mockResolvedValue(Buffer.from('fake-image')),
+            screenshot: vi.fn().mockResolvedValue(Buffer.from('fake-image-data')),
             evaluate: vi.fn().mockImplementation((fn) => {
                 if (typeof fn === 'function') {
                     return Promise.resolve(fn());
@@ -104,7 +108,7 @@ describe('VisionPackager', () => {
     describe('Delegated Methods', () => {
         it('should delegate cleanup to storage', async () => {
             fs.readdir.mockResolvedValue(['old.jpg']);
-            fs.stat.mockResolvedValue({ mtimeMs: Date.now() - 4000000 });
+            fs.stat.mockResolvedValue({ mtimeMs: Date.now() - 4000000, size: 1024 });
             const count = await packager.cleanupOldScreenshots(3600000);
             expect(fs.unlink).toHaveBeenCalledWith(expect.stringContaining('old.jpg'));
             expect(count).toBe(1);
@@ -112,7 +116,7 @@ describe('VisionPackager', () => {
 
         it('should log cleanup count if greater than 0', async () => {
             fs.readdir.mockResolvedValue(['old.jpg']);
-            fs.stat.mockResolvedValue({ mtimeMs: Date.now() - 4000000 });
+            fs.stat.mockResolvedValue({ mtimeMs: Date.now() - 4000000, size: 1024 });
             await packager.cleanupOldScreenshots(3600000);
             // The logger is mocked, we just need to ensure the code path is taken.
             // The fact that it doesn't throw is sufficient for this test's purpose.
@@ -121,6 +125,7 @@ describe('VisionPackager', () => {
         it('should delegate stats to storage', async () => {
             // Override readdir mock for this specific test
             fs.readdir.mockResolvedValue(['1.jpg', '2.jpg']);
+            fs.stat.mockResolvedValue({ mtimeMs: Date.now(), size: 1024 });
             const stats = await packager.getStats();
             expect(stats.totalScreenshots).toBe(2);
             expect(stats.totalSizeBytes).toBe(2048);

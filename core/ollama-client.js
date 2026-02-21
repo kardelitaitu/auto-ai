@@ -64,6 +64,15 @@ class OllamaClient {
 
         const startTime = Date.now();
 
+        // Pre-flight check: verify Ollama is reachable before making request (using cache)
+        const { isOllamaRunning } = await import('../utils/local-ollama-manager.js');
+        const ollamaReady = await isOllamaRunning(); // Removed forced true bypass
+        if (!ollamaReady) {
+            const duration = Date.now() - startTime;
+            logger.error(`[Ollama] Service not ready at ${this.baseUrl}. Cannot process request.`);
+            return { success: false, error: 'Ollama service not ready', duration };
+        }
+
         // Check if this is a vision request - use chat endpoint for LLaVA
         let isVision = !!request.vision || !!request.images;
 
@@ -234,13 +243,13 @@ class OllamaClient {
             if (content && (request.prompt?.includes('Tweet from') || request.systemPrompt?.includes('Twitter'))) {
                 // Remove mentions, hashtags, quotes
                 let cleaned = content.replace(/@\w+/g, '')
-                                .replace(/#\w+/g, '')
-                                .replace(/["']/g, '');
+                    .replace(/#\w+/g, '')
+                    .replace(/["']/g, '');
 
                 // Only remove emojis if NOT explicitly allowed by prompt instructions
                 // Strategies in twitter-reply-prompt.js use "EMOJI" keyword when allowing them
-                const allowEmojis = (request.prompt && request.prompt.includes('EMOJI')) || 
-                                   (request.systemPrompt && request.systemPrompt.includes('EMOJI'));
+                const allowEmojis = (request.prompt && request.prompt.includes('EMOJI')) ||
+                    (request.systemPrompt && request.systemPrompt.includes('EMOJI'));
 
                 if (!allowEmojis) {
                     cleaned = cleaned.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}]/gu, '');
@@ -265,10 +274,10 @@ class OllamaClient {
                         if (Math.random() < 0.15) {
                             content = content.toLowerCase();
                         }
-                        
+
                         // NEW: Apply additional humanization (abbreviations, slang)
                         content = this.applyHumanization(content);
-                        
+
                         // NEW: Apply realistic typos (very low probability)
                         content = this.applyTypos(content);
                     }
@@ -311,7 +320,7 @@ class OllamaClient {
      */
     applyHumanization(text) {
         if (!text) return text;
-        
+
         // 1. Abbreviation Replacer (10-15% chance per word match)
         // Only applies if the text is relatively short (casual context)
         const abbreviations = {
@@ -380,19 +389,19 @@ class OllamaClient {
             'good night': 'gn',
             'good morning': 'gm'
         };
-        
+
         // Pre-compile regexes once for performance (was creating 64 regex objects per call)
         if (!this._abbrRegexes) {
-            this._abbrRegexes = Object.entries(abbreviations).map(([full]) => 
+            this._abbrRegexes = Object.entries(abbreviations).map(([full]) =>
                 new RegExp(`\\b${full}\\b`, 'gi')
             );
         }
-        
+
         // Simple word replacement with low probability
         let processed = text;
         const abbrEntries = Object.entries(abbreviations);
         for (let i = 0; i < abbrEntries.length; i++) {
-            const [full, abbr] = abbrEntries[i];
+            const [_full, abbr] = abbrEntries[i];
             const regex = this._abbrRegexes[i];
             regex.lastIndex = 0; // Reset regex state
             if (regex.test(processed)) {
@@ -415,7 +424,7 @@ class OllamaClient {
         if (Math.random() < 0.01) {
             processed = processed.replace(/([,.]) /g, '$1');
         }
-        
+
         return processed;
     }
 
@@ -437,24 +446,24 @@ class OllamaClient {
         };
 
         let chars = text.split('');
-        
+
         // Iterate through characters with a very low probability of typo
         for (let i = 0; i < chars.length; i++) {
             const char = chars[i].toLowerCase();
-            
+
             // 0.1% chance per character to make a typo (approx 1 in 1000 keystrokes)
             if (adjacency[char] && Math.random() < 0.001) {
                 const adjacentKeys = adjacency[char];
                 const typo = adjacentKeys[Math.floor(Math.random() * adjacentKeys.length)];
-                
+
                 // Preserve original case
                 chars[i] = (chars[i] === char.toUpperCase()) ? typo.toUpperCase() : typo;
-                
+
                 // Don't make multiple typos in a single short reply
-                break; 
+                break;
             }
         }
-        
+
         return chars.join('');
     }
 
@@ -523,13 +532,13 @@ class OllamaClient {
             if (content && (request.prompt?.includes('Tweet from') || request.systemPrompt?.includes('Twitter'))) {
                 // Remove mentions, hashtags, quotes
                 let cleaned = content.replace(/@\w+/g, '')
-                                .replace(/#\w+/g, '')
-                                .replace(/["']/g, '');
+                    .replace(/#\w+/g, '')
+                    .replace(/["']/g, '');
 
                 // Only remove emojis if NOT explicitly allowed by prompt instructions
                 // Strategies in twitter-reply-prompt.js use "EMOJI" keyword when allowing them
-                const allowEmojis = (request.prompt && request.prompt.includes('EMOJI')) || 
-                                   (request.systemPrompt && request.systemPrompt.includes('EMOJI'));
+                const allowEmojis = (request.prompt && request.prompt.includes('EMOJI')) ||
+                    (request.systemPrompt && request.systemPrompt.includes('EMOJI'));
 
                 if (!allowEmojis) {
                     cleaned = cleaned.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}]/gu, '');
@@ -605,7 +614,7 @@ class OllamaClient {
                 signal: AbortSignal.timeout(2000)
             });
             return res.ok;
-        } catch (e) {
+        } catch (_e) {
             return false;
         }
     }
@@ -619,22 +628,26 @@ class OllamaClient {
             return false;
         }
         const now = Date.now();
-        if (now - this._recentOllamaListAt < 10000) {
+        if (now - this._recentOllamaListAt < 30000) {
             return false;
         }
         this._recentOllamaListAt = now;
         logger.warn(`[Ollama] ${errorMessage} Triggering 'ollama list'...`);
+
+        const TIMEOUT_MS = 5000;
+        let timedOut = false;
+        const timeout = setTimeout(() => {
+            timedOut = true;
+            logger.warn(`[Ollama] 'ollama list' timed out after ${TIMEOUT_MS}ms`);
+        }, TIMEOUT_MS);
+
+        // Run 'ollama list' purely to wake up the system processes if asleep, ignore output for speed
         exec('ollama list', { windowsHide: true }, (err, stdout, stderr) => {
+            clearTimeout(timeout);
+            if (timedOut) return;
             if (err) {
                 logger.warn(`[Ollama] 'ollama list' failed: ${err.message}`);
                 return;
-            }
-            const output = stdout?.trim();
-            if (output) {
-                const preview = output.split('\n').slice(0, 5).join(' | ');
-                logger.info(`[Ollama] 'ollama list' output: ${preview}`);
-            } else if (stderr?.trim()) {
-                logger.warn(`[Ollama] 'ollama list' stderr: ${stderr.trim()}`);
             }
         });
         return true;

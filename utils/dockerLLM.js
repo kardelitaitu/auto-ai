@@ -89,6 +89,13 @@ async function startLocalLLM() {
  * Main entry point: Check and ensure LLM is running.
  */
 export async function ensureDockerLLM() {
+    // Check if local LLM is disabled in config
+    const settings = await getSettings();
+    if (settings.llm?.local?.enabled === false) {
+        logger.info('[LocalLLM] Local LLM is disabled in config, skipping initialization');
+        return false;
+    }
+    
     // Renamed internally but keeping export name for main.js compatibility
     logger.info('[LocalLLM] Checking local LLM status...');
 

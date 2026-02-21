@@ -1,18 +1,18 @@
 /**
- * @fileoverview Individual Sentiment Dimension Analyzers (Phase 2)
+ * Individual Sentiment Dimension Analyzers (Phase 2)
  * Each analyzer is independently testable, cacheable, and unit-testable
  * @module utils/sentiment-analyzers
  */
 
-// import { createLogger } from './logger.js';
 import SentimentData from './sentiment-data.js';
 
-// const logger = createLogger('sentiment-analyzers.js');
-
-// ============================================================================
-// VALENCE ANALYZER (Positive/Negative Intensity)
-// ============================================================================
+/**
+ * ValenceAnalyzer - Analyzes positive/negative intensity in text
+ */
 export class ValenceAnalyzer {
+    /**
+     * Creates a new ValenceAnalyzer instance
+     */
     constructor() {
         this.positiveWords = this.buildWordWeights(SentimentData.POSITIVE_LEXICON);
         this.negativeWords = this.buildWordWeights(SentimentData.NEGATIVE_LEXICON);
@@ -95,6 +95,9 @@ export class ValenceAnalyzer {
 // ============================================================================
 // AROUSAL ANALYZER (Calm/Excited Energy)
 // ============================================================================
+/**
+ * ArousalAnalyzer - Analyzes energy/excitement level in text
+ */
 export class ArousalAnalyzer {
     analyze(text) {
         let score = 0.3; // Default: slightly calm
@@ -168,6 +171,9 @@ export class ArousalAnalyzer {
 // ============================================================================
 // DOMINANCE ANALYZER (Submissive/Assertive)
 // ============================================================================
+/**
+ * DominanceAnalyzer - Analyzes assertiveness/submissiveness in text
+ */
 export class DominanceAnalyzer {
     analyze(text) {
         let score = 0.5; // Default: neutral
@@ -230,6 +236,9 @@ export class DominanceAnalyzer {
 // ============================================================================
 // SARCASM ANALYZER (Literal/Sarcastic)
 // ============================================================================
+/**
+ * SarcasmAnalyzer - Detects sarcasm in text
+ */
 export class SarcasmAnalyzer {
     analyze(text) {
         let score = 0;
@@ -315,6 +324,9 @@ export class SarcasmAnalyzer {
 // ============================================================================
 // URGENCY ANALYZER (Relaxed/Time-Sensitive)
 // ============================================================================
+/**
+ * UrgencyAnalyzer - Analyzes time-sensitivity in text
+ */
 export class UrgencyAnalyzer {
     analyze(text) {
         let score = 0.3; // Default: relaxed
@@ -376,6 +388,9 @@ export class UrgencyAnalyzer {
 // ============================================================================
 // TOXICITY ANALYZER (Friendly/Hostile)
 // ============================================================================
+/**
+ * ToxicityAnalyzer - Detects hostile/toxic language in text
+ */
 export class ToxicityAnalyzer {
     constructor() {
         this.profanities = ['fuck', 'shit', 'damn', 'ass', 'crap', 'bitch',

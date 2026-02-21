@@ -10,6 +10,7 @@ import { createLogger } from './utils/logger.js';
 import { showBanner } from './utils/banner.js';
 import Orchestrator from './core/orchestrator.js';
 import { ensureDockerLLM } from './utils/dockerLLM.js';
+import { getSettings } from './utils/configLoader.js';
 
 const logger = createLogger('main.js');
 
@@ -46,6 +47,14 @@ const logger = createLogger('main.js');
 
     logger.info("Attempting to discover and connect to available browsers...");
 
+    // Start dashboard if enabled in config
+    const settings = await getSettings();
+    if (settings?.ui?.dashboard?.enabled) {
+      await orchestrator.startDashboard(settings.ui.dashboard.port || 3001);
+    }
+
+    // Retry Loop for Discovery
+
     // Retry Loop for Discovery
     const maxRetries = 3;
     let attempt = 1;
@@ -79,24 +88,49 @@ const logger = createLogger('main.js');
     }
 
     logger.info('Adding specified tasks to the queue...');
-    logger.info('Adding specified tasks to the queue...');
-    
+
     // Parse arguments: first arg is task, rest are key=value pairs
     let currentTask = null;
     let currentPayload = {};
-    
+
+    logger.info(`[CLI] Parsing args: ${JSON.stringify(tasksToRun)}`);
+
     tasksToRun.forEach(arg => {
+      // Handle taskName=value format (e.g., pageview=www.example.com)
+      // Split on first '=' only
+      const firstEqualIndex = arg.indexOf('=');
+      if (firstEqualIndex > 0) {
+        const potentialTask = arg.substring(0, firstEqualIndex);
+        const potentialValue = arg.substring(firstEqualIndex + 1);
+
+        logger.info(`[CLI] Found '=' in arg: task='${potentialTask}', value='${potentialValue}'`);
+
+        // If we already have a task and this looks like key=value, add to payload
+        if (currentTask && potentialTask !== currentTask) {
+          currentPayload[potentialTask] = potentialValue;
+          return;
+        }
+
+        // If no current task, treat "taskName=value" as task with url=value
+        if (!currentTask) {
+          currentTask = potentialTask;
+          currentPayload = { url: potentialValue };
+          logger.info(`[CLI] Set currentTask='${currentTask}', currentPayload=${JSON.stringify(currentPayload)}`);
+          return;
+        }
+      }
+
       // If arg contains '=', it's a key=value parameter for the current task
       if (arg.includes('=') && currentTask) {
         const parts = arg.split('=');
         const key = parts[0];
         let value = parts.slice(1).join('=');
-        
+
         // Remove surrounding quotes if present
         if (value.startsWith('"') && value.endsWith('"')) {
           value = value.slice(1, -1);
         }
-        
+
         currentPayload[key] = value;
       } else if (!arg.startsWith('--')) {
         // This is a task name
@@ -108,7 +142,7 @@ const logger = createLogger('main.js');
         currentPayload = {};
       }
     });
-    
+
     // Add the last task
     if (currentTask) {
       orchestrator.addTask(currentTask, currentPayload);

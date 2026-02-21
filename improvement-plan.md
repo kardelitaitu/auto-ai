@@ -1,87 +1,63 @@
-# Performance Improvement Plan
+# ai-twitterActivity.js Reliability Improvement Plan
 
 ## Goals
-- Increase task snappiness under multi-session load
-- Reduce task start latency and queue wait time
-- Lower CPU and memory pressure during sustained runs
-- Improve stability and recovery under network and browser failures
+- Eradicate silent hangs and deadlocks during tweet diving & scanning phases.
+- Make DOM extraction resilient to Twitter/X UI updates and lazy-loading.
+- Ensure 100% clean lock releases for the `operationLock` state machine.
+- Provide clear error propagation from Action Modules back up to the Orchestrator.
 
 ## Scope
-- Browser orchestration and session lifecycle
-- Task scheduling and execution workflow
-- AI request routing and queueing
-- Network retry and timeout behavior
-- Memory and resource cleanup
+- `tasks/ai-twitterActivity.js` (Session loop & orchestration)
+- `utils/ai-twitterAgent.js` (Agent state machine, DOM interaction, logging)
+- `utils/async-queue.js` (DiveQueue concurrency)
+- `utils/actions/*` (Individual engagement actions)
 
 ## Key Risks and Bottlenecks
-- Task broadcast to all sessions multiplies work under load
-- Page creation per task inflates startup latency and memory churn
-- Busy-retry loops for workers add latency jitter
-- Double queueing for AI requests reduces throughput
-- Timer-based timeouts not cleared can accumulate
-- Retry and circuit breaker overlap can extend tail latency
+- **Unbounded Scanning Phase**: Phase 1 of `diveTweet()` (finding tweets, scrolling, extracting text) runs outside the `DiveQueue` timeout. If `page.waitForURL` or locator counts hang, the loop stalls indefinitely.
+- **Fragile Boolean Locks**: The `operationLock` is a simple boolean. If an unhandled exception bypasses the `finally` block or occurs in an un-awaited background promise, the agent deadlocks, busy-waiting forever in `startDive()`.
+- **Race conditions in DOM Extraction**: Tweet text extraction uses fixed timeouts (`page.waitForTimeout(1000)`) instead of waiting for React state hydration, resulting in empty context queries.
+- **Scattered Timeout Logic**: There's a mix of `setTimeout`, `Promise.race`, and Playwright timeouts. They need to be standardized.
+
+---
 
 ## Optimization Plan
 
-### 1) Orchestration and Scheduling
-- Replace task broadcast with centralized task assignment
-- Use per-session worker semaphores to await availability
-- Track task affinity and deprioritize failing sessions
+### 1) Robust State & Lock Management
+- **Auto-Expiring Locks**: Replace the `while (this.operationLock)` busy-wait with an event-driven `Mutex` or an auto-expiring lock (e.g., maximum 3-minute lease) to guarantee deadlocks auto-resolve.
+- **Wrap Entire Dive in Timeout**: Move the timeout boundary from just the "AI execution" phase to encompass the *entire* `diveTweet` sequence, including DOM scanning and navigation.
 
-### 2) Page and Context Reuse
-- Maintain a small pool of pages per worker
-- Reuse contexts per session while healthy
-- Close pages only when unhealthy or idle beyond threshold
+### 2) Resilient DOM & Context Extraction
+- **Centralized Selectors**: Abstract Twitter DOM selectors into a separate config/constant map, allowing easy updates if Twitter changes class names or test IDs.
+- **Smart Hydration Waits**: Replace `page.waitForTimeout` with robust predicates (e.g., waiting for specific inner bounds or text to be non-empty) to ensure tweet text is actually fully loaded before `contextEngine` extracts it.
 
-### 3) AI Request Throughput
-- Consolidate AI request queues into a single layer
-- Unify retry policy and keep circuit breaker state only
-- Cache stable prompts and configuration values
+### 3) Hardened Error & Navigation Recovery
+- **Safe Navigation Wrappers**: Ensure that `_safeNavigateHome()` and other Playwright `.goto()` / `.waitForURL()` calls are wrapped in robust Circuit Breakers. If Twitter throttles the page, the agent should instantly recover rather than stalling the session.
+- **Action Rollbacks**: If `ActionRunner` executes an action but it partially fails (e.g., clicked reply but couldn't type), ensure the fallback safely closes any stray modals/composers (`PopupCloser` integration enhancement).
 
-### 4) Network and Retry Behavior
-- Normalize timeout settings across AI providers
-- Use exponential backoff with jitter and max cap
-- Add fast-fail on known fatal error classes
+### 4) Enhanced Telemetry & Queue Visibility
+- **Granular Error Types**: Standardize error strings (e.g., `ERR_DOM_TIMEOUT`, `ERR_AI_RATE_LIMIT`) so the Orchestrator knows whether to skip a tweet, refresh the page, or kill the browser profile entirely.
+- **Queue Health Checks**: Auto-flush `DiveQueue` if the worker tab crashes or the Playwright context disconnects unexpectedly.
 
-### 5) Memory and Cleanup
-- Enforce bounds for queue sizes and occupancy maps
-- Clear timeout handles on success and failure
-- Add periodic cleanup for orphaned pages and stale sessions
+---
 
 ## Task Breakdown
-- Task A: Centralized task assignment with worker semaphores (branch: feat/scheduler-queue)
-- Task B: Page pooling and context reuse (branch: feat/page-pooling)
-- Task C: Retry and timeout unification (branch: feat/retry-timeout)
-- Task D: Memory bounds and cleanup hardening (branch: feat/memory-hardening)
 
-## Metrics and Success Criteria
-- P50 and P95 task latency reduced by 30–50%
-- Queue wait time reduced by 40–60%
-- CPU usage reduced by 15–30% under steady load
-- Memory growth bounded to <5% over 1 hour
-- Task success rate above 98% under load
+- **Task A: Lock & Timeout Unification**
+  - Refactor `AITwitterAgent.operationLock` to a robust Async Mutex.
+  - Wrap `diveTweet` Phase 1 (Scanning) in a standard `Promise.race` sequence.
+- **Task B: DOM Abstraction & Extraction Resilience**
+  - Implement smart `waitForTextLoad` instead of raw delays in `_readExpandedTweet` & `_diveTweetWithAI`.
+- **Task C: Navigation Circuit Breakers**
+  - Harden `_safeNavigateHome`, `smartClick`, and `page.waitForURL` fallback loops.
+- **Task D: Action Feedback Loop**
+  - Improve `ActionRunner` state propagation and error code returns to `ai-twitterActivity.js`.
 
-## Testing Requirements
-- Concurrency tests with 3–10 sessions
-- Long-running soak tests with repeated task cycles
-- Failure injection for network timeouts and browser disconnects
-- Regression tests for AI routing and task scheduling
+## Verification Plan
 
-## Implementation Phases
+### Automated Tests
+- Review Vitest integration tests in `tests/integration/` for `ai-twitterAgent.test.js` (if any exist) or create mocks for Playwright `Page` to simulate `waitForURL` timeouts and verify the Mutex unlocks properly.
+- Command: `npm run test:unit -- tests/unit/async-queue.test.js` and `npm run test:unit -- tests/unit/ai-twitterAgent.test.js`
 
-### Phase A: Scheduler and Queue Consolidation
-- Central task assignment
-- Worker semaphore
-- Remove redundant AI queue
-
-### Phase B: Page Pooling
-- Page reuse with health checks
-- Idle page cleanup
-
-### Phase C: Retry and Timeout Unification
-- Centralized retry policy
-- Circuit breaker-only for state
-
-### Phase D: Memory Hardening
-- Bounded queues and maps
-- Cleanup timers on shutdown
+### Manual Verification
+- Run a multi-profile debug session where we artificially inject network drops directly into Playwright intercepts, confirming the fallback modes trigger successfully without freezing.
+- Command: `node main.js ai-twitterActivity profileId=test1 debug=true`

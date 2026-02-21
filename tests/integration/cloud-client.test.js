@@ -4,8 +4,8 @@
  * @module tests/integration/cloud-client.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
-import { createLogger } from '../../utils/logger.js';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+// import { createLogger } from '../../utils/logger.js';
 import { getSettings } from '../../utils/configLoader.js';
 import { MultiOpenRouterClient } from '../../utils/multi-api.js';
 import { FreeApiRouter } from '../../utils/free-api-router.js';
@@ -151,7 +151,7 @@ describe('CloudClient Integration', () => {
             mocks.getSettings.mockResolvedValue(settings);
             
             // Verify mock
-            const mockedSettings = await mocks.getSettings();
+            await mocks.getSettings();
             // console.log('DEBUG: Mocked Settings in Test:', JSON.stringify(mockedSettings, null, 2));
 
             const client = new CloudClient();
@@ -465,7 +465,7 @@ describe('CloudClient Integration', () => {
             if (content.trim().startsWith('{')) {
                 try {
                     data = JSON.parse(content);
-                } catch (e) {
+                } catch (_e) {
                     data = null;
                 }
             }
@@ -478,7 +478,7 @@ describe('CloudClient Integration', () => {
             if (content.trim().startsWith('[')) {
                 try {
                     data = JSON.parse(content);
-                } catch (e) {
+                } catch (_e) {
                     data = null;
                 }
             }
@@ -491,7 +491,7 @@ describe('CloudClient Integration', () => {
             if (content.trim().startsWith('{') || content.trim().startsWith('[')) {
                 try {
                     data = JSON.parse(content);
-                } catch (e) {
+                } catch (_e) {
                     data = null;
                 }
             }
@@ -504,7 +504,7 @@ describe('CloudClient Integration', () => {
             if (content.trim().startsWith('{') || content.trim().startsWith('[')) {
                 try {
                     data = JSON.parse(content);
-                } catch (e) {
+                } catch (_e) {
                     data = null;
                 }
             }

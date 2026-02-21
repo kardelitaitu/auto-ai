@@ -352,24 +352,25 @@ export class SentimentDecisionEngine {
         const fallbacks = blockReasons[blockType];
         if (!fallbacks) return null;
         
-        // Suggest safest fallback
-        const safestAction = fallbacks.actions[0];
-        
-        // But check if even fallback is allowed
         const testGates = sentimentResult.actionGates;
-        
-        if (safestAction === 'like' && testGates.canLike) {
-            return {
-                action: 'like',
-                reason: `${fallbacks.reason} - suggesting like instead`,
-                confidence: 'medium'
-            };
-        } else if (safestAction === 'bookmark' && testGates.canBookmark) {
-            return {
-                action: 'bookmark',
-                reason: `${fallbacks.reason} - suggesting bookmark instead`,
-                confidence: 'medium'
-            };
+
+        // Iterate through suggested fallbacks to find one that is allowed
+        for (const action of fallbacks.actions) {
+            if (action === 'like' && testGates.canLike) {
+                return {
+                    action: 'like',
+                    reason: `${fallbacks.reason} - suggesting like instead`,
+                    confidence: 'medium'
+                };
+            }
+            
+            if (action === 'bookmark' && testGates.canBookmark) {
+                return {
+                    action: 'bookmark',
+                    reason: `${fallbacks.reason} - suggesting bookmark instead`,
+                    confidence: 'medium'
+                };
+            }
         }
         
         // No safe fallback

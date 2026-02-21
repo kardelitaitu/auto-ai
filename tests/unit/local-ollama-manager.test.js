@@ -29,9 +29,11 @@ vi.mock('child_process', () => ({
 describe('local-ollama-manager', () => {
     let originalAbortSignal;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.clearAllMocks();
         originalAbortSignal = global.AbortSignal;
+        const manager = await import('../../utils/local-ollama-manager.js');
+        manager.clearOllamaCache();
     });
 
     afterEach(() => {
@@ -47,16 +49,20 @@ describe('local-ollama-manager', () => {
         it('should return false if process not running', async () => {
             const { execSync } = await import('child_process');
             execSync.mockReturnValue('node.exe');
-            
+
+            global.fetch = vi.fn().mockRejectedValue(new Error('Connection refused'));
+
             const { isOllamaRunning } = await import('../../utils/local-ollama-manager.js');
             const result = await isOllamaRunning();
-            
+
             expect(result).toBe(false);
         });
 
         it('should return false when tasklist check throws', async () => {
             const { execSync } = await import('child_process');
             execSync.mockImplementation(() => { throw new Error('tasklist fail'); });
+
+            global.fetch = vi.fn().mockRejectedValue(new Error('Connection refused'));
 
             const { isOllamaRunning } = await import('../../utils/local-ollama-manager.js');
             const result = await isOllamaRunning();
@@ -67,26 +73,26 @@ describe('local-ollama-manager', () => {
         it('should return true if API responds', async () => {
             const { execSync } = await import('child_process');
             execSync.mockReturnValue('ollama.exe');
-            
+
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true
             });
-            
+
             const { isOllamaRunning } = await import('../../utils/local-ollama-manager.js');
             const result = await isOllamaRunning();
-            
+
             expect(result).toBe(true);
         });
 
         it('should return false if API fails', async () => {
             const { execSync } = await import('child_process');
             execSync.mockReturnValue('ollama.exe');
-            
+
             global.fetch = vi.fn().mockRejectedValue(new Error('Connection refused'));
-            
+
             const { isOllamaRunning } = await import('../../utils/local-ollama-manager.js');
             const result = await isOllamaRunning();
-            
+
             expect(result).toBe(false);
         });
 
@@ -107,54 +113,65 @@ describe('local-ollama-manager', () => {
     });
 
     describe('ensureOllama', () => {
+        beforeEach(() => {
+            process.env.ALLOW_OLLAMA_MODEL_OPS = 'true';
+        });
+
+        afterEach(() => {
+            delete process.env.ALLOW_OLLAMA_MODEL_OPS;
+        });
+
         it('should return true if already running', async () => {
             const { execSync } = await import('child_process');
             execSync.mockReturnValue('ollama.exe');
-            
+
             global.fetch = vi.fn().mockResolvedValue({ ok: true });
-            
+
             const { ensureOllama } = await import('../../utils/local-ollama-manager.js');
             const result = await ensureOllama();
-            
+
             expect(result).toBe(true);
         });
 
         it('should return true after starting successfully', async () => {
+            process.env.ALLOW_OLLAMA_MODEL_OPS = 'true';
+
             const { execSync } = await import('child_process');
             const { exec } = await import('child_process');
-            
+
             let callCount = 0;
             execSync.mockImplementation(() => {
                 callCount++;
                 return callCount >= 2 ? 'ollama.exe' : '';
             });
-            
+
             exec.mockImplementation((cmd, cb) => {
                 if (cb) cb(null);
             });
-            
+
             let fetchCount = 0;
             global.fetch = vi.fn().mockImplementation(() => {
                 fetchCount++;
-                return fetchCount >= 2 
+                return fetchCount >= 2
                     ? Promise.resolve({ ok: true })
                     : Promise.reject(new Error('Not ready'));
             });
-            
+
             const { ensureOllama } = await import('../../utils/local-ollama-manager.js');
             const result = await ensureOllama();
-            
+
             expect(result).toBe(true);
         });
 
         it('should return false when start fails and verification never succeeds', async () => {
+            process.env.ALLOW_OLLAMA_MODEL_OPS = 'true';
             vi.useFakeTimers();
-            
+
             try {
                 const { execSync } = await import('child_process');
                 execSync.mockReturnValue('');
                 global.fetch = vi.fn().mockRejectedValue(new Error('fail'));
-                
+
                 const module = await import('../../utils/local-ollama-manager.js');
                 vi.spyOn(module, 'startOllama').mockResolvedValue(false);
 
@@ -166,14 +183,16 @@ describe('local-ollama-manager', () => {
                 expect(result).toBe(false);
             } finally {
                 vi.useRealTimers();
+                delete process.env.ALLOW_OLLAMA_MODEL_OPS;
             }
         });
     });
 
     describe('startOllama', () => {
         it('should return false when API never becomes ready', async () => {
+            process.env.ALLOW_OLLAMA_MODEL_OPS = 'true';
             vi.useFakeTimers();
-            
+
             try {
                 const { execSync, exec } = await import('child_process');
                 execSync.mockImplementation((cmd) => {
@@ -204,7 +223,7 @@ describe('local-ollama-manager', () => {
         it('should return true when model exists and api becomes ready', async () => {
             vi.useFakeTimers();
             let originalAbortSignal;
-            
+
             try {
                 const { execSync, exec } = await import('child_process');
                 execSync.mockImplementation((cmd) => {
@@ -332,7 +351,7 @@ describe('local-ollama-manager', () => {
         it('should start process when not running', async () => {
             vi.useFakeTimers();
             let originalAbortSignal;
-            
+
             try {
                 const { execSync, exec } = await import('child_process');
                 let tasklistCalls = 0;
@@ -369,18 +388,18 @@ describe('local-ollama-manager', () => {
     });
 
     describe('startOllama error paths', () => {
-        it.skip('should log error when startOllama catch block executes', async () => {
+        it('should log error when startOllama catch block executes', async () => {
+            process.env.ALLOW_OLLAMA_MODEL_OPS = 'true';
             vi.useFakeTimers();
             try {
-                const { execSync, exec } = await import('child_process');
                 const { getSettings } = await import('../../utils/configLoader.js');
-                
+
                 // Make getSettings throw
                 getSettings.mockRejectedValueOnce(new Error('Config error'));
-                
+
                 const { startOllama } = await import('../../utils/local-ollama-manager.js');
                 const result = await startOllama();
-                
+
                 expect(result).toBe(false);
                 // Error should be logged via logger.error
             } finally {

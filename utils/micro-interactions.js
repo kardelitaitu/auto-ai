@@ -22,6 +22,11 @@ function randomInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+/**
+ * Creates a micro-interaction handler for human-like behaviors
+ * @param {object} options - Configuration options
+ * @returns {object} Handler object
+ */
 function createMicroInteractionHandler(options = {}) {
     const config = { ...MICRO_CONFIG, ...options };
     let fidgetInterval = null;

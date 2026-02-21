@@ -4,3 +4,10 @@ node_modules
 *.log
 /ui
 /screenshot
+/docs
+/examples
+/local-agent
+/test-dir
+/.llm-context
+/backup
+nul

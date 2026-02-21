@@ -7,13 +7,13 @@ import AIReplyEngine from '../utils/ai-reply-engine.js';
  * Navigates to a specific tweet and executes the reply function to verify LLM generation and robustness.
  * This simulates the reply generation process using the currently configured LLM settings.
  */
-export default async function replyTestTask(page, payload) {
+export default async function replyTestTask(page, _payload) {
     const logger = createLogger('reply-test.js');
     logger.info('Starting reply test task...');
 
     // 1. Navigate to the target tweet
     // Using a known tweet for testing. 
-    const targetUrl = 'https://x.com/TheFigen_/status/2023160621638779352'; 
+    const targetUrl = 'https://x.com/historyinmemes/status/2024455675443814774'; 
     logger.info(`Navigating to ${targetUrl}...`);
     
     try {

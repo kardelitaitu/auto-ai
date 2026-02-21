@@ -1,9 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Orchestrator from '../../core/orchestrator.js';
-import SessionManager from '../../core/sessionManager.js';
-import Discovery from '../../core/discovery.js';
-import Automator from '../../core/automator.js';
-import metricsCollector from '../../utils/metrics.js';
 import * as validator from '../../utils/validator.js';
 import { isDevelopment } from '../../utils/envLoader.js';
 
@@ -35,6 +31,9 @@ vi.mock('../../utils/validator.js', () => ({
 }));
 
 // No mock for tasks/testTask.js as we use the real file and spy on page interactions
+
+// Import the mocked metrics module
+import metricsCollector from '../../utils/metrics.js';
 
 describe('Orchestrator', () => {
   let orchestrator;
@@ -143,20 +142,12 @@ describe('Orchestrator', () => {
   });
 
     it('should sleep for specified duration', async () => {
-      vi.useRealTimers(); // Ensure real timers for this test if needed, but spy is safer
+      vi.useFakeTimers();
       const setTimeoutSpy = vi.spyOn(global, 'setTimeout');
-      const promise = orchestrator._sleep(100);
+      
+      orchestrator._sleep(100);
       
       expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 100);
-      
-      // We don't need to wait for real timeout if we use fake timers properly, 
-      // but let's just trust the spy for coverage of the line.
-      // To actually cover the line, we need the promise to resolve.
-      // If we are using fake timers (which we are not in beforeEach except one test), it should be fine.
-      
-      // Let's just resolve it
-      vi.useFakeTimers();
-      orchestrator._sleep(100);
       vi.advanceTimersByTime(100);
       vi.useRealTimers();
     });
@@ -264,7 +255,7 @@ describe('Orchestrator', () => {
       
       await orchestrator.startDiscovery();
       
-      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), expect.stringContaining('Unnamed Profile'));
+      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), expect.stringContaining('Unnamed Profile'), expect.any(String));
     });
 
     it('should include port in display name if present', async () => {
@@ -275,7 +266,7 @@ describe('Orchestrator', () => {
       
       await orchestrator.startDiscovery();
       
-      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'Chrome:9222');
+      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'Chrome:9222', 'ws://localhost:9222');
     });
 
     it('should not include port in display name if port is missing', async () => {
@@ -286,7 +277,7 @@ describe('Orchestrator', () => {
       
       await orchestrator.startDiscovery();
       
-      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'No Port');
+      expect(mockSessionManager.addSession).toHaveBeenCalledWith(expect.anything(), 'No Port', 'ws://example.com');
     });
   });
 

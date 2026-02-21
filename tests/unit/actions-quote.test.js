@@ -34,7 +34,7 @@ describe('AIQuoteAction', () => {
             quoteEngine: {
                 generateQuote: vi.fn().mockResolvedValue({ success: true, quote: 'Nice quote!' })
             },
-            executeAIQuote: vi.fn().mockResolvedValue(undefined),
+            executeAIQuote: vi.fn().mockResolvedValue(true),
             diveQueue: {
                 canEngage: vi.fn().mockReturnValue(true)
             },
@@ -127,7 +127,7 @@ describe('AIQuoteAction', () => {
 
         it('should generate and post quote successfully', async () => {
             const result = await quoteAction.execute(context);
-            
+
             expect(mockAgent.contextEngine.extractEnhancedContext).toHaveBeenCalled();
             expect(mockAgent.quoteEngine.generateQuote).toHaveBeenCalled();
             expect(mockAgent.executeAIQuote).toHaveBeenCalledWith('Nice quote!', 'url');
@@ -135,24 +135,24 @@ describe('AIQuoteAction', () => {
         });
 
         it('should use pre-calculated context if provided', async () => {
-            const contextWithContext = { 
-                tweetText: 'text', 
-                username: 'user', 
+            const contextWithContext = {
+                tweetText: 'text',
+                username: 'user',
                 tweetUrl: 'url',
-                enhancedContext: { replies: [{id: 1}], sentiment: { overall: 'positive' } }
+                enhancedContext: { replies: [{ id: 1 }], sentiment: { overall: 'positive' } }
             };
-            
+
             const result = await quoteAction.execute(contextWithContext);
-            
+
             expect(mockAgent.contextEngine.extractEnhancedContext).not.toHaveBeenCalled();
             expect(result.success).toBe(true);
         });
 
         it('should handle AI generation failure', async () => {
             mockAgent.quoteEngine.generateQuote.mockResolvedValue({ success: false, reason: 'Too boring' });
-            
+
             const result = await quoteAction.execute(context);
-            
+
             expect(result.success).toBe(false);
             expect(result.reason).toBe('Too boring');
             expect(mockAgent.executeAIQuote).not.toHaveBeenCalled();
@@ -160,9 +160,9 @@ describe('AIQuoteAction', () => {
 
         it('should handle exception', async () => {
             mockAgent.contextEngine.extractEnhancedContext.mockRejectedValue(new Error('Context failed'));
-            
+
             const result = await quoteAction.execute(context);
-            
+
             expect(result.success).toBe(false);
             expect(result.reason).toBe('exception');
         });
@@ -199,7 +199,7 @@ describe('AIQuoteAction', () => {
 
         it('should track stats correctly', async () => {
             await quoteAction.execute(context);
-            
+
             const stats = quoteAction.getStats();
             expect(stats.attempts).toBe(1);
             expect(stats.successes).toBe(1);
@@ -209,7 +209,7 @@ describe('AIQuoteAction', () => {
         it('should reset stats', async () => {
             await quoteAction.execute(context);
             quoteAction.resetStats();
-            
+
             const stats = quoteAction.getStats();
             expect(stats.attempts).toBe(0);
             expect(stats.successes).toBe(0);

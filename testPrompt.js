@@ -1,5 +1,5 @@
 import VisionInterpreter from './core/vision-interpreter.js';
-import { createLogger } from './utils/logger.js';
+// import { createLogger } from './utils/logger.js';
 
 const interpreter = new VisionInterpreter();
 

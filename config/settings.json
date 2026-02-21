@@ -43,7 +43,7 @@
       "readMin": 5000,
       "readMax": 15000,
       "diveRead": 10000,
-      "globalScrollMultiplier": 2.0
+      "globalScrollMultiplier": 1.0
     },
     "phases": {
       "warmupPercent": 0.1,
@@ -70,10 +70,17 @@
       "retweet": {
         "probability": 0.2,
         "enabled": true
-      },
-      "goHome": {
-        "enabled": true
       }
+    },
+    "goHome": {
+      "enabled": true
+    }
+  },
+  "ui": {
+    "dashboard": {
+      "enabled": true,
+      "port": 3001,
+      "broadcastIntervalMs": 2000
     }
   },
   "llm": {
@@ -89,8 +96,7 @@
       "endpoint": "http://localhost:11434",
       "model": "hermes3:8b",
       "textModel": "hermes3:8b",
-      "timeout": 120000,
-      "retryAttempts": 2,
+      "timeout": 30000,
       "warmup": true,
       "vision": false
     },
@@ -108,47 +114,47 @@
       "providers": [
         {
           "name": "openrouter1",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "arcee-ai/trinity-large-preview:free"
         },
         {
           "name": "openrouter2",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "tngtech/deepseek-r1t2-chimera:free"
         },
         {
           "name": "openrouter3",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "z-ai/glm-4.5-air:free"
         },
         {
           "name": "openrouter4",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "stepfun/step-3.5-flash:free"
         },
         {
           "name": "openrouter5",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "tngtech/deepseek-r1t-chimera:free"
         },
         {
           "name": "openrouter6",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "arcee-ai/trinity-mini:free"
         },
         {
           "name": "openrouter7",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "meta-llama/llama-3.3-70b-instruct:free"
         },
         {
           "name": "openrouter8",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "qwen/qwen3-next-80b-a3b-instruct:free"
         },
         {
           "name": "openrouter9",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "google/gemma-3-27b-it:free"
         }
       ]
@@ -198,7 +204,7 @@
   "open_router_free_api": {
     "enabled": false,
     "api_keys": [
-      "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",
+      "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",
       "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",
       "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",
       "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",

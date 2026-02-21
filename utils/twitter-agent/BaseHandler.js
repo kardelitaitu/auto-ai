@@ -430,11 +430,6 @@ export class BaseHandler {
      */
     async simulateReading() {
         const { mean, deviation } = this.config.timings.readingPhase;
-        const actionDelays = this.config.timings.actionSpecific || {
-            space: { mean: 1000, deviation: 200 },
-            keys: { mean: 100, deviation: 30 }
-        };
-
         // HUMAN-LIKE: Use content skimming pattern
         await this.human.consumeContent('tweet', 'skim');
 
@@ -473,7 +468,6 @@ export class BaseHandler {
 
             // 15% chance to look around
             if (this.mathUtils.roll(0.15)) {
-                const distance = this.mathUtils.gaussian(400, 150);
                 if (this.mathUtils.roll(0.2)) {
                     const viewport = this.page.viewportSize();
                     const x = this.mathUtils.gaussian(viewport.width / 2, viewport.width / 3);

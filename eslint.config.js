@@ -59,7 +59,7 @@ export default [
             }],
 
             // Performance: Allow console.log, but warn so you don't miss them in Prod
-            "no-console": "warn", 
+            "no-console": "off", 
             
             // Speed: Turn off strict equality checks (as per your request)
             "eqeqeq": "off",

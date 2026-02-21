@@ -19,6 +19,10 @@ const logger = createLogger('sessionManager.js');
  * @description Manages a pool of browser sessions, including their creation, status, and cleanup.
  */
 class SessionManager {
+  /**
+   * Creates a new SessionManager instance
+   * @param {object} options - Configuration options
+   */
   constructor(options = {}) {
     /** @type {Array<object>} */
     this.sessions = [];
@@ -35,14 +39,73 @@ class SessionManager {
     this.pagePoolHealthCheckTimeoutMs = options.pagePoolHealthCheckTimeoutMs || 5000;
     this.cleanupInterval = null;
     
-    // Worker allocation lock - prevents race conditions
-    this.workerLocks = new Map(); // sessionId -> Promise
+    // Worker allocation mutexes - prevents race conditions
+    this.workerMutexes = new Map(); // sessionId -> Mutex
     this.workerOccupancy = new Map(); // Track worker occupancy for debugging
     this.workerWaiters = new Map(); // sessionId -> Array of waiters
     
     this.startCleanupTimer();
     this.loadConfiguration();
   }
+
+  // Lightweight mutex to serialize worker operations per session
+  static Mutex = class {
+    constructor() {
+      this._queue = [];
+      this._locked = false;
+    }
+
+    async acquire(timeoutMs) {
+      if (!this._locked) {
+        this._locked = true;
+        return true;
+      }
+
+      return new Promise((resolve) => {
+        const entry = { resolve, timer: null };
+        if (timeoutMs != null) {
+          entry.timer = setTimeout(() => {
+            const idx = this._queue.indexOf(entry);
+            if (idx !== -1) {
+              this._queue.splice(idx, 1);
+            }
+            resolve(false);
+          }, timeoutMs);
+        }
+        this._queue.push(entry);
+      });
+    }
+
+    release() {
+      if (this._queue.length > 0) {
+        const next = this._queue.shift();
+        if (next.timer) {
+          clearTimeout(next.timer);
+        }
+        this._locked = true;
+        next.resolve(true);
+        return;
+      }
+      this._locked = false;
+    }
+  };
+
+  _getMutex(sessionId) {
+    if (!this.workerMutexes.has(sessionId)) {
+      this.workerMutexes.set(sessionId, new SessionManager.Mutex());
+    }
+    return this.workerMutexes.get(sessionId);
+  }
+
+  _closePagePool(session) {
+    if (!session?.pagePool) return;
+    while (session.pagePool.length > 0) {
+      const entry = session.pagePool.pop();
+      const normalized = this._normalizePoolEntry(entry, Date.now());
+      this._closePooledPage(session.id, normalized.page);
+    }
+  }
+
 
   /**
    * Loads session timeout values from the configuration.
@@ -77,10 +140,18 @@ class SessionManager {
   /**
    * Adds a new browser session to the manager.
    * @param {object} browser - The Playwright browser instance.
-   * @param {string} [browserInfo] - A unique identifier for the browser.
+   * @param {string} [browserInfo] - A display identifier for the browser.
+   * @param {string} [wsEndpoint] - The CDP websocket endpoint for the session.
    * @returns {string} The ID of the added session.
    */
-  addSession(browser, browserInfo) {
+  /**
+   * Adds a new browser session to the pool
+   * @param {object} browser - Playwright browser instance
+   * @param {object} browserInfo - Browser information
+   * @param {string} wsEndpoint - WebSocket endpoint
+   * @returns {object} The added session
+   */
+  addSession(browser, browserInfo, wsEndpoint) {
     // Priority: browserInfo > generated ID
     const id = browserInfo ? browserInfo : `session-${this.nextSessionId++}`;
     const now = Date.now();
@@ -90,16 +161,20 @@ class SessionManager {
       status: 'idle',
     }));
 
-    this.sessions.push({
-      id,
-      browser,
-      browserInfo,
-      workers,
-      createdAt: now,
-      lastActivity: now,
-      managedPages: new Set(),
-      pagePool: []
-    });
+     this.sessions.push({
+       id,
+       browser,
+       browserInfo,
+       wsEndpoint: wsEndpoint || browserInfo,
+       workers,
+       createdAt: now,
+       lastActivity: now,
+       managedPages: new Set(),
+       pagePool: [],
+       sharedContext: null,
+       currentTaskName: null,
+       currentProcessing: null
+     });
 
     if (browserInfo) {
       logger.info(`Added new session: ${id} at ${browserInfo} with ${this.concurrencyPerBrowser} worker slots.`);
@@ -264,61 +339,39 @@ class SessionManager {
     * @returns {Promise<object | null>} The worker object if found, otherwise null.
     */
   async findAndOccupyIdleWorker(sessionId) {
-    // Acquire lock for this session to ensure atomicity
-    if (!this.workerLocks.has(sessionId)) {
-      this.workerLocks.set(sessionId, Promise.resolve());
+    const mutex = this._getMutex(sessionId);
+    const acquired = await mutex.acquire(this.workerLockTimeoutMs || 10000);
+    if (!acquired) {
+      logger.warn(`[MUTEX] Acquire timeout for session ${sessionId}`);
+      return null;
     }
-    
-    const lockPromise = this.workerLocks.get(sessionId);
-
-    let timeoutId;
-    const timeoutPromise = new Promise((_, reject) => {
-      timeoutId = setTimeout(() => reject(new Error('Worker lock timeout')), this.workerLockTimeoutMs || 10000);
-    });
 
     try {
-      const result = await Promise.race([
-        new Promise((resolve) => {
-          lockPromise.then(() => {
-            const session = this.sessions.find(s => s.id === sessionId);
-            if (!session) {
-              resolve(null);
-              return;
-            }
-
-            const worker = session.workers.find(w => w.status === 'idle');
-            if (worker) {
-              if (session.workers.find(w => w.id === worker.id && w.status === 'idle')) {
-                worker.status = 'busy';
-                worker.occupiedAt = Date.now();
-                worker.occupiedBy = this._getCurrentExecutionContext();
-                
-                const occupancyKey = `${sessionId}:${worker.id}`;
-                this.workerOccupancy.set(occupancyKey, {
-                  startTime: Date.now(),
-                  context: worker.occupiedBy
-                });
-                
-                logger.debug(`[ATOMIC] Occupied worker ${worker.id} in session ${sessionId} (context: ${worker.occupiedBy})`);
-                resolve(worker);
-                return;
-              }
-            }
-
-            logger.debug(`[ATOMIC] No idle workers available in session ${sessionId}`);
-            resolve(null);
-          }).catch(() => {
-            resolve(null);
-          });
-        }),
-        timeoutPromise
-      ]);
-      
-      return result;
-    } finally {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
+      const session = this.sessions.find(s => s.id === sessionId);
+      if (!session) {
+        return null;
       }
+
+      const worker = session.workers.find(w => w.status === 'idle');
+      if (worker) {
+        worker.status = 'busy';
+        worker.occupiedAt = Date.now();
+        worker.occupiedBy = this._getCurrentExecutionContext();
+
+        const occupancyKey = `${sessionId}:${worker.id}`;
+        this.workerOccupancy.set(occupancyKey, {
+          startTime: Date.now(),
+          context: worker.occupiedBy
+        });
+
+        logger.debug(`[MUTEX] Occupied worker ${worker.id} in session ${sessionId} (context: ${worker.occupiedBy})`);
+        return worker;
+      }
+
+      logger.debug(`[MUTEX] No idle workers available in session ${sessionId}`);
+      return null;
+    } finally {
+      mutex.release();
     }
   }
 
@@ -329,6 +382,12 @@ class SessionManager {
     return this.workerWaiters.get(sessionId);
   }
 
+  /**
+   * Acquires a worker for the given session
+   * @param {string} sessionId - Session ID
+   * @param {object} options - Acquisition options
+   * @returns {Promise<object|null>} Worker object or null
+   */
   async acquireWorker(sessionId, options = {}) {
     const timeoutMs = options.timeoutMs ?? this.workerWaitTimeoutMs;
     let worker;
@@ -370,74 +429,71 @@ class SessionManager {
     * @param {number} workerId - The ID of the worker to release.
     */
   async releaseWorker(sessionId, workerId) {
-    // Acquire lock for this session to ensure atomicity
-    if (!this.workerLocks.has(sessionId)) {
-      this.workerLocks.set(sessionId, Promise.resolve());
+    const mutex = this._getMutex(sessionId);
+    const acquired = await mutex.acquire(this.workerLockTimeoutMs || 10000);
+    if (!acquired) {
+      logger.warn(`[MUTEX] Release timeout for session ${sessionId}`);
+      return;
     }
-    
-    const lockPromise = this.workerLocks.get(sessionId);
-    
-    // Create a new promise that waits for the lock and then processes
-    await new Promise((resolve) => {
-      lockPromise.then(async () => {
-        // We hold the lock - proceed with atomic operation
-        const session = this.sessions.find(s => s.id === sessionId);
-        if (session) {
-          const worker = session.workers.find(w => w.id === workerId);
-          if (worker) {
-            // Only release if worker is busy
-            if (worker.status === 'busy') {
-              worker.status = 'idle';
-              worker.occupiedAt = null;
-              worker.occupiedBy = null;
-              session.lastActivity = Date.now();
-              
-              // Clear occupancy tracking
-              const occupancyKey = `${sessionId}:${worker.id}`;
-              const occupancyInfo = this.workerOccupancy.get(occupancyKey);
-              if (occupancyInfo) {
-                const duration = Date.now() - occupancyInfo.startTime;
-                logger.debug(`[ATOMIC] Released worker ${worker.id} in session ${sessionId} after ${duration}ms (context: ${occupancyInfo.context})`);
-                this.workerOccupancy.delete(occupancyKey);
-              } else {
-                logger.debug(`[ATOMIC] Released worker ${worker.id} in session ${sessionId}`);
-              }
+
+    try {
+      const session = this.sessions.find(s => s.id === sessionId);
+      if (session) {
+        const worker = session.workers.find(w => w.id === workerId);
+        if (worker) {
+          if (worker.status === 'busy') {
+            worker.status = 'idle';
+            worker.occupiedAt = null;
+            worker.occupiedBy = null;
+            session.lastActivity = Date.now();
+
+            const occupancyKey = `${sessionId}:${worker.id}`;
+            const occupancyInfo = this.workerOccupancy.get(occupancyKey);
+            if (occupancyInfo) {
+              const duration = Date.now() - occupancyInfo.startTime;
+              logger.debug(`[MUTEX] Released worker ${worker.id} in session ${sessionId} after ${duration}ms (context: ${occupancyInfo.context})`);
+              this.workerOccupancy.delete(occupancyKey);
             } else {
-              logger.warn(`[ATOMIC] Worker ${workerId} in session ${sessionId} is not busy, cannot release`);
+              logger.debug(`[MUTEX] Released worker ${worker.id} in session ${sessionId}`);
             }
           } else {
-            logger.warn(`Worker ${workerId} not found in session ${sessionId} to release.`);
+            logger.warn(`[MUTEX] Worker ${workerId} in session ${sessionId} is not busy, cannot release`);
           }
         } else {
-          logger.warn(`Session ${sessionId} not found to release a worker.`);
+          logger.warn(`Worker ${workerId} not found in session ${sessionId} to release.`);
         }
+      } else {
+        logger.warn(`Session ${sessionId} not found to release a worker.`);
+      }
 
-        const waiters = this.workerWaiters.get(sessionId);
-        if (waiters && waiters.length > 0) {
-          const next = waiters.shift();
-          if (next?.timeoutId) {
-            clearTimeout(next.timeoutId);
-          }
-          const sessionForWaiter = this.sessions.find(s => s.id === sessionId);
-          const idleWorker = sessionForWaiter?.workers.find(w => w.status === 'idle');
-          if (idleWorker) {
-            idleWorker.status = 'busy';
-            idleWorker.occupiedAt = Date.now();
-            idleWorker.occupiedBy = this._getCurrentExecutionContext();
-            const occupancyKey = `${sessionId}:${idleWorker.id}`;
-            this.workerOccupancy.set(occupancyKey, {
-              startTime: Date.now(),
-              context: idleWorker.occupiedBy
-            });
-            next.resolve(idleWorker);
-          } else {
-            next.resolve(null);
-          }
+      const waiters = this.workerWaiters.get(sessionId);
+      if (waiters && waiters.length > 0) {
+        const next = waiters.shift();
+        if (next?.timeoutId) {
+          clearTimeout(next.timeoutId);
         }
-        
-        resolve();
-      });
-    });
+        const sessionForWaiter = this.sessions.find(s => s.id === sessionId);
+        const idleWorker = sessionForWaiter?.workers.find(w => w.status === 'idle');
+        if (idleWorker) {
+          idleWorker.status = 'busy';
+          idleWorker.occupiedAt = Date.now();
+          idleWorker.occupiedBy = this._getCurrentExecutionContext();
+          const occupancyKey = `${sessionId}:${idleWorker.id}`;
+          this.workerOccupancy.set(occupancyKey, {
+            startTime: Date.now(),
+            context: idleWorker.occupiedBy
+          });
+          next.resolve(idleWorker);
+        } else {
+          next.resolve(null);
+        }
+      }
+      if (session) {
+        session.lastActivity = Date.now();
+      }
+    } finally {
+      mutex.release();
+    }
   }
 
   /**
@@ -504,7 +560,7 @@ class SessionManager {
   }
 
   _cleanupSessionMaps(sessionId) {
-    this.workerLocks.delete(sessionId);
+    this.workerMutexes.delete(sessionId);
     for (const key of this.workerOccupancy.keys()) {
       if (key.startsWith(`${sessionId}:`)) {
         this.workerOccupancy.delete(key);
@@ -684,6 +740,7 @@ class SessionManager {
       const sessionData = this.sessions.map(session => ({
         id: session.id,
         browserInfo: session.browserInfo,
+        wsEndpoint: session.wsEndpoint,
         workers: session.workers,
         createdAt: session.createdAt,
         lastActivity: session.lastActivity
@@ -716,6 +773,18 @@ class SessionManager {
       if (state.sessions) {
         this.nextSessionId = state.nextSessionId || 1;
         logger.info(`Next session ID set to ${this.nextSessionId}`);
+        this.sessions = state.sessions.map((sessionData) => ({
+          id: sessionData.id,
+          browser: null,
+          browserInfo: sessionData.browserInfo,
+          wsEndpoint: sessionData.wsEndpoint || sessionData.browserInfo,
+          workers: sessionData.workers || [],
+          createdAt: sessionData.createdAt,
+          lastActivity: sessionData.lastActivity,
+          managedPages: new Set(),
+          pagePool: [],
+          sharedContext: null
+        }));
       }
 
       return state;
@@ -735,11 +804,56 @@ class SessionManager {
     return this.sessions.map(session => ({
       id: session.id,
       browserInfo: session.browserInfo,
+      wsEndpoint: session.wsEndpoint,
       workers: session.workers,
       createdAt: session.createdAt,
       lastActivity: session.lastActivity,
       age: Date.now() - session.createdAt
     }));
+  }
+
+  async replaceBrowserByEndpoint(wsEndpoint, newBrowser) {
+    if (!wsEndpoint || !newBrowser) {
+      logger.warn('[sessionManager.js] replaceBrowserByEndpoint missing wsEndpoint or browser');
+      return;
+    }
+
+    const targets = this.sessions.filter(session => session.wsEndpoint === wsEndpoint);
+    if (!targets.length) {
+      logger.debug(`[sessionManager.js] No session found for wsEndpoint ${wsEndpoint} to replace browser`);
+      return;
+    }
+
+    for (const session of targets) {
+      try {
+        await this.closeManagedPages(session);
+        this._closePagePool(session);
+        session.pagePool = [];
+
+        if (session.sharedContext) {
+          try {
+            await session.sharedContext.close();
+          } catch (error) {
+            logger.debug(`[${session.id}] Error closing shared context during reconnect: ${error.message}`);
+          }
+          session.sharedContext = null;
+        }
+
+        if (session.browser && session.browser !== newBrowser) {
+          try {
+            await this.closeSessionBrowser(session);
+          } catch (error) {
+            logger.debug(`[${session.id}] Error closing old browser during reconnect: ${error.message}`);
+          }
+        }
+
+        session.browser = newBrowser;
+        session.lastActivity = Date.now();
+        logger.info(`[${session.id}] Replaced browser connection for ${wsEndpoint}`);
+      } catch (error) {
+        logger.warn(`[${session.id}] Failed to replace browser for ${wsEndpoint}: ${error.message}`);
+      }
+    }
   }
 
   /**
@@ -789,7 +903,7 @@ class SessionManager {
     await Promise.allSettled(closePromises);
 
     this.sessions = [];
-    this.workerLocks.clear();
+    this.workerMutexes.clear();
     this.workerOccupancy.clear();
     this.workerWaiters.clear();
     logger.info(`Shutdown completed`);

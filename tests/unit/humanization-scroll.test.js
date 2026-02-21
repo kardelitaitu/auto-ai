@@ -1,30 +1,53 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { HumanScroll } from '../../utils/humanization/scroll.js';
-import { mathUtils } from '../../utils/mathUtils.js';
-import { entropy } from '../../utils/entropyController.js';
-import * as scrollHelper from '../../utils/scroll-helper.js';
-
 // Mock dependencies
 vi.mock('../../utils/mathUtils.js', () => ({
     mathUtils: {
-        randomInRange: vi.fn(),
-        gaussian: vi.fn(),
-        roll: vi.fn()
+        randomInRange: vi.fn((min) => min),
+        gaussian: vi.fn(() => 100),
+        roll: vi.fn(() => false),
+        sample: vi.fn((arr) => arr ? arr[0] : null)
     }
 }));
 
 vi.mock('../../utils/entropyController.js', () => ({
     entropy: {
-        reactionTime: vi.fn()
+        reactionTime: vi.fn(() => 100)
+    },
+    EntropyController: function () {
+        return {
+            reactionTime: vi.fn(() => 100)
+        };
+    }
+}));
+
+vi.mock('../../utils/global-scroll-controller.js', () => ({
+    globalScroll: {
+        scrollBy: vi.fn(() => Promise.resolve()),
+        scrollDown: vi.fn(() => Promise.resolve()),
+        scrollUp: vi.fn(() => Promise.resolve()),
+        scrollRandom: vi.fn(() => Promise.resolve()),
+        getMultiplier: vi.fn(() => 1.0)
     }
 }));
 
 vi.mock('../../utils/scroll-helper.js', () => ({
-    scrollRandom: vi.fn(),
-    scrollDown: vi.fn(),
-    scrollUp: vi.fn()
+    scrollRandom: vi.fn(() => Promise.resolve()),
+    scrollDown: vi.fn(() => Promise.resolve()),
+    scrollUp: vi.fn(() => Promise.resolve()),
+    scrollToTop: vi.fn(() => Promise.resolve()),
+    scrollToBottom: vi.fn(() => Promise.resolve()),
+    getScrollMultiplier: vi.fn(() => 1.0),
+    globalScroll: {
+        scrollBy: vi.fn(() => Promise.resolve()),
+        scrollRandom: vi.fn(() => Promise.resolve())
+    }
 }));
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { HumanScroll } from '../../utils/humanization/scroll.js';
+import { mathUtils } from '../../utils/mathUtils.js';
+import { entropy } from '../../utils/entropyController.js';
+import * as scrollHelper from '../../utils/scroll-helper.js';
 
 describe('HumanScroll', () => {
     let humanScroll;
@@ -52,7 +75,7 @@ describe('HumanScroll', () => {
         };
 
         // Default mock behaviors
-        mathUtils.randomInRange.mockImplementation((min, max) => min); // Return min by default for predictability
+        mathUtils.randomInRange.mockImplementation((min, _max) => min); // Return min by default for predictability
         mathUtils.gaussian.mockReturnValue(100);
         mathUtils.roll.mockReturnValue(false); // Default to false for probabilistic branches
         entropy.reactionTime.mockReturnValue(100);
@@ -64,7 +87,7 @@ describe('HumanScroll', () => {
         it('should scroll down with normal intensity by default', async () => {
             // Setup
             mathUtils.randomInRange.mockReturnValue(100); // Constant scroll amount
-            
+
             // Execute
             await humanScroll.execute();
 
@@ -84,7 +107,6 @@ describe('HumanScroll', () => {
 
             // Verify
             // scrollRandom arguments should be negative for up
-            const callArgs = vi.mocked(scrollHelper.scrollRandom).mock.calls[0];
             // Since we mocked randomInRange to return 100, and execute uses random variation
             // We just check if it was called. The actual value might vary slightly due to logic.
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
@@ -110,25 +132,25 @@ describe('HumanScroll', () => {
         it('should log if agent is set', async () => {
             const mockAgent = { log: vi.fn() };
             humanScroll.setAgent(mockAgent);
-            
+
             await humanScroll.execute();
-            
+
             expect(mockAgent.log).toHaveBeenCalled();
         });
 
         it('should handle random direction', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.6);
-            
+
             await humanScroll.execute('random');
-            
+
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
         });
 
         it('should fallback to normal intensity for unknown', async () => {
             mathUtils.randomInRange.mockReturnValue(100);
-            
+
             await humanScroll.execute('down', 'unknown');
-            
+
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
         });
 
@@ -138,9 +160,9 @@ describe('HumanScroll', () => {
                 return 100;
             });
             mathUtils.roll.mockReturnValue(true);
-            
+
             await humanScroll.execute('down', 'normal');
-            
+
             expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(mockPage, 20, 50);
         });
     });
@@ -158,7 +180,7 @@ describe('HumanScroll', () => {
             mockLocator = {
                 first: vi.fn().mockResolvedValue(mockElement)
             };
-            
+
             // Mock window.innerHeight
             mockPage.evaluate.mockResolvedValue(800); // Viewport height 800, center 400
         });
@@ -167,7 +189,7 @@ describe('HumanScroll', () => {
             // Target Y center = 1000 + 50 = 1050
             // Viewport center = 400
             // Distance = 650
-            
+
             await humanScroll.toElement(mockLocator);
 
             // Should verify that scrollRandom was called to close the gap
@@ -176,8 +198,8 @@ describe('HumanScroll', () => {
 
         it('should micro-adjust when already close', async () => {
             // Target Y center = 450 (close to 400)
-            mockBox.y = 400; 
-            
+            mockBox.y = 400;
+
             await humanScroll.toElement(mockLocator);
 
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
@@ -185,25 +207,25 @@ describe('HumanScroll', () => {
 
         it('should handle missing element gracefully', async () => {
             mockLocator.first.mockResolvedValue(null);
-            
+
             await humanScroll.toElement(mockLocator);
-            
+
             expect(scrollHelper.scrollRandom).not.toHaveBeenCalled();
         });
 
         it('should return when element has no bounding box', async () => {
             mockElement.boundingBox.mockResolvedValue(null);
-            
+
             await humanScroll.toElement(mockLocator);
-            
+
             expect(scrollHelper.scrollRandom).not.toHaveBeenCalled();
         });
 
         it('should fallback to direct scroll on error', async () => {
             mockLocator.first.mockRejectedValue(new Error('Locator error'));
-            
+
             await humanScroll.toElement(mockLocator);
-            
+
             // Should call scrollRandom as fallback
             expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(mockPage, 200, 200);
         });
@@ -212,9 +234,9 @@ describe('HumanScroll', () => {
     describe('microAdjustments', () => {
         it('should perform random small scrolls', async () => {
             mathUtils.randomInRange.mockReturnValue(2); // 2 adjustments
-            
+
             await humanScroll.microAdjustments();
-            
+
             expect(scrollHelper.scrollRandom).toHaveBeenCalledTimes(2);
             expect(mockPage.waitForTimeout).toHaveBeenCalledTimes(2);
         });
@@ -223,9 +245,9 @@ describe('HumanScroll', () => {
     describe('quickCheck', () => {
         it('should execute light down scroll', async () => {
             const executeSpy = vi.spyOn(humanScroll, 'execute');
-            
+
             await humanScroll.quickCheck();
-            
+
             expect(executeSpy).toHaveBeenCalledWith('down', 'light');
         });
     });
@@ -233,7 +255,7 @@ describe('HumanScroll', () => {
     describe('scrollToTop', () => {
         it('should scroll up multiple times', async () => {
             await humanScroll.scrollToTop();
-            
+
             // 3 quick jumps + 1 fine adjustment = 4 calls
             expect(scrollHelper.scrollRandom).toHaveBeenCalledTimes(4);
         });
@@ -243,9 +265,9 @@ describe('HumanScroll', () => {
         it('should perform multiple scroll sessions', async () => {
             mathUtils.randomInRange.mockReturnValue(3);
             mathUtils.roll.mockReturnValue(true);
-            
+
             await humanScroll.deepScroll();
-            
+
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
             expect(mockPage.waitForTimeout).toHaveBeenCalled();
         });

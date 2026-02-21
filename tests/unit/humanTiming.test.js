@@ -1,5 +1,5 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { humanTiming } from '../../utils/human-timing.js';
 
 describe('humanTiming', () => {

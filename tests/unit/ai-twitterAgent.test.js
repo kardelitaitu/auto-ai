@@ -1,5 +1,5 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AITwitterAgent } from '../../utils/ai-twitterAgent.js';
 import { TwitterAgent } from '../../utils/twitterAgent.js';
 import { DiveQueue } from '../../utils/async-queue.js';
@@ -18,7 +18,7 @@ const engagementMocks = vi.hoisted(() => {
   const getStatus = vi.fn().mockReturnValue({});
   const getSummary = vi.fn().mockReturnValue('Summary');
   const getUsageRate = vi.fn().mockReturnValue('25%');
-  
+
   const createEngagementTracker = vi.fn().mockImplementation(() => ({
     canPerform,
     record,
@@ -47,14 +47,14 @@ vi.mock('../../utils/engagement-limits.js', () => ({
 
 // Mock dependencies
 vi.mock('../../utils/twitterAgent.js', () => {
-  const MockTwitterAgent = vi.fn(function(page, initialProfile, logger) {
+  const MockTwitterAgent = vi.fn(function (page, initialProfile, logger) {
     this.page = page;
     this.initialProfile = initialProfile;
     this.logger = logger;
-    this.human = { 
-        sessionStart: vi.fn(),
-        session: { shouldEndSession: vi.fn().mockReturnValue(false) },
-        think: vi.fn()
+    this.human = {
+      sessionStart: vi.fn(),
+      session: { shouldEndSession: vi.fn().mockReturnValue(false) },
+      think: vi.fn()
     };
     this.state = { consecutiveLoginFailures: 0, replies: 0, quotes: 0 };
     this.pageState = 'HOME';
@@ -75,7 +75,7 @@ vi.mock('../../utils/twitterAgent.js', () => {
 });
 
 vi.mock('../../utils/async-queue.js', () => {
-  const MockDiveQueue = vi.fn(function() {
+  const MockDiveQueue = vi.fn(function () {
     return {
       canEngage: vi.fn().mockReturnValue(true),
       recordEngagement: vi.fn().mockReturnValue(true),
@@ -107,7 +107,7 @@ vi.mock('../../utils/async-queue.js', () => {
 });
 
 vi.mock('../../utils/ai-reply-engine.js', () => {
-  const MockAIReplyEngine = vi.fn(function() {
+  const MockAIReplyEngine = vi.fn(function () {
     return {
       generateReply: vi.fn().mockResolvedValue({ text: 'test reply' }),
       config: { REPLY_PROBABILITY: 0.5 }
@@ -117,7 +117,7 @@ vi.mock('../../utils/ai-reply-engine.js', () => {
 });
 
 vi.mock('../../utils/ai-quote-engine.js', () => {
-  const MockAIQuoteEngine = vi.fn(function() {
+  const MockAIQuoteEngine = vi.fn(function () {
     return {
       generateQuote: vi.fn().mockResolvedValue({ text: 'test quote' })
     };
@@ -126,7 +126,7 @@ vi.mock('../../utils/ai-quote-engine.js', () => {
 });
 
 vi.mock('../../utils/ai-context-engine.js', () => {
-  const MockAIContextEngine = vi.fn(function() {
+  const MockAIContextEngine = vi.fn(function () {
     return {
       extractEnhancedContext: vi.fn().mockResolvedValue({})
     };
@@ -142,16 +142,16 @@ vi.mock('../../core/agent-connector.js', () => {
 vi.mock('../../utils/micro-interactions.js', () => ({
   microInteractions: {
     createMicroInteractionHandler: vi.fn().mockReturnValue({
-        executeMicroInteraction: vi.fn().mockResolvedValue({ success: true, type: 'test' }),
-        textHighlight: vi.fn().mockResolvedValue({ success: true }),
-        startFidgetLoop: vi.fn(),
-        stopFidgetLoop: vi.fn(),
-        config: {
-            highlightChance: 0.1,
-            rightClickChance: 0.1,
-            logoClickChance: 0.1,
-            whitespaceClickChance: 0.1
-        }
+      executeMicroInteraction: vi.fn().mockResolvedValue({ success: true, type: 'test' }),
+      textHighlight: vi.fn().mockResolvedValue({ success: true }),
+      startFidgetLoop: vi.fn(),
+      stopFidgetLoop: vi.fn(),
+      config: {
+        highlightChance: 0.1,
+        rightClickChance: 0.1,
+        logoClickChance: 0.1,
+        whitespaceClickChance: 0.1
+      }
     }),
     moveCursorTo: vi.fn(),
     randomScroll: vi.fn()
@@ -161,7 +161,7 @@ vi.mock('../../utils/micro-interactions.js', () => ({
 vi.mock('../../utils/motor-control.js', () => ({
   motorControl: {
     createMotorController: vi.fn().mockReturnValue({
-        smartClick: vi.fn().mockResolvedValue({ success: true, x: 100, y: 100 })
+      smartClick: vi.fn().mockResolvedValue({ success: true, x: 100, y: 100 })
     }),
     humanLikeMouseMove: vi.fn()
   }
@@ -241,7 +241,7 @@ vi.mock('../../utils/actions/ai-twitter-go-home.js', () => ({
 }));
 
 vi.mock('../../utils/actions/index.js', () => {
-  const MockActionRunner = vi.fn(function() {
+  const MockActionRunner = vi.fn(function () {
     return {
       selectAction: vi.fn().mockReturnValue('like'),
       executeAction: vi.fn().mockResolvedValue({ success: true, executed: true, reason: 'tested' })
@@ -260,7 +260,7 @@ vi.mock('../../constants/twitter-timeouts.js', () => ({
 }));
 
 vi.mock('../../utils/human-interaction.js', () => {
-  const MockHumanInteraction = vi.fn(function() {
+  const MockHumanInteraction = vi.fn(function () {
     return {
       sessionStart: vi.fn(),
       session: { shouldEndSession: vi.fn().mockReturnValue(false) }
@@ -301,23 +301,23 @@ describe('AITwitterAgent', () => {
       on: vi.fn(),
       off: vi.fn(),
       locator: vi.fn().mockReturnValue({
+        count: vi.fn().mockResolvedValue(0),
+        first: vi.fn().mockReturnValue({
           count: vi.fn().mockResolvedValue(0),
-          first: vi.fn().mockReturnValue({
-              count: vi.fn().mockResolvedValue(0),
-              isVisible: vi.fn().mockResolvedValue(false)
-          })
+          isVisible: vi.fn().mockResolvedValue(false)
+        })
       }),
       waitForTimeout: vi.fn().mockResolvedValue(undefined),
       waitForURL: vi.fn().mockResolvedValue(undefined),
       waitForSelector: vi.fn().mockResolvedValue(undefined),
-      keyboard: { press: vi.fn() },
+      keyboard: { press: vi.fn().mockResolvedValue(undefined) },
       mouse: { move: vi.fn() },
       viewportSize: vi.fn().mockReturnValue({ width: 1000, height: 800 }),
       emulateMedia: vi.fn(),
       context: vi.fn().mockReturnValue({
-          browser: vi.fn().mockReturnValue({
-              isConnected: vi.fn().mockReturnValue(true)
-          })
+        browser: vi.fn().mockReturnValue({
+          isConnected: vi.fn().mockReturnValue(true)
+        })
       })
     };
 
@@ -386,10 +386,10 @@ describe('AITwitterAgent', () => {
     it('canPerform should check both tracker and queue', () => {
       // Use engagementMocks directly to ensure we control the mocks
       engagementMocks.canPerform.mockReturnValue(true);
-      
+
       const mockQueue = agent.diveQueue;
       mockQueue.canEngage.mockReturnValue(true);
-      
+
       expect(agent.engagementTracker.canPerform('like')).toBe(true);
 
       engagementMocks.canPerform.mockReturnValue(false);
@@ -422,364 +422,375 @@ describe('AITwitterAgent', () => {
     });
 
     it('getProgress should use diveQueue progress', () => {
-        const mockQueue = agent.diveQueue;
-        
-        mockQueue.getEngagementProgress.mockReturnValue({ like: { current: 1, limit: 5, percentUsed: 20 } });
-        
-        const progress = agent.engagementTracker.getProgress('like');
-        expect(progress).toBe('1/5');
+      const mockQueue = agent.diveQueue;
+
+      mockQueue.getEngagementProgress.mockReturnValue({ like: { current: 1, limit: 5, percentUsed: 20 } });
+
+      const progress = agent.engagementTracker.getProgress('like');
+      expect(progress).toBe('1/5');
     });
 
     it('getStatus should merge statuses', () => {
-         const mockQueue = agent.diveQueue;
+      const mockQueue = agent.diveQueue;
 
-         engagementMocks.getStatus.mockReturnValue({ like: { current: 0, limit: 10 } });
-         mockQueue.getEngagementProgress.mockReturnValue({ like: { current: 1, limit: 5, percentUsed: 20 } });
+      engagementMocks.getStatus.mockReturnValue({ like: { current: 0, limit: 10 } });
+      mockQueue.getEngagementProgress.mockReturnValue({ like: { current: 1, limit: 5, percentUsed: 20 } });
 
-         const status = agent.engagementTracker.getStatus();
-         expect(status.like.current).toBe(1);
-         expect(status.like.limit).toBe(5);
+      const status = agent.engagementTracker.getStatus();
+      expect(status.like.current).toBe(1);
+      expect(status.like.limit).toBe(5);
     });
   });
 
   describe('Dive Lock Mechanism', () => {
     it('should acquire lock and disable scrolling on startDive', async () => {
-        const result = await agent.startDive();
-        expect(result).toBe(true);
-        expect(agent.operationLock).toBe(true);
-        expect(agent.diveLockAcquired).toBe(true);
-        expect(agent.pageState).toBe('DIVING');
-        expect(agent.scrollingEnabled).toBe(false);
+      const result = await agent.startDive();
+      expect(result).toBe(true);
+      expect(agent.operationLock).toBe(true);
+      expect(agent.diveLockAcquired).toBe(true);
+      expect(agent.pageState).toBe('DIVING');
+      expect(agent.scrollingEnabled).toBe(false);
     });
 
     it('should wait for existing lock to release', async () => {
-        agent.operationLock = true;
-        setTimeout(() => { agent.operationLock = false; }, 150);
-        const start = Date.now();
-        await agent.startDive();
-        const duration = Date.now() - start;
-        expect(duration).toBeGreaterThan(100);
-        expect(agent.operationLock).toBe(true);
+      agent.operationLock = true;
+      setTimeout(() => { agent.operationLock = false; }, 150);
+      const start = Date.now();
+      await agent.startDive();
+      const duration = Date.now() - start;
+      expect(duration).toBeGreaterThan(100);
+      expect(agent.operationLock).toBe(true);
     });
 
     it('should release lock and return home on endDive(true, true)', async () => {
-        agent.operationLock = true;
-        agent.diveLockAcquired = true;
-        agent.pageState = 'DIVING';
-        
-        // Mock _safeNavigateHome
-        agent._safeNavigateHome = vi.fn().mockResolvedValue(true);
-        mockPage.url.mockReturnValue('https://x.com/home');
+      agent.operationLock = true;
+      agent.diveLockAcquired = true;
+      agent.pageState = 'DIVING';
 
-        await agent.endDive(true, true);
+      // Mock _safeNavigateHome
+      agent._safeNavigateHome = vi.fn().mockResolvedValue(true);
+      mockPage.url.mockReturnValue('https://x.com/home');
 
-        expect(agent.operationLock).toBe(false);
-        expect(agent.diveLockAcquired).toBe(false);
-        expect(agent.pageState).toBe('HOME');
-        expect(agent.scrollingEnabled).toBe(true);
-        expect(agent._safeNavigateHome).toHaveBeenCalled();
+      await agent.endDive(true, true);
+
+      expect(agent.operationLock).toBe(false);
+      expect(agent.diveLockAcquired).toBe(false);
+      expect(agent.pageState).toBe('HOME');
+      expect(agent.scrollingEnabled).toBe(true);
+      expect(agent._safeNavigateHome).toHaveBeenCalled();
     });
 
-     it('should release lock and stay on page on endDive(true, false)', async () => {
-        agent.operationLock = true;
-        agent.diveLockAcquired = true;
-        agent.pageState = 'DIVING';
+    it('should release lock and stay on page on endDive(true, false)', async () => {
+      agent.operationLock = true;
+      agent.diveLockAcquired = true;
+      agent.pageState = 'DIVING';
 
-        await agent.endDive(true, false);
+      await agent.endDive(true, false);
 
-        expect(agent.operationLock).toBe(false);
-        expect(agent.diveLockAcquired).toBe(false);
-        expect(agent.pageState).toBe('TWEET_PAGE');
-        expect(agent.scrollingEnabled).toBe(true);
+      expect(agent.operationLock).toBe(false);
+      expect(agent.diveLockAcquired).toBe(false);
+      expect(agent.pageState).toBe('TWEET_PAGE');
+      expect(agent.scrollingEnabled).toBe(true);
     });
-    
+
     it('isDiving should return correct state', () => {
-        agent.operationLock = true;
-        agent.pageState = 'DIVING';
-        expect(agent.isDiving()).toBe(true);
-        
-        agent.pageState = 'HOME';
-        expect(agent.isDiving()).toBe(false);
+      agent.operationLock = true;
+      agent.pageState = 'DIVING';
+      expect(agent.isDiving()).toBe(true);
+
+      agent.pageState = 'HOME';
+      expect(agent.isDiving()).toBe(false);
     });
-    
+
     it('isOnTweetPage should check URL and state', () => {
-        mockPage.url.mockReturnValue('https://x.com/user/status/123');
-        expect(agent.isOnTweetPage()).toBe(true);
-        
-        mockPage.url.mockReturnValue('https://x.com/home');
-        agent.pageState = 'TWEET_PAGE';
-        expect(agent.isOnTweetPage()).toBe(true);
+      mockPage.url.mockReturnValue('https://x.com/user/status/123');
+      expect(agent.isOnTweetPage()).toBe(true);
+
+      mockPage.url.mockReturnValue('https://x.com/home');
+      agent.pageState = 'TWEET_PAGE';
+      expect(agent.isOnTweetPage()).toBe(true);
     });
-    
+
     it('canScroll should check enabled and lock', () => {
-        agent.scrollingEnabled = true;
-        agent.operationLock = false;
-        expect(agent.canScroll()).toBe(true);
-        
-        agent.operationLock = true;
-        expect(agent.canScroll()).toBe(false);
+      agent.scrollingEnabled = true;
+      agent.operationLock = false;
+      expect(agent.canScroll()).toBe(true);
+
+      agent.operationLock = true;
+      expect(agent.canScroll()).toBe(false);
     });
-    
+
     it('logDiveStatus should log state', () => {
-        agent.logDiveStatus();
-        expect(mockLogger.info).toHaveBeenCalled();
+      agent.logDiveStatus();
+      expect(mockLogger.info).toHaveBeenCalled();
     });
-    
+
     it('_safeNavigateHome should try navigating home', async () => {
-        mockPage.url.mockReturnValue('https://x.com/settings');
-        agent.navigateHome = vi.fn().mockResolvedValue(true);
-        await agent._safeNavigateHome();
-        expect(agent.navigateHome).toHaveBeenCalled();
+      mockPage.url.mockReturnValue('https://x.com/settings');
+      agent.navigateHome = vi.fn().mockResolvedValue(true);
+      await agent._safeNavigateHome();
+      expect(agent.navigateHome).toHaveBeenCalled();
     });
-    
+
     it('_safeNavigateHome should fallback to goto if navigateHome fails', async () => {
-        mockPage.url.mockReturnValue('https://x.com/settings');
-        agent.navigateHome = vi.fn().mockRejectedValue(new Error('nav failed'));
-        await agent._safeNavigateHome();
-        expect(mockPage.goto).toHaveBeenCalledWith('https://x.com/home', expect.any(Object));
+      mockPage.url.mockReturnValue('https://x.com/settings');
+      agent.navigateHome = vi.fn().mockRejectedValue(new Error('nav failed'));
+      await agent._safeNavigateHome();
+      expect(mockPage.goto).toHaveBeenCalledWith('https://x.com/home', expect.any(Object));
     });
-    
+
     it('performIdleCursorMovement should move mouse', async () => {
-        await agent.performIdleCursorMovement();
-        expect(mockPage.mouse.move).toHaveBeenCalled();
+      await agent.performIdleCursorMovement();
+      expect(mockPage.mouse.move).toHaveBeenCalled();
     });
   });
 
   describe('diveTweet', () => {
     it('should skip if scanning is in progress', async () => {
-        agent.isScanning = true;
-        await agent.diveTweet();
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Scan already in progress'));
+      agent.isScanning = true;
+      await agent.diveTweet();
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Scan already in progress'));
     });
 
     it('should call _diveTweetWithAI and add to queue', async () => {
-        agent._diveTweetWithAI = vi.fn().mockImplementation(async (callback) => {
-            if (callback) await callback(() => {});
-        });
-        
-        await agent.diveTweet();
-        
-        expect(agent._diveTweetWithAI).toHaveBeenCalled();
-        expect(agent.diveQueue.addDive).toHaveBeenCalled();
+      agent._diveTweetWithAI = vi.fn().mockImplementation(async (callback) => {
+        if (callback) await callback(() => { });
+      });
+
+      await agent.diveTweet();
+
+      expect(agent._diveTweetWithAI).toHaveBeenCalled();
+      expect(agent.diveQueue.addDive).toHaveBeenCalled();
     });
-    
+
     it('should handle errors and release lock', async () => {
-         agent._diveTweetWithAI = vi.fn().mockRejectedValue(new Error('Dive failed'));
-         agent.diveLockAcquired = true;
-         agent.endDive = vi.fn();
-         
-         await agent.diveTweet();
-         
-         expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Error in diveTweet'));
-         expect(agent.endDive).toHaveBeenCalledWith(false, true);
+      agent._diveTweetWithAI = vi.fn().mockRejectedValue(new Error('Dive failed'));
+      agent.diveLockAcquired = true;
+      agent.operationLock = true;
+      agent.endDive = vi.fn().mockResolvedValue();
+
+      await agent.diveTweet();
+
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Error in diveTweet'));
+      expect(agent.endDive).toHaveBeenCalledWith(false, true);
     });
   });
 
   describe('_diveTweetWithAI', () => {
     beforeEach(() => {
-        agent.startDive = vi.fn().mockResolvedValue(true);
-        agent.endDive = vi.fn().mockResolvedValue(true);
-        agent._ensureExplorationScroll = vi.fn().mockResolvedValue(true);
-        agent._readExpandedTweet = vi.fn().mockResolvedValue(true);
-        agent.humanClick = vi.fn().mockResolvedValue(true);
-        // Mock actionRunner on instance
-        agent.actionRunner = {
-            selectAction: vi.fn(),
-            executeAction: vi.fn().mockResolvedValue({ success: true, executed: true, reason: 'mocked' })
-        };
+      agent.startDive = vi.fn().mockResolvedValue(true);
+      agent.endDive = vi.fn().mockResolvedValue(true);
+      agent._ensureExplorationScroll = vi.fn().mockResolvedValue(true);
+      agent._readExpandedTweet = vi.fn().mockResolvedValue(true);
+      agent.humanClick = vi.fn().mockResolvedValue(true);
+      // Mock actionRunner on instance
+      agent.actionRunner = {
+        selectAction: vi.fn(),
+        executeAction: vi.fn().mockResolvedValue({ success: true, executed: true, reason: 'mocked' })
+      };
     });
 
     it('should navigate home if no tweets found', async () => {
-        // Mock tweets count 0
-        mockPage.locator.mockReturnValue({
-            count: vi.fn().mockResolvedValue(0),
-            first: vi.fn().mockReturnValue({ count: vi.fn().mockResolvedValue(0) }),
-            nth: vi.fn().mockReturnValue({ boundingBox: vi.fn().mockResolvedValue(null) })
-        });
-        agent.ensureForYouTab = vi.fn().mockResolvedValue(true);
+      // Mock tweets count 0
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(0),
+        first: vi.fn().mockReturnValue({ count: vi.fn().mockResolvedValue(0) }),
+        nth: vi.fn().mockReturnValue({ boundingBox: vi.fn().mockResolvedValue(null) })
+      });
+      agent.ensureForYouTab = vi.fn().mockResolvedValue(true);
 
-        await agent._diveTweetWithAI();
+      await agent._diveTweetWithAI();
 
-        expect(mockPage.goto).toHaveBeenCalledWith('https://x.com/');
-        expect(agent.endDive).toHaveBeenCalled();
+      expect(mockPage.goto).toHaveBeenCalledWith('https://x.com/');
+      expect(agent.endDive).toHaveBeenCalled();
     });
 
     it('should process found tweet', async () => {
-        const clickTarget = {
-            count: vi.fn().mockResolvedValue(1),
-            isVisible: vi.fn().mockResolvedValue(true),
-            evaluate: vi.fn().mockResolvedValue(undefined),
-            boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 }),
-            click: vi.fn().mockResolvedValue(undefined)
-        };
+      const clickTarget = {
+        count: vi.fn().mockResolvedValue(1),
+        isVisible: vi.fn().mockResolvedValue(true),
+        evaluate: vi.fn().mockResolvedValue(undefined),
+        boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 }),
+        click: vi.fn().mockResolvedValue(undefined)
+      };
 
-        const tweetTextElement = {
-            count: vi.fn().mockResolvedValue(1),
-            isVisible: vi.fn().mockResolvedValue(true),
-            innerText: vi.fn().mockResolvedValue('This is a tweet text for testing.'),
-            $x: vi.fn().mockResolvedValue([])
-        };
+      const tweetTextElement = {
+        count: vi.fn().mockResolvedValue(1),
+        isVisible: vi.fn().mockResolvedValue(true),
+        innerText: vi.fn().mockResolvedValue('This is a tweet text for testing.'),
+        $x: vi.fn().mockResolvedValue([])
+      };
 
-        const tweetTextLocator = {
-            first: vi.fn().mockReturnValue(tweetTextElement),
-            count: vi.fn().mockResolvedValue(1),
-            isVisible: vi.fn().mockResolvedValue(true)
-        };
+      const tweetTextLocator = {
+        first: vi.fn().mockReturnValue(tweetTextElement),
+        count: vi.fn().mockResolvedValue(1),
+        isVisible: vi.fn().mockResolvedValue(true)
+      };
 
-        const timeLocator = {
-            first: vi.fn().mockReturnValue(clickTarget),
-            count: vi.fn().mockResolvedValue(1),
-            isVisible: vi.fn().mockResolvedValue(true)
-        };
+      const timeLocator = {
+        first: vi.fn().mockReturnValue(clickTarget),
+        count: vi.fn().mockResolvedValue(1),
+        isVisible: vi.fn().mockResolvedValue(true)
+      };
 
-        const permalinkLocator = {
-            first: vi.fn().mockReturnValue(clickTarget),
-            count: vi.fn().mockResolvedValue(1),
-            isVisible: vi.fn().mockResolvedValue(true)
-        };
+      const permalinkLocator = {
+        first: vi.fn().mockReturnValue(clickTarget),
+        count: vi.fn().mockResolvedValue(1),
+        isVisible: vi.fn().mockResolvedValue(true)
+      };
 
-        const mockTweet = {
-            boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 }),
-            locator: vi.fn().mockImplementation((selector) => {
-                if (selector.includes('a[href*="/status/"]')) return permalinkLocator;
-                if (selector.includes('[data-testid="tweetText"]')) return tweetTextLocator;
-                if (selector === 'time') return timeLocator;
-                return tweetTextLocator;
-            }),
-            evaluate: vi.fn().mockResolvedValue(undefined)
-        };
+      const mockTweet = {
+        boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 }),
+        locator: vi.fn().mockImplementation((selector) => {
+          if (selector.includes('a[href*="/status/"]')) return permalinkLocator;
+          if (selector.includes('[data-testid="tweetText"]')) return tweetTextLocator;
+          if (selector === 'time') return timeLocator;
+          return tweetTextLocator;
+        }),
+        evaluate: vi.fn().mockResolvedValue(undefined)
+      };
 
-        const tweetsLocator = {
-            count: vi.fn().mockResolvedValue(1),
-            nth: vi.fn().mockReturnValue(mockTweet)
-        };
+      const tweetsLocator = {
+        count: vi.fn().mockResolvedValue(1),
+        nth: vi.fn().mockReturnValue(mockTweet),
+        first: vi.fn().mockReturnValue(mockTweet)
+      };
 
-        const pageTweetTextLocator = {
-            first: vi.fn().mockReturnValue(tweetTextElement),
-            count: vi.fn().mockResolvedValue(1),
-            isVisible: vi.fn().mockResolvedValue(true)
-        };
+      const pageTweetTextLocator = {
+        first: vi.fn().mockReturnValue(tweetTextElement),
+        count: vi.fn().mockResolvedValue(1),
+        isVisible: vi.fn().mockResolvedValue(true)
+      };
 
-        mockPage.locator.mockImplementation((selector) => {
-            if (selector === 'article[data-testid="tweet"]') return tweetsLocator;
-            if (selector === '[data-testid="tweetText"]') return pageTweetTextLocator;
-            return pageTweetTextLocator;
-        });
+      mockPage.locator.mockImplementation((selector) => {
+        if (selector === 'article[data-testid="tweet"]') return tweetsLocator;
+        if (selector === '[data-testid="tweetText"]') return pageTweetTextLocator;
+        return pageTweetTextLocator;
+      });
 
-        mockPage.waitForURL.mockResolvedValue(undefined);
-        mockPage.url.mockReturnValue('https://x.com/user/status/123');
+      mockPage.waitForURL.mockResolvedValue(undefined);
+      mockPage.url.mockReturnValue('https://x.com/user/status/123');
 
-        agent.actionRunner.selectAction.mockReturnValue('like');
+      agent.actionRunner.selectAction.mockReturnValue('like');
 
-        await agent._diveTweetWithAI();
+      // Log if there's any error caught in _diveTweetWithAI
+      const originalLog = agent.log;
+      agent.log = vi.fn().mockImplementation((msg) => {
+        if (msg.includes('Dive sequence failed')) {
+          console.error('DIVE TWEET ERROR CAUGHT:', msg);
+        }
+        originalLog(msg);
+      });
 
-        expect(agent.startDive).toHaveBeenCalled();
-        expect(agent.endDive).toHaveBeenCalledWith(true, true);
+      await agent._diveTweetWithAI();
+
+      expect(agent.startDive).toHaveBeenCalled();
+      expect(agent.endDive).toHaveBeenCalledWith(true, true);
     });
-    
+
     it('should skip already processed tweets', async () => {
-        const mockTweet = {
-            boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 }),
-            locator: vi.fn().mockReturnValue({
-                first: vi.fn().mockReturnValue({
-                    count: vi.fn().mockResolvedValue(1),
-                    isVisible: vi.fn().mockResolvedValue(true),
-                    innerText: vi.fn().mockResolvedValue('Tweet text'),
-                    evaluate: vi.fn(),
-                    boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 })
-                }),
-                count: vi.fn().mockResolvedValue(1)
-            }),
-            evaluate: vi.fn()
-        };
-        
-        mockPage.locator.mockReturnValue({
+      const mockTweet = {
+        boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 }),
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
             count: vi.fn().mockResolvedValue(1),
-            nth: vi.fn().mockReturnValue(mockTweet),
-            first: vi.fn().mockReturnValue(mockTweet)
-        });
-        
-        mockPage.url.mockReturnValue('https://x.com/user/status/123');
-        agent._processedTweetIds.add('123');
-        
-        await agent._diveTweetWithAI();
-        
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Already processed tweet'));
-        expect(agent.endDive).toHaveBeenCalledWith(true, true);
-    });
-    
-    it('should handle navigation failure', async () => {
-         const mockTweet = {
-            boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 }),
-            locator: vi.fn().mockReturnValue({
-                first: vi.fn().mockReturnValue({
-                    count: vi.fn().mockResolvedValue(1),
-                    isVisible: vi.fn().mockResolvedValue(true),
-                    innerText: vi.fn().mockResolvedValue('Tweet text'),
-                    evaluate: vi.fn()
-                }),
-                count: vi.fn().mockResolvedValue(1)
-            }),
+            isVisible: vi.fn().mockResolvedValue(true),
+            innerText: vi.fn().mockResolvedValue('Tweet text'),
             evaluate: vi.fn(),
-            click: vi.fn()
-        };
-        
-        mockPage.locator.mockReturnValue({
+            boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 })
+          }),
+          count: vi.fn().mockResolvedValue(1)
+        }),
+        evaluate: vi.fn()
+      };
+
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(1),
+        nth: vi.fn().mockReturnValue(mockTweet),
+        first: vi.fn().mockReturnValue(mockTweet)
+      });
+
+      mockPage.url.mockReturnValue('https://x.com/user/status/123');
+      agent._processedTweetIds.add('123');
+
+      await agent._diveTweetWithAI();
+
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Already processed tweet'));
+      expect(agent.endDive).toHaveBeenCalledWith(true, true);
+    });
+
+    it('should handle navigation failure', async () => {
+      const mockTweet = {
+        boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, height: 100 }),
+        locator: vi.fn().mockReturnValue({
+          first: vi.fn().mockReturnValue({
             count: vi.fn().mockResolvedValue(1),
-            nth: vi.fn().mockReturnValue(mockTweet),
-            first: vi.fn().mockReturnValue(mockTweet)
-        });
-        
-        mockPage.waitForURL.mockRejectedValue(new Error('Navigation timeout'));
-        
-        await agent._diveTweetWithAI();
-        
-        expect(agent.endDive).toHaveBeenCalledWith(false, true);
+            isVisible: vi.fn().mockResolvedValue(true),
+            innerText: vi.fn().mockResolvedValue('Tweet text'),
+            evaluate: vi.fn()
+          }),
+          count: vi.fn().mockResolvedValue(1)
+        }),
+        evaluate: vi.fn(),
+        click: vi.fn()
+      };
+
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(1),
+        nth: vi.fn().mockReturnValue(mockTweet),
+        first: vi.fn().mockReturnValue(mockTweet)
+      });
+
+      mockPage.waitForURL.mockRejectedValue(new Error('Navigation timeout'));
+
+      await agent._diveTweetWithAI();
+
+      expect(agent.endDive).toHaveBeenCalledWith(false, true);
     });
   });
 
   describe('runSession', () => {
     it.skip('should stop if session expired', async () => {
-        agent.isSessionExpired = vi.fn().mockReturnValue(true);
-        agent.human = { 
-            session: { shouldEndSession: vi.fn().mockReturnValue(false) }, 
-            sessionStart: vi.fn() 
-        };
-        agent.checkLoginState = vi.fn().mockResolvedValue(true);
-        
-        await agent.runSession(1);
-        
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Session Time Limit Reached'));
+      agent.isSessionExpired = vi.fn().mockReturnValue(true);
+      agent.human = {
+        session: { shouldEndSession: vi.fn().mockReturnValue(false) },
+        sessionStart: vi.fn()
+      };
+      agent.checkLoginState = vi.fn().mockResolvedValue(true);
+
+      await agent.runSession(1);
+
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Session Time Limit Reached'));
     });
-    
+
     it('should stop if login fails 3 times', async () => {
-        agent.checkLoginState = vi.fn().mockResolvedValue(false);
-        agent.state.consecutiveLoginFailures = 3;
-        
-        await agent.runSession(1);
-        
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Aborting session: Not logged in'));
+      agent.checkLoginState = vi.fn().mockResolvedValue(false);
+      agent.state.consecutiveLoginFailures = 3;
+
+      await agent.runSession(1);
+
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Aborting session: Not logged in'));
     });
-    
+
     it.skip('should run cycles and call diveTweet', async () => {
-        agent.checkLoginState = vi.fn().mockResolvedValue(true);
-        agent.isSessionExpired = vi.fn().mockReturnValue(false);
-        agent.human = { 
-            session: { shouldEndSession: vi.fn().mockReturnValue(false) }, 
-            sessionStart: vi.fn() 
-        };
-        agent.diveTweet = vi.fn().mockResolvedValue();
-        
-        // Mock loop limit
-        let cycles = 0;
-        vi.spyOn(agent, 'isSessionExpired').mockImplementation(() => {
-            cycles++;
-            return cycles > 2;
-        });
-        
-        await agent.runSession(1);
-        
-        expect(agent.diveTweet).toHaveBeenCalled();
+      agent.checkLoginState = vi.fn().mockResolvedValue(true);
+      agent.isSessionExpired = vi.fn().mockReturnValue(false);
+      agent.human = {
+        session: { shouldEndSession: vi.fn().mockReturnValue(false) },
+        sessionStart: vi.fn()
+      };
+      agent.diveTweet = vi.fn().mockResolvedValue();
+
+      // Mock loop limit
+      let cycles = 0;
+      vi.spyOn(agent, 'isSessionExpired').mockImplementation(() => {
+        cycles++;
+        return cycles > 2;
+      });
+
+      await agent.runSession(1);
+
+      expect(agent.diveTweet).toHaveBeenCalled();
     });
   });
 
@@ -1083,452 +1094,632 @@ describe('AITwitterAgent', () => {
 
   describe('Helper Methods', () => {
     it('updateSessionPhase should update phase', () => {
-        const phase = agent.updateSessionPhase();
-        expect(phase).toBe('normal');
-        expect(agent.currentPhase).toBe('normal');
+      const phase = agent.updateSessionPhase();
+      expect(phase).toBe('normal');
+      expect(agent.currentPhase).toBe('normal');
     });
 
     it('getPhaseModifiedProbability should calculate probability', () => {
-        const prob = agent.getPhaseModifiedProbability('reply', 0.5);
-        expect(prob).toBe(0.5);
+      const prob = agent.getPhaseModifiedProbability('reply', 0.5);
+      expect(prob).toBe(0.5);
     });
 
     it('triggerMicroInteraction should respect probability', async () => {
-        // Force fail
-        vi.spyOn(Math, 'random').mockReturnValue(1.0);
-        await agent.triggerMicroInteraction();
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('No micro-interaction'));
+      // Force fail
+      vi.spyOn(Math, 'random').mockReturnValue(1.0);
+      await agent.triggerMicroInteraction();
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('No micro-interaction'));
 
-        // Force success
-        vi.spyOn(Math, 'random').mockReturnValue(0.0);
-        await agent.triggerMicroInteraction();
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Executed test'));
+      // Force success
+      vi.spyOn(Math, 'random').mockReturnValue(0.0);
+      await agent.triggerMicroInteraction();
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Executed test'));
     });
 
     it('triggerMicroInteraction should handle handler errors', async () => {
-        vi.spyOn(Math, 'random').mockReturnValue(0.0);
-        agent.microHandler.executeMicroInteraction = vi.fn().mockRejectedValue(new Error('micro fail'));
-        const result = await agent.triggerMicroInteraction('reading');
-        expect(result.success).toBe(false);
-        expect(result.reason).toBe('micro fail');
+      vi.spyOn(Math, 'random').mockReturnValue(0.0);
+      agent.microHandler.executeMicroInteraction = vi.fn().mockRejectedValue(new Error('micro fail'));
+      const result = await agent.triggerMicroInteraction('reading');
+      expect(result.success).toBe(false);
+      expect(result.reason).toBe('micro fail');
     });
 
     it('highlightText should call micro handler', async () => {
-        const result = await agent.highlightText();
-        expect(result.success).toBe(true);
-        expect(agent.microHandler.textHighlight).toHaveBeenCalled();
+      const result = await agent.highlightText();
+      expect(result.success).toBe(true);
+      expect(agent.microHandler.textHighlight).toHaveBeenCalled();
     });
 
     it('startFidgetLoop and stopFidgetLoop should forward to handler', () => {
-        agent.startFidgetLoop();
-        agent.stopFidgetLoop();
-        expect(agent.microHandler.startFidgetLoop).toHaveBeenCalled();
-        expect(agent.microHandler.stopFidgetLoop).toHaveBeenCalled();
+      agent.startFidgetLoop();
+      agent.stopFidgetLoop();
+      expect(agent.microHandler.startFidgetLoop).toHaveBeenCalled();
+      expect(agent.microHandler.stopFidgetLoop).toHaveBeenCalled();
     });
 
     it('simulateFidget should handle handler errors', async () => {
-        agent.microHandler.executeMicroInteraction = vi.fn().mockRejectedValue(new Error('fidget fail'));
-        await agent.simulateFidget();
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('[Fidget] Error'));
+      agent.microHandler.executeMicroInteraction = vi.fn().mockRejectedValue(new Error('fidget fail'));
+      await agent.simulateFidget();
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('[Fidget] Error'));
     });
 
     it('smartClick should return failure when motor handler fails', async () => {
-        agent.motorHandler.smartClick = vi.fn().mockResolvedValue({ success: false, reason: 'miss' });
-        const result = await agent.smartClick('test-context');
-        expect(result.success).toBe(false);
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Smart click failed'));
+      agent.motorHandler.smartClick = vi.fn().mockResolvedValue({ success: false, reason: 'miss' });
+      const result = await agent.smartClick('test-context');
+      expect(result.success).toBe(false);
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Smart click failed'));
     });
 
     it('smartClickElement should handle motor handler exceptions', async () => {
-        agent.motorHandler.smartClick = vi.fn().mockRejectedValue(new Error('motor fail'));
-        const result = await agent.smartClickElement('[data-testid="like"]');
-        expect(result.success).toBe(false);
-        expect(result.reason).toBe('motor fail');
+      agent.motorHandler.smartClick = vi.fn().mockRejectedValue(new Error('motor fail'));
+      const result = await agent.smartClickElement('[data-testid="like"]');
+      expect(result.success).toBe(false);
+      expect(result.reason).toBe('motor fail');
     });
-    
+
     it('_quickFallbackEngagement should perform fallback', async () => {
-        agent.diveQueue.canEngage.mockReturnValue(true);
-        agent.handleLike = vi.fn().mockResolvedValue(true);
-        
-        vi.spyOn(Math, 'random').mockReturnValue(0.1); // Like
-        
-        const result = await agent._quickFallbackEngagement();
-        expect(result.engagementType).toBe('like');
-        expect(agent.handleLike).toHaveBeenCalled();
+      agent.diveQueue.canEngage.mockReturnValue(true);
+      agent.handleLike = vi.fn().mockResolvedValue(true);
+
+      vi.spyOn(Math, 'random').mockReturnValue(0.1); // Like
+
+      const result = await agent._quickFallbackEngagement();
+      expect(result.engagementType).toBe('like');
+      expect(agent.handleLike).toHaveBeenCalled();
     });
   });
 
   describe('Stats and Status Methods', () => {
     it('getAIStats should return stats with success rate', () => {
-        agent.aiStats = {
-            attempts: 10,
-            replies: 5,
-            skips: 3,
-            safetyBlocks: 1,
-            errors: 1
-        };
-        // Mock actions with getStats
-        agent.actions = {
-            reply: { getStats: vi.fn().mockReturnValue({ executed: 5 }) },
-            like: { getStats: vi.fn().mockReturnValue({ executed: 10 }) }
-        };
-        
-        const stats = agent.getAIStats();
-        
-        expect(stats.attempts).toBe(10);
-        expect(stats.replies).toBe(5);
-        expect(stats.successRate).toBe('50.0%');
-        expect(stats.actions).toBeDefined();
+      agent.aiStats = {
+        attempts: 10,
+        replies: 5,
+        skips: 3,
+        safetyBlocks: 1,
+        errors: 1
+      };
+      // Mock actions with getStats
+      agent.actions = {
+        reply: { getStats: vi.fn().mockReturnValue({ executed: 5 }) },
+        like: { getStats: vi.fn().mockReturnValue({ executed: 10 }) }
+      };
+
+      const stats = agent.getAIStats();
+
+      expect(stats.attempts).toBe(10);
+      expect(stats.replies).toBe(5);
+      expect(stats.successRate).toBe('50.0%');
+      expect(stats.actions).toBeDefined();
     });
 
     it('getAIStats should handle zero attempts', () => {
-        agent.aiStats = {
-            attempts: 0,
-            replies: 0,
-            skips: 0,
-            safetyBlocks: 0,
-            errors: 0
-        };
-        // Mock actions with getStats
-        agent.actions = {
-            reply: { getStats: vi.fn().mockReturnValue({ executed: 0 }) }
-        };
-        
-        const stats = agent.getAIStats();
-        
-        expect(stats.successRate).toBe('0%');
+      agent.aiStats = {
+        attempts: 0,
+        replies: 0,
+        skips: 0,
+        safetyBlocks: 0,
+        errors: 0
+      };
+      // Mock actions with getStats
+      agent.actions = {
+        reply: { getStats: vi.fn().mockReturnValue({ executed: 0 }) }
+      };
+
+      const stats = agent.getAIStats();
+
+      expect(stats.successRate).toBe('0%');
     });
 
     it('getActionStats should return action runner stats', () => {
-        const mockStats = { reply: { executed: 5 }, like: { executed: 10 } };
-        agent.actionRunner = { getStats: vi.fn().mockReturnValue(mockStats) };
-        
-        const stats = agent.getActionStats();
-        
-        expect(stats).toEqual(mockStats);
-        expect(agent.actionRunner.getStats).toHaveBeenCalled();
+      const mockStats = { reply: { executed: 5 }, like: { executed: 10 } };
+      agent.actionRunner = { getStats: vi.fn().mockReturnValue(mockStats) };
+
+      const stats = agent.getActionStats();
+
+      expect(stats).toEqual(mockStats);
+      expect(agent.actionRunner.getStats).toHaveBeenCalled();
     });
 
     it('getActionStats should fallback to individual actions', () => {
-        agent.actionRunner = null;
-        agent.actions = {
-            reply: { getStats: vi.fn().mockReturnValue({ executed: 5 }) },
-            like: { getStats: vi.fn().mockReturnValue({ executed: 10 }) }
-        };
-        
-        const stats = agent.getActionStats();
-        
-        expect(stats.reply).toEqual({ executed: 5 });
-        expect(stats.like).toEqual({ executed: 10 });
+      agent.actionRunner = null;
+      agent.actions = {
+        reply: { getStats: vi.fn().mockReturnValue({ executed: 5 }) },
+        like: { getStats: vi.fn().mockReturnValue({ executed: 10 }) }
+      };
+
+      const stats = agent.getActionStats();
+
+      expect(stats.reply).toEqual({ executed: 5 });
+      expect(stats.like).toEqual({ executed: 10 });
     });
 
     it('getEngagementStats should return tracker data', () => {
-        const mockStatus = { likes: { current: 5, limit: 20 } };
-        engagementMocks.getStatus.mockReturnValue(mockStatus);
-        engagementMocks.getSummary.mockReturnValue('likes: 5/20');
-        
-        const stats = agent.getEngagementStats();
-        
-        expect(stats.tracker).toEqual(mockStatus);
-        expect(stats.summary).toBe('likes: 5/20');
+      const mockStatus = { likes: { current: 5, limit: 20 } };
+      engagementMocks.getStatus.mockReturnValue(mockStatus);
+      engagementMocks.getSummary.mockReturnValue('likes: 5/20');
+
+      const stats = agent.getEngagementStats();
+
+      expect(stats.tracker).toEqual(mockStatus);
+      expect(stats.summary).toBe('likes: 5/20');
     });
 
     it('getQueueStatus should return queue status with buffered logging', () => {
-        const mockStatus = {
-            queueLength: 2,
-            activeCount: 1,
-            utilization: 33,
-            capacity: 10,
-            maxQueueSize: 30,
-            engagementLimits: {
-                likes: { used: 5, limit: 20 },
-                replies: { used: 2, limit: 10 },
-                quotes: { used: 1, limit: 5 },
-                bookmarks: { used: 3, limit: 10 }
-            },
-            retryInfo: { pendingRetries: 0 }
-        };
-        
-        agent.diveQueue.getFullStatus.mockReturnValue(mockStatus);
-        
-        const status = agent.getQueueStatus();
-        
-        expect(status).toEqual(mockStatus);
-        expect(agent.queueLogger.info).toHaveBeenCalled();
+      const mockStatus = {
+        queueLength: 2,
+        activeCount: 1,
+        utilization: 33,
+        capacity: 10,
+        maxQueueSize: 30,
+        engagementLimits: {
+          likes: { used: 5, limit: 20 },
+          replies: { used: 2, limit: 10 },
+          quotes: { used: 1, limit: 5 },
+          bookmarks: { used: 3, limit: 10 }
+        },
+        retryInfo: { pendingRetries: 0 }
+      };
+
+      agent.diveQueue.getFullStatus.mockReturnValue(mockStatus);
+
+      const status = agent.getQueueStatus();
+
+      expect(status).toEqual(mockStatus);
+      expect(agent.queueLogger.info).toHaveBeenCalled();
     });
 
     it('getQueueStatus should warn about pending retries', () => {
-        const mockStatus = {
-            queueLength: 5,
-            activeCount: 2,
-            utilization: 50,
-            capacity: 10,
-            maxQueueSize: 30,
-            engagementLimits: null,
-            retryInfo: { pendingRetries: 3 }
-        };
-        
-        agent.diveQueue.getFullStatus.mockReturnValue(mockStatus);
-        
-        agent.getQueueStatus();
-        
-        expect(agent.queueLogger.warn).toHaveBeenCalledWith('3 retries pending');
+      const mockStatus = {
+        queueLength: 5,
+        activeCount: 2,
+        utilization: 50,
+        capacity: 10,
+        maxQueueSize: 30,
+        engagementLimits: null,
+        retryInfo: { pendingRetries: 3 }
+      };
+
+      agent.diveQueue.getFullStatus.mockReturnValue(mockStatus);
+
+      agent.getQueueStatus();
+
+      expect(agent.queueLogger.warn).toHaveBeenCalledWith('3 retries pending');
     });
 
     it('isQueueHealthy should delegate to diveQueue', () => {
-        agent.diveQueue.isHealthy.mockReturnValue(true);
-        
-        expect(agent.isQueueHealthy()).toBe(true);
-        expect(agent.diveQueue.isHealthy).toHaveBeenCalled();
+      agent.diveQueue.isHealthy.mockReturnValue(true);
+
+      expect(agent.isQueueHealthy()).toBe(true);
+      expect(agent.diveQueue.isHealthy).toHaveBeenCalled();
     });
   });
 
   describe('Session State Methods', () => {
     it('getSessionProgress should calculate progress percentage', () => {
-        agent.sessionStart = Date.now() - 5000; // 5 seconds ago
-        
-        const progress = agent.getSessionProgress();
-        
-        expect(typeof progress).toBe('number');
-        expect(progress).toBeGreaterThan(0);
-        expect(progress).toBeLessThanOrEqual(100);
+      agent.sessionStart = Date.now() - 5000; // 5 seconds ago
+
+      const progress = agent.getSessionProgress();
+
+      expect(typeof progress).toBe('number');
+      expect(progress).toBeGreaterThan(0);
+      expect(progress).toBeLessThanOrEqual(100);
     });
 
     it('isInCooldown should check cooldown phase', () => {
-        sessionPhases.getSessionPhase.mockReturnValue('cooldown');
-        
-        expect(agent.isInCooldown()).toBe(true);
+      sessionPhases.getSessionPhase.mockReturnValue('cooldown');
+
+      expect(agent.isInCooldown()).toBe(true);
     });
 
     it('isInCooldown should return false when not in cooldown', () => {
-        sessionPhases.getSessionPhase.mockReturnValue('active');
-        
-        expect(agent.isInCooldown()).toBe(false);
+      sessionPhases.getSessionPhase.mockReturnValue('active');
+
+      expect(agent.isInCooldown()).toBe(false);
     });
 
     it('isInWarmup should check warmup phase', () => {
-        sessionPhases.getSessionPhase.mockReturnValue('warmup');
-        
-        expect(agent.isInWarmup()).toBe(true);
+      sessionPhases.getSessionPhase.mockReturnValue('warmup');
+
+      expect(agent.isInWarmup()).toBe(true);
     });
 
     it('isInWarmup should return false when not in warmup', () => {
-        sessionPhases.getSessionPhase.mockReturnValue('active');
-        
-        expect(agent.isInWarmup()).toBe(false);
+      sessionPhases.getSessionPhase.mockReturnValue('active');
+
+      expect(agent.isInWarmup()).toBe(false);
     });
   });
 
   describe('Health Check', () => {
     it('performHealthCheck should return healthy when all checks pass', async () => {
-        const mockBrowser = {
-            isConnected: vi.fn().mockReturnValue(true)
-        };
-        const mockContext = {
-            browser: vi.fn().mockReturnValue(mockBrowser)
-        };
-        
-        mockPage.context.mockReturnValue(mockContext);
-        mockPage.evaluate.mockResolvedValue({
-            readyState: 'complete',
-            title: 'Home',
-            hasBody: true
-        });
-        mockPage.url.mockReturnValue('https://x.com/home');
-        
-        const result = await agent.performHealthCheck();
-        
-        expect(result.healthy).toBe(true);
+      const mockBrowser = {
+        isConnected: vi.fn().mockReturnValue(true)
+      };
+      const mockContext = {
+        browser: vi.fn().mockReturnValue(mockBrowser)
+      };
+
+      mockPage.context.mockReturnValue(mockContext);
+      mockPage.evaluate.mockResolvedValue({
+        readyState: 'complete',
+        title: 'Home',
+        hasBody: true
+      });
+      mockPage.url.mockReturnValue('https://x.com/home');
+
+      const result = await agent.performHealthCheck();
+
+      expect(result.healthy).toBe(true);
     });
 
     it('performHealthCheck should detect disconnected browser', async () => {
-        const mockBrowser = {
-            isConnected: vi.fn().mockReturnValue(false)
-        };
-        const mockContext = {
-            browser: vi.fn().mockReturnValue(mockBrowser)
-        };
-        
-        mockPage.context.mockReturnValue(mockContext);
-        
-        const result = await agent.performHealthCheck();
-        
-        expect(result.healthy).toBe(false);
-        expect(result.reason).toBe('browser_disconnected');
+      const mockBrowser = {
+        isConnected: vi.fn().mockReturnValue(false)
+      };
+      const mockContext = {
+        browser: vi.fn().mockReturnValue(mockBrowser)
+      };
+
+      mockPage.context.mockReturnValue(mockContext);
+
+      const result = await agent.performHealthCheck();
+
+      expect(result.healthy).toBe(false);
+      expect(result.reason).toBe('browser_disconnected');
     });
 
     it('performHealthCheck should detect page not ready', async () => {
-        const mockBrowser = {
-            isConnected: vi.fn().mockReturnValue(true)
-        };
-        const mockContext = {
-            browser: vi.fn().mockReturnValue(mockBrowser)
-        };
-        
-        mockPage.context.mockReturnValue(mockContext);
-        mockPage.evaluate.mockResolvedValue({
-            readyState: 'loading',
-            title: '',
-            hasBody: false
-        });
-        
-        const result = await agent.performHealthCheck();
-        
-        expect(result.healthy).toBe(false);
-        expect(result.reason).toBe('page_not_ready');
+      const mockBrowser = {
+        isConnected: vi.fn().mockReturnValue(true)
+      };
+      const mockContext = {
+        browser: vi.fn().mockReturnValue(mockBrowser)
+      };
+
+      mockPage.context.mockReturnValue(mockContext);
+      mockPage.evaluate.mockResolvedValue({
+        readyState: 'loading',
+        title: '',
+        hasBody: false
+      });
+
+      const result = await agent.performHealthCheck();
+
+      expect(result.healthy).toBe(false);
+      expect(result.reason).toBe('page_not_ready');
     });
 
     it('performHealthCheck should detect unexpected URL', async () => {
-        const mockBrowser = {
-            isConnected: vi.fn().mockReturnValue(true)
-        };
-        const mockContext = {
-            browser: vi.fn().mockReturnValue(mockBrowser)
-        };
-        
-        mockPage.context.mockReturnValue(mockContext);
-        mockPage.evaluate.mockResolvedValue({
-            readyState: 'complete',
-            title: 'Google',
-            hasBody: true
-        });
-        mockPage.url.mockReturnValue('https://google.com');
-        agent.navigateHome = vi.fn().mockResolvedValue();
-        
-        const result = await agent.performHealthCheck();
-        
-        expect(result.healthy).toBe(false);
-        expect(result.reason).toBe('unexpected_url');
-        expect(agent.navigateHome).toHaveBeenCalled();
+      const mockBrowser = {
+        isConnected: vi.fn().mockReturnValue(true)
+      };
+      const mockContext = {
+        browser: vi.fn().mockReturnValue(mockBrowser)
+      };
+
+      mockPage.context.mockReturnValue(mockContext);
+      mockPage.evaluate.mockResolvedValue({
+        readyState: 'complete',
+        title: 'Google',
+        hasBody: true
+      });
+      mockPage.url.mockReturnValue('https://google.com');
+      agent.navigateHome = vi.fn().mockResolvedValue();
+
+      const result = await agent.performHealthCheck();
+
+      expect(result.healthy).toBe(false);
+      expect(result.reason).toBe('unexpected_url');
+      expect(agent.navigateHome).toHaveBeenCalled();
     });
 
     it('performHealthCheck should handle errors gracefully', async () => {
-        mockPage.context.mockImplementation(() => {
-            throw new Error('Context error');
-        });
-        
-        const result = await agent.performHealthCheck();
-        
-        expect(result.healthy).toBe(false);
-        expect(result.reason).toContain('Context error');
+      mockPage.context.mockImplementation(() => {
+        throw new Error('Context error');
+      });
+
+      const result = await agent.performHealthCheck();
+
+      expect(result.healthy).toBe(false);
+      expect(result.reason).toContain('Context error');
     });
   });
 
   describe('Action Execution', () => {
     beforeEach(() => {
-        agent.replyEngine = {
-            executeReply: vi.fn().mockResolvedValue({ success: true, method: 'composer' })
-        };
-        agent.quoteEngine = {
-            executeQuote: vi.fn().mockResolvedValue({ success: true, method: 'composer' })
-        };
+      agent.replyEngine = {
+        executeReply: vi.fn().mockResolvedValue({ success: true, method: 'composer' })
+      };
+      agent.quoteEngine = {
+        executeQuote: vi.fn().mockResolvedValue({ success: true, method: 'composer' })
+      };
     });
 
     it('executeAIReply should execute reply and record engagement', async () => {
-        engagementMocks.record.mockReturnValue(true);
-        engagementMocks.getProgress.mockReturnValue('1/10');
-        
-        const result = await agent.executeAIReply('Test reply');
-        
-        expect(result).toBe(true);
-        expect(agent.replyEngine.executeReply).toHaveBeenCalledWith(mockPage, 'Test reply');
-        expect(agent.state.replies).toBe(1);
-        expect(engagementMocks.record).toHaveBeenCalledWith('replies');
+      engagementMocks.record.mockReturnValue(true);
+      engagementMocks.getProgress.mockReturnValue('1/10');
+
+      const result = await agent.executeAIReply('Test reply');
+
+      expect(result).toBe(true);
+      expect(agent.replyEngine.executeReply).toHaveBeenCalledWith(mockPage, 'Test reply');
+      expect(agent.state.replies).toBe(1);
+      expect(engagementMocks.record).toHaveBeenCalledWith('replies');
     });
 
     it('executeAIReply should handle failure', async () => {
-        agent.replyEngine.executeReply.mockResolvedValue({ 
-            success: false, 
-            method: 'composer',
-            reason: 'Composer not found'
-        });
-        
-        const result = await agent.executeAIReply('Test reply');
-        
-        expect(result).toBe(false);
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('[WARN]'));
+      agent.replyEngine.executeReply.mockResolvedValue({
+        success: false,
+        method: 'composer',
+        reason: 'Composer not found'
+      });
+
+      const result = await agent.executeAIReply('Test reply');
+
+      expect(result).toBe(false);
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('[WARN]'));
     });
 
     it('executeAIReply should handle errors', async () => {
-        agent.replyEngine.executeReply.mockRejectedValue(new Error('Execution failed'));
-        
-        const result = await agent.executeAIReply('Test reply');
-        
-        expect(result).toBe(false);
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Failed to post reply'));
+      agent.replyEngine.executeReply.mockRejectedValue(new Error('Execution failed'));
+
+      const result = await agent.executeAIReply('Test reply');
+
+      expect(result).toBe(false);
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Failed to post reply'));
     });
 
     it('executeAIQuote should execute quote and record engagement', async () => {
-        engagementMocks.record.mockReturnValue(true);
-        engagementMocks.getProgress.mockReturnValue('1/5');
-        
-        const result = await agent.executeAIQuote('Test quote');
-        
-        expect(result).toBe(true);
-        expect(agent.quoteEngine.executeQuote).toHaveBeenCalledWith(mockPage, 'Test quote');
-        expect(agent.state.quotes).toBe(1);
-        expect(engagementMocks.record).toHaveBeenCalledWith('quotes');
+      engagementMocks.record.mockReturnValue(true);
+      engagementMocks.getProgress.mockReturnValue('1/5');
+
+      const result = await agent.executeAIQuote('Test quote');
+
+      expect(result).toBe(true);
+      expect(agent.quoteEngine.executeQuote).toHaveBeenCalledWith(mockPage, 'Test quote');
+      expect(agent.state.quotes).toBe(1);
+      expect(engagementMocks.record).toHaveBeenCalledWith('quotes');
     });
 
     it('executeAIQuote should handle failure', async () => {
-        agent.quoteEngine.executeQuote.mockResolvedValue({ 
-            success: false, 
-            method: 'composer',
-            reason: 'Timeout'
-        });
-        
-        const result = await agent.executeAIQuote('Test quote');
-        
-        expect(result).toBe(false);
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('[WARN]'));
+      agent.quoteEngine.executeQuote.mockResolvedValue({
+        success: false,
+        method: 'composer',
+        reason: 'Timeout'
+      });
+
+      const result = await agent.executeAIQuote('Test quote');
+
+      expect(result).toBe(false);
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('[WARN]'));
     });
 
     it('executeAIQuote should handle errors', async () => {
-        agent.quoteEngine.executeQuote.mockRejectedValue(new Error('Execution failed'));
-        
-        const result = await agent.executeAIQuote('Test quote');
-        
-        expect(result).toBe(false);
+      agent.quoteEngine.executeQuote.mockRejectedValue(new Error('Execution failed'));
+
+      const result = await agent.executeAIQuote('Test quote');
+
+      expect(result).toBe(false);
     });
   });
 
   describe('simulateReading Override', () => {
     it.skip('should perform idle cursor movement when scrolling disabled', async () => {
-        // Skipped: Requires complex prototype mocking setup
+      // Skipped: Requires complex prototype mocking setup
     });
 
     it.skip('should perform idle cursor movement when operation locked', async () => {
-        // Skipped: Requires complex prototype mocking setup
+      // Skipped: Requires complex prototype mocking setup
     });
 
     it.skip('should call parent simulateReading when scrolling enabled', async () => {
-        // Skipped: Requires complex prototype mocking setup
+      // Skipped: Requires complex prototype mocking setup
     });
   });
 
   describe('Logging Methods', () => {
     it('logEngagementStatus should log all actions', () => {
-        const mockStatus = {
-            likes: { current: 5, limit: 20, remaining: 15, percentage: '25%' },
-            replies: { current: 2, limit: 10, remaining: 8, percentage: '20%' },
-            bookmarks: { current: 10, limit: 10, remaining: 0, percentage: '100%' }
-        };
-        engagementMocks.getStatus.mockReturnValue(mockStatus);
-        
-        agent.logEngagementStatus();
-        
-        expect(agent.engagementLogger.info).toHaveBeenCalledTimes(3);
-        expect(agent.engagementLogger.info).toHaveBeenCalledWith(expect.stringContaining('likes'));
-        expect(agent.engagementLogger.info).toHaveBeenCalledWith(expect.stringContaining('✅'));
-        expect(agent.engagementLogger.info).toHaveBeenCalledWith(expect.stringContaining('🚫'));
+      const mockStatus = {
+        likes: { current: 5, limit: 20, remaining: 15, percentage: '25%' },
+        replies: { current: 2, limit: 10, remaining: 8, percentage: '20%' },
+        bookmarks: { current: 10, limit: 10, remaining: 0, percentage: '100%' }
+      };
+      engagementMocks.getStatus.mockReturnValue(mockStatus);
+
+      agent.logEngagementStatus();
+
+      expect(agent.engagementLogger.info).toHaveBeenCalledTimes(3);
+      expect(agent.engagementLogger.info).toHaveBeenCalledWith(expect.stringContaining('likes'));
+      expect(agent.engagementLogger.info).toHaveBeenCalledWith(expect.stringContaining('✅'));
+      expect(agent.engagementLogger.info).toHaveBeenCalledWith(expect.stringContaining('🚫'));
     });
 
     it('flushLogs should shutdown buffered loggers', async () => {
-        await agent.flushLogs();
-        
-        expect(agent.queueLogger.shutdown).toHaveBeenCalled();
-        expect(agent.engagementLogger.shutdown).toHaveBeenCalled();
-        expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Flushing'));
+      await agent.flushLogs();
+
+      expect(agent.queueLogger.shutdown).toHaveBeenCalled();
+      expect(agent.engagementLogger.shutdown).toHaveBeenCalled();
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Flushing'));
+    });
+  });
+
+  describe('diveTweet Additional Edge Cases', () => {
+    it('should skip if isScanning is true', async () => {
+      agent.isScanning = true;
+      await agent.diveTweet();
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Scan already in progress'));
+    });
+
+    it('should handle queue addDive throwing error', async () => {
+      agent.diveQueue.addDive = vi.fn().mockRejectedValue(new Error('Queue error'));
+      agent._diveTweetWithAI = vi.fn().mockImplementation(async (queueWrapper) => {
+        if (queueWrapper) {
+          await queueWrapper(async () => { });
+        }
+      });
+
+      await agent.diveTweet();
+
+      expect(agent.logger.info).toHaveBeenCalledWith(expect.stringContaining('Error in diveTweet'));
+    });
+  });
+
+  describe('_diveTweetWithAI Additional Edge Cases', () => {
+    it('should handle context extraction error', async () => {
+      agent.startDive = vi.fn().mockResolvedValue(true);
+      agent._ensureExplorationScroll = vi.fn().mockResolvedValue(true);
+      agent._readExpandedTweet = vi.fn().mockRejectedValue(new Error('Read error'));
+      agent.endDive = vi.fn().mockResolvedValue(true);
+
+      await agent._diveTweetWithAI();
+
+      expect(agent.endDive).toHaveBeenCalledWith(false, true);
+    });
+
+    it('should call endDive when no action is selected', async () => {
+      agent.startDive = vi.fn().mockResolvedValue(true);
+      agent._ensureExplorationScroll = vi.fn().mockResolvedValue(true);
+      agent._readExpandedTweet = vi.fn().mockResolvedValue(true);
+      agent.endDive = vi.fn().mockResolvedValue(true);
+      agent.actionRunner.selectAction = vi.fn().mockReturnValue(null);
+
+      await agent._diveTweetWithAI();
+
+      expect(agent.endDive).toHaveBeenCalled();
+    });
+  });
+
+  describe('handleAIReply Additional Edge Cases', () => {
+    it('should skip when sentiment is negative', async () => {
+      sentimentService.analyze.mockReturnValue({
+        isNegative: true,
+        score: 0.8,
+        dimensions: { valence: { valence: 0.5 }, arousal: { arousal: 0.5 }, dominance: { dominance: 0.5 }, sarcasm: { sarcasm: 0.1 } },
+        engagement: { warnings: [] },
+        composite: { riskLevel: 'low' }
+      });
+      agent.contextEngine.extractEnhancedContext = vi.fn().mockResolvedValue(null);
+      agent.replyEngine.generateReply = vi.fn();
+
+      await agent.handleAIReply('test', 'user1', { url: 'https://x.com/1' });
+
+      expect(agent.replyEngine.generateReply).not.toHaveBeenCalled();
+      expect(agent.aiStats.skips).toBe(1);
+    });
+
+    it('should skip when risk level is high', async () => {
+      sentimentService.analyze.mockReturnValue({
+        isNegative: false,
+        score: 0.2,
+        dimensions: { valence: { valence: 0.5 }, arousal: { arousal: 0.5 }, dominance: { dominance: 0.5 }, sarcasm: { sarcasm: 0.1 } },
+        engagement: { warnings: [] },
+        composite: { riskLevel: 'high', conversationType: 'controversial' }
+      });
+      agent.replyEngine.generateReply = vi.fn();
+
+      await agent.handleAIReply('test', 'user1', { url: 'https://x.com/1' });
+
+      expect(agent.replyEngine.generateReply).not.toHaveBeenCalled();
+      expect(agent.aiStats.skips).toBe(1);
+    });
+  });
+
+  describe('handleLike Additional Edge Cases', () => {
+    it('should skip when already liked (unlike button visible)', async () => {
+      agent.humanInteraction = {
+        findWithFallback: vi.fn().mockImplementation((selectors) => {
+          if (selectors.some(sel => sel.includes('unlike') || sel.includes('Liked'))) {
+            return { element: {}, selector: 'unlike' };
+          }
+          return null;
+        })
+      };
+
+      await agent.handleLike('test');
+      expect(agent.humanClick).not.toHaveBeenCalled();
+    });
+
+    it('should handle engagement limit reached in handleLike', async () => {
+      sentimentService.analyze.mockReturnValue({ engagement: { canLike: true }, composite: { riskLevel: 'low' }, dimensions: { toxicity: { toxicity: 0.1 } } });
+      engagementMocks.canPerform.mockReturnValue(false);
+
+      const result = await agent.handleLike('test');
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('Session/Phase Additional Edge Cases', () => {
+    it('getSessionProgress should return valid percentage', () => {
+      agent.sessionStart = Date.now() - 60000; // 1 minute ago
+      const progress = agent.getSessionProgress();
+      expect(progress).toBeGreaterThan(0);
+      expect(progress).toBeLessThanOrEqual(100);
+    });
+
+    it('getPhaseModifiedProbability should apply phase modifier', () => {
+      sessionPhases.getPhaseModifier.mockReturnValue(1.5);
+      const prob = agent.getPhaseModifiedProbability('reply', 0.5);
+      expect(prob).toBe(0.75);
+    });
+  });
+
+  describe('Health Check Additional Edge Cases', () => {
+    it('should handle page URL check error', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const mockContext = { browser: vi.fn().mockReturnValue(mockBrowser) };
+      mockPage.context.mockReturnValue(mockContext);
+      mockPage.evaluate.mockResolvedValue({ readyState: 'complete', title: 'Home', hasBody: true });
+      mockPage.url.mockImplementation(() => { throw new Error('URL error'); });
+
+      const result = await agent.performHealthCheck();
+      expect(result.healthy).toBe(false);
+    });
+
+    it('should navigate home when URL is unexpected', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const mockContext = { browser: vi.fn().mockReturnValue(mockBrowser) };
+      mockPage.context.mockReturnValue(mockContext);
+      mockPage.evaluate.mockResolvedValue({ readyState: 'complete', title: 'Google', hasBody: true });
+      mockPage.url.mockReturnValue('https://google.com');
+      agent.navigateHome = vi.fn().mockResolvedValue();
+
+      await agent.performHealthCheck();
+      expect(agent.navigateHome).toHaveBeenCalled();
+    });
+  });
+
+  describe('Queue Additional Edge Cases', () => {
+    it('isQueueHealthy should return false when queue is unhealthy', () => {
+      agent.diveQueue.isHealthy.mockReturnValue(false);
+      expect(agent.isQueueHealthy()).toBe(false);
+    });
+
+    it('isQueueHealthy should return true when queue is healthy', () => {
+      agent.diveQueue.isHealthy.mockReturnValue(true);
+      expect(agent.isQueueHealthy()).toBe(true);
+    });
+  });
+
+  describe('Action Execution Additional Edge Cases', () => {
+    it('executeAIReply should handle replyEngine missing', async () => {
+      agent.replyEngine = null;
+      const result = await agent.executeAIReply('test');
+      expect(result).toBe(false);
+    });
+
+    it('executeAIQuote should handle quoteEngine missing', async () => {
+      agent.quoteEngine = null;
+      const result = await agent.executeAIQuote('test');
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('Engagement Tracker Additional Edge Cases', () => {
+    it('should return engagement stats', () => {
+      const stats = agent.getEngagementStats();
+      expect(stats).toBeDefined();
+      expect(stats.tracker).toBeDefined();
+      expect(stats.summary).toBeDefined();
     });
   });
 });

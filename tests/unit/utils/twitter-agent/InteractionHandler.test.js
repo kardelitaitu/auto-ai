@@ -167,7 +167,7 @@ describe('InteractionHandler', () => {
     describe('scrollToGoldenZone', () => {
         it('should scroll element to golden zone', async () => {
             const mockEl = {
-                evaluate: vi.fn().mockImplementation((fn) => {
+                evaluate: vi.fn().mockImplementation((_fn) => {
                     // Simulate evaluate execution context
                     global.window = { innerHeight: 1000, scrollBy: vi.fn() };
                     // We can't easily simulate the rect logic inside evaluate without running it in browser context or complex mocking.

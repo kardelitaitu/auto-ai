@@ -4,10 +4,10 @@
  * @module tests/unit/ai-twitter-activity.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 // Mock dependencies before imports
-const mockPage = {
+const _mockPage = {
   emulateMedia: vi.fn().mockResolvedValue(undefined),
   goto: vi.fn().mockResolvedValue(undefined),
   waitForSelector: vi.fn().mockResolvedValue(undefined),
@@ -19,7 +19,7 @@ const mockPage = {
   close: vi.fn().mockResolvedValue(undefined)
 };
 
-const mockPayload = {
+const _mockPayload = {
   browserInfo: 'test-profile',
   profileId: 'test-profile-123',
   cycles: 5,
@@ -28,7 +28,7 @@ const mockPayload = {
   taskTimeoutMs: 600000
 };
 
-const mockConfig = {
+const _mockConfig = {
   init: vi.fn().mockResolvedValue(undefined),
   getEngagementLimits: vi.fn().mockResolvedValue({
     replies: 3,
@@ -49,14 +49,14 @@ const mockConfig = {
   })
 };
 
-const mockSettings = {
+const _mockSettings = {
   twitter: {
     reply: { probability: 0.5 },
     quote: { probability: 0.5 }
   }
 };
 
-const mockAgent = {
+const _mockAgent = {
   checkLoginState: vi.fn().mockResolvedValue(true),
   runSession: vi.fn().mockResolvedValue(undefined),
   state: {
@@ -87,7 +87,7 @@ const mockAgent = {
   sessionStart: Date.now()
 };
 
-const mockLogger = {
+const _mockLogger = {
   info: vi.fn(),
   warn: vi.fn(),
   error: vi.fn(),
@@ -95,12 +95,12 @@ const mockLogger = {
 };
 
 // Create module mocks
-const mockModuleImports = {
+const _mockModuleImports = {
   '../utils/logger.js': {
-    createLogger: vi.fn(() => mockLogger)
+    createLogger: vi.fn(() => _mockLogger)
   },
   '../utils/configLoader.js': {
-    getSettings: vi.fn().mockResolvedValue(mockSettings)
+    getSettings: vi.fn().mockResolvedValue(_mockSettings)
   },
   '../utils/logging-config.js': {
     getLoggingConfig: vi.fn().mockResolvedValue({
@@ -111,7 +111,7 @@ const mockModuleImports = {
     formatEngagementLine: vi.fn((action, data) => `${action}: ${data.current}/${data.limit}`)
   },
   '../utils/ai-twitterAgent.js': {
-    AITwitterAgent: vi.fn().mockImplementation(() => mockAgent)
+    AITwitterAgent: vi.fn().mockImplementation(() => _mockAgent)
   },
   '../utils/profileManager.js': {
     getById: vi.fn().mockReturnValue({
@@ -164,7 +164,7 @@ const mockModuleImports = {
     formatDuration: vi.fn().mockReturnValue('5s')
   },
   '../utils/config-service.js': {
-    config: mockConfig
+    config: _mockConfig
   },
   '../constants/twitter-timeouts.js': {
     TWITTER_TIMEOUTS: {
@@ -871,7 +871,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
       
       try {
         throw sessionError;
-      } catch (error) {
+      } catch (_error) {
         // Simulate recovery attempt
         recoveryAttempted = true;
       }
@@ -886,7 +886,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
       
       try {
         throw closeError;
-      } catch (error) {
+      } catch (_error) {
         errorLogged = true;
       }
       
@@ -900,7 +900,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
       
       try {
         throw navError;
-      } catch (error) {
+      } catch (_error) {
         errorCaught = true;
       }
       
@@ -951,7 +951,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
       try {
         flow.tryEntered = true;
         throw new Error('Test error');
-      } catch (error) {
+      } catch (_error) {
         flow.catchEntered = true;
         flow.recoveryAttempted = true;
         flow.recoverySucceeded = true; // Simulated success
@@ -976,7 +976,7 @@ describe('ai-twitterActivity Error Boundary Scenarios', () => {
         innerErrorCaught = true;
         try {
           throw new Error('Outer error', { cause: inner });
-        } catch (outer) {
+        } catch (_outer) {
           outerErrorCaught = true;
         }
       }
@@ -1010,7 +1010,6 @@ describe('ai-twitterActivity Queue Monitoring Scenarios', () => {
 
     it('should reset error count on success', () => {
       let errorCount = 0;
-      const maxErrors = 3;
 
       // First failure
       errorCount++;

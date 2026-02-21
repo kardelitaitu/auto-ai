@@ -1,8 +1,7 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HumanTiming } from '../../utils/humanization/timing.js';
 import { mathUtils } from '../../utils/mathUtils.js';
-import { entropy } from '../../utils/entropyController.js';
 
 // Mock dependencies
 vi.mock('../../utils/mathUtils.js', () => ({
@@ -38,8 +37,8 @@ describe('HumanTiming', () => {
         };
 
         // Default mock behaviors
-        mathUtils.randomInRange.mockImplementation((min, max) => min);
-        mathUtils.gaussian.mockImplementation((mean, dev) => mean);
+        mathUtils.randomInRange.mockImplementation((min, _max) => min);
+        mathUtils.gaussian.mockImplementation((mean, _dev) => mean);
 
         humanTiming = new HumanTiming(mockPage, mockLogger);
     });
@@ -63,7 +62,7 @@ describe('HumanTiming', () => {
 
         it('should increase time for interesting content', () => {
             // Mock gaussian to return mean directly to verify multiplier
-            mathUtils.gaussian.mockImplementation((mean, dev) => mean);
+            mathUtils.gaussian.mockImplementation((mean, _dev) => mean);
             
             const normalTime = humanTiming.getThinkTime('read_tweet'); // 3000
             const interestingTime = humanTiming.getThinkTime('read_tweet', { interesting: true });
@@ -72,7 +71,7 @@ describe('HumanTiming', () => {
         });
 
         it('should decrease time for boring content', () => {
-            mathUtils.gaussian.mockImplementation((mean, dev) => mean);
+            mathUtils.gaussian.mockImplementation((mean, _dev) => mean);
             
             const normalTime = humanTiming.getThinkTime('read_tweet');
             const boringTime = humanTiming.getThinkTime('read_tweet', { boring: true });
@@ -84,7 +83,7 @@ describe('HumanTiming', () => {
             // Mock Date to 8 AM
             vi.setSystemTime(new Date('2024-01-01T08:00:00'));
             
-            mathUtils.gaussian.mockImplementation((mean, dev) => mean);
+            mathUtils.gaussian.mockImplementation((mean, _dev) => mean);
             
             const time = humanTiming.getThinkTime('general'); // default 1000
             // Morning multiplier 1.2 -> 1200
@@ -97,7 +96,7 @@ describe('HumanTiming', () => {
             // Mock Date to 11 PM
             vi.setSystemTime(new Date('2024-01-01T23:00:00'));
             
-            mathUtils.gaussian.mockImplementation((mean, dev) => mean);
+            mathUtils.gaussian.mockImplementation((mean, _dev) => mean);
             
             const time = humanTiming.getThinkTime('general'); // default 1000
             // Late night multiplier 0.8 -> 800
@@ -116,7 +115,7 @@ describe('HumanTiming', () => {
         });
 
         it('should apply fatigue variation at higher cycle counts', () => {
-            mathUtils.gaussian.mockImplementation((mean, dev) => mean);
+            mathUtils.gaussian.mockImplementation((mean, _dev) => mean);
             const time = humanTiming.getThinkTime('general', { cycleCount: 60 });
             expect(time).toBe(900);
         });

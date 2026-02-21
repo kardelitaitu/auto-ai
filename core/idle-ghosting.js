@@ -141,7 +141,7 @@ class IdleGhosting {
      * @returns {Promise<void>}
      * @private
      */
-    async _startMicroScroll(page) {
+    async _startMicroScroll(_page) {
         // Placeholder for micro-scroll implementation
         // In production, this would occasionally scroll by small amounts (10-50px)
         logger.debug('[IdleGhosting] Micro-scroll feature not yet implemented');

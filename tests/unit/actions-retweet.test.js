@@ -19,7 +19,7 @@ describe('RetweetAction', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockPage = { waitForTimeout: vi.fn().mockResolvedValue(undefined), locator: vi.fn(), keyboard: { press: vi.fn().mockResolvedValue(undefined) } };
-        mockAgent = { twitterConfig: { actions: { retweet: { enabled: true, probability: 0.5 } } }, page: mockPage, humanClick: vi.fn().mockResolvedValue(undefined), diveQueue: { canEngage: vi.fn().mockReturnValue(true), recordEngagement: vi.fn() }, scrollToGoldenZone: null };
+        mockAgent = { twitterConfig: { actions: { retweet: { enabled: true, probability: 0.5, strategy: 'click' } } }, page: mockPage, humanClick: vi.fn().mockResolvedValue(undefined), diveQueue: { canEngage: vi.fn().mockReturnValue(true), recordEngagement: vi.fn() }, scrollToGoldenZone: null };
         mockTweetElement = { locator: vi.fn(), scrollIntoViewIfNeeded: vi.fn().mockResolvedValue(undefined) };
         retweetAction = new RetweetAction(mockAgent);
     });
@@ -94,41 +94,41 @@ describe('RetweetAction', () => {
         it('should handle menu appearing and confirm', async () => {
             mockAgent.scrollToGoldenZone = vi.fn().mockResolvedValue(undefined);
             // unretweet not visible, retweet count > 0 to skip aria-label fallback
-            const mockUnretweet = { 
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false), 
+            const mockUnretweet = {
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false),
                     count: vi.fn().mockResolvedValue(0),
                     waitFor: vi.fn().mockResolvedValue(undefined)
-                }) 
+                })
             };
             // count > 0 to skip aria-label fallback
-            const mockRetweet = { 
-                first: vi.fn().mockReturnValue({ 
+            const mockRetweet = {
+                first: vi.fn().mockReturnValue({
                     count: vi.fn().mockResolvedValue(1),
                     isVisible: vi.fn().mockResolvedValue(true)
-                }) 
+                })
             };
             // aria-label for Reposted should NOT match (return false)
             const mockReposted = {
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false) 
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false)
                 })
             };
-            mockTweetElement.locator.mockImplementation((selector) => { 
-                if (selector.includes('unretweet')) return mockUnretweet; 
-                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet; 
+            mockTweetElement.locator.mockImplementation((selector) => {
+                if (selector.includes('unretweet')) return mockUnretweet;
+                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet;
                 if (selector.includes('Reposted')) return mockReposted;
-                return { first: vi.fn() }; 
+                return { first: vi.fn() };
             });
-            const mockConfirm = { 
-                first: vi.fn().mockReturnValue({ 
-                    waitFor: vi.fn().mockResolvedValue(undefined), 
-                    isVisible: vi.fn().mockResolvedValue(true) 
-                }) 
+            const mockConfirm = {
+                first: vi.fn().mockReturnValue({
+                    waitFor: vi.fn().mockResolvedValue(undefined),
+                    isVisible: vi.fn().mockResolvedValue(true)
+                })
             };
-            mockPage.locator.mockImplementation((selector) => { 
-                if (selector.includes('Confirm')) return mockConfirm; 
-                return { first: vi.fn() }; 
+            mockPage.locator.mockImplementation((selector) => {
+                if (selector.includes('Confirm')) return mockConfirm;
+                return { first: vi.fn() };
             });
             const result = await retweetAction.handleRetweet(mockTweetElement);
             expect(mockAgent.humanClick).toHaveBeenCalledTimes(2);
@@ -136,38 +136,38 @@ describe('RetweetAction', () => {
         });
 
         it('should handle menu timeout', async () => {
-            const mockUnretweet = { 
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false), 
-                    count: vi.fn().mockResolvedValue(0) 
-                }) 
-            };
-            const mockRetweet = { 
-                first: vi.fn().mockReturnValue({ 
-                    count: vi.fn().mockResolvedValue(1),
-                    isVisible: vi.fn().mockResolvedValue(true)
-                }) 
-            };
-            const mockReposted = {
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false) 
+            const mockUnretweet = {
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false),
+                    count: vi.fn().mockResolvedValue(0)
                 })
             };
-            mockTweetElement.locator.mockImplementation((selector) => { 
-                if (selector.includes('unretweet')) return mockUnretweet; 
-                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet; 
+            const mockRetweet = {
+                first: vi.fn().mockReturnValue({
+                    count: vi.fn().mockResolvedValue(1),
+                    isVisible: vi.fn().mockResolvedValue(true)
+                })
+            };
+            const mockReposted = {
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false)
+                })
+            };
+            mockTweetElement.locator.mockImplementation((selector) => {
+                if (selector.includes('unretweet')) return mockUnretweet;
+                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet;
                 if (selector.includes('Reposted')) return mockReposted;
-                return { first: vi.fn() }; 
+                return { first: vi.fn() };
             });
-            mockPage.locator.mockImplementation((selector) => { 
-                if (selector.includes('Confirm')) { 
-                    return { 
-                        first: vi.fn().mockReturnValue({ 
-                            waitFor: vi.fn().mockRejectedValue(new Error('timeout')) 
-                        }) 
-                    }; 
+            mockPage.locator.mockImplementation((selector) => {
+                if (selector.includes('Confirm')) {
+                    return {
+                        first: vi.fn().mockReturnValue({
+                            waitFor: vi.fn().mockRejectedValue(new Error('timeout'))
+                        })
+                    };
                 }
-                return { first: vi.fn() }; 
+                return { first: vi.fn() };
             });
             const result = await retweetAction.handleRetweet(mockTweetElement);
             expect(result.success).toBe(false);
@@ -178,41 +178,41 @@ describe('RetweetAction', () => {
 
     describe('handleRetweet - verification', () => {
         it('should verify success', async () => {
-            const mockUnretweet = { 
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false), 
-                    count: vi.fn().mockResolvedValue(0), 
-                    waitFor: vi.fn().mockResolvedValue(undefined) 
-                }) 
+            const mockUnretweet = {
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false),
+                    count: vi.fn().mockResolvedValue(0),
+                    waitFor: vi.fn().mockResolvedValue(undefined)
+                })
             };
             // count > 0 to skip aria-label fallback
-            const mockRetweet = { 
-                first: vi.fn().mockReturnValue({ 
+            const mockRetweet = {
+                first: vi.fn().mockReturnValue({
                     count: vi.fn().mockResolvedValue(1),
                     isVisible: vi.fn().mockResolvedValue(true)
-                }) 
+                })
             };
             // aria-label Reposted should return false
             const mockReposted = {
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false) 
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false)
                 })
             };
-            mockTweetElement.locator.mockImplementation((selector) => { 
-                if (selector.includes('unretweet')) return mockUnretweet; 
-                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet; 
+            mockTweetElement.locator.mockImplementation((selector) => {
+                if (selector.includes('unretweet')) return mockUnretweet;
+                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet;
                 if (selector.includes('Reposted')) return mockReposted;
-                return { first: vi.fn() }; 
+                return { first: vi.fn() };
             });
-            const mockConfirm = { 
-                first: vi.fn().mockReturnValue({ 
-                    waitFor: vi.fn().mockResolvedValue(undefined), 
-                    isVisible: vi.fn().mockResolvedValue(true) 
-                }) 
+            const mockConfirm = {
+                first: vi.fn().mockReturnValue({
+                    waitFor: vi.fn().mockResolvedValue(undefined),
+                    isVisible: vi.fn().mockResolvedValue(true)
+                })
             };
-            mockPage.locator.mockImplementation((selector) => { 
-                if (selector.includes('Confirm')) return mockConfirm; 
-                return { first: vi.fn() }; 
+            mockPage.locator.mockImplementation((selector) => {
+                if (selector.includes('Confirm')) return mockConfirm;
+                return { first: vi.fn() };
             });
             const result = await retweetAction.handleRetweet(mockTweetElement);
             expect(result.success).toBe(true);
@@ -221,39 +221,39 @@ describe('RetweetAction', () => {
         });
 
         it('should handle verification failure', async () => {
-            const mockUnretweet = { 
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false), 
-                    count: vi.fn().mockResolvedValue(0), 
-                    waitFor: vi.fn().mockRejectedValue(new Error('timeout')) 
-                }) 
-            };
-            const mockRetweet = { 
-                first: vi.fn().mockReturnValue({ 
-                    count: vi.fn().mockResolvedValue(1),
-                    isVisible: vi.fn().mockResolvedValue(true)
-                }) 
-            };
-            const mockReposted = {
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false) 
+            const mockUnretweet = {
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false),
+                    count: vi.fn().mockResolvedValue(0),
+                    waitFor: vi.fn().mockRejectedValue(new Error('timeout'))
                 })
             };
-            mockTweetElement.locator.mockImplementation((selector) => { 
-                if (selector.includes('unretweet')) return mockUnretweet; 
-                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet; 
-                if (selector.includes('Reposted')) return mockReposted;
-                return { first: vi.fn() }; 
-            });
-            const mockConfirm = { 
-                first: vi.fn().mockReturnValue({ 
-                    waitFor: vi.fn().mockResolvedValue(undefined), 
-                    isVisible: vi.fn().mockResolvedValue(true) 
-                }) 
+            const mockRetweet = {
+                first: vi.fn().mockReturnValue({
+                    count: vi.fn().mockResolvedValue(1),
+                    isVisible: vi.fn().mockResolvedValue(true)
+                })
             };
-            mockPage.locator.mockImplementation((selector) => { 
-                if (selector.includes('Confirm')) return mockConfirm; 
-                return { first: vi.fn() }; 
+            const mockReposted = {
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false)
+                })
+            };
+            mockTweetElement.locator.mockImplementation((selector) => {
+                if (selector.includes('unretweet')) return mockUnretweet;
+                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet;
+                if (selector.includes('Reposted')) return mockReposted;
+                return { first: vi.fn() };
+            });
+            const mockConfirm = {
+                first: vi.fn().mockReturnValue({
+                    waitFor: vi.fn().mockResolvedValue(undefined),
+                    isVisible: vi.fn().mockResolvedValue(true)
+                })
+            };
+            mockPage.locator.mockImplementation((selector) => {
+                if (selector.includes('Confirm')) return mockConfirm;
+                return { first: vi.fn() };
             });
             const result = await retweetAction.handleRetweet(mockTweetElement);
             expect(result.success).toBe(false);
@@ -262,39 +262,39 @@ describe('RetweetAction', () => {
 
         it('should work without diveQueue', async () => {
             delete mockAgent.diveQueue;
-            const mockUnretweet = { 
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false), 
-                    count: vi.fn().mockResolvedValue(0), 
-                    waitFor: vi.fn().mockResolvedValue(undefined) 
-                }) 
-            };
-            const mockRetweet = { 
-                first: vi.fn().mockReturnValue({ 
-                    count: vi.fn().mockResolvedValue(1),
-                    isVisible: vi.fn().mockResolvedValue(true)
-                }) 
-            };
-            const mockReposted = {
-                first: vi.fn().mockReturnValue({ 
-                    isVisible: vi.fn().mockResolvedValue(false) 
+            const mockUnretweet = {
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false),
+                    count: vi.fn().mockResolvedValue(0),
+                    waitFor: vi.fn().mockResolvedValue(undefined)
                 })
             };
-            mockTweetElement.locator.mockImplementation((selector) => { 
-                if (selector.includes('unretweet')) return mockUnretweet; 
-                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet; 
-                if (selector.includes('Reposted')) return mockReposted;
-                return { first: vi.fn() }; 
-            });
-            const mockConfirm = { 
-                first: vi.fn().mockReturnValue({ 
-                    waitFor: vi.fn().mockResolvedValue(undefined), 
-                    isVisible: vi.fn().mockResolvedValue(true) 
-                }) 
+            const mockRetweet = {
+                first: vi.fn().mockReturnValue({
+                    count: vi.fn().mockResolvedValue(1),
+                    isVisible: vi.fn().mockResolvedValue(true)
+                })
             };
-            mockPage.locator.mockImplementation((selector) => { 
-                if (selector.includes('Confirm')) return mockConfirm; 
-                return { first: vi.fn() }; 
+            const mockReposted = {
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false)
+                })
+            };
+            mockTweetElement.locator.mockImplementation((selector) => {
+                if (selector.includes('unretweet')) return mockUnretweet;
+                if (selector.includes('retweet') && !selector.includes('Confirm')) return mockRetweet;
+                if (selector.includes('Reposted')) return mockReposted;
+                return { first: vi.fn() };
+            });
+            const mockConfirm = {
+                first: vi.fn().mockReturnValue({
+                    waitFor: vi.fn().mockResolvedValue(undefined),
+                    isVisible: vi.fn().mockResolvedValue(true)
+                })
+            };
+            mockPage.locator.mockImplementation((selector) => {
+                if (selector.includes('Confirm')) return mockConfirm;
+                return { first: vi.fn() };
             });
             const result = await retweetAction.handleRetweet(mockTweetElement);
             expect(result.success).toBe(true);

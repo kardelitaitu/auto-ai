@@ -17,14 +17,15 @@ describe('EngagementHandler', () => {
     let mockGhost;
 
     beforeEach(() => {
+        vi.clearAllMocks();
         mockPage = {
             locator: vi.fn(),
-            evaluate: vi.fn().mockImplementation((fn, arg) => {
+            evaluate: vi.fn().mockImplementation((fn, _arg) => {
                 if (typeof fn === 'function') {
                     const mockEl = { scrollIntoView: vi.fn(), click: vi.fn() };
                     try {
                         return fn(mockEl);
-                    } catch (e) {
+                    } catch (_error) {
                         return Promise.resolve();
                     }
                 }
@@ -65,7 +66,8 @@ describe('EngagementHandler', () => {
                 stamina: 100
             },
             human: {},
-            ghost: mockGhost
+            ghost: mockGhost,
+            mathUtils
         };
 
         handler = new EngagementHandler(mockAgent);
@@ -652,7 +654,7 @@ describe('EngagementHandler', () => {
             mockFollowBtn.click = vi.fn().mockRejectedValue(new Error('Fail'));
             mockFollowBtn.evaluate = vi.fn().mockRejectedValue(new Error('Fail'));
             
-            const result = await handler.robustFollow();
+            await handler.robustFollow();
             
             expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining("Already in following/pending state: 'Pending'"));
         });

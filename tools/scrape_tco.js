@@ -30,8 +30,8 @@ async function scrape() {
         try {
             JSON.parse(fs.readFileSync(outputPath, 'utf8')).forEach(l => allLinks.add(l));
             console.log(`[t.co-Scraper] Loaded ${allLinks.size} existing links.`);
-        } catch (e) {
-            console.warn('[t.co-Scraper] Failed to load existing links:', e);
+        } catch (_error) {
+            console.warn('[t.co-Scraper] Failed to load existing links:', _error);
         }
     }
 
@@ -47,7 +47,7 @@ async function scrape() {
         // Wait for primary column or a tweet
         try {
             await page.waitForSelector('[data-testid="tweet"]', { timeout: 0 }); // Infinite wait until user logs in and content loads
-        } catch (e) {
+        } catch (_error) {
             console.log('Timeout waiting for login?');
         }
 
@@ -87,8 +87,8 @@ async function scrape() {
         console.log(`[t.co-Scraper] SUCCESS! Saved ${finalArr.length} links to ${outputPath}`);
         console.log('You can run this again to add more.');
 
-    } catch (e) {
-        console.error('[t.co-Scraper] Error:', e);
+    } catch (_error) {
+        console.error('[t.co-Scraper] Error:', _error);
     } finally {
         console.log('Closing in 5 seconds...');
         await sleep(5000, 5000);

@@ -1,5 +1,5 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SessionManager } from '../../utils/humanization/session.js';
 import { mathUtils } from '../../utils/mathUtils.js';
 import * as scrollHelper from '../../utils/scroll-helper.js';
@@ -41,8 +41,8 @@ describe('SessionManager', () => {
         };
 
         // Default mock behaviors
-        mathUtils.randomInRange.mockImplementation((min, max) => min);
-        mathUtils.gaussian.mockImplementation((mean, dev) => mean);
+        mathUtils.randomInRange.mockImplementation((min, _max) => min);
+        mathUtils.gaussian.mockImplementation((mean, _dev) => mean);
         mathUtils.sample.mockImplementation((arr) => arr[0]);
 
         sessionManager = new SessionManager(mockPage, mockLogger);

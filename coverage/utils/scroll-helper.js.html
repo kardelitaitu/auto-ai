@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -181,7 +181,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -191,7 +191,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,7 +201,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -212,7 +212,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">146x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -221,7 +221,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -230,7 +230,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -240,7 +240,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -248,7 +248,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -275,8 +275,8 @@ import { globalScroll } from './global-scroll-controller.js';
  * @param {number} deltaY - Vertical scroll amount (positive=down, negative=up)
  * @param {object} options - { delay: number }
  */
-export async function scrollWheel(page, deltaY, options = {}) {
-  await globalScroll.scrollBy(page, deltaY, options);
+export async function <span class="fstat-no" title="function not covered" >scrollWheel(</span>page, deltaY, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+<span class="cstat-no" title="statement not covered" >  await globalScroll.scrollBy(page, deltaY, options);</span>
 }
 &nbsp;
 /**
@@ -285,8 +285,8 @@ export async function scrollWheel(page, deltaY, options = {}) {
  * @param {number} amount - Pixels to scroll down
  * @param {object} options - { delay: number }
  */
-export async function scrollDown(page, amount, options = {}) {
-  await globalScroll.scrollDown(page, amount, options);
+export async function <span class="fstat-no" title="function not covered" >scrollDown(</span>page, amount, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+<span class="cstat-no" title="statement not covered" >  await globalScroll.scrollDown(page, amount, options);</span>
 }
 &nbsp;
 /**
@@ -295,8 +295,8 @@ export async function scrollDown(page, amount, options = {}) {
  * @param {number} amount - Pixels to scroll up
  * @param {object} options - { delay: number }
  */
-export async function scrollUp(page, amount, options = {}) {
-  await globalScroll.scrollUp(page, amount, options);
+export async function <span class="fstat-no" title="function not covered" >scrollUp(</span>page, amount, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+<span class="cstat-no" title="statement not covered" >  await globalScroll.scrollUp(page, amount, options);</span>
 }
 &nbsp;
 /**
@@ -306,8 +306,8 @@ export async function scrollUp(page, amount, options = {}) {
  * @param {number} max - Maximum scroll amount
  * @param {object} options - { delay: number }
  */
-export async function scrollRandom(page, min, max, options = {}) {
-  await globalScroll.scrollRandom(page, min, max, options);
+export async function <span class="fstat-no" title="function not covered" >scrollRandom(</span>page, min, max, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+<span class="cstat-no" title="statement not covered" >  await globalScroll.scrollRandom(page, min, max, options);</span>
 }
 &nbsp;
 /**
@@ -315,8 +315,8 @@ export async function scrollRandom(page, min, max, options = {}) {
  * @param {object} page - Playwright page
  * @param {object} options - { behavior: 'auto'|'smooth' }
  */
-export async function scrollToTop(page, options = {}) {
-  await globalScroll.scrollToTop(page, options);
+export async function <span class="fstat-no" title="function not covered" >scrollToTop(</span>page, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+<span class="cstat-no" title="statement not covered" >  await globalScroll.scrollToTop(page, options);</span>
 }
 &nbsp;
 /**
@@ -324,8 +324,8 @@ export async function scrollToTop(page, options = {}) {
  * @param {object} page - Playwright page
  * @param {object} options - { behavior: 'auto'|'smooth' }
  */
-export async function scrollToBottom(page, options = {}) {
-  await globalScroll.scrollToBottom(page, options);
+export async function <span class="fstat-no" title="function not covered" >scrollToBottom(</span>page, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+<span class="cstat-no" title="statement not covered" >  await globalScroll.scrollToBottom(page, options);</span>
 }
 &nbsp;
 /**
@@ -334,16 +334,16 @@ export async function scrollToBottom(page, options = {}) {
  * @param {object} page - Playwright page
  * @param {number} amount - Scroll amount (positive=down, negative=up)
  */
-export async function scroll(page, amount) {
-  await globalScroll.scrollBy(page, amount);
+export async function <span class="fstat-no" title="function not covered" >scroll(</span>page, amount) {
+<span class="cstat-no" title="statement not covered" >  await globalScroll.scrollBy(page, amount);</span>
 }
 &nbsp;
 /**
  * Get current scroll multiplier
  * @returns {number} Current multiplier (e.g., 1.5 for 50% faster)
  */
-export function getScrollMultiplier() {
-  return globalScroll.getMultiplier();
+export function <span class="fstat-no" title="function not covered" >getScrollMultiplier(</span>) {
+<span class="cstat-no" title="statement not covered" >  return globalScroll.getMultiplier();</span>
 }
 &nbsp;
 // Re-export the controller for advanced usage
@@ -355,7 +355,7 @@ export { globalScroll } from './global-scroll-controller.js';
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-17T10:40:09.643Z
+                at 2026-02-21T09:57:40.349Z
             </div>
         <script src="../prettify.js"></script>
         <script>

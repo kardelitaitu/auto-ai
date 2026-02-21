@@ -27,7 +27,7 @@ function extractUsername(tweetUrl) {
         if (pathParts.length >= 1) {
             return '@' + pathParts[0];
         }
-    } catch (e) {
+    } catch (_e) {
         return '(unknown)';
     }
     return '(unknown)';
@@ -39,7 +39,7 @@ function extractUsername(tweetUrl) {
  * @param {any} payload
  */
 export default async function twitterFollowTask(page, payload) {
-    const startTime = process.hrtime.bigint();
+    // const startTime = process.hrtime.bigint();
     const browserInfo = payload.browserInfo || "unknown_profile";
     const logger = createLogger(`twitterFollowTask [${browserInfo}]`);
     const taskTimeoutMs = payload.taskTimeoutMs || DEFAULT_TASK_TIMEOUT_MS;
@@ -59,7 +59,7 @@ export default async function twitterFollowTask(page, payload) {
                 if (payload.profileId) {
                     try {
                         profile = profileManager.getById(payload.profileId);
-                    } catch (e) {
+                    } catch (_e) {
                         profile = profileManager.getStarter();
                     }
                 } else {
@@ -90,7 +90,7 @@ export default async function twitterFollowTask(page, payload) {
                 // 5. Navigation with Advanced Referrer Engine
                 logger.info(`[twitterFollow] Initializing Referrer Engine...`);
 
-                const targetUrl = payload.targetUrl || TARGET_TWEET_URL;
+                const targetUrl = payload.targetUrl || payload.url || TARGET_TWEET_URL;
 
                 if (!targetUrl || targetUrl.length < 5) {
                     logger.error(`[twitterFollow] No targetUrl provided in payload and TARGET_TWEET_URL is invalid.`);
@@ -180,7 +180,7 @@ export default async function twitterFollowTask(page, payload) {
                 const avatarSelector = `article[data-testid="tweet"] [data-testid="Tweet-User-Avatar"]`;
                 const fallbackSelector = 'article[data-testid="tweet"] div[data-testid="User-Name"] a[href^="/"]';
 
-                let navSuccess = false;
+                // let navSuccess = false;
 
                 // Attempt 1: Click specific Handle/Name link
                 let targetEl = page.locator(handleSelector).first();
@@ -209,7 +209,7 @@ export default async function twitterFollowTask(page, payload) {
                 if (!page.url().includes('/status/')) {
                     // We likely navigated!
                     await page.waitForLoadState('domcontentloaded');
-                    navSuccess = true;
+                    // navSuccess = true;
                 } else {
                     logger.warn(`[twitterFollow] 🛑 Failed to navigate to profile. Still on status page: ${page.url()}`);
                     // Depending on strictness, we might want to return here.

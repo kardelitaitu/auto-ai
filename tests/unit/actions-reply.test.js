@@ -34,7 +34,7 @@ describe('AIReplyAction', () => {
             replyEngine: {
                 generateReply: vi.fn().mockResolvedValue({ success: true, reply: 'Nice reply!' })
             },
-            executeAIReply: vi.fn().mockResolvedValue(undefined),
+            executeAIReply: vi.fn().mockResolvedValue(true),
             diveQueue: {
                 canEngage: vi.fn().mockReturnValue(true)
             },
@@ -120,7 +120,7 @@ describe('AIReplyAction', () => {
 
         it('should generate and post reply successfully', async () => {
             const result = await replyAction.execute(context);
-            
+
             expect(mockAgent.contextEngine.extractEnhancedContext).toHaveBeenCalled();
             expect(mockAgent.replyEngine.generateReply).toHaveBeenCalled();
             expect(mockAgent.executeAIReply).toHaveBeenCalledWith('Nice reply!');
@@ -128,24 +128,24 @@ describe('AIReplyAction', () => {
         });
 
         it('should use pre-calculated context if provided', async () => {
-            const contextWithContext = { 
-                tweetText: 'text', 
-                username: 'user', 
+            const contextWithContext = {
+                tweetText: 'text',
+                username: 'user',
                 tweetUrl: 'url',
-                enhancedContext: { replies: [{id: 1}], sentiment: { overall: 'positive' } }
+                enhancedContext: { replies: [{ id: 1 }], sentiment: { overall: 'positive' } }
             };
-            
+
             const result = await replyAction.execute(contextWithContext);
-            
+
             expect(mockAgent.contextEngine.extractEnhancedContext).not.toHaveBeenCalled();
             expect(result.success).toBe(true);
         });
 
         it('should handle AI generation failure', async () => {
             mockAgent.replyEngine.generateReply.mockResolvedValue({ success: false, reason: 'Too controversial' });
-            
+
             const result = await replyAction.execute(context);
-            
+
             expect(result.success).toBe(false);
             expect(result.reason).toBe('Too controversial');
             expect(mockAgent.executeAIReply).not.toHaveBeenCalled();
@@ -153,9 +153,9 @@ describe('AIReplyAction', () => {
 
         it('should handle exception', async () => {
             mockAgent.contextEngine.extractEnhancedContext.mockRejectedValue(new Error('Context failed'));
-            
+
             const result = await replyAction.execute(context);
-            
+
             expect(result.success).toBe(false);
             expect(result.reason).toBe('exception');
         });
@@ -192,7 +192,7 @@ describe('AIReplyAction', () => {
 
         it('should track stats correctly', async () => {
             await replyAction.execute(context);
-            
+
             const stats = replyAction.getStats();
             expect(stats.attempts).toBe(1);
             expect(stats.successes).toBe(1);
@@ -202,7 +202,7 @@ describe('AIReplyAction', () => {
         it('should reset stats', async () => {
             await replyAction.execute(context);
             replyAction.resetStats();
-            
+
             const stats = replyAction.getStats();
             expect(stats.attempts).toBe(0);
             expect(stats.successes).toBe(0);

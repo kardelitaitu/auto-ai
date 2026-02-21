@@ -1,0 +1,261 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/My Script/auto-ai[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/My Script/auto-ai[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+[90mstdout[2m | tests/unit/sessionManager.test.js
+[22m[39m✅ MaxListeners increased to 50
+
+[90mstdout[2m | tests/unit/sessionManager.test.js
+[22m[39m✅ MaxListeners increased to 50
+
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mInitialization[2m > [22mshould initialize with default values[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mInitialization[2m > [22mshould load configuration during init[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mInitialization[2m > [22mshould handle configuration load failure[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mSession Management[2m > [22mshould add a session[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mSession Management[2m > [22mshould generate session ID if no browserInfo provided[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mSession Management[2m > [22mshould remove a session[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mSession Management[2m > [22mshould return false when removing non-existent session[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mSession Management[2m > [22mshould get active sessions count[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mSession Management[2m > [22mshould get all sessions[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Allocation[2m > [22mshould find and occupy an idle worker[32m 16[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Allocation[2m > [22mshould return null if no idle workers[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Allocation[2m > [22mshould handle non-existent session for worker allocation[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Allocation[2m > [22mshould release a worker[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Allocation[2m > [22mshould handle releasing non-existent worker or session[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Allocation[2m > [22mshould handle worker lock timeout[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Management[2m > [22mshould register and unregister a page[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Management[2m > [22mshould handle register/unregister for non-existent session[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCleanup[2m > [22mshould cleanup timed out sessions[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCleanup[2m > [22mshould not cleanup active sessions[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCleanup[2m > [22mshould close managed pages during cleanup[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCleanup[2m > [22mshould handle error during page close[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCleanup[2m > [22mshould handle error during browser close[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPersistence[2m > [22mshould save session state[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPersistence[2m > [22mshould handle error saving state[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPersistence[2m > [22mshould load session state[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPersistence[2m > [22mshould handle missing state file[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPersistence[2m > [22mshould handle corrupted state file[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mShutdown[2m > [22mshould shutdown gracefully[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mDiagnostics[2m > [22mshould get session metadata[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mDiagnostics[2m > [22mshould get stuck workers[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mDiagnostics[2m > [22mshould get worker occupancy[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mDiagnostics[2m > [22mshould return unknown if stack trace unavailable[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mDiagnostics[2m > [22mshould handle error when accessing stack trace[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mDiagnostics[2m > [22mshould trigger cleanupTimedOutSessions on interval[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mDiagnostics[2m > [22mshould handle outer error in closeManagedPages[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mDiagnostics[2m > [22mshould return stuck workers if duration exceeds threshold[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCoverage Gaps[2m > [22mshould handle session.browser without close method in closeSessionBrowser[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCoverage Gaps[2m > [22mshould update nextSessionId from state in loadSessionState[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCoverage Gaps[2m > [22mshould use existing values if configuration is missing properties[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCoverage Gaps[2m > [22mshould filter worker occupancy by session ID[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCoverage Gaps[2m > [22mshould not include non-stuck workers[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mCoverage Gaps[2m > [22mshould default nextSessionId to 1 if missing in state[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould acquire a new page when pool is empty[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould return null for invalid session in acquirePage[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould return null when context is missing[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould reuse pooled page[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould not reuse closed pooled pages[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould close unhealthy pooled page on acquire[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould close unhealthy page on release[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould not release closed page[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool Management[2m > [22mshould close pooled page if idle timeout exceeded[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Waiter[2m > [22mshould return null when waiter limit exceeded[32m 54[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Waiter[2m > [22mshould handle waiter timeout[32m 64[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Waiter[2m > [22mshould get worker when available[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_normalizePoolEntry[2m > [22mshould normalize pool entry with page property[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_normalizePoolEntry[2m > [22mshould normalize pool entry without page property[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_isPageHealthy[2m > [22mshould return false for closed page[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_isPageHealthy[2m > [22mshould return false for null page[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_isPageHealthy[2m > [22mshould return true for page without isClosed method[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_isPageHealthy[2m > [22mshould return false for unhealthy page[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_isPageHealthy[2m > [22mshould return true for healthy page with complete state[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_isPageHealthy[2m > [22mshould return true for healthy page with interactive state[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_isPageHealthy[2m > [22mshould return false when evaluate throws[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould return early when wsEndpoint is missing[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould return early when newBrowser is missing[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould return early when wsEndpoint is empty string[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould return early when no sessions match wsEndpoint[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould successfully replace browser and close sharedContext[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould close old browser when replacing[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould handle error when closing sharedContext[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould handle error when closing old browser[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mreplaceBrowserByEndpoint[2m > [22mshould clear pagePool and managedPages during replacement[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mcleanupIdlePages[2m > [22mshould handle session with empty pagePool[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mcleanupIdlePages[2m > [22mshould handle session without pagePool property[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mcleanupIdlePages[2m > [22mshould close page that is already closed[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mcleanupIdlePages[2m > [22mshould retain page that is within idle timeout[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mcleanupIdlePages[2m > [22mshould close page that exceeds idle timeout[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mcleanupIdlePages[2m > [22mshould retain multiple pages with mixed idle times[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mcleanupIdlePages[2m > [22mshould handle entry without page property[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mcleanupIdlePages[2m > [22mshould skip closing page when pagePoolIdleTimeoutMs is null[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_closePooledPage[2m > [22mshould handle null page gracefully[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_closePooledPage[2m > [22mshould close page and unregister it[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_closePooledPage[2m > [22mshould handle error when page.close throws[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool - additional edge cases[2m > [22mshould acquire page when page.evaluate does not exist[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool - additional edge cases[2m > [22mshould not release page to pool when pool is full[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool - additional edge cases[2m > [22mshould not release unhealthy page to pool[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage Pool - additional edge cases[2m > [22mshould release healthy page to pool[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Mutex - additional edge cases[2m > [22mshould handle mutex acquire with zero timeout[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Mutex - additional edge cases[2m > [22mshould handle mutex acquire with negative timeout[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mWorker Mutex - additional edge cases[2m > [22mshould queue mutex requests and resolve in order[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22macquireWorker - additional scenarios[2m > [22mshould release worker after waiter resolves[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22macquireWorker - additional scenarios[2m > [22mshould handle waiter timeout and return null[32m 77[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_normalizePoolEntry - additional scenarios[2m > [22mshould handle entry with all properties[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22m_normalizePoolEntry - additional scenarios[2m > [22mshould default lastHealthCheckAt to 0 when missing[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage pool max per session[2m > [22mshould respect pagePoolMaxPerSession limit when releasing[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mPage pool max per session[2m > [22mshould not limit pool when pagePoolMaxPerSession is null[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mClose page pool edge cases[2m > [22mshould handle empty page pool[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mClose page pool edge cases[2m > [22mshould handle null pagePool[32m 0[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mClose page pool edge cases[2m > [22mshould close all pages in pool[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js[2m > [22mSessionManager[2m > [22mClose page pool edge cases[2m > [22mshould handle null page in pool entry[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/sessionManager.test.js [2m([22m[2m100 tests[22m[2m)[22m[32m 274[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m100 passed[39m[22m[90m (100)[39m
+[2m   Start at [22m 12:41:28
+[2m   Duration [22m 2.10s[2m (transform 158ms, setup 24ms, import 283ms, tests 274ms, environment 0ms)[22m
+
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m100 passed[39m[22m[90m (100)[39m
+[2m   Start at [22m 12:41:28
+[2m   Duration [22m 2.10s[2m (transform 158ms, setup 24ms, import 283ms, tests 274ms, environment 0ms)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |    2.42 |     2.44 |    2.67 |    2.46 |                   
+ core              |   12.72 |    12.36 |   13.34 |   12.78 |                   
+  ...-connector.js |       0 |        0 |       0 |       0 | 15-577            
+  agent-cortex.js  |       0 |        0 |       0 |       0 | 12-409            
+  ...t-verifier.js |       0 |        0 |       0 |       0 | 9-325             
+  automator.js     |       0 |        0 |       0 |       0 | 11-516            
+  ...it-breaker.js |       0 |        0 |       0 |       0 | 8-266             
+  cloud-client.js  |       0 |        0 |       0 |       0 | 14-784            
+  discovery.js     |       0 |        0 |       0 |       0 | 11-137            
+  ...th-monitor.js |       0 |        0 |       0 |       0 | 5-113             
+  ...-compactor.js |       0 |        0 |       0 |       0 | 9-250             
+  ...zer-engine.js |       0 |        0 |       0 |       0 | 9-264             
+  idle-ghosting.js |       0 |        0 |       0 |       0 | 9-185             
+  ...classifier.js |       0 |        0 |       0 |       0 | 9-225             
+  local-client.js  |       0 |        0 |       0 |       0 | 12-197            
+  log-capture.js   |       0 |        0 |       0 |       0 | 5-78              
+  ollama-client.js |       0 |        0 |       0 |       0 | 12-714            
+  orchestrator.js  |       0 |        0 |       0 |       0 | 16-708            
+  ...pt-builder.js |       0 |        0 |       0 |       0 | 13-106            
+  request-queue.js |       0 |        0 |       0 |       0 | 9-263             
+  ...tic-parser.js |       0 |        0 |       0 |       0 | 9-320             
+  ...ionManager.js |   89.56 |    84.48 |   88.05 |   90.33 | ...54-558,829,837 
+  state-manager.js |       0 |        0 |       0 |       0 | 9-186             
+  ...k-detector.js |       0 |        0 |       0 |       0 | 10-59             
+  ...nterpreter.js |       0 |        0 |       0 |       0 | 9-141             
+  ...n-packager.js |       0 |        0 |       0 |       0 | 11-277            
+  vllm-client.js   |       0 |        0 |       0 |       0 | 10-215            
+ core/vision       |       0 |        0 |       0 |       0 |                   
+  image-storage.js |       0 |        0 |       0 |       0 | 11-59             
+  roi-detector.js  |       0 |        0 |       0 |       0 | 13-32             
+ utils             |       0 |        0 |       0 |       0 |                   
+  ...chestrator.js |       0 |        0 |       0 |       0 | 10-156            
+  ...ext-engine.js |       0 |        0 |       0 |       0 | 11-897            
+  ...ote-engine.js |       0 |        0 |       0 |       0 | 15-1539           
+  ...ply-engine.js |       0 |        0 |       0 |       0 | 21-2402           
+  ai-tools.js      |       0 |        0 |       0 |       0 | 12-292            
+  ...itterAgent.js |       0 |        0 |       0 |       0 | 37-3017           
+  ...ut-tracker.js |       0 |        0 |       0 |       0 | 9-200             
+  apiHandler.js    |       0 |        0 |       0 |       0 | 16-102            
+  async-queue.js   |       0 |        0 |       0 |       0 | 12-491            
+  banner.js        |       0 |      100 |       0 |       0 | 7-30              
+  browserPatch.js  |       0 |        0 |       0 |       0 | 12-73             
+  ...it-breaker.js |       0 |        0 |       0 |       0 | 9-147             
+  config-cache.js  |       0 |        0 |       0 |       0 | 9-264             
+  ...ig-manager.js |       0 |        0 |       0 |       0 | 16-541            
+  ...ig-service.js |       0 |        0 |       0 |       0 | 19-434            
+  ...-validator.js |       0 |        0 |       0 |       0 | 9-385             
+  configLoader.js  |       0 |        0 |       0 |       0 | 11-184            
+  content-depth.js |       0 |        0 |       0 |       0 | 12-283            
+  dockerLLM.js     |       0 |        0 |       0 |       0 | 13-111            
+  ...ent-limits.js |       0 |        0 |       0 |       0 | 9-213             
+  ...Controller.js |       0 |        0 |       0 |       0 | 19-453            
+  envLoader.js     |       0 |        0 |       0 |       0 | 13-145            
+  ...ent-config.js |       0 |        0 |       0 |       0 | 9-312             
+  errors.js        |       0 |        0 |       0 |       0 | 19-202            
+  ...api-router.js |       0 |        0 |       0 |       0 | 20-734            
+  ...ter-helper.js |       0 |        0 |       0 |       0 | 10-350            
+  ...bugProfile.js |       0 |      100 |       0 |       0 | 5-94              
+  ...teProfiles.js |       0 |        0 |       0 |       0 | 6-232             
+  ghostCursor.js   |       0 |        0 |       0 |       0 | 10-521            
+  ...controller.js |       0 |        0 |       0 |       0 | 11-217            
+  ...nteraction.js |       0 |        0 |       0 |       0 | 12-850            
+  human-timing.js  |       0 |        0 |       0 |       0 | 9-125             
+  ...ma-manager.js |       0 |        0 |       0 |       0 | 11-230            
+  logger.js        |       0 |        0 |       0 |       0 | 11-550            
+  ...ing-config.js |       0 |        0 |       0 |       0 | 8-133             
+  mathUtils.js     |       0 |        0 |       0 |       0 | 5-34              
+  metrics.js       |       0 |        0 |       0 |       0 | 8-613             
+  ...teractions.js |       0 |        0 |       0 |       0 | 12-230            
+  ...ake-engine.js |       0 |        0 |       0 |       0 | 11-220            
+  ...rf-tracker.js |       0 |        0 |       0 |       0 | 9-257             
+  motor-control.js |       0 |        0 |       0 |       0 | 14-550            
+  multi-api.js     |       0 |        0 |       0 |       0 | 8-176             
+  ...-diversity.js |       0 |        0 |       0 |       0 | 11-240            
+  pageZoom.js      |       0 |        0 |       0 |       0 | 10-138            
+  popup-closer.js  |       0 |        0 |       0 |       0 | 5-75              
+  probe_llm.js     |       0 |        0 |       0 |       0 | 5-58              
+  ...ileManager.js |       0 |        0 |       0 |       0 | 6-192             
+  proxy-agent.js   |       0 |        0 |       0 |       0 | 9-69              
+  ...mScrolling.js |       0 |        0 |       0 |       0 | 10-104            
+  randomZoom.js    |       0 |        0 |       0 |       0 | 9-99              
+  ...it-tracker.js |       0 |        0 |       0 |       0 | 9-180             
+  ...est-dedupe.js |       0 |        0 |       0 |       0 | 9-153             
+  retry.js         |       0 |        0 |       0 |       0 | 8-52              
+  screenshot.js    |       0 |        0 |       0 |       0 | 11-52             
+  scroll-helper.js |       0 |        0 |       0 |       0 | 24-91             
+  ...-humanizer.js |       0 |        0 |       0 |       0 | 11-192            
+  ...yzer-multi.js |       0 |        0 |       0 |       0 | 18-374            
+  ...-analyzers.js |       0 |        0 |       0 |       0 | 17-453            
+  ...iment-data.js |       0 |        0 |       0 |       0 | 10-716            
+  ...ion-engine.js |       0 |        0 |       0 |       0 | 10-415            
+  ...ment-guard.js |       0 |        0 |       0 |       0 | 9-177             
+  ...ntegration.js |       0 |        0 |       0 |       0 | 12-265            
+  ...nt-service.js |       0 |        0 |       0 |       0 | 30-410            
+  ...ion-phases.js |       0 |        0 |       0 |       0 | 9-110             
+  ...fig-loader.js |       0 |        0 |       0 |       0 | 14-313            
+  ...-awareness.js |       0 |        0 |       0 |       0 | 11-229            
+  ...on-methods.js |       0 |        0 |       0 |       0 | 10-647            
+  ...ply-prompt.js |       0 |        0 |       0 |       0 | 7-423             
+  twitterAgent.js  |       0 |        0 |       0 |       0 | 16-1793           
+  ...CloseMedia.js |       0 |        0 |       0 |       0 | 11-208            
+  urlReferrer.js   |       0 |        0 |       0 |       0 | 20-587            
+  ...rGenerator.js |       0 |        0 |       0 |       0 | 11-213            
+  utils.js         |       0 |        0 |       0 |       0 |                   
+  validator.js     |       0 |        0 |       0 |       0 | 9-250             
+ utils/actions     |       0 |        0 |       0 |       0 |                   
+  ...r-bookmark.js |       0 |        0 |       0 |       0 | 11-130            
+  ...er-go-home.js |       0 |        0 |       0 |       0 | 11-114            
+  ...itter-like.js |       0 |        0 |       0 |       0 | 11-130            
+  ...tter-quote.js |       0 |        0 |       0 |       0 | 11-189            
+  ...tter-reply.js |       0 |        0 |       0 |       0 | 11-185            
+  ...er-retweet.js |       0 |        0 |       0 |       0 | 11-273            
+  index.js         |       0 |        0 |       0 |       0 | 22-210            
+ ...s/humanization |       0 |        0 |       0 |       0 |                   
+  action.js        |       0 |        0 |       0 |       0 | 19-260            
+  content.js       |       0 |        0 |       0 |       0 | 18-217            
+  engine.js        |       0 |        0 |       0 |       0 | 26-250            
+  error.js         |       0 |        0 |       0 |       0 | 18-328            
+  index.js         |       0 |        0 |       0 |       0 |                   
+  multitask.js     |       0 |        0 |       0 |       0 | 18-204            
+  scroll.js        |       0 |        0 |       0 |       0 | 19-185            
+  session.js       |       0 |        0 |       0 |       0 | 18-263            
+  timing.js        |       0 |        0 |       0 |       0 | 17-270            
+ .../twitter-agent |       0 |        0 |       0 |       0 |                   
+  BaseHandler.js   |       0 |        0 |       0 |       0 | 6-491             
+  ...entHandler.js |       0 |        0 |       0 |       0 | 5-491             
+  ...ionHandler.js |       0 |      100 |       0 |       0 | 5                 
+  ...ionHandler.js |       0 |        0 |       0 |       0 | 6-238             
+  ...ionHandler.js |       0 |        0 |       0 |       0 | 7-433             
+-------------------|---------|----------|---------|---------|-------------------

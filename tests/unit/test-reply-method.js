@@ -3,10 +3,7 @@
  * Usage: HUMAN_DEBUG=true node test-reply-method.js
  */
 
-import { createLogger } from './utils/logger.js';
 import { HumanInteraction } from './utils/human-interaction.js';
-
-const logger = createLogger('test-reply-method.js');
 
 async function main() {
     console.log('\n' + '='.repeat(70));

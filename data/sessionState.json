@@ -1,8 +1,9 @@
 {
   "sessions": [
     {
-      "id": "0001:23261",
-      "browserInfo": "0001:23261",
+      "id": "0001:59619",
+      "browserInfo": "0001:59619",
+      "wsEndpoint": "ws://127.0.0.1:59619/devtools/browser/9d5b78db-45a0-434a-bb07-583ac7fb1e6d",
       "workers": [
         {
           "id": 0,
@@ -15,10 +16,10 @@
           "status": "idle"
         }
       ],
-      "createdAt": 1771300704337,
-      "lastActivity": 1771300850506
+      "createdAt": 1771709333113,
+      "lastActivity": 1771709871652
     }
   ],
   "nextSessionId": 1,
-  "savedAt": 1771300850544
+  "savedAt": 1771709871672
 }

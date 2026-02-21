@@ -1,8 +1,7 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ContentSkimmer } from '../../utils/humanization/content.js';
 import { mathUtils } from '../../utils/mathUtils.js';
-import { entropy } from '../../utils/entropyController.js';
 import * as scrollHelper from '../../utils/scroll-helper.js';
 
 // Mock dependencies
@@ -47,7 +46,7 @@ describe('ContentSkimmer', () => {
         };
 
         // Default mock behaviors
-        mathUtils.randomInRange.mockImplementation((min, max) => min);
+        mathUtils.randomInRange.mockImplementation((min, _max) => min);
         mathUtils.roll.mockReturnValue(false);
 
         contentSkimmer = new ContentSkimmer(mockPage, mockLogger);

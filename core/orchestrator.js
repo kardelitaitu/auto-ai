@@ -7,7 +7,7 @@ import { EventEmitter } from 'events';
 import SessionManager from './sessionManager.js';
 import Discovery from './discovery.js';
 import Automator from './automator.js';
-import { createLogger } from '../utils/logger.js';
+import { createLogger, loggerContext } from '../utils/logger.js';
 import { getSettings } from '../utils/configLoader.js';
 import { validateTaskExecution, validatePayload } from '../utils/validator.js';
 import { isDevelopment } from '../utils/envLoader.js';
@@ -21,6 +21,9 @@ const logger = createLogger('orchestrator.js');
  * @description Coordinates browser discovery, session management, and task execution.
  */
 class Orchestrator extends EventEmitter {
+  /**
+   * Creates a new Orchestrator instance
+   */
   constructor() {
     super();
     /** @type {Automator} */
@@ -41,6 +44,10 @@ class Orchestrator extends EventEmitter {
     this.isShuttingDown = false;
 
     this._loadConfig();
+
+    this.automator.onReconnect = async (wsEndpoint, newBrowser) => {
+      await this.sessionManager.replaceBrowserByEndpoint(wsEndpoint, newBrowser);
+    };
   }
 
   /**
@@ -116,7 +123,7 @@ class Orchestrator extends EventEmitter {
             }
           } catch (_e) { /* ignore URL parse error */ }
 
-          this.sessionManager.addSession(browser, displayName);
+          this.sessionManager.addSession(browser, displayName, wsEndpoint);
           logger.info(`Successfully connected and added session for ${displayName}.`);
         } else if (result.status === 'rejected') {
           logger.error(result.reason.message);
@@ -280,7 +287,7 @@ class Orchestrator extends EventEmitter {
             requeueTask(task);
             continue;
           }
-          
+
           let page = null;
           try {
             page = await this.sessionManager.acquirePage(session.id, sharedContext);
@@ -326,25 +333,25 @@ class Orchestrator extends EventEmitter {
     const sharedContext = reuseSharedContext ? session.sharedContext : (contexts.length > 0 ? contexts[0] : await session.browser.newContext());
 
     try {
-    const taskQueue = tasks.slice();
-    let taskIndex = 0;
-    const retryStack = [];
-    const takeTask = () => {
-      if (retryStack.length > 0) {
-        return retryStack.pop();
-      }
-      if (taskIndex >= taskQueue.length) {
-        return null;
-      }
-      const task = taskQueue[taskIndex];
-      taskIndex += 1;
-      return task;
-    };
-    const requeueTask = (task) => {
-      retryStack.push(task);
-    };
+      const taskQueue = tasks.slice();
+      let taskIndex = 0;
+      const retryStack = [];
+      const takeTask = () => {
+        if (retryStack.length > 0) {
+          return retryStack.pop();
+        }
+        if (taskIndex >= taskQueue.length) {
+          return null;
+        }
+        const task = taskQueue[taskIndex];
+        taskIndex += 1;
+        return task;
+      };
+      const requeueTask = (task) => {
+        retryStack.push(task);
+      };
 
-    const workerPromises = session.workers.map(async (worker) => {
+      const workerPromises = session.workers.map(async (worker) => {
         logger.debug(`[${session.id}][Worker ${worker.id}] Starting...`);
 
         while (true) {
@@ -365,7 +372,7 @@ class Orchestrator extends EventEmitter {
             requeueTask(task);
             continue;
           }
-          
+
           let page = null;
           try {
             page = await this.sessionManager.acquirePage(session.id, sharedContext);
@@ -430,112 +437,156 @@ class Orchestrator extends EventEmitter {
   }
 
   /**
-   * Helper to import task modules (extracted for testing/mocking)
-   * @param {string} taskName 
-   * @returns {Promise<any>}
-   * @private
+   * Starts the dashboard server if enabled in config
+   * Non-intrusive: optional module, graceful degradation if missing
+   * @param {number} [port=3001] - Port to start dashboard server on
+   * @returns {Promise<void>}
    */
-  async _importTaskModule(taskName) {
-    const cacheBuster = isDevelopment() ? `?v=${Date.now()}` : '';
-    return import(`../tasks/${taskName}.js${cacheBuster}`);
-  }
-
-  /**
-   * Loads and executes a single task.
-   * @param {{taskName: string, payload: object}} task - The task object.
-   * @param {object} page - The Playwright Page object to run the task in.
-   * @param {object} session - The session to use.
-   * @private
-   */
-  async executeTask(task, page, session) {
-    const startTime = Date.now();
-    let success;
-    let error = null;
-
+  async startDashboard(port = 3001) {
     try {
-      const validation = validateTaskExecution(page, task.payload);
-      if (!validation.isValid) {
-        throw new Error(`Task execution validation failed: ${validation.errors.join(', ')}`);
-      }
+      const fs = await import('fs');
+      const path = await import('path');
+      const { getSettings } = await import('../utils/configLoader.js');
+      const uiPath = path.join(process.cwd(), 'ui', 'electron-dashboard', 'dashboard.js');
 
-      const taskModule = await this._importTaskModule(task.taskName);
-      if (typeof taskModule.default === 'function') {
-        const augmentedPayload = {
-          ...task.payload,
-          browserInfo: session.browserInfo || 'unknown_profile'
-        };
+      const settings = await getSettings();
+      const broadcastIntervalMs = settings?.ui?.dashboard?.broadcastIntervalMs || 2000;
 
-        const payloadValidation = validatePayload(augmentedPayload);
-        if (!payloadValidation.isValid) {
-          throw new Error(`Augmented payload validation failed: ${payloadValidation.errors.join(', ')}`);
-        }
-
-        // The task now receives a Page object directly.
-        await taskModule.default(page, augmentedPayload);
-        success = true;
+      if (fs.existsSync(uiPath)) {
+        const { DashboardServer } = await import('../ui/electron-dashboard/dashboard.js');
+        this.dashboardServer = new DashboardServer(port, broadcastIntervalMs);
+        await this.dashboardServer.start(this);
+        logger.info(`Dashboard server started on port ${port} (broadcast every ${broadcastIntervalMs}ms)`);
       } else {
-        throw new Error(`Task '${task.taskName}' does not export a default function.`);
+        logger.info('UI folder not found, dashboard disabled');
       }
-    } catch (err) {
-      error = err;
-      success = false;
-      logger.error(`Error executing task '${task.taskName}' on session ${session.id}:`, err);
-    } finally {
-      const duration = Date.now() - startTime;
-      const wasSuccessful = success === true;
-      metricsCollector.recordTaskExecution(task.taskName, duration, wasSuccessful, session.id, error);
-      this._recordSessionOutcome(session.id, wasSuccessful);
+    } catch (error) {
+      logger.warn('Failed to start dashboard server:', error.message);
+      logger.info('Continuing without dashboard...');
     }
-  }
-
-  _getSessionFailureScore(sessionId) {
-    return this.sessionFailureScores.get(sessionId) || 0;
-  }
-
-  _recordSessionOutcome(sessionId, success) {
-    const current = this.sessionFailureScores.get(sessionId) || 0;
-    if (success) {
-      const next = Math.max(0, current - 1);
-      if (next === 0) {
-        this.sessionFailureScores.delete(sessionId);
-      } else {
-        this.sessionFailureScores.set(sessionId, next);
-      }
-      return;
-    }
-    this.sessionFailureScores.set(sessionId, current + 1);
   }
 
   /**
-   * Gets the current metrics and statistics.
-   * @returns {object} An object containing the current metrics.
+   * Stops the dashboard server
+   */
+  stopDashboard() {
+    if (this.dashboardServer) {
+      this.dashboardServer.stop();
+      this.dashboardServer = null;
+    }
+  }
+
+  /**
+   * Gets session metrics for dashboard
+   * @returns {Array<object>} Array of session metrics
+   */
+  getSessionMetrics() {
+    try {
+      const sessions = this.sessionManager.getAllSessions() || [];
+      return sessions.map(session => {
+        try {
+          return {
+            id: session.id,
+            name: session.displayName || session.id,
+            status: session.browser?.isConnected() ? 'online' : 'offline',
+            activeWorkers: (session.workers || []).filter(w => w?.isActive).length,
+            totalWorkers: (session.workers || []).length,
+            completedTasks: session.completedTaskCount || 0,
+            taskName: session.currentTaskName || null,
+            processing: session.currentProcessing || null,
+            browserType: session.browserType || null
+          };
+        } catch (_sessionError) {
+          return {
+            id: session?.id || 'unknown',
+            name: session?.displayName || 'Unknown',
+            status: 'offline',
+            activeWorkers: 0,
+            totalWorkers: 0,
+            completedTasks: 0,
+            taskName: null,
+            processing: null,
+            browserType: null
+          };
+        }
+      });
+    } catch (error) {
+      logger.error('Error getting session metrics:', error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Gets queue status for dashboard
+   * @returns {object} Queue status
+   */
+  getQueueStatus() {
+    try {
+      return {
+        queueLength: this.taskQueue?.length || 0,
+        isProcessing: this.isProcessingTasks || false,
+        maxQueueSize: this.maxTaskQueueSize || 500
+      };
+    } catch (error) {
+      logger.error('Error getting queue status:', error.message);
+      return { queueLength: 0, isProcessing: false, maxQueueSize: 500 };
+    }
+  }
+
+  /**
+   * Gets comprehensive metrics for dashboard
+   * @returns {object} Dashboard metrics
    */
   getMetrics() {
-    return metricsCollector.getStats();
+    try {
+      const stats = metricsCollector?.getStats?.() || {};
+      return {
+        ...stats,
+        startTime: metricsCollector?.metrics?.startTime || Date.now(),
+        lastResetTime: metricsCollector?.metrics?.lastResetTime || Date.now()
+      };
+    } catch (error) {
+      logger.error('Error getting metrics:', error.message);
+      return {};
+    }
   }
 
   /**
-   * Gets the recent task history.
-   * @param {number} [limit=10] - The number of recent tasks to return.
-   * @returns {object[]} An array of recent task execution objects.
+   * Gets recent task history for dashboard
+   * @param {number} [limit=10] - Number of recent tasks to return
+   * @returns {Array<object>} Recent task executions
    */
   getRecentTasks(limit = 10) {
-    return metricsCollector.getRecentTasks(limit);
+    try {
+      return metricsCollector?.getRecentTasks?.(limit) || [];
+    } catch (error) {
+      logger.error('Error getting recent tasks:', error.message);
+      return [];
+    }
   }
 
   /**
-   * Gets task statistics grouped by task name.
-   * @returns {object} An object containing statistics for each task.
+   * Gets task statistics breakdown for dashboard
+   * @returns {object} Task statistics
    */
   getTaskBreakdown() {
-    return metricsCollector.getTaskBreakdown();
+    try {
+      return metricsCollector?.getTaskBreakdown?.() || {};
+    } catch (error) {
+      logger.error('Error getting task breakdown:', error.message);
+      return {};
+    }
   }
 
   /**
-   * Logs the current metrics to the console.
+   * Logs current metrics for dashboard
    */
   logMetrics() {
-    metricsCollector.logStats();
+    try {
+      metricsCollector?.logStats?.();
+    } catch (error) {
+      logger.error('Error logging metrics:', error.message);
+    }
   }
 
   /**
@@ -567,9 +618,126 @@ class Orchestrator extends EventEmitter {
       await this.sessionManager.shutdown();
     }
 
+    // Dashboard server cleanup
+    if (this.dashboardServer) {
+      this.dashboardServer.stop();
+      this.dashboardServer = null;
+    }
+
     await this.automator.shutdown();
 
     logger.info("Orchestrator shutdown completed");
+  }
+
+  /**
+   * Helper to import task modules (extracted for testing/mocking)
+   * Handles case-insensitive task names (e.g., twitterfollow -> twitterFollow)
+   * @param {string} taskName 
+   * @returns {Promise<any>}
+   * @private
+   */
+  async _importTaskModule(taskName) {
+    const cacheBuster = isDevelopment() ? `?v=${Date.now()}` : '';
+    const fs = await import('fs');
+    const path = await import('path');
+    const aliasMap = new Map([
+      ['run-retweet-test', 'retweet-test']
+    ]);
+    const normalizedName = String(taskName).toLowerCase();
+    const resolvedTaskName = aliasMap.get(normalizedName) || taskName;
+
+    // Try exact match first
+    if (fs.existsSync(path.join(process.cwd(), 'tasks', `${resolvedTaskName}.js`))) {
+      return import(`../tasks/${resolvedTaskName}.js${cacheBuster}`);
+    }
+
+    // Case-insensitive search
+    const taskFiles = fs.readdirSync(path.join(process.cwd(), 'tasks')).filter(f => f.endsWith('.js'));
+    const matchedFile = taskFiles.find(f => f.replace(/\.js$/i, '').toLowerCase() === normalizedName);
+
+    if (matchedFile) {
+      const actualName = matchedFile.replace('.js', '');
+      return import(`../tasks/${actualName}.js${cacheBuster}`);
+    }
+
+    // Fallback to original
+    return import(`../tasks/${resolvedTaskName}.js${cacheBuster}`);
+  }
+
+  /**
+   * Loads and executes a single task.
+   * @param {{taskName: string, payload: object}} task - The task object.
+   * @param {object} page - The Playwright Page object to run the task in.
+   * @param {object} session - The session to use.
+   * @private
+   */
+  async executeTask(task, page, session) {
+    const startTime = Date.now();
+    let success;
+    let error = null;
+
+    session.currentTaskName = task.taskName;
+    session.currentProcessing = 'Executing task...';
+
+    // Debug log
+    logger.info(`[Orchestrator] Executing task: '${task.taskName}' with payload: ${JSON.stringify(task.payload)}`);
+
+    try {
+      const validation = validateTaskExecution(page, task.payload);
+      if (!validation.isValid) {
+        throw new Error(`Task execution validation failed: ${validation.errors.join(', ')}`);
+      }
+
+      const taskModule = await this._importTaskModule(task.taskName);
+      if (typeof taskModule.default === 'function') {
+        const augmentedPayload = {
+          ...task.payload,
+          browserInfo: session.browserInfo || 'unknown_profile'
+        };
+
+        const payloadValidation = validatePayload(augmentedPayload);
+        if (!payloadValidation.isValid) {
+          throw new Error(`Augmented payload validation failed: ${payloadValidation.errors.join(', ')}`);
+        }
+
+        // The task now receives a Page object directly.
+        await loggerContext.run({ taskName: task.taskName, sessionId: session.id }, async () => {
+          await taskModule.default(page, augmentedPayload);
+        });
+        success = true;
+      } else {
+        throw new Error(`Task '${task.taskName}' does not export a default function.`);
+      }
+    } catch (err) {
+      error = err;
+      success = false;
+      logger.error(`Error executing task '${task.taskName}' on session ${session.id}:`, err);
+    } finally {
+      session.currentTaskName = null;
+      session.currentProcessing = null;
+      const duration = Date.now() - startTime;
+      const wasSuccessful = success === true;
+      metricsCollector.recordTaskExecution(task.taskName, duration, wasSuccessful, session.id, error);
+      this._recordSessionOutcome(session.id, wasSuccessful);
+    }
+  }
+
+  _getSessionFailureScore(sessionId) {
+    return this.sessionFailureScores.get(sessionId) || 0;
+  }
+
+  _recordSessionOutcome(sessionId, success) {
+    const current = this.sessionFailureScores.get(sessionId) || 0;
+    if (success) {
+      const next = Math.max(0, current - 1);
+      if (next === 0) {
+        this.sessionFailureScores.delete(sessionId);
+      } else {
+        this.sessionFailureScores.set(sessionId, next);
+      }
+      return;
+    }
+    this.sessionFailureScores.set(sessionId, current + 1);
   }
 }
 

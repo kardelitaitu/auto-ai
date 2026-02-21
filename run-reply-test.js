@@ -2,11 +2,6 @@ import Orchestrator from './core/orchestrator.js';
 import { createLogger } from './utils/logger.js';
 
 const logger = createLogger('run-reply-test');
-
-// --- START MOCK SIMULATION ---
-// This intercepts requests to the local LLM to simulate a response
-// regardless of whether Ollama/Docker is actually running.
-// This satisfies the requirement to "simulate whatever LLM settings is configured".
 const originalFetch = global.fetch;
 
 global.fetch = async (url, options) => {
@@ -24,7 +19,6 @@ global.fetch = async (url, options) => {
                           urlStr.includes('/v1/completions');
 
         if (isLocalLLM) {
-            console.log(`[SIMULATION] Intercepting LLM request to: ${urlStr}`);
             logger.info(`[SIMULATION] Intercepting LLM request to: ${urlStr}`);
             
             // Create a mock successful response

@@ -1,8 +1,7 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ErrorRecovery } from '../../utils/humanization/error.js';
 import { mathUtils } from '../../utils/mathUtils.js';
-import { entropy } from '../../utils/entropyController.js';
 import * as scrollHelper from '../../utils/scroll-helper.js';
 
 // Mock dependencies

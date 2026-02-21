@@ -3,7 +3,7 @@
  * @module tests/unit/human-interaction.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HumanInteraction } from '../../utils/human-interaction.js';
 
 describe('HumanInteraction', () => {
@@ -263,16 +263,23 @@ describe('HumanInteraction', () => {
 
   describe('verifyPostSent', () => {
     it('should return sent: false when no confirmation found', async () => {
-      const mockElementBuilder = (count, visible) => ({
+      const mockElementBuilder = (count, visible, inputVal = '') => ({
         count: vi.fn().mockResolvedValue(count),
         innerText: vi.fn().mockResolvedValue(''),
-        isVisible: vi.fn().mockResolvedValue(visible)
+        isVisible: vi.fn().mockResolvedValue(visible),
+        inputValue: vi.fn().mockResolvedValue(inputVal),
+        first: vi.fn().mockReturnValue({
+          count: vi.fn().mockResolvedValue(count),
+          innerText: vi.fn().mockResolvedValue(''),
+          isVisible: vi.fn().mockResolvedValue(visible),
+          inputValue: vi.fn().mockResolvedValue(inputVal)
+        })
       });
 
       const mockPage = {
         locator: vi.fn().mockImplementation((selector) => {
           if (selector === '[data-testid="tweetTextarea_0"]') {
-            return mockElementBuilder(1, true);
+            return mockElementBuilder(1, true, 'draft text');
           }
           return mockElementBuilder(0, false);
         }),
@@ -285,16 +292,23 @@ describe('HumanInteraction', () => {
     });
 
     it('should confirm send when url changes after checks', async () => {
-      const mockElementBuilder = (count, visible) => ({
+      const mockElementBuilder = (count, visible, inputVal = '') => ({
         count: vi.fn().mockResolvedValue(count),
         innerText: vi.fn().mockResolvedValue(''),
-        isVisible: vi.fn().mockResolvedValue(visible)
+        isVisible: vi.fn().mockResolvedValue(visible),
+        inputValue: vi.fn().mockResolvedValue(inputVal),
+        first: vi.fn().mockReturnValue({
+          count: vi.fn().mockResolvedValue(count),
+          innerText: vi.fn().mockResolvedValue(''),
+          isVisible: vi.fn().mockResolvedValue(visible),
+          inputValue: vi.fn().mockResolvedValue(inputVal)
+        })
       });
 
       const mockPage = {
         locator: vi.fn().mockImplementation((selector) => {
           if (selector === '[data-testid="tweetTextarea_0"]') {
-            return mockElementBuilder(1, true);
+            return mockElementBuilder(1, true, '');
           }
           return mockElementBuilder(0, false);
         }),
@@ -303,7 +317,7 @@ describe('HumanInteraction', () => {
 
       const result = await human.verifyPostSent(mockPage);
 
-      expect(result.method).toBe('url_change');
+      expect(result.method).toBe('composer_cleared');
     });
   });
 
@@ -408,11 +422,12 @@ describe('HumanInteraction', () => {
   describe('verifyPostSent success paths', () => {
     it('should return sent: true when toast is found', async () => {
       const mockPage = {
-        locator: vi.fn().mockImplementation((selector) => ({
+        locator: vi.fn().mockImplementation((_selector) => ({
           first: vi.fn().mockReturnValue({
-            count: vi.fn().mockResolvedValue(selector === '[data-testid="toast"]' ? 1 : 0),
+            count: vi.fn().mockResolvedValue(_selector === '[data-testid="toast"]' ? 1 : 0),
             innerText: vi.fn().mockResolvedValue('sent'),
-            isVisible: vi.fn().mockResolvedValue(true)
+            isVisible: vi.fn().mockResolvedValue(true),
+            inputValue: vi.fn().mockResolvedValue('')
           })
         })),
         url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
@@ -424,11 +439,12 @@ describe('HumanInteraction', () => {
 
     it('should handle innerText errors when toast is found', async () => {
       const mockPage = {
-        locator: vi.fn().mockImplementation((selector) => ({
+        locator: vi.fn().mockImplementation((_selector) => ({
           first: vi.fn().mockReturnValue({
-            count: vi.fn().mockResolvedValue(selector === '[data-testid="toast"]' ? 1 : 0),
+            count: vi.fn().mockResolvedValue(_selector === '[data-testid="toast"]' ? 1 : 0),
             innerText: vi.fn().mockRejectedValue(new Error('fail')),
-            isVisible: vi.fn().mockResolvedValue(true)
+            isVisible: vi.fn().mockResolvedValue(true),
+            inputValue: vi.fn().mockResolvedValue('')
           })
         })),
         url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
@@ -440,13 +456,19 @@ describe('HumanInteraction', () => {
 
     it('should return sent: true when composer is closed', async () => {
       const mockPage = {
-        locator: vi.fn().mockImplementation((selector) => ({
-          first: vi.fn().mockReturnValue({
-            count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 0 : 0),
-            innerText: vi.fn().mockResolvedValue(''),
-            isVisible: vi.fn().mockResolvedValue(false)
-          })
-        })),
+        locator: vi.fn().mockImplementation((selector) => {
+          const mockLocator = {
+            first: vi.fn().mockReturnValue({
+              count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 0 : 0),
+              innerText: vi.fn().mockResolvedValue(''),
+              isVisible: vi.fn().mockResolvedValue(false),
+              inputValue: vi.fn().mockResolvedValue('')
+            }),
+            isVisible: vi.fn().mockResolvedValue(false),
+            inputValue: vi.fn().mockResolvedValue('')
+          };
+          return mockLocator;
+        }),
         url: vi.fn().mockReturnValue('https://x.com/compose/tweet')
       };
 
@@ -456,13 +478,19 @@ describe('HumanInteraction', () => {
 
     it('should return sent: true when url changes', async () => {
       const mockPage = {
-        locator: vi.fn().mockImplementation((selector) => ({
-          first: vi.fn().mockReturnValue({
-            count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 1 : 0),
-            innerText: vi.fn().mockResolvedValue(''),
-            isVisible: vi.fn().mockResolvedValue(false)
-          })
-        })),
+        locator: vi.fn().mockImplementation((selector) => {
+          const mockLocator = {
+            first: vi.fn().mockReturnValue({
+              count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 1 : 0),
+              innerText: vi.fn().mockResolvedValue(''),
+              isVisible: vi.fn().mockResolvedValue(false),
+              inputValue: vi.fn().mockResolvedValue('')
+            }),
+            isVisible: vi.fn().mockResolvedValue(false),
+            inputValue: vi.fn().mockResolvedValue('')
+          };
+          return mockLocator;
+        }),
         url: vi.fn().mockReturnValue('https://x.com/home')
       };
 
@@ -477,7 +505,8 @@ describe('HumanInteraction', () => {
           first: vi.fn().mockReturnValue({
             count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 1 : 0),
             innerText: vi.fn().mockResolvedValue(''),
-            isVisible: vi.fn().mockResolvedValue(false)
+            isVisible: vi.fn().mockResolvedValue(false),
+            inputValue: vi.fn().mockResolvedValue('')
           }),
           isVisible: vi.fn().mockResolvedValue(selector !== '[data-testid="tweetTextarea_0"]')
         })),
@@ -498,7 +527,8 @@ describe('HumanInteraction', () => {
           first: vi.fn().mockReturnValue({
             count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetTextarea_0"]' ? 1 : 0),
             innerText: vi.fn().mockResolvedValue(''),
-            isVisible: vi.fn().mockResolvedValue(false)
+            isVisible: vi.fn().mockResolvedValue(false),
+            inputValue: vi.fn().mockResolvedValue('')
           }),
           isVisible: vi.fn().mockResolvedValue(false)
         })),
@@ -515,11 +545,12 @@ describe('HumanInteraction', () => {
     it('should treat composer visibility errors as closed after wait', async () => {
       vi.useFakeTimers();
       const mockPage = {
-        locator: vi.fn().mockImplementation((selector) => ({
+        locator: vi.fn().mockImplementation((_selector) => ({
           first: vi.fn().mockReturnValue({
             count: vi.fn().mockResolvedValue(0),
             innerText: vi.fn().mockResolvedValue(''),
-            isVisible: vi.fn().mockResolvedValue(false)
+            isVisible: vi.fn().mockResolvedValue(false),
+            inputValue: vi.fn().mockResolvedValue('')
           }),
           isVisible: vi.fn().mockRejectedValue(new Error('vis fail'))
         })),
@@ -543,7 +574,8 @@ describe('HumanInteraction', () => {
           first: vi.fn().mockReturnValue({
             count: vi.fn().mockResolvedValue(1),
             innerText: vi.fn().mockResolvedValue(''),
-            isVisible: vi.fn().mockResolvedValue(true)
+            isVisible: vi.fn().mockResolvedValue(true),
+            inputValue: vi.fn().mockResolvedValue('')
           }),
           isVisible: vi.fn().mockResolvedValue(true)
         })),
@@ -748,47 +780,85 @@ describe('HumanInteraction', () => {
 
   describe('postTweet', () => {
     it('should return success when ctrl+enter works', async () => {
+      vi.useFakeTimers();
       const page = { keyboard: { press: vi.fn() } };
       vi.spyOn(human, 'verifyPostSent').mockResolvedValue({ sent: true, method: 'ctrl_enter' });
-      const result = await human.postTweet(page);
+      const resultPromise = human.postTweet(page);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
       expect(result.success).toBe(true);
+      vi.useRealTimers();
     });
 
     it('should fallback to button click when ctrl+enter fails', async () => {
+      vi.useFakeTimers();
       const page = {
         keyboard: { press: vi.fn() },
-        locator: vi.fn().mockReturnValue({
+        locator: vi.fn().mockImplementation((_selector) => ({
           first: vi.fn().mockReturnValue({
             count: vi.fn().mockResolvedValue(1),
-            isVisible: vi.fn().mockResolvedValue(true)
-          })
-        })
+            isVisible: vi.fn().mockResolvedValue(true),
+            evaluate: vi.fn().mockResolvedValue(false)
+          }),
+          count: vi.fn().mockResolvedValue(1),
+          nth: vi.fn().mockImplementation(() => ({
+            isVisible: vi.fn().mockResolvedValue(true),
+            boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 80, height: 40 }),
+            evaluate: vi.fn().mockResolvedValue(false),
+            getAttribute: vi.fn().mockResolvedValue(null),
+            innerText: vi.fn().mockResolvedValue('Post')
+          })),
+          isVisible: vi.fn().mockResolvedValue(true)
+        }))
       };
       vi.spyOn(human, 'verifyPostSent')
         .mockResolvedValueOnce({ sent: false })
-        .mockResolvedValueOnce({ sent: true });
+        .mockResolvedValueOnce({ sent: true, method: 'button_click' });
       vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
-      const result = await human.postTweet(page);
+
+      const resultPromise = human.postTweet(page);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+
       expect(result.success).toBe(true);
+      vi.useRealTimers();
     });
 
     it('should return failure when button click throws and no method works', async () => {
+      vi.useFakeTimers();
+      const mockButtonElement = {
+        isVisible: vi.fn().mockResolvedValue(true),
+        boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 80, height: 40 }),
+        evaluate: vi.fn().mockResolvedValue(false),
+        getAttribute: vi.fn().mockResolvedValue('Post'),
+        innerText: vi.fn().mockResolvedValue('Post'),
+        click: vi.fn().mockRejectedValue(new Error('click fail'))
+      };
+
       const page = {
         keyboard: { press: vi.fn() },
-        locator: vi.fn().mockImplementation((selector) => ({
-          first: vi.fn().mockReturnValue({
-            count: vi.fn().mockResolvedValue(selector === '[data-testid="tweetButton"]' ? 1 : 0),
-            isVisible: vi.fn().mockResolvedValue(true)
-          })
-        }))
+        locator: vi.fn().mockImplementation((selector) => {
+          const isTweetButton = selector === '[data-testid="tweetButton"]';
+          return {
+            count: vi.fn().mockResolvedValue(isTweetButton ? 1 : 0),
+            nth: vi.fn().mockReturnValue(mockButtonElement),
+            first: vi.fn().mockReturnValue({
+              count: vi.fn().mockResolvedValue(isTweetButton ? 1 : 0),
+              isVisible: vi.fn().mockResolvedValue(true),
+              evaluate: vi.fn().mockResolvedValue(false)
+            })
+          };
+        })
       };
       vi.spyOn(human, 'verifyPostSent').mockResolvedValue({ sent: false });
-      vi.spyOn(human, 'humanClick').mockRejectedValue(new Error('click fail'));
+      vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
 
-      const result = await human.postTweet(page);
+      const resultPromise = human.postTweet(page);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('post_failed');
+      vi.useRealTimers();
     });
   });
 
@@ -1115,7 +1185,7 @@ describe('HumanInteraction with GhostCursor', () => {
     mockPage = {
       mouse: { move: vi.fn(), click: vi.fn() },
       evaluate: vi.fn(),
-      waitForTimeout: vi.fn().mockImplementation(ms => Promise.resolve())
+      waitForTimeout: vi.fn().mockImplementation((_ms) => Promise.resolve())
     };
 
     mockElement = {

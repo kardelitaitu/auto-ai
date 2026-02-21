@@ -3,10 +3,9 @@
  * Usage: node test-dive-lock.js
  */
 
-import { createLogger } from './utils/logger.js';
 import { config } from './utils/config-service.js';
 
-const logger = createLogger('test-dive-lock.js');
+// const logger = createLogger('test-dive-lock.js');
 
 // Page states for testing
 const PAGE_STATE = {
@@ -92,7 +91,7 @@ async function testLockMechanism() {
         return true;
     }
 
-    const concurrentResult = await tryConcurrentOperation();
+    await tryConcurrentOperation();
     console.log(`  Concurrent operation started: ${concurrentStarted}`);
     console.log('  ✓ Concurrent operations correctly blocked during dive');
 

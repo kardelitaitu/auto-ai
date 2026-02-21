@@ -7,10 +7,10 @@ describe('core/ollama-client.js', () => {
 
   beforeEach(async () => {
     vi.resetModules();
-    
+
     mockFetch = vi.fn();
     global.fetch = mockFetch;
-    
+
     vi.mock('../../utils/logger.js', () => ({
       createLogger: () => ({
         info: vi.fn(),
@@ -34,7 +34,8 @@ describe('core/ollama-client.js', () => {
     }));
 
     vi.mock('../../utils/local-ollama-manager.js', () => ({
-      ensureOllama: vi.fn().mockResolvedValue(true)
+      ensureOllama: vi.fn().mockResolvedValue(true),
+      isOllamaRunning: vi.fn().mockResolvedValue(true)
     }));
 
     const module = await import('../../core/ollama-client.js');
@@ -59,7 +60,7 @@ describe('core/ollama-client.js', () => {
     it('should initialize with config', async () => {
       const client = new OllamaClient();
       await client.initialize();
-      
+
       expect(client.config).toBeDefined();
       expect(client.baseUrl).toBe('http://localhost:11434');
     });
@@ -68,7 +69,7 @@ describe('core/ollama-client.js', () => {
       const client = new OllamaClient();
       await client.initialize();
       await client.initialize();
-      
+
       const { ensureOllama } = await import('../../utils/local-ollama-manager.js');
       expect(ensureOllama).toHaveBeenCalledTimes(1);
     });
@@ -76,9 +77,9 @@ describe('core/ollama-client.js', () => {
     it('should not reinitialize if config already exists', async () => {
       const client = new OllamaClient();
       client.config = { existing: true };
-      
+
       await client.initialize();
-      
+
       // Config should remain unchanged
       expect(client.config).toEqual({ existing: true });
     });
@@ -284,28 +285,28 @@ describe('core/ollama-client.js', () => {
   describe('applyHumanization', () => {
     it('should abbreviate words with 15% probability', () => {
       const client = new OllamaClient();
-      
+
       // Mock Math.random to always trigger abbreviation
       const originalRandom = Math.random;
       Math.random = vi.fn().mockReturnValue(0.1);
 
       const result = client.applyHumanization('because you are great');
-      
+
       Math.random = originalRandom;
-      
+
       expect(result).toContain('bc');
     });
 
     it('should replace I with i 20% of the time', () => {
       const client = new OllamaClient();
-      
+
       const originalRandom = Math.random;
       Math.random = vi.fn().mockReturnValue(0.15);
 
       const result = client.applyHumanization('I think');
-      
+
       Math.random = originalRandom;
-      
+
       expect(result).toContain('i');
     });
 
@@ -337,14 +338,14 @@ describe('core/ollama-client.js', () => {
 
     it('should potentially introduce typos with very low probability', () => {
       const client = new OllamaClient();
-      
+
       const originalRandom = Math.random;
       Math.random = vi.fn().mockReturnValue(0.0005); // Below 0.001 threshold
 
       const result = client.applyTypos('hello world test');
-      
+
       Math.random = originalRandom;
-      
+
       // Should potentially modify one character
       expect(typeof result).toBe('string');
     });
@@ -542,7 +543,7 @@ describe('core/ollama-client.js', () => {
 
       const client = new OllamaClient();
       client._warmedUp = true;
-      
+
       const result = await client.generate({
         prompt: 'Test',
         vision: Buffer.from('image')
@@ -679,14 +680,14 @@ describe('core/ollama-client.js', () => {
 
     it('should compile regexes once for performance', async () => {
       const client = new OllamaClient();
-      
+
       // First call should compile regexes
       client.applyHumanization('because you are great');
-      
+
       // Should have compiled regexes stored
       expect(client._abbrRegexes).toBeDefined();
       expect(client._abbrRegexes.length).toBeGreaterThan(0);
-      
+
       // Second call should reuse compiled regexes
       const result = client.applyHumanization('because you are great');
       expect(typeof result).toBe('string');

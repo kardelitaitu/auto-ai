@@ -1,5 +1,13 @@
 import { defineConfig } from 'vitest/config';
+import { mkdirSync } from 'fs';
 import { resolve } from 'path';
+import { cpus } from 'os';
+
+const coverageRoot = resolve(__dirname, 'coverage');
+const coverageTmp = resolve(coverageRoot, '.tmp');
+mkdirSync(coverageTmp, { recursive: true });
+const cpuCount = Math.max(1, cpus().length);
+const maxWorkers = Math.max(2, cpuCount - 1);
 
 export default defineConfig({
   test: {
@@ -8,7 +16,7 @@ export default defineConfig({
     
     setupFiles: ['./tests/vitest.setup.js'], 
     include: ['**/*.{test,spec}.{js,ts}'],
-    exclude: ['node_modules', 'dist', '.git'],
+    exclude: ['node_modules', 'dist', '.git', 'ui/electron-dashboard/node_modules', 'ui/electron-dashboard/renderer/node_modules'],
     
     testTimeout: 10000,
     hookTimeout: 10000,
@@ -16,16 +24,17 @@ export default defineConfig({
     cache: true,
     
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        isolate: false
-      }
-    },
+    maxWorkers,
+    fileParallelism: true,
+    isolate: false,
     
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['core/**/*.js', 'utils/**/*.js', 'tasks/**/*.js'],
+      reportsDirectory: coverageRoot,
+      clean: false,
+      cleanOnRerun: false,
+      include: ['core/**/*.js', 'utils/**/*.js'],
       exclude: [
         'node_modules/',
         'dist/',
@@ -35,18 +44,18 @@ export default defineConfig({
         '**/*.test.js',
         '**/*.spec.js',
         'local-agent/',
+        'ui/electron-dashboard/',
       ],
       thresholds: {
-        lines: 80.00,
-        functions: 80.00,
-        branches: 80.00,
-        statements: 80.00,
+        lines: 100,
+        functions: 100,
+        branches: 100,
+        statements: 100,
         autoUpdate: true
       }
     },
     
-    reporters: ['default', 'verbose'], 
-    isolate: false,
+    reporters: ['dot'],
   },
   
   resolve: {

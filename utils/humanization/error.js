@@ -168,7 +168,7 @@ export class ErrorRecovery {
                     
                     return { success: true, strategy: 'nearby_click' };
                 }
-            } catch (e) {
+            } catch (_error) {
                 continue;
             }
         }
@@ -179,7 +179,7 @@ export class ErrorRecovery {
     /**
      * Refresh page and retry
      */
-    async _refreshAndRetry(context) {
+    async _refreshAndRetry(_context) {
         this._logStrategy('refresh_and_retry');
         
         // Quick refresh
@@ -192,7 +192,7 @@ export class ErrorRecovery {
     /**
      * Wait and retry
      */
-    async _waitAndRetry(context) {
+    async _waitAndRetry(_context) {
         this._logStrategy('wait_and_retry');
         
         // Human wait time (1-3 seconds)
@@ -212,7 +212,7 @@ export class ErrorRecovery {
             try {
                 await context.locator.click({ force: true });
                 return { success: true, strategy: 'force_click' };
-            } catch (e) {
+            } catch (_error) {
                 return { success: false, strategy: 'force_click' };
             }
         }
@@ -258,7 +258,7 @@ export class ErrorRecovery {
     /**
      * Check current state
      */
-    async _checkState(context) {
+    async _checkState(_context) {
         this._logStrategy('check_state');
         
         // Verify current page state
@@ -274,7 +274,7 @@ export class ErrorRecovery {
     /**
      * Retry original action
      */
-    async _retryAction(context) {
+    async _retryAction(_context) {
         this._logStrategy('retry_action');
         
         await this.page.waitForTimeout(mathUtils.randomInRange(500, 1500));

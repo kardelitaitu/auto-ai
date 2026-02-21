@@ -202,54 +202,58 @@ export class FreeOpenRouterHelper {
     // Acquire lock
     this.testing = true;
     this.testLock = (async () => {
-      this.results = {
-        working: [],
-        failed: [],
-        total: this.models.length,
-        testDuration: 0
-      };
+      try {
+        this.results = {
+          working: [],
+          failed: [],
+          total: this.models.length,
+          testDuration: 0
+        };
 
-      this.testStartTime = Date.now();
+        this.testStartTime = Date.now();
 
-      let successCount = 0;
+        let successCount = 0;
 
-      // Process models in parallel batches
-      for (let i = 0; i < this.models.length; i += this.batchSize) {
-        if (!this.testing) {
-          this.results.testDuration = Date.now() - this.testStartTime;
-          return this.results;
-        }
-
-        const batch = this.models.slice(i, i + this.batchSize);
-        const batchPromises = batch.map(async (model) => {
-          const apiKey = this._getNextApiKey();
-          const result = await this._testModel(model, apiKey);
-
-          if (result.success) {
-            this.results.working.push(model);
-            successCount++;
-          } else {
-            this.results.failed.push({ model, error: result.error?.substring(0, 30) || 'Err', duration: result.duration });
+        // Process models in parallel batches
+        for (let i = 0; i < this.models.length; i += this.batchSize) {
+          if (!this.testing) {
+            this.results.testDuration = Date.now() - this.testStartTime;
+            return this.results;
           }
-        });
 
-        await Promise.all(batchPromises);
+          const batch = this.models.slice(i, i + this.batchSize);
+          const batchPromises = batch.map(async (model) => {
+            const apiKey = this._getNextApiKey();
+            const result = await this._testModel(model, apiKey);
 
-        // Small delay between batches to avoid rate limiting
-        if (i + this.batchSize < this.models.length) {
-          await new Promise(resolve => setTimeout(resolve, 50));
+            if (result.success) {
+              this.results.working.push(model);
+              successCount++;
+            } else {
+              this.results.failed.push({ model, error: result.error?.substring(0, 30) || 'Err', duration: result.duration });
+            }
+          });
+
+          await Promise.all(batchPromises);
+
+          // Small delay between batches to avoid rate limiting
+          if (i + this.batchSize < this.models.length) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
         }
+
+        this.results.testDuration = Date.now() - this.testStartTime;
+        this.testing = false;
+        this.testStartTime = null;
+
+        let resultMsg = `[FreeRouter] Done: ${successCount}/${this.models.length} OK (${this.results.testDuration}ms)`;
+        logger.info(resultMsg);
+
+        this.cacheTimestamp = Date.now();
+        return this.results;
+      } finally {
+        this.testLock = null;
       }
-
-      this.results.testDuration = Date.now() - this.testStartTime;
-      this.testing = false;
-      this.testStartTime = null;
-
-      let resultMsg = `[FreeRouter] Done: ${successCount}/${this.models.length} OK (${this.results.testDuration}ms)`;
-      logger.info(resultMsg);
-
-      this.cacheTimestamp = Date.now();
-      return this.results;
     })();
 
     // NON-BLOCKING: Return immediately, tests run in background

@@ -14,34 +14,42 @@ import RequestQueue from './request-queue.js';
 const logger = createLogger('cloud-client.js');
 
 /**
-  * @typedef {object} CloudRequest
-  * @property {string} [prompt]
-  * @property {{ systemPrompt?: string, userPrompt?: string, prompt?: string }} [payload]
-  * @property {{ breadcrumbs?: string, state?: any }} [context]
-  * @property {string} [model]
-  * @property {number} [maxTokens]
-  * @property {number} [temperature]
-  */
+ * @typedef {Object} CloudRequest
+ * @property {string} [prompt]
+ * @property {Object} [payload]
+ * @property {string} [payload.systemPrompt]
+ * @property {string} [payload.userPrompt]
+ * @property {string} [payload.prompt]
+ * @property {Object} [context]
+ * @property {string} [context.breadcrumbs]
+ * @property {*} [context.state]
+ * @property {string} [model]
+ * @property {number} [maxTokens]
+ * @property {number} [temperature]
+ */
 
- /**
-  * @typedef {object} CloudResponse
-  * @property {boolean} success - Whether the request succeeded
-  * @property {string} [content] - Response content from model
-  * @property {object} [data] - Parsed JSON response if applicable
-  * @property {string} [error] - Error message if failed
-  * @property {object} [metadata] - Request metadata (tokens, duration, etc.)
-  */
+/**
+ * @typedef {Object} CloudResponse
+ * @property {boolean} success - Whether the request succeeded
+ * @property {string} [content] - Response content from model
+ * @property {Object} [data] - Parsed JSON response if applicable
+ * @property {string} [error] - Error message if failed
+ * @property {Object} [metadata] - Request metadata (tokens, duration, etc.)
+ */
 
- /**
-  * @class CloudClient
-  * @description Manages communication with OpenRouter API for cloud-based LLM reasoning.
-  * Now configured via config/settings.json with multi-key fallback support.
-  */
- class CloudClient {
-     static sharedHelper = null;
-     static sharedTestResults = null;
+/**
+ * @class CloudClient
+ * @description Manages communication with OpenRouter API for cloud-based LLM reasoning.
+ * Now configured via config/settings.json with multi-key fallback support.
+ */
+class CloudClient {
+    static sharedHelper = null;
+    static sharedTestResults = null;
 
-     constructor() {
+    /**
+     * Creates a new CloudClient instance
+     */
+    constructor() {
         /** @type {object|null} Configuration loaded from settings.json */
         this.config = null;
 
@@ -216,6 +224,11 @@ const logger = createLogger('cloud-client.js');
               this._configLoaded = true;
 
           } catch (error) {
+              this.config = null;
+              this.multiClient = null;
+              this.freeApiRouter = null;
+              this.requestQueue = null;
+              this.apiKey = '';
               logger.error(`Failed to load cloud config: ${error.message}`);
           }
       }

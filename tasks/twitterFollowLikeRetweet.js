@@ -19,12 +19,12 @@ import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
 import { takeScreenshot } from '../utils/screenshot.js';
 import { applyHumanizationPatch } from '../utils/browserPatch.js';
-import { humanTiming } from '../utils/human-timing.js';
-import { entropy } from '../utils/entropyController.js';
-import { GhostCursor } from '../utils/ghostCursor.js';
-import PopupCloser from '../utils/popup-closer.js';
-import OllamaClient from '../core/ollama-client.js';
-import { config } from '../utils/config-service.js';
+// import { humanTiming } from '../utils/human-timing.js';
+// import { entropy } from '../utils/entropyController.js';
+// import { GhostCursor } from '../utils/ghostCursor.js';
+// import PopupCloser from '../utils/popup-closer.js';
+// import OllamaClient from '../core/ollama-client.js';
+// import { config } from '../utils/config-service.js';
 
 // Helper: Extract username from tweet URL
 function extractUsername(tweetUrl) {
@@ -101,7 +101,7 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                 // 5. Navigation with Advanced Referrer Engine
                 logger.info(`[followLikeRetweet] Initializing Referrer Engine...`);
 
-                const targetUrl = (payload && payload.targetUrl) || TARGET_TWEET_URL;
+                const targetUrl = (payload && (payload.targetUrl || payload.url)) || TARGET_TWEET_URL;
 
                 if (!targetUrl || targetUrl.length < 5) {
                     logger.error(`[followLikeRetweet] No targetUrl provided in payload and TARGET_TWEET_URL is invalid.`);

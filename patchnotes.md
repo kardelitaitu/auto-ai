@@ -1,3 +1,28 @@
+### ✅ version 0.0.8
+(21 February 2026) AI Twitter Agent Coverage Fixes
+- 🚀 **Coverage Test Stability**: Fixed `TypeError`s thrown by invalid Mock constructors in `ai-twitterAgent.gap.test.js`. Replaced arrow functions with regular mock functions to fully support ES6 instantiation syntax.
+- 🛡️ **Zero-Failure Coverage Runs**: Validated execution of `npm run test:coverage`. Achieved a perfect exit code 0 under strict global coverage tests suite.
+
+### ✅ version 0.0.7
+(21 February 2026) Test Performance & Mutex fixes
+- 🚀 **Critical Mutex Fix**: Fixed `testLock` bug in `FreeOpenRouterHelper.js` where the testing lock was never released, resolving 5-second delays in dependent tests.
+- ⚡ **Fake Timers Implementation**: Applied `vi.useFakeTimers()` to `human-interaction.test.js` to eliminate multi-second Waits in interaction and verification tests.
+- ⏱️ **Reduced Test Latency**: Decreased `waitForTests` timeouts in unit tests to 100ms for faster mock resolution.
+- 📊 **Stability Verified**: Re-analyzed test suite durations, confirming ~3x speedup in `free-openrouter-helper.test.js` and removal of false-positive 30s delays in `config-service.test.js`.
+
+### ✅ version 0.0.6
+(21 February 2026) Twitter Agent Test Stability
+- Resolved critical `TypeError: (...) is not a constructor` by refactoring arrow function mocks in `ai-twitterAgent-coverage.test.js`.
+- Fixed `used` of undefined in `DiveQueue` status mock by adding missing engagement limits.
+- Synchronized `keyboard.press` and `keyboard.type` mocks to return promises, ensuring safe navigation logic passes.
+- Verified 14/14 unit tests and 99/99 coverage tests pass for AI Twitter Agent.
+
+### ✅ version 0.0.5
+(20 February 2026) Local Ollama Integration Optimization
+- 🚀 **Thundering Herd Resolution**: Implemented Promise deduplication in `ensureOllama` and `isOllamaRunning` to prevent redundant overlapping processes during multi-tab initialization.
+- ⚡ **Optimized Health Checks**: Reversed the checking order to prioritize fast HTTP readiness checks (`/api/tags`) over slow OS-level `tasklist` commands.
+- ⏱️ **Cooldown Mechanisms**: Added a 30-second penalty cache for initialization failures to prevent persistent retry loops, and increased the `ollama list` wakeup fallback throttle to 30 seconds.
+
 ### ✅ version 0.0.4
 (13 February 2026) Engagement & Navigation Fixes
 - Fixed engagement double-counting in `ai-twitterAgent.js` (removed redundant `recordEngagement` calls).

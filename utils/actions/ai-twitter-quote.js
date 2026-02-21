@@ -81,15 +81,15 @@ export class AIQuoteAction {
       let enhancedContext = context.enhancedContext;
 
       if (!enhancedContext || Object.keys(enhancedContext).length === 0) {
-          this.logger.info(`[AIQuoteAction] Loading replies for context...`);
-          enhancedContext = await this.agent.contextEngine.extractEnhancedContext(
-            this.agent.page,
-            tweetUrl,
-            tweetText,
-            username
-          );
+        this.logger.info(`[AIQuoteAction] Loading replies for context...`);
+        enhancedContext = await this.agent.contextEngine.extractEnhancedContext(
+          this.agent.page,
+          tweetUrl,
+          tweetText,
+          username
+        );
       } else {
-          this.logger.info(`[AIQuoteAction] Using pre-calculated context`);
+        this.logger.info(`[AIQuoteAction] Using pre-calculated context`);
       }
 
       this.logger.info(`[AIQuoteAction] Context: ${enhancedContext.replies?.length || 0} replies, sentiment: ${enhancedContext.sentiment?.overall || 'unknown'}`);
@@ -102,22 +102,35 @@ export class AIQuoteAction {
       );
 
       if (result.success && result.quote) {
-        await this.agent.executeAIQuote(result.quote, tweetUrl);
-        this.stats.successes++;
+        const posted = await this.agent.executeAIQuote(result.quote, tweetUrl);
 
-        this.logger.info(`[AIQuoteAction] ✅ Quote posted: "${result.quote.substring(0, 30)}..."`);
+        if (posted) {
+          this.stats.successes++;
 
-        return {
-          success: true,
-          executed: true,
-          reason: 'success',
-          data: {
-            quote: result.quote,
-            username,
-            tweetUrl
-          },
-          engagementType: this.engagementType
-        };
+          this.logger.info(`[AIQuoteAction] ✅ Quote posted: "${result.quote.substring(0, 30)}..."`);
+
+          return {
+            success: true,
+            executed: true,
+            reason: 'success',
+            data: {
+              quote: result.quote,
+              username,
+              tweetUrl
+            },
+            engagementType: this.engagementType
+          };
+        } else {
+          this.stats.failures++;
+          this.logger.warn(`[AIQuoteAction] ❌ Failed to physically post quote to page`);
+          return {
+            success: false,
+            executed: true,
+            reason: 'ui_post_failed',
+            data: { error: 'Failed to post quote in UI' },
+            engagementType: this.engagementType
+          };
+        }
       } else {
         this.stats.failures++;
         const reason = result.reason || 'ai_generation_failed';

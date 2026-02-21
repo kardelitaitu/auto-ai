@@ -4,7 +4,7 @@
  */
 
 import { createRandomScroller, createRandomZoomer, createLogger } from '../utils/utils.js';
-import { getTimeoutValue } from '../utils/configLoader.js';
+// import { getTimeoutValue } from '../utils/configLoader.js';
 
 /**
  * An example automation task.

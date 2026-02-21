@@ -106,7 +106,7 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have arrays containing strings', () => {
-            for (const [category, words] of Object.entries(POSITIVE_LEXICON)) {
+            for (const [_category, words] of Object.entries(POSITIVE_LEXICON)) {
                 expect(Array.isArray(words)).toBe(true);
                 expect(words.length).toBeGreaterThan(0);
                 words.forEach(word => {
@@ -147,7 +147,7 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have arrays containing strings', () => {
-            for (const [category, words] of Object.entries(NEGATIVE_LEXICON)) {
+            for (const [_category, words] of Object.entries(NEGATIVE_LEXICON)) {
                 expect(Array.isArray(words)).toBe(true);
                 expect(words.length).toBeGreaterThan(0);
                 words.forEach(word => {
@@ -437,7 +437,7 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have numeric values between -1 and 1', () => {
-            for (const [emoji, score] of Object.entries(EMOJI_SENTIMENT)) {
+            for (const [_emoji, score] of Object.entries(EMOJI_SENTIMENT)) {
                 expect(typeof score).toBe('number');
                 expect(score).toBeGreaterThanOrEqual(-1);
                 expect(score).toBeLessThanOrEqual(1);
@@ -504,7 +504,7 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have callable condition functions', () => {
-            for (const [name, pattern] of Object.entries(CONTEXTUAL_PATTERNS)) {
+            for (const [_name, pattern] of Object.entries(CONTEXTUAL_PATTERNS)) {
                 expect(typeof pattern.condition).toBe('function');
             }
         });
@@ -519,13 +519,13 @@ describe('sentiment-data.js', () => {
                 toxicity: 0.1
             };
 
-            for (const [name, pattern] of Object.entries(CONTEXTUAL_PATTERNS)) {
+            for (const [_name, pattern] of Object.entries(CONTEXTUAL_PATTERNS)) {
                 expect(() => pattern.condition(mockAnalysis)).not.toThrow();
             }
         });
 
         it('should have classification strings', () => {
-            for (const [name, pattern] of Object.entries(CONTEXTUAL_PATTERNS)) {
+            for (const [_name, pattern] of Object.entries(CONTEXTUAL_PATTERNS)) {
                 expect(typeof pattern.classification).toBe('string');
             }
         });
@@ -614,7 +614,7 @@ describe('sentiment-data.js', () => {
                 'description'
             ];
 
-            for (const [name, profile] of Object.entries(PERSONALITY_PROFILES)) {
+            for (const [_name, profile] of Object.entries(PERSONALITY_PROFILES)) {
                 requiredProps.forEach(prop => {
                     expect(profile).toHaveProperty(prop);
                 });
@@ -622,7 +622,7 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have numeric values in valid ranges', () => {
-            for (const [name, profile] of Object.entries(PERSONALITY_PROFILES)) {
+            for (const [_name, profile] of Object.entries(PERSONALITY_PROFILES)) {
                 expect(typeof profile.replyProbability).toBe('number');
                 expect(profile.replyProbability).toBeGreaterThanOrEqual(0);
                 expect(profile.replyProbability).toBeLessThanOrEqual(1);
@@ -650,7 +650,7 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have arrays for preferredTones', () => {
-            for (const [name, profile] of Object.entries(PERSONALITY_PROFILES)) {
+            for (const [_name, profile] of Object.entries(PERSONALITY_PROFILES)) {
                 expect(Array.isArray(profile.preferredTones)).toBe(true);
                 expect(profile.preferredTones.length).toBeGreaterThan(0);
                 profile.preferredTones.forEach(tone => {
@@ -660,7 +660,7 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have description strings', () => {
-            for (const [name, profile] of Object.entries(PERSONALITY_PROFILES)) {
+            for (const [_name, profile] of Object.entries(PERSONALITY_PROFILES)) {
                 expect(typeof profile.description).toBe('string');
                 expect(profile.description.length).toBeGreaterThan(0);
             }
@@ -684,7 +684,7 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have arrays containing strings', () => {
-            for (const [topic, words] of Object.entries(TOPIC_KEYWORDS)) {
+            for (const [_topic, words] of Object.entries(TOPIC_KEYWORDS)) {
                 expect(Array.isArray(words)).toBe(true);
                 expect(words.length).toBeGreaterThan(0);
                 words.forEach(word => {

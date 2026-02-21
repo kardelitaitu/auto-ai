@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Automator from '../../core/automator.js';
 import { chromium } from 'playwright';
 import { getTimeoutValue } from '../../utils/configLoader.js';
-import { withRetry } from '../../utils/retry.js';
+// import { withRetry } from '../../utils/retry.js';
 
 vi.mock('playwright', () => ({
   chromium: {
@@ -451,8 +451,46 @@ describe('Automator', () => {
 
     it('should handle missing connection gracefully', async () => {
       const result = await automator.recoverConnection('unknown');
-      // The function returns some result even without a connection
       expect(result).toBeDefined();
+    });
+
+    it('should handle isConnected error gracefully', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockRejectedValue(new Error('Connection error')) };
+      const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { browser: mockBrowser });
+      chromium.connectOverCDP.mockResolvedValue(newBrowser);
+
+      const result = await automator.recoverConnection(wsEndpoint);
+      expect(result).toBeDefined();
+    });
+
+    it('should handle page reload error in recovery', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const mockPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        reload: vi.fn().mockRejectedValue(new Error('Reload failed')),
+        goto: vi.fn().mockResolvedValue()
+      };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { browser: mockBrowser });
+
+      const result = await automator.recoverConnection(wsEndpoint, mockPage);
+      expect(result.steps).toContainEqual(expect.objectContaining({ step: 'page_reload', success: false }));
+    });
+
+    it('should try navigate home on page reload failure', async () => {
+      const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+      const mockPage = {
+        isClosed: vi.fn().mockReturnValue(false),
+        reload: vi.fn().mockRejectedValue(new Error('Reload failed')),
+        goto: vi.fn().mockResolvedValue()
+      };
+      const wsEndpoint = 'ws://localhost:1234';
+      automator.connections.set(wsEndpoint, { browser: mockBrowser });
+
+      const result = await automator.recoverConnection(wsEndpoint, mockPage);
+      expect(result.steps).toContainEqual(expect.objectContaining({ step: 'navigate_home', success: true }));
     });
   });
 

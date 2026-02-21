@@ -100,7 +100,7 @@ async function agent(page, payload) {
                         logger.info(`[${browserInfo}] ⌨️ Typing "${text}": ${description || 'input'}`);
 
                         // Type at current cursor position (after clicking)
-                        const timings = humanizer.generateKeystrokeTiming(text);
+                        // const timings = humanizer.generateKeystrokeTiming(text);
                         for (const char of text) {
                             await page.keyboard.type(char);
                             await page.waitForTimeout(Math.random() * 100 + 30);

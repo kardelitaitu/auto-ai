@@ -87,7 +87,7 @@ class UndetectableDiscover extends BaseDiscover {
                     const url = new URL(wsEndpoint);
                     httpEndpoint = `http://${url.host}`;
                     port = parseInt(url.port, 10);
-                } catch (e) {
+                } catch (_e) {
                     logger.warn(`Failed to parse WS URL for profile ${profile.name}: ${wsEndpoint}`);
                 }
 

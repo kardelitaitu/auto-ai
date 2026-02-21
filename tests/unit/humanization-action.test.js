@@ -1,5 +1,5 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ActionPredictor } from '../../utils/humanization/action.js';
 import { mathUtils } from '../../utils/mathUtils.js';
 import * as scrollHelper from '../../utils/scroll-helper.js';
@@ -56,7 +56,7 @@ describe('ActionPredictor', () => {
         };
 
         // Default mock behaviors
-        mathUtils.randomInRange.mockImplementation((min, max) => min);
+        mathUtils.randomInRange.mockImplementation((min, _max) => min);
 
         actionPredictor = new ActionPredictor(mockLogger);
     });

@@ -1,3 +1,9 @@
+/**
+ * Twitter Agent - Core automation class for Twitter/X browser interactions
+ * Handles scrolling, clicking, navigation, and human-like behavior simulation
+ * @module utils/twitterAgent
+ */
+
 import { mathUtils } from './mathUtils.js';
 import { entropy } from './entropyController.js';
 import { profileManager } from './profileManager.js';
@@ -10,8 +16,17 @@ import { NavigationHandler } from './twitter-agent/NavigationHandler.js';
 import { EngagementHandler } from './twitter-agent/EngagementHandler.js';
 import { SessionHandler } from './twitter-agent/SessionHandler.js';
 
-
+/**
+ * TwitterAgent - Main class for Twitter automation
+ * Provides human-like browsing, engagement, and session management
+ */
 export class TwitterAgent {
+    /**
+     * Creates a new TwitterAgent instance
+     * @param {object} page - Playwright page instance
+     * @param {object} initialProfile - Profile configuration
+     * @param {object} logger - Logger instance
+     */
     constructor(page, initialProfile, logger) {
         this.page = page;
         this.config = initialProfile;
@@ -64,6 +79,10 @@ export class TwitterAgent {
         }
     }
 
+    /**
+     * Logs a message with agent prefix
+     * @param {string} msg - Message to log
+     */
     log(msg) {
         if (this.logger) {
             this.logger.info(`[Agent:${this.config.id}] ${msg}`);
@@ -72,13 +91,23 @@ export class TwitterAgent {
         }
     }
 
-    // Utility: clamp
+    /**
+     * Clamps a value between min and max
+     * @param {number} n - Value to clamp
+     * @param {number} min - Minimum value
+     * @param {number} max - Maximum value
+     * @returns {number} Clamped value
+     */
     clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 
     /**
-      * Anti-Sybil Interaction Wrapper - Human-like clicking behavior
-      */
-    async humanClick(target, description = 'Target') {
+     * Human-like click with anti-detection features
+     * @param {object} target - Playwright locator or element
+     * @param {string} description - Description for logging
+     * @param {object} options - Click options
+     * @returns {Promise<void>}
+     */
+    async humanClick(target, description = 'Target', options = {}) {
         if (!target) return;
         
         // HUMAN-LIKE: Thinking pause before clicking
@@ -91,7 +120,8 @@ export class TwitterAgent {
             await this.page.waitForTimeout(mathUtils.randomInRange(300, 600));
             const ghostResult = await this.ghost.click(target, {
                 label: description,
-                hoverBeforeClick: true
+                hoverBeforeClick: true,
+                ...options
             });
             if (ghostResult?.success && ghostResult?.x != null && ghostResult?.y != null) {
                 const x = Math.round(ghostResult.x);
@@ -116,13 +146,14 @@ export class TwitterAgent {
      * @param {Object} target - Playwright locator or element handle
      * @param {string} description - Description for logging
      * @param {number} retries - Number of retry attempts (default: 3)
+     * @param {Object} options - Additional options for ghost click
      * @returns {Promise<boolean>} - True if successful, false if all retries failed
      */
-    async safeHumanClick(target, description = 'Target', retries = 3) {
+    async safeHumanClick(target, description = 'Target', retries = 3, options = {}) {
         const attemptLogs = [];
         for (let attempt = 1; attempt <= retries; attempt++) {
             try {
-                await this.humanClick(target, description);
+                await this.humanClick(target, description, options);
                 this.log(`[Interaction] [${description}] Success on attempt ${attempt}/${retries}`);
                 return true;
             } catch (error) {
@@ -171,6 +202,7 @@ export class TwitterAgent {
      * @param {object} element - Playwright locator
      */
     async scrollToGoldenZone(element) {
+        if (!element) return;
         try {
             const handle = await element.elementHandle();
             if (!handle) return;
@@ -276,7 +308,7 @@ export class TwitterAgent {
      * 6-layer click fallback, polling verification, page reload on failure
      * @param {string} [logPrefix='[Follow]'] - Optional prefix for log messages
      * @param {string|null} [reloadUrl=null] - Optional URL to force navigate to on reload
-     * @returns {Promise<{success: boolean, attempts: number, reason: string, fatal?: boolean}>}
+     * @returns {Promise<Object>} Promise resolving to result object with success, attempts, reason, fatal properties
      */
     async robustFollow(logPrefix = '[Follow]', reloadUrl = null) {
         const followBtnSelector = 'div[data-testid="placementTracking"] [data-testid$="-follow"], div[role="button"][data-testid$="-follow"]';
@@ -605,6 +637,10 @@ export class TwitterAgent {
 
 
 
+    /**
+     * Checks if session has reached fatigue threshold
+     * @returns {void}
+     */
     checkFatigue() {
         if (this.isFatigued) return;
         const elapsed = Date.now() - this.sessionStart;
@@ -613,6 +649,10 @@ export class TwitterAgent {
         }
     }
 
+    /**
+     * Triggers hot swap to slower profile when fatigue is detected
+     * @returns {void}
+     */
     triggerHotSwap() {
         this.log(`⚠️ ENERGY DECAY TRIGGERED | Simulasi wes kesel browsing`);
         const slowerProfile = profileManager.getFatiguedVariant(this.config.timings.scrollPause.mean);
@@ -631,6 +671,10 @@ export class TwitterAgent {
         }
     }
 
+    /**
+     * Gets random scroll method based on configured probabilities
+     * @returns {string} Scroll method name
+     */
     getScrollMethod() {
         const methods = this.config.inputMethods || { wheelDown: 0.8, wheelUp: 0.05, space: 0.05, keysDown: 0.1, keysUp: 0 };
         const roll = Math.random();
@@ -642,6 +686,11 @@ export class TwitterAgent {
         return 'KEYS_UP';
     }
 
+    /**
+     * Normalizes action probabilities with fatigue bias
+     * @param {object} p - Probability configuration
+     * @returns {object} Normalized probabilities
+     */
     normalizeProbabilities(p) {
         // Fallback to default safe probabilities if not specified
         const base = {
@@ -687,6 +736,10 @@ export class TwitterAgent {
         return merged;
     }
 
+    /**
+     * Simulates human reading behavior with random delays
+     * @returns {Promise<void>}
+     */
     async simulateReading() {
         const { mean, deviation } = this.config.timings.readingPhase;
         const actionDelays = this.config.timings.actionSpecific || {
@@ -827,6 +880,10 @@ export class TwitterAgent {
         }
     }
 
+    /**
+     * Dives into a tweet to view expanded content
+     * @returns {Promise<void>}
+     */
     async diveTweet() {
         this.log('[Branch] Tweet Dive (Expanding)...');
         try {
@@ -1060,6 +1117,10 @@ export class TwitterAgent {
         }
     }
 
+    /**
+     * Dives into a user profile to view content
+     * @returns {Promise<void>}
+     */
     async diveProfile() {
         this.log('[Branch] Inspecting User Profile');
         // Broader selector to catch all links in the tweet header (Avatar, Name, Handle)
@@ -1172,6 +1233,10 @@ export class TwitterAgent {
         }
     }
 
+    /**
+     * Navigates back to the home feed
+     * @returns {Promise<void>}
+     */
     async navigateHome() {
         this.log('Returning to Home Feed...');
 
@@ -1239,6 +1304,10 @@ export class TwitterAgent {
         await this.ensureForYouTab();
     }
 
+    /**
+     * Ensures the For You tab is selected
+     * @returns {Promise<void>}
+     */
     async ensureForYouTab() {
         try {
             // Strictly enforce 'For you' tab to avoid empty 'Following' feeds
@@ -1402,6 +1471,10 @@ export class TwitterAgent {
         }
     }
 
+    /**
+     * Checks if user is logged in to Twitter
+     * @returns {Promise<boolean>} True if logged in
+     */
     async checkLoginState() {
         try {
             // Check for specific text content indicating logged out state (Relaxed Matching)
@@ -1463,11 +1536,22 @@ export class TwitterAgent {
         }
     }
 
+    /**
+     * Checks if session has expired based on duration
+     * @returns {boolean} True if session expired
+     */
     isSessionExpired() {
         if (!this.sessionEndTime) return false;
         return Date.now() > this.sessionEndTime;
     }
 
+    /**
+     * Runs the main automation session
+     * @param {number} cycles - Number of cycles to run
+     * @param {number} minDurationSec - Minimum duration in seconds
+     * @param {number} maxDurationSec - Maximum duration in seconds
+     * @returns {Promise<void>}
+     */
     async runSession(cycles = 10, minDurationSec = 0, maxDurationSec = 0) {
         this.log(`Starting Session on ${this.page.url()}`);
 
@@ -1604,6 +1688,10 @@ export class TwitterAgent {
         this.log('Session Complete.');
     }
 
+    /**
+     * Simulates random fidgeting movements to appear human
+     * @returns {Promise<void>}
+     */
     async simulateFidget() {
         const fidgetType = mathUtils.roll(0.4) ? 'TEXT_SELECT' : (mathUtils.roll(0.5) ? 'MOUSE_WIGGLE' : 'OVERSHOOT');
         this.log(`[Fidget] Performing ${fidgetType}...`);
@@ -1716,6 +1804,12 @@ export class TwitterAgent {
             this.log(`[Fidget] Error: ${e.message}`);
         }
     }
+    /**
+     * Types text with human-like delays
+     * @param {object} element - Input element
+     * @param {string} text - Text to type
+     * @returns {Promise<void>}
+     */
     async humanType(element, text) {
         if (!element || !text) return;
         try {

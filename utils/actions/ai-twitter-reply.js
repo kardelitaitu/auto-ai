@@ -6,7 +6,15 @@
 
 import { createLogger } from '../logger.js';
 
+/**
+ * AIReplyAction - Handles AI reply operations
+ */
 export class AIReplyAction {
+  /**
+   * Creates a new AIReplyAction instance
+   * @param {object} agent - Agent instance
+   * @param {object} options - Configuration options
+   */
   constructor(agent, _options = {}) {
     this.agent = agent;
     this.logger = createLogger('ai-twitter-reply.js');
@@ -77,15 +85,15 @@ export class AIReplyAction {
       let enhancedContext = context.enhancedContext;
 
       if (!enhancedContext || Object.keys(enhancedContext).length === 0) {
-          this.logger.info(`[AIReplyAction] Loading replies for context...`);
-          enhancedContext = await this.agent.contextEngine.extractEnhancedContext(
-            this.agent.page,
-            tweetUrl,
-            tweetText,
-            username
-          );
+        this.logger.info(`[AIReplyAction] Loading replies for context...`);
+        enhancedContext = await this.agent.contextEngine.extractEnhancedContext(
+          this.agent.page,
+          tweetUrl,
+          tweetText,
+          username
+        );
       } else {
-          this.logger.info(`[AIReplyAction] Using pre-calculated context`);
+        this.logger.info(`[AIReplyAction] Using pre-calculated context`);
       }
 
       this.logger.info(`[AIReplyAction] Context: ${enhancedContext.replies?.length || 0} replies, sentiment: ${enhancedContext.sentiment?.overall || 'unknown'}`);
@@ -98,22 +106,35 @@ export class AIReplyAction {
       );
 
       if (result.success && result.reply) {
-        await this.agent.executeAIReply(result.reply);
-        this.stats.successes++;
+        const posted = await this.agent.executeAIReply(result.reply);
 
-        this.logger.info(`[AIReplyAction] ✅ Reply posted: "${result.reply.substring(0, 30)}..."`);
+        if (posted) {
+          this.stats.successes++;
 
-        return {
-          success: true,
-          executed: true,
-          reason: 'success',
-          data: {
-            reply: result.reply,
-            username,
-            tweetUrl
-          },
-          engagementType: this.engagementType
-        };
+          this.logger.info(`[AIReplyAction] ✅ Reply posted: "${result.reply.substring(0, 30)}..."`);
+
+          return {
+            success: true,
+            executed: true,
+            reason: 'success',
+            data: {
+              reply: result.reply,
+              username,
+              tweetUrl
+            },
+            engagementType: this.engagementType
+          };
+        } else {
+          this.stats.failures++;
+          this.logger.warn(`[AIReplyAction] ❌ Failed to physically post reply to page`);
+          return {
+            success: false,
+            executed: true,
+            reason: 'ui_post_failed',
+            data: { error: 'Failed to post reply in UI' },
+            engagementType: this.engagementType
+          };
+        }
       } else {
         this.stats.failures++;
         const reason = result.reason || 'ai_generation_failed';

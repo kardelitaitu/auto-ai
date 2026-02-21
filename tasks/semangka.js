@@ -1,10 +1,17 @@
 /**
  * @fileoverview Semangka Search Task (The "String Driver")
  * Demonstrates how to use the Universal Agent with a simple text command.
+ * @module tasks/semangka
  */
 
 import agent from './agent.js';
 
+/**
+ * @param {Object} page - Playwright Page object
+ * @param {Object} payload - Task payload containing goal and steps
+ * @param {string} payload.goal - The search goal to accomplish
+ * @param {string[]} payload.steps - Array of step instructions
+ */
 async function semangka(page, payload) {
     // 1. Define the Goal & Steps
     payload.goal = "search google for blueberry";

@@ -48,6 +48,12 @@ describe('core/sessionManager', () => {
         vi.clearAllMocks();
         vi.useFakeTimers();
 
+        mocks.fs.mkdir.mockReset().mockResolvedValue(undefined);
+        mocks.fs.writeFile.mockReset().mockResolvedValue(undefined);
+        mocks.fs.readFile
+            .mockReset()
+            .mockResolvedValue(JSON.stringify({ sessions: [], nextSessionId: 1, savedAt: 0 }));
+
         getTimeoutValue.mockResolvedValue({ timeoutMs: 1000, cleanupIntervalMs: 500 });
         getSettings.mockResolvedValue({ concurrencyPerBrowser: 2 });
 
@@ -224,10 +230,13 @@ describe('core/sessionManager', () => {
 
         it('should handle lock timeout', async () => {
             const id = manager.addSession({});
-            manager.workerLocks.set(id, new Promise(() => { }));
-            const promise = manager.findAndOccupyIdleWorker(id);
-            vi.advanceTimersByTime(11000);
-            await expect(promise).rejects.toThrow('Worker lock timeout');
+            const mutex = { acquire: vi.fn().mockResolvedValue(false) };
+            vi.spyOn(manager, '_getMutex').mockReturnValue(mutex);
+
+            const result = await manager.findAndOccupyIdleWorker(id);
+
+            expect(mutex.acquire).toHaveBeenCalled();
+            expect(result).toBeNull();
         });
 
         it('should handle releaseWorker for unknown session or worker', async () => {

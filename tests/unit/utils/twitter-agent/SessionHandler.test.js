@@ -1,5 +1,5 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SessionHandler } from '../../../../utils/twitter-agent/SessionHandler.js';
 import { mathUtils } from '../../../../utils/mathUtils.js';
 import * as scrollHelper from '../../../../utils/scroll-helper.js';

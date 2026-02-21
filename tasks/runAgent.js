@@ -5,9 +5,9 @@
  */
 
 import Agent from '../local-agent/core/agent.js';
-import { createLogger } from '../utils/logger.js';
+// import { createLogger } from '../utils/logger.js';
 
-const logger = createLogger('runAgent.js');
+// const logger = createLogger('runAgent.js');
 
 /**
  * Runs the agent task.

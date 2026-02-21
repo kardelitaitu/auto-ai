@@ -25,7 +25,9 @@ const logger = createLogger('agentNavigate.js');
  * @param {string} [payload.browserInfo] - Browser identifier.
  */
 async function agentNavigate(page, payload) {
-    const { targetUrl, goal, browserInfo = 'unknown' } = payload;
+    const targetUrl = payload.targetUrl || payload.url;
+    const goal = payload.goal;
+    const browserInfo = payload.browserInfo || 'unknown';
     const sessionId = `${browserInfo}-${Date.now()}`;
 
     if (!targetUrl || !goal) {
@@ -149,7 +151,7 @@ async function agentNavigate(page, payload) {
         try {
             await takeScreenshot(page, sessionId, '-Error');
             logger.info(`[${sessionId}] Error screenshot captured`);
-        } catch (screenshotError) {
+        } catch (_screenshotError) {
             logger.warn(`[${sessionId}] Could not capture error screenshot`);
         }
 

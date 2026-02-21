@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { RateLimitTracker } from '../../../utils/rate-limit-tracker.js';
 
 vi.mock('../../../utils/logger.js', () => ({
@@ -223,6 +223,15 @@ describe('rate-limit-tracker.js', () => {
       });
 
       expect(tracker.getUsageToday('test-key')).toBe(150);
+    });
+
+    it('should return 0 if usage_daily is undefined', () => {
+      tracker.cache.set('test-key', {
+        data: { data: {} },
+        timestamp: Date.now()
+      });
+
+      expect(tracker.getUsageToday('test-key')).toBe(0);
     });
   });
 

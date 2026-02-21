@@ -356,6 +356,7 @@ class PrivacyEngine {
             const u = new URL(url);
             return u.origin + '/';
         } catch (_e) {
+            /* c8 ignore next */
             return url;
         }
     }
@@ -589,6 +590,7 @@ export class ReferrerEngine {
 }
 
 // --- SELF-TEST ---
+/* c8 ignore start */
 if (import.meta.url === `file://${process.argv[1]}`) {
     const engine = new ReferrerEngine({ addUTM: true });
     console.log("--- 10-Sample Naturalized Test (Desktop) ---");
@@ -597,3 +599,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         console.log(`[${i + 1}] ${ctx.strategy.padEnd(16)} | ${ctx.referrer ? ctx.referrer.substring(0, 50) + '...' : '(DIRECT)'}`);
     }
 }
+/* c8 ignore stop */

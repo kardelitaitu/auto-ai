@@ -5,7 +5,6 @@
 
 import BaseDiscover from '../baseDiscover.js';
 import { createLogger } from '../../utils/logger.js';
-import { validateApiResponse } from '../../utils/validator.js';
 import { getEnv } from '../../utils/envLoader.js';
 import apiHandler from '../../utils/apiHandler.js';
 

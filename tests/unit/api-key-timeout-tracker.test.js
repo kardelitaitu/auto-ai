@@ -345,15 +345,17 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should return aggregate statistics', () => {
             tracker.trackRequest('key1', 5000, true);
             tracker.trackRequest('key1', 5000, false);
+            tracker.trackRequest('key1', 5000, false);
+            tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key2', 25000, true); // slow
             
             const stats = tracker.getStats();
             
             expect(stats.trackedKeys).toBe(2);
-            expect(stats.totalRequests).toBe(3);
-            expect(stats.totalFailures).toBe(1);
+            expect(stats.totalRequests).toBe(5);
+            expect(stats.totalFailures).toBe(3);
             expect(stats.slowKeys).toBe(1);
-            expect(stats.problematicKeys).toBe(0);
+            expect(stats.problematicKeys).toBe(1);
         });
 
         it('should return zeros for empty tracker', () => {

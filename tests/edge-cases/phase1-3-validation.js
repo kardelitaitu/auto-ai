@@ -120,6 +120,8 @@ test('Session Phases: getPhaseDescription returns strings', () => {
     
     assert(typeof warmupDesc === 'string', 'Warmup description should be string');
     assert(warmupDesc.length > 0, 'Warmup description should not be empty');
+    assert(typeof activeDesc === 'string', 'Active description should be string');
+    assert(typeof cooldownDesc === 'string', 'Cooldown description should be string');
 });
 
 // Test 1.3: Engagement Limits

@@ -4,7 +4,7 @@
  * @module tests/integration/agent-connector.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
     getSettings: vi.fn()

@@ -37,7 +37,7 @@ class ImageStorage {
                 }
             }
             return deletedCount;
-        } catch (error) {
+        } catch (_error) {
             return 0; // Directory might not exist or other error
         }
     }

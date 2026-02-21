@@ -37,8 +37,6 @@ describe('tasks/semangka.js', () => {
     });
 
     it('should navigate to blank page before running agent', async () => {
-        const agent = (await import('../../tasks/agent.js')).default;
-        
         await semangka(mockPage, mockPayload);
         
         expect(mockPage.goto).toHaveBeenCalledWith('about:blank');

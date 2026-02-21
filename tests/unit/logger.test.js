@@ -312,9 +312,6 @@ describe('Logger exit handler', () => {
       // Clear any existing buffer
       vi.resetModules();
       
-      const { createLogger } = await import('../../utils/logger.js');
-      const logger = createLogger('exit-test');
-      
       // Mock fs.appendFileSync to track calls
       const fs = await import('fs');
       const appendSpy = vi.spyOn(fs, 'appendFileSync').mockImplementation(() => {});
@@ -336,9 +333,6 @@ describe('Logger exit handler', () => {
     try {
       vi.resetModules();
       
-      const { createLogger } = await import('../../utils/logger.js');
-      const logger = createLogger('exit-error-test');
-      
       const fs = await import('fs');
       const appendSpy = vi.spyOn(fs, 'appendFileSync').mockImplementation(() => {
         throw new Error('Disk full');
@@ -348,7 +342,7 @@ describe('Logger exit handler', () => {
       process.emit('exit');
       
       appendSpy.mockRestore();
-    } catch (e) {
+    } catch (_e) {
       // Should not reach here
       expect(false).toBe(true);
     } finally {

@@ -92,7 +92,7 @@ describe('IdleGhosting', () => {
             mockPage.viewportSize.mockReturnValue(null);
             await ghosting._randomWiggle(mockPage);
 
-            const [x, y] = mockPage.mouse.move.mock.calls[0];
+            const [x, _y] = mockPage.mouse.move.mock.calls[0];
             // Default center is 1920/2, 1080/2 = 960, 540
             expect(x).toBeGreaterThanOrEqual(955);
             expect(x).toBeLessThanOrEqual(965);

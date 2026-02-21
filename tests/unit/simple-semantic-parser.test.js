@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import SemanticParser from '../../core/semantic-parser.js';
 
 describe('SemanticParser', () => {

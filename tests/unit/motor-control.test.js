@@ -48,6 +48,7 @@ describe('motorControl', () => {
             const selectors = controller.getXSelectors('tweet_text');
             expect(selectors.primary).toBe('[data-testid="tweetText"]');
             expect(selectors.fallbacks.length).toBeGreaterThan(0);
+            expect(selectors.fallbacks[0].selector).toBe('article [role="group"] a[href*="/status"]');
         });
 
         it('should return selectors for reply', () => {
@@ -78,6 +79,8 @@ describe('motorControl', () => {
         it('should return selectors for home', () => {
             const selectors = controller.getXSelectors('home');
             expect(selectors.primary).toBe('[aria-label="Home"]');
+            expect(selectors.fallbacks.length).toBeGreaterThan(0);
+            expect(selectors.fallbacks[0].selector).toBe('[data-testid="appleLogo"]');
         });
 
         it('should return primary as context for unknown context', () => {
@@ -351,6 +354,35 @@ describe('motorControl', () => {
 
             expect(result.verified).toBe(false);
         });
+
+        it('should return result directly when no verifySelector provided', async () => {
+            vi.spyOn(controller, 'clickWithRecovery').mockResolvedValue({ success: true, x: 100, y: 100 });
+
+            const result = await controller.clickWithVerification(mockPage, '.target');
+
+            expect(result.success).toBe(true);
+            expect(result.x).toBe(100);
+        });
+
+        it('should handle non-Error rejection from waitForSelector', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 }
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue(null);
+            mockPage.waitForSelector = vi.fn().mockRejectedValue('String error not an object');
+
+            const result = await controller.smartClick(mockPage, { primary: '.target' }, { verifySelector: '.verified' });
+
+            expect(result.success).toBe(true);
+            expect(result.verified).toBe(false);
+        });
     });
 
     describe('retryWithBackoff', () => {
@@ -373,6 +405,423 @@ describe('motorControl', () => {
                 .rejects.toThrow('Fail');
             
             expect(fn).toHaveBeenCalledTimes(3);
+        });
+    });
+
+    describe('smartClick - additional coverage', () => {
+        it('should use stableResult.box over element.boundingBox', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, width: 10, height: 10 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 }
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue(null);
+
+            const result = await controller.smartClick(mockPage, { primary: '.test' });
+
+            expect(result.success).toBe(true);
+            expect(mockElement.boundingBox).not.toHaveBeenCalled();
+        });
+
+        it('should fallback to element.boundingBox when stableResult.box undefined', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: undefined
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue(null);
+
+            const result = await controller.smartClick(mockPage, { primary: '.test' });
+
+            expect(result.success).toBe(true);
+            expect(mockElement.boundingBox).toHaveBeenCalled();
+        });
+
+        it('should use default verifyTimeout when not provided', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 }
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue(null);
+            mockPage.waitForSelector = vi.fn().mockResolvedValue(true);
+
+            const result = await controller.smartClick(mockPage, null, { 
+                context: 'reply',
+                verifySelector: '.verified'
+            });
+
+            expect(result.success).toBe(true);
+        });
+
+        it('should handle overlap and use findUncoveredArea', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 }
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue({ tagName: 'SPAN' });
+            vi.spyOn(controller, 'findUncoveredArea').mockResolvedValue({ success: true, x: 150, y: 150 });
+
+            const result = await controller.smartClick(mockPage, { primary: '.test' });
+
+            expect(result.success).toBe(true);
+            expect(result.recovered).toBe(true);
+            expect(mockPage.mouse.click).toHaveBeenCalledWith(150, 150);
+        });
+
+        it('should handle overlap and use spiralSearch when findUncoveredArea fails', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 }
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue({ tagName: 'SPAN' });
+            vi.spyOn(controller, 'findUncoveredArea').mockResolvedValue({ success: false });
+            vi.spyOn(controller, 'spiralSearch').mockResolvedValue({ success: true, x: 110, y: 110 });
+
+            const result = await controller.smartClick(mockPage, { primary: '.test' });
+
+            expect(result.success).toBe(true);
+            expect(result.recovered).toBe(true);
+            expect(mockPage.mouse.click).toHaveBeenCalledWith(110, 110);
+        });
+
+        it('should return failure when overlap cannot be recovered', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 }
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue({ tagName: 'SPAN' });
+            vi.spyOn(controller, 'findUncoveredArea').mockResolvedValue({ success: false });
+            vi.spyOn(controller, 'spiralSearch').mockResolvedValue({ success: false });
+
+            const result = await controller.smartClick(mockPage, { primary: '.test' });
+
+            expect(result.success).toBe(false);
+            expect(result.reason).toBe('overlapped_element');
+        });
+
+        it('should attempt recovery when target not stable', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            mockPage.evaluate = vi.fn();
+            mockPage.waitForTimeout = vi.fn();
+            
+            vi.spyOn(controller, 'getStableTarget')
+                .mockResolvedValueOnce({ success: false })
+                .mockResolvedValueOnce({ success: true, box: { x: 100, y: 100, width: 50, height: 50 } });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue(null);
+
+            const result = await controller.smartClick(mockPage, { primary: '.test' });
+
+            expect(result.success).toBe(true);
+        });
+
+        it('should return failure when recovery also fails', async () => {
+            const mockElement = { 
+                isVisible: vi.fn().mockResolvedValue(true),
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 })
+            };
+            mockPage.$.mockResolvedValue(mockElement);
+            mockPage.evaluate = vi.fn();
+            mockPage.waitForTimeout = vi.fn();
+            
+            vi.spyOn(controller, 'getStableTarget')
+                .mockResolvedValueOnce({ success: false })
+                .mockResolvedValueOnce({ success: false });
+
+            const result = await controller.smartClick(mockPage, { primary: '.test' });
+
+            expect(result.success).toBe(false);
+            expect(result.reason).toBe('target_not_stable');
+        });
+    });
+
+    describe('clickWithRecovery - additional coverage', () => {
+        it('should handle overlap and use findUncoveredArea', async () => {
+            const mockElement = { boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }) };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 },
+                stable: true 
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue({ tagName: 'SPAN' });
+            vi.spyOn(controller, 'findUncoveredArea').mockResolvedValue({ success: true, x: 150, y: 150 });
+
+            const result = await controller.clickWithRecovery(mockPage, '.test');
+
+            expect(result.success).toBe(true);
+            expect(result.recovered).toBe(true);
+            expect(mockPage.mouse.click).toHaveBeenCalledWith(150, 150);
+        });
+
+        it('should handle overlap and use spiralSearch when findUncoveredArea fails', async () => {
+            const mockElement = { boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }) };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 },
+                stable: true 
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue({ tagName: 'SPAN' });
+            vi.spyOn(controller, 'findUncoveredArea').mockResolvedValue({ success: false });
+            vi.spyOn(controller, 'spiralSearch').mockResolvedValue({ success: true, x: 120, y: 120 });
+
+            const result = await controller.clickWithRecovery(mockPage, '.test');
+
+            expect(result.success).toBe(true);
+            expect(result.recovered).toBe(true);
+            expect(mockPage.mouse.click).toHaveBeenCalledWith(120, 120);
+        });
+
+        it('should return failure when recovery is none but scroll recovery also fails', async () => {
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ success: false });
+            mockPage.$.mockResolvedValue({});
+            mockPage.evaluate = vi.fn();
+
+            const result = await controller.clickWithRecovery(mockPage, '.test', { recovery: 'none' });
+
+            expect(result.success).toBe(false);
+        });
+
+        it('should return failure when overlap cannot be recovered in clickWithRecovery', async () => {
+            const mockElement = { boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }) };
+            mockPage.$.mockResolvedValue(mockElement);
+            
+            vi.spyOn(controller, 'getStableTarget').mockResolvedValue({ 
+                success: true, 
+                box: { x: 100, y: 100, width: 50, height: 50 },
+                stable: true 
+            });
+            vi.spyOn(controller, 'checkOverlap').mockResolvedValue({ tagName: 'SPAN' });
+            vi.spyOn(controller, 'findUncoveredArea').mockResolvedValue({ success: false });
+            vi.spyOn(controller, 'spiralSearch').mockResolvedValue({ success: false });
+
+            const result = await controller.clickWithRecovery(mockPage, '.test');
+
+            expect(result.success).toBe(false);
+            expect(result.reason).toBe('overlapped');
+        });
+
+        it('should catch errors and return failure', async () => {
+            vi.spyOn(controller, 'getStableTarget').mockRejectedValue(new Error('Test error'));
+
+            const result = await controller.clickWithRecovery(mockPage, '.test');
+
+            expect(result.success).toBe(false);
+            expect(result.reason).toBe('Test error');
+        });
+    });
+
+    describe('scrollToElement - additional coverage', () => {
+        it('should scroll with smooth=true', async () => {
+            const mockElement = {};
+            const box = { x: 100, y: 200, width: 50, height: 50 };
+            
+            mockPage.$.mockResolvedValue(mockElement);
+            mockElement.boundingBox = vi.fn().mockResolvedValue(box);
+            mockPage.evaluate = vi.fn();
+            mockPage.waitForTimeout = vi.fn();
+
+            const result = await controller.scrollToElement(mockPage, '.test', { smooth: true });
+
+            expect(result.success).toBe(true);
+            expect(mockPage.evaluate).toHaveBeenCalledWith(expect.any(Function), 100, true);
+        });
+
+        it('should scroll with smooth=false', async () => {
+            const mockElement = {};
+            const box = { x: 100, y: 200, width: 50, height: 50 };
+            
+            mockPage.$.mockResolvedValue(mockElement);
+            mockElement.boundingBox = vi.fn().mockResolvedValue(box);
+            mockPage.evaluate = vi.fn();
+            mockPage.waitForTimeout = vi.fn();
+
+            const result = await controller.scrollToElement(mockPage, '.test', { smooth: false });
+
+            expect(result.success).toBe(true);
+            expect(mockPage.evaluate).toHaveBeenCalledWith(expect.any(Function), 100, false);
+        });
+
+        it('should handle error and return failure', async () => {
+            mockPage.$.mockRejectedValue(new Error('Error'));
+
+            const result = await controller.scrollToElement(mockPage, '.test');
+
+            expect(result.success).toBe(false);
+            expect(result.reason).toBe('Error');
+        });
+
+        it('should use custom offset', async () => {
+            const mockElement = {};
+            const box = { x: 100, y: 200, width: 50, height: 50 };
+            
+            mockPage.$.mockResolvedValue(mockElement);
+            mockElement.boundingBox = vi.fn().mockResolvedValue(box);
+            mockPage.evaluate = vi.fn();
+            mockPage.waitForTimeout = vi.fn();
+
+            const result = await controller.scrollToElement(mockPage, '.test', { offset: 50 });
+
+            expect(result.success).toBe(true);
+            expect(result.y).toBe(150);
+        });
+    });
+
+    describe('getStableTarget - additional coverage', () => {
+        it('should handle element becoming null during check', async () => {
+            let callCount = 0;
+            mockPage.$.mockImplementation(() => {
+                callCount++;
+                return callCount % 2 === 1 ? null : {};
+            });
+            mockPage.waitForTimeout = vi.fn().mockResolvedValue();
+
+            const result = await controller.getStableTarget(mockPage, '.test', { timeout: 150 });
+
+            expect(result.success).toBe(false);
+        });
+
+        it('should handle bounding box becoming null during check', async () => {
+            const mockElement = {};
+            let callCount = 0;
+            mockPage.$.mockResolvedValue(mockElement);
+            mockPage.evaluate = vi.fn().mockImplementation(() => {
+                callCount++;
+                if (callCount % 2 === 1) return null;
+                return { x: 100, y: 100, width: 50, height: 50 };
+            });
+            mockPage.waitForTimeout = vi.fn().mockResolvedValue();
+
+            const result = await controller.getStableTarget(mockPage, '.test', { timeout: 200 });
+
+            expect(result.success).toBe(false);
+        });
+    });
+
+    describe('spiralSearch - additional coverage', () => {
+        it('should find uncovered position on second attempt', async () => {
+            mockPage.evaluate
+                .mockResolvedValueOnce({ tagName: 'DIV' })
+                .mockResolvedValueOnce(null);
+
+            const result = await controller.spiralSearch(mockPage, 100, 100, { maxAttempts: 3 });
+
+            expect(result.success).toBe(true);
+            expect(result.attempts).toBe(2);
+        });
+
+        it('should use custom maxAttempts', async () => {
+            mockPage.evaluate = vi.fn().mockResolvedValue({ tagName: 'DIV' });
+
+            const result = await controller.spiralSearch(mockPage, 100, 100, { maxAttempts: 5 });
+
+            expect(result.success).toBe(false);
+            expect(result.reason).toBe('spiral_failed');
+        });
+    });
+
+    describe('retryWithBackoff - additional coverage', () => {
+        it('should use custom jitter options', async () => {
+            const fn = vi.fn()
+                .mockRejectedValueOnce(new Error('Fail'))
+                .mockResolvedValue('Success');
+
+            const result = await controller.retryWithBackoff(mockPage, fn, { 
+                maxRetries: 2, 
+                baseDelay: 10,
+                jitterMin: 1.0,
+                jitterMax: 1.0
+            });
+
+            expect(result).toBe('Success');
+        });
+
+        it('should use custom factor and maxDelay', async () => {
+            const fn = vi.fn()
+                .mockRejectedValueOnce(new Error('Fail'))
+                .mockResolvedValue('Success');
+
+            const result = await controller.retryWithBackoff(mockPage, fn, { 
+                maxRetries: 2, 
+                baseDelay: 10,
+                factor: 3,
+                maxDelay: 100
+            });
+
+            expect(result).toBe('Success');
+        });
+    });
+
+    describe('findUncoveredArea - additional coverage', () => {
+        it('should try all offsets', async () => {
+            mockPage.evaluate = vi.fn().mockResolvedValue({ tagName: 'DIV' });
+
+            const box = { x: 100, y: 100, width: 50, height: 50 };
+
+            await controller.findUncoveredArea(mockPage, box);
+
+            expect(mockPage.evaluate).toHaveBeenCalledTimes(6);
+        });
+    });
+
+    describe('smartSelector - additional coverage', () => {
+        it('should skip fallback if element not visible', async () => {
+            const invisibleElement1 = { isVisible: vi.fn().mockResolvedValue(false) };
+            const invisibleElement2 = { isVisible: vi.fn().mockResolvedValue(false) };
+            
+            mockPage.$
+                .mockResolvedValueOnce(invisibleElement1)
+                .mockResolvedValueOnce(invisibleElement2);
+
+            const fallbacks = [
+                { selector: '.fallback1', reason: 'test_reason1' },
+                { selector: '.fallback2', reason: 'test_reason2' }
+            ];
+
+            const result = await controller.smartSelector(mockPage, '.primary', fallbacks);
+
+            expect(result.element).toBeNull();
+            expect(result.selector).toBe('.primary');
         });
     });
 });

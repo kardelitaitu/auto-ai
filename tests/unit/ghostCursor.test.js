@@ -45,16 +45,35 @@ describe('GhostCursor', () => {
 
     describe('Vector Helpers', () => {
         it('should add vectors', () => {
-            expect(cursor.vecAdd({x:1, y:2}, {x:3, y:4})).toEqual({x:4, y:6});
+            const result = cursor.vecAdd({x:1, y:2}, {x:3, y:4});
+            expect(result).toEqual({x:4, y:6});
         });
         it('should sub vectors', () => {
-            expect(cursor.vecSub({x:4, y:6}, {x:1, y:2})).toEqual({x:3, y:4});
+            const result = cursor.vecSub({x:4, y:6}, {x:1, y:2});
+            expect(result).toEqual({x:3, y:4});
         });
         it('should mult vector', () => {
-            expect(cursor.vecMult({x:2, y:3}, 2)).toEqual({x:4, y:6});
+            const result = cursor.vecMult({x:2, y:3}, 2);
+            expect(result).toEqual({x:4, y:6});
         });
         it('should calc length', () => {
-            expect(cursor.vecLen({x:3, y:4})).toBe(5);
+            const result = cursor.vecLen({x:3, y:4});
+            expect(result).toBe(5);
+        });
+        
+        it('should calculate bezier at different t values', () => {
+            const p0 = { x: 0, y: 0 };
+            const p1 = { x: 10, y: 10 };
+            const p2 = { x: 20, y: 20 };
+            const p3 = { x: 30, y: 30 };
+            
+            const result0 = cursor.bezier(0, p0, p1, p2, p3);
+            const result1 = cursor.bezier(0.5, p0, p1, p2, p3);
+            const result2 = cursor.bezier(1, p0, p1, p2, p3);
+            
+            expect(result0.x).toBeCloseTo(0);
+            expect(result1.x).toBeCloseTo(15);
+            expect(result2.x).toBeCloseTo(30);
         });
     });
 
@@ -492,6 +511,24 @@ describe('GhostCursor', () => {
             vi.stubGlobal('setTimeout', (fn) => fn());
 
             await cursor.twitterClick(locator, 'like', 0);
+
+            expect(locator.click).toHaveBeenCalled();
+        });
+
+        it('should handle native fallback click error', async () => {
+            const locator = {
+                boundingBox: vi.fn()
+                    .mockResolvedValueOnce({ x: 100, y: 100, width: 50, height: 20 })
+                    .mockRejectedValueOnce(new Error('bbox error'))
+                    .mockRejectedValueOnce(new Error('bbox error'))
+                    .mockRejectedValueOnce(new Error('bbox error'))
+                    .mockRejectedValueOnce(new Error('bbox error')),
+                click: vi.fn().mockRejectedValue(new Error('Fallback click failed'))
+            };
+
+            vi.stubGlobal('setTimeout', (fn) => fn());
+
+            await cursor.twitterClick(locator, 'like', 3);
 
             expect(locator.click).toHaveBeenCalled();
         });

@@ -321,7 +321,8 @@ export class FreeApiRouter {
           modelFallbacks: modelIndex,
           retryCount: retryCount,
           duration,
-          warningStatus: rateLimitStatus
+          warningStatus: rateLimitStatus,
+          rateLimitedModels: Array.from(rateLimitedModels)
         };
       }
 

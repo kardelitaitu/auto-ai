@@ -11,6 +11,7 @@ import { getSettings } from './utils/configLoader.js';
 import CloudClient from './core/cloud-client.js';
 
 const logger = createLogger('test-ai-reply-engine.js');
+logger.info('Starting test-ai-reply-engine.js');
 
 const EXAMPLE_TWEETS = [
   {

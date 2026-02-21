@@ -26,6 +26,7 @@ describe('BaseHandler', () => {
     let mockLogger;
 
     beforeEach(() => {
+        vi.clearAllMocks();
         mockPage = {
             content: vi.fn().mockResolvedValue('<html></html>'),
             locator: vi.fn(),
@@ -102,6 +103,7 @@ describe('BaseHandler', () => {
                 click: vi.fn().mockResolvedValue({ success: true, x: 100, y: 100 }),
                 move: vi.fn()
             },
+            mathUtils,
             state: { consecutiveSoftErrors: 0, fatigueBias: 0, activityMode: 'NORMAL' },
             sessionStart: Date.now(),
             sessionEndTime: Date.now() + 3600000,
@@ -674,15 +676,17 @@ describe('BaseHandler', () => {
                      return { first: () => ({ isVisible: vi.fn().mockResolvedValue(false) }), isVisible: vi.fn().mockResolvedValue(false) };
                  });
                  
-                 await handler.checkAndHandleSoftError();
-                 
-                 expect(handler.state.consecutiveSoftErrors).toBe(2);
-                 expect(retryBtnLocator.click).not.toHaveBeenCalled();
-                 expect(mockPage.goto).toHaveBeenCalled(); // Default is http, so goto
-            });
+             await handler.checkAndHandleSoftError();
+             
+             expect(handler.state.consecutiveSoftErrors).toBe(2);
+             expect(retryBtnLocator.click).not.toHaveBeenCalled();
+             expect(mockPage.goto).toHaveBeenCalled(); // Default is http, so goto
+             });
 
             it('should use page.reload() if url is not http', async () => {
-                 mockPage.url.mockReturnValue('about:blank');
+                handler.state.consecutiveSoftErrors = 0;
+                
+                mockPage.url.mockReturnValue('about:blank');
                  const softErrorLocator = { 
                      isVisible: vi.fn().mockResolvedValue(true),
                      first: function() { return this; }
@@ -693,7 +697,7 @@ describe('BaseHandler', () => {
                      return { first: () => ({ isVisible: vi.fn().mockResolvedValue(false) }), isVisible: vi.fn().mockResolvedValue(false) };
                  });
                  
-                 const result = await handler.checkAndHandleSoftError();
+                 await handler.checkAndHandleSoftError();
                  
                  expect(mockPage.reload).toHaveBeenCalled();
                  expect(mockPage.goto).not.toHaveBeenCalled();
@@ -788,13 +792,15 @@ describe('BaseHandler', () => {
                  // Force reload error
                  mockPage.goto.mockRejectedValue(new Error('Reload failed'));
                  
-                 const result = await handler.checkAndHandleSoftError();
-                 expect(result).toBe(true);
+                const result = await handler.checkAndHandleSoftError();
+                expect(result).toBe(true);
                  expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Reload failed'));
             });
 
             it('should use page.reload() if url is not http', async () => {
-                 mockPage.url.mockReturnValue('about:blank');
+                handler.state.consecutiveSoftErrors = 0;
+                 
+                mockPage.url.mockReturnValue('about:blank');
                  const softErrorLocator = { 
                      isVisible: vi.fn().mockResolvedValue(true),
                      first: function() { return this; }
@@ -805,7 +811,7 @@ describe('BaseHandler', () => {
                      return { first: () => ({ isVisible: vi.fn().mockResolvedValue(false) }), isVisible: vi.fn().mockResolvedValue(false) };
                  });
                  
-                 const result = await handler.checkAndHandleSoftError();
+                 await handler.checkAndHandleSoftError();
                  
                  expect(mockPage.reload).toHaveBeenCalled();
                  expect(mockPage.goto).not.toHaveBeenCalled();

@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import ProxyAgent, { createProxyAgent } from '../../utils/proxy-agent.js';
 
 // Hoist mocks to ensure they are available in vi.mock factory
 const mocks = vi.hoisted(() => ({
@@ -26,10 +25,18 @@ vi.mock('https-proxy-agent', () => ({
 global.fetch = mocks.fetch;
 
 describe('proxy-agent.js', () => {
+  let ProxyAgent;
+  let createProxyAgent;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
     mocks.HttpsProxyAgent.mockImplementation(class { constructor(url) { this.url = url; } });
     mocks.fetch.mockResolvedValue({ ok: true });
+    return import('../../utils/proxy-agent.js').then((module) => {
+      ProxyAgent = module.default;
+      createProxyAgent = module.createProxyAgent;
+    });
   });
 
   describe('createProxyAgent', () => {

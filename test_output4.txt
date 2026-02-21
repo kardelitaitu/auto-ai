@@ -1,0 +1,259 @@
+
+ RUN  v4.0.18 C:/My Script/auto-ai
+
+stdout | tests/unit/twitterAgent.test.js > twitterAgent > normalizes probabilities with refresh suppression and aliasing
+[2m20:13:13[0m [36m≡ƒö╡[0m [0m[33m[EntropyController][0m[0m[0m[33m[session-1771679593718-1xylcswkf][0m[0m Session initialized with paceMultiplier=0.83[0m
+[2m20:13:13[0m [36m≡ƒö╡[0m [0m[33m[EntropyController][0m[0m[0m[33m[session-1771679593718-1xylcswkf][0m[0m Fatigue scheduled for T+3.6m[0m
+
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > normalizes probabilities with refresh suppression and aliasing 131ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > applies burst mode overrides 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > selects scroll method based on roll 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > detects session expiration 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > constructor initialization > should initialize with provided page, profile, and logger 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > constructor initialization > should initialize state with default values 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > constructor initialization > should setup network activity listeners 2ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > constructor initialization > should handle listener setup failure gracefully 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > log method > should use logger if available 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > log method > should fallback to console if no logger 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > clamp utility > should clamp value between min and max 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkFatigue > should not trigger fatigue if not expired 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkFatigue > should trigger fatigue when threshold exceeded 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkFatigue > should not trigger fatigue if already fatigued 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > normalizeProbabilities edge cases > should apply fatigue bias 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > normalizeProbabilities edge cases > should suppress refresh if recent 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > normalizeProbabilities edge cases > should handle missing probability keys 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > normalizeProbabilities edge cases > should handle likeTweetafterDive alias 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > getScrollMethod edge cases > should return WHEEL_DOWN for low random value 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > getScrollMethod edge cases > should return valid scroll method for high random value 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > isSessionExpired edge cases > should return false for future end time 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > isSessionExpired edge cases > should return true for past end time 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > triggerHotSwap > should swap to fatigued profile 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > triggerHotSwap > should enter doom scroll mode if no fatigued variant 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > humanClick > should skip if target is null 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > humanClick > should perform human-like click sequence 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > humanClick > should handle click errors and recover 2ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > safeHumanClick > should succeed on first attempt 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > safeHumanClick > should retry on failure 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > isElementActionable > should return false if element handle is null 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > isElementActionable > should check element visibility 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > isElementActionable > should handle errors gracefully 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > scrollToGoldenZone > should scroll element to 30% from top 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > scrollToGoldenZone > should handle missing element 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > dismissOverlays > should dismiss toast notifications 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > dismissOverlays > should dismiss modals 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > dismissOverlays > should handle errors gracefully 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > pollForFollowState > should return true when unfollow button appears 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > pollForFollowState > should return true when button text changes to Following 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > pollForFollowState > should return false after max polls 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > sixLayerClick > should succeed with first layer 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > robustFollow > should return already following if unfollow button visible 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > robustFollow > should handle pending state 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > performHealthCheck > should return healthy for active network 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > performHealthCheck > should detect network inactivity 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > performHealthCheck > should detect redirect errors 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > performHealthCheck > should handle check errors gracefully 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkAndHandleSoftError > should return false when no error present 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkAndHandleSoftError > should handle soft error and click retry button 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkAndHandleSoftError > should throw error after 3 consecutive soft errors 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkLoginState > should return true if logged in 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkLoginState > should detect logged out state by text 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkLoginState > should detect logged out state by selectors 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkLoginState > should detect logged out state by missing timeline 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkLoginState > should handle check errors 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > navigateHome > should click home icon 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > navigateHome > should fallback to direct URL if click fails 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > postTweet > should skip if no text provided 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > postTweet > should post tweet using keyboard shortcut 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > postTweet > should post tweet using UI button 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > postTweet > should handle post errors 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > humanType > should type text with random delays 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > humanType > should skip if element is null 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > humanType > should skip if text is empty 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > humanType > should fallback to fill on error 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateFidget > should perform fidget without errors 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateFidget > should handle fidget errors gracefully 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > diveProfile > should dive into a profile 4ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > diveProfile > should skip if no valid profile links 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > diveTweet > should dive into a tweet 1ms
+ ├ù tests/unit/twitterAgent.test.js > twitterAgent > diveTweet > should handle no tweets found 16ms
+   ΓåÆ expected "vi.fn()" to be called with arguments: [ 'https://x.com/' ][90m
+
+Number of calls: [1m0[22m
+[39m
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > ensureForYouTab > should skip if tab already selected 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > ensureForYouTab > should click tab if not selected 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > ensureForYouTab > should fallback to index if text not found 4ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > ensureForYouTab > should handle tablist not found 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkAndClickShowPostsButton > should find and click show posts button 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkAndClickShowPostsButton > should return false if button not found 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkAndClickShowPostsButton > should scroll after clicking button 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > checkAndClickShowPostsButton > should handle errors gracefully 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > runSession > should run session initialization 1ms
+ ├ù tests/unit/twitterAgent.test.js > twitterAgent > runSession > should abort if not logged in after retries 11ms
+   ΓåÆ A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
+ ├ù tests/unit/twitterAgent.test.js > twitterAgent > runSession > should handle burst mode entry 1ms
+   ΓåÆ A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > runSession > should handle boredom pause every 4th cycle 1ms
+ ├ù tests/unit/twitterAgent.test.js > twitterAgent > runSession > should handle session with timer 1ms
+   ΓåÆ A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
+ ├ù tests/unit/twitterAgent.test.js > twitterAgent > runSession > should enter idle branch when random is high 1ms
+   ΓåÆ A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should perform reading with WHEEL_DOWN scroll 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should perform reading with WHEEL_UP scroll 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should perform reading with SPACE scroll 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should perform reading with KEYS_DOWN scroll 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should perform reading with KEYS_UP scroll 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should handle burst mode reading 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should handle soft error during reading 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should throw on fatal health check 3ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should handle multitasking during reading 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should handle fidgeting during reading 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should handle jitter scroll during reading 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateReading > should handle mouse parking during long pauses 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateFidget > should perform TEXT_SELECT fidget 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateFidget > should perform MOUSE_WIGGLE fidget 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateFidget > should perform OVERSHOOT fidget 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateFidget > should handle accidental navigation in OVERSHOOT 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateFidget > should handle no visible text candidates 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > simulateFidget > should select visible text candidate in TEXT_SELECT fidget 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle diveTweet error gracefully 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle robustFollow with visible follow button 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle sixLayerClick with different layers 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle sixLayerClick with focus fallback 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkFatigue edge cases 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle normalizeProbabilities with missing config 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle navigateHome with 10% direct URL path 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle postTweet with empty text 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle postTweet with keyboard shortcut path 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle postTweet error when composer not found 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle postTweet with UI button fallback 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle postTweet successfully 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkAndClickShowPostsButton with multiple selectors 3ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkAndClickShowPostsButton with invalid text pattern 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle humanType with keyboard typing 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle humanType with fill fallback 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle pollForFollowState with text content check 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle pollForFollowState timeout 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle triggerHotSwap with doom scroll mode 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle isElementActionable with covered element 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle scrollToGoldenZone with valid element 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkAndHandleSoftError with reload strategy 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkAndHandleSoftError exceeding max retries 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle performHealthCheck with network inactivity 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle performHealthCheck with critical error page 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle simulateFidget with candidates but no visible text 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle diveProfile with tab exploration 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle diveTweet with expanded tweet and media 2ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle sixLayerClick with various fallback layers 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle sixLayerClick returning false on complete failure 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle robustFollow with pre-click state change detection 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle robustFollow with aria-label verification 2ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle robustFollow with button text indicating already following 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle robustFollow with non-actionable button 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle robustFollow with page reload on failure 2ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle postTweet with UI button visible 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle postTweet when UI button not found 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle simulateReading with viewport calculation error 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle diveTweet with viewport size fallback 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkLoginState with exception during check 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkAndHandleSoftError with successful retry button click 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkAndHandleSoftError with null reloadUrl fallback 2ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle normalizeProbabilities with fatigue bias 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle normalizeProbabilities with burst mode 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle scrollRandom import correctly 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle humanClick with mouse movement errors 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle ensureForYouTab with multiple tabs 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle diveProfile with refresh action 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle diveProfile with idle action 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle diveTweet with different scroll targets 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle robustFollow with pending state resolution 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle checkLoginState with multiple signed out texts 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle postTweet with composer already open 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle triggerHotSwap with slower profile 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle isSessionExpired with no end time 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle isSessionExpired with future end time 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle isSessionExpired with past end time 0ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle diveTweet with failed ghost and native click 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle simulateFidget with visible candidates for TEXT_SELECT 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle simulateFidget with MOUSE_WIGGLE fidget type 1ms
+ Γ£ô tests/unit/twitterAgent.test.js > twitterAgent > additional edge cases > should handle simulateFidget with OVERSHOOT fidget type 1ms
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 5 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  tests/unit/twitterAgent.test.js > twitterAgent > diveTweet > should handle no tweets found
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'https://x.com/' ]
+
+Number of calls: 0
+
+ Γ¥» tests/unit/twitterAgent.test.js:1057:31
+    1055|       await agent.diveTweet();
+    1056| 
+    1057|       expect(agent.page.goto).toHaveBeenCalledWith('https://x.com/');
+       |                               ^
+    1058|     });
+    1059|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/5]ΓÄ»
+
+ FAIL  tests/unit/twitterAgent.test.js > twitterAgent > runSession > should abort if not logged in after retries
+Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
+ Γ¥» Object.<anonymous> tests/unit/twitterAgent.test.js:1245:133
+    1243|       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
+    1244|       agent.page.emulateMedia = vi.fn().mockResolvedValue(undefined);
+    1245|       agent.page.waitForTimeout = vi.fn().mockImplementation(async (msΓÇª
+       |                                                                                                                                     ^
+    1246|       agent.checkLoginState = vi.fn().mockResolvedValue(true);
+    1247|       agent.simulateReading = vi.fn().mockResolvedValue(undefined);
+ Γ¥» TwitterAgent.runSession utils/twitterAgent.js:1587:33
+ Γ¥» tests/unit/twitterAgent.test.js:1264:7
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/5]ΓÄ»
+
+ FAIL  tests/unit/twitterAgent.test.js > twitterAgent > runSession > should handle burst mode entry
+Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
+ Γ¥» Object.<anonymous> tests/unit/twitterAgent.test.js:1245:133
+    1243|       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
+    1244|       agent.page.emulateMedia = vi.fn().mockResolvedValue(undefined);
+    1245|       agent.page.waitForTimeout = vi.fn().mockImplementation(async (msΓÇª
+       |                                                                                                                                     ^
+    1246|       agent.checkLoginState = vi.fn().mockResolvedValue(true);
+    1247|       agent.simulateReading = vi.fn().mockResolvedValue(undefined);
+ Γ¥» TwitterAgent.runSession utils/twitterAgent.js:1671:33
+ Γ¥» tests/unit/twitterAgent.test.js:1290:7
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/5]ΓÄ»
+
+ FAIL  tests/unit/twitterAgent.test.js > twitterAgent > runSession > should handle session with timer
+Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
+ Γ¥» Object.<anonymous> tests/unit/twitterAgent.test.js:1245:133
+    1243|       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
+    1244|       agent.page.emulateMedia = vi.fn().mockResolvedValue(undefined);
+    1245|       agent.page.waitForTimeout = vi.fn().mockImplementation(async (msΓÇª
+       |                                                                                                                                     ^
+    1246|       agent.checkLoginState = vi.fn().mockResolvedValue(true);
+    1247|       agent.simulateReading = vi.fn().mockResolvedValue(undefined);
+ Γ¥» TwitterAgent.runSession utils/twitterAgent.js:1678:33
+ Γ¥» tests/unit/twitterAgent.test.js:1324:7
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[4/5]ΓÄ»
+
+ FAIL  tests/unit/twitterAgent.test.js > twitterAgent > runSession > should enter idle branch when random is high
+Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
+ Γ¥» Object.<anonymous> tests/unit/twitterAgent.test.js:1333:133
+    1331|       agent.page.goto = vi.fn().mockResolvedValue(undefined);
+    1332|       agent.ensureForYouTab = vi.fn().mockResolvedValue(undefined);
+    1333|       agent.page.waitForTimeout = vi.fn().mockImplementation(async (msΓÇª
+       |                                                                                                                                     ^
+    1334|       
+    1335|       agent.human.session.shouldEndSession = vi.fn().mockReturnValueOnΓÇª
+ Γ¥» TwitterAgent.runSession utils/twitterAgent.js:1671:33
+ Γ¥» tests/unit/twitterAgent.test.js:1344:7
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[5/5]ΓÄ»
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 159 passed (164)
+   Start at  20:13:13
+   Duration  740ms (transform 311ms, setup 23ms, import 251ms, tests 296ms, environment 0ms)
+

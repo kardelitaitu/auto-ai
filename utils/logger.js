@@ -6,9 +6,14 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { EventEmitter } from 'events';
+import { AsyncLocalStorage } from 'async_hooks';
+
+export const loggerContext = new AsyncLocalStorage();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LOG_FILE = path.join(__dirname, '../logs.txt');
+export const logEmitter = new EventEmitter();
 
 // Rich ANSI Color Codes (Neon/Bright variants)
 const COLORS = {
@@ -117,10 +122,10 @@ function initLogFile() {
  */
 function flushLogBuffer() {
   if (LOG_BUFFER.length === 0) return;
-  
+
   const entries = LOG_BUFFER.splice(0, LOG_BUFFER.length);
   const data = entries.map(e => JSON.stringify(e)).join('\n') + '\n';
-  
+
   fs.appendFile(LOG_FILE, data, 'utf8', (err) => {
     if (err) console.error('Failed to write log buffer:', err.message);
   });
@@ -140,7 +145,7 @@ function writeToLogFile(level, scriptName, message, args) {
     }
     // Use pre-compiled regex
     const cleanMessage = message.replace(ANSI_REGEX, '');
-    
+
     // Build structured log line
     const logEntry = {
       timestamp,
@@ -150,10 +155,11 @@ function writeToLogFile(level, scriptName, message, args) {
       message: cleanMessage,
       ...(structuredData && { data: structuredData })
     };
-    
+
     // Buffer the log entry instead of sync write
     LOG_BUFFER.push(logEntry);
-    
+    logEmitter.emit('log', logEntry);
+
     // Start flush timer on first entry
     if (!flushTimer) {
       flushTimer = setTimeout(() => {
@@ -225,6 +231,23 @@ class Logger {
       displayScript = displayScript.replace(/(.*?) \[(.*?)\]/, '[$1][$2]');
     } else if (!displayScript.startsWith('[')) {
       displayScript = `[${displayScript}]`;
+    }
+
+    const context = loggerContext.getStore();
+    if (context && context.taskName && context.sessionId) {
+      const taskBase = context.taskName.endsWith('.js') ? context.taskName : `${context.taskName}.js`;
+
+      // Escape special characters for regex
+      const escapedTaskBase = taskBase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const taskBaseRegex = new RegExp(`\\[${escapedTaskBase}\\]`, 'i');
+
+      if (!taskBaseRegex.test(displayScript)) {
+        displayScript = `[${taskBase}][${context.sessionId}]${displayScript}`;
+      } else {
+        if (!displayScript.includes(context.sessionId)) {
+          displayScript = displayScript.replace(taskBaseRegex, `$&[${context.sessionId}]`);
+        }
+      }
     }
 
     // 4. Message Coloring
@@ -363,6 +386,10 @@ export const sessionLogger = {
       startTime: sessionStartTime,
       duration: sessionStartTime ? Date.now() - sessionStartTime : 0
     };
+  },
+
+  setCurrentSessionId(sessionId) {
+    currentSessionId = sessionId;
   }
 };
 
@@ -386,13 +413,13 @@ class BufferedLogger {
     this.flushInterval = options.flushInterval || 5000; // Default: 5 seconds
     this.maxBufferSize = options.maxBufferSize || 100;  // Default: 100 entries
     this.minBufferSize = options.minBufferSize || 10;   // Default: 10 entries
-    
+
     this.buffer = [];
     this.timer = null;
     this.logger = createLogger('BufferedLogger');
     this.module = options.module || 'buffered';
     this.enabled = options.enabled !== false;
-    
+
     if (this.enabled) {
       this._startTimer();
     }
@@ -424,7 +451,7 @@ class BufferedLogger {
    */
   _add(level, message, data = null) {
     if (!this.enabled) return;
-    
+
     this.buffer.push({
       timestamp: Date.now(),
       level,

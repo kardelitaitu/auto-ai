@@ -4,7 +4,7 @@
  * @module tests/unit/logging-config.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as loggingConfigModule from '../../utils/logging-config.js';
 
 // Mock configLoader

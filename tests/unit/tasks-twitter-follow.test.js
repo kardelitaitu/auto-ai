@@ -8,7 +8,6 @@ import { TwitterAgent } from '../../utils/twitterAgent.js';
 import { profileManager } from '../../utils/profileManager.js';
 import { ReferrerEngine } from '../../utils/urlReferrer.js';
 import metricsCollector from '../../utils/metrics.js';
-import { takeScreenshot } from '../../utils/screenshot.js';
 
 // Mocks
 vi.mock('../../utils/twitterAgent.js');

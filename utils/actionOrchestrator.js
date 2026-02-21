@@ -5,8 +5,6 @@
  * and using weighted random selection for next actions.
  */
 
-import { mathUtils } from './mathUtils.js';
-
 export const ACTION_ROUTINES = {
     TIMELINE_BROWSE: 'TIMELINE_BROWSE',
     NOTIFICATION_CHECK: 'NOTIFICATION_CHECK',

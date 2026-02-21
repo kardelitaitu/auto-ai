@@ -70,7 +70,7 @@ class CircuitBreaker {
      * @param {object} options - Execution options
      * @returns {Promise<any>} Function result
      */
-    async execute(modelId, fn, options = {}) {
+    async execute(modelId, fn, _options = {}) {
         const breaker = this.getBreaker(modelId);
 
         if (breaker.state === STATE_OPEN) {

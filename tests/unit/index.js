@@ -63,7 +63,7 @@ export async function runAllUnitTests() {
     { name: 'reply-method', module: replyMethod }
   ];
 
-  for (const { name, module } of testModules) {
+  for (const { name, module: _module } of testModules) {
     try {
       results.tests.push({ name, status: 'loaded' });
       results.passed++;

@@ -28,6 +28,7 @@ describe('utils/global-scroll-controller', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+        vi.clearAllMocks();
         gsc = await import('../../utils/global-scroll-controller.js');
         await gsc.globalScroll.reload();
     });

@@ -280,23 +280,23 @@ export class MultiDimensionalSentimentAnalyzer {
         const actionGates = SentimentData.ACTION_GATES;
         
         // REPLY gate
-        gates.canReply = toxicity < actionGates.reply.toxicityThreshold &&
+        gates.canReply = toxicity < actionGates.reply.maxToxicity &&
                          !aggregated.actionBlock &&
                          aggregated.derived.credibility > 0.5;
         
         // LIKE gate
-        gates.canLike = toxicity < actionGates.like.toxicityThreshold &&
+        gates.canLike = toxicity < actionGates.like.maxToxicity &&
                        Math.max(0, valence) > 0.1 &&
                        !['grief', 'crisis'].includes(aggregated.actionBlock);
         
         // QUOTE gate (most conservative)
-        gates.canQuote = toxicity < actionGates.quote.toxicityThreshold &&
+        gates.canQuote = toxicity < actionGates.quote.maxToxicity &&
                         aggregated.derived.credibility > 0.7 &&
                         sarcasm < 0.5 &&
                         !aggregated.actionBlock;
         
         // RETWEET gate
-        gates.canRetweet = toxicity < actionGates.retweet.toxicityThreshold &&
+        gates.canRetweet = toxicity < actionGates.retweet.maxToxicity &&
                           Math.max(0, valence) > 0.2 &&
                           sarcasm < 0.3 &&
                           !aggregated.actionBlock;

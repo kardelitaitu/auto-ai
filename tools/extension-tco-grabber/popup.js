@@ -60,23 +60,4 @@ document.addEventListener('DOMContentLoaded', () => {
         totalCountEl.textContent = count;
     }
 
-    async function saveLinks(newLinks) {
-        return new Promise((resolve) => {
-            chromeApi.storage.local.get(['tco_links'], (result) => {
-                const existing = result.tco_links || [];
-                let added = 0;
-
-                newLinks.forEach(link => {
-                    if (!existing.includes(link)) {
-                        existing.push(link);
-                        added++;
-                    }
-                });
-
-                chromeApi.storage.local.set({ tco_links: existing }, () => {
-                    resolve(added);
-                });
-            });
-        });
-    }
 });

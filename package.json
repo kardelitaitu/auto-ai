@@ -17,7 +17,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "docs": "jsdoc -c jsdoc.json",
+    "docs": "node node_modules/jsdoc/jsdoc.js -r -d ./docs -t node_modules/docdash --exclude \"**/free-api-router.js\" tasks utils core connectors local-agent",
+    "docs:tasks": "node node_modules/jsdoc/jsdoc.js -r -d ./docs -t node_modules/docdash tasks",
+    "docs:utils": "node node_modules/jsdoc/jsdoc.js -r -d ./docs -t node_modules/docdash utils",
     "docs:watch": "jsdoc -c jsdoc.json -r"
   },
   "keywords": [
@@ -40,8 +42,11 @@
   },
   "dependencies": {
     "dotenv": "^16.4.7",
+    "express": "^4.21.0",
     "https-proxy-agent": "^7.0.6",
     "playwright": "^1.56.1",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -58,8 +63,10 @@
     "globals": "^17.3.0",
     "jest": "^30.2.0",
     "jsdoc": "^4.0.5",
+    "jsdom": "^28.1.0",
     "mocha": "^11.7.5",
     "prettier": "^3.8.1",
+    "typedoc": "^0.28.17",
     "vitest": "^4.0.18"
   }
 }

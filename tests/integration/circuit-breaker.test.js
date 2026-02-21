@@ -41,7 +41,7 @@ describe('CircuitBreaker', () => {
                     await breaker.execute('test-model', async () => {
                         throw new Error('Failed');
                     });
-                } catch (e) {
+                } catch (_e) {
                     // Expected
                 }
             }
@@ -56,7 +56,7 @@ describe('CircuitBreaker', () => {
                     await breaker.execute('test-model', async () => {
                         throw new Error('Failed');
                     });
-                } catch (e) {
+                } catch (_e) {
                     // Expected
                 }
             }

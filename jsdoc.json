@@ -1,7 +1,7 @@
 {
   "source": {
     "include": ["."],
-    "exclude": ["node_modules", "docs", "coverage"],
+    "exclude": ["node_modules", "docs", "coverage", "backup", "tests", "test-dir", ".git", "screenshot", "tools", "data", "examples", "ui", ".qodo", ".llm-context", "utils/free-api-router.js"],
     "includePattern": ".+\\.js(doc|x)?$",
     "excludePattern": "(^|\\/|\\\\)_"
   },

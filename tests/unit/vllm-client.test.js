@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import VLLMClient from '../../core/vllm-client.js';
 
 vi.mock('../../utils/logger.js', () => ({

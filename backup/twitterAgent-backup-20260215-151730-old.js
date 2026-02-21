@@ -1,5 +1,4 @@
 import { mathUtils } from '../utils/mathUtils.js';
-import { entropy } from '../utils/entropyController.js';
 import { GhostCursor } from '../utils/ghostCursor.js';
 import { HumanizationEngine } from '../utils/humanization/index.js';
 

@@ -61,7 +61,7 @@ class LocalBraveDiscover extends BaseDiscover {
             if (versionData.webSocketDebuggerUrl) {
               browserWsUrl = versionData.webSocketDebuggerUrl;
             }
-          } catch (versionError) {
+          } catch (_versionError) {
             const firstTab = browserTabs[0];
             if (firstTab?.webSocketDebuggerUrl) {
               const urlMatch = firstTab.webSocketDebuggerUrl.match(/(ws:\/\/[^/]+:\d+)\/devtools\/page\/[^/]+/);
@@ -87,13 +87,13 @@ class LocalBraveDiscover extends BaseDiscover {
             
             logger.info(`Found connectable Brave instance: ${braveProfile.name}`);
             return braveProfile;
-          }
-          
-          return null;
-        } catch (error) {
-          return null;
         }
-      })
+        
+        return null;
+      } catch (_error) {
+        return null;
+      }
+    })
     );
     
     for (const result of portChecks) {

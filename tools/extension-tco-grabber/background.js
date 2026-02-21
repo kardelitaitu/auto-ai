@@ -3,7 +3,7 @@
     if (!chromeApi) {
         throw new Error('Chrome API unavailable');
     }
-    chromeApi.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    chromeApi.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
         if (request.type === 'LINKS_FOUND') {
             const newLinks = request.links;
 

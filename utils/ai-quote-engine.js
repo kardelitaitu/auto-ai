@@ -7,12 +7,8 @@
 import { createLogger } from './logger.js';
 import { mathUtils } from './mathUtils.js';
 import { sentimentService } from './sentiment-service.js';
-import { scrollRandom } from './scroll-helper.js';
-import { config } from './config-service.js';
 import { HumanInteraction } from './human-interaction.js';
 import { getStrategyInstruction } from './twitter-reply-prompt.js';
-
-const logger = createLogger('ai-quote-engine.js');
 
 export const QUOTE_SYSTEM_PROMPT = `You are a real Twitter user crafting an authentic quote tweet.
 Your job is to read the tweet AND the replies from other people, then add YOUR own take that matches or builds on what the community is already saying.
@@ -66,7 +62,16 @@ IMPORTANT: Return ONLY the final quote tweet text. Do NOT include:
 
 Just output the quote tweet itself.`;
 
+/**
+ * AIQuoteEngine - Handles AI quote tweet generation
+ * @extends AIReplyEngine
+ */
 export class AIQuoteEngine {
+    /**
+     * Creates a new AIQuoteEngine instance
+     * @param {object} agentConnector - Agent connector for AI requests
+     * @param {object} options - Configuration options
+     */
     constructor(agentConnector, options = {}) {
         this.agent = agentConnector;
         this.logger = createLogger('ai-quote-engine.js');
@@ -144,6 +149,10 @@ export class AIQuoteEngine {
         this.logger.info(`[AIQuoteEngine] Initialized (probability: ${this.config.QUOTE_PROBABILITY})`);
     }
 
+    /**
+     * Updates configuration at runtime
+     * @param {object} options - Configuration options
+     */
     updateConfig(options) {
         if (options.quoteProbability !== undefined) {
             this.config.QUOTE_PROBABILITY = options.quoteProbability;
@@ -219,11 +228,6 @@ export class AIQuoteEngine {
     detectReplyLanguage(replies) {
         if (!replies || replies.length === 0) return 'English';
 
-        // Collect all reply text
-        const allText = replies
-            .map(r => r.text || r.content || '')
-            .join(' ');
-
         // Sample up to 5 replies for language detection
         const sampleText = replies
             .slice(0, 5)
@@ -249,7 +253,6 @@ export class AIQuoteEngine {
 
         // Generate sentiment-aware tone guidance
         const toneGuidance = this.getStyleGuidance(sentiment, sarcasmScore);
-        const lengthGuidance = this.getLengthGuidance(conversationType, valence);
 
         // === STRATEGY SELECTION ===
         // Use the improved strategy selector from twitter-reply-prompt.js
@@ -317,9 +320,13 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     }
 
     /**
-     * Decide whether to quote a tweet
+     * Decides whether to quote a tweet
+     * @param {string} tweetText - Tweet content
+     * @param {string} authorUsername - Tweet author
+     * @param {object} context - Additional context
+     * @returns {Promise<object>} Quote decision
      */
-    async shouldQuote(tweetText, authorUsername, context = {}) {
+    async shouldQuote(tweetText, authorUsername, _context = {}) {
         this.stats.attempts++;
 
         const rolled = Math.random();
@@ -342,8 +349,12 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     }
 
     /**
-      * Generate a quote tweet using AI
-      */
+     * Generates a quote tweet using AI
+     * @param {string} tweetText - Tweet content
+     * @param {string} authorUsername - Tweet author
+     * @param {object} context - Additional context
+     * @returns {Promise<object>} Generated quote result
+     */
     async generateQuote(tweetText, authorUsername, context = {}) {
         const { url = '', replies = [] } = context;
 
@@ -752,7 +763,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                         return parsed[key];
                     }
                 }
-            } catch (e) {
+            } catch (_error) {
                 // Not JSON, continue
             }
         }
@@ -772,13 +783,14 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     }
 
     /**
-     * Execute the quote tweet flow
-     * Method A: Keyboard Compose + Quote (40%)
-     * Method B: Retweet Menu -> Quote (35%)
-     * Method C: New Post with URL (25%)
+     * Executes the quote tweet flow
+     * @param {object} page - Playwright page
+     * @param {string} quoteText - Quote text to post
+     * @param {object} options - Execution options
+     * @returns {Promise<object>} Execution result
      */
     async executeQuote(page, quoteText, options = {}) {
-        const { logger = console, humanTyping } = options;
+        const { logger: _logger = console, humanTyping } = options;
         this.logger.info(`[AIQuote] Executing quote (${quoteText.length} chars)...`);
 
         const human = new HumanInteraction(page);
@@ -909,6 +921,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         return { valid: true, reason: 'passed' };
     }
 
+    /**
+     * Gets engine statistics
+     * @returns {object} Statistics object
+     */
     getStats() {
         return {
             ...this.stats,
@@ -921,7 +937,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     getSentimentGuidance(tweetSentiment) {
         const sentiment = tweetSentiment.composite?.engagementStyle || 'neutral';
         const sarcasmScore = tweetSentiment.dimensions?.sarcasm?.sarcasm || 0;
-        const valence = tweetSentiment.dimensions?.valence?.valence || 0;
+        const _valence = tweetSentiment.dimensions?.valence?.valence || 0;
 
         const guidance = {
             enthusiastic: 'Show genuine excitement and energy. Use exclamation points naturally.',
@@ -967,7 +983,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         return baseGuidance;
     }
 
-    getStyleGuidance(sentiment, sarcasmScore) {
+    getStyleGuidance(sentiment, _sarcasmScore) {
         const styles = {
             enthusiastic: 'Style: High energy, exclamation points allowed.',
             humorous: 'Style: Witty, maybe use a common internet slang.',
@@ -1000,13 +1016,11 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         human.logStep('CLICK_TWEET', 'Clicking main tweet text');
         const tweetTextSelector = '[data-testid="tweetText"]';
         
-        let tweetClicked = false;
         try {
             const tweetEl = page.locator(tweetTextSelector).first();
             if (await tweetEl.count() > 0) {
-                await tweetEl.click({ offset: { x: 10, y: 10 } });
+                await human.safeHumanClick(tweetEl, 'Main Tweet Focus', 3, { precision: 'high' });
                 await new Promise(resolve => setTimeout(resolve, 500));
-                tweetClicked = true;
                 human.logStep('CLICK_TWEET', 'Tweet text clicked');
             } else {
                 human.logStep('CLICK_TWEET', 'Tweet text not found');
@@ -1205,22 +1219,40 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // Human-like click sequence
         await retweetBtn.scrollIntoViewIfNeeded();
-        await human.fixation(300, 800);
-        await human.microMove(page, 20);
-        await retweetBtn.click({ timeout: 5000 });
-        human.logStep('CLICK', 'Clicked retweet button');
+        
+        // Click Retweet button with high precision
+        const rtClickSuccess = await human.safeHumanClick(
+            retweetBtn, 
+            "Retweet Button", 
+            3, 
+            { precision: 'high' }
+        );
+        
         let menuReady = false;
-        for (let i = 0; i < 3; i++) {
-            const menu = page.locator('[role="menu"]').first();
-            const visible = await menu.isVisible().catch(() => false);
-            if (visible) {
-                menuReady = true;
-                break;
+        if (rtClickSuccess) {
+            for (let i = 0; i < 5; i++) {
+                const menu = page.locator('[role="menu"]').first();
+                const visible = await menu.isVisible().catch(() => false);
+                if (visible) {
+                    menuReady = true;
+                    break;
+                }
+                await new Promise(resolve => setTimeout(resolve, 400));
             }
-            await new Promise(resolve => setTimeout(resolve, 400));
-            await retweetBtn.click({ timeout: 5000 }).catch(() => {});
-            await new Promise(resolve => setTimeout(resolve, 600));
         }
+        
+        if (!menuReady) {
+            // Try one more click if menu didn't open
+             human.logStep('RETRY', 'Menu not open, clicking Retweet button again');
+             await human.safeHumanClick(retweetBtn, "Retweet Button (Retry)", 2, { precision: 'high' });
+             await new Promise(resolve => setTimeout(resolve, 800));
+             
+             const menu = page.locator('[role="menu"]').first();
+             if (await menu.isVisible().catch(() => false)) {
+                 menuReady = true;
+             }
+        }
+
         if (!menuReady) {
             return { success: false, reason: 'retweet_menu_not_open', method: 'retweet_menu' };
         }
@@ -1269,9 +1301,17 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         // Click Quote option with human-like behavior
-        await human.fixation(100, 300);
-        await human.microMove(page, 10);
-        await quoteOption.click({ timeout: 5000 });
+        const quoteClickSuccess = await human.safeHumanClick(
+            quoteOption,
+            "Quote Option",
+            3,
+            { precision: 'high' }
+        );
+        
+        if (!quoteClickSuccess) {
+             human.logStep('CLICK_FAIL', 'Failed to click Quote option');
+             return { success: false, reason: 'quote_click_failed', method: 'retweet_menu' };
+        }
         human.logStep('QUOTE_CLICK', 'Clicked Quote option');
         await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -1339,7 +1379,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         const composer = page.locator(verify.selector).first();
         
         // Clear and type
-        await composer.click();
+        await human.safeHumanClick(composer, 'Composer Focus', 3, { precision: 'high' });
         
         const isMac = process.platform === 'darwin';
         const modifier = isMac ? 'Meta' : 'Control';
@@ -1418,7 +1458,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         await composeBtn.scrollIntoViewIfNeeded();
         await human.fixation(300, 800);
         await human.microMove(page, 20);
-        await composeBtn.click({ timeout: 5000 });
+        await human.safeHumanClick(composeBtn, "Compose Button", 3, { precision: 'high' });
         human.logStep('CLICK', 'Clicked Compose button');
         await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -1468,22 +1508,43 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // Step 5: Paste the URL LAST (appears as preview/card below comment)
         human.logStep('PASTE_URL', 'Pasting tweet URL...');
         
+        // Ensure focus before pasting
+        await human.ensureFocus(page, composer);
+        
         const isMac = process.platform === 'darwin';
         const modifier = isMac ? 'Meta' : 'Control';
         await page.keyboard.press(`${modifier}+v`);
         
-        await new Promise(resolve => setTimeout(resolve, 750));
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Verify URL was pasted
-        const finalContent = await page
-            .locator('[data-testid="tweetTextarea_0"], [role="textbox"][contenteditable="true"]')
-            .first()
-            .textContent()
-            .catch(() => '');
-        if (finalContent.includes('x.com') || finalContent.includes('twitter.com')) {
-            human.logStep('URL_PASTED', 'URL pasted successfully');
-        } else {
+        // Verify URL was pasted with retry
+        let urlPasted = false;
+        for (let i = 0; i < 3; i++) {
+            const finalContent = await page
+                .locator('[data-testid="tweetTextarea_0"], [role="textbox"][contenteditable="true"]')
+                .first()
+                .textContent()
+                .catch(() => '');
+                
+            if (finalContent.includes('x.com') || finalContent.includes('twitter.com')) {
+                human.logStep('URL_PASTED', 'URL pasted successfully');
+                urlPasted = true;
+                break;
+            }
+            
+            if (i < 2) {
+                human.logStep('PASTE_RETRY', `URL not found, retrying paste (attempt ${i+2})`);
+                await human.ensureFocus(page, composer);
+                await page.keyboard.press(`${modifier}+v`);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+        
+        if (!urlPasted) {
             human.logStep('PASTE_WARN', 'URL may not have pasted correctly');
+            // Last resort: type it manually
+            human.logStep('PASTE_FALLBACK', 'Typing URL manually');
+            await page.keyboard.type(currentUrl, { delay: 10 });
         }
 
         // STEP 6: Post

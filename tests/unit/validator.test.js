@@ -4,7 +4,7 @@
  * @module tests/unit/validator.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock logger
 vi.mock('../../utils/logger.js', () => ({

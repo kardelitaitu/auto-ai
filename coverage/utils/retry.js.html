@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>0/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>0/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -126,7 +126,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -135,16 +135,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -157,20 +155,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -182,23 +182,23 @@
 &nbsp;
 import { createLogger } from './logger.js';
 &nbsp;
-const logger = createLogger('retry.js');
+const logger =<span class="cstat-no" title="statement not covered" > createLogger('retry.js');</span>
 &nbsp;
-export function calculateBackoffDelay(attempt, options = {}) {
+export function <span class="fstat-no" title="function not covered" >calculateBackoffDelay(</span>attempt, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
   const {
-    baseDelay = 1000,
-    maxDelay = 30000,
-    factor = 2,
-    jitterMin = 1,
-    jitterMax = 1
-  } = options;
+    baseDelay = <span class="branch-0 cbranch-no" title="branch not covered" >1000,</span>
+    maxDelay = <span class="branch-0 cbranch-no" title="branch not covered" >30000,</span>
+    factor = <span class="branch-0 cbranch-no" title="branch not covered" >2,</span>
+    jitterMin = <span class="branch-0 cbranch-no" title="branch not covered" >1,</span>
+    jitterMax = <span class="branch-0 cbranch-no" title="branch not covered" >1</span>
+  } = <span class="cstat-no" title="statement not covered" >options;</span>
 &nbsp;
-  const delay = Math.min(baseDelay * Math.pow(factor, attempt), maxDelay);
-  const min = Math.min(jitterMin, jitterMax);
-  const max = Math.max(jitterMin, jitterMax);
-  const jitterMultiplier = min === max ? min : min + Math.random() * (max - min);
+  const delay = <span class="cstat-no" title="statement not covered" >Math.min(baseDelay * Math.pow(factor, attempt), maxDelay);</span>
+  const min = <span class="cstat-no" title="statement not covered" >Math.min(jitterMin, jitterMax);</span>
+  const max = <span class="cstat-no" title="statement not covered" >Math.max(jitterMin, jitterMax);</span>
+  const jitterMultiplier = <span class="cstat-no" title="statement not covered" >min === max ? min : min + Math.random() * (max - min);</span>
 &nbsp;
-  return Math.floor(delay * jitterMultiplier);
+<span class="cstat-no" title="statement not covered" >  return Math.floor(delay * jitterMultiplier);</span>
 }
 &nbsp;
 /**
@@ -212,21 +212,21 @@ export function calculateBackoffDelay(attempt, options = {}) {
  * @returns {Promise&lt;any&gt;} A promise that resolves with the result of the operation.
  * @throws {Error} If the operation fails after all retries.
  */
-export async function withRetry(operation, options = {}) {
-  const { retries = 2, delay = 1000, factor = 1, description = 'operation' } = options;
-  let currentDelay = delay;
+export async function <span class="fstat-no" title="function not covered" >withRetry(</span>operation, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+  const { retries = <span class="branch-0 cbranch-no" title="branch not covered" >2,</span> delay = <span class="branch-0 cbranch-no" title="branch not covered" >1000,</span> factor = <span class="branch-0 cbranch-no" title="branch not covered" >1,</span> description = <span class="branch-0 cbranch-no" title="branch not covered" >'operation' </span>} = <span class="cstat-no" title="statement not covered" >options;</span>
+  let currentDelay = <span class="cstat-no" title="statement not covered" >delay;</span>
 &nbsp;
-  for (let i = 0; i &lt; retries; i++) {
-    try {
-      return await operation();
+<span class="cstat-no" title="statement not covered" >  for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; retries; i++) {</span>
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      return await operation();</span>
     } catch (error) {
-      if (i &lt; retries - 1) {
-        logger.warn(`[${description}] Attempt ${i + 1} failed: ${error.message}. Retrying in ${currentDelay}ms...`);
-        await new Promise(resolve =&gt; setTimeout(resolve, currentDelay));
-        currentDelay *= factor;
+<span class="cstat-no" title="statement not covered" >      if (i &lt; retries - 1) {</span>
+<span class="cstat-no" title="statement not covered" >        logger.warn(`[${description}] Attempt ${i + 1} failed: ${error.message}. Retrying in ${currentDelay}ms...`);</span>
+<span class="cstat-no" title="statement not covered" >        await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, currentDelay))</span>;</span>
+<span class="cstat-no" title="statement not covered" >        currentDelay *= factor;</span>
       } else {
-        logger.error(`[${description}] All ${retries} attempts failed. Last error: ${error.message}`);
-        throw error;
+<span class="cstat-no" title="statement not covered" >        logger.error(`[${description}] All ${retries} attempts failed. Last error: ${error.message}`);</span>
+<span class="cstat-no" title="statement not covered" >        throw error;</span>
       }
     }
   }
@@ -238,7 +238,7 @@ export async function withRetry(operation, options = {}) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-17T10:40:09.643Z
+                at 2026-02-21T09:57:40.349Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -1,14 +1,16 @@
-/** AI-Enhanced Twitter Activity Task using AITwitterAgent. Customize via config/settings.json or env vars. */
-import { getLoggingConfig, formatEngagementLine, formatEngagementSummary } from '../utils/logging-config.js';
+/**
+ * AI-Enhanced Twitter Activity Task using AITwitterAgent
+ * Customize via config/settings.json or env vars
+ * @module tasks/ai-twitterActivity
+ */
+
+import { getLoggingConfig, formatEngagementSummary } from '../utils/logging-config.js';
 import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
 import { mathUtils } from '../utils/mathUtils.js';
-import { GhostCursor } from '../utils/ghostCursor.js';
-import { entropy } from '../utils/entropyController.js';
 import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
 import { applyHumanizationPatch } from '../utils/browserPatch.js';
-import { sessionPhases } from '../utils/session-phases.js';
 import { humanTiming } from '../utils/human-timing.js';
 import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
 import { config } from '../utils/config-service.js';
@@ -19,8 +21,8 @@ import PopupCloser from '../utils/popup-closer.js';
 
 const TARGET_URL = 'https://x.com';
 const DEFAULT_CYCLES = 20;
-const DEFAULT_MIN_DURATION = 360;
-const DEFAULT_MAX_DURATION = 540;
+const DEFAULT_MIN_DURATION = 360; // 6 minutes
+const DEFAULT_MAX_DURATION = 600; // 10 minutes
 const WAIT_UNTIL = 'domcontentloaded';
 
 // Config service: settings.json + env var overrides.
@@ -29,49 +31,54 @@ const LOGIN_CHECK_LOOPS = 3;
 const LOGIN_CHECK_DELAY = 3000;
 const PAGE_TIMEOUT_MS = 60000;
 const ENTRY_POINTS = [
-    { url: 'https://x.com/', weight: 80 },
-    { url: 'https://x.com/explore', weight: 5 },
-    { url: 'https://x.com/notifications', weight: 5 },
-    { url: 'https://x.com/notifications/mentions', weight: 3 },
-    { url: 'https://x.com/explore/tabs/for_you', weight: 1 },
-    { url: 'https://x.com/explore/tabs/trending', weight: 1 },
+    // Primary Entry (Remainder: 100% - 32% - 4% - 5% = 59%)
+    { url: 'https://x.com/', weight: 59 },
+
+    // 4% Weight Group (Total 32%)
+    { url: 'https://x.com/i/jf/global-trending/home', weight: 4 },
+    { url: 'https://x.com/explore', weight: 4 },
+    { url: 'https://x.com/explore/tabs/for-you', weight: 4 },
+    { url: 'https://x.com/explore/tabs/trending', weight: 4 },
+    { url: 'https://x.com/i/bookmarks', weight: 4 },
+    { url: 'https://x.com/notifications', weight: 4 },
+    { url: 'https://x.com/notifications/mentions', weight: 4 },
+    { url: 'https://x.com/i/chat/', weight: 4 },
+
+    // 2% Weight Group (Total 4%)
+    { url: 'https://x.com/i/connect_people?show_topics=false', weight: 2 },
+    { url: 'https://x.com/i/connect_people?is_creator_only=true', weight: 2 },
+
+    // Legacy/Supplementary Exploratory Points (1% each to fill entropy, Total 5%)
     { url: 'https://x.com/explore/tabs/news', weight: 1 },
     { url: 'https://x.com/explore/tabs/sports', weight: 1 },
-    { url: 'https://x.com/explore/tabs/entertai', weight: 1 },
-    { url: 'https://x.com/i/connect_people?show_topics=false', weight: 1 },
-    { url: 'https://x.com/i/connect_people?is_creator_only=true', weight: 1 }
+    { url: 'https://x.com/explore/tabs/entertainment', weight: 1 },
+    { url: 'https://x.com/explore/tabs/for_you', weight: 1 }, // Note: legacy underscore version
+    { url: 'https://x.com/notifications', weight: 1 }        // Secondary notification hit
 ];
+
+function selectEntryPoint() {
+    const totalWeight = ENTRY_POINTS.reduce((sum, ep) => sum + ep.weight, 0);
+    let random = Math.random() * totalWeight;
+
+    for (const entry of ENTRY_POINTS) {
+        random -= entry.weight;
+        if (random <= 0) {
+            return entry.url;
+        }
+    }
+
+    return ENTRY_POINTS[0].url;
+}
 
 // Env vars examples: TWITTER_ACTIVITY_CYCLES, TWITTER_REPLY_PROBABILITY.
 
-const createAsyncLock = () => {
-    let chain = Promise.resolve();
-    return async (task) => {
-        const previous = chain;
-        let release = () => {};
-        chain = new Promise(resolve => {
-            release = resolve;
-        });
-        try {
-            await previous.catch(() => {});
-            return await task();
-        } finally {
-            release();
-        }
-    };
-};
-
-const selectEntryPoint = () => {
-    const total = ENTRY_POINTS.reduce((sum, entry) => sum + entry.weight, 0);
-    let roll = Math.random() * total;
-    for (const entry of ENTRY_POINTS) {
-        roll -= entry.weight;
-        if (roll <= 0) return entry.url;
-    }
-    return ENTRY_POINTS[0].url;
-};
-
-/** AI-Enhanced Twitter Activity Task. Config priority: Env Vars > settings.json > defaults. */
+/**
+ * AI-Enhanced Twitter Activity Task
+ * Config priority: Env Vars > settings.json > defaults
+ * @param {object} page - Playwright page instance
+ * @param {object} payload - Task payload with configuration
+ * @returns {Promise<object>} Task result
+ */
 export default async function aiTwitterActivityTask(page, payload) {
     const startTime = process.hrtime.bigint();
     const browserInfo = payload.browserInfo || "unknown_profile";
@@ -98,7 +105,7 @@ export default async function aiTwitterActivityTask(page, payload) {
         const resolved = payload.profileId
             ? (profileManager.getById(payload.profileId) || profileManager.getStarter())
             : profileManager.getStarter();
-        
+
         if (resolved) {
             const profileDesc = `${resolved.id}-${resolved.type} | Input: ${resolved.inputMethod} (${resolved.inputMethodPct}%) | Dive: ${resolved.probabilities.dive}% | Like: ${resolved.probabilities.like}% | Follow: ${resolved.probabilities.follow}%`;
             logger.info(`[ai-twitterActivity] Profile: ${profileDesc}`);
@@ -110,12 +117,11 @@ export default async function aiTwitterActivityTask(page, payload) {
     logger.info(`[ai-twitterActivity] ⏳ Startup: Running parallel initialization (Jitter: ${startupJitter}ms)...`);
 
     // --- PARALLEL INITIALIZATION ---
-    let taskConfig, profile, warmupResult;
+    let taskConfig, profile;
     try {
-        [taskConfig, profile, warmupResult] = await Promise.all([
+        [taskConfig, profile] = await Promise.all([
             loadAiTwitterActivityConfig(payload),
             Promise.resolve().then(resolveProfile),
-            handleLLMWarmup(),
             new Promise(resolve => setTimeout(resolve, startupJitter))
         ]);
 
@@ -134,14 +140,11 @@ export default async function aiTwitterActivityTask(page, payload) {
     let getQueueStats = () => null;
     let getEngagementProgress = () => null;
     let sessionStart;
-    let cursor = null;
-    let cleanupPerformed = false;
     let popupCloser;
     let hasPopupCloser = false;
-    let stopPopupCloser = () => {};
+    let stopPopupCloser = () => { };
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
-    const withPageLock = createAsyncLock();
 
     const throwIfAborted = () => {
         if (abortSignal.aborted) {
@@ -151,7 +154,10 @@ export default async function aiTwitterActivityTask(page, payload) {
     };
 
     try {
-        const hardTimeoutMs = payload.taskTimeoutMs || (DEFAULT_MIN_DURATION + DEFAULT_MAX_DURATION) * 1000;
+        const hardTimeoutMs = payload.taskTimeoutMs || Math.max(
+            DEFAULT_MIN_DURATION * 1000, // Minimum 6 minutes
+            Math.min(DEFAULT_MAX_DURATION * 1000, DEFAULT_MAX_DURATION * 1000) // Maximum 10 minutes
+        );
         let timeoutId;
 
         try {
@@ -167,8 +173,7 @@ export default async function aiTwitterActivityTask(page, payload) {
                             }
 
                             throwIfAborted();
-                            
-                            cursor = new GhostCursor(page, logger);
+
                             agent = new AITwitterAgent(page, profile, logger, {
                                 replyProbability: taskConfig.engagement.probabilities.reply,
                                 quoteProbability: taskConfig.engagement.probabilities.quote,
@@ -181,6 +186,9 @@ export default async function aiTwitterActivityTask(page, payload) {
                             getQueueStats = () => agent.diveQueue?.getFullStatus?.();
                             getEngagementProgress = () => agent.diveQueue?.getEngagementProgress?.();
                             sessionStart = agent.sessionStart;
+
+                            // Using DiveQueue for proper lock management
+                            const withPageLock = agent.diveQueue.add.bind(agent.diveQueue);
 
                             if (taskConfig.system.debugMode) {
                                 logger.info(`[ai-twitterActivity] AITwitterAgent initialized with reply=${taskConfig.engagement.probabilities.reply}`);
@@ -196,9 +204,15 @@ export default async function aiTwitterActivityTask(page, payload) {
                                     lock: withPageLock,
                                     signal: abortSignal
                                 });
-                                stopPopupCloser = popupCloser.stop.bind(popupCloser);
+                                stopPopupCloser = async () => {
+                                    try {
+                                        await popupCloser.stop();
+                                    } catch (error) {
+                                        logger.warn(`[ai-twitterActivity] Popup closer stop failed: ${error.message}`);
+                                    }
+                                };
                                 hasPopupCloser = true;
-                                popupCloser.start();
+                                await popupCloser.start();
                             }
 
                             const wakeUp = humanTiming.getWarmupDelay({
@@ -219,7 +233,8 @@ export default async function aiTwitterActivityTask(page, payload) {
                             }));
 
                             const entryUrl = selectEntryPoint();
-                            logger.info(`[ai-twitterActivity] Navigating to ${entryUrl} (random entry point)`);
+                            const entryName = entryUrl.replace('https://x.com/', '').replace('https://x.com', '') || 'home';
+                            logger.info(`[ai-twitterActivity] 🎲 Rolled entry point: ${entryName} → ${entryUrl}`);
                             await withPageLock(async () => page.goto(entryUrl, { waitUntil: WAIT_UNTIL, timeout: PAGE_TIMEOUT_MS }));
 
                             const xLoaded = await withPageLock(async () => Promise.race([
@@ -231,26 +246,29 @@ export default async function aiTwitterActivityTask(page, payload) {
 
                             logger.info(`[ai-twitterActivity] X.com loaded (${xLoaded || 'partial'})`);
 
-                            const idleTimeout = xLoaded ? 4000 : 10000;
+                            const idleTimeout = xLoaded ? 12000 : 20000;
                             logger.info(`[ai-twitterActivity] Waiting for network settlement (${idleTimeout}ms)...`);
 
                             try {
                                 await withPageLock(async () => page.waitForLoadState('networkidle', { timeout: idleTimeout }));
                                 logger.info(`[ai-twitterActivity] Network idle reached.`);
-                            } catch (e) {
+                            } catch (_e) {
                                 logger.info(`[ai-twitterActivity] Network active, proceeding after ${idleTimeout}ms...`);
                             }
 
                             const currentUrl = page.url();
                             const onHome = currentUrl.includes('/home') || currentUrl === 'https://x.com/' || currentUrl === 'https://x.com';
                             if (!onHome) {
-                                const scrollDuration = mathUtils.randomInRange(3000, 5000);
+                                const scrollDuration = mathUtils.randomInRange(10000, 20000);
+                                const scrollDurationSec = (scrollDuration / 1000).toFixed(2);
+                                logger.info(`[ai-twitterActivity] 📖 Simulating reading on ${entryName} for ${scrollDurationSec}s...`);
                                 const scrollStart = Date.now();
                                 while (Date.now() - scrollStart < scrollDuration) {
                                     const delta = mathUtils.randomInRange(200, 600);
                                     await withPageLock(async () => page.mouse.wheel(0, delta));
                                     await page.waitForTimeout(mathUtils.randomInRange(200, 500));
                                 }
+                                logger.info(`[ai-twitterActivity] ✅ Finished reading, navigating to home...`);
                                 await withPageLock(async () => agent.navigateHome());
                             }
 
@@ -324,7 +342,7 @@ export default async function aiTwitterActivityTask(page, payload) {
         logger.error(`[ai-twitterActivity] Error: ${error.message}`);
     } finally {
         // CRITICAL: Cleanup flag set first to prevent race conditions and ensure single execution.
-        cleanupPerformed = true;
+        // cleanupPerformed = true;
 
         if (hasAgent) {
             const agentStateSnapshot = { ...agentState };
@@ -380,8 +398,8 @@ export default async function aiTwitterActivityTask(page, payload) {
         // Close page with error logging.
         try {
             if (hasPopupCloser) {
-                stopPopupCloser();
-                stopPopupCloser = () => {};
+                await stopPopupCloser();
+                stopPopupCloser = () => { };
                 hasPopupCloser = false;
             }
             if (page && !page.isClosed()) {
