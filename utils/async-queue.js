@@ -108,7 +108,9 @@ export class AsyncQueue {
             const item = this.queue.shift();
             const startTime = Date.now();
 
-            this.logger.debug(`[AsyncQueue] Starting task: ${item.taskName} (queue: ${this.queue.length}, active: ${this.active.size}/${this.maxConcurrent})`);
+            if (item.taskName !== 'unnamed') {
+                this.logger.debug(`[AsyncQueue] Starting task: ${item.taskName} (queue: ${this.queue.length}, active: ${this.active.size}/${this.maxConcurrent})`);
+            }
 
             // Track active task
             this.active.set(item.id, {
@@ -120,7 +122,9 @@ export class AsyncQueue {
             let timeoutId;
             const timeoutPromise = new Promise((_, reject) => {
                 timeoutId = setTimeout(() => {
-                    this.logger.warn(`[AsyncQueue] ⚠ Task timeout reached: ${item.timeout}ms for ${item.taskName}`);
+                    if (item.taskName !== 'unnamed') {
+                        this.logger.warn(`[AsyncQueue] ⚠ Task timeout reached: ${item.timeout}ms for ${item.taskName}`);
+                    }
                     reject(new Error('timeout'));
                 }, item.timeout);
             });
@@ -130,28 +134,42 @@ export class AsyncQueue {
                     this._executeTask(item),
                     timeoutPromise
                 ]);
-                
+
                 clearTimeout(timeoutId);
 
                 const processingTime = Date.now() - startTime;
                 this.stats.totalCompleted++;
                 this._updateAverageStats('processing', processingTime);
 
-                this.logger.info(`[AsyncQueue] ✓ Completed task: ${item.taskName} in ${processingTime}ms`);
+                if (item.taskName !== 'unnamed') {
+                    this.logger.info(`[AsyncQueue] ✓ Completed task: ${item.taskName} in ${processingTime}ms`);
+                }
                 item.resolve({ success: true, result, taskName: item.taskName, processingTime });
 
             } catch (error) {
                 const isTimeout = error.message === 'timeout';
                 const processingTime = Date.now() - startTime;
 
+                // Get just the first line of the error to avoid huge Playwright traces
+                const shortError = error.message ? error.message.split('\n')[0] : 'Unknown error';
+                const isExpectedTimeout = shortError.includes('Timeout') || shortError.includes('Target page, context or browser has been closed');
+
                 if (isTimeout) {
                     this.stats.totalTimedOut++;
                     this.timedOutCount++;
-                    this.logger.warn(`[AsyncQueue] ⚠ Task timed out: ${item.taskName} after ${processingTime}ms`);
+                    if (item.taskName !== 'unnamed') {
+                        this.logger.warn(`[AsyncQueue] ⚠ Task timed out: ${item.taskName} after ${processingTime}ms`);
+                    }
                 } else {
                     this.stats.totalFailed++;
                     this.failedCount++;
-                    this.logger.error(`[AsyncQueue] ✗ Task failed: ${item.taskName} - ${error.message}`);
+
+                    if (item.taskName === 'unnamed' && isExpectedTimeout) {
+                        // Expected timeout behavior for background tasks, log silently
+                        this.logger.debug(`[AsyncQueue] ⚡ Background task expected timeout: ${shortError}`);
+                    } else {
+                        this.logger.error(`[AsyncQueue] ✗ Task failed: ${item.taskName} - ${shortError}`);
+                    }
                 }
 
                 item.resolve({

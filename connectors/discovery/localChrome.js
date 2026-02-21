@@ -3,13 +3,27 @@
  * @module connectors/discovery/localChrome
  */
 
+import BaseDiscover from '../baseDiscover.js';
+
 /**
- * Discovers local Chrome browser instances
- * @returns {Promise<Array>} Array of browser endpoints
+ * @class LocalChromeDiscover
+ * @extends BaseDiscover
+ * @description Discovers local Chrome browser instances
  */
-async function discover() {
-  // Placeholder for local Chrome discovery logic
-  return [];
+class LocalChromeDiscover extends BaseDiscover {
+  constructor() {
+    super();
+    this.browserType = 'localChrome';
+  }
+
+  /**
+   * Discovers local Chrome browser instances
+   * @returns {Promise<Array>} Array of browser endpoints
+   */
+  async discover() {
+    // Placeholder for local Chrome discovery logic
+    return [];
+  }
 }
 
-export { discover };
+export default LocalChromeDiscover;

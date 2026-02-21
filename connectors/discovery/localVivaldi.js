@@ -3,12 +3,26 @@
  * @module connectors/discovery/localVivaldi
  */
 
+import BaseDiscover from '../baseDiscover.js';
+
 /**
- * Discovers local Vivaldi browser instances
- * @returns {Promise<Array>} Array of browser endpoints
+ * @class LocalVivaldiDiscover
+ * @extends BaseDiscover
+ * @description Discovers local Vivaldi browser instances
  */
-async function discover() {
-  return [];
+class LocalVivaldiDiscover extends BaseDiscover {
+  constructor() {
+    super();
+    this.browserType = 'localVivaldi';
+  }
+
+  /**
+   * Discovers local Vivaldi browser instances
+   * @returns {Promise<Array>} Array of browser endpoints
+   */
+  async discover() {
+    return [];
+  }
 }
 
-export { discover };
+export default LocalVivaldiDiscover;

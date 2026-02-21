@@ -3,12 +3,26 @@
  * @module connectors/discovery/localEdge
  */
 
+import BaseDiscover from '../baseDiscover.js';
+
 /**
- * Discovers local Edge browser instances
- * @returns {Promise<Array>} Array of browser endpoints
+ * @class LocalEdgeDiscover
+ * @extends BaseDiscover
+ * @description Discovers local Edge browser instances
  */
-async function discover() {
-  return [];
+class LocalEdgeDiscover extends BaseDiscover {
+  constructor() {
+    super();
+    this.browserType = 'localEdge';
+  }
+
+  /**
+   * Discovers local Edge browser instances
+   * @returns {Promise<Array>} Array of browser endpoints
+   */
+  async discover() {
+    return [];
+  }
 }
 
-export { discover };
+export default LocalEdgeDiscover;

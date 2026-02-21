@@ -39,3 +39,5 @@
 21-02-2026--22:18 > main.js > Removed duplicate "Adding specified tasks to the queue..." log (was logged twice at lines 90-91)
 21-02-2026--22:18 > tasks/ai-twitterActivity.js > Raised idleTimeout from 4000→12000ms (xLoaded) and 10000→20000ms (!xLoaded) to reduce waitForLoadState networkidle timeout noise
 22-02-2026--04-54 > core/orchestrator.js, utils/logger.js > Implemented AsyncLocalStorage to prepend [taskName][sessId] to all task logs and fixed case-sensitive duplicates.
+22-02-2026--06-20 > connectors/discovery/localChrome.js, localEdge.js, localVivaldi.js, morelogin.js > export default class extending BaseDiscover
+22-02-2026--06-29 > utils/async-queue.js > silenced console logs for unnamed background tasks and expected timeouts

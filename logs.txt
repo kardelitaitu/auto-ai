@@ -1,221 +1,119 @@
-{"timestamp":"2026-02-21T21:52:40.663Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=399 y=715 [Tweet Permalink]"}
-{"timestamp":"2026-02-21T21:52:40.735Z","level":"INFO","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Added new entry: {}"}
-{"timestamp":"2026-02-21T21:52:40.736Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] Starting task: unnamed"}
-{"timestamp":"2026-02-21T21:52:42.196Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=400 y=715 [Tweet Permalink]"}
-{"timestamp":"2026-02-21T21:52:42.196Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=400 y=715"}
-{"timestamp":"2026-02-21T21:52:57.197Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Fail] Ghost Click did not navigate. Retrying with NATIVE click..."}
-{"timestamp":"2026-02-21T21:52:57.328Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Success] Native Click navigated to tweet."}
-{"timestamp":"2026-02-21T21:52:57.328Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Tracking new tweet 2025110290388713777"}
-{"timestamp":"2026-02-21T21:52:57.329Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-02-21T21:52:57.683Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Found tweet text (46 chars) using [data-testid=\"tweetText\"]"}
-{"timestamp":"2026-02-21T21:52:57.684Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.5,\"quote\":0.166,\"like\":0.125,\"bookmark\":0.041,\"retweet\":0.166}"}
-{"timestamp":"2026-02-21T21:52:57.684Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ActionRunner] Selected: like (roll: 75.3%, prob: 12.5%)"}
-{"timestamp":"2026-02-21T21:52:57.685Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI-Engage] Selected: LIKE"}
-{"timestamp":"2026-02-21T21:52:57.685Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1771710757482_d6hbf"}
-{"timestamp":"2026-02-21T21:52:57.685Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1771710757482_d6hbf, timeout: 120000ms"}
-{"timestamp":"2026-02-21T21:52:57.686Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1771710757482_d6hbf (queue: 0, active: 0/1)"}
-{"timestamp":"2026-02-21T21:52:57.686Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1771710757482_d6hbf"}
-{"timestamp":"2026-02-21T21:52:57.687Z","level":"INFO","module":"ai-twitter-like.js","sessionId":null,"message":"[LikeAction] Executing like"}
-{"timestamp":"2026-02-21T21:52:58.220Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[Fallback] All 4 selectors failed"}
-{"timestamp":"2026-02-21T21:52:58.452Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Like] ⚠️ Element may be covered, trying scroll adjustment..."}
-{"timestamp":"2026-02-21T21:52:58.971Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Action] ❤ Like (selector: button[data-testid=\"like\"][role=\"button\"])"}
-{"timestamp":"2026-02-21T21:52:58.971Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Like Button for 380ms..."}
-{"timestamp":"2026-02-21T21:53:00.622Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=493 y=314 [Like Button]"}
-{"timestamp":"2026-02-21T21:53:01.936Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=492 y=314 [Like Button]"}
-{"timestamp":"2026-02-21T21:53:01.937Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=492 y=314"}
-{"timestamp":"2026-02-21T21:53:03.717Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Like] ✓ Successfully liked tweet"}
-{"timestamp":"2026-02-21T21:53:03.717Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] ✓ Engagement recorded: likes (1/5)"}
-{"timestamp":"2026-02-21T21:53:03.718Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Engagement] 1/5 Likes given"}
-{"timestamp":"2026-02-21T21:53:03.718Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] Returning to Home Feed..."}
-{"timestamp":"2026-02-21T21:53:03.721Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Clicking 'X Logo' (1st click for reload)..."}
-{"timestamp":"2026-02-21T21:53:03.722Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about X Logo for 374ms..."}
-{"timestamp":"2026-02-21T21:53:05.302Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=130 y=26 [X Logo]"}
-{"timestamp":"2026-02-21T21:53:07.012Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=129 y=27 [X Logo]"}
-{"timestamp":"2026-02-21T21:53:07.012Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=129 y=27"}
-{"timestamp":"2026-02-21T21:53:07.013Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Interaction] [X Logo] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:53:08.277Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Clicking 'X Logo' again (2nd click to reload)..."}
-{"timestamp":"2026-02-21T21:53:08.278Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about X Logo for 300ms..."}
-{"timestamp":"2026-02-21T21:53:09.770Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=125 y=30 [X Logo]"}
-{"timestamp":"2026-02-21T21:53:10.858Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=126 y=30 [X Logo]"}
-{"timestamp":"2026-02-21T21:53:10.858Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=126 y=30"}
-{"timestamp":"2026-02-21T21:53:10.858Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Interaction] [X Logo] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:53:11.706Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Navigate to /home Success."}
-{"timestamp":"2026-02-21T21:53:11.716Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Tab] \"For you\" is already selected."}
-{"timestamp":"2026-02-21T21:53:13.542Z","level":"INFO","module":"ai-twitter-like.js","sessionId":null,"message":"[LikeAction] ✅ Like posted"}
-{"timestamp":"2026-02-21T21:53:13.542Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI-Engage] ✅ like executed: success"}
-{"timestamp":"2026-02-21T21:53:13.543Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1771710757482_d6hbf"}
-{"timestamp":"2026-02-21T21:53:13.543Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1771710757482_d6hbf in 15858ms"}
-{"timestamp":"2026-02-21T21:53:13.543Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] Starting task: unnamed (queue: 0, active: 0/1)"}
-{"timestamp":"2026-02-21T21:53:13.544Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Dive] Action successful, skipping reading phase and returning home..."}
-{"timestamp":"2026-02-21T21:53:13.545Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] Already on home page"}
-{"timestamp":"2026-02-21T21:53:13.552Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: unnamed in 8ms"}
-{"timestamp":"2026-02-21T21:53:14.054Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] ✓ Successfully returned to home"}
-{"timestamp":"2026-02-21T21:53:15.309Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
-{"timestamp":"2026-02-21T21:53:15.309Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Branch] Idle (Staring at screen)"}
-{"timestamp":"2026-02-21T21:53:26.107Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] --- Loop 4  ---"}
-{"timestamp":"2026-02-21T21:53:28.992Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Idle] Reading Phase (28.5s)"}
-{"timestamp":"2026-02-21T21:53:42.567Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔍 Starting SCAN phase for dive_1771710822566_5tzye"}
-{"timestamp":"2026-02-21T21:53:42.567Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-02-21T21:53:42.602Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-02-21T21:53:43.708Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Debug] Target: Box=x:432,y:976"}
-{"timestamp":"2026-02-21T21:53:43.708Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-02-21T21:53:43.708Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Tweet Permalink for 300ms..."}
-{"timestamp":"2026-02-21T21:53:45.303Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=510 y=877 [Tweet Permalink]"}
-{"timestamp":"2026-02-21T21:53:46.672Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=509 y=877 [Tweet Permalink]"}
-{"timestamp":"2026-02-21T21:53:46.672Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=509 y=877"}
-{"timestamp":"2026-02-21T21:54:01.678Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Fail] Ghost Click did not navigate. Retrying with NATIVE click..."}
-{"timestamp":"2026-02-21T21:54:01.789Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Success] Native Click navigated to tweet."}
-{"timestamp":"2026-02-21T21:54:01.790Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Tracking new tweet 2025054011888730475"}
-{"timestamp":"2026-02-21T21:54:01.790Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-02-21T21:54:02.110Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Found tweet text (7 chars) using [data-testid=\"tweetText\"]"}
-{"timestamp":"2026-02-21T21:54:02.115Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Found tweet text (15 chars) using article [role=\"group\"]"}
-{"timestamp":"2026-02-21T21:54:02.116Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.5,\"quote\":0.166,\"like\":0.125,\"bookmark\":0.041,\"retweet\":0.166}"}
-{"timestamp":"2026-02-21T21:54:02.116Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ActionRunner] Selected: like (roll: 69.4%, prob: 12.5%)"}
-{"timestamp":"2026-02-21T21:54:02.117Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI-Engage] Selected: LIKE"}
-{"timestamp":"2026-02-21T21:54:02.117Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1771710822566_5tzye"}
-{"timestamp":"2026-02-21T21:54:02.117Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1771710822566_5tzye, timeout: 120000ms"}
-{"timestamp":"2026-02-21T21:54:02.118Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1771710822566_5tzye (queue: 0, active: 0/1)"}
-{"timestamp":"2026-02-21T21:54:02.118Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1771710822566_5tzye"}
-{"timestamp":"2026-02-21T21:54:02.119Z","level":"INFO","module":"ai-twitter-like.js","sessionId":null,"message":"[LikeAction] Executing like"}
-{"timestamp":"2026-02-21T21:54:02.644Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[Fallback] All 4 selectors failed"}
-{"timestamp":"2026-02-21T21:54:02.874Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Like] ⚠️ Element may be covered, trying scroll adjustment..."}
-{"timestamp":"2026-02-21T21:54:03.408Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Action] ❤ Like (selector: button[data-testid=\"like\"][role=\"button\"])"}
-{"timestamp":"2026-02-21T21:54:03.409Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Like Button for 300ms..."}
-{"timestamp":"2026-02-21T21:54:05.091Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=495 y=318 [Like Button]"}
-{"timestamp":"2026-02-21T21:54:06.386Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=494 y=319 [Like Button]"}
-{"timestamp":"2026-02-21T21:54:06.386Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=494 y=319"}
-{"timestamp":"2026-02-21T21:54:08.146Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Like] ✓ Successfully liked tweet"}
-{"timestamp":"2026-02-21T21:54:08.147Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] ✓ Engagement recorded: likes (2/5)"}
-{"timestamp":"2026-02-21T21:54:08.147Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Engagement] 2/5 Likes given"}
-{"timestamp":"2026-02-21T21:54:08.147Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] Returning to Home Feed..."}
-{"timestamp":"2026-02-21T21:54:08.150Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Clicking 'Home Icon' (1st click for reload)..."}
-{"timestamp":"2026-02-21T21:54:08.151Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Home Icon for 492ms..."}
-{"timestamp":"2026-02-21T21:54:09.714Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=133 y=79 [Home Icon]"}
-{"timestamp":"2026-02-21T21:54:11.107Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=134 y=79 [Home Icon]"}
-{"timestamp":"2026-02-21T21:54:11.107Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=134 y=79"}
-{"timestamp":"2026-02-21T21:54:11.108Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:54:12.068Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
-{"timestamp":"2026-02-21T21:54:12.068Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Home Icon for 300ms..."}
-{"timestamp":"2026-02-21T21:54:13.411Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=160 y=75 [Home Icon]"}
-{"timestamp":"2026-02-21T21:54:14.448Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=160 y=74 [Home Icon]"}
-{"timestamp":"2026-02-21T21:54:14.449Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=160 y=74"}
-{"timestamp":"2026-02-21T21:54:14.449Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:54:15.140Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Navigate to /home Success."}
-{"timestamp":"2026-02-21T21:54:15.150Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Tab] \"For you\" is already selected."}
-{"timestamp":"2026-02-21T21:54:16.939Z","level":"INFO","module":"ai-twitter-like.js","sessionId":null,"message":"[LikeAction] ✅ Like posted"}
-{"timestamp":"2026-02-21T21:54:16.939Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI-Engage] ✅ like executed: success"}
-{"timestamp":"2026-02-21T21:54:16.940Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1771710822566_5tzye"}
-{"timestamp":"2026-02-21T21:54:16.940Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1771710822566_5tzye in 14822ms"}
-{"timestamp":"2026-02-21T21:54:16.941Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Dive] Action successful, skipping reading phase and returning home..."}
-{"timestamp":"2026-02-21T21:54:16.941Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] Already on home page"}
-{"timestamp":"2026-02-21T21:54:17.450Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] ✓ Successfully returned to home"}
-{"timestamp":"2026-02-21T21:54:18.803Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
-{"timestamp":"2026-02-21T21:54:18.803Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Branch] Refresh Feed"}
-{"timestamp":"2026-02-21T21:54:18.803Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] Returning to Home Feed..."}
-{"timestamp":"2026-02-21T21:54:18.807Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Clicking 'Home Icon' (1st click for reload)..."}
-{"timestamp":"2026-02-21T21:54:18.807Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Home Icon for 388ms..."}
-{"timestamp":"2026-02-21T21:54:20.190Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=129 y=85 [Home Icon]"}
-{"timestamp":"2026-02-21T21:54:21.086Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=130 y=84 [Home Icon]"}
-{"timestamp":"2026-02-21T21:54:21.087Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=130 y=84"}
-{"timestamp":"2026-02-21T21:54:21.087Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:54:22.338Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
-{"timestamp":"2026-02-21T21:54:22.339Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Home Icon for 563ms..."}
-{"timestamp":"2026-02-21T21:54:24.261Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=144 y=86 [Home Icon]"}
-{"timestamp":"2026-02-21T21:54:25.164Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=145 y=86 [Home Icon]"}
-{"timestamp":"2026-02-21T21:54:25.165Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=145 y=86"}
-{"timestamp":"2026-02-21T21:54:25.165Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:54:25.873Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Navigate to /home Success."}
-{"timestamp":"2026-02-21T21:54:25.883Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Tab] \"For you\" is already selected."}
-{"timestamp":"2026-02-21T21:54:27.172Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] --- Loop 5  ---"}
-{"timestamp":"2026-02-21T21:54:30.132Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Idle] Reading Phase (55.7s)"}
-{"timestamp":"2026-02-21T21:54:36.547Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔍 Starting SCAN phase for dive_1771710876546_tc7us"}
-{"timestamp":"2026-02-21T21:54:36.547Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-02-21T21:54:36.574Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-02-21T21:54:38.258Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Debug] Target: Box=x:357,y:-460"}
-{"timestamp":"2026-02-21T21:54:38.258Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-02-21T21:54:38.259Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Tweet Permalink for 459ms..."}
-{"timestamp":"2026-02-21T21:54:40.059Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=369 y=315 [Tweet Permalink]"}
-{"timestamp":"2026-02-21T21:54:41.303Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=369 y=314 [Tweet Permalink]"}
-{"timestamp":"2026-02-21T21:54:41.304Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=369 y=314"}
-{"timestamp":"2026-02-21T21:54:41.305Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Success] Navigated to tweet page."}
-{"timestamp":"2026-02-21T21:54:41.305Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Debug] Tweet URL: https://x.com/drawalov/status/2025175281192067531"}
-{"timestamp":"2026-02-21T21:54:41.305Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Tracking new tweet 2025175281192067531"}
-{"timestamp":"2026-02-21T21:54:41.305Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-02-21T21:54:41.645Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Found tweet text (67 chars) using [data-testid=\"tweetText\"]"}
-{"timestamp":"2026-02-21T21:54:41.645Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.5,\"quote\":0.166,\"like\":0.125,\"bookmark\":0.041,\"retweet\":0.166}"}
-{"timestamp":"2026-02-21T21:54:41.645Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ActionRunner] Selected: reply (roll: 5.3%, prob: 50.0%)"}
-{"timestamp":"2026-02-21T21:54:41.646Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI-Engage] Selected: REPLY"}
-{"timestamp":"2026-02-21T21:54:41.646Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI-Engage] Pre-fetching context for reply..."}
-{"timestamp":"2026-02-21T21:54:41.649Z","level":"INFO","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Starting comprehensive reply extraction..."}
-{"timestamp":"2026-02-21T21:54:41.649Z","level":"DEBUG","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Step 1: Slowly scrolling to load all replies..."}
-{"timestamp":"2026-02-21T21:54:54.540Z","level":"DEBUG","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Step 2: Extracting while scrolling up..."}
-{"timestamp":"2026-02-21T21:54:55.917Z","level":"DEBUG","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Strategy 1: Extracting from article elements..."}
-{"timestamp":"2026-02-21T21:54:55.922Z","level":"DEBUG","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Found 1 articles"}
-{"timestamp":"2026-02-21T21:54:55.937Z","level":"DEBUG","module":"ai-context-engine.js","sessionId":null,"message":"[extractReplyFromArticle] Extracted: @drawalov: \"Click to Follow drawalov...\""}
-{"timestamp":"2026-02-21T21:54:55.938Z","level":"DEBUG","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Strategy 1 extracted 12 replies"}
-{"timestamp":"2026-02-21T21:54:55.938Z","level":"DEBUG","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Strategy 2: Using tweetText selectors..."}
-{"timestamp":"2026-02-21T21:54:55.942Z","level":"INFO","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Final reply count: 12 (from 12 candidates)"}
-{"timestamp":"2026-02-21T21:54:56.517Z","level":"INFO","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Captured screenshot of tweet with image"}
-{"timestamp":"2026-02-21T21:54:56.517Z","level":"INFO","module":"ai-context-engine.js","sessionId":null,"message":"[Context] Enhanced context: neutral, tone: serious, 12 replies, viral engagement"}
-{"timestamp":"2026-02-21T21:54:56.517Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1771710876546_tc7us"}
-{"timestamp":"2026-02-21T21:54:56.518Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1771710876546_tc7us, timeout: 120000ms"}
-{"timestamp":"2026-02-21T21:54:56.518Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1771710876546_tc7us (queue: 0, active: 0/1)"}
-{"timestamp":"2026-02-21T21:54:56.518Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1771710876546_tc7us"}
-{"timestamp":"2026-02-21T21:54:56.519Z","level":"INFO","module":"ai-twitter-reply.js","sessionId":null,"message":"[AIReplyAction] Executing reply to @drawalov"}
-{"timestamp":"2026-02-21T21:54:57.037Z","level":"INFO","module":"ai-twitter-reply.js","sessionId":null,"message":"[AIReplyAction] Using pre-calculated context"}
-{"timestamp":"2026-02-21T21:54:57.037Z","level":"INFO","module":"ai-twitter-reply.js","sessionId":null,"message":"[AIReplyAction] Context: 12 replies, sentiment: neutral"}
-{"timestamp":"2026-02-21T21:54:57.038Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Processing request: generate_reply"}
-{"timestamp":"2026-02-21T21:54:57.038Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Routing to local providers (vllm: false, ollama: true)"}
-{"timestamp":"2026-02-21T21:54:57.038Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Using vision mode with 12 replies context"}
-{"timestamp":"2026-02-21T21:54:57.039Z","level":"DEBUG","module":"local-client.js","sessionId":null,"message":"[Local] Falling back to Ollama..."}
-{"timestamp":"2026-02-21T21:54:57.042Z","level":"DEBUG","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Vision disabled in config for model hermes3:8b, ignoring image data"}
-{"timestamp":"2026-02-21T21:54:57.043Z","level":"DEBUG","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Using generate endpoint for hermes3:8b..."}
-{"timestamp":"2026-02-21T21:55:00.099Z","level":"SUCCESS","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Generate request completed in 3060ms"}
-{"timestamp":"2026-02-21T21:55:00.100Z","level":"SUCCESS","module":"local-client.js","sessionId":null,"message":"[Local] Ollama response in 3060ms"}
-{"timestamp":"2026-02-21T21:55:00.100Z","level":"SUCCESS","module":"agent-connector.js","sessionId":null,"message":"[null] Vision reply generated in 3062ms"}
-{"timestamp":"2026-02-21T21:55:00.100Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] processRequest returning: success=true, contentLen=21"}
-{"timestamp":"2026-02-21T21:55:00.101Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI] Executing reply with human-like behavior..."}
-{"timestamp":"2026-02-21T21:55:00.101Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReply] Executing reply (21 chars)..."}
-{"timestamp":"2026-02-21T21:55:00.101Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[MethodSelect] Selected: keyboard_shortcut (roll: 9.5, threshold: 40.0)"}
-{"timestamp":"2026-02-21T21:55:00.101Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReply] Using method: keyboard_shortcut"}
-{"timestamp":"2026-02-21T21:55:00.102Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[STEP] KEYBOARD_SHORTCUT: Starting"}
-{"timestamp":"2026-02-21T21:55:00.416Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[humanClick] Starting human-like click on Main Tweet"}
-{"timestamp":"2026-02-21T21:55:01.272Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=271 y=317 [Main Tweet]"}
-{"timestamp":"2026-02-21T21:55:02.188Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=271 y=318 [Main Tweet]"}
-{"timestamp":"2026-02-21T21:55:02.189Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[humanClick] Successfully clicked Main Tweet"}
-{"timestamp":"2026-02-21T21:55:02.189Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[safeHumanClick] [Main Tweet] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:55:04.203Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[Verify] Checking if composer is open..."}
-{"timestamp":"2026-02-21T21:55:04.725Z","level":"DEBUG","module":"human-interaction.js","sessionId":null,"message":"[Verify] Composer not open"}
-{"timestamp":"2026-02-21T21:55:04.725Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [WARN] [AI] Reply failed: composer_not_open (method: keyboard_shortcut)"}
-{"timestamp":"2026-02-21T21:55:04.725Z","level":"WARN","module":"ai-twitter-reply.js","sessionId":null,"message":"[AIReplyAction] ❌ Failed to physically post reply to page"}
-{"timestamp":"2026-02-21T21:55:04.726Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [AI-Engage] ❌ reply failed: ui_post_failed"}
-{"timestamp":"2026-02-21T21:55:04.726Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1771710876546_tc7us"}
-{"timestamp":"2026-02-21T21:55:04.726Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1771710876546_tc7us in 8208ms"}
-{"timestamp":"2026-02-21T21:55:04.727Z","level":"DEBUG","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] Starting task: unnamed (queue: 0, active: 0/1)"}
-{"timestamp":"2026-02-21T21:55:04.727Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Dive] Action successful, skipping reading phase and returning home..."}
-{"timestamp":"2026-02-21T21:55:04.732Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: unnamed in 5ms"}
-{"timestamp":"2026-02-21T21:55:05.247Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] Returning to Home Feed..."}
-{"timestamp":"2026-02-21T21:55:05.251Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Clicking 'Home Icon' (1st click for reload)..."}
-{"timestamp":"2026-02-21T21:55:05.251Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Home Icon for 504ms..."}
-{"timestamp":"2026-02-21T21:55:06.819Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=125 y=88 [Home Icon]"}
-{"timestamp":"2026-02-21T21:55:08.026Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=126 y=87 [Home Icon]"}
-{"timestamp":"2026-02-21T21:55:08.026Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=126 y=87"}
-{"timestamp":"2026-02-21T21:55:08.026Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:55:09.081Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
-{"timestamp":"2026-02-21T21:55:09.082Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Home Icon for 300ms..."}
-{"timestamp":"2026-02-21T21:55:10.693Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=148 y=86 [Home Icon]"}
-{"timestamp":"2026-02-21T21:55:11.801Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor clicked x=148 y=85 [Home Icon]"}
-{"timestamp":"2026-02-21T21:55:11.802Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [ai-twitterActivity][GhostClick] Clicked x=148 y=85"}
-{"timestamp":"2026-02-21T21:55:11.802Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-02-21T21:55:12.600Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Navigation] Navigate to /home Success."}
-{"timestamp":"2026-02-21T21:55:12.613Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Tab] \"For you\" is already selected."}
-{"timestamp":"2026-02-21T21:55:13.117Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] ✓ Successfully returned to home"}
-{"timestamp":"2026-02-21T21:55:15.279Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
-{"timestamp":"2026-02-21T21:55:20.454Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔍 Starting SCAN phase for dive_1771710920454_nm8vr"}
-{"timestamp":"2026-02-21T21:55:20.455Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-02-21T21:55:20.486Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-02-21T21:55:21.785Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Debug] Target: Box=x:416,y:305"}
-{"timestamp":"2026-02-21T21:55:21.786Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-02-21T21:55:21.786Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[Agent:46-NewsJunkie] [Human] Thinking about Tweet Permalink for 501ms..."}
-{"timestamp":"2026-02-21T21:55:23.425Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"ghostCursor moving to x=428 y=317 [Tweet Permalink]"}
-{"timestamp":"2026-02-21T21:55:23.681Z","level":"INFO","module":"main.js","sessionId":null,"message":"Received SIGINT. Shutting down gracefully..."}
+{"timestamp":"2026-02-21T23:30:22.087Z","level":"INFO","module":"banner","sessionId":null,"message":"Initializing Agent Environment..."}
+{"timestamp":"2026-02-21T23:30:22.088Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
+{"timestamp":"2026-02-21T23:30:22.089Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
+{"timestamp":"2026-02-21T23:30:22.091Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
+{"timestamp":"2026-02-21T23:30:22.092Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
+{"timestamp":"2026-02-21T23:30:22.092Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
+{"timestamp":"2026-02-21T23:30:22.129Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
+{"timestamp":"2026-02-21T23:30:22.129Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Started cleanup timer with 300000ms interval"}
+{"timestamp":"2026-02-21T23:30:22.130Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
+{"timestamp":"2026-02-21T23:30:22.133Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-02-21T23:30:22.133Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Loaded configuration: session=1800000ms, cleanup=300000ms, concurrency=2"}
+{"timestamp":"2026-02-21T23:30:22.133Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Stopped cleanup timer"}
+{"timestamp":"2026-02-21T23:30:22.134Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Started cleanup timer with 300000ms interval"}
+{"timestamp":"2026-02-21T23:30:22.312Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
+{"timestamp":"2026-02-21T23:30:22.314Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
+{"timestamp":"2026-02-21T23:30:22.316Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
+{"timestamp":"2026-02-21T23:30:22.316Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dashboard server started on port 3001 (broadcast every 2000ms)"}
+{"timestamp":"2026-02-21T23:30:22.317Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting browser discovery..."}
+{"timestamp":"2026-02-21T23:30:22.317Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Loaded configuration: session=1800000ms, cleanup=300000ms, concurrency=2"}
+{"timestamp":"2026-02-21T23:30:22.318Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Stopped cleanup timer"}
+{"timestamp":"2026-02-21T23:30:22.318Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Started cleanup timer with 300000ms interval"}
+{"timestamp":"2026-02-21T23:30:22.319Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
+{"timestamp":"2026-02-21T23:30:22.320Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
+{"timestamp":"2026-02-21T23:30:22.323Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-21T23:30:22.323Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
+{"timestamp":"2026-02-21T23:30:22.324Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
+{"timestamp":"2026-02-21T23:30:22.324Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
+{"timestamp":"2026-02-21T23:30:22.326Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-21T23:30:22.326Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
+{"timestamp":"2026-02-21T23:30:22.326Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
+{"timestamp":"2026-02-21T23:30:22.327Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
+{"timestamp":"2026-02-21T23:30:22.328Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-21T23:30:22.328Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
+{"timestamp":"2026-02-21T23:30:22.328Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
+{"timestamp":"2026-02-21T23:30:22.330Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-21T23:30:22.330Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
+{"timestamp":"2026-02-21T23:30:22.330Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
+{"timestamp":"2026-02-21T23:30:22.332Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-21T23:30:22.332Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
+{"timestamp":"2026-02-21T23:30:22.332Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
+{"timestamp":"2026-02-21T23:30:22.334Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-21T23:30:22.334Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
+{"timestamp":"2026-02-21T23:30:22.334Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
+{"timestamp":"2026-02-21T23:30:22.336Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-21T23:30:22.336Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
+{"timestamp":"2026-02-21T23:30:22.337Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
+{"timestamp":"2026-02-21T23:30:22.337Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
+{"timestamp":"2026-02-21T23:30:22.339Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-21T23:30:22.339Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
+{"timestamp":"2026-02-21T23:30:22.339Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
+{"timestamp":"2026-02-21T23:30:22.339Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
+{"timestamp":"2026-02-21T23:30:22.340Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
+{"timestamp":"2026-02-21T23:30:22.340Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
+{"timestamp":"2026-02-21T23:30:22.341Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
+{"timestamp":"2026-02-21T23:30:22.343Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
+{"timestamp":"2026-02-21T23:30:22.343Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
+{"timestamp":"2026-02-21T23:30:22.360Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
+{"timestamp":"2026-02-21T23:30:22.360Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
+{"timestamp":"2026-02-21T23:30:22.361Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
+{"timestamp":"2026-02-21T23:30:22.361Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
+{"timestamp":"2026-02-21T23:30:22.378Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
+{"timestamp":"2026-02-21T23:30:22.379Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-02-21T23:30:22.379Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-02-21T23:30:22.384Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
+{"timestamp":"2026-02-21T23:30:22.384Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
+{"timestamp":"2026-02-21T23:30:22.385Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: 0001 (ws: ws://127.0.0.1:59619/devtools/browser/9d5b78db-45a0-434a-bb07-583ac7fb1e6d)"}
+{"timestamp":"2026-02-21T23:30:22.385Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
+{"timestamp":"2026-02-21T23:30:23.384Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-02-21T23:30:23.384Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
+{"timestamp":"2026-02-21T23:30:23.385Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-02-21T23:30:23.385Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
+{"timestamp":"2026-02-21T23:30:23.385Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
+{"timestamp":"2026-02-21T23:30:23.385Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
+{"timestamp":"2026-02-21T23:30:23.386Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
+{"timestamp":"2026-02-21T23:30:23.386Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
+{"timestamp":"2026-02-21T23:30:23.386Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
+{"timestamp":"2026-02-21T23:30:23.386Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
+{"timestamp":"2026-02-21T23:30:23.386Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
+{"timestamp":"2026-02-21T23:30:23.387Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
+{"timestamp":"2026-02-21T23:30:23.387Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
+{"timestamp":"2026-02-21T23:30:23.387Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Found 1 browser endpoints. Attempting to connect in parallel..."}
+{"timestamp":"2026-02-21T23:30:23.388Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:59619/devtools/browser/9d5b78db-45a0-434a-bb07-583ac7fb1e6d"}
+{"timestamp":"2026-02-21T23:30:23.610Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:59619/devtools/browser/9d5b78db-45a0-434a-bb07-583ac7fb1e6d"}
+{"timestamp":"2026-02-21T23:30:23.611Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Added new session: 0001:59619 at 0001:59619 with 2 worker slots."}
+{"timestamp":"2026-02-21T23:30:23.611Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Successfully connected and added session for 0001:59619."}
+{"timestamp":"2026-02-21T23:30:23.611Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Discovery completed. Connected to 1 browsers."}
+{"timestamp":"2026-02-21T23:30:23.612Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
+{"timestamp":"2026-02-21T23:30:23.613Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to undefined browser(s). Ready for automation."}
+{"timestamp":"2026-02-21T23:30:23.613Z","level":"INFO","module":"main.js","sessionId":null,"message":"Adding specified tasks to the queue..."}
+{"timestamp":"2026-02-21T23:30:23.613Z","level":"INFO","module":"main.js","sessionId":null,"message":"[CLI] Parsing args: [\"ai-twitteractivity\"]"}
+{"timestamp":"2026-02-21T23:30:23.620Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Task 'ai-twitteractivity' added to queue. Queue size: 1. Queue contents: ai-twitteractivity"}
+{"timestamp":"2026-02-21T23:30:23.621Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - System initialized. All tasks queued."}
+{"timestamp":"2026-02-21T23:30:23.621Z","level":"INFO","module":"main.js","sessionId":null,"message":"Waiting for all tasks to be processed..."}
+{"timestamp":"2026-02-21T23:30:23.621Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"waitForTasksToComplete: Waiting for tasks to finish using event-driven approach..."}
+{"timestamp":"2026-02-21T23:30:23.622Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
+{"timestamp":"2026-02-21T23:30:23.672Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting concurrent checklist processing for all sessions..."}
+{"timestamp":"2026-02-21T23:30:23.673Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dispatching 1 tasks across sessions using centralized mode: ai-twitteractivity"}
+{"timestamp":"2026-02-21T23:30:23.674Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[0001:59619] Starting shared checklist with 1 tasks and up to 2 parallel tabs."}
+{"timestamp":"2026-02-21T23:30:23.674Z","level":"DEBUG","module":"orchestrator.js","sessionId":null,"message":"[0001:59619][Worker 0] Starting..."}
+{"timestamp":"2026-02-21T23:30:23.675Z","level":"DEBUG","module":"orchestrator.js","sessionId":null,"message":"[0001:59619][Worker 1] Starting..."}
+{"timestamp":"2026-02-21T23:30:23.675Z","level":"DEBUG","module":"orchestrator.js","sessionId":null,"message":"[0001:59619][Worker 1] No more tasks. Exiting."}
+{"timestamp":"2026-02-21T23:30:23.676Z","level":"DEBUG","module":"sessionManager.js","sessionId":null,"message":"[MUTEX] Occupied worker 0 in session 0001:59619 (context: at SessionManager.findAndOccupyIdleWorker (file:///C:/My%20Script/auto-ai/core/sessionManager.js:359:34) | at process.processTicksAndRejections (node:internal/process/task_queues:95:5))"}
+{"timestamp":"2026-02-21T23:30:23.723Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[0001:59619][Worker 0] Starting task 'ai-twitteractivity' in new tab."}
+{"timestamp":"2026-02-21T23:30:23.724Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Executing task: 'ai-twitteractivity' with payload: {}"}
+{"timestamp":"2026-02-21T23:30:23.794Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1771716623793-0t4v5b92h] Session initialized with paceMultiplier=1.19"}
+{"timestamp":"2026-02-21T23:30:23.794Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1771716623793-0t4v5b92h] Fatigue scheduled for T+4.1m"}
+{"timestamp":"2026-02-21T23:30:23.800Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
+{"timestamp":"2026-02-21T23:30:23.800Z","level":"INFO","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Service initialized (TTL: 300000ms)"}
+{"timestamp":"2026-02-21T23:30:23.801Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
+{"timestamp":"2026-02-21T23:30:23.803Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ai-twitterActivity] Initializing AI-Enhanced Agent..."}
+{"timestamp":"2026-02-21T23:30:23.803Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ai-twitterActivity] ⏳ Startup: Running parallel initialization (Jitter: 4685ms)..."}
+{"timestamp":"2026-02-21T23:30:23.804Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Loading configuration (cache miss: {})"}
+{"timestamp":"2026-02-21T23:30:23.805Z","level":"INFO","module":"ai-twitterActivity.js [0001:59619]","sessionId":null,"message":"[ai-twitterActivity] Profile: 28-Balanced-undefined | Input: undefined (undefined%) | Dive: undefined% | Like: undefined% | Follow: undefined%"}
+{"timestamp":"2026-02-21T23:30:23.805Z","level":"INFO","module":"config-service.js","sessionId":null,"message":"[Config] Service initialized"}
+{"timestamp":"2026-02-21T23:30:23.806Z","level":"DEBUG","module":"environment-config.js","sessionId":null,"message":"[EnvironmentConfig] No environment overrides found"}
+{"timestamp":"2026-02-21T23:30:23.807Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Added new entry: {}"}
+{"timestamp":"2026-02-21T23:30:23.807Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Configuration loaded successfully in 4ms"}
+{"timestamp":"2026-02-21T23:30:23.808Z","level":"DEBUG","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Cache stats: 0 hits, 1 loads"}
+{"timestamp":"2026-02-21T23:30:27.225Z","level":"INFO","module":"main.js","sessionId":null,"message":"Received SIGINT. Shutting down gracefully..."}

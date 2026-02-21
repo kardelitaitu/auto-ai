@@ -3,13 +3,27 @@
  * @module connectors/discovery/morelogin
  */
 
+import BaseDiscover from '../baseDiscover.js';
+
 /**
- * Discovers MoreLogin browser instances
- * @returns {Promise<Array>} Array of browser endpoints
+ * @class MoreLoginDiscover
+ * @extends BaseDiscover
+ * @description Discovers MoreLogin browser instances
  */
-async function discover() {
-  // Placeholder for MoreLogin discovery logic
-  return [];
+class MoreLoginDiscover extends BaseDiscover {
+  constructor() {
+    super();
+    this.browserType = 'morelogin';
+  }
+
+  /**
+   * Discovers MoreLogin browser instances
+   * @returns {Promise<Array>} Array of browser endpoints
+   */
+  async discover() {
+    // Placeholder for MoreLogin discovery logic
+    return [];
+  }
 }
 
-export { discover };
+export default MoreLoginDiscover;
