@@ -68,18 +68,20 @@ The engagement logic is distributed across several key components:
 - **Verification**:
   - Verifies the composer is open (`verifyComposerOpen`).
   - Types the text using human-like delays.
-  - Post-click verification is handled by observing the successful submission of the form (handled in `human.postTweet`).
+  - Post-click verification prioritizes checking for the success popup notification ("Your post was sent." or "Your reply was sent.") at the bottom of the screen.
+  - Observes the post-submission state (e.g., composer closing) as a fallback.
 
 ### 3.5 Quote Tweets (`AIQuoteEngine`)
 - **Pre-checks**: Similar to replies, including length and content safety validations.
 - **Generation**: Uses strict LLM parsing to extract quotes and enforce tone/length guidance based on the original tweet's sentiment.
 - **Strategy**: Complex multi-step interaction using three weighted methods:
-  1. **Keyboard Compose (40%)**: Press `T`, navigate to "Quote" via keyboard/menu.
-  2. **Retweet Menu (35%)**: Click Retweet button, select "Quote" from dropdown.
-  3. **New Post (15%)**: Copy tweet URL, click global "Compose", type text, paste URL to generate a quote card manually.
+  1. **Keyboard Compose (30%)**: Press `T`, navigate to "Quote" via keyboard/menu.
+  2. **Retweet Menu (60%)**: Click Retweet button, select "Quote" from dropdown.
+  3. **New Post (10%)**: Copy tweet URL, click global "Compose", type text, paste URL to generate a quote card manually.
 - **Verification**:
   - Aggressively verifies the quote preview card is embedded in the composer using multiple heuristics (inspecting HTML innerText, specific class names).
-  - Observes the post-submission state to ensure the quote was published.
+  - Prioritizes checking for the success popup notification ("Your post was sent.") at the bottom of the screen as the primary verification method.
+  - Observes the post-submission state (e.g., composer closing) as a fallback to ensure the quote was published.
 
 ---
 

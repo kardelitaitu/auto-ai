@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/179</span>
+                <span class='fraction'>0/190</span>
             </div>
         
             
@@ -614,7 +614,17 @@
 <a name='L549'></a><a href='#L549'>549</a>
 <a name='L550'></a><a href='#L550'>550</a>
 <a name='L551'></a><a href='#L551'>551</a>
-<a name='L552'></a><a href='#L552'>552</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L552'></a><a href='#L552'>552</a>
+<a name='L553'></a><a href='#L553'>553</a>
+<a name='L554'></a><a href='#L554'>554</a>
+<a name='L555'></a><a href='#L555'>555</a>
+<a name='L556'></a><a href='#L556'>556</a>
+<a name='L557'></a><a href='#L557'>557</a>
+<a name='L558'></a><a href='#L558'>558</a>
+<a name='L559'></a><a href='#L559'>559</a>
+<a name='L560'></a><a href='#L560'>560</a>
+<a name='L561'></a><a href='#L561'>561</a>
+<a name='L562'></a><a href='#L562'>562</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -628,7 +638,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -645,7 +654,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -788,7 +796,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1177,8 +1197,6 @@ import { sentimentService } from "../sentiment-service.js";
 import { REPLY_SYSTEM_PROMPT, getStrategyInstruction } from "../twitter-reply-prompt.js";
 import { HumanInteraction } from "../human-interaction.js";
 &nbsp;
-const logger =<span class="cstat-no" title="statement not covered" > createLogger("ai-reply-engine.js");</span>
-&nbsp;
 export const SAFETY_FILTERS = <span class="cstat-no" title="statement not covered" >{</span>
   minTweetLength: 10,
   maxTweetLength: 500,
@@ -1339,19 +1357,31 @@ export class AIReplyEngine {
 &nbsp;
         const prompt = <span class="cstat-no" title="statement not covered" >this.buildEnhancedPrompt(tweetText, authorUsername, context, strategy);</span>
 &nbsp;
+        const hasVision = <span class="cstat-no" title="statement not covered" >!!(context.screenshot || context.vision);</span>
         const request = <span class="cstat-no" title="statement not covered" >{</span>
-          prompt: prompt,
-          image: context.screenshot || null,
-          options: { temperature: 0.7 + Math.random() * 0.3, max_tokens: 150 },
+          action: 'generate_reply',
+          sessionId: context.sessionId || null,
+          payload: {
+            systemPrompt: REPLY_SYSTEM_PROMPT,
+            userPrompt: prompt,
+            vision: hasVision ? (context.vision || context.screenshot) : null,
+            context: {
+              hasScreenshot: hasVision,
+              replyCount: context.replies?.length || 0,
+              ...context
+            },
+            temperature: 0.7 + Math.random() * 0.3,
+            maxTokens: 150,
+          },
         };
 &nbsp;
         const aiResponse = <span class="cstat-no" title="statement not covered" >await this.agent.processRequest(request);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (!aiResponse || !aiResponse.text) {</span>
-<span class="cstat-no" title="statement not covered" >          throw new Error("Empty AI response");</span>
+<span class="cstat-no" title="statement not covered" >        if (!aiResponse || !aiResponse.success || !aiResponse.content) {</span>
+<span class="cstat-no" title="statement not covered" >          throw new Error(aiResponse?.error || "Empty AI response");</span>
         }
 &nbsp;
-        const reply = <span class="cstat-no" title="statement not covered" >this.extractReplyFromResponse(aiResponse.text, tweetText);</span>
+        const reply = <span class="cstat-no" title="statement not covered" >this.extractReplyFromResponse(aiResponse.content, tweetText);</span>
 <span class="cstat-no" title="statement not covered" >        if (!reply) <span class="cstat-no" title="statement not covered" >continue;</span></span>
 &nbsp;
         const normalized = <span class="cstat-no" title="statement not covered" >this.normalizeReply(reply);</span>
@@ -1448,22 +1478,22 @@ Reply:`;
 <span class="cstat-no" title="statement not covered" >    return { url: tweetUrl, screenshot: null, replies: [] };</span>
   }
 &nbsp;
-  async <span class="fstat-no" title="function not covered" >extractRepliesMultipleStrategies(</span>page) {
+  async <span class="fstat-no" title="function not covered" >extractRepliesMultipleStrategies(</span>_page) {
 <span class="cstat-no" title="statement not covered" >    return [];</span>
   }
 &nbsp;
-  async <span class="fstat-no" title="function not covered" >_returnToMainTweet(</span>page) {}
+  async <span class="fstat-no" title="function not covered" >_returnToMainTweet(</span>_page) { }
 &nbsp;
-  async <span class="fstat-no" title="function not covered" >extractReplyFromArticle(</span>article, _page) {
+  async <span class="fstat-no" title="function not covered" >extractReplyFromArticle(</span>_article, _page) {
 <span class="cstat-no" title="statement not covered" >    return null;</span>
   }
 &nbsp;
-  async <span class="fstat-no" title="function not covered" >extractAuthorFromArticle(</span>article) {
+  async <span class="fstat-no" title="function not covered" >extractAuthorFromArticle(</span>_article) {
 <span class="cstat-no" title="statement not covered" >    return "unknown";</span>
   }
 &nbsp;
-  async <span class="fstat-no" title="function not covered" >extractAuthorFromElement(</span>element, _page) {
-<span class="cstat-no" title="statement not covered" >    return this.extractAuthorFromArticle(element);</span>
+  async <span class="fstat-no" title="function not covered" >extractAuthorFromElement(</span>_element, _page) {
+<span class="cstat-no" title="statement not covered" >    return this.extractAuthorFromArticle(_element);</span>
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  interceptAddress(</span>reply) {
@@ -1480,7 +1510,7 @@ Reply:`;
 <span class="cstat-no" title="statement not covered" >    return false;</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  extractReplyFromResponse(</span>content, originalTweet) {
+<span class="fstat-no" title="function not covered" >  extractReplyFromResponse(</span>content, _originalTweet) {
 <span class="cstat-no" title="statement not covered" >    if (!content) <span class="cstat-no" title="statement not covered" >return null;</span></span>
     let reply = <span class="cstat-no" title="statement not covered" >content.trim();</span>
     const lines = <span class="cstat-no" title="statement not covered" >reply.split("\n").filter(<span class="fstat-no" title="function not covered" >(l</span>ine) =&gt; <span class="cstat-no" title="statement not covered" >line.trim().length &gt; 0)</span>;</span>
@@ -1620,7 +1650,7 @@ Reply:`;
 <span class="cstat-no" title="statement not covered" >          await human.safeHumanClick(el, "Main Tweet", 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
         }
-      } catch (e) { /* continue */ }
+      } catch (_e) { /* continue */ }
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    await page.keyboard.press("r");</span>
@@ -1650,7 +1680,7 @@ Reply:`;
 <span class="cstat-no" title="statement not covered" >          replyBtn = btn;</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
         }
-      } catch (e) { /* continue */ }
+      } catch (_e) { /* continue */ }
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (!replyBtn) {</span>
@@ -1723,7 +1753,7 @@ export default AIReplyEngine;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-21T09:57:40.349Z
+                at 2026-02-22T01:01:57.868Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

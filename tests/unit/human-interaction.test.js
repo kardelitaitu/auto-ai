@@ -779,41 +779,54 @@ describe('HumanInteraction', () => {
   });
 
   describe('postTweet', () => {
-    it('should return success when ctrl+enter works', async () => {
-      vi.useFakeTimers();
-      const page = { keyboard: { press: vi.fn() } };
-      vi.spyOn(human, 'verifyPostSent').mockResolvedValue({ sent: true, method: 'ctrl_enter' });
-      const resultPromise = human.postTweet(page);
-      await vi.runAllTimersAsync();
-      const result = await resultPromise;
-      expect(result.success).toBe(true);
-      vi.useRealTimers();
-    });
-
-    it('should fallback to button click when ctrl+enter fails', async () => {
+    it('should return success when button click works', async () => {
       vi.useFakeTimers();
       const page = {
-        keyboard: { press: vi.fn() },
         locator: vi.fn().mockImplementation((_selector) => ({
           first: vi.fn().mockReturnValue({
             count: vi.fn().mockResolvedValue(1),
             isVisible: vi.fn().mockResolvedValue(true),
             evaluate: vi.fn().mockResolvedValue(false)
+          })
+        }))
+      };
+      vi.spyOn(human, 'verifyPostSent').mockResolvedValue({ sent: true, method: 'button_click' });
+      vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
+      const resultPromise = human.postTweet(page);
+      await vi.runAllTimersAsync();
+      const result = await resultPromise;
+      expect(result.success).toBe(true);
+      expect(result.method).toBe('button_click');
+      vi.useRealTimers();
+    });
+
+    it('should fallback to force click when humanClick succeeds but verify fails', async () => {
+      vi.useFakeTimers();
+      const mockButtonElement = {
+        isVisible: vi.fn().mockResolvedValue(true),
+        boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 80, height: 40 }),
+        evaluate: vi.fn().mockResolvedValue(false),
+        getAttribute: vi.fn().mockResolvedValue(null),
+        innerText: vi.fn().mockResolvedValue('Post'),
+        click: vi.fn().mockResolvedValue(undefined)
+      };
+
+      const page = {
+        locator: vi.fn().mockImplementation((_selector) => ({
+          first: vi.fn().mockReturnValue({
+            count: vi.fn().mockResolvedValue(1),
+            isVisible: vi.fn().mockResolvedValue(true),
+            evaluate: vi.fn().mockResolvedValue(false),
+            click: vi.fn().mockResolvedValue(undefined)
           }),
           count: vi.fn().mockResolvedValue(1),
-          nth: vi.fn().mockImplementation(() => ({
-            isVisible: vi.fn().mockResolvedValue(true),
-            boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 80, height: 40 }),
-            evaluate: vi.fn().mockResolvedValue(false),
-            getAttribute: vi.fn().mockResolvedValue(null),
-            innerText: vi.fn().mockResolvedValue('Post')
-          })),
+          nth: vi.fn().mockReturnValue(mockButtonElement),
           isVisible: vi.fn().mockResolvedValue(true)
         }))
       };
       vi.spyOn(human, 'verifyPostSent')
         .mockResolvedValueOnce({ sent: false })
-        .mockResolvedValueOnce({ sent: true, method: 'button_click' });
+        .mockResolvedValueOnce({ sent: true, method: 'force_click' });
       vi.spyOn(human, 'humanClick').mockResolvedValue(undefined);
 
       const resultPromise = human.postTweet(page);
@@ -836,7 +849,6 @@ describe('HumanInteraction', () => {
       };
 
       const page = {
-        keyboard: { press: vi.fn() },
         locator: vi.fn().mockImplementation((selector) => {
           const isTweetButton = selector === '[data-testid="tweetButton"]';
           return {

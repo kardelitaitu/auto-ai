@@ -642,7 +642,7 @@ class OllamaClient {
         }, TIMEOUT_MS);
 
         // Run 'ollama list' purely to wake up the system processes if asleep, ignore output for speed
-        exec('ollama list', { windowsHide: true }, (err, stdout, stderr) => {
+        exec('ollama list', { windowsHide: true }, (err, _stdout, _stderr) => {
             clearTimeout(timeout);
             if (timedOut) return;
             if (err) {

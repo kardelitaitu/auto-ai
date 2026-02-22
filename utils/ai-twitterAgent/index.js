@@ -297,6 +297,22 @@ export class AITwitterAgent extends TwitterAgent {
     );
   }
 
+  /**
+   * Cleanup resources when agent is no longer needed
+   */
+  shutdown() {
+    this.log(`[AITwitterAgent] Shutting down resources`);
+    if (this.queueLogger && typeof this.queueLogger.shutdown === 'function') {
+      this.queueLogger.shutdown();
+    }
+    if (this.engagementLogger && typeof this.engagementLogger.shutdown === 'function') {
+      this.engagementLogger.shutdown();
+    }
+    if (this.diveQueue && typeof this.diveQueue.shutdown === 'function') {
+      this.diveQueue.shutdown();
+    }
+  }
+
   // ================================================================
   // DIVE LOCK MECHANISM - State Management Methods
   // ================================================================
@@ -1062,7 +1078,7 @@ export class AITwitterAgent extends TwitterAgent {
           );
           return Array.from(els).some(el => el.innerText && el.innerText.trim().length > 5);
         }, { timeout: 10000 });
-      } catch (e) {
+      } catch (_e) {
         this.log("[AI] Timeout waiting for non-empty text content to hydrate, proceeding with fallback extraction...");
       }
 
@@ -1558,8 +1574,8 @@ export class AITwitterAgent extends TwitterAgent {
               } else {
                 this.log("[Health] Recovery successful");
               }
-            } catch (e) {
-              this.logWarn(`[Health] Recovery attempt failed: ${e.message}`);
+            } catch (_e) {
+              this.logWarn(`[Health] Recovery attempt failed: ${_e.message}`);
             }
           } else {
             this.log("[Health] Connection healthy");
@@ -3066,6 +3082,33 @@ export class AITwitterAgent extends TwitterAgent {
         `[Engagement] ${emoji} ${action}: ${data.current}/${data.limit} (${data.percentage} used)`,
       );
     }
+  }
+
+  /**
+   * Proper cleanup of all agent resources, timers, and listeners.
+   * Calls base class shutdown and ensures fidget loop is stopped.
+   */
+  async shutdown() {
+    this.log("[Shutdown] Initiating AI agent cleanup...");
+
+    // 1. Stop background loops
+    try {
+      if (typeof this.stopFidgetLoop === "function") {
+        this.stopFidgetLoop();
+      }
+    } catch (e) {
+      this.logWarn(`[Shutdown] Error stopping fidget loop: ${e.message}`);
+    }
+
+    // 2. Flush logs
+    await this.flushLogs().catch((err) =>
+      this.logWarn(`[Shutdown] Failed to flush logs: ${err.message}`)
+    );
+
+    // 3. Base class cleanup (network listeners)
+    super.shutdown();
+
+    this.log("[Shutdown] AI agent cleanup complete.");
   }
 
   //Flush all buffered loggers (call during cleanup)

@@ -6,7 +6,7 @@
 
 import { createLogger } from "../logger.js";
 
-const logger = createLogger("ai-reply-engine.js");
+// logger - unused in this module
 
 export const SAFETY_FILTERS = {
   minTweetLength: 10,

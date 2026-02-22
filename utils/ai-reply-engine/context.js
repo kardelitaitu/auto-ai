@@ -6,15 +6,6 @@
 
 import { mathUtils } from "../mathUtils.js";
 
-const logger = createLogger("ai-reply-engine.js");
-
-function createLogger(name) {
-  return {
-    debug: (msg) => console.debug(`[${name}] ${msg}`),
-    warn: (msg) => console.warn(`[${name}] ${msg}`),
-  };
-}
-
 export async function captureContext(engine, page, tweetUrl = "") {
   const context = {
     url: tweetUrl,
@@ -169,7 +160,7 @@ export async function extractRepliesMultipleStrategies(engine, page) {
         if (reply && reply.text) {
           addReply(reply.author, reply.text);
         }
-      } catch (e) {
+      } catch (_e) {
         // Skip failed articles
       }
     }
@@ -189,12 +180,12 @@ export async function extractRepliesMultipleStrategies(engine, page) {
           const text = await textEl.innerText();
           addReply("unknown", text);
         }
-      } catch (e) {
+      } catch (_e) {
         // Skip
       }
     }
-  } catch (e) {
-    engine.logger.debug(`[AIReply] Timeline selector failed: ${e.message}`);
+  } catch (_e) {
+    engine.logger.debug(`[AIReply] Timeline selector failed: ${_e.message}`);
   }
 
   try {
@@ -293,11 +284,11 @@ export async function extractAuthorFromArticle(engine, article) {
 
     const timeEl = await article.$("time");
     if (timeEl) {
-      const parent = await timeEl.$("x");
+      const _parent = await timeEl.$("x");
     }
 
     return "unknown";
-  } catch (e) {
+  } catch (_e) {
     return "unknown";
   }
 }

@@ -13,10 +13,8 @@ import metricsCollector from '../utils/metrics.js';
 import { applyHumanizationPatch } from '../utils/browserPatch.js';
 import { humanTiming } from '../utils/human-timing.js';
 import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
-import { config } from '../utils/config-service.js';
 import { createLogger } from '../utils/logger.js';
 import { loadAiTwitterActivityConfig } from '../utils/task-config-loader.js';
-import OllamaClient from '../core/ollama-client.js';
 import PopupCloser from '../utils/popup-closer.js';
 
 const TARGET_URL = 'https://x.com';
@@ -87,19 +85,6 @@ export default async function aiTwitterActivityTask(page, payload) {
     logger.info(`[ai-twitterActivity] Initializing AI-Enhanced Agent...`);
 
     // --- INITIALIZATION HELPERS ---
-    const handleLLMWarmup = async () => {
-        try {
-            if (await config.isLocalLLMEnabled()) {
-                const client = new OllamaClient();
-                await client.wakeLocal();
-                await client.checkModel('Warmup: Reply with OK then a short 30-word sentence about reading a social feed.');
-                return true;
-            }
-        } catch (warmErr) {
-            logger.warn(`[ai-twitterActivity] Local LLM warmup: ${warmErr.message}`);
-        }
-        return false;
-    };
 
     const resolveProfile = () => {
         const resolved = payload.profileId
@@ -392,6 +377,11 @@ export default async function aiTwitterActivityTask(page, payload) {
                 }, 50);
 
                 logger.info(`[ai-twitterActivity] Task Finished. Duration: ${duration}m`);
+            }
+
+            // Clean up agent resources
+            if (typeof agent.shutdown === 'function') {
+                await agent.shutdown();
             }
         }
 

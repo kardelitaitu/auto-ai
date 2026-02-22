@@ -292,6 +292,17 @@ export class AsyncQueue {
             queueLength: this.queue.length
         };
     }
+
+    /**
+     * Shutdown the queue - clears all pending tasks
+     */
+    shutdown() {
+        this.logger.info(`[AsyncQueue] Shutting down...`);
+        this.clear();
+        // Since we can't easily cancel running taskPromises, we rely on 
+        // their internal timeouts or page closures. 
+        // Clearing the queue prevents new tasks from starting.
+    }
 }
 
 /**

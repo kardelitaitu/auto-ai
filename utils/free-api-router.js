@@ -595,7 +595,7 @@ const data = await response.json();
      }
    }
 
-  async _tryModelDirect(model, messages, maxTokens, temperature, startTime) {
+  async _tryModelDirect(model, messages, maxTokens, temperature, _startTime) {
     const payload = {
       model,
       messages,

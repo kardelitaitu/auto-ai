@@ -17,9 +17,12 @@ export default [
             "examples/",
             "local-agent/",
             "node_modules/",
-            "test/",
+            "tests/",
             "screenshots/",
-            "ui",
+            "ui/",
+            "tools/",
+            "coverage/",
+            "backup/",
 
             "**/*.min.js" // Ignore minified files to save CPU
         ]

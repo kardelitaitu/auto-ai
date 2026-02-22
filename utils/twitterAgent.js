@@ -109,10 +109,10 @@ export class TwitterAgent {
      */
     async humanClick(target, description = 'Target', options = {}) {
         if (!target) return;
-        
+
         // HUMAN-LIKE: Thinking pause before clicking
         await this.human.think(description);
-        
+
         try {
             await target.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
             const fixationDelay = mathUtils.randomInRange(200, 500);
@@ -133,7 +133,7 @@ export class TwitterAgent {
 
         } catch (e) {
             this.log(`[Interaction] humanClick failed on ${description}: ${e.message}`);
-            
+
             // HUMAN-LIKE: Error recovery
             await this.human.recoverFromError('click_failed', { locator: target });
             throw e;
@@ -1375,7 +1375,7 @@ export class TwitterAgent {
                     await target.click();
                 }
             }
-            
+
             // After ensuring "For you" tab, check for "Show X posts" button
             // This button appears 2-3 seconds after returning home (per user feedback)
             await this.checkAndClickShowPostsButton();
@@ -1431,34 +1431,34 @@ export class TwitterAgent {
 
             if (showPostsBtn) {
                 this.log(`[Posts] Found "${btnText}" button, clicking to load new posts...`);
-                
+
                 // HUMAN-LIKE: Additional pre-click behavior for this specific button
                 // 1. Ensure button is in viewport (scroll if needed)
                 await showPostsBtn.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
                 await this.page.waitForTimeout(mathUtils.randomInRange(300, 600));
-                
+
                 // 2. Move cursor to vicinity first (not directly on button)
                 const box = await showPostsBtn.boundingBox();
                 if (box) {
                     const offsetX = mathUtils.randomInRange(-30, 30);
                     const offsetY = mathUtils.randomInRange(-20, 20);
-                    await this.ghost.move(box.x + box.width/2 + offsetX, box.y + box.height/2 + offsetY, mathUtils.randomInRange(15, 25));
+                    await this.ghost.move(box.x + box.width / 2 + offsetX, box.y + box.height / 2 + offsetY, mathUtils.randomInRange(15, 25));
                     await this.page.waitForTimeout(mathUtils.randomInRange(400, 800));
                 }
-                
+
                 // 3. Use safeHumanClick for full simulated interaction with retry
                 await this.safeHumanClick(showPostsBtn, 'Show Posts Button', 3);
-                
+
                 // 3. HUMAN-LIKE: "Reading" the new posts after loading
                 this.log('[Posts] Posts loading, simulating reading behavior...');
                 const waitTime = mathUtils.randomInRange(1200, 2500);
                 await this.page.waitForTimeout(waitTime);
-                
+
                 // 4. Scroll down slightly to show the new posts (human-like discovery)
                 const scrollVariance = 0.8 + Math.random() * 0.4;
                 await scrollRandom(this.page, Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));
                 await this.page.waitForTimeout(mathUtils.randomInRange(600, 1000));
-                
+
                 this.log('[Posts] New posts loaded successfully.');
                 return true;
             } else {
@@ -1883,6 +1883,23 @@ export class TwitterAgent {
 
         } catch (e) {
             this.log(`[Error] Failed to post tweet: ${e.message}`);
+        }
+    }
+
+    /**
+     * Proper cleanup of all agent resources, timers, and listeners.
+     * Removes network listeners to prevent memory leaks and Vitest hangs.
+     */
+    shutdown() {
+        this.log('Agent shutting down...');
+        try {
+            if (this.page && !this.page.isClosed()) {
+                // Remove network listeners attached in constructor
+                this.page.removeAllListeners('request');
+                this.page.removeAllListeners('response');
+            }
+        } catch (e) {
+            this.log(`[Shutdown] Error during cleanup: ${e.message}`);
         }
     }
 }

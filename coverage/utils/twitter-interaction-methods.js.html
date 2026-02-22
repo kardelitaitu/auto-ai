@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/108</span>
+                <span class='fraction'>0/110</span>
             </div>
         
             
@@ -962,11 +962,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1416,14 +1416,14 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 &nbsp;
             // Verify composer opened
             const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
-            
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            if (verify.open) {</span>
                 // composerOpened = true; // Unused assignment
 <span class="cstat-no" title="statement not covered" >                logger.info(`[replyA] Composer opened with: ${verify.selector}`);</span>
-                
+&nbsp;
 <span class="cstat-no" title="statement not covered" >                await human.typeText(page, text, verify.locator || page.locator(verify.selector).first());</span>
                 const postResult = <span class="cstat-no" title="statement not covered" >await human.postTweet(page);</span>
-                
+&nbsp;
 <span class="cstat-no" title="statement not covered" >                if (postResult.success) {</span>
 <span class="cstat-no" title="statement not covered" >                    logger.info(`[replyA] Reply posted successfully`);</span>
 <span class="cstat-no" title="statement not covered" >                    return { success: true, method: 'replyA' };</span>
@@ -1432,7 +1432,7 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >                    return { success: false, method: 'replyA', reason: postResult.reason };</span>
                 }
             }
-            
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            logger.warn(`[replyA] Composer did not open on attempt ${attempt + 1}`);</span>
 <span class="cstat-no" title="statement not covered" >            attempt++;</span>
         }
@@ -1446,13 +1446,13 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
      */
     replyB: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyB] Starting button click method`);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
 &nbsp;
         // Enhanced button finding with more detailed logging
-        const btnResult = <span class="cstat-no" title="statement not covered" >await human.findElement(page, </span>
-            ['[data-testid="replyEdge"]', '[data-testid="reply"]', '[aria-label*="Reply"]', '[role="button"][data-testid="reply"]'], 
+        const btnResult = <span class="cstat-no" title="statement not covered" >await human.findElement(page,</span>
+            ['[data-testid="replyEdge"]', '[data-testid="reply"]', '[aria-label*="Reply"]', '[role="button"][data-testid="reply"]'],
             { visibleOnly: true }
         );
 &nbsp;
@@ -1476,26 +1476,26 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyB] Found button: ${btnResult.selector}`);</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyB] Button Details: Tag=${elementInfo.tagName}, Label="${elementInfo.ariaLabel}", Text="${elementInfo.text}", Disabled=${elementInfo.disabled}`);</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyB] Bounding Box: x=${box?.x}, y=${box?.y}, w=${box?.width}, h=${box?.height}`);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (elementInfo.disabled) {</span>
-<span class="cstat-no" title="statement not covered" >             logger.warn(`[replyB] Reply button is disabled! Waiting...`);</span>
-<span class="cstat-no" title="statement not covered" >             await page.waitForTimeout(1000);</span>
-             const isDisabled = <span class="cstat-no" title="statement not covered" >await btnResult.element.evaluate(<span class="fstat-no" title="function not covered" >el </span>=&gt; <span class="cstat-no" title="statement not covered" >el.disabled || el.getAttribute('aria-disabled') === 'true')</span>;</span>
-<span class="cstat-no" title="statement not covered" >             if (isDisabled) {</span>
-<span class="cstat-no" title="statement not covered" >                 logger.warn(`[replyB] Reply button still disabled. Attempting to click anyway.`);</span>
-             } else {
-<span class="cstat-no" title="statement not covered" >                 logger.info(`[replyB] Reply button became enabled.`);</span>
-             }
+<span class="cstat-no" title="statement not covered" >            logger.warn(`[replyB] Reply button is disabled! Waiting...`);</span>
+<span class="cstat-no" title="statement not covered" >            await page.waitForTimeout(1000);</span>
+            const isDisabled = <span class="cstat-no" title="statement not covered" >await btnResult.element.evaluate(<span class="fstat-no" title="function not covered" >el </span>=&gt; <span class="cstat-no" title="statement not covered" >el.disabled || el.getAttribute('aria-disabled') === 'true')</span>;</span>
+<span class="cstat-no" title="statement not covered" >            if (isDisabled) {</span>
+<span class="cstat-no" title="statement not covered" >                logger.warn(`[replyB] Reply button still disabled. Attempting to click anyway.`);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                logger.info(`[replyB] Reply button became enabled.`);</span>
+            }
         }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        await btnResult.element.scrollIntoViewIfNeeded();</span>
 <span class="cstat-no" title="statement not covered" >        await human.fixation(300, 800);</span>
 <span class="cstat-no" title="statement not covered" >        await human.microMove(page, 20);</span>
-        
+&nbsp;
         // Use high precision for the small reply icon
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyB] Attempting safeHumanClick with high precision...`);</span>
         const clickResult = <span class="cstat-no" title="statement not covered" >await human.safeHumanClick(btnResult.element, 'Reply Button', 3, { precision: 'high' });</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!clickResult) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.warn(`[replyB] safeHumanClick returned false (failed). Trying force click fallback...`);</span>
 <span class="cstat-no" title="statement not covered" >            try {</span>
@@ -1508,7 +1508,7 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
         } else {
 <span class="cstat-no" title="statement not covered" >            logger.info(`[replyB] safeHumanClick successful.`);</span>
         }
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(2000);</span>
 &nbsp;
         const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
@@ -1519,12 +1519,12 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
         }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyB] Composer opened with: ${verify.selector}`);</span>
-        
+&nbsp;
         const composer = <span class="cstat-no" title="statement not covered" >verify.locator || page.locator(verify.selector).first();</span>
 <span class="cstat-no" title="statement not covered" >        await human.typeText(page, text, composer);</span>
-        
+&nbsp;
         const postResult = <span class="cstat-no" title="statement not covered" >await human.postTweet(page, 'reply');</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (postResult.success) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.info(`[replyB] Reply posted successfully`);</span>
 <span class="cstat-no" title="statement not covered" >            return { success: true, method: 'replyB' };</span>
@@ -1540,7 +1540,7 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
      */
     replyC: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Starting direct composer focus method`);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
 &nbsp;
@@ -1557,7 +1557,7 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Looking for reply box...`);</span>
         const replyBox = <span class="cstat-no" title="statement not covered" >page.locator('[data-testid="tweetTextarea_0"]').first();</span>
         let count = <span class="cstat-no" title="statement not covered" >await replyBox.count();</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (count === 0) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.warn(`[replyC] Reply box not visible, scrolling...`);</span>
 <span class="cstat-no" title="statement not covered" >            await page.evaluate(<span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
@@ -1572,23 +1572,23 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
         // Re-check after scroll
         const replyBoxAfter = <span class="cstat-no" title="statement not covered" >page.locator('[data-testid="tweetTextarea_0"]').first();</span>
 <span class="cstat-no" title="statement not covered" >        count = await replyBoxAfter.count();</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (count === 0) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.warn(`[replyC] Reply box still not found`);</span>
 <span class="cstat-no" title="statement not covered" >            return { success: false, method: 'replyC', reason: 'reply_box_not_found' };</span>
         }
-        
+&nbsp;
         // Verify it has "Post your reply" placeholder
         const placeholderText = <span class="cstat-no" title="statement not covered" >await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
             const el = <span class="cstat-no" title="statement not covered" >document.querySelector('[data-testid="tweetTextarea_0"]');</span>
             const placeholder = <span class="cstat-no" title="statement not covered" >el?.querySelector('#placeholder-tb0p, .public-DraftEditorPlaceholder-inner');</span>
 <span class="cstat-no" title="statement not covered" >            return placeholder?.textContent || '';</span>
         });
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!placeholderText.includes('Post your reply')) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.warn(`[replyC] Placeholder text mismatch: "${placeholderText}"`);</span>
         }
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Found reply box (placeholder: "${placeholderText}")`);</span>
 &nbsp;
         // Step 3: Click the reply box
@@ -1598,7 +1598,7 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        await replyBoxAfter.scrollIntoViewIfNeeded();</span>
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(300);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await human.safeHumanClick(replyBoxAfter, 'Reply Box', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Clicked reply box`);</span>
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(300);</span>
@@ -1607,16 +1607,16 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Typing...`);</span>
 <span class="cstat-no" title="statement not covered" >        await human.typeText(page, text, replyBoxAfter);</span>
 &nbsp;
-        // Step 5: Submit with Ctrl+Enter
+        // Step 5: Submit via ghost-click on the post/reply button
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Submitting...`);</span>
-<span class="cstat-no" title="statement not covered" >        await page.keyboard.down('Control');</span>
-<span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Enter');</span>
-<span class="cstat-no" title="statement not covered" >        await page.keyboard.up('Control');</span>
-        
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(2000);</span>
-<span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Reply submitted`);</span>
-        
-<span class="cstat-no" title="statement not covered" >        return { success: true, method: 'replyC' };</span>
+        const postC = <span class="cstat-no" title="statement not covered" >await human.postTweet(page, 'reply');</span>
+<span class="cstat-no" title="statement not covered" >        if (postC.success) {</span>
+<span class="cstat-no" title="statement not covered" >            logger.info(`[replyC] Reply posted successfully`);</span>
+<span class="cstat-no" title="statement not covered" >            return { success: true, method: 'replyC' };</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            logger.warn(`[replyC] Post failed: ${postC.reason}`);</span>
+<span class="cstat-no" title="statement not covered" >            return { success: false, method: 'replyC', reason: postC.reason };</span>
+        }
     }
 };
 &nbsp;
@@ -1630,7 +1630,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
      */
     quoteA: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteA] Starting keyboard compose method`);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
 &nbsp;
@@ -1675,7 +1675,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 &nbsp;
         // Type the quote text
 <span class="cstat-no" title="statement not covered" >        await human.typeText(page, text, composerA);</span>
-        
+&nbsp;
         // Post the quote
         const postA = <span class="cstat-no" title="statement not covered" >await human.postTweet(page);</span>
 <span class="cstat-no" title="statement not covered" >        if (postA.success) {</span>
@@ -1693,7 +1693,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
      */
     quoteB: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteB] Starting retweet menu method`);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
 &nbsp;
@@ -1755,10 +1755,10 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >        await retweetBtn.scrollIntoViewIfNeeded();</span>
 <span class="cstat-no" title="statement not covered" >        await human.fixation(300, 800);</span>
 <span class="cstat-no" title="statement not covered" >        await human.microMove(page, 20);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteB] Clicking Retweet button...`);</span>
         const rtClickResult = <span class="cstat-no" title="statement not covered" >await human.safeHumanClick(retweetBtn, 'Retweet Button', 3, { precision: 'high' });</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!rtClickResult) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.warn(`[quoteB] Failed to click Retweet button (safeHumanClick false). Trying force click...`);</span>
 <span class="cstat-no" title="statement not covered" >            try {</span>
@@ -1769,13 +1769,13 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >                return { success: false, method: 'quoteB', reason: 'retweet_click_failed' };</span>
             }
         }
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(1000);</span>
 &nbsp;
         // Verify menu opened (look for Quote option)
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteB] Looking for Quote option...`);</span>
         const quoteMenuSelectors = <span class="cstat-no" title="statement not covered" >[</span>
-            'a[role="menuitem"][href*="/retweet"]', 
+            'a[role="menuitem"][href*="/retweet"]',
             'a[role="menuitem"]:has-text("Quote")',
             '[role="menuitem"]:has-text("Quote")',
             '[data-testid="retweetQuote"]',
@@ -1784,7 +1784,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 &nbsp;
         let quoteOption = <span class="cstat-no" title="statement not covered" >null;</span>
         let quoteSelector = <span class="cstat-no" title="statement not covered" >null;</span>
-        
+&nbsp;
         // Wait a bit for menu animation
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
 &nbsp;
@@ -1795,7 +1795,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >                    try {</span>
                         const isVisible = <span class="cstat-no" title="statement not covered" >await el.isVisible();</span>
                         const text = <span class="cstat-no" title="statement not covered" >await el.innerText().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'')</span>;</span>
-                        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >                        if (isVisible &amp;&amp; text.toLowerCase().includes('quote')) {</span>
 <span class="cstat-no" title="statement not covered" >                            quoteOption = el;</span>
 <span class="cstat-no" title="statement not covered" >                            quoteSelector = selector;</span>
@@ -1823,20 +1823,20 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
         // Click Quote option
 <span class="cstat-no" title="statement not covered" >        await human.fixation(100, 300);</span>
 <span class="cstat-no" title="statement not covered" >        await human.microMove(page, 10);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteB] Clicking Quote option...`);</span>
         const quoteClickResult = <span class="cstat-no" title="statement not covered" >await human.safeHumanClick(quoteOption, 'Quote Menu Option', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >        if (!quoteClickResult) {</span>
-<span class="cstat-no" title="statement not covered" >             logger.warn(`[quoteB] Failed to click Quote option. Trying force click...`);</span>
-<span class="cstat-no" title="statement not covered" >             try {</span>
-<span class="cstat-no" title="statement not covered" >                 await quoteOption.click({ force: true });</span>
-<span class="cstat-no" title="statement not covered" >                 logger.info(`[quoteB] Force click executed on Quote option.`);</span>
-             } catch (e) {
-<span class="cstat-no" title="statement not covered" >                 logger.error(`[quoteB] Force click failed: ${e.message}`);</span>
-<span class="cstat-no" title="statement not covered" >                 return { success: false, method: 'quoteB', reason: 'quote_click_failed' };</span>
-             }
+<span class="cstat-no" title="statement not covered" >            logger.warn(`[quoteB] Failed to click Quote option. Trying force click...`);</span>
+<span class="cstat-no" title="statement not covered" >            try {</span>
+<span class="cstat-no" title="statement not covered" >                await quoteOption.click({ force: true });</span>
+<span class="cstat-no" title="statement not covered" >                logger.info(`[quoteB] Force click executed on Quote option.`);</span>
+            } catch (e) {
+<span class="cstat-no" title="statement not covered" >                logger.error(`[quoteB] Force click failed: ${e.message}`);</span>
+<span class="cstat-no" title="statement not covered" >                return { success: false, method: 'quoteB', reason: 'quote_click_failed' };</span>
+            }
         }
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(1500);</span>
 &nbsp;
         // Verify composer is open
@@ -1854,9 +1854,9 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Control+a');</span>
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Delete');</span>
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(200);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await human.typeText(page, text, composerB);</span>
-        
+&nbsp;
         const postB = <span class="cstat-no" title="statement not covered" >await human.postTweet(page, 'quote');</span>
 <span class="cstat-no" title="statement not covered" >        if (postB.success) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.info(`[quoteB] Quote posted successfully`);</span>
@@ -1873,11 +1873,11 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
      */
     quoteC: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteC] Starting new post + paste URL method`);</span>
-        
+&nbsp;
         // Get current tweet URL
         const currentUrl = <span class="cstat-no" title="statement not covered" >page.url();</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteC] Current URL: ${currentUrl}`);</span>
-        
+&nbsp;
         // Close any open menus
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Escape');</span>
 <span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(300);</span>
@@ -1982,7 +1982,7 @@ export async function <span class="fstat-no" title="function not covered" >execu
 <span class="cstat-no" title="statement not covered" >        logger.error(`[executeReplyMethod] Unknown method: ${methodName}`);</span>
 <span class="cstat-no" title="statement not covered" >        return { success: false, method: methodName, reason: 'unknown_method' };</span>
     }
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    logger.info(`[executeReplyMethod] Executing ${methodName}...`);</span>
 <span class="cstat-no" title="statement not covered" >    return await method(page, text, human, logger, options);</span>
 }
@@ -2007,7 +2007,7 @@ export async function <span class="fstat-no" title="function not covered" >execu
 <span class="cstat-no" title="statement not covered" >        logger.error(`[executeQuoteMethod] Unknown method: ${methodName}`);</span>
 <span class="cstat-no" title="statement not covered" >        return { success: false, method: methodName, reason: 'unknown_method' };</span>
     }
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    logger.info(`[executeQuoteMethod] Executing ${methodName}...`);</span>
 <span class="cstat-no" title="statement not covered" >    return await method(page, text, human, logger, options);</span>
 }
@@ -2020,7 +2020,7 @@ export default { replyMethods, quoteMethods, executeReplyMethod, executeQuoteMet
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-21T09:57:40.349Z
+                at 2026-02-22T01:01:57.868Z
             </div>
         <script src="../prettify.js"></script>
         <script>

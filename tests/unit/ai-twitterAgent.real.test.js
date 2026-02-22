@@ -5,7 +5,7 @@
  * @module tests/unit/ai-twitterAgent.real.test
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AITwitterAgent } from '../../utils/ai-twitterAgent.js';
 
 // ============================================================================
@@ -44,6 +44,7 @@ vi.mock('../../utils/twitterAgent.js', () => ({
         checkLoginState() { return Promise.resolve(true); }
         normalizeProbabilities(p) { return p; }
         diveProfile() { return Promise.resolve(); }
+        shutdown() { }
     }
 }));
 
@@ -260,6 +261,12 @@ describe('AITwitterAgent (Real Implementation)', () => {
     let mockPage;
     let mockLogger;
     let mockProfile;
+
+    afterEach(async () => {
+        if (agent && typeof agent.shutdown === 'function') {
+            await agent.shutdown();
+        }
+    });
 
     beforeEach(() => {
         vi.clearAllMocks();

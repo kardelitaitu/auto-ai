@@ -157,7 +157,7 @@ async function replyMethodB_Button(engine, page, replyText, human) {
         btnSelector = sel;
         break;
       }
-    } catch (e) {
+    } catch (_e) {
       // Continue
     }
   }
@@ -240,7 +240,7 @@ async function replyMethodD_RightClick(engine, page, replyText, human) {
         tweetEl = el;
         break;
       }
-    } catch (e) {
+    } catch (_e) {
       // Continue
     }
   }
@@ -268,7 +268,7 @@ async function replyMethodD_RightClick(engine, page, replyText, human) {
         replyOption = opt;
         break;
       }
-    } catch (e) {
+    } catch (_e) {
       // Continue
     }
   }

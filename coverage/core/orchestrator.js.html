@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/421</span>
+                <span class='fraction'>0/422</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/121</span>
+                <span class='fraction'>0/122</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/339</span>
+                <span class='fraction'>0/340</span>
             </div>
         
             
@@ -805,7 +805,9 @@
 <a name='L740'></a><a href='#L740'>740</a>
 <a name='L741'></a><a href='#L741'>741</a>
 <a name='L742'></a><a href='#L742'>742</a>
-<a name='L743'></a><a href='#L743'>743</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L743'></a><a href='#L743'>743</a>
+<a name='L744'></a><a href='#L744'>744</a>
+<a name='L745'></a><a href='#L745'>745</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1509,6 +1511,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1556,7 +1560,7 @@ import { EventEmitter } from 'events';
 import SessionManager from './sessionManager.js';
 import Discovery from './discovery.js';
 import Automator from './automator.js';
-import { createLogger } from '../utils/logger.js';
+import { createLogger, loggerContext } from '../utils/logger.js';
 import { getSettings } from '../utils/configLoader.js';
 import { validateTaskExecution, validatePayload } from '../utils/validator.js';
 import { isDevelopment } from '../utils/envLoader.js';
@@ -1836,7 +1840,7 @@ class Orchestrator extends EventEmitter {
 <span class="cstat-no" title="statement not covered" >            requeueTask(task);</span>
 <span class="cstat-no" title="statement not covered" >            continue;</span>
           }
-          
+&nbsp;
           let page = <span class="cstat-no" title="statement not covered" >null;</span>
 <span class="cstat-no" title="statement not covered" >          try {</span>
 <span class="cstat-no" title="statement not covered" >            page = await this.sessionManager.acquirePage(session.id, sharedContext);</span>
@@ -1882,25 +1886,25 @@ class Orchestrator extends EventEmitter {
     const sharedContext = <span class="cstat-no" title="statement not covered" >reuseSharedContext ? session.sharedContext : (contexts.length &gt; 0 ? contexts[0] : await session.browser.newContext());</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
-    const taskQueue = <span class="cstat-no" title="statement not covered" >tasks.slice();</span>
-    let taskIndex = <span class="cstat-no" title="statement not covered" >0;</span>
-    const retryStack = <span class="cstat-no" title="statement not covered" >[];</span>
-    const takeTask = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (retryStack.length &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >        return retryStack.pop();</span>
-      }
-<span class="cstat-no" title="statement not covered" >      if (taskIndex &gt;= taskQueue.length) {</span>
-<span class="cstat-no" title="statement not covered" >        return null;</span>
-      }
-      const task = <span class="cstat-no" title="statement not covered" >taskQueue[taskIndex];</span>
-<span class="cstat-no" title="statement not covered" >      taskIndex += 1;</span>
-<span class="cstat-no" title="statement not covered" >      return task;</span>
-    };
-    const requeueTask = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(t</span>ask) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      retryStack.push(task);</span>
-    };
+      const taskQueue = <span class="cstat-no" title="statement not covered" >tasks.slice();</span>
+      let taskIndex = <span class="cstat-no" title="statement not covered" >0;</span>
+      const retryStack = <span class="cstat-no" title="statement not covered" >[];</span>
+      const takeTask = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (retryStack.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >          return retryStack.pop();</span>
+        }
+<span class="cstat-no" title="statement not covered" >        if (taskIndex &gt;= taskQueue.length) {</span>
+<span class="cstat-no" title="statement not covered" >          return null;</span>
+        }
+        const task = <span class="cstat-no" title="statement not covered" >taskQueue[taskIndex];</span>
+<span class="cstat-no" title="statement not covered" >        taskIndex += 1;</span>
+<span class="cstat-no" title="statement not covered" >        return task;</span>
+      };
+      const requeueTask = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(t</span>ask) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        retryStack.push(task);</span>
+      };
 &nbsp;
-    const workerPromises = <span class="cstat-no" title="statement not covered" >session.workers.map(<span class="fstat-no" title="function not covered" >async </span>(worker) =&gt; {</span>
+      const workerPromises = <span class="cstat-no" title="statement not covered" >session.workers.map(<span class="fstat-no" title="function not covered" >async </span>(worker) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        logger.debug(`[${session.id}][Worker ${worker.id}] Starting...`);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        while (true) {</span>
@@ -1921,7 +1925,7 @@ class Orchestrator extends EventEmitter {
 <span class="cstat-no" title="statement not covered" >            requeueTask(task);</span>
 <span class="cstat-no" title="statement not covered" >            continue;</span>
           }
-          
+&nbsp;
           let page = <span class="cstat-no" title="statement not covered" >null;</span>
 <span class="cstat-no" title="statement not covered" >          try {</span>
 <span class="cstat-no" title="statement not covered" >            page = await this.sessionManager.acquirePage(session.id, sharedContext);</span>
@@ -1997,10 +2001,10 @@ class Orchestrator extends EventEmitter {
       const path = <span class="cstat-no" title="statement not covered" >await import('path');</span>
       const { getSettings } = <span class="cstat-no" title="statement not covered" >await import('../utils/configLoader.js'</span>);
       const uiPath = <span class="cstat-no" title="statement not covered" >path.join(process.cwd(), 'ui', 'electron-dashboard', 'dashboard.js');</span>
-      
+&nbsp;
       const settings = <span class="cstat-no" title="statement not covered" >await getSettings();</span>
       const broadcastIntervalMs = <span class="cstat-no" title="statement not covered" >settings?.ui?.dashboard?.broadcastIntervalMs || 2000;</span>
-      
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      if (fs.existsSync(uiPath)) {</span>
         const { DashboardServer } = <span class="cstat-no" title="statement not covered" >await import('../ui/electron-dashboard/dashboard.js'</span>);
 <span class="cstat-no" title="statement not covered" >        this.dashboardServer = new DashboardServer(port, broadcastIntervalMs);</span>
@@ -2194,21 +2198,21 @@ class Orchestrator extends EventEmitter {
     ]);
     const normalizedName = <span class="cstat-no" title="statement not covered" >String(taskName).toLowerCase();</span>
     const resolvedTaskName = <span class="cstat-no" title="statement not covered" >aliasMap.get(normalizedName) || taskName;</span>
-    
+&nbsp;
     // Try exact match first
 <span class="cstat-no" title="statement not covered" >    if (fs.existsSync(path.join(process.cwd(), 'tasks', `${resolvedTaskName}.js`))) {</span>
 <span class="cstat-no" title="statement not covered" >      return import(`../tasks/${resolvedTaskName}.js${cacheBuster}`);<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>
     }
-    
+&nbsp;
     // Case-insensitive search
     const taskFiles = <span class="cstat-no" title="statement not covered" >fs.readdirSync(path.join(process.cwd(), 'tasks')).filter(<span class="fstat-no" title="function not covered" >f </span>=&gt; <span class="cstat-no" title="statement not covered" >f.endsWith('.js'))</span>;</span>
     const matchedFile = <span class="cstat-no" title="statement not covered" >taskFiles.find(<span class="fstat-no" title="function not covered" >f </span>=&gt; <span class="cstat-no" title="statement not covered" >f.replace(/\.js$/i, '').toLowerCase() === normalizedName)</span>;</span>
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    if (matchedFile) {</span>
       const actualName = <span class="cstat-no" title="statement not covered" >matchedFile.replace('.js', '');</span>
 <span class="cstat-no" title="statement not covered" >      return import(`../tasks/${actualName}.js${cacheBuster}`);<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>
     }
-    
+&nbsp;
     // Fallback to original
 <span class="cstat-no" title="statement not covered" >    return import(`../tasks/${resolvedTaskName}.js${cacheBuster}`);<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>
   }
@@ -2227,7 +2231,7 @@ class Orchestrator extends EventEmitter {
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    session.currentTaskName = task.taskName;</span>
 <span class="cstat-no" title="statement not covered" >    session.currentProcessing = 'Executing task...';</span>
-    
+&nbsp;
     // Debug log
 <span class="cstat-no" title="statement not covered" >    logger.info(`[Orchestrator] Executing task: '${task.taskName}' with payload: ${JSON.stringify(task.payload)}`);</span>
 &nbsp;
@@ -2250,7 +2254,9 @@ class Orchestrator extends EventEmitter {
         }
 &nbsp;
         // The task now receives a Page object directly.
-<span class="cstat-no" title="statement not covered" >        await taskModule.default(page, augmentedPayload);</span>
+<span class="cstat-no" title="statement not covered" >        await loggerContext.run({ taskName: task.taskName, sessionId: session.id }, <span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >          await taskModule.default(page, augmentedPayload);</span>
+        });
 <span class="cstat-no" title="statement not covered" >        success = true;</span>
       } else {
 <span class="cstat-no" title="statement not covered" >        throw new Error(`Task '${task.taskName}' does not export a default function.`);</span>
@@ -2296,7 +2302,7 @@ export default Orchestrator;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-21T09:57:40.349Z
+                at 2026-02-22T01:01:57.868Z
             </div>
         <script src="../prettify.js"></script>
         <script>

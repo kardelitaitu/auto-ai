@@ -1,0 +1,8 @@
+--- ESLINT DEBUG REPORT ---
+Generated: 07:51:36
+---------------------------
+
+Run Location: C:\My Script\auto-ai
+Command: npx.cmd eslint . --quiet --format=json
+
+Found 0 files with errors.

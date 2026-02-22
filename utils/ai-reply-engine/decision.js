@@ -183,7 +183,7 @@ export function applySafetyFilters(engine, text) {
   return { safe: true, reason: "passed" };
 }
 
-function randomFallback(engine) {
+function randomFallback(_engine) {
   const fallbacks = ["like", "bookmark", "retweet", "follow"];
   return fallbacks[Math.floor(Math.random() * fallbacks.length)];
 }
@@ -210,7 +210,7 @@ async function generateReply(engine, tweetText, authorUsername, context = {}) {
   const maxAttempts = engine.config.MAX_RETRIES;
   let lastError = null;
 
-  const { screenshot = null, replies = [], url = "" } = context;
+  const { screenshot = null } = context;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
@@ -306,7 +306,7 @@ Reply:`;
   return prompt;
 }
 
-function extractReplyFromResponse(engine, content, originalTweet) {
+function extractReplyFromResponse(engine, content, _originalTweet) {
   if (!content) return null;
   let reply = content.trim();
   const lines = reply.split("\n").filter((line) => line.trim().length > 0);
@@ -334,7 +334,7 @@ function normalizeReply(engine, reply) {
   return cleaned.length >= engine.config.MIN_REPLY_LENGTH ? cleaned : null;
 }
 
-function generateQuickFallback(engine, tweetText, authorUsername) {
+function generateQuickFallback(_engine, tweetText, _authorUsername) {
   const fallbacks = ["Great point!", "Interesting perspective", "Thanks for sharing", "I see what you mean", "That's a good take"];
   if (tweetText.includes("?")) {
     fallbacks.push("That's a thoughtful question", "Good question");

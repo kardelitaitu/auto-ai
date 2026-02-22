@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('fs/promises', () => ({}));
 
@@ -280,6 +280,12 @@ describe('AITwitterAgent Coverage Tests', () => {
   let mockPage;
   let mockProfile;
   let mockLogger;
+
+  afterEach(() => {
+    if (agent && typeof agent.shutdown === 'function') {
+      agent.shutdown();
+    }
+  });
 
   beforeEach(async () => {
     mockPage = {

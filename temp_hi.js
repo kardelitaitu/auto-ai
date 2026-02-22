@@ -629,7 +629,7 @@ export class HumanInteraction {
      * @param {object} options - Click options
      * @returns {Promise<boolean>} - True if successful
      */
-    async clickWithFallback(selectors, description = 'Element', options = {}) {
+    async clickWithFallback(selectors, description = 'Element', _options = {}) {
         for (let i = 0; i < selectors.length; i++) {
             const selector = selectors[i];
             

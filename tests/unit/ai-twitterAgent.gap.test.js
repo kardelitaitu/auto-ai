@@ -151,6 +151,7 @@ vi.mock('../../utils/twitterAgent.js', () => ({
             this.logError = vi.fn();
         }
         navigateHome() { return Promise.resolve(); }
+        shutdown() { }
     }
 }));
 
@@ -226,6 +227,11 @@ describe('AITwitterAgent Gaps', () => {
                 bookmarks: 5
             }
         });
+    });
+
+    afterEach(async () => {
+        if (agent) await agent.shutdown();
+        vi.restoreAllMocks();
     });
 
     describe('performHealthCheck', () => {

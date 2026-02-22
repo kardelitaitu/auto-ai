@@ -353,6 +353,12 @@ describe('AITwitterAgent', () => {
     agent = new AITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
   });
 
+  afterEach(() => {
+    if (agent && typeof agent.shutdown === 'function') {
+      agent.shutdown();
+    }
+  });
+
   describe('Constructor', () => {
     it('should initialize with correct configuration', () => {
       expect(agent).toBeInstanceOf(TwitterAgent);

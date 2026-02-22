@@ -28,7 +28,7 @@ vi.mock('../../utils/ai-quote-engine.js', () => ({
 vi.mock('../../utils/ai-context-engine.js', () => ({
   AIContextEngine: class {
     constructor(config) { this.config = config; }
-    async extractEnhancedContext() { 
+    async extractEnhancedContext() {
       return { sentiment: 'positive', topics: ['test'], replies: [] };
     }
   }
@@ -89,7 +89,7 @@ vi.mock('../../utils/async-queue.js', () => ({
       this.state = { likes: 0, replies: 0, bookmarks: 0, quotes: 0, retweets: 0, follows: 0 };
     }
     canEngage(action) { return this.state[action] < (this.config[action] || Infinity); }
-    recordEngagement(action) { 
+    recordEngagement(action) {
       if (this.canEngage(action)) {
         this.state[action]++;
         return true;
@@ -108,7 +108,7 @@ vi.mock('../../utils/async-queue.js', () => ({
         engagement: this.getEngagementProgress()
       };
     }
-    enableQuickMode() {}
+    enableQuickMode() { }
     async addDive(task, _fallback, _options) {
       try {
         const result = await task();
@@ -258,72 +258,73 @@ vi.mock('../../utils/twitterAgent.js', () => ({
         session: { shouldEndSession: vi.fn().mockReturnValue(false) }
       };
     }
-    
+
     log(msg) {
       if (this.logger) this.logger.info(msg);
     }
-    
+
     async humanClick(_target, _description) {
       return true;
     }
-    
+
     async safeHumanClick(_target, _description, _retries = 3) {
       return true;
     }
-    
+
     async navigateHome() {
       return true;
     }
-    
+
     async checkLoginState() {
       return true;
     }
-    
+
     async ensureForYouTab() {
       return true;
     }
-    
+
     async diveTweet() {
       return true;
     }
-    
+
     async diveProfile() {
       return true;
     }
-    
+
     async simulateReading() {
       return true;
     }
-    
+
     async simulateFidget() {
       return true;
     }
-    
+
     async postTweet(_text) {
       return true;
     }
-    
+
     async runSession(_cycles, _minDuration, _maxDuration) {
       return true;
     }
-    
+
     async performHealthCheck() {
       return { healthy: true };
     }
-    
+
     isSessionExpired() {
       return false;
     }
-    
+
     normalizeProbabilities(p) {
       return { ...p };
     }
-    
+
     getScrollMethod() {
       return 'WHEEL_DOWN';
     }
-    
-    checkFatigue() {}
+
+    checkFatigue() { }
+    shutdown() { }
   }
 }));
 
@@ -400,20 +401,20 @@ const mockOptions = {
 
 describe('AITwitterAgent - Real Implementation', () => {
   let agent;
-  
+
   beforeEach(() => {
     mockPage.url.mockReturnValue('https://x.com/home');
     mockPage.context = () => ({ browser: () => ({ isConnected: () => true }) });
     mockPage.evaluate.mockResolvedValue({ readyState: 'complete', title: 'Home' });
     agent = new AITwitterAgent(mockPage, mockProfile, mockLogger, mockOptions);
   });
-  
+
   afterEach(async () => {
-    if (agent && typeof agent.flushLogs === 'function') {
-      await agent.flushLogs().catch(() => {});
+    if (agent && typeof agent.shutdown === 'function') {
+      await agent.shutdown();
     }
   });
-  
+
   describe('Constructor & Initialization', () => {
     it('should initialize with correct page state', () => {
       expect(agent.pageState).toBe('HOME');
@@ -421,28 +422,28 @@ describe('AITwitterAgent - Real Implementation', () => {
       expect(agent.operationLock).toBe(false);
       expect(agent.diveLockAcquired).toBe(false);
     });
-    
+
     it('should initialize with correct home URL', () => {
       expect(agent.homeUrl).toBe('https://x.com/home');
     });
-    
+
     it('should initialize log buffering', () => {
       expect(agent.lastWaitLogTime).toBe(0);
       expect(agent.waitLogInterval).toBe(10000);
     });
-    
+
     it('should initialize DiveQueue with correct config', () => {
       expect(agent.diveQueue).toBeDefined();
       expect(agent.diveQueue.config.maxConcurrent).toBe(1);
       expect(agent.diveQueue.config.likes).toBe(5);
     });
-    
+
     it('should initialize AI engines', () => {
       expect(agent.replyEngine).toBeDefined();
       expect(agent.quoteEngine).toBeDefined();
       expect(agent.contextEngine).toBeDefined();
     });
-    
+
     it('should initialize AI stats', () => {
       expect(agent.aiStats).toEqual({
         attempts: 0,
@@ -452,46 +453,46 @@ describe('AITwitterAgent - Real Implementation', () => {
         errors: 0
       });
     });
-    
+
     it('should initialize engagement tracker', () => {
       expect(agent.engagementTracker).toBeDefined();
       expect(typeof agent.engagementTracker.canPerform).toBe('function');
     });
-    
+
     it('should initialize micro handler', () => {
       expect(agent.microHandler).toBeDefined();
     });
-    
+
     it('should initialize motor handler', () => {
       expect(agent.motorHandler).toBeDefined();
     });
-    
+
     it('should initialize action handlers', () => {
       expect(agent.actions).toBeDefined();
       expect(agent.actions.reply).toBeDefined();
       expect(agent.actions.quote).toBeDefined();
       expect(agent.actions.like).toBeDefined();
     });
-    
+
     it('should initialize action runner', () => {
       expect(agent.actionRunner).toBeDefined();
     });
-    
+
     it('should initialize session tracking', () => {
       expect(agent.sessionStart).toBeDefined();
       expect(agent.currentPhase).toBe('warmup');
     });
-    
+
     it('should initialize processed tweets set', () => {
       expect(agent._processedTweetIds).toBeInstanceOf(Set);
     });
-    
+
     it('should initialize scroll tracking', () => {
       expect(agent._lastScrollY).toBe(0);
       expect(agent._minScrollPerDive).toBe(400);
     });
   });
-  
+
   describe('Session Abort', () => {
     it('should exit early when aborted', async () => {
       const controller = new AbortController();
@@ -511,7 +512,7 @@ describe('AITwitterAgent - Real Implementation', () => {
       expect(agent.pageState).toBe('DIVING');
       expect(agent.scrollingEnabled).toBe(false);
     });
-    
+
     it('should end dive and release lock', async () => {
       await agent.startDive();
       await agent.endDive(true, false);
@@ -519,182 +520,182 @@ describe('AITwitterAgent - Real Implementation', () => {
       expect(agent.diveLockAcquired).toBe(false);
       expect(agent.scrollingEnabled).toBe(true);
     });
-    
+
     it('should return home when ending dive with returnHome=true', async () => {
       await agent.startDive();
       await agent.endDive(true, true);
       expect(agent.pageState).toBe('HOME');
     });
-    
+
     it('should check if diving', async () => {
       expect(agent.isDiving()).toBe(false);
       await agent.startDive();
       expect(agent.isDiving()).toBe(true);
     });
-    
+
     it('should check if on tweet page', () => {
       agent.page.url = vi.fn().mockReturnValue('https://x.com/user/status/123');
       expect(agent.isOnTweetPage()).toBe(true);
     });
-    
+
     it('should check if can scroll', async () => {
       expect(agent.canScroll()).toBe(true);
       await agent.startDive();
       expect(agent.canScroll()).toBe(false);
     });
-    
+
     it('should get page state', () => {
       const state = agent.getPageState();
       expect(state.state).toBe('HOME');
       expect(state.scrollingEnabled).toBe(true);
     });
-    
+
     it('should log dive status', () => {
       agent.logDiveStatus();
       expect(mockLogger.info).toHaveBeenCalled();
     });
-    
+
     it('should wait for dive to complete', async () => {
       await agent.startDive();
-      
+
       setTimeout(async () => {
         await agent.endDive();
       }, 100);
-      
+
       await agent.waitForDiveComplete();
       expect(agent.operationLock).toBe(false);
     });
-    
+
     it('should check if should continue session', () => {
       expect(agent.shouldContinueSession()).toBe(true);
     });
   });
-  
+
   describe('Session Management', () => {
     it('should update session phase', () => {
       agent.updateSessionPhase();
       expect(agent.currentPhase).toBeDefined();
     });
-    
+
     it('should get phase modified probability', () => {
       const prob = agent.getPhaseModifiedProbability('reply', 0.5);
       expect(typeof prob).toBe('number');
     });
-    
+
     it('should get session progress', () => {
       const progress = agent.getSessionProgress();
       expect(typeof progress).toBe('number');
     });
-    
+
     it('should check if in cooldown', () => {
       const inCooldown = agent.isInCooldown();
       expect(typeof inCooldown).toBe('boolean');
     });
-    
+
     it('should check if in warmup', () => {
       const inWarmup = agent.isInWarmup();
       expect(typeof inWarmup).toBe('boolean');
     });
   });
-  
+
   describe('Micro Interactions', () => {
     it('should trigger micro interaction', async () => {
       const result = await agent.triggerMicroInteraction('reading');
       expect(result).toBeDefined();
     });
-    
+
     it('should highlight text', async () => {
       const result = await agent.highlightText();
       expect(result).toBeDefined();
     });
-    
+
     it('should start fidget loop', () => {
       const interval = agent.startFidgetLoop();
       expect(interval).toBeDefined();
     });
-    
+
     it('should stop fidget loop', () => {
       agent.stopFidgetLoop();
       // Should not throw
     });
-    
+
     it('should override simulateFidget', async () => {
       await agent.simulateFidget();
       // Should call microHandler.executeMicroInteraction
     });
   });
-  
+
   describe('Motor Control', () => {
     it('should perform smart click', async () => {
       const result = await agent.smartClick('test', { verifySelector: '[data-testid="like"]' });
       expect(result).toBeDefined();
     });
-    
+
     it('should click element with fallback', async () => {
       const result = await agent.smartClickElement('[data-testid="like"]', ['[data-testid="unlike"]']);
       expect(result).toBeDefined();
     });
   });
-  
+
   describe('Safe Navigation', () => {
     it('should safely navigate home', async () => {
       const result = await agent._safeNavigateHome();
       expect(result).toBe(true);
     });
-    
+
     it('should detect already on home page', async () => {
       agent.page.url = vi.fn().mockReturnValue('https://x.com/home');
       const result = await agent._safeNavigateHome();
       expect(result).toBe(true);
     });
   });
-  
+
   describe('Exploration Scroll', () => {
     it('should ensure exploration scroll', async () => {
       agent.page.evaluate = vi.fn()
         .mockResolvedValueOnce(500)  // currentY
         .mockResolvedValueOnce(2000); // docHeight
-      
+
       const result = await agent._ensureExplorationScroll();
       expect(result).toBe(true);
     });
-    
+
     it('should skip scroll if already scrolled enough', async () => {
       agent._lastScrollY = 1000;
       agent.page.evaluate = vi.fn()
         .mockResolvedValueOnce(1500)  // currentY (delta = 500 > 400)
         .mockResolvedValueOnce(3000); // docHeight
-      
+
       const result = await agent._ensureExplorationScroll();
       expect(result).toBe(true);
     });
   });
-  
+
   describe('Logging', () => {
     it('should log debug messages', () => {
       agent.logDebug('Test debug message');
       expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('[DEBUG]'));
     });
-    
+
     it('should log warning messages', () => {
       agent.logWarn('Test warning message');
       expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('[WARN]'));
     });
   });
-  
+
   describe('Perform Idle Cursor Movement', () => {
     it('should perform idle cursor movement', async () => {
       await agent.performIdleCursorMovement();
       // Should move mouse without errors
     });
   });
-  
+
   describe('Health Check', () => {
     it('should return healthy when browser connected', async () => {
       const result = await agent.performHealthCheck();
       expect(result.healthy).toBe(true);
     });
-    
+
     it('should handle disconnected browser', async () => {
       agent.page.context = vi.fn().mockReturnValue({
         browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(false) })
@@ -702,55 +703,55 @@ describe('AITwitterAgent - Real Implementation', () => {
       const result = await agent.performHealthCheck();
       expect(result.healthy).toBe(false);
     });
-    
+
     it('should handle page evaluation error', async () => {
       agent.page.evaluate = vi.fn().mockRejectedValue(new Error('Eval failed'));
       const result = await agent.performHealthCheck();
       expect(result.healthy).toBe(false);
     });
   });
-  
+
   describe('Read Expanded Tweet', () => {
     it('should read expanded tweet', async () => {
       // Mock mathUtils.roll to return false (skip media check)
       const { mathUtils } = await import('../../utils/mathUtils.js');
       mathUtils.roll = vi.fn().mockReturnValue(false);
-      
+
       // Mock locator to return proper chainable object
       agent.page.locator = vi.fn().mockReturnValue({
         count: vi.fn().mockResolvedValue(0),
         isVisible: vi.fn().mockResolvedValue(false)
       });
-      
+
       await agent._readExpandedTweet();
     });
   });
-  
+
   describe('Quick Fallback Engagement', () => {
     it('should perform quick fallback engagement', async () => {
       const result = await agent._quickFallbackEngagement();
       expect(result).toBeDefined();
     });
   });
-  
+
   describe('Dive Tweet with AI', () => {
     it('should handle dive tweet with queue wrapper', async () => {
       agent.isScanning = false;
       const queueWrapper = async (task) => {
         return await task();
       };
-      
+
       await agent._diveTweetWithAI(queueWrapper);
       // Should complete without errors
     });
-    
+
     it('should handle dive tweet without queue wrapper', async () => {
       agent.isScanning = false;
       await agent._diveTweetWithAI();
       // Should complete without errors
     });
   });
-  
+
   describe('Process Tweet ID', () => {
     it('should track processed tweets', () => {
       agent._processedTweetIds.add('tweet-123');
@@ -758,7 +759,7 @@ describe('AITwitterAgent - Real Implementation', () => {
       expect(agent._processedTweetIds.size).toBe(1);
     });
   });
-  
+
   describe('AI Stats Tracking', () => {
     it('should track AI stats', () => {
       agent.aiStats.attempts = 5;
@@ -767,34 +768,34 @@ describe('AITwitterAgent - Real Implementation', () => {
       expect(agent.aiStats.replies).toBe(3);
     });
   });
-  
+
   describe('Engagement Tracking', () => {
     it('should check if can perform engagement', () => {
       const canLike = agent.engagementTracker.canPerform('likes');
       expect(canLike).toBe(true);
     });
-    
+
     it('should record engagement', () => {
       const recorded = agent.engagementTracker.record('likes');
       expect(recorded).toBe(true);
     });
-    
+
     it('should get engagement progress', () => {
       const progress = agent.engagementTracker.getProgress('likes');
       expect(progress).toBeDefined();
     });
-    
+
     it('should get engagement status', () => {
       const status = agent.engagementTracker.getStatus();
       expect(status).toBeDefined();
     });
-    
+
     it('should get engagement summary', () => {
       const summary = agent.engagementTracker.getSummary();
       expect(summary).toBeDefined();
     });
   });
-  
+
   describe('Quick Mode', () => {
     it('should enable quick mode', () => {
       agent.diveQueue.enableQuickMode();
@@ -802,7 +803,7 @@ describe('AITwitterAgent - Real Implementation', () => {
       expect(agent.quickModeEnabled).toBe(true);
     });
   });
-  
+
   describe('Get AI Stats', () => {
     it('should return AI stats', () => {
       const stats = agent.getAIStats();

@@ -10,8 +10,6 @@ import { sentimentService } from "../sentiment-service.js";
 import { REPLY_SYSTEM_PROMPT, getStrategyInstruction } from "../twitter-reply-prompt.js";
 import { HumanInteraction } from "../human-interaction.js";
 
-const logger = createLogger("ai-reply-engine.js");
-
 export const SAFETY_FILTERS = {
   minTweetLength: 10,
   maxTweetLength: 500,
@@ -293,22 +291,22 @@ Reply:`;
     return { url: tweetUrl, screenshot: null, replies: [] };
   }
 
-  async extractRepliesMultipleStrategies(page) {
+  async extractRepliesMultipleStrategies(_page) {
     return [];
   }
 
-  async _returnToMainTweet(page) { }
+  async _returnToMainTweet(_page) { }
 
-  async extractReplyFromArticle(article, _page) {
+  async extractReplyFromArticle(_article, _page) {
     return null;
   }
 
-  async extractAuthorFromArticle(article) {
+  async extractAuthorFromArticle(_article) {
     return "unknown";
   }
 
-  async extractAuthorFromElement(element, _page) {
-    return this.extractAuthorFromArticle(element);
+  async extractAuthorFromElement(_element, _page) {
+    return this.extractAuthorFromArticle(_element);
   }
 
   interceptAddress(reply) {
@@ -325,7 +323,7 @@ Reply:`;
     return false;
   }
 
-  extractReplyFromResponse(content, originalTweet) {
+  extractReplyFromResponse(content, _originalTweet) {
     if (!content) return null;
     let reply = content.trim();
     const lines = reply.split("\n").filter((line) => line.trim().length > 0);
@@ -465,7 +463,7 @@ Reply:`;
           await human.safeHumanClick(el, "Main Tweet", 3, { precision: 'high' });
           break;
         }
-      } catch (e) { /* continue */ }
+      } catch (_e) { /* continue */ }
     }
 
     await page.keyboard.press("r");
@@ -495,7 +493,7 @@ Reply:`;
           replyBtn = btn;
           break;
         }
-      } catch (e) { /* continue */ }
+      } catch (_e) { /* continue */ }
     }
 
     if (!replyBtn) {

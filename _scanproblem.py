@@ -5,7 +5,7 @@ import datetime
 import sys
 
 # --- CONFIGURATION ---
-LOG_FILE = "logs.txt"
+LOG_FILE = "_scanproblem.txt"
 # ---------------------
 
 def write_log(content, mode='a'):
@@ -14,7 +14,7 @@ def write_log(content, mode='a'):
         with open(LOG_FILE, mode, encoding='utf-8') as f:
             f.write(content)
     except Exception as e:
-        print(f"❌ CRITICAL: Could not write to logs.txt: {e}")
+        print(f"❌ CRITICAL: Could not write to _scanproblem.txt: {e}")
 
 def main():
     print(f"🚀 Starting Scan... (Writing to {LOG_FILE})")
@@ -57,7 +57,7 @@ def main():
         print(f"📊 Output Size: {stdout_len} chars")
 
         if stderr_len > 0:
-            print("⚠️ STDERR detected (Check logs.txt)")
+            print("⚠️ STDERR detected (Check _scanproblem.txt)")
             write_log(f"--- STDERR (Errors from ESLint) ---\n{result.stderr}\n\n")
 
         if stdout_len == 0:
@@ -100,7 +100,7 @@ def main():
                 text = msg.get('message', '').replace('\n', ' ')
                 write_log(f"  ❌ Line {line}: [{rule}] {text}\n")
 
-        print("✅ DONE. Check logs.txt now.")
+        print("✅ DONE. Check _scanproblem.txt now.")
 
     except Exception as e:
         print(f"🔥 PYTHON CRASHED: {e}")

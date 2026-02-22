@@ -275,7 +275,7 @@ Tweet URL: ${url}
                 .filter(r => r.text && r.text.length > 5)
                 .sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))
                 .slice(0, 30);
-            
+
             prompt += `Other replies to this tweet (in ${detectedLanguage}):
 `;
             sortedReplies.forEach((reply, i) => {
@@ -362,7 +362,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // FULL SENTIMENT ANALYSIS OF TWEET
         // ================================================================
         const tweetSentiment = sentimentService.analyze(tweetText);
-        
+
         // Log comprehensive sentiment analysis
         this.logger.info(`[AIQuote] Sentiment Analysis:`);
         this.logger.info(`[AIQuote]   - Overall: ${tweetSentiment.isNegative ? 'NEGATIVE' : 'NEUTRAL/POSITIVE'} (score: ${tweetSentiment.score.toFixed(2)})`);
@@ -401,10 +401,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         if (replies && replies.length > 0) {
             const sentimentAnalysis = sentimentService.analyzeForReplySelection(replies);
             this.logger.info(`[AIQuote] Reply selection strategy: ${sentimentAnalysis.strategy} ` +
-                        `(pos: ${sentimentAnalysis.distribution.positive}, ` +
-                        `neg: ${sentimentAnalysis.distribution.negative}, ` +
-                        `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`);
-            
+                `(pos: ${sentimentAnalysis.distribution.positive}, ` +
+                `neg: ${sentimentAnalysis.distribution.negative}, ` +
+                `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`);
+
             const recs = sentimentAnalysis.recommendations;
             if (recs.manualSelection) {
                 selectedReplies = recs.manualSelection;
@@ -415,9 +415,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                     .slice(0, recs.max)
                     .map(r => ({ author: r.author, text: r.text }));
             }
-            
+
             this.logger.info(`[AIQuote] Selected ${selectedReplies.length} replies for LLM context ` +
-                        `(filtered from ${replies.length})`);
+                `(filtered from ${replies.length})`);
         }
 
         // Build enhanced prompt with language detection
@@ -619,20 +619,20 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // ================================================================
         if (trimmed.length >= 10 && trimmed.length < 300) {
             // Check if it looks like a real tweet (not JSON, not thinking)
-            const isCleanResponse = !trimmed.startsWith('{') && 
-                                    !trimmed.startsWith('[') &&
-                                    !trimmed.startsWith('```') &&
-                                    !trimmed.toLowerCase().includes('thinking') &&
-                                    !trimmed.toLowerCase().includes('reasoning') &&
-                                    !trimmed.toLowerCase().includes('<thought>');
+            const isCleanResponse = !trimmed.startsWith('{') &&
+                !trimmed.startsWith('[') &&
+                !trimmed.startsWith('```') &&
+                !trimmed.toLowerCase().includes('thinking') &&
+                !trimmed.toLowerCase().includes('reasoning') &&
+                !trimmed.toLowerCase().includes('<thought>');
 
             if (isCleanResponse) {
                 // Check for reasoning patterns
                 const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(trimmed) ||
-                                   /Let me|I'll|First|Then|So I|Now I/i.test(trimmed) ||
-                                   /This is my|My draft|Here's my|I think this/i.test(trimmed) ||
-                                   /It needs to be|My draft fits/i.test(trimmed) ||
-                                   /That'?s specific|It feels authentic/i.test(trimmed);
+                    /Let me|I'll|First|Then|So I|Now I/i.test(trimmed) ||
+                    /This is my|My draft|Here's my|I think this/i.test(trimmed) ||
+                    /It needs to be|My draft fits/i.test(trimmed) ||
+                    /That'?s specific|It feels authentic/i.test(trimmed);
 
                 if (!isReasoning) {
                     this.logger.debug(`[extractReplyFromResponse] ✓ Direct content used`);
@@ -668,16 +668,16 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // ================================================================
         const lines = trimmed.split('\n');
         const lastLine = lines[lines.length - 1].trim();
-        
+
         if (lastLine.length > 10 && lastLine.length < 300) {
             // Check if it looks like a real response (not internal reasoning)
             const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(lastLine) ||
-                               /Let me|I'll|First|Then|So I|Now I/i.test(lastLine) ||
-                               /This is my|My draft|Here's my/i.test(lastLine) ||
-                               /It needs to be|My draft fits|I think this/i.test(lastLine) ||
-                               /That'?s specific|It feels authentic/i.test(lastLine) ||
-                               /That's specific|My draft|Here's my|I think this/i.test(lastLine);
-            
+                /Let me|I'll|First|Then|So I|Now I/i.test(lastLine) ||
+                /This is my|My draft|Here's my/i.test(lastLine) ||
+                /It needs to be|My draft fits|I think this/i.test(lastLine) ||
+                /That'?s specific|It feels authentic/i.test(lastLine) ||
+                /That's specific|My draft|Here's my|I think this/i.test(lastLine);
+
             if (!isReasoning) {
                 this.logger.debug(`[extractReplyFromResponse] ✓ Last line pattern matched`);
                 return lastLine;
@@ -692,9 +692,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             const para = paragraphs[i].trim();
             if (para.length > 10 && para.length < 300) {
                 const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(para) ||
-                                   /Let me|I'll|First|Then|So I|Now I/i.test(para) ||
-                                   /This is my|My draft|Here's my/i.test(para) ||
-                                   /It needs to be|My draft fits|I think this/i.test(para);
+                    /Let me|I'll|First|Then|So I|Now I/i.test(para) ||
+                    /This is my|My draft|Here's my/i.test(para) ||
+                    /It needs to be|My draft fits|I think this/i.test(para);
                 if (!isReasoning) {
                     this.logger.debug(`[extractReplyFromResponse] ✓ Paragraph pattern matched`);
                     return para;
@@ -803,9 +803,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         const methods = [
-            { name: 'keyboard_compose', weight: 40, fn: () => this.quoteMethodA_Keyboard(page, quoteText, human) },
-            { name: 'retweet_menu', weight: 35, fn: () => this.quoteMethodB_Retweet(page, quoteText, human) },
-            { name: 'new_post', weight: 25, fn: () => this.quoteMethodC_Url(page, quoteText, human) }
+            { name: 'keyboard_compose', weight: 30, fn: () => this.quoteMethodA_Keyboard(page, quoteText, human) },
+            { name: 'retweet_menu', weight: 60, fn: () => this.quoteMethodB_Retweet(page, quoteText, human) },
+            { name: 'new_post', weight: 10, fn: () => this.quoteMethodC_Url(page, quoteText, human) }
         ];
 
         const selected = human.selectMethod(methods);
@@ -813,19 +813,19 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         try {
             const result = await selected.fn();
-            
+
             // Update stats based on result
             if (result.success) {
                 this.stats.successes++;
             } else {
                 this.stats.failures++;
             }
-            
+
             return result;
         } catch (error) {
             this.logger.error(`[AIQuote] Method ${selected.name} failed: ${error.message}`);
             this.logger.warn(`[AIQuote] Trying fallback: retweet_menu`);
-            
+
             // Fallback to Retweet Menu method
             try {
                 const result = await this.quoteMethodB_Retweet(page, quoteText, human);
@@ -904,7 +904,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             if (lower === pattern || lower.startsWith(pattern + ' ') || lower.startsWith(pattern + '.')) {
                 return { valid: false, reason: `generic_response:${pattern}` };
             }
-            
+
             const patternIndex = lower.indexOf(' ' + pattern + ' ');
             if (patternIndex !== -1) {
                 if (text.length < 40 || (pattern.length / text.length) > 0.4) {
@@ -1001,7 +1001,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
 
     /**
-     * Method A: Keyboard Compose + Quote (40%)
+     * Method A: Keyboard Compose + Quote (30%)
      * Click Tweet Text → T → Down → Down → Enter → [type] → Ctrl+Enter
      */
     async quoteMethodA_Keyboard(page, quoteText, human) {
@@ -1015,7 +1015,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // STEP 1: Click on the main tweet text first (required for quote to work)
         human.logStep('CLICK_TWEET', 'Clicking main tweet text');
         const tweetTextSelector = '[data-testid="tweetText"]';
-        
+
         try {
             const tweetEl = page.locator(tweetTextSelector).first();
             if (await tweetEl.count() > 0) {
@@ -1090,10 +1090,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                     return composer?.innerHTML || '';
                 });
                 const hasQuote = composerHTML.includes('quoted') ||
-                                composerHTML.includes('Pop Base') ||
-                                composerHTML.includes('tweet-') ||
-                                composerHTML.includes(' TweetText') ||
-                                composerHTML.length > 800;
+                    composerHTML.includes('Pop Base') ||
+                    composerHTML.includes('tweet-') ||
+                    composerHTML.includes(' TweetText') ||
+                    composerHTML.length > 800;
                 if (hasQuote) {
                     human.logStep('QUOTE_DETECTED', 'composer_content');
                 }
@@ -1172,7 +1172,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     }
 
     /**
-     * Method B: Retweet Menu (35%)
+     * Method B: Retweet Menu (60%)
      * Click Retweet → Find Quote → Click → [type] → Ctrl+Enter
      */
     async quoteMethodB_Retweet(page, quoteText, human) {
@@ -1187,7 +1187,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // STEP 1: Find and click retweet button with specific selectors
         human.logStep('FIND_RETWEET', 'Locating retweet button');
-        
+
         const retweetBtnSelectors = [
             '[data-testid="retweet"]',
             '[aria-label*="Repost"]',
@@ -1219,15 +1219,15 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // Human-like click sequence
         await retweetBtn.scrollIntoViewIfNeeded();
-        
+
         // Click Retweet button with high precision
         const rtClickSuccess = await human.safeHumanClick(
-            retweetBtn, 
-            "Retweet Button", 
-            3, 
+            retweetBtn,
+            "Retweet Button",
+            3,
             { precision: 'high' }
         );
-        
+
         let menuReady = false;
         if (rtClickSuccess) {
             for (let i = 0; i < 5; i++) {
@@ -1240,17 +1240,17 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                 await new Promise(resolve => setTimeout(resolve, 400));
             }
         }
-        
+
         if (!menuReady) {
             // Try one more click if menu didn't open
-             human.logStep('RETRY', 'Menu not open, clicking Retweet button again');
-             await human.safeHumanClick(retweetBtn, "Retweet Button (Retry)", 2, { precision: 'high' });
-             await new Promise(resolve => setTimeout(resolve, 800));
-             
-             const menu = page.locator('[role="menu"]').first();
-             if (await menu.isVisible().catch(() => false)) {
-                 menuReady = true;
-             }
+            human.logStep('RETRY', 'Menu not open, clicking Retweet button again');
+            await human.safeHumanClick(retweetBtn, "Retweet Button (Retry)", 2, { precision: 'high' });
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const menu = page.locator('[role="menu"]').first();
+            if (await menu.isVisible().catch(() => false)) {
+                menuReady = true;
+            }
         }
 
         if (!menuReady) {
@@ -1259,7 +1259,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // STEP 2: Find and click Quote option in dropdown menu
         human.logStep('FIND_QUOTE', 'Looking for Quote option in menu');
-        
+
         const quoteOptionSelectors = [
             'a[role="menuitem"]:has-text("Quote")',
             '[role="menuitem"]:has-text("Quote")',
@@ -1293,7 +1293,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             // Debug: show what's in the menu
             const menuItems = await page.locator('[role="menuitem"]').all();
             human.logStep('DEBUG', `Found ${menuItems.length} menu items`);
-            
+
             // Fallback to keyboard method
             await page.keyboard.press('Escape');
             await new Promise(resolve => setTimeout(resolve, 500));
@@ -1307,10 +1307,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             3,
             { precision: 'high' }
         );
-        
+
         if (!quoteClickSuccess) {
-             human.logStep('CLICK_FAIL', 'Failed to click Quote option');
-             return { success: false, reason: 'quote_click_failed', method: 'retweet_menu' };
+            human.logStep('CLICK_FAIL', 'Failed to click Quote option');
+            return { success: false, reason: 'quote_click_failed', method: 'retweet_menu' };
         }
         human.logStep('QUOTE_CLICK', 'Clicked Quote option');
         await new Promise(resolve => setTimeout(resolve, 1500));
@@ -1377,17 +1377,17 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // STEP 5: Type and post
         const composer = page.locator(verify.selector).first();
-        
+
         // Clear and type
         await human.safeHumanClick(composer, 'Composer Focus', 3, { precision: 'high' });
-        
+
         const isMac = process.platform === 'darwin';
         const modifier = isMac ? 'Meta' : 'Control';
         await page.keyboard.press(`${modifier}+a`);
-        
+
         await page.keyboard.press('Delete');
         await new Promise(resolve => setTimeout(resolve, 200));
-        
+
         human.logStep('TYPING', `Entering ${quoteText.length} chars`);
         await human.typeText(page, quoteText, composer);
 
@@ -1403,7 +1403,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     }
 
     /**
-     * Method C: New Post Button → Paste URL → Type Comment (15%)
+     * Method C: New Post Button → Paste URL → Type Comment (10%)
      */
     async quoteMethodC_Url(page, quoteText, human) {
         human.logStep('NEW_POST_URL', 'Starting');
@@ -1483,7 +1483,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // STEP 3: Type the comment FIRST
         const composer = page.locator(verify.selector).first();
-        
+
         human.logStep('TYPING', `Entering ${quoteText.length} chars`);
         await human.typeText(page, quoteText, composer);
 
@@ -1497,7 +1497,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
             return composer?.innerHTML || '';
         });
-        
+
         // If no <br> or new div, try Enter again
         if (!contentAfterEnter.includes('<br>') && !contentAfterEnter.includes('<div>')) {
             human.logStep('NEWLINE', 'Pressing Enter again...');
@@ -1507,14 +1507,14 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // Step 5: Paste the URL LAST (appears as preview/card below comment)
         human.logStep('PASTE_URL', 'Pasting tweet URL...');
-        
+
         // Ensure focus before pasting
         await human.ensureFocus(page, composer);
-        
+
         const isMac = process.platform === 'darwin';
         const modifier = isMac ? 'Meta' : 'Control';
         await page.keyboard.press(`${modifier}+v`);
-        
+
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Verify URL was pasted with retry
@@ -1525,21 +1525,21 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                 .first()
                 .textContent()
                 .catch(() => '');
-                
+
             if (finalContent.includes('x.com') || finalContent.includes('twitter.com')) {
                 human.logStep('URL_PASTED', 'URL pasted successfully');
                 urlPasted = true;
                 break;
             }
-            
+
             if (i < 2) {
-                human.logStep('PASTE_RETRY', `URL not found, retrying paste (attempt ${i+2})`);
+                human.logStep('PASTE_RETRY', `URL not found, retrying paste (attempt ${i + 2})`);
                 await human.ensureFocus(page, composer);
                 await page.keyboard.press(`${modifier}+v`);
                 await new Promise(resolve => setTimeout(resolve, 1000));
             }
         }
-        
+
         if (!urlPasted) {
             human.logStep('PASTE_WARN', 'URL may not have pasted correctly');
             // Last resort: type it manually

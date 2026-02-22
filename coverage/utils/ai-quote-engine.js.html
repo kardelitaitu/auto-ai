@@ -3464,7 +3464,7 @@ Tweet URL: ${url}
                 .filter(<span class="fstat-no" title="function not covered" >r </span>=&gt; <span class="cstat-no" title="statement not covered" >r.text &amp;&amp; r.text.length &gt; 5)</span>
                 .sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >(b.text?.length || 0) - (a.text?.length || 0))</span>
                 .slice(0, 30);
-            
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            prompt += `Other replies to this tweet (in ${detectedLanguage}):</span>
 `;
 <span class="cstat-no" title="statement not covered" >            sortedReplies.forEach(<span class="fstat-no" title="function not covered" >(r</span>eply, i) =&gt; {</span>
@@ -3551,7 +3551,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // FULL SENTIMENT ANALYSIS OF TWEET
         // ================================================================
         const tweetSentiment = <span class="cstat-no" title="statement not covered" >sentimentService.analyze(tweetText);</span>
-        
+&nbsp;
         // Log comprehensive sentiment analysis
 <span class="cstat-no" title="statement not covered" >        this.logger.info(`[AIQuote] Sentiment Analysis:`);</span>
 <span class="cstat-no" title="statement not covered" >        this.logger.info(`[AIQuote]   - Overall: ${tweetSentiment.isNegative ? 'NEGATIVE' : 'NEUTRAL/POSITIVE'} (score: ${tweetSentiment.score.toFixed(2)})`);</span>
@@ -3590,10 +3590,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 <span class="cstat-no" title="statement not covered" >        if (replies &amp;&amp; replies.length &gt; 0) {</span>
             const sentimentAnalysis = <span class="cstat-no" title="statement not covered" >sentimentService.analyzeForReplySelection(replies);</span>
 <span class="cstat-no" title="statement not covered" >            this.logger.info(`[AIQuote] Reply selection strategy: ${sentimentAnalysis.strategy} ` +</span>
-                        `(pos: ${sentimentAnalysis.distribution.positive}, ` +
-                        `neg: ${sentimentAnalysis.distribution.negative}, ` +
-                        `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`);
-            
+                `(pos: ${sentimentAnalysis.distribution.positive}, ` +
+                `neg: ${sentimentAnalysis.distribution.negative}, ` +
+                `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`);
+&nbsp;
             const recs = <span class="cstat-no" title="statement not covered" >sentimentAnalysis.recommendations;</span>
 <span class="cstat-no" title="statement not covered" >            if (recs.manualSelection) {</span>
 <span class="cstat-no" title="statement not covered" >                selectedReplies = recs.manualSelection;</span>
@@ -3604,9 +3604,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                     .slice(0, recs.max)
                     .map(<span class="fstat-no" title="function not covered" >r </span>=&gt; (<span class="cstat-no" title="statement not covered" >{ author: r.author, text: r.text })</span>);
             }
-            
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            this.logger.info(`[AIQuote] Selected ${selectedReplies.length} replies for LLM context ` +</span>
-                        `(filtered from ${replies.length})`);
+                `(filtered from ${replies.length})`);
         }
 &nbsp;
         // Build enhanced prompt with language detection
@@ -3808,20 +3808,20 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // ================================================================
 <span class="cstat-no" title="statement not covered" >        if (trimmed.length &gt;= 10 &amp;&amp; trimmed.length &lt; 300) {</span>
             // Check if it looks like a real tweet (not JSON, not thinking)
-            const isCleanResponse = <span class="cstat-no" title="statement not covered" >!trimmed.startsWith('{') &amp;&amp; </span>
-                                    !trimmed.startsWith('[') &amp;&amp;
-                                    !trimmed.startsWith('```') &amp;&amp;
-                                    !trimmed.toLowerCase().includes('thinking') &amp;&amp;
-                                    !trimmed.toLowerCase().includes('reasoning') &amp;&amp;
-                                    !trimmed.toLowerCase().includes('&lt;thought&gt;');
+            const isCleanResponse = <span class="cstat-no" title="statement not covered" >!trimmed.startsWith('{') &amp;&amp;</span>
+                !trimmed.startsWith('[') &amp;&amp;
+                !trimmed.startsWith('```') &amp;&amp;
+                !trimmed.toLowerCase().includes('thinking') &amp;&amp;
+                !trimmed.toLowerCase().includes('reasoning') &amp;&amp;
+                !trimmed.toLowerCase().includes('&lt;thought&gt;');
 &nbsp;
 <span class="cstat-no" title="statement not covered" >            if (isCleanResponse) {</span>
                 // Check for reasoning patterns
                 const isReasoning = <span class="cstat-no" title="statement not covered" >/I (?:need to|should|want to|will|must|can|have) /i.test(trimmed) ||</span>
-                                   /Let me|I'll|First|Then|So I|Now I/i.test(trimmed) ||
-                                   /This is my|My draft|Here's my|I think this/i.test(trimmed) ||
-                                   /It needs to be|My draft fits/i.test(trimmed) ||
-                                   /That'?s specific|It feels authentic/i.test(trimmed);
+                    /Let me|I'll|First|Then|So I|Now I/i.test(trimmed) ||
+                    /This is my|My draft|Here's my|I think this/i.test(trimmed) ||
+                    /It needs to be|My draft fits/i.test(trimmed) ||
+                    /That'?s specific|It feels authentic/i.test(trimmed);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >                if (!isReasoning) {</span>
 <span class="cstat-no" title="statement not covered" >                    this.logger.debug(`[extractReplyFromResponse] ✓ Direct content used`);</span>
@@ -3857,16 +3857,16 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // ================================================================
         const lines = <span class="cstat-no" title="statement not covered" >trimmed.split('\n');</span>
         const lastLine = <span class="cstat-no" title="statement not covered" >lines[lines.length - 1].trim();</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (lastLine.length &gt; 10 &amp;&amp; lastLine.length &lt; 300) {</span>
             // Check if it looks like a real response (not internal reasoning)
             const isReasoning = <span class="cstat-no" title="statement not covered" >/I (?:need to|should|want to|will|must|can|have) /i.test(lastLine) ||</span>
-                               /Let me|I'll|First|Then|So I|Now I/i.test(lastLine) ||
-                               /This is my|My draft|Here's my/i.test(lastLine) ||
-                               /It needs to be|My draft fits|I think this/i.test(lastLine) ||
-                               /That'?s specific|It feels authentic/i.test(lastLine) ||
-                               /That's specific|My draft|Here's my|I think this/i.test(lastLine);
-            
+                /Let me|I'll|First|Then|So I|Now I/i.test(lastLine) ||
+                /This is my|My draft|Here's my/i.test(lastLine) ||
+                /It needs to be|My draft fits|I think this/i.test(lastLine) ||
+                /That'?s specific|It feels authentic/i.test(lastLine) ||
+                /That's specific|My draft|Here's my|I think this/i.test(lastLine);
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            if (!isReasoning) {</span>
 <span class="cstat-no" title="statement not covered" >                this.logger.debug(`[extractReplyFromResponse] ✓ Last line pattern matched`);</span>
 <span class="cstat-no" title="statement not covered" >                return lastLine;</span>
@@ -3881,9 +3881,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             const para = <span class="cstat-no" title="statement not covered" >paragraphs[i].trim();</span>
 <span class="cstat-no" title="statement not covered" >            if (para.length &gt; 10 &amp;&amp; para.length &lt; 300) {</span>
                 const isReasoning = <span class="cstat-no" title="statement not covered" >/I (?:need to|should|want to|will|must|can|have) /i.test(para) ||</span>
-                                   /Let me|I'll|First|Then|So I|Now I/i.test(para) ||
-                                   /This is my|My draft|Here's my/i.test(para) ||
-                                   /It needs to be|My draft fits|I think this/i.test(para);
+                    /Let me|I'll|First|Then|So I|Now I/i.test(para) ||
+                    /This is my|My draft|Here's my/i.test(para) ||
+                    /It needs to be|My draft fits|I think this/i.test(para);
 <span class="cstat-no" title="statement not covered" >                if (!isReasoning) {</span>
 <span class="cstat-no" title="statement not covered" >                    this.logger.debug(`[extractReplyFromResponse] ✓ Paragraph pattern matched`);</span>
 <span class="cstat-no" title="statement not covered" >                    return para;</span>
@@ -3992,9 +3992,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 &nbsp;
         const methods = <span class="cstat-no" title="statement not covered" >[</span>
-            { name: 'keyboard_compose', weight: 40, fn: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.quoteMethodA_Keyboard(page, quoteText, human) </span>},
-            { name: 'retweet_menu', weight: 35, fn: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.quoteMethodB_Retweet(page, quoteText, human) </span>},
-            { name: 'new_post', weight: 25, fn: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.quoteMethodC_Url(page, quoteText, human) </span>}
+            { name: 'keyboard_compose', weight: 30, fn: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.quoteMethodA_Keyboard(page, quoteText, human) </span>},
+            { name: 'retweet_menu', weight: 60, fn: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.quoteMethodB_Retweet(page, quoteText, human) </span>},
+            { name: 'new_post', weight: 10, fn: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.quoteMethodC_Url(page, quoteText, human) </span>}
         ];
 &nbsp;
         const selected = <span class="cstat-no" title="statement not covered" >human.selectMethod(methods);</span>
@@ -4002,19 +4002,19 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const result = <span class="cstat-no" title="statement not covered" >await selected.fn();</span>
-            
+&nbsp;
             // Update stats based on result
 <span class="cstat-no" title="statement not covered" >            if (result.success) {</span>
 <span class="cstat-no" title="statement not covered" >                this.stats.successes++;</span>
             } else {
 <span class="cstat-no" title="statement not covered" >                this.stats.failures++;</span>
             }
-            
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            return result;</span>
         } catch (error) {
 <span class="cstat-no" title="statement not covered" >            this.logger.error(`[AIQuote] Method ${selected.name} failed: ${error.message}`);</span>
 <span class="cstat-no" title="statement not covered" >            this.logger.warn(`[AIQuote] Trying fallback: retweet_menu`);</span>
-            
+&nbsp;
             // Fallback to Retweet Menu method
 <span class="cstat-no" title="statement not covered" >            try {</span>
                 const result = <span class="cstat-no" title="statement not covered" >await this.quoteMethodB_Retweet(page, quoteText, human);</span>
@@ -4093,7 +4093,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 <span class="cstat-no" title="statement not covered" >            if (lower === pattern || lower.startsWith(pattern + ' ') || lower.startsWith(pattern + '.')) {</span>
 <span class="cstat-no" title="statement not covered" >                return { valid: false, reason: `generic_response:${pattern}` };</span>
             }
-            
+&nbsp;
             const patternIndex = <span class="cstat-no" title="statement not covered" >lower.indexOf(' ' + pattern + ' ');</span>
 <span class="cstat-no" title="statement not covered" >            if (patternIndex !== -1) {</span>
 <span class="cstat-no" title="statement not covered" >                if (text.length &lt; 40 || (pattern.length / text.length) &gt; 0.4) {</span>
@@ -4190,7 +4190,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 &nbsp;
 &nbsp;
     /**
-     * Method A: Keyboard Compose + Quote (40%)
+     * Method A: Keyboard Compose + Quote (30%)
      * Click Tweet Text → T → Down → Down → Enter → [type] → Ctrl+Enter
      */
     async <span class="fstat-no" title="function not covered" >quoteMethodA_Keyboard(</span>page, quoteText, human) {
@@ -4204,7 +4204,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // STEP 1: Click on the main tweet text first (required for quote to work)
 <span class="cstat-no" title="statement not covered" >        human.logStep('CLICK_TWEET', 'Clicking main tweet text');</span>
         const tweetTextSelector = <span class="cstat-no" title="statement not covered" >'[data-testid="tweetText"]';</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const tweetEl = <span class="cstat-no" title="statement not covered" >page.locator(tweetTextSelector).first();</span>
 <span class="cstat-no" title="statement not covered" >            if (await tweetEl.count() &gt; 0) {</span>
@@ -4279,10 +4279,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 <span class="cstat-no" title="statement not covered" >                    return composer?.innerHTML || '';</span>
                 });
                 const hasQuote = <span class="cstat-no" title="statement not covered" >composerHTML.includes('quoted') ||</span>
-                                composerHTML.includes('Pop Base') ||
-                                composerHTML.includes('tweet-') ||
-                                composerHTML.includes(' TweetText') ||
-                                composerHTML.length &gt; 800;
+                    composerHTML.includes('Pop Base') ||
+                    composerHTML.includes('tweet-') ||
+                    composerHTML.includes(' TweetText') ||
+                    composerHTML.length &gt; 800;
 <span class="cstat-no" title="statement not covered" >                if (hasQuote) {</span>
 <span class="cstat-no" title="statement not covered" >                    human.logStep('QUOTE_DETECTED', 'composer_content');</span>
                 }
@@ -4361,7 +4361,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     }
 &nbsp;
     /**
-     * Method B: Retweet Menu (35%)
+     * Method B: Retweet Menu (60%)
      * Click Retweet → Find Quote → Click → [type] → Ctrl+Enter
      */
     async <span class="fstat-no" title="function not covered" >quoteMethodB_Retweet(</span>page, quoteText, human) {
@@ -4376,7 +4376,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 &nbsp;
         // STEP 1: Find and click retweet button with specific selectors
 <span class="cstat-no" title="statement not covered" >        human.logStep('FIND_RETWEET', 'Locating retweet button');</span>
-        
+&nbsp;
         const retweetBtnSelectors = <span class="cstat-no" title="statement not covered" >[</span>
             '[data-testid="retweet"]',
             '[aria-label*="Repost"]',
@@ -4408,15 +4408,15 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 &nbsp;
         // Human-like click sequence
 <span class="cstat-no" title="statement not covered" >        await retweetBtn.scrollIntoViewIfNeeded();</span>
-        
+&nbsp;
         // Click Retweet button with high precision
         const rtClickSuccess = <span class="cstat-no" title="statement not covered" >await human.safeHumanClick(</span>
-            retweetBtn, 
-            "Retweet Button", 
-            3, 
+            retweetBtn,
+            "Retweet Button",
+            3,
             { precision: 'high' }
         );
-        
+&nbsp;
         let menuReady = <span class="cstat-no" title="statement not covered" >false;</span>
 <span class="cstat-no" title="statement not covered" >        if (rtClickSuccess) {</span>
 <span class="cstat-no" title="statement not covered" >            for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; 5; i++) {</span>
@@ -4429,17 +4429,17 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 <span class="cstat-no" title="statement not covered" >                await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 400))</span>;</span>
             }
         }
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!menuReady) {</span>
             // Try one more click if menu didn't open
-<span class="cstat-no" title="statement not covered" >             human.logStep('RETRY', 'Menu not open, clicking Retweet button again');</span>
-<span class="cstat-no" title="statement not covered" >             await human.safeHumanClick(retweetBtn, "Retweet Button (Retry)", 2, { precision: 'high' });</span>
-<span class="cstat-no" title="statement not covered" >             await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 800))</span>;</span>
-             
-             const menu = <span class="cstat-no" title="statement not covered" >page.locator('[role="menu"]').first();</span>
-<span class="cstat-no" title="statement not covered" >             if (await menu.isVisible().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >false)</span>) {</span>
-<span class="cstat-no" title="statement not covered" >                 menuReady = true;</span>
-             }
+<span class="cstat-no" title="statement not covered" >            human.logStep('RETRY', 'Menu not open, clicking Retweet button again');</span>
+<span class="cstat-no" title="statement not covered" >            await human.safeHumanClick(retweetBtn, "Retweet Button (Retry)", 2, { precision: 'high' });</span>
+<span class="cstat-no" title="statement not covered" >            await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 800))</span>;</span>
+&nbsp;
+            const menu = <span class="cstat-no" title="statement not covered" >page.locator('[role="menu"]').first();</span>
+<span class="cstat-no" title="statement not covered" >            if (await menu.isVisible().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >false)</span>) {</span>
+<span class="cstat-no" title="statement not covered" >                menuReady = true;</span>
+            }
         }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!menuReady) {</span>
@@ -4448,7 +4448,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 &nbsp;
         // STEP 2: Find and click Quote option in dropdown menu
 <span class="cstat-no" title="statement not covered" >        human.logStep('FIND_QUOTE', 'Looking for Quote option in menu');</span>
-        
+&nbsp;
         const quoteOptionSelectors = <span class="cstat-no" title="statement not covered" >[</span>
             'a[role="menuitem"]:has-text("Quote")',
             '[role="menuitem"]:has-text("Quote")',
@@ -4482,7 +4482,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             // Debug: show what's in the menu
             const menuItems = <span class="cstat-no" title="statement not covered" >await page.locator('[role="menuitem"]').all();</span>
 <span class="cstat-no" title="statement not covered" >            human.logStep('DEBUG', `Found ${menuItems.length} menu items`);</span>
-            
+&nbsp;
             // Fallback to keyboard method
 <span class="cstat-no" title="statement not covered" >            await page.keyboard.press('Escape');</span>
 <span class="cstat-no" title="statement not covered" >            await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 500))</span>;</span>
@@ -4496,10 +4496,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             3,
             { precision: 'high' }
         );
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!quoteClickSuccess) {</span>
-<span class="cstat-no" title="statement not covered" >             human.logStep('CLICK_FAIL', 'Failed to click Quote option');</span>
-<span class="cstat-no" title="statement not covered" >             return { success: false, reason: 'quote_click_failed', method: 'retweet_menu' };</span>
+<span class="cstat-no" title="statement not covered" >            human.logStep('CLICK_FAIL', 'Failed to click Quote option');</span>
+<span class="cstat-no" title="statement not covered" >            return { success: false, reason: 'quote_click_failed', method: 'retweet_menu' };</span>
         }
 <span class="cstat-no" title="statement not covered" >        human.logStep('QUOTE_CLICK', 'Clicked Quote option');</span>
 <span class="cstat-no" title="statement not covered" >        await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 1500))</span>;</span>
@@ -4566,17 +4566,17 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 &nbsp;
         // STEP 5: Type and post
         const composer = <span class="cstat-no" title="statement not covered" >page.locator(verify.selector).first();</span>
-        
+&nbsp;
         // Clear and type
 <span class="cstat-no" title="statement not covered" >        await human.safeHumanClick(composer, 'Composer Focus', 3, { precision: 'high' });</span>
-        
+&nbsp;
         const isMac = <span class="cstat-no" title="statement not covered" >process.platform === 'darwin';</span>
         const modifier = <span class="cstat-no" title="statement not covered" >isMac ? 'Meta' : 'Control';</span>
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press(`${modifier}+a`);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Delete');</span>
 <span class="cstat-no" title="statement not covered" >        await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 200))</span>;</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        human.logStep('TYPING', `Entering ${quoteText.length} chars`);</span>
 <span class="cstat-no" title="statement not covered" >        await human.typeText(page, quoteText, composer);</span>
 &nbsp;
@@ -4592,7 +4592,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     }
 &nbsp;
     /**
-     * Method C: New Post Button → Paste URL → Type Comment (15%)
+     * Method C: New Post Button → Paste URL → Type Comment (10%)
      */
     async <span class="fstat-no" title="function not covered" >quoteMethodC_Url(</span>page, quoteText, human) {
 <span class="cstat-no" title="statement not covered" >        human.logStep('NEW_POST_URL', 'Starting');</span>
@@ -4672,7 +4672,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 &nbsp;
         // STEP 3: Type the comment FIRST
         const composer = <span class="cstat-no" title="statement not covered" >page.locator(verify.selector).first();</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        human.logStep('TYPING', `Entering ${quoteText.length} chars`);</span>
 <span class="cstat-no" title="statement not covered" >        await human.typeText(page, quoteText, composer);</span>
 &nbsp;
@@ -4686,7 +4686,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             const composer = <span class="cstat-no" title="statement not covered" >document.querySelector('[data-testid="tweetTextarea_0"]');</span>
 <span class="cstat-no" title="statement not covered" >            return composer?.innerHTML || '';</span>
         });
-        
+&nbsp;
         // If no &lt;br&gt; or new div, try Enter again
 <span class="cstat-no" title="statement not covered" >        if (!contentAfterEnter.includes('&lt;br&gt;') &amp;&amp; !contentAfterEnter.includes('&lt;div&gt;')) {</span>
 <span class="cstat-no" title="statement not covered" >            human.logStep('NEWLINE', 'Pressing Enter again...');</span>
@@ -4696,14 +4696,14 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 &nbsp;
         // Step 5: Paste the URL LAST (appears as preview/card below comment)
 <span class="cstat-no" title="statement not covered" >        human.logStep('PASTE_URL', 'Pasting tweet URL...');</span>
-        
+&nbsp;
         // Ensure focus before pasting
 <span class="cstat-no" title="statement not covered" >        await human.ensureFocus(page, composer);</span>
-        
+&nbsp;
         const isMac = <span class="cstat-no" title="statement not covered" >process.platform === 'darwin';</span>
         const modifier = <span class="cstat-no" title="statement not covered" >isMac ? 'Meta' : 'Control';</span>
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press(`${modifier}+v`);</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 1000))</span>;</span>
 &nbsp;
         // Verify URL was pasted with retry
@@ -4714,21 +4714,21 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                 .first()
                 .textContent()
                 .catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'')</span>;
-                
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            if (finalContent.includes('x.com') || finalContent.includes('twitter.com')) {</span>
 <span class="cstat-no" title="statement not covered" >                human.logStep('URL_PASTED', 'URL pasted successfully');</span>
 <span class="cstat-no" title="statement not covered" >                urlPasted = true;</span>
 <span class="cstat-no" title="statement not covered" >                break;</span>
             }
-            
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            if (i &lt; 2) {</span>
-<span class="cstat-no" title="statement not covered" >                human.logStep('PASTE_RETRY', `URL not found, retrying paste (attempt ${i+2})`);</span>
+<span class="cstat-no" title="statement not covered" >                human.logStep('PASTE_RETRY', `URL not found, retrying paste (attempt ${i + 2})`);</span>
 <span class="cstat-no" title="statement not covered" >                await human.ensureFocus(page, composer);</span>
 <span class="cstat-no" title="statement not covered" >                await page.keyboard.press(`${modifier}+v`);</span>
 <span class="cstat-no" title="statement not covered" >                await new Promise(<span class="fstat-no" title="function not covered" >resolve </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 1000))</span>;</span>
             }
         }
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!urlPasted) {</span>
 <span class="cstat-no" title="statement not covered" >            human.logStep('PASTE_WARN', 'URL may not have pasted correctly');</span>
             // Last resort: type it manually
@@ -4756,7 +4756,7 @@ export default AIQuoteEngine;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-21T09:57:40.349Z
+                at 2026-02-22T01:01:57.868Z
             </div>
         <script src="../prettify.js"></script>
         <script>

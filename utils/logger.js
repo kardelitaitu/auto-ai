@@ -107,6 +107,7 @@ const ANSI_REGEX = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g");
  * Initialize the log file (clear it)
  */
 function initLogFile() {
+  if (process.env.NODE_ENV === 'test' || process.env.VITEST) return;
   if (!logFileInitialized) {
     try {
       fs.writeFileSync(LOG_FILE, '', 'utf8');
@@ -121,6 +122,7 @@ function initLogFile() {
  * Flush buffered logs to file (async)
  */
 function flushLogBuffer() {
+  if (process.env.NODE_ENV === 'test' || process.env.VITEST) return;
   if (LOG_BUFFER.length === 0) return;
 
   const entries = LOG_BUFFER.splice(0, LOG_BUFFER.length);
@@ -136,6 +138,7 @@ function flushLogBuffer() {
  * Uses buffered async writes for better performance
  */
 function writeToLogFile(level, scriptName, message, args) {
+  if (process.env.NODE_ENV === 'test' || process.env.VITEST) return;
   try {
     const timestamp = new Date().toISOString();
     // Extract structured data if first arg is an object
