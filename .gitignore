@@ -11,3 +11,4 @@ node_modules
 /.llm-context
 /backup
 nul
+/coverage/.tmp/

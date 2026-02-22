@@ -2,6 +2,24 @@
 
 ## Architectural Blueprint & Anti-Detection System
 
+### Progress
+
+- [x] Phase 1 — Core scaffolding & barrel export (`api/index.js`)
+- [x] Phase 2 — Context binding (`api/context.js`)
+- [x] Phase 3 — Spatial & Kinetic (`api/scroll.js`, `api/cursor.js`)
+- [x] Phase 4 — Action layer (`api/actions.js` — click, type, hover, rightClick)
+- [x] Phase 5 — Query & Sync (`api/queries.js`, `api/wait.js`)
+- [x] Phase 6 — Persona & Timing (`api/persona.js`, `api/timing.js`)
+- [x] Phase 7 — Navigation (`api/navigation.js`)
+- [x] Phase 8 — Trampoline / warmup integration (`api/warmup.js`)
+- [x] Phase 9 — Scroll reading simulation (`api/scroll.js` - read, back)
+- [x] Phase 10 — Trajectory sophistication (`api/cursor.js` - bezier/arc/zigzag/overshoot)
+- [x] Phase 11 — Error recovery (`api/recover.js`)
+- [x] Phase 12 — Attention modeling (`api/attention.js` - gaze, exit intent)
+- [x] Phase 13 — Idle & patch (`api/idle.js`, `api/patch.js`)
+- [ ] Phase 14 — Integration testing
+- [ ] Phase 15 — Agentic migration (refactor existing tasks)
+
 ---
 
 ## 1. System Overview
@@ -126,77 +144,22 @@ Every kinetic action (`click`, `type`, `hover`) automatically prepares the DOM e
 ## 5. Directory Structure
 
 ```
-utils/tools/
-├── index.js                    # Central API export and Context WeakMap initialization
-│
-├── context/                    # Session Hygiene
-│   ├── index.js              # setPage(), getPage(), clearContext()
-│   └── cursor.js              # GhostCursor instance management
-│
-├── scroll/                    # Scroll operations
-│   ├── index.js              # scroll.focus(), scroll()
-│   ├── focus.js             # Golden view scroll + cursor move
-│   ├── read.js              # Reading simulation (stop-and-read)
-│   └── generic.js            # scroll down/up/toTop/toBottom
-│
-├── actions/                   # Interaction Layer
-│   ├── index.js              # Barrel export
-│   ├── click.js             # Human-like click lifecycle
-│   ├── type.js              # Entropy-rich typing (typo/repair)
-│   ├── hover.js             # Hover with non-committal engagement
-│   └── recover.js           # Error recovery behavior
-│
-├── cursor/                    # Low-level cursor control
-│   ├── index.js              # move(), up(), down()
-│   ├── move.js               # Human-like cursor movement
-│   └── trajectory.js         # Path variations (bezier, arc, zigzag)
-│
-├── timing/                    # Temporal pattern breaking
-│   ├── index.js              # timing modes, think()
-│   ├── gaussian.js           # Gaussian distribution
-│   ├── burst.js              # Rapid action bursts
-│   └── pause.js              # Extended pauses
-│
-├── warmup/                    # Pre-navigation trampoline
-│   ├── index.js              # warmup.beforeNavigate()
-│   ├── mouse.js             # Random viewport mouse wiggles
-│   └── pause.js             # Fake reading/pauses
-│
-├── persona/                   # Behavioral profiles
-│   ├── index.js              # setPersona(), getPersona()
-│   └── profiles.js           # 16+ persona definitions
-│
-├── attention/                 # Attention modeling
-│   ├── index.js              # attention(), distraction()
-│   ├── gaze.js              # Gaze tracking
-│   └── exitIntent.js        # Exit intent simulation
-│
-├── idle/                      # Idle simulation
-│   ├── index.js              # idle.start(), idle.stop()
-│   └── ghosting.js           # Micro-movements, occasional scrolling
-│
-├── patch/                     # Detection API patching
-│   ├── index.js              # applyPatches()
-│   ├── automation.js         # webdriver, CDP markers stripping
-│   └── runtime.js            # Runtime detection bypass
-│
-├── queries/                   # Audit & Validation
-│   ├── index.js              # text(), attr(), visible(), count(), exists()
-│   ├── text.js
-│   ├── attr.js
-│   ├── visible.js
-│   ├── count.js
-│   └── exists.js
-│
-├── navigation/                # State Transitions
-│   ├── index.js              # goto(), reload(), back(), forward()
-│   ├── goto.js
-│   └── reload.js
-│
-└── wait/                      # Synchronization
-    ├── index.js              # wait(), waitFor(), waitVisible(), waitHidden()
-    ├── wait.js
-    └── for.js
+api/                            # Flat structure (15 files)
+├── index.js                    # Central barrel export — assembles the api object
+├── context.js                  # Session Hygiene — setPage(), getPage(), clearContext()
+├── persona.js                  # 16 behavioral profiles + setPersona(), getPersona()
+├── timing.js                   # think(), delay(), gaussian helpers (persona-aware)
+├── scroll.js                   # focus(), scroll(), toTop(), toBottom(), read(), back()
+├── cursor.js                   # move(), up(), down() + setPathStyle() (bezier/arc/zigzag/overshoot)
+├── actions.js                  # click(), type() (QWERTY typo injection), hover(), rightClick()
+├── queries.js                  # text(), attr(), visible(), count(), exists()
+├── wait.js                     # wait(), waitFor(), waitVisible(), waitHidden()
+├── navigation.js               # goto(), reload(), back(), forward() + warmup exports
+├── warmup.js                   # beforeNavigate(), randomMouse(), fakeRead(), pause()
+├── recover.js                  # recover(), goBack(), findElement(), smartClick(), undo()
+├── attention.js                # gaze(), attention(), distraction(), beforeLeave(), focusShift()
+├── idle.js                     # start(), stop(), wiggle(), idleScroll()
+└── patch.js                    # apply(), stripCDPMarkers(), check()
 ```
 
 ---
@@ -205,35 +168,50 @@ utils/tools/
 
 ### 6.1 Module Pattern Standard
 
-Each domain strictly follows a barrel export pattern:
+Flat file structure — each module is a single file exporting named functions.
+The central `index.js` barrel assembles everything into the `api` object:
 
 ```js
-// domain/index.js - Barrel file
-import { click } from './click.js';
-import { type } from './type.js';
-export { click, type };
+// api/actions.js — Individual module
+import { getPage, getCursor } from './context.js';
+import { focus } from './scroll.js';
 
-// domain/click.js - Individual node
-import { getPage } from '../context/index.js';
 export async function click(selector, options = {}) {
     const page = getPage();
-    // Inherited execution
+    await focus(selector);
+    // ... GhostCursor click delegation
 }
 ```
 
 ### 6.2 Context & Session Hygiene
 
+Module-scoped variables (not WeakMap — WeakMap requires object keys, strings throw TypeError):
+
 ```js
-const pageContext = new WeakMap();
+import { GhostCursor } from '../utils/ghostCursor.js';
+
+let currentPage = null;
+let currentCursor = null;
 
 export function setPage(page) {
-    pageContext.set('default', page);
+    if (!page) throw new Error('setPage requires a valid Playwright page instance.');
+    currentPage = page;
+    currentCursor = new GhostCursor(page);
 }
 
 export function getPage() {
-    const page = pageContext.get('default');
-    if (!page) throw new Error('Session Hygiene Violation: Page context uninitialized. Invoke setPage(page).');
-    return page;
+    if (!currentPage) throw new Error('Session Hygiene Violation: Page context uninitialized. Call api.setPage(page) first.');
+    return currentPage;
+}
+
+export function getCursor() {
+    if (!currentCursor) throw new Error('Session Hygiene Violation: Cursor uninitialized. Call api.setPage(page) first.');
+    return currentCursor;
+}
+
+export function clearContext() {
+    currentPage = null;
+    currentCursor = null;
 }
 ```
 
@@ -572,47 +550,52 @@ await api.click('.target', { focusShift: true });  // Click nearby element first
 
 ## 8. Implementation Roadmap
 
-| Phase | Action |
-|-------|--------|
-| 1 | Core scaffolding. Create `api/` and barrel structures. Integrate existing ghostCursor |
-| 2 | Context Binding. Implement context/index.js WeakMap hygiene and cursor.js management |
-| 3 | Spatial & Kinetic. Build scroll/ (Golden View math) and cursor/ |
-| 4 | Action Layer. Develop actions/ (click, type with typo variants, hover) |
-| 5 | Query & Sync. Implement queries/ read-only DOM extraction and wait synchronization |
-| 6 | Anti-Detect Subsystems. Scaffold persona/, idle/, and patch/ directories |
-| 7 | Trampoline Integration. Build warmup/ and seamlessly bind to navigation/goto.js |
-| 8 | Temporal Patterns. Implement timing/ with gaussian, burst, pause modes |
-| 9 | Scroll Reading. Build scroll/read.js with stop-and-read simulation |
-| 10 | Trajectory Sophistication. Add cursor/trajectory.js with bezier/arc/zigzag/overshoot |
-| 11 | Error Recovery. Create actions/recover.js with smart retry logic |
-| 12 | Attention Modeling. Build attention/ with gaze and exit intent |
-| 13 | Integration Testing. Test all modules together |
-| 14 | Agentic Migration. Refactor existing orchestration tasks to consume the unified api |
+| Phase | Status | Action |
+|-------|--------|--------|
+| 1 | ✅ Done | Core scaffolding. Created `api/` with 10-file flat structure. Barrel export in `index.js` |
+| 2 | ✅ Done | Context Binding. Module-scoped page/cursor management in `context.js` |
+| 3 | ✅ Done | Spatial & Kinetic. Golden View math in `scroll.js`, cursor wrapping in `cursor.js` |
+| 4 | ✅ Done | Action Layer. `actions.js` — click, type (QWERTY typo injection), hover, rightClick |
+| 5 | ✅ Done | Query & Sync. `queries.js` + `wait.js` — DOM extraction and synchronization |
+| 6 | ✅ Done | Persona & Timing. 16 profiles in `persona.js`, think/delay in `timing.js` |
+| 7 | ✅ Done | Navigation. `navigation.js` — goto, reload, back, forward |
+| 8 | | Trampoline Integration. Build warmup/ and bind to navigation/goto.js |
+| 9 | | Scroll Reading. Add stop-and-read simulation to scroll.js |
+| 10 | | Trajectory Sophistication. Add bezier/arc/zigzag/overshoot path variations |
+| 11 | | Error Recovery. Add recover.js with smart retry logic |
+| 12 | | Attention Modeling. Build attention/ with gaze and exit intent |
+| 13 | | Idle & Patch. Build idle simulation and detection API patching |
+| 14 | | Integration Testing. Test all modules together |
+| 15 | | Agentic Migration. Refactor existing orchestration tasks to consume the unified api |
 
 ---
 
 ## 9. Acceptance Criteria
 
-- [ ] `api.click(selector)` natively triggers Golden View variant + Bezier cursor logic + micro-delayed mousedown
-- [ ] `api.type(selector, text)` evaluates typo probability per character and natively spawns backspace repairs
-- [ ] `api.scroll.focus(selector)` correctly calculates Y_offset bounding box with ±10% drift
-- [ ] Context is implicitly routed via WeakMap without requiring page parameters
-- [ ] `warmup.beforeNavigate(url)` successfully injects ≥2 seconds of fake mouse wiggling prior to state transition
-- [ ] Automation environment successfully strips cdc_ CDP signatures and passes navigator.webdriver checks
-- [ ] Persona switching natively recalibrates typing base speed and Bezier curve duration multipliers
-- [ ] Backward compatibility with existing scroll-helper.js and other utilities
-- [ ] `api.setTimingMode(mode)` switches between gaussian/burst/pause/random timing
-- [ ] `api.think()` injects random "thinking pause" (1-5s)
-- [ ] `api.scroll.read()` implements stop-and-read scrolling pattern
-- [ ] `api.scroll.back()` performs occasional back-scroll for re-reading
-- [ ] Cursor path supports bezier/arc/zigzag/overshoot/stopped variations
-- [ ] `api.cursor.setPathStyle()` configures trajectory style
-- [ ] Click includes correction movements after reaching target
-- [ ] Error recovery scrolls and searches when element not found
-- [ ] Wrong click triggers URL check and optional go-back
-- [ ] `api.attention()` implements gaze tracking before actions
-- [ ] `api.beforeLeave()` simulates exit intent behavior
-- [ ] Distraction mode randomly moves to other elements
+- [x] `api.click(selector)` natively triggers Golden View variant + Bezier cursor logic + micro-delayed mousedown
+- [x] `api.type(selector, text)` evaluates typo probability per character and natively spawns backspace repairs
+- [x] `api.scroll.focus(selector)` correctly calculates Y_offset bounding box with ±10% drift
+- [x] Context is implicitly routed via module-scoped variables without requiring page parameters
+- [x] Persona switching natively recalibrates typing base speed and Bezier curve duration multipliers
+- [x] Backward compatibility with existing scroll-helper.js and other utilities (purely additive, zero changes)
+- [x] `api.think()` injects random "thinking pause" (1-5s)
+- [x] `api.scroll(distance)` performs multi-step humanized scroll
+- [x] `api.scroll.toTop()` / `api.scroll.toBottom()` with smooth behavior
+- [x] `api.cursor.move(selector)` / `api.cursor.up(px)` / `api.cursor.down(px)` for low-level control
+- [x] `api.text()`, `api.attr()`, `api.visible()`, `api.count()`, `api.exists()` for read-only queries
+- [x] `api.wait()`, `api.waitFor()`, `api.waitVisible()`, `api.waitHidden()` for synchronization
+- [x] `api.goto()`, `api.reload()`, `api.back()`, `api.forward()` for navigation
+- [x] `api.beforeNavigate(url)` successfully injects ≥2 seconds of fake mouse wiggling prior to state transition
+- [x] Automation environment successfully strips cdc_ CDP signatures and passes navigator.webdriver checks
+- [x] `api.scroll.read()` implements stop-and-read scrolling pattern
+- [x] `api.scroll.back()` performs occasional back-scroll for re-reading
+- [x] Cursor path supports bezier/arc/zigzag/overshoot/stopped variations
+- [x] `api.cursor.setPathStyle()` configures trajectory style
+- [x] Error recovery scrolls and searches when element not found
+- [x] Wrong click triggers URL check and optional go-back
+- [x] `api.attention()` implements gaze tracking before actions
+- [x] `api.beforeLeave()` simulates exit intent behavior
+- [x] Distraction mode randomly moves to other elements
 
 ---
 
