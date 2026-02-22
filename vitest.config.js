@@ -34,7 +34,7 @@ export default defineConfig({
       reportsDirectory: coverageRoot,
       clean: false,
       cleanOnRerun: false,
-      include: ['core/**/*.js', 'utils/**/*.js'],
+      include: ['core/**/*.js', 'utils/**/*.js', 'api/**/*.js'],
       exclude: [
         'node_modules/',
         'dist/',
