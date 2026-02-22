@@ -15,20 +15,32 @@
 
 import { setPage, clearContext } from './context.js';
 import { click, type, hover, rightClick } from './actions.js';
-import { focus, scroll, toTop, toBottom } from './scroll.js';
-import { move, up, down } from './cursor.js';
+import { focus, scroll, toTop, toBottom, read, back as scrollBack } from './scroll.js';
+import { move, up, down, setPathStyle, getPathStyle } from './cursor.js';
 import { text, attr, visible, count, exists } from './queries.js';
 import { wait, waitFor, waitVisible, waitHidden } from './wait.js';
-import { goto, reload, back, forward } from './navigation.js';
+import { goto, reload, back, forward, beforeNavigate, randomMouse, fakeRead, pause as warmupPause } from './navigation.js';
 import { think, delay, gaussian, randomInRange } from './timing.js';
 import { setPersona, getPersona, getPersonaName, listPersonas } from './persona.js';
+import { recover, goBack, findElement, smartClick, undo } from './recover.js';
+import { gaze, attention, distraction, beforeLeave, focusShift, maybeDistract, setDistractionChance, getDistractionChance } from './attention.js';
+import { start as idleStart, stop as idleStop, isRunning as idleIsRunning, wiggle, idleScroll } from './idle.js';
+import { apply as patchApply, stripCDPMarkers, check as patchCheck } from './patch.js';
 
 // Build the scroll dual-callable: api.scroll(300) + api.scroll.focus('.el')
 const scrollFn = Object.assign(scroll, {
     focus,
     toTop,
     toBottom,
+    read,
+    back: scrollBack,
 });
+
+// Build cursor with path style
+const cursorFn = Object.assign(
+    (selector) => move(selector),
+    { move, up, down, setPathStyle, getPathStyle }
+);
 
 export const api = {
     // ── Context ──────────────────────────────────────────────────
@@ -45,7 +57,7 @@ export const api = {
     scroll: scrollFn,
 
     // ── Cursor (low-level) ───────────────────────────────────────
-    cursor: { move, up, down },
+    cursor: cursorFn,
 
     // ── Queries (read-only) ──────────────────────────────────────
     text,
@@ -66,6 +78,12 @@ export const api = {
     back,
     forward,
 
+    // ── Warmup ───────────────────────────────────────────────────
+    beforeNavigate,
+    randomMouse,
+    fakeRead,
+    warmupPause,
+
     // ── Timing ───────────────────────────────────────────────────
     think,
     delay,
@@ -77,6 +95,39 @@ export const api = {
     getPersona,
     getPersonaName,
     listPersonas,
+
+    // ── Recovery ─────────────────────────────────────────────────
+    recover,
+    goBack,
+    findElement,
+    smartClick,
+    undo,
+
+    // ── Attention ────────────────────────────────────────────────
+    gaze,
+    attention,
+    distraction,
+    beforeLeave,
+    focusShift,
+    maybeDistract,
+    setDistractionChance,
+    getDistractionChance,
+
+    // ── Idle ────────────────────────────────────────────────────
+    idle: {
+        start: idleStart,
+        stop: idleStop,
+        isRunning: idleIsRunning,
+        wiggle,
+        scroll: idleScroll,
+    },
+
+    // ── Patch ────────────────────────────────────────────────────
+    patch: {
+        apply: patchApply,
+        stripCDPMarkers,
+        check: patchCheck,
+    },
 };
 
 export default api;

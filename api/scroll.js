@@ -2,6 +2,7 @@
  * @fileoverview Scroll Operations — Golden View & Generic
  * Implements the Golden View principle: center element in viewport with entropy,
  * then move cursor to target before any kinetic action.
+ * Includes scroll reading simulation for human-like behavior.
  * 
  * @module api/scroll
  */
@@ -9,6 +10,83 @@
 import { getPage, getCursor } from './context.js';
 import { getPersona } from './persona.js';
 import { mathUtils } from '../utils/mathUtils.js';
+
+/**
+ * Scroll reading simulation — stop-and-read pattern.
+ * Scrolls through content with pauses to simulate reading.
+ * @param {string|number} [target] - CSS selector or pixel distance
+ * @param {object} [options]
+ * @param {number} [options.pauses=3] - Number of scroll+pause cycles
+ * @param {number} [options.scrollAmount=300] - Pixels per scroll
+ * @param {boolean} [options.variableSpeed=true] - Vary scroll speed
+ * @param {boolean} [options.backScroll=false] - Occasional back-scroll
+ * @returns {Promise<void>}
+ */
+export async function read(target, options = {}) {
+    const page = getPage();
+    const persona = getPersona();
+    
+    // Handle both: api.scroll.read('.article') and api.scroll.read(500)
+    const isSelector = typeof target === 'string';
+    const {
+        pauses = mathUtils.randomInRange(2, 5),
+        scrollAmount = mathUtils.randomInRange(200, 400),
+        variableSpeed = true,
+        backScroll = Math.random() > 0.7
+    } = options;
+    
+    // If selector provided, scroll to it first
+    if (isSelector && target) {
+        try {
+            await page.waitForSelector(target, { state: 'attached', timeout: 3000 });
+        } catch {
+            // Selector not found, continue with blind scroll
+        }
+    }
+    
+    for (let i = 0; i < pauses; i++) {
+        // Variable speed scroll
+        const amount = variableSpeed 
+            ? scrollAmount * (0.7 + Math.random() * 0.6) 
+            : scrollAmount;
+        
+        const steps = mathUtils.randomInRange(2, 4);
+        for (let s = 0; s < steps; s++) {
+            await page.mouse.wheel(0, amount / steps);
+            const pause = mathUtils.randomInRange(20, 50) / (persona.scrollSpeed || 1);
+            await new Promise(r => setTimeout(r, pause));
+        }
+        
+        // Reading pause - longer after each scroll
+        const readTime = mathUtils.randomInRange(500, 2000);
+        await new Promise(r => setTimeout(r, readTime));
+        
+        // Occasional back-scroll to re-read (30% chance)
+        if (backScroll && i < pauses - 1 && Math.random() > 0.7) {
+            const backAmount = mathUtils.randomInRange(50, 150);
+            await page.mouse.wheel(0, -backAmount);
+            await new Promise(r => setTimeout(r, mathUtils.randomInRange(300, 800)));
+        }
+    }
+}
+
+/**
+ * Scroll back / up slightly — simulates re-reading or adjusting view.
+ * @param {number} [distance=100] - Pixels to scroll up
+ * @returns {Promise<void>}
+ */
+export async function back(distance = 100) {
+    const page = getPage();
+    const persona = getPersona();
+    const scrollSpeed = persona.scrollSpeed || 1;
+    
+    const steps = mathUtils.randomInRange(2, 3);
+    for (let i = 0; i < steps; i++) {
+        await page.mouse.wheel(0, -distance / steps);
+        const pause = mathUtils.randomInRange(30, 60) / scrollSpeed;
+        await new Promise(r => setTimeout(r, pause));
+    }
+}
 
 /**
  * Golden View Focus — scroll element to center of viewport with ±10% randomness,
