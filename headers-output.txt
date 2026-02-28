@@ -1,0 +1,1614 @@
+Navigating to https://x.com/doge/status/1892644265436660144 to trigger a video request naturally...
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/pl/BAsCAAc9CqCdLJn8.m3u8?variant_version=1&tag=21
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/7UVKvNTK_0eap0YS.m3u8?variant_version=1&tag=12
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/dMd55B4XDmltmJRT.m3u8?variant_version=1&tag=12
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/pl/RGxZMZ4s4tnyNyQJ.m3u8?variant_version=1&tag=21
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/pl/RGxZMZ4s4tnyNyQJ.m3u8?variant_version=1&tag=21
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/pl/avc1/320x568/lWPWG4oRbGmHRytj.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/pl/mp4a/32000/MCmvQey3OThM4TNe.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/dMd55B4XDmltmJRT.m3u8?variant_version=1&tag=12
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/avc1/320x374/H7u7IgAl9sYmGkys.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/mp4a/32000/3vGOwn1MBetqluq6.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/pl/BAsCAAc9CqCdLJn8.m3u8?variant_version=1&tag=21
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/pl/avc1/320x426/39ZoYpzQgqyn6tfb.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/pl/mp4a/32000/486dr9dB50p4gNdd.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/7UVKvNTK_0eap0YS.m3u8?variant_version=1&tag=12
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/avc1/320x568/WdIOM5ojAPykyEqz.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/mp4a/32000/lOkIvEQHF37MS51u.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/pl/avc1/320x568/lWPWG4oRbGmHRytj.m3u8
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/pl/mp4a/32000/MCmvQey3OThM4TNe.m3u8
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/mp4a/32000/3vGOwn1MBetqluq6.m3u8
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/avc1/320x374/H7u7IgAl9sYmGkys.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/0/3000/320x374/npbOigd-uX5NGkYx.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/0/0/32000/nCKzdY2GV63pv9yd.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/pl/mp4a/32000/486dr9dB50p4gNdd.m3u8
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/pl/avc1/320x426/39ZoYpzQgqyn6tfb.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/0/3000/320x426/kMRZfPjqaEG5j-1S.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/0/0/32000/TtdRkc-DljFgONdO.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/mp4a/32000/lOkIvEQHF37MS51u.m3u8
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/avc1/320x568/WdIOM5ojAPykyEqz.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/0/3000/320x568/Fvcaemy5Oo7dauHY.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/0/0/32000/e_j0VPBlFSXme9-7.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/0/3000/320x374/npbOigd-uX5NGkYx.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/0/3000/320x568/W_b7ZfMLUlgxs5TK.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/0/0/32000/nCKzdY2GV63pv9yd.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/0/3000/32000/_jt0nD0Cvz6JAKms.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/0/0/32000/6g5gNTj71UmHzIeD.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/0/3000/320x568/W_b7ZfMLUlgxs5TK.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/0/0/32000/6g5gNTj71UmHzIeD.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/0/3000/32000/Cr4Gdfo9bv29qoJ0.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/0/3000/32000/Cr4Gdfo9bv29qoJ0.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/mp4a/128000/_qWh1Chd4qpdeIEM.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/avc1/720x842/gDgN_aMt2Cd6EUlx.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/0/3000/320x426/kMRZfPjqaEG5j-1S.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/0/0/32000/TtdRkc-DljFgONdO.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/0/3000/32000/Vsebvk1GpUdNeUd2.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/0/0/32000/e_j0VPBlFSXme9-7.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/0/3000/32000/LL1SNhjHlxc5WZfn.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/0/3000/320x568/Fvcaemy5Oo7dauHY.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/pl/mp4a/128000/xWoZ2LvWKliZl0h1.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/pl/avc1/720x1280/qNSa1giyHe8R-i_g.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/pl/mp4a/128000/xWoZ2LvWKliZl0h1.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/0/0/128000/rA1dULbJQKIYBVSM.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/pl/avc1/720x1280/qNSa1giyHe8R-i_g.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/0/0/720x1280/3EOYM96fkchDq_2u.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/pl/mp4a/128000/NZ8wFIcprx_Indvh.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/pl/avc1/720x960/Ds18I7a_fyH33B4v.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/0/0/128000/rA1dULbJQKIYBVSM.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/3000/6000/128000/srTIXGWmbqWWsKqA.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/0/0/720x1280/3EOYM96fkchDq_2u.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/0/3000/720x1280/rQkt_rv2ipfYjk4c.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/3000/6000/128000/srTIXGWmbqWWsKqA.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/0/3000/720x1280/rQkt_rv2ipfYjk4c.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/6000/9000/128000/vAVZZAT-OnLd0XZa.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/3000/6000/720x1280/WUHDVew2reX5XHRe.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/6000/9000/128000/vAVZZAT-OnLd0XZa.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/3000/6000/720x1280/WUHDVew2reX5XHRe.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/0/3000/128000/eg_c_TNYr5Bv4sGa.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/6000/9000/720x1280/-PA7BtBtkub5hGvM.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/0/3000/128000/eg_c_TNYr5Bv4sGa.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/6000/9000/720x1280/-PA7BtBtkub5hGvM.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/mp4a/128000/_qWh1Chd4qpdeIEM.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/0/0/128000/6bwqO1GMAUTKIRry.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/pl/avc1/720x842/gDgN_aMt2Cd6EUlx.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/0/0/720x842/JSoCyETAikTEjOWl.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/pl/avc1/720x960/Ds18I7a_fyH33B4v.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/0/0/720x960/xj8wWFGPhXytLn-p.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/pl/mp4a/128000/NZ8wFIcprx_Indvh.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/0/0/128000/5npZQJb8oBgUhO5s.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/0/3000/32000/LL1SNhjHlxc5WZfn.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/0/0/128000/6bwqO1GMAUTKIRry.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/3000/6000/128000/NdQjLH2aBgbUa9tA.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/0/0/720x842/JSoCyETAikTEjOWl.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/0/3000/720x842/PxRQl-WL25IqmzZC.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/0/0/720x960/xj8wWFGPhXytLn-p.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/0/3000/720x960/gmGGCB6_qNmlMlUj.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/0/0/128000/5npZQJb8oBgUhO5s.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/3000/6000/128000/s4aJQdpNMh8IfvLP.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/mp4a/128000/kREOG451aKE-YCB4.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/avc1/720x1280/DfEOqrbn5mnxFRlA.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/3000/6000/128000/NdQjLH2aBgbUa9tA.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/0/3000/720x842/PxRQl-WL25IqmzZC.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/0/3000/720x960/gmGGCB6_qNmlMlUj.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/3000/6000/128000/s4aJQdpNMh8IfvLP.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/avc1/720x1280/DfEOqrbn5mnxFRlA.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/0/0/720x1280/HgQ2fQHvVLlMM-Cf.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/pl/mp4a/128000/kREOG451aKE-YCB4.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/0/0/128000/DM7EQlNVRLdQ_RGO.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/6000/9000/128000/A6kZQmCEWqObRn_0.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/0/0/128000/DM7EQlNVRLdQ_RGO.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/3000/6000/128000/x88EVrk3eqtyxGtU.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/0/0/720x1280/HgQ2fQHvVLlMM-Cf.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/0/3000/720x1280/ROA4Ou6KadIFKmcb.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/3000/6000/720x842/HJBsl7pzOkAgoGzN.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/6000/9000/128000/f0d8MRBnTlY0xWgl.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/3000/6000/720x960/2aytONPjnnb6PouW.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/6000/9000/128000/A6kZQmCEWqObRn_0.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/0/3000/128000/ZC-3pOsImJHheBYn.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/0/3000/720x1280/ROA4Ou6KadIFKmcb.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/3000/6000/128000/x88EVrk3eqtyxGtU.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/6000/9000/128000/f0d8MRBnTlY0xWgl.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/6000/9000/128000/UHh3Wq9s84jikNAr.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/3000/6000/720x1280/jgjE9WIP0Ky91_Tf.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/0/3000/128000/u7_XZoALiTCiSfiS.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/3000/6000/720x842/HJBsl7pzOkAgoGzN.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/3000/6000/720x960/2aytONPjnnb6PouW.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/6000/9000/720x842/R9zM5Q9LmS1amXMN.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/0/3000/128000/ZC-3pOsImJHheBYn.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/6000/9000/720x960/bwL3sqqMYmjqWsbM.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/3000/6000/720x1280/jgjE9WIP0Ky91_Tf.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/6000/9000/128000/UHh3Wq9s84jikNAr.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/0/3000/128000/tNEEL1RAWzMfT__-.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/0/3000/128000/u7_XZoALiTCiSfiS.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/6000/9000/720x1280/HdcNYBQ71Z0NI4r8.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/6000/9000/720x842/R9zM5Q9LmS1amXMN.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/6000/9000/720x960/bwL3sqqMYmjqWsbM.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/9000/12933/720x842/B1D1bxMf1vzk8aLq.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/0/3000/128000/tNEEL1RAWzMfT__-.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/9000/12000/720x960/Dtrq2vDAdZuvDoHr.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/6000/9000/720x1280/HdcNYBQ71Z0NI4r8.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/9000/12000/128000/AsxsV-s1qQDa3B0G.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/9000/12000/128000/_5bazSaZDs8CJo57.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/vid/avc1/9000/12933/720x842/B1D1bxMf1vzk8aLq.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/9000/12000/720x1280/ap3qNPtFHPQununL.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/9000/12000/720x960/Dtrq2vDAdZuvDoHr.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/9000/12000/128000/AsxsV-s1qQDa3B0G.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/12000/15000/720x960/XlCP3XMSdtvH7Rfc.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/9000/12000/128000/_5bazSaZDs8CJo57.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/9000/12000/128000/Bb4cD31qvuiME9kY.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/9000/12000/720x1280/ap3qNPtFHPQununL.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/12000/15466/720x1280/Fy9QGBWoTPqEBTrh.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/vid/avc1/12000/15000/720x960/XlCP3XMSdtvH7Rfc.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/9000/12000/128000/Bb4cD31qvuiME9kY.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/vid/avc1/12000/15466/720x1280/Fy9QGBWoTPqEBTrh.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/SXYw8ydffBlrJXzy.m3u8?variant_version=1&tag=12&v=f80
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/12000/15000/128000/TitEB0GMHQYyPKJu.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/SXYw8ydffBlrJXzy.m3u8?variant_version=1&tag=12&v=f80
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/320x320/h41dVwNUs9wlacAR.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/mp4a/32000/Jm7qwbcjt15HB56J.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027402091795247105/aud/mp4a/12000/15000/128000/TitEB0GMHQYyPKJu.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/320x320/h41dVwNUs9wlacAR.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/0/3000/320x320/RKav2kXQJrjTKw5u.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/mp4a/32000/Jm7qwbcjt15HB56J.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/0/0/32000/__Ucs_TUMfvL6DiI.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/0/0/32000/__Ucs_TUMfvL6DiI.mp4
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/0/3000/320x320/RKav2kXQJrjTKw5u.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/0/3000/32000/b9FbAWNkeRaV0DxD.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/0/3000/32000/b9FbAWNkeRaV0DxD.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/mp4a/64000/YKZ3K6apXVUwQfiq.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/576x576/vvk7eJcAxTeCntiq.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/576x576/vvk7eJcAxTeCntiq.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/0/0/576x576/6WiJVoNl3kMniMWN.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/pl/mp4a/64000/YKZ3K6apXVUwQfiq.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/0/0/64000/umsYsqcpro3CMu2H.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/0/0/576x576/6WiJVoNl3kMniMWN.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/0/3000/576x576/PSj-FTvrT4hycmqj.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/0/0/64000/umsYsqcpro3CMu2H.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/3000/6000/64000/lF88ehqV6wRd6TZg.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/0/3000/576x576/PSj-FTvrT4hycmqj.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/3000/6000/64000/lF88ehqV6wRd6TZg.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/6000/9000/64000/By68icEax0gxzVUk.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/3000/6000/576x576/jQCYgQzLNxCmGW-W.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/6000/9000/64000/By68icEax0gxzVUk.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/3000/6000/576x576/jQCYgQzLNxCmGW-W.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/6000/9000/576x576/pjjofifVF5Q0E46-.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/0/3000/64000/qxUy3cO6-gK5IRe5.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/aud/mp4a/0/3000/64000/qxUy3cO6-gK5IRe5.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/6000/9000/576x576/pjjofifVF5Q0E46-.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/9000/12000/576x576/lGgs0_E0AmeyJCFS.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/12000/15000/128000/4nx9a-FD6e5fjzkW.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/1510113602480775168/pu/vid/9000/12000/576x576/lGgs0_E0AmeyJCFS.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027630457920147456/pu/aud/mp4a/12000/15000/128000/4nx9a-FD6e5fjzkW.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/MCl8g3XAeO5pthSi.m3u8?variant_version=1&tag=12
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/MCl8g3XAeO5pthSi.m3u8?variant_version=1&tag=12
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/avc1/320x568/WtSgpQ6JjZH6fuGR.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/mp4a/32000/mz1pwyBrnfrIeCEt.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/avc1/320x568/WtSgpQ6JjZH6fuGR.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/0/3000/320x568/Ex1z_Sa9zdW3evBi.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/mp4a/32000/mz1pwyBrnfrIeCEt.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/0/0/32000/A3GTQNlqKUlaLOAO.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/0/0/32000/A3GTQNlqKUlaLOAO.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/0/3000/32000/q4zoZNGSG3TZf5It.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/0/3000/320x568/Ex1z_Sa9zdW3evBi.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/mp4a/128000/QpPxzcPvKdBXZexv.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/avc1/720x1280/TQbMAsOoxdtlC2g-.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/avc1/720x1280/TQbMAsOoxdtlC2g-.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/0/0/720x1280/2k6CFrfDYw533gXB.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/pl/mp4a/128000/QpPxzcPvKdBXZexv.m3u8
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/0/0/128000/o8u-AsaX7HAMycb3.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/0/0/720x1280/2k6CFrfDYw533gXB.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/0/3000/720x1280/94QkAEdfiwWuzl8P.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/0/0/128000/o8u-AsaX7HAMycb3.mp4
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/3000/6000/128000/sY95lChjIdM6te6A.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/0/3000/720x1280/94QkAEdfiwWuzl8P.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/3000/6000/128000/sY95lChjIdM6te6A.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/6000/9000/128000/CniKDS7jRQa1-Aeg.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/3000/6000/720x1280/icoUJSTLj6jgkG0z.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/6000/9000/128000/CniKDS7jRQa1-Aeg.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/0/3000/128000/3nTQaiy39lH830PD.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/3000/6000/720x1280/icoUJSTLj6jgkG0z.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/6000/9000/720x1280/-0lOw-FqQeEzi_SB.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/0/3000/128000/3nTQaiy39lH830PD.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/6000/9000/720x1280/-0lOw-FqQeEzi_SB.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/9000/12000/720x1280/i-2vyeJ-dyVUM8bT.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/9000/12000/128000/s3PhDby5Jp7DFtZD.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/9000/12000/720x1280/i-2vyeJ-dyVUM8bT.m4s
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/aud/mp4a/9000/12000/128000/s3PhDby5Jp7DFtZD.m4s
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/12000/15733/720x1280/gySa1Pihfgppdv51.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027520381846716416/pu/vid/avc1/12000/15733/720x1280/gySa1Pihfgppdv51.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/pl/sZW8lQb-cSR-ZUs_.m3u8?variant_version=1&tag=21
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/pl/sZW8lQb-cSR-ZUs_.m3u8?variant_version=1&tag=21
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/pl/avc1/320x568/0TY8znQxafGC2HJE.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/pl/mp4a/32000/vVyfjREBpktFGlbr.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/12000/12981/128000/SDpYvb9CxJX0F63r.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/pl/mp4a/32000/vVyfjREBpktFGlbr.m3u8
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/pl/avc1/320x568/0TY8znQxafGC2HJE.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/0/3000/320x568/iKUL9ik0sa8WlP5-.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/0/0/32000/jZe2uuYIevVvcLiQ.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/0/3000/320x568/iKUL9ik0sa8WlP5-.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/0/0/32000/jZe2uuYIevVvcLiQ.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/0/3000/32000/reeOIDMV6a-G7JIF.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/ext_tw_video/2027670152146223104/pu/aud/mp4a/12000/12981/128000/SDpYvb9CxJX0F63r.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/pl/mp4a/128000/Nd3BpqF4rRYzR4SE.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/pl/avc1/720x1280/63W6fiZh1V45BIVG.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/pl/avc1/720x1280/63W6fiZh1V45BIVG.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/0/0/720x1280/lHZGMddPo1wvsB0a.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/pl/mp4a/128000/Nd3BpqF4rRYzR4SE.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/0/0/128000/O8jNo5R2qTG3RlnF.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/0/0/128000/O8jNo5R2qTG3RlnF.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/3000/6000/128000/fEh4ChXgwS83RxEA.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/0/0/720x1280/lHZGMddPo1wvsB0a.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/0/3000/720x1280/e12ndbUMCVn_uW5y.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/0/3000/720x1280/e12ndbUMCVn_uW5y.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/3000/6000/128000/fEh4ChXgwS83RxEA.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/6000/9000/128000/-F_vbL3w31PcTJld.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/3000/6000/720x1280/L1_ejSlvSRhcgyQT.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/6000/9000/128000/-F_vbL3w31PcTJld.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/0/3000/128000/4LGys2lDMEot0lYI.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/3000/6000/720x1280/L1_ejSlvSRhcgyQT.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/6000/9000/720x1280/OnQgoG0UTrAbDO0a.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/aud/mp4a/0/3000/128000/4LGys2lDMEot0lYI.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/6000/9000/720x1280/OnQgoG0UTrAbDO0a.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/9000/12000/720x1280/k-m0W5z7WF4hHb5O.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027408081035124736/vid/avc1/9000/12000/720x1280/k-m0W5z7WF4hHb5O.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/pl/sIyCev2Vk8bafOoh.m3u8?variant_version=1&tag=21
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/pl/sIyCev2Vk8bafOoh.m3u8?variant_version=1&tag=21
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/pl/avc1/320x568/_Knu-wn90WCX8RJs.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/pl/mp4a/32000/DMOzTW7oRDYbfwDI.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/pl/avc1/320x568/_Knu-wn90WCX8RJs.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/0/3000/320x568/Lc9WkTol-zNAqdH4.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/pl/mp4a/32000/DMOzTW7oRDYbfwDI.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/0/0/32000/WsgYl6JO-s0vRFui.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/0/0/32000/WsgYl6JO-s0vRFui.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/0/3000/32000/Bx1_ZC0Ijd09eXmF.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/0/3000/320x568/Lc9WkTol-zNAqdH4.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/pl/mp4a/64000/T8RdluwfH2nh6Oab.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/pl/avc1/360x640/KcVpiT022J_wula5.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/pl/mp4a/64000/T8RdluwfH2nh6Oab.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/0/0/64000/vCY5AkUD0CiuChVf.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/pl/avc1/360x640/KcVpiT022J_wula5.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/0/0/360x640/E8xNPWmJYl_O-PMe.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/0/0/64000/vCY5AkUD0CiuChVf.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/3000/6000/64000/6Llu8BvxjwhanrYu.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/0/0/360x640/E8xNPWmJYl_O-PMe.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/0/3000/360x640/H7hYiAyPruUet5Y_.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/9000/12000/720x1280/CUgH0SWThYrk29pu.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/3000/6000/64000/6Llu8BvxjwhanrYu.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/0/3000/360x640/H7hYiAyPruUet5Y_.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/6000/9000/64000/YAALELrfjgyiDx_W.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/3000/6000/360x640/28QO1nNZji_M3Bq8.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/vid/avc1/9000/12000/720x1280/CUgH0SWThYrk29pu.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/6000/9000/64000/YAALELrfjgyiDx_W.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/3000/6000/360x640/28QO1nNZji_M3Bq8.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/0/3000/64000/HJ8APZMssuJ6GDfc.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/9000/12000/128000/ql9fncGCbCI_2UhR.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/6000/9000/360x640/Cod0DhLyE3WE3BT7.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/aud/mp4a/0/3000/64000/HJ8APZMssuJ6GDfc.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027483448227549184/aud/mp4a/9000/12000/128000/ql9fncGCbCI_2UhR.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/6000/9000/360x640/Cod0DhLyE3WE3BT7.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/9000/12000/360x640/bP_Fe8NMClHNY875.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027397568880082944/vid/avc1/9000/12000/360x640/bP_Fe8NMClHNY875.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/pl/-LG_rtdvXVRcCatq.m3u8?variant_version=1&tag=21
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/pl/-LG_rtdvXVRcCatq.m3u8?variant_version=1&tag=21
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/pl/avc1/320x568/n1woQk8X50Wl5yCO.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/pl/mp4a/32000/W03cQTDAJAi5-Miu.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/pl/mp4a/32000/W03cQTDAJAi5-Miu.m3u8
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/pl/avc1/320x568/n1woQk8X50Wl5yCO.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/vid/avc1/0/3000/320x568/kctU_TkEubxjDws8.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/0/0/32000/-IKV7Z_LmN9861Kl.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/0/0/32000/-IKV7Z_LmN9861Kl.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/0/3000/32000/_Pi1q6vzDLmYYoF-.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/vid/avc1/0/3000/320x568/kctU_TkEubxjDws8.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/pl/mp4a/128000/z70DQC9zFH7-LRwv.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/pl/avc1/1080x1920/zPrq0hgB93BtF5LF.m3u8
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/pl/avc1/1080x1920/zPrq0hgB93BtF5LF.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/vid/avc1/0/0/1080x1920/bSHG1WpFZrUsFSzR.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/pl/mp4a/128000/z70DQC9zFH7-LRwv.m3u8
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/0/0/128000/RtIQbx0jJlzRxOAv.mp4
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/vid/avc1/0/0/1080x1920/bSHG1WpFZrUsFSzR.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/vid/avc1/0/3000/1080x1920/lwXN3nxXUyTFByBw.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/0/0/128000/RtIQbx0jJlzRxOAv.mp4
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/3000/6000/128000/3CCNB5M63jkQtFLo.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/vid/avc1/0/3000/1080x1920/lwXN3nxXUyTFByBw.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/3000/6000/128000/3CCNB5M63jkQtFLo.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/6000/9000/128000/YtgzQkg7YKzWlqBo.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/vid/avc1/3000/6000/1080x1920/uMN27QM7ZTMYalQI.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/6000/9000/128000/YtgzQkg7YKzWlqBo.m4s
+[RES] 200 https://video.twimg.com/amplify_video/2027391618580721665/vid/avc1/3000/6000/1080x1920/uMN27QM7ZTMYalQI.m4s
+
+[REQ] GET https://video.twimg.com/amplify_video/2027391618580721665/aud/mp4a/0/3000/128000/d5OBSmVqWcYlA-sB.m4s
+Headers: {
+  "sec-ch-ua-platform": "\"macOS\"",
+  "referer": "https://x.com/",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
+  "sec-ch-ua-mobile": "?0"
+}

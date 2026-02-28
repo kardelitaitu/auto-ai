@@ -225,3 +225,10 @@ Strategy engine randomization in `utils/twitter-reply-prompt.js`:
 Reply engine token optimization — reduced total tokens per LLM call from ~1200 to ~465:
 - `utils/twitter-reply-prompt.js`: Slimmed `REPLY_SYSTEM_PROMPT` from ~600 tokens to ~220 tokens (removed thread-type sections, approach examples, example conversations, length table). Restored `strategies` object with correct backtick template literals. Rewrote `buildReplyPrompt` with hard limits: tweet ≤500 chars, each reply ≤80 chars, max 3 replies. Rewrote `buildEnhancedPrompt` to lean user-prompt-only version (no system prompt prepend, same limits).
 - `utils/ai-reply-engine/index.js`: Rewrote `buildEnhancedPrompt` method to remove double system-prompt send (it was prepending `REPLY_SYSTEM_PROMPT` into the user prompt while `generateReply` already sends it as `systemPrompt`). New version sends only: strategy instruction + tweet (≤500 chars) + up to 3 replies (≤80 chars each) + `Reply:` footer.
+
+28-02-2026--21-12
+Fixed media playback issues permanently and created v0.4.8:
+- Diagnosed 403 Forbidden issues on X.com video streams via custom header interception scripts.
+- Discovered video requests were actually hitting 200 OK, but decoding was failing silently in `ixbrowser` custom binaries.
+- Removed explicit MP4/H.264 capability denial in `api/utils/browserPatch.js` and `utils/browserPatch.js` which was breaking X.com's internal player negotiations.
+- Restoring native negotiation allows the video player to automatically fallback appropriately and play videos correctly in WebM/HLS as needed.

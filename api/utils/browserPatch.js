@@ -32,43 +32,7 @@ export async function applyHumanizationPatch(page, logger) {
             void _e;
         }
 
-        // 2. Explicitly Deny H.264/MP4 to Force WebM/VP9 Fallbacks on X.com
-        // Many custom Chromium builds falsely report MP4 capabilities but lack the proprietary decoders.
-        try {
-            const originalCanPlayType = HTMLMediaElement.prototype.canPlayType;
-            HTMLMediaElement.prototype.canPlayType = function (type) {
-                try {
-                    if (typeof type === 'string') {
-                        const t = type.toLowerCase();
-                        if (t.includes('avc1') || t.includes('h264') || t.includes('mp4')) {
-                            return ''; // Explicitly deny format
-                        }
-                    }
-                } catch (_e2) {
-                    void _e2;
-                }
-                return originalCanPlayType.call(this, type);
-            };
-
-            if (typeof window.MediaSource !== 'undefined' && typeof window.MediaSource.isTypeSupported === 'function') {
-                const originalIsTypeSupported = window.MediaSource.isTypeSupported.bind(window.MediaSource);
-                window.MediaSource.isTypeSupported = (type) => {
-                    try {
-                        if (typeof type === 'string') {
-                            const t = type.toLowerCase();
-                            if (t.includes('avc1') || t.includes('h264') || t.includes('mp4')) {
-                                return false; // Explicitly deny format
-                            }
-                        }
-                    } catch (_e2) {
-                        void _e2;
-                    }
-                    return originalIsTypeSupported(type);
-                };
-            }
-        } catch (_e) {
-            void _e;
-        }
+        // Removed media capability spoofing as it interferes with X.com player negotiations
         try {
             const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
             HTMLCanvasElement.prototype.toDataURL = function (...args) {

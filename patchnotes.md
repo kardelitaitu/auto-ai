@@ -1,8 +1,12 @@
+### ✅ version 0.4.8
+(28 February 2026) Stable Release & Video Playback Fix
+- **Fixed Media Playback**: Resolved X.com video playback issues by completely removing explicit H.264 codec spoofing from `api/utils/browserPatch.js` and `utils/browserPatch.js`. Diagnostics revealed that actively denying codec capabilities broke X.com's internal player negotiations (resulting in silent stream failures). Allowing the browser to negotiate natively restores consistent playback.
+
 ### ✅ version 0.4.7
 (28 February 2026) AI-Powered Reply Integration & Bug Fixes
 - **Integrated AI Replies**: Surfaced `api.replyWithAI()` in the core API. Handles context gathering, AI generation, and execution via Strategy A (Reply Icon) in one line.
 - **Improved Context Extraction**: Ported optimized scrolling context extraction to the reply macro for consistent interaction behavior.
-- **Fixed Media Playback**: Removed legacy H.264 codec spoofing from `api/utils/browserPatch.js` that was preventing images and video GIFs from playing on X.com.
+- **Fixed Media Playback**: Addressed a bug where custom Chromium builds artificially reported MP4 support. (Note: Reverted in 0.4.8)
 
 ### ✅ version 0.4.6
 (28 February 2026) AI-Powered Action APIs
