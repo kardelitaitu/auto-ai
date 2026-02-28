@@ -1269,7 +1269,9 @@ export class AITwitterAgent extends TwitterAgent {
 
         // 2. Pre-fetch Context (Heavy scrolling) - OUTSIDE QUEUE
         // This ensures we only block the queue for actual AI generation
-        if (selectedAction === "reply" || selectedAction === "quote") {
+        // Skip if the selected action explicitly declares it doesn't need context (e.g. API macros map their own context)
+        const needsContext = this.actions[selectedAction]?.needsContext !== false;
+        if ((selectedAction === "reply" || selectedAction === "quote") && needsContext) {
           this.log(`[AI-Engage] Pre-fetching context for ${selectedAction}...`);
           try {
             enhancedContext = await this.contextEngine.extractEnhancedContext(

@@ -277,6 +277,10 @@ export default async function apiTwitterActivityTask(page, payload) {
                                 }
                             };
 
+                            // Disable legacy context pre-fetching since the API macros handle it natively
+                            agent.actions.reply.needsContext = false;
+                            agent.actions.quote.needsContext = false;
+
                             hasAgent = true;
                             agentState = agent.state;
                             getAIStats = agent.getAIStats.bind(agent);
