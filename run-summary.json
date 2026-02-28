@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 44373,
-      "uptimeFormatted": "44s",
-      "timeSinceReset": 44373,
-      "timeSinceResetFormatted": "44s"
+      "uptime": 17024,
+      "uptimeFormatted": "17s",
+      "timeSinceReset": 17024,
+      "timeSinceResetFormatted": "17s"
     },
     "tasks": {
       "executed": 1,
       "failed": 0,
       "succeeded": 1,
       "successRate": 100,
-      "avgDuration": 42037,
-      "totalDuration": 42037,
+      "avgDuration": 9947,
+      "totalDuration": 9947,
       "durationPercentiles": {
-        "p50": 42037,
-        "p95": 42037,
-        "p99": 42037
+        "p50": 9947,
+        "p95": 9947,
+        "p99": 9947
       }
     },
     "browsers": {
@@ -61,17 +61,17 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-02-28T12:50:12.303Z"
+    "runEndTime": "2026-02-28T13:14:32.551Z"
   },
   "tasks": [
     {
-      "taskName": "reply-test",
-      "duration": 42037,
+      "taskName": "retweet-test",
+      "duration": 9947,
       "success": true,
       "sessionId": "0001:8857",
       "error": null,
-      "startTime": "2026-02-28T12:49:30.211Z",
-      "timestamp": 1772283012248
+      "startTime": "2026-02-28T13:14:22.542Z",
+      "timestamp": 1772284472489
     }
   ]
 }

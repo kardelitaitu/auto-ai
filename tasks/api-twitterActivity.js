@@ -215,6 +215,68 @@ export default async function apiTwitterActivityTask(page, payload) {
                                 engagementLimits: taskConfig.engagement.limits,
                                 config: taskConfig
                             });
+
+                            // Inject high-level unified API macros
+                            agent.actions.reply.execute = async (context = {}) => {
+                                agent.actions.reply.stats.attempts++;
+                                try {
+                                    logger.info(`[api-twitterActivity] Delegating reply to api.replyWithAI()...`);
+                                    const result = await api.replyWithAI();
+                                    if (result.success) {
+                                        agent.actions.reply.stats.successes++;
+                                        return {
+                                            success: true,
+                                            executed: true,
+                                            reason: 'success',
+                                            data: { reply: result.reply, method: result.method },
+                                            engagementType: 'replies'
+                                        };
+                                    } else {
+                                        agent.actions.reply.stats.failures++;
+                                        return {
+                                            success: false,
+                                            executed: true,
+                                            reason: result.reason || 'api_reply_failed',
+                                            data: { error: result.reason },
+                                            engagementType: 'replies'
+                                        };
+                                    }
+                                } catch (error) {
+                                    agent.actions.reply.stats.failures++;
+                                    return { success: false, executed: true, reason: 'exception', data: { error: error.message }, engagementType: 'replies' };
+                                }
+                            };
+
+                            agent.actions.quote.execute = async (context = {}) => {
+                                agent.actions.quote.stats.attempts++;
+                                try {
+                                    logger.info(`[api-twitterActivity] Delegating quote to api.quoteWithAI()...`);
+                                    const result = await api.quoteWithAI();
+                                    if (result.success) {
+                                        agent.actions.quote.stats.successes++;
+                                        return {
+                                            success: true,
+                                            executed: true,
+                                            reason: 'success',
+                                            data: { quote: result.quote, method: result.method },
+                                            engagementType: 'quotes'
+                                        };
+                                    } else {
+                                        agent.actions.quote.stats.failures++;
+                                        return {
+                                            success: false,
+                                            executed: true,
+                                            reason: result.reason || 'api_quote_failed',
+                                            data: { error: result.reason },
+                                            engagementType: 'quotes'
+                                        };
+                                    }
+                                } catch (error) {
+                                    agent.actions.quote.stats.failures++;
+                                    return { success: false, executed: true, reason: 'exception', data: { error: error.message }, engagementType: 'quotes' };
+                                }
+                            };
+
                             hasAgent = true;
                             agentState = agent.state;
                             getAIStats = agent.getAIStats.bind(agent);
