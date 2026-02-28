@@ -1,7 +1,8 @@
 ### ✅ version 0.4.7
-(28 February 2026) AI-Powered Reply Integration
+(28 February 2026) AI-Powered Reply Integration & Bug Fixes
 - **Integrated AI Replies**: Surfaced `api.replyWithAI()` in the core API. Handles context gathering, AI generation, and execution via Strategy A (Reply Icon) in one line.
 - **Improved Context Extraction**: Ported optimized scrolling context extraction to the reply macro for consistent interaction behavior.
+- **Fixed Media Playback**: Removed legacy H.264 codec spoofing from `api/utils/browserPatch.js` that was preventing images and video GIFs from playing on X.com.
 
 ### ✅ version 0.4.6
 (28 February 2026) AI-Powered Action APIs

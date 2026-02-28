@@ -1,6 +1,9 @@
-28-02# Agent Journal - Quote Test & AI API Integration
+# AGENT JOURNAL - 28 February 2026
 
-## [2026-02-28] Integrated# AGENT JOURNAL - 28 February 2026
+28-02-2026--20-40
+Fixed "media could not be played" errors on X.com in `api/utils/browserPatch.js`:
+- Removed H.264 (MP4) codec spoofing from `HTMLMediaElement.prototype.canPlayType` and `MediaSource.isTypeSupported` that was accidentally left behind after previous removal in `utils/browserPatch.js`.
+- This allows X.com's video player to correctly fallback to serving natively supported formats instead of failing to decode spoofed MP4s.
 
 ## Integrated `api.replyWithAI()` (Engagement Macro)
 - **Goal**: Create a high-level API to automate AI-driven replies with a single call.
