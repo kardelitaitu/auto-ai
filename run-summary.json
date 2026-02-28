@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 17024,
-      "uptimeFormatted": "17s",
-      "timeSinceReset": 17024,
-      "timeSinceResetFormatted": "17s"
+      "uptime": 422593,
+      "uptimeFormatted": "7m 2s",
+      "timeSinceReset": 422593,
+      "timeSinceResetFormatted": "7m 2s"
     },
     "tasks": {
       "executed": 1,
       "failed": 0,
       "succeeded": 1,
       "successRate": 100,
-      "avgDuration": 9947,
-      "totalDuration": 9947,
+      "avgDuration": 420247,
+      "totalDuration": 420247,
       "durationPercentiles": {
-        "p50": 9947,
-        "p95": 9947,
-        "p99": 9947
+        "p50": 420247,
+        "p95": 420247,
+        "p99": 420247
       }
     },
     "browsers": {
@@ -48,10 +48,10 @@
         "replies": 0,
         "quotes": 0,
         "retweets": 0,
-        "bookmarks": 0,
+        "bookmarks": 1,
         "follows": 0,
         "tweets": 0,
-        "total": 0
+        "total": 1
       },
       "performance": {
         "avgDiveDuration": 0,
@@ -61,17 +61,17 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-02-28T13:14:32.551Z"
+    "runEndTime": "2026-02-28T13:50:16.940Z"
   },
   "tasks": [
     {
-      "taskName": "retweet-test",
-      "duration": 9947,
+      "taskName": "api-twitteractivity",
+      "duration": 420247,
       "success": true,
       "sessionId": "0001:8857",
       "error": null,
-      "startTime": "2026-02-28T13:14:22.542Z",
-      "timestamp": 1772284472489
+      "startTime": "2026-02-28T13:43:16.619Z",
+      "timestamp": 1772286616866
     }
   ]
 }

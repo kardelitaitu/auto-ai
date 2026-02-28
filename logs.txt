@@ -1,187 +1,258 @@
-{"timestamp":"2026-02-28T13:30:27.041Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772285427020-co2t3d9f2] Session initialized with paceMultiplier=0.78"}
-{"timestamp":"2026-02-28T13:30:27.041Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772285427020-co2t3d9f2] Fatigue scheduled for T+3.7m"}
-{"timestamp":"2026-02-28T13:30:27.083Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
-{"timestamp":"2026-02-28T13:30:27.083Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
-{"timestamp":"2026-02-28T13:30:27.085Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
-{"timestamp":"2026-02-28T13:30:27.085Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
-{"timestamp":"2026-02-28T13:30:27.086Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
-{"timestamp":"2026-02-28T13:30:27.123Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
-{"timestamp":"2026-02-28T13:30:27.134Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Session database initialized at C:\\My Script\\auto-ai\\data\\sessions.db"}
-{"timestamp":"2026-02-28T13:30:27.136Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
-{"timestamp":"2026-02-28T13:30:27.138Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
-{"timestamp":"2026-02-28T13:30:27.139Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager configured: session=1800000ms, concurrency=50"}
-{"timestamp":"2026-02-28T13:30:27.142Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
-{"timestamp":"2026-02-28T13:30:27.327Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
-{"timestamp":"2026-02-28T13:30:27.329Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
-{"timestamp":"2026-02-28T13:30:27.331Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
-{"timestamp":"2026-02-28T13:30:27.331Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dashboard server started on port 3001"}
-{"timestamp":"2026-02-28T13:30:27.332Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting browser discovery..."}
-{"timestamp":"2026-02-28T13:30:27.332Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager configured: session=1800000ms, concurrency=50"}
-{"timestamp":"2026-02-28T13:30:27.333Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
-{"timestamp":"2026-02-28T13:30:27.334Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
-{"timestamp":"2026-02-28T13:30:27.337Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-02-28T13:30:27.337Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
-{"timestamp":"2026-02-28T13:30:27.338Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
-{"timestamp":"2026-02-28T13:30:27.338Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
-{"timestamp":"2026-02-28T13:30:27.339Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-02-28T13:30:27.340Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
-{"timestamp":"2026-02-28T13:30:27.340Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
-{"timestamp":"2026-02-28T13:30:27.340Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
-{"timestamp":"2026-02-28T13:30:27.342Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-02-28T13:30:27.342Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
-{"timestamp":"2026-02-28T13:30:27.342Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
-{"timestamp":"2026-02-28T13:30:27.344Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-02-28T13:30:27.344Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
-{"timestamp":"2026-02-28T13:30:27.344Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
-{"timestamp":"2026-02-28T13:30:27.345Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-02-28T13:30:27.346Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
-{"timestamp":"2026-02-28T13:30:27.346Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
-{"timestamp":"2026-02-28T13:30:27.347Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-02-28T13:30:27.348Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
-{"timestamp":"2026-02-28T13:30:27.348Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
-{"timestamp":"2026-02-28T13:30:27.350Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-02-28T13:30:27.350Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
-{"timestamp":"2026-02-28T13:30:27.350Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
-{"timestamp":"2026-02-28T13:30:27.351Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
-{"timestamp":"2026-02-28T13:30:27.352Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-02-28T13:30:27.353Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
-{"timestamp":"2026-02-28T13:30:27.353Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
-{"timestamp":"2026-02-28T13:30:27.353Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
-{"timestamp":"2026-02-28T13:30:27.354Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
-{"timestamp":"2026-02-28T13:30:27.354Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
-{"timestamp":"2026-02-28T13:30:27.355Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
-{"timestamp":"2026-02-28T13:30:27.357Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
-{"timestamp":"2026-02-28T13:30:27.358Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
-{"timestamp":"2026-02-28T13:30:27.374Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
-{"timestamp":"2026-02-28T13:30:27.374Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
-{"timestamp":"2026-02-28T13:30:27.375Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
-{"timestamp":"2026-02-28T13:30:27.376Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
-{"timestamp":"2026-02-28T13:30:27.394Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
-{"timestamp":"2026-02-28T13:30:27.395Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
-{"timestamp":"2026-02-28T13:30:27.396Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
-{"timestamp":"2026-02-28T13:30:27.401Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
-{"timestamp":"2026-02-28T13:30:27.402Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
-{"timestamp":"2026-02-28T13:30:27.402Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: 0001 (ws: ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4)"}
-{"timestamp":"2026-02-28T13:30:27.402Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
-{"timestamp":"2026-02-28T13:30:28.406Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
-{"timestamp":"2026-02-28T13:30:28.406Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
-{"timestamp":"2026-02-28T13:30:28.407Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
-{"timestamp":"2026-02-28T13:30:28.407Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
-{"timestamp":"2026-02-28T13:30:28.408Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
-{"timestamp":"2026-02-28T13:30:28.408Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
-{"timestamp":"2026-02-28T13:30:28.408Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
-{"timestamp":"2026-02-28T13:30:28.408Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
-{"timestamp":"2026-02-28T13:30:28.408Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
-{"timestamp":"2026-02-28T13:30:28.409Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
-{"timestamp":"2026-02-28T13:30:28.409Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
-{"timestamp":"2026-02-28T13:30:28.409Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
-{"timestamp":"2026-02-28T13:30:28.409Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
-{"timestamp":"2026-02-28T13:30:28.410Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Found 1 browser endpoints. Attempting to connect in parallel..."}
-{"timestamp":"2026-02-28T13:30:28.410Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4"}
-{"timestamp":"2026-02-28T13:30:28.739Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4"}
-{"timestamp":"2026-02-28T13:30:28.739Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Session added: 0001:8857 with 50 slots."}
-{"timestamp":"2026-02-28T13:30:28.745Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Successfully connected and added session for 0001:8857."}
-{"timestamp":"2026-02-28T13:30:28.745Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Discovery completed. Connected to 1 browsers."}
-{"timestamp":"2026-02-28T13:30:28.746Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
-{"timestamp":"2026-02-28T13:30:28.747Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to 1 browser(s). Ready for automation."}
-{"timestamp":"2026-02-28T13:30:28.747Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Initialized. Processing 1 sequential task groups."}
-{"timestamp":"2026-02-28T13:30:28.747Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 1/1: [\"api-twitteractivity\"]"}
-{"timestamp":"2026-02-28T13:30:28.755Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Task 'api-twitteractivity' added to queue. Queue size: 1"}
-{"timestamp":"2026-02-28T13:30:28.755Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 1 added. Waiting for completion..."}
-{"timestamp":"2026-02-28T13:30:28.756Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
-{"timestamp":"2026-02-28T13:30:28.819Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting concurrent checklist processing for all sessions..."}
-{"timestamp":"2026-02-28T13:30:28.820Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dispatching 1 tasks across sessions."}
-{"timestamp":"2026-02-28T13:30:28.820Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[0001:8857] Starting shared checklist with 1 tasks and up to 50 parallel tabs."}
-{"timestamp":"2026-02-28T13:30:28.894Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[0001:8857][Worker 0] Starting task 'api-twitteractivity'"}
-{"timestamp":"2026-02-28T13:30:28.941Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
-{"timestamp":"2026-02-28T13:30:28.942Z","level":"INFO","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Service initialized (TTL: 300000ms)"}
-{"timestamp":"2026-02-28T13:30:28.942Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
-{"timestamp":"2026-02-28T13:30:28.951Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
-{"timestamp":"2026-02-28T13:30:28.951Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
-{"timestamp":"2026-02-28T13:30:28.952Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
-{"timestamp":"2026-02-28T13:30:28.952Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
-{"timestamp":"2026-02-28T13:30:28.959Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-02-28T13:30:28.961Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-02-28T13:30:28.964Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Initializing with Unified API..."}
-{"timestamp":"2026-02-28T13:30:28.967Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] ⏳ Startup: Running parallel initialization (Jitter: 1105ms)..."}
-{"timestamp":"2026-02-28T13:30:28.968Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Loading configuration (cache miss: {})"}
-{"timestamp":"2026-02-28T13:30:28.969Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Profile: 10-Balanced-undefined | Input: undefined (undefined%) | Dive: undefined% | Like: undefined% | Follow: undefined%"}
-{"timestamp":"2026-02-28T13:30:28.969Z","level":"INFO","module":"config-service.js","sessionId":null,"message":"[Config] Service initialized"}
-{"timestamp":"2026-02-28T13:30:28.971Z","level":"DEBUG","module":"environment-config.js","sessionId":null,"message":"[EnvironmentConfig] No environment overrides found"}
-{"timestamp":"2026-02-28T13:30:28.972Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Added new entry: {}"}
-{"timestamp":"2026-02-28T13:30:28.972Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Configuration loaded successfully in 5ms"}
-{"timestamp":"2026-02-28T13:30:28.972Z","level":"DEBUG","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Cache stats: 0 hits, 1 loads"}
-{"timestamp":"2026-02-28T13:30:30.228Z","level":"INFO","module":"humanization.js","sessionId":null,"message":"[Humanization] Engine initialized"}
-{"timestamp":"2026-02-28T13:30:30.228Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] Initialized [Type: Balanced | Input: Mouse (89%) | Dive: 38.8% | Tweet: 5.5% | T-Dive: 11.2% Like: 1.51%]. Fatigue scheduled for T+3.9m"}
-{"timestamp":"2026-02-28T13:30:30.230Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[AsyncQueue] Initialized (maxConcurrent: 1, maxQueueSize: 30, defaultTimeout: 20000ms)"}
-{"timestamp":"2026-02-28T13:30:30.230Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] Initialized with engagement limits: {\"replies\":3,\"retweets\":1,\"quotes\":1,\"likes\":5,\"follows\":2,\"bookmarks\":2}"}
-{"timestamp":"2026-02-28T13:30:30.231Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReplyEngine] Initialized (probability: 0.6)"}
-{"timestamp":"2026-02-28T13:30:30.232Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuoteEngine] Initialized (probability: 0.2)"}
-{"timestamp":"2026-02-28T13:30:30.233Z","level":"INFO","module":"ai-twitter-reply.js","sessionId":null,"message":"[AIReplyAction] Initialized (enabled: true, probability: 60%)"}
-{"timestamp":"2026-02-28T13:30:30.233Z","level":"INFO","module":"ai-twitter-quote.js","sessionId":null,"message":"[AIQuoteAction] Initialized (enabled: true, probability: 20%)"}
-{"timestamp":"2026-02-28T13:30:30.234Z","level":"INFO","module":"ai-twitter-like.js","sessionId":null,"message":"[LikeAction] Initialized (enabled: true, probability: 15%)"}
-{"timestamp":"2026-02-28T13:30:30.234Z","level":"INFO","module":"ai-twitter-bookmark.js","sessionId":null,"message":"[BookmarkAction] Initialized (enabled: true, probability: 5%)"}
-{"timestamp":"2026-02-28T13:30:30.234Z","level":"INFO","module":"ai-twitter-retweet.js","sessionId":null,"message":"[RetweetAction] Initialized (enabled: true, probability: 20%)"}
-{"timestamp":"2026-02-28T13:30:30.235Z","level":"INFO","module":"ai-twitter-go-home.js","sessionId":null,"message":"[GoHomeAction] Initialized (enabled: true)"}
-{"timestamp":"2026-02-28T13:30:30.235Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[ActionRunner] Initialized: reply=0.6, quote=0.2, like=0.15, bookmark=0.05, retweet=0.2 (total: 120%)"}
-{"timestamp":"2026-02-28T13:30:30.236Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AITwitterAgent] Initialized (replyProbability: 0.6)"}
-{"timestamp":"2026-02-28T13:30:30.236Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AITwitterAgent] Engagement limits: replies: 0/3, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/2, bookmarks: 0/2"}
-{"timestamp":"2026-02-28T13:30:30.236Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AITwitterAgent] Session phases: warmup(0-10%) → active(10-80%) → cooldown(80-100%)"}
-{"timestamp":"2026-02-28T13:30:30.237Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [DiveLock] State management initialized: HOME (scrolling enabled)"}
-{"timestamp":"2026-02-28T13:30:30.237Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AITwitterAgent] Action handlers initialized: reply, quote, like, bookmark, retweet, goHome"}
-{"timestamp":"2026-02-28T13:30:30.238Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Persona: casual"}
-{"timestamp":"2026-02-28T13:30:30.238Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Distraction chance: 6%"}
-{"timestamp":"2026-02-28T13:30:30.239Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Enforcing theme: dark"}
-{"timestamp":"2026-02-28T13:30:30.240Z","level":"INFO","module":"cloud-client.js","sessionId":null,"message":"[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization."}
-{"timestamp":"2026-02-28T13:30:30.243Z","level":"DEBUG","module":"ollama-manager.js","sessionId":null,"message":"[OllamaManager] Ollama is already running."}
-{"timestamp":"2026-02-28T13:30:30.243Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Initialized: http://localhost:11434 (Model: llama3.2:3b)"}
-{"timestamp":"2026-02-28T13:30:30.244Z","level":"INFO","module":"local-client.js","sessionId":null,"message":"[Local] Ollama client initialized"}
-{"timestamp":"2026-02-28T13:30:30.245Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Warm-up 1.4s..."}
-{"timestamp":"2026-02-28T13:30:31.442Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] 🎲 Rolled entry point: home → https://x.com/"}
-{"timestamp":"2026-02-28T13:30:36.037Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] X.com loaded (home)"}
-{"timestamp":"2026-02-28T13:30:36.038Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Waiting for network settlement (4000ms)..."}
-{"timestamp":"2026-02-28T13:30:40.041Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[AsyncQueue] ⚡ Background task expected timeout: page.waitForLoadState: Timeout 4000ms exceeded."}
-{"timestamp":"2026-02-28T13:30:40.041Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Network idle reached."}
-{"timestamp":"2026-02-28T13:30:40.041Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Checking login state..."}
-{"timestamp":"2026-02-28T13:30:40.098Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] ✅ Logged in (check 1/3)"}
-{"timestamp":"2026-02-28T13:30:40.099Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Starting session (20 cycles, 360-600s)..."}
-{"timestamp":"2026-02-28T13:30:40.100Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AITwitterAgent] Starting AI-Enhanced Session with DiveQueue and Lock Management..."}
-{"timestamp":"2026-02-28T13:30:40.100Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] Starting Session on https://x.com/home"}
-{"timestamp":"2026-02-28T13:30:40.100Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] Session Timer Set: 465.5s"}
-{"timestamp":"2026-02-28T13:30:40.100Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] Enforcing theme: dark"}
-{"timestamp":"2026-02-28T13:30:40.102Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Human] Session starting..."}
-{"timestamp":"2026-02-28T13:30:46.045Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] --- Loop 1  ---"}
-{"timestamp":"2026-02-28T13:30:50.854Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Idle] Reading Phase (61.1s)"}
-{"timestamp":"2026-02-28T13:30:56.439Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Phase] Transition: warmup → cooldown (Slowing down - more reading, fewer actions)"}
-{"timestamp":"2026-02-28T13:30:56.439Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [DiveQueue] Enabling quick mode for cooldown phase"}
-{"timestamp":"2026-02-28T13:30:56.440Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] Quick mode enabled (timeout: 15000ms)"}
-{"timestamp":"2026-02-28T13:30:56.440Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1772285456440_v3ujn"}
-{"timestamp":"2026-02-28T13:30:56.441Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-02-28T13:30:56.445Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Scroll] New session/navigated home, performing forced exploration scroll..."}
-{"timestamp":"2026-02-28T13:30:58.519Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Dive] Processing feed before selecting target (thinking)..."}
-{"timestamp":"2026-02-28T13:30:58.520Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Human] Thinking about scout for 536ms..."}
-{"timestamp":"2026-02-28T13:30:59.584Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Dive] Selected tweet candidate at index 5 (Y: 447)"}
-{"timestamp":"2026-02-28T13:30:59.592Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-02-28T13:31:00.579Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Debug] Target: Box=x:291,y:440"}
-{"timestamp":"2026-02-28T13:31:00.579Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-02-28T13:31:00.580Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Human] Thinking about Tweet Permalink for 592ms..."}
-{"timestamp":"2026-02-28T13:31:02.910Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor moving to x=303 y=449 [Tweet Permalink]"}
-{"timestamp":"2026-02-28T13:31:03.829Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor clicked x=304 y=448 [Tweet Permalink]"}
-{"timestamp":"2026-02-28T13:31:03.830Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [ai-twitterActivity][GhostClick] Clicked x=304 y=448"}
-{"timestamp":"2026-02-28T13:31:03.831Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Success] Navigated to tweet page."}
-{"timestamp":"2026-02-28T13:31:03.832Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Debug] Tweet URL: https://x.com/softiealiaa/status/2027435379759186409"}
-{"timestamp":"2026-02-28T13:31:03.832Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AI] Tracking new tweet 2027435379759186409"}
-{"timestamp":"2026-02-28T13:31:03.832Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-02-28T13:31:04.850Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AI] Extracted tweet text (67 chars)"}
-{"timestamp":"2026-02-28T13:31:04.851Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.5,\"quote\":0.166,\"like\":0.125,\"bookmark\":0.041,\"retweet\":0.166}"}
-{"timestamp":"2026-02-28T13:31:04.851Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[ActionRunner] Selected: retweet (roll: 99.0%, prob: 16.7%)"}
-{"timestamp":"2026-02-28T13:31:04.852Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [AI-Engage] Selected: RETWEET"}
-{"timestamp":"2026-02-28T13:31:04.852Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1772285456440_v3ujn"}
-{"timestamp":"2026-02-28T13:31:04.852Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1772285456440_v3ujn, timeout: 120000ms"}
-{"timestamp":"2026-02-28T13:31:04.853Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1772285456440_v3ujn (queue: 0, active: 0/1)"}
-{"timestamp":"2026-02-28T13:31:04.853Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1772285456440_v3ujn"}
-{"timestamp":"2026-02-28T13:31:04.854Z","level":"INFO","module":"ai-twitter-retweet.js","sessionId":null,"message":"[RetweetAction] Executing retweet"}
-{"timestamp":"2026-02-28T13:31:06.307Z","level":"INFO","module":"ai-twitter-retweet.js","sessionId":null,"message":"[RetweetAction] Selected Strategy: keyboard"}
-{"timestamp":"2026-02-28T13:31:07.838Z","level":"INFO","module":"ai-twitter-retweet.js","sessionId":null,"message":"[RetweetAction] Keyboard Strategy: Clicking element to focus"}
-{"timestamp":"2026-02-28T13:31:07.839Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:10-Balanced] [Human] Thinking about Focus Element for 482ms..."}
-{"timestamp":"2026-02-28T13:31:08.373Z","level":"INFO","module":"main.js","sessionId":null,"message":"Received SIGINT. Shutting down gracefully..."}
+{"timestamp":"2026-02-28T13:43:14.719Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772286194700-hr1wfnnmx] Session initialized with paceMultiplier=0.96"}
+{"timestamp":"2026-02-28T13:43:14.720Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772286194700-hr1wfnnmx] Fatigue scheduled for T+4.5m"}
+{"timestamp":"2026-02-28T13:43:14.763Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
+{"timestamp":"2026-02-28T13:43:14.763Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
+{"timestamp":"2026-02-28T13:43:14.765Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
+{"timestamp":"2026-02-28T13:43:14.765Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
+{"timestamp":"2026-02-28T13:43:14.766Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
+{"timestamp":"2026-02-28T13:43:14.802Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
+{"timestamp":"2026-02-28T13:43:14.810Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Session database initialized at C:\\My Script\\auto-ai\\data\\sessions.db"}
+{"timestamp":"2026-02-28T13:43:14.811Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
+{"timestamp":"2026-02-28T13:43:14.814Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-02-28T13:43:14.814Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager configured: session=1800000ms, concurrency=50"}
+{"timestamp":"2026-02-28T13:43:14.815Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-02-28T13:43:15.036Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
+{"timestamp":"2026-02-28T13:43:15.038Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
+{"timestamp":"2026-02-28T13:43:15.040Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
+{"timestamp":"2026-02-28T13:43:15.040Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dashboard server started on port 3001"}
+{"timestamp":"2026-02-28T13:43:15.041Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting browser discovery..."}
+{"timestamp":"2026-02-28T13:43:15.041Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager configured: session=1800000ms, concurrency=50"}
+{"timestamp":"2026-02-28T13:43:15.042Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
+{"timestamp":"2026-02-28T13:43:15.043Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
+{"timestamp":"2026-02-28T13:43:15.046Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-28T13:43:15.046Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
+{"timestamp":"2026-02-28T13:43:15.047Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
+{"timestamp":"2026-02-28T13:43:15.047Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
+{"timestamp":"2026-02-28T13:43:15.049Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-28T13:43:15.049Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
+{"timestamp":"2026-02-28T13:43:15.049Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
+{"timestamp":"2026-02-28T13:43:15.050Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
+{"timestamp":"2026-02-28T13:43:15.051Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-28T13:43:15.051Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
+{"timestamp":"2026-02-28T13:43:15.051Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
+{"timestamp":"2026-02-28T13:43:15.053Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-28T13:43:15.053Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
+{"timestamp":"2026-02-28T13:43:15.053Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
+{"timestamp":"2026-02-28T13:43:15.055Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-28T13:43:15.055Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
+{"timestamp":"2026-02-28T13:43:15.055Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
+{"timestamp":"2026-02-28T13:43:15.056Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-28T13:43:15.057Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
+{"timestamp":"2026-02-28T13:43:15.057Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
+{"timestamp":"2026-02-28T13:43:15.059Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-28T13:43:15.059Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
+{"timestamp":"2026-02-28T13:43:15.059Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
+{"timestamp":"2026-02-28T13:43:15.060Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
+{"timestamp":"2026-02-28T13:43:15.061Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-02-28T13:43:15.062Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
+{"timestamp":"2026-02-28T13:43:15.062Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
+{"timestamp":"2026-02-28T13:43:15.062Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
+{"timestamp":"2026-02-28T13:43:15.063Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
+{"timestamp":"2026-02-28T13:43:15.063Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
+{"timestamp":"2026-02-28T13:43:15.063Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
+{"timestamp":"2026-02-28T13:43:15.066Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
+{"timestamp":"2026-02-28T13:43:15.066Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
+{"timestamp":"2026-02-28T13:43:15.083Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
+{"timestamp":"2026-02-28T13:43:15.083Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
+{"timestamp":"2026-02-28T13:43:15.084Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
+{"timestamp":"2026-02-28T13:43:15.084Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
+{"timestamp":"2026-02-28T13:43:15.105Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
+{"timestamp":"2026-02-28T13:43:15.106Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-02-28T13:43:15.107Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-02-28T13:43:15.112Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
+{"timestamp":"2026-02-28T13:43:15.112Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
+{"timestamp":"2026-02-28T13:43:15.112Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: 0001 (ws: ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4)"}
+{"timestamp":"2026-02-28T13:43:15.113Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
+{"timestamp":"2026-02-28T13:43:16.110Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-02-28T13:43:16.110Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
+{"timestamp":"2026-02-28T13:43:16.111Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-02-28T13:43:16.111Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
+{"timestamp":"2026-02-28T13:43:16.112Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
+{"timestamp":"2026-02-28T13:43:16.112Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
+{"timestamp":"2026-02-28T13:43:16.112Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
+{"timestamp":"2026-02-28T13:43:16.112Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
+{"timestamp":"2026-02-28T13:43:16.113Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
+{"timestamp":"2026-02-28T13:43:16.113Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
+{"timestamp":"2026-02-28T13:43:16.113Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
+{"timestamp":"2026-02-28T13:43:16.113Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
+{"timestamp":"2026-02-28T13:43:16.113Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
+{"timestamp":"2026-02-28T13:43:16.114Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Found 1 browser endpoints. Attempting to connect in parallel..."}
+{"timestamp":"2026-02-28T13:43:16.114Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4"}
+{"timestamp":"2026-02-28T13:43:16.464Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4"}
+{"timestamp":"2026-02-28T13:43:16.465Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Session added: 0001:8857 with 50 slots."}
+{"timestamp":"2026-02-28T13:43:16.467Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Successfully connected and added session for 0001:8857."}
+{"timestamp":"2026-02-28T13:43:16.467Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Discovery completed. Connected to 1 browsers."}
+{"timestamp":"2026-02-28T13:43:16.467Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
+{"timestamp":"2026-02-28T13:43:16.468Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to 1 browser(s). Ready for automation."}
+{"timestamp":"2026-02-28T13:43:16.468Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Initialized. Processing 1 sequential task groups."}
+{"timestamp":"2026-02-28T13:43:16.468Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 1/1: [\"api-twitteractivity\"]"}
+{"timestamp":"2026-02-28T13:43:16.475Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Task 'api-twitteractivity' added to queue. Queue size: 1"}
+{"timestamp":"2026-02-28T13:43:16.475Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 1 added. Waiting for completion..."}
+{"timestamp":"2026-02-28T13:43:16.476Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
+{"timestamp":"2026-02-28T13:43:16.537Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting concurrent checklist processing for all sessions..."}
+{"timestamp":"2026-02-28T13:43:16.538Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dispatching 1 tasks across sessions."}
+{"timestamp":"2026-02-28T13:43:16.538Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[0001:8857] Starting shared checklist with 1 tasks and up to 50 parallel tabs."}
+{"timestamp":"2026-02-28T13:43:16.617Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[0001:8857][Worker 0] Starting task 'api-twitteractivity'"}
+{"timestamp":"2026-02-28T13:43:16.672Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
+{"timestamp":"2026-02-28T13:43:16.672Z","level":"INFO","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Service initialized (TTL: 300000ms)"}
+{"timestamp":"2026-02-28T13:43:16.673Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
+{"timestamp":"2026-02-28T13:43:16.677Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-02-28T13:43:16.677Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-02-28T13:43:16.677Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-02-28T13:43:16.678Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-02-28T13:43:16.684Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-02-28T13:43:16.686Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-02-28T13:43:16.689Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Initializing with Unified API..."}
+{"timestamp":"2026-02-28T13:43:16.691Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] ⏳ Startup: Running parallel initialization (Jitter: 3496ms)..."}
+{"timestamp":"2026-02-28T13:43:16.692Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Loading configuration (cache miss: {})"}
+{"timestamp":"2026-02-28T13:43:16.693Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Profile: 49-Stalker-undefined | Input: undefined (undefined%) | Dive: undefined% | Like: undefined% | Follow: undefined%"}
+{"timestamp":"2026-02-28T13:43:16.693Z","level":"INFO","module":"config-service.js","sessionId":null,"message":"[Config] Service initialized"}
+{"timestamp":"2026-02-28T13:43:16.695Z","level":"DEBUG","module":"environment-config.js","sessionId":null,"message":"[EnvironmentConfig] No environment overrides found"}
+{"timestamp":"2026-02-28T13:43:16.696Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Added new entry: {}"}
+{"timestamp":"2026-02-28T13:43:16.696Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Configuration loaded successfully in 5ms"}
+{"timestamp":"2026-02-28T13:43:16.696Z","level":"DEBUG","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Cache stats: 0 hits, 1 loads"}
+{"timestamp":"2026-02-28T13:43:20.645Z","level":"INFO","module":"humanization.js","sessionId":null,"message":"[Humanization] Engine initialized"}
+{"timestamp":"2026-02-28T13:43:20.646Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] Initialized [Type: Stalker | Input: Mouse (82%) | Dive: 80.0% | Tweet: 2.9% | T-Dive: 0.0% Like: 0.81%]. Fatigue scheduled for T+7.3m"}
+{"timestamp":"2026-02-28T13:43:20.648Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[AsyncQueue] Initialized (maxConcurrent: 1, maxQueueSize: 30, defaultTimeout: 20000ms)"}
+{"timestamp":"2026-02-28T13:43:20.648Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] Initialized with engagement limits: {\"replies\":3,\"retweets\":1,\"quotes\":1,\"likes\":5,\"follows\":2,\"bookmarks\":2}"}
+{"timestamp":"2026-02-28T13:43:20.649Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReplyEngine] Initialized (probability: 0.6)"}
+{"timestamp":"2026-02-28T13:43:20.650Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuoteEngine] Initialized (probability: 0.2)"}
+{"timestamp":"2026-02-28T13:43:20.650Z","level":"INFO","module":"ai-twitter-reply.js","sessionId":null,"message":"[AIReplyAction] Initialized (enabled: true, probability: 60%)"}
+{"timestamp":"2026-02-28T13:43:20.651Z","level":"INFO","module":"ai-twitter-quote.js","sessionId":null,"message":"[AIQuoteAction] Initialized (enabled: true, probability: 20%)"}
+{"timestamp":"2026-02-28T13:43:20.651Z","level":"INFO","module":"ai-twitter-like.js","sessionId":null,"message":"[LikeAction] Initialized (enabled: true, probability: 15%)"}
+{"timestamp":"2026-02-28T13:43:20.651Z","level":"INFO","module":"ai-twitter-bookmark.js","sessionId":null,"message":"[BookmarkAction] Initialized (enabled: true, probability: 5%)"}
+{"timestamp":"2026-02-28T13:43:20.652Z","level":"INFO","module":"ai-twitter-retweet.js","sessionId":null,"message":"[RetweetAction] Initialized (enabled: true, probability: 20%)"}
+{"timestamp":"2026-02-28T13:43:20.652Z","level":"INFO","module":"ai-twitter-go-home.js","sessionId":null,"message":"[GoHomeAction] Initialized (enabled: true)"}
+{"timestamp":"2026-02-28T13:43:20.653Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[ActionRunner] Initialized: reply=0.6, quote=0.2, like=0.15, bookmark=0.05, retweet=0.2 (total: 120%)"}
+{"timestamp":"2026-02-28T13:43:20.653Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AITwitterAgent] Initialized (replyProbability: 0.6)"}
+{"timestamp":"2026-02-28T13:43:20.654Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AITwitterAgent] Engagement limits: replies: 0/3, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/2, bookmarks: 0/2"}
+{"timestamp":"2026-02-28T13:43:20.654Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AITwitterAgent] Session phases: warmup(0-10%) → active(10-80%) → cooldown(80-100%)"}
+{"timestamp":"2026-02-28T13:43:20.654Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [DiveLock] State management initialized: HOME (scrolling enabled)"}
+{"timestamp":"2026-02-28T13:43:20.655Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AITwitterAgent] Action handlers initialized: reply, quote, like, bookmark, retweet, goHome"}
+{"timestamp":"2026-02-28T13:43:20.655Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Persona: focused"}
+{"timestamp":"2026-02-28T13:43:20.655Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Distraction chance: 2%"}
+{"timestamp":"2026-02-28T13:43:20.656Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Enforcing theme: dark"}
+{"timestamp":"2026-02-28T13:43:20.657Z","level":"INFO","module":"cloud-client.js","sessionId":null,"message":"[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization."}
+{"timestamp":"2026-02-28T13:43:20.661Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Warm-up 1.6s..."}
+{"timestamp":"2026-02-28T13:43:20.662Z","level":"DEBUG","module":"ollama-manager.js","sessionId":null,"message":"[OllamaManager] Ollama is already running."}
+{"timestamp":"2026-02-28T13:43:20.662Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Initialized: http://localhost:11434 (Model: llama3.2:3b)"}
+{"timestamp":"2026-02-28T13:43:20.663Z","level":"INFO","module":"local-client.js","sessionId":null,"message":"[Local] Ollama client initialized"}
+{"timestamp":"2026-02-28T13:43:22.168Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] 🎲 Rolled entry point: home → https://x.com/"}
+{"timestamp":"2026-02-28T13:43:26.745Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] X.com loaded (home)"}
+{"timestamp":"2026-02-28T13:43:26.746Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Waiting for network settlement (4000ms)..."}
+{"timestamp":"2026-02-28T13:43:30.748Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[AsyncQueue] ⚡ Background task expected timeout: page.waitForLoadState: Timeout 4000ms exceeded."}
+{"timestamp":"2026-02-28T13:43:30.748Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Network idle reached."}
+{"timestamp":"2026-02-28T13:43:30.749Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Checking login state..."}
+{"timestamp":"2026-02-28T13:43:30.795Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] ✅ Logged in (check 1/3)"}
+{"timestamp":"2026-02-28T13:43:30.796Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Starting session (20 cycles, 360-600s)..."}
+{"timestamp":"2026-02-28T13:43:30.797Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AITwitterAgent] Starting AI-Enhanced Session with DiveQueue and Lock Management..."}
+{"timestamp":"2026-02-28T13:43:30.797Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] Starting Session on https://x.com/home"}
+{"timestamp":"2026-02-28T13:43:30.797Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] Session Timer Set: 399.4s"}
+{"timestamp":"2026-02-28T13:43:30.797Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] Enforcing theme: dark"}
+{"timestamp":"2026-02-28T13:43:30.799Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Human] Session starting..."}
+{"timestamp":"2026-02-28T13:43:36.970Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] --- Loop 1  ---"}
+{"timestamp":"2026-02-28T13:43:39.835Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Idle] Reading Phase (80.3s)"}
+{"timestamp":"2026-02-28T13:45:01.247Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Phase] Transition: warmup → cooldown (Slowing down - more reading, fewer actions)"}
+{"timestamp":"2026-02-28T13:45:01.247Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [DiveQueue] Enabling quick mode for cooldown phase"}
+{"timestamp":"2026-02-28T13:45:01.247Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] Quick mode enabled (timeout: 15000ms)"}
+{"timestamp":"2026-02-28T13:45:01.248Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [DiveLock] 🔍 Starting SCAN phase for dive_1772286301247_yuv0f"}
+{"timestamp":"2026-02-28T13:45:01.249Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
+{"timestamp":"2026-02-28T13:45:01.252Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Scroll] New session/navigated home, performing forced exploration scroll..."}
+{"timestamp":"2026-02-28T13:45:03.855Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Dive] Processing feed before selecting target (thinking)..."}
+{"timestamp":"2026-02-28T13:45:03.856Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Human] Thinking about scout for 336ms..."}
+{"timestamp":"2026-02-28T13:45:05.030Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Dive] Selected tweet candidate at index 6 (Y: 1040)"}
+{"timestamp":"2026-02-28T13:45:05.038Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Debug] Targeting tweet permalink link (Primary)."}
+{"timestamp":"2026-02-28T13:45:05.900Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Debug] Target: Box=x:371,y:1043"}
+{"timestamp":"2026-02-28T13:45:05.900Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Attempt] Ghost Click on Permalink..."}
+{"timestamp":"2026-02-28T13:45:05.900Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Human] Thinking about Tweet Permalink for 310ms..."}
+{"timestamp":"2026-02-28T13:45:07.873Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor moving to x=392 y=873 [Tweet Permalink]"}
+{"timestamp":"2026-02-28T13:45:09.344Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor clicked x=392 y=874 [Tweet Permalink]"}
+{"timestamp":"2026-02-28T13:45:09.344Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [ai-twitterActivity][GhostClick] Clicked x=392 y=874"}
+{"timestamp":"2026-02-28T13:45:09.346Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Success] Navigated to tweet page."}
+{"timestamp":"2026-02-28T13:45:09.346Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Debug] Tweet URL: https://x.com/ThePetsX/status/2027454623972528505"}
+{"timestamp":"2026-02-28T13:45:09.346Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AI] Tracking new tweet 2027454623972528505"}
+{"timestamp":"2026-02-28T13:45:09.346Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AI] Extracting tweet content from full page..."}
+{"timestamp":"2026-02-28T13:45:11.804Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AI] Extracted tweet text (89 chars)"}
+{"timestamp":"2026-02-28T13:45:11.805Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.5,\"quote\":0.166,\"like\":0.125,\"bookmark\":0.041,\"retweet\":0.166}"}
+{"timestamp":"2026-02-28T13:45:11.805Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[ActionRunner] Selected: bookmark (roll: 81.3%, prob: 4.2%)"}
+{"timestamp":"2026-02-28T13:45:11.805Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AI-Engage] Selected: BOOKMARK"}
+{"timestamp":"2026-02-28T13:45:11.805Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1772286301247_yuv0f"}
+{"timestamp":"2026-02-28T13:45:11.806Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1772286301247_yuv0f, timeout: 120000ms"}
+{"timestamp":"2026-02-28T13:45:11.806Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1772286301247_yuv0f (queue: 0, active: 0/1)"}
+{"timestamp":"2026-02-28T13:45:11.807Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1772286301247_yuv0f"}
+{"timestamp":"2026-02-28T13:45:11.807Z","level":"INFO","module":"ai-twitter-bookmark.js","sessionId":null,"message":"[BookmarkAction] Executing bookmark"}
+{"timestamp":"2026-02-28T13:45:12.302Z","level":"WARN","module":"human-interaction.js","sessionId":null,"message":"[Fallback] All 4 selectors failed"}
+{"timestamp":"2026-02-28T13:45:12.540Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Action] 🔖 Bookmark (selector: button[data-testid=\"bookmark\"])"}
+{"timestamp":"2026-02-28T13:45:12.541Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Human] Thinking about Bookmark Button for 832ms..."}
+{"timestamp":"2026-02-28T13:45:14.781Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor moving to x=574 y=443 [Bookmark Button]"}
+{"timestamp":"2026-02-28T13:45:16.286Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor clicked x=574 y=442 [Bookmark Button]"}
+{"timestamp":"2026-02-28T13:45:16.286Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [ai-twitterActivity][GhostClick] Clicked x=574 y=442"}
+{"timestamp":"2026-02-28T13:45:17.354Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Bookmark] ✓ Successfully bookmarked tweet"}
+{"timestamp":"2026-02-28T13:45:17.355Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] ✓ Engagement recorded: bookmarks (1/2)"}
+{"timestamp":"2026-02-28T13:45:17.355Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Engagement] 1/2 Bookmarks saved"}
+{"timestamp":"2026-02-28T13:45:17.356Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] Returning to Home Feed..."}
+{"timestamp":"2026-02-28T13:45:17.361Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Navigation] Clicking 'Home Icon' (1st click for reload)..."}
+{"timestamp":"2026-02-28T13:45:17.361Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Human] Thinking about Home Icon for 599ms..."}
+{"timestamp":"2026-02-28T13:45:19.672Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor moving to x=83 y=85 [Home Icon]"}
+{"timestamp":"2026-02-28T13:45:21.018Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor clicked x=82 y=84 [Home Icon]"}
+{"timestamp":"2026-02-28T13:45:21.018Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [ai-twitterActivity][GhostClick] Clicked x=82 y=84"}
+{"timestamp":"2026-02-28T13:45:21.018Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Interaction] [Home Icon] Success on attempt 1/3"}
+{"timestamp":"2026-02-28T13:45:22.005Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
+{"timestamp":"2026-02-28T13:45:22.006Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Human] Thinking about Home Icon for 508ms..."}
+{"timestamp":"2026-02-28T13:45:24.142Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor moving to x=87 y=89 [Home Icon]"}
+{"timestamp":"2026-02-28T13:45:25.234Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"ghostCursor clicked x=88 y=90 [Home Icon]"}
+{"timestamp":"2026-02-28T13:45:25.234Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [ai-twitterActivity][GhostClick] Clicked x=88 y=90"}
+{"timestamp":"2026-02-28T13:45:25.235Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Interaction] [Home Icon] Success on attempt 1/3"}
+{"timestamp":"2026-02-28T13:45:25.794Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Navigation] Navigate to /home Success."}
+{"timestamp":"2026-02-28T13:45:25.851Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Tab] \"For you\" is already selected."}
+{"timestamp":"2026-02-28T13:45:25.851Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Navigation] Resetting scroll tracking for exploration..."}
+{"timestamp":"2026-02-28T13:45:28.734Z","level":"INFO","module":"ai-twitter-bookmark.js","sessionId":null,"message":"[BookmarkAction] ✅ Bookmark added"}
+{"timestamp":"2026-02-28T13:45:28.735Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [AI-Engage] ✅ bookmark executed: success"}
+{"timestamp":"2026-02-28T13:45:28.735Z","level":"DEBUG","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1772286301247_yuv0f"}
+{"timestamp":"2026-02-28T13:45:28.736Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1772286301247_yuv0f in 16929ms"}
+{"timestamp":"2026-02-28T13:45:28.737Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Dive] Action successful, skipping reading phase and returning home..."}
+{"timestamp":"2026-02-28T13:45:28.737Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [DiveLock] Already on home page"}
+{"timestamp":"2026-02-28T13:45:29.239Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [DiveLock] ✓ Successfully returned to home"}
+{"timestamp":"2026-02-28T13:45:30.717Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
+{"timestamp":"2026-02-28T13:45:30.718Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] --- Loop 2  ---"}
+{"timestamp":"2026-02-28T13:45:33.819Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Idle] Reading Phase (78.0s)"}
+{"timestamp":"2026-02-28T13:46:52.989Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Branch] Idle (Staring at screen)"}
+{"timestamp":"2026-02-28T13:46:57.407Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] --- Loop 3  ---"}
+{"timestamp":"2026-02-28T13:47:00.199Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Idle] Reading Phase (119.4s)"}
+{"timestamp":"2026-02-28T13:48:44.792Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Fidget] Whitespace click at (88, 178)"}
+{"timestamp":"2026-02-28T13:49:00.705Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Branch] Idle (Staring at screen)"}
+{"timestamp":"2026-02-28T13:49:03.489Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] --- Loop 4  ---"}
+{"timestamp":"2026-02-28T13:49:06.251Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Idle] Reading Phase (164.4s)"}
+{"timestamp":"2026-02-28T13:50:13.895Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Human] Session ending..."}
+{"timestamp":"2026-02-28T13:50:16.860Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Human] Session ended"}
+{"timestamp":"2026-02-28T13:50:16.861Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Logger] Flushing buffered logs..."}
+{"timestamp":"2026-02-28T13:50:16.861Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] [Logger] All buffered logs flushed"}
+{"timestamp":"2026-02-28T13:50:16.861Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] Session Complete."}
+{"timestamp":"2026-02-28T13:50:16.862Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Session completed successfully"}
+{"timestamp":"2026-02-28T13:50:16.862Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Session completed"}
+{"timestamp":"2026-02-28T13:50:16.863Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"[recordTwitterEngagement] Recorded 1 bookmark(s)"}
+{"timestamp":"2026-02-28T13:50:16.864Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Final AI Stats: {\"attempts\":0,\"replies\":0,\"skips\":0,\"safetyBlocks\":0,\"errors\":0,\"successRate\":\"0%\",\"actions\":{\"reply\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"skipped\":0,\"successRate\":\"0.0%\",\"engagementType\":\"replies\"},\"quote\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"skipped\":0,\"successRate\":\"0.0%\",\"engagementType\":\"quotes\"},\"like\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"skipped\":0,\"successRate\":\"0.0%\",\"engagementType\":\"likes\"},\"bookmark\":{\"attempts\":1,\"successes\":1,\"failures\":0,\"skipped\":0,\"successRate\":\"100.0%\",\"engagementType\":\"bookmarks\"},\"retweet\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"skipped\":0,\"successRate\":\"0.0%\",\"engagementType\":\"retweets\"},\"goHome\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"successRate\":\"0.0%\"}}}"}
+{"timestamp":"2026-02-28T13:50:16.864Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Task Finished. Duration: 6.9m"}
+{"timestamp":"2026-02-28T13:50:16.865Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[Agent:49-Stalker] Agent shutting down..."}
+{"timestamp":"2026-02-28T13:50:16.865Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Done in 420.18s"}
+{"timestamp":"2026-02-28T13:50:16.866Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'api-twitteractivity' recorded: SUCCESS, duration: 420247ms"}
+{"timestamp":"2026-02-28T13:50:16.869Z","level":"DEBUG","module":"sessionManager.js","sessionId":null,"message":"Released worker 0 in 0001:8857 (420329ms)"}
+{"timestamp":"2026-02-28T13:50:16.869Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"All sessions have completed their task checklists."}
+{"timestamp":"2026-02-28T13:50:16.869Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"All tasks completed, resolving"}
+{"timestamp":"2026-02-28T13:50:16.870Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Group 1 completed successfully."}
+{"timestamp":"2026-02-28T13:50:16.870Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Shutting down..."}
+{"timestamp":"2026-02-28T13:50:16.870Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Resolving immediately as queue is empty and not processing"}
+{"timestamp":"2026-02-28T13:50:16.914Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] DiveQueue: queue=0, active=0, utilization=undefined%"}
+{"timestamp":"2026-02-28T13:50:16.915Z","level":"INFO","module":"api-twitterActivity.js [0001:8857]","sessionId":null,"message":"[api-twitterActivity] Engagement Progress: [replies: 0/3 (0%)] [retweets: 0/1 (0%)] [quotes: 0/1 (0%)] [likes: 0/5 (0%)] [follows: 0/2 (0%)] [bookmarks: 1/2 (50%)]"}
+{"timestamp":"2026-02-28T13:50:16.931Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager shutdown complete."}
+{"timestamp":"2026-02-28T13:50:16.931Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Socket.io closed"}
+{"timestamp":"2026-02-28T13:50:16.933Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server stopped"}
+{"timestamp":"2026-02-28T13:50:16.933Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutting down..."}
+{"timestamp":"2026-02-28T13:50:16.934Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Closing 1 browser connections"}
+{"timestamp":"2026-02-28T13:50:16.934Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Stopped health check monitoring"}
+{"timestamp":"2026-02-28T13:50:16.936Z","level":"DEBUG","module":"automator.js","sessionId":null,"message":"Closed connection to ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4"}
+{"timestamp":"2026-02-28T13:50:16.936Z","level":"INFO","module":"automator.js","sessionId":null,"message":"All connections closed"}
+{"timestamp":"2026-02-28T13:50:16.937Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutdown complete"}
+{"timestamp":"2026-02-28T13:50:16.939Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Generating JSON summary report..."}
+{"timestamp":"2026-02-28T13:50:16.942Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Successfully generated JSON report at C:\\My Script\\auto-ai\\run-summary.json"}
+{"timestamp":"2026-02-28T13:50:16.943Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Orchestrator shutdown completed"}
