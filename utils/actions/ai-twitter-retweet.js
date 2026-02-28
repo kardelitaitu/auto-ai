@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 /**
  * Retweet Action
  * Handles pure retweeting (no quote) of tweets
@@ -156,7 +157,7 @@ export class RetweetAction {
     const delay = mean !== undefined && dev !== undefined
       ? mathUtils.gaussian(mean, dev, min, max)
       : mathUtils.randomInRange(min, max);
-    await this.agent.page.waitForTimeout(delay);
+    await api.wait(1000);
     return delay;
   }
 
@@ -179,14 +180,14 @@ export class RetweetAction {
       const unretweetBtn = tweetElement.locator(unretweetBtnSelector).first();
 
       // Check 1: unretweet button
-      if (await unretweetBtn.isVisible().catch(() => false)) {
+      if (await api.visible(unretweetBtn).catch(() => false)) {
         this.logger.info("[RetweetAction] Checker: Tweet is already retweeted (unretweet button visible)");
         return { success: true, reason: "already_retweeted" };
       }
 
       // Check 2: Reposted label
       const repostedLabel = tweetElement.locator('[aria-label*="Reposted"]').first();
-      if (await repostedLabel.isVisible().catch(() => false)) {
+      if (await api.visible(repostedLabel).catch(() => false)) {
         this.logger.info("[RetweetAction] Checker: Tweet is already retweeted (aria-label match)");
         return { success: true, reason: "already_retweeted" };
       }
@@ -288,7 +289,7 @@ export class RetweetAction {
 
       if ((await retweetBtn.count()) === 0) {
         const ariaRepost = tweetElement.locator('[aria-label*="Repost"], [aria-label*="Retweet"]').first();
-        if (await ariaRepost.isVisible()) {
+        if (await api.visible(ariaRepost)) {
           this.logger.info("[RetweetAction] Found button via aria-label fallback");
           retweetBtn = ariaRepost;
         } else {

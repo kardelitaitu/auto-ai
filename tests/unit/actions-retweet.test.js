@@ -1,4 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        exists: vi.fn().mockResolvedValue(true),
+        visible: vi.fn().mockImplementation(async (el) => {
+            if (el && typeof el.isVisible === 'function') return await el.isVisible();
+            return false;
+        }),
+    }
+}));
+import { api } from '../../api/index.js';
 import { RetweetAction } from '../../utils/actions/ai-twitter-retweet.js';
 
 vi.mock('../../utils/logger.js', () => ({
@@ -18,7 +32,14 @@ describe('RetweetAction', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        mockPage = { waitForTimeout: vi.fn().mockResolvedValue(undefined), locator: vi.fn(), keyboard: { press: vi.fn().mockResolvedValue(undefined) } };
+        mockPage = { 
+            waitForTimeout: vi.fn().mockResolvedValue(undefined), 
+            locator: vi.fn(), 
+            keyboard: { press: vi.fn().mockResolvedValue(undefined) },
+            isClosed: vi.fn().mockReturnValue(false),
+            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
+        };
+        api.getPage.mockReturnValue(mockPage);
         mockAgent = { twitterConfig: { actions: { retweet: { enabled: true, probability: 0.5, strategy: 'click' } } }, page: mockPage, humanClick: vi.fn().mockResolvedValue(undefined), diveQueue: { canEngage: vi.fn().mockReturnValue(true), recordEngagement: vi.fn() }, scrollToGoldenZone: null };
         mockTweetElement = { locator: vi.fn(), scrollIntoViewIfNeeded: vi.fn().mockResolvedValue(undefined) };
         retweetAction = new RetweetAction(mockAgent);

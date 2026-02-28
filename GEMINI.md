@@ -1,1 +1,6 @@
-only edit what i ask you to edit
+- only edit what i ask you to edit, always ask permission before editing other than mentioned files
+- node -c <filename>.js before marking as done
+- update AGENT-JOURNAL.md if you edit any files
+- update patchnotes.md after we push to git
+- if you create script to batch edit files, name it gemini-edit-<file-name>.js on root folder
+- skip vitest if not asked to edit test files

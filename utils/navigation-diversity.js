@@ -1,3 +1,4 @@
+import { api } from '../api/index.js';
 /**
  * Navigation Diversity Module
  * Implements state machine for navigation patterns (rabbit holes)
@@ -6,7 +7,7 @@
  * @module utils/navigation-diversity
  */
 
-import { mathUtils } from './mathUtils.js';
+import { _mathUtils } from './mathUtils.js';
 
 export const NAV_STATES = {
     FEED: 'FEED',
@@ -198,7 +199,7 @@ function createNavigationManager(options = {}) {
             
             for (const action of path) {
                 await this.navigate(page, action, { logger });
-                await page.waitForTimeout(mathUtils.randomInRange(500, 1500));
+                await api.wait(1000);
             }
             
             return { success: true, path };

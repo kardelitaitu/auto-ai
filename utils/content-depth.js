@@ -1,3 +1,4 @@
+import { api } from '../api/index.js';
 /**
  * Content Depth Module
  * Simulates rich content interactions:
@@ -65,9 +66,9 @@ function createContentHandler(options = {}) {
                 logger.info(`[Content] Watching video for ${(duration / 1000).toFixed(1)}s`);
                 
                 await video.click();
-                await page.waitForTimeout(1000);
+                await api.wait(1000);
                 
-                await page.waitForTimeout(duration);
+                await api.wait(1000);
                 
                 await page.keyboard.press('Escape');
                 
@@ -107,7 +108,7 @@ function createContentHandler(options = {}) {
                 
                 await selected.click();
                 
-                await page.waitForTimeout(500);
+                await api.wait(1000);
                 
                 return { success: true, action: 'voted', option: selectedIndex + 1 };
                 
@@ -138,7 +139,7 @@ function createContentHandler(options = {}) {
                 
                 const viewTime = mathUtils.randomInRange(config.mediaViewTime.min, config.mediaViewTime.max);
                 
-                await page.waitForTimeout(viewTime);
+                await api.wait(1000);
                 
                 await page.keyboard.press('Escape');
                 
@@ -169,14 +170,14 @@ function createContentHandler(options = {}) {
                 
                 await shareBtn.click();
                 
-                await page.waitForTimeout(500);
+                await api.wait(1000);
                 
                 const copyLink = await page.$('text="Copy link"');
                 
                 if (copyLink) {
                     await copyLink.click();
                     
-                    await page.waitForTimeout(500);
+                    await api.wait(1000);
                     
                     logger.info(`[Content] Link copied to clipboard`);
                     
@@ -258,7 +259,7 @@ function createContentHandler(options = {}) {
                 
                 logger.info(`[Content] Viewing media for ${(viewTime / 1000).toFixed(1)}s`);
                 
-                await page.waitForTimeout(viewTime);
+                await api.wait(1000);
                 
                 await page.keyboard.press('Escape');
                 

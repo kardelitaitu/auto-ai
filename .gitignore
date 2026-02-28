@@ -12,3 +12,5 @@ node_modules
 /backup
 nul
 /coverage/.tmp/
+.env
+/config/settings.json

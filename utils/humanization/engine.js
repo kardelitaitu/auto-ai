@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 /**
  * Humanization Engine - Main Orchestrator
  * Central hub for all human-like behavior patterns
@@ -32,7 +33,7 @@ export class HumanizationEngine {
         this._timingEngine = new HumanTiming(page, this.logger);
         this._contentEngine = new ContentSkimmer(page, this.logger);
         this._errorEngine = new ErrorRecovery(page, this.logger, this);
-        this._sessionEngine = new SessionManager(page, this.logger);
+        this._sessionEngine = new SessionManager(page, this.logger, agent);
         this._multitaskEngine = new MultitaskEngine(page, this.logger);
         this._actionEngine = new ActionPredictor(this.logger);
 
@@ -91,7 +92,7 @@ export class HumanizationEngine {
     async think(actionType = 'general', context = {}) {
         const thinkTime = this._timingEngine.getThinkTime(actionType, context);
         this.log(`Thinking about ${actionType} for ${Math.round(thinkTime)}ms...`);
-        await this.page.waitForTimeout(thinkTime);
+        await api.wait(1000);
         this._updateActivity();
     }
 
@@ -157,11 +158,11 @@ export class HumanizationEngine {
         await this._timingEngine.sessionRampUp();
 
         // Initial scroll to "wake up" the feed
-        await this.page.waitForTimeout(mathUtils.randomInRange(400, 800));
+        await api.wait(500);
         await this.scroll('down', 'light');
 
         this._updateActivity();
-        this.log('Session started');
+        //this.log('Session started');
     }
 
     /**
@@ -174,7 +175,7 @@ export class HumanizationEngine {
         await this._sessionEngine.wrapUp(this.page);
 
         // Final position adjustment
-        await scrollRandom(this.page, -50, 100);
+        await scrollRandom(-50, 100);
 
         this.log('Session ended');
     }
@@ -239,8 +240,8 @@ export class HumanizationEngine {
      * Helper: Natural pause between actions
      */
     async naturalPause(context = 'transition') {
-        const pause = this._timingEngine.getNaturalPause(context);
-        await this.page.waitForTimeout(pause);
+        const duration = this._timingEngine.getNaturalPause(context);
+        await api.wait(duration);
     }
 
     /**

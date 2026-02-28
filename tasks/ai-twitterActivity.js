@@ -173,7 +173,10 @@ export default async function aiTwitterActivityTask(page, payload) {
                             sessionStart = agent.sessionStart;
 
                             // Using DiveQueue for proper lock management
-                            const withPageLock = agent.diveQueue.add.bind(agent.diveQueue);
+                            const withPageLock = async (fn, opts) => {
+                                const res = await agent.diveQueue.add(fn, opts);
+                                return res.success ? res.result : null;
+                            };
 
                             if (taskConfig.system.debugMode) {
                                 logger.info(`[ai-twitterActivity] AITwitterAgent initialized with reply=${taskConfig.engagement.probabilities.reply}`);

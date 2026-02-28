@@ -4,6 +4,25 @@ import { SessionManager } from '../../utils/humanization/session.js';
 import { mathUtils } from '../../utils/mathUtils.js';
 import * as scrollHelper from '../../utils/scroll-helper.js';
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockResolvedValue(true),
+        exists: vi.fn().mockResolvedValue(true),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
+    }
+}));
+import { api } from '../../api/index.js';
+
 // Mock dependencies
 vi.mock('../../utils/mathUtils.js', () => ({
     mathUtils: {
@@ -23,6 +42,8 @@ describe('SessionManager', () => {
     let mockLogger;
 
     beforeEach(() => {
+        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         vi.useFakeTimers();
         // Set default time to Monday noon (weekday, lunch)
         vi.setSystemTime(new Date('2024-01-01T12:00:00')); // Monday
@@ -129,7 +150,7 @@ describe('SessionManager', () => {
             
             await sessionManager.warmup();
             
-            expect(mockPage.waitForTimeout).toHaveBeenCalledTimes(3);
+            expect(api.wait).toHaveBeenCalledTimes(3);
         });
     });
 
@@ -148,7 +169,7 @@ describe('SessionManager', () => {
              await sessionManager.boredomPause(mockPage);
              
              expect(scrollHelper.scrollRandom).toHaveBeenCalled();
-             expect(mockPage.waitForTimeout).toHaveBeenCalled();
+             expect(api.wait).toHaveBeenCalled();
              expect(mockPage.mouse.move).toHaveBeenCalled(); // Moves back at end
         });
     });
@@ -161,7 +182,7 @@ describe('SessionManager', () => {
              await sessionManager.wrapUp(mockPage);
              
              expect(scrollHelper.scrollRandom).toHaveBeenCalled();
-             expect(mockPage.waitForTimeout).toHaveBeenCalled();
+             expect(api.wait).toHaveBeenCalled();
         });
 
         it('should execute bookmark behavior', async () => {
@@ -170,7 +191,7 @@ describe('SessionManager', () => {
             await sessionManager.wrapUp(mockPage);
             
             expect(mockPage.mouse.move).toHaveBeenCalledWith(800, 300);
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
 
         it('should execute mentions behavior', async () => {
@@ -179,7 +200,7 @@ describe('SessionManager', () => {
             await sessionManager.wrapUp(mockPage);
             
             expect(mockPage.mouse.move).toHaveBeenCalledWith(100, 100);
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 

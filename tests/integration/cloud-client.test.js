@@ -12,7 +12,13 @@ import { FreeApiRouter } from '../../utils/free-api-router.js';
 import CloudClient from '../../core/cloud-client.js';
 
 const mocks = vi.hoisted(() => ({
-    getSettings: vi.fn()
+    getSettings: vi.fn(),
+    mockPage: {
+        url: vi.fn().mockReturnValue('https://example.com'),
+        goto: vi.fn().mockResolvedValue(undefined),
+        goBack: vi.fn().mockResolvedValue({}),
+        evaluate: vi.fn().mockResolvedValue(undefined)
+    }
 }));
 
 vi.mock('../../utils/configLoader.js', () => ({
@@ -21,6 +27,15 @@ vi.mock('../../utils/configLoader.js', () => ({
 
 vi.mock('../../utils/multi-api.js', () => ({
     MultiOpenRouterClient: vi.fn()
+}));
+
+vi.mock('../../api/core/context.js', () => ({
+    getPage: vi.fn(() => ({
+        url: vi.fn().mockReturnValue('https://example.com'),
+        isClosed: vi.fn().mockReturnValue(false)
+    })),
+    isSessionActive: vi.fn().mockReturnValue(true),
+    getEvents: vi.fn(() => ({ emitSafe: vi.fn() }))
 }));
 
 vi.mock('../../utils/free-api-router.js', () => ({
@@ -52,13 +67,15 @@ vi.mock('../../utils/logger.js', () => ({
 
 describe('CloudClient Integration', () => {
     let cloudClient;
+    let mockPage;
 
     beforeEach(async () => {
         vi.clearAllMocks();
 
-        getSettings.mockResolvedValue({
+        mocks.getSettings.mockResolvedValue({
             llm: {
                 cloud: {
+                    enabled: true,
                     timeout: 60000,
                     defaultModel: 'anthropic/claude-3.5-sonnet',
                     endpoint: 'https://openrouter.ai/api/v1/chat/completions',
@@ -69,20 +86,11 @@ describe('CloudClient Integration', () => {
                 enabled: false
             }
         });
-
-        /*
-        if (!CloudClient) {
-            const module = await import('../../core/cloud-client.js');
-            CloudClient = module.default;
-        }
-        */
-
-        cloudClient = new CloudClient();
-        await cloudClient.initPromise;
     });
 
     describe('Initialization', () => {
         it('should initialize with default values', async () => {
+            cloudClient = new CloudClient();
             await cloudClient.initPromise;
 
             expect(cloudClient.config).toBeDefined();
@@ -149,7 +157,10 @@ describe('CloudClient Integration', () => {
                 }
             };
             mocks.getSettings.mockResolvedValue(settings);
-            
+            mockPage = {
+                url: vi.fn().mockReturnValue('https://example.com'),
+                goto: vi.fn().mockResolvedValue(undefined),
+            };
             // Verify mock
             await mocks.getSettings();
             // console.log('DEBUG: Mocked Settings in Test:', JSON.stringify(mockedSettings, null, 2));
@@ -528,6 +539,10 @@ describe('CloudClient Integration', () => {
         });
 
         it('should handle empty settings gracefully', async () => {
+            mockPage = {
+                url: vi.fn().mockReturnValue('https://example.com'),
+                goBack: vi.fn().mockResolvedValue({}),
+            };
             getSettings.mockResolvedValue({});
 
             const client = new CloudClient();
@@ -557,7 +572,6 @@ describe('CloudClient Integration', () => {
 });
 
 describe('CloudClient Request Queue Integration', () => {
-    let CloudClient;
     let cloudClient;
 
     beforeEach(async () => {
@@ -566,17 +580,13 @@ describe('CloudClient Request Queue Integration', () => {
         mocks.getSettings.mockResolvedValue({
             llm: {
                 cloud: {
-                    providers: [{
-                        apiKey: 'test-key',
-                        model: 'anthropic/claude-3.5-sonnet'
-                    }]
+                    enabled: true,
+                    timeout: 60000,
+                    defaultModel: 'openrouter/free'
                 }
-            },
-            open_router_free_api: { enabled: false }
+            }
         });
 
-        const module = await import('../../core/cloud-client.js');
-        CloudClient = module.default;
         cloudClient = new CloudClient();
         await cloudClient.initPromise;
     });

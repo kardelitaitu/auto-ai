@@ -12,6 +12,7 @@
 import { mathUtils } from '../mathUtils.js';
 import { entropy } from '../entropyController.js';
 import { scrollRandom } from '../scroll-helper.js';
+import { api } from '../../api/index.js';
 
 export class ErrorRecovery {
     constructor(page, logger, humanizationEngine = null) {
@@ -128,10 +129,10 @@ export class ErrorRecovery {
         this._logStrategy('scroll_and_retry');
         
         // Scroll in random direction
-        await scrollRandom(this.page, 150, 300);
+        await scrollRandom(api.getPage(), 150, 300);
         
         // Wait for content to load
-        await this.page.waitForTimeout(mathUtils.gaussian(500, 200));
+        await api.wait(mathUtils.gaussian(500, 200));
         
         // Check if element is now available
         if (context.locator) {
@@ -182,11 +183,14 @@ export class ErrorRecovery {
     async _refreshAndRetry(_context) {
         this._logStrategy('refresh_and_retry');
         
-        // Quick refresh
-        await this.page.reload({ waitUntil: 'domcontentloaded' }).catch(() => {});
-        await this.page.waitForTimeout(mathUtils.gaussian(1500, 500));
-        
-        return { success: true, strategy: 'refresh' };
+        try {
+            // Quick refresh
+            await api.reload({ waitUntil: 'domcontentloaded' });
+            await api.wait(mathUtils.gaussian(1500, 500));
+            return { success: true, strategy: 'refresh' };
+        } catch (_e) {
+            return { success: false, strategy: 'refresh' };
+        }
     }
     
     /**
@@ -195,11 +199,14 @@ export class ErrorRecovery {
     async _waitAndRetry(_context) {
         this._logStrategy('wait_and_retry');
         
-        // Human wait time (1-3 seconds)
-        const waitTime = mathUtils.randomInRange(1000, 3000);
-        await this.page.waitForTimeout(waitTime);
-        
-        return { success: true, strategy: 'wait' };
+        try {
+            // Human wait time (1-3 seconds)
+            const waitTime = mathUtils.randomInRange(1000, 3000);
+            await api.wait(waitTime);
+            return { success: true, strategy: 'wait' };
+        } catch (_e) {
+            return { success: false, strategy: 'wait' };
+        }
     }
     
     /**
@@ -226,17 +233,21 @@ export class ErrorRecovery {
     async _goBackAndRetry(_context) {
         this._logStrategy('go_back');
         
-        // Human-like: go back, then forward if needed
-        await this.page.goBack().catch(() => {});
-        await this.page.waitForTimeout(mathUtils.gaussian(1000, 300));
-        
-        // Sometimes also go forward
-        if (mathUtils.roll(0.3)) {
-            await this.page.goForward().catch(() => {});
-            await this.page.waitForTimeout(mathUtils.gaussian(1000, 300));
+        try {
+            // Human-like: go back, then forward if needed
+            await api.getPage().goBack();
+            await api.wait(mathUtils.gaussian(1000, 300));
+            
+            // Sometimes also go forward
+            if (mathUtils.roll(0.3)) {
+                await api.getPage().goForward();
+                await api.wait(mathUtils.gaussian(1000, 300));
+            }
+            
+            return { success: true, strategy: 'navigation' };
+        } catch (_e) {
+            return { success: false, strategy: 'navigation' };
         }
-        
-        return { success: true, strategy: 'navigation' };
     }
     
     /**
@@ -245,42 +256,45 @@ export class ErrorRecovery {
     async _retryNavigation(context) {
         this._logStrategy('retry_navigation');
         
-        // Wait and retry
-        await this.page.waitForTimeout(mathUtils.randomInRange(2000, 4000));
-        
-        if (context.url) {
-            await this.page.goto(context.url, { waitUntil: 'domcontentloaded' }).catch(() => {});
+        try {
+            // Wait and retry
+            await api.wait(mathUtils.randomInRange(2000, 4000));
+            
+            if (context.url) {
+                await api.goto(context.url, { waitUntil: 'domcontentloaded' });
+            }
+            
+            return { success: true, strategy: 'navigation_retry' };
+        } catch (_e) {
+            return { success: false, strategy: 'navigation_retry' };
         }
-        
-        return { success: true, strategy: 'navigation_retry' };
     }
     
     /**
      * Check current state
      */
-    async _checkState(_context) {
-        this._logStrategy('check_state');
+        async _checkState(_context) {
+            this._logStrategy('check_state');
+            
+            // Verify current page state
+            const url = await api.getCurrentUrl();
+            const title = await api.getPage().title();
+            
+            // Log state for debugging
+            this._logDebug({ url, title });
+            
+            return { success: true, strategy: 'state_check' };
+        }
         
-        // Verify current page state
-        const url = await this.page.url();
-        const title = await this.page.title();
-        
-        // Log state for debugging
-        this._logDebug({ url, title });
-        
-        return { success: true, strategy: 'state_check' };
-    }
-    
-    /**
-     * Retry original action
-     */
-    async _retryAction(_context) {
-        this._logStrategy('retry_action');
-        
-        await this.page.waitForTimeout(mathUtils.randomInRange(500, 1500));
-        
-        return { success: true, strategy: 'retry' };
-    }
+        /**
+         * Retry original action
+         */
+        async _retryAction(_context) {
+            this._logStrategy('retry_action');
+            
+            await api.wait(mathUtils.randomInRange(500, 1500));
+            return { success: true, strategy: 'retry' };
+        }
     
     /**
      * Give up (human-like)

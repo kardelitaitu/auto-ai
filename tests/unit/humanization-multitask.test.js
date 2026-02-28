@@ -3,6 +3,25 @@ import { MultitaskEngine } from '../../utils/humanization/multitask.js';
 import { mathUtils } from '../../utils/mathUtils.js';
 import { scrollRandom } from '../../utils/scroll-helper.js';
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockResolvedValue(true),
+        exists: vi.fn().mockResolvedValue(true),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
+    }
+}));
+import { api } from '../../api/index.js';
+
 vi.mock('../../utils/mathUtils.js', () => ({
     mathUtils: {
         roll: vi.fn(),
@@ -19,6 +38,8 @@ describe('MultitaskEngine', () => {
     let mockLogger;
 
     beforeEach(() => {
+        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         mockPage = {
             mouse: {
                 move: vi.fn().mockResolvedValue(undefined),
@@ -117,7 +138,7 @@ describe('MultitaskEngine', () => {
             // _moveToArea is called twice (once to notify area, once back)
             // But _moveToArea calls page.mouse.move multiple times
             expect(mockPage.mouse.move).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 
@@ -125,13 +146,13 @@ describe('MultitaskEngine', () => {
         it('should move to trending area and back', async () => {
             await multitaskEngine.glanceTrending();
             expect(mockPage.mouse.move).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
 
         it('should scroll if roll is true', async () => {
             mathUtils.roll.mockReturnValue(true);
             await multitaskEngine.glanceTrending();
-            expect(scrollRandom).toHaveBeenCalledWith(mockPage, 30, 80);
+            expect(scrollRandom).toHaveBeenCalledWith(30, 80);
         });
     });
 
@@ -139,7 +160,7 @@ describe('MultitaskEngine', () => {
         it('should move mouse randomly', async () => {
             await multitaskEngine.shiftPosition();
             expect(mockPage.mouse.move).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 
@@ -147,7 +168,7 @@ describe('MultitaskEngine', () => {
         it('should move to mentions area and back', async () => {
             await multitaskEngine.glanceMentions();
             expect(mockPage.mouse.move).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 
@@ -155,7 +176,7 @@ describe('MultitaskEngine', () => {
         it('should wait without moving mouse', async () => {
             await multitaskEngine.pureIdle();
             expect(mockPage.mouse.move).not.toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 
@@ -163,7 +184,7 @@ describe('MultitaskEngine', () => {
         it('should move mouse slightly', async () => {
             await multitaskEngine.quickCheck();
             expect(mockPage.mouse.move).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 

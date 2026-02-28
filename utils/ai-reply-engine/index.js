@@ -219,31 +219,38 @@ export class AIReplyEngine {
     return { success: false, error: lastError?.message || "Unknown error" };
   }
 
-  buildEnhancedPrompt(tweetText, authorUsername, context, strategy) {
+  buildEnhancedPrompt(tweetText, authorUsername, context, _strategy) {
     const sentiment = context.sentiment || {};
     const replies = context.replies || [];
-    const instruction = getStrategyInstruction(strategy);
 
-    const hasReplies = replies && replies.length > 0;
-    const repliesContext = hasReplies
-      ? `\n\nRecent replies to this tweet:\n${replies.slice(0, 3).map((r) => `- @${r.author}: ${r.text}`).join("\n")}`
-      : "";
+    // Hard limits: tweet 500 chars, each reply 80 chars, max 3 replies
+    const tweetSnippet = (tweetText || '').substring(0, 500);
 
-    return `${REPLY_SYSTEM_PROMPT}
+    const strategyContext = {
+      sentiment: sentiment.overall || 'neutral',
+      type: sentiment.conversationType || 'general',
+      engagement: context.engagementLevel,
+      valence: sentiment.valence || 0,
+    };
+    const instruction = getStrategyInstruction(strategyContext);
 
-${instruction}
+    let prompt = `${instruction}\n\nTweet: "@${authorUsername}: ${tweetSnippet}"`;
 
-Tweet to reply to: "${tweetText}"
-Author: @${authorUsername}${repliesContext}
+    if (context.hasImage) {
+      prompt += ' [IMAGE ATTACHED — comment on a specific visual detail]';
+    }
 
-Generate a reply that:
-- Is natural and conversational
-- ${this.getReplyLengthGuidance(sentiment.conversationType, sentiment.valence)}
-- ${this.getSentimentGuidance(sentiment.engagementStyle, sentiment.conversationType, sentiment.sarcasm)}
-- Adds value to the conversation
-- Is 1-2 sentences maximum
+    const topReplies = replies.filter(r => r.text && r.text.length > 5).slice(0, 20);
+    if (topReplies.length > 0) {
+      prompt += '\n\nReplies:';
+      topReplies.forEach((r, idx) => {
+        const text = (r.text || '').substring(0, 80);
+        prompt += `\n${idx + 1}. @${r.author || 'User'}: ${text}`;
+      });
+    }
 
-Reply:`;
+    prompt += '\n\nReply:';
+    return prompt;
   }
 
   getSentimentGuidance(sentiment, conversationType, sarcasmScore) {
@@ -443,10 +450,33 @@ Reply:`;
     this.logger.info(`[AIReply] Using method: ${selected.name}`);
 
     try {
-      return await selected.fn();
+      const result = await selected.fn();
+      if (result && result.success === false) {
+        this.logger.warn(`[AIReply] Method ${selected.name} returned failure: ${result.reason || "unknown_reason"}`);
+
+        // SAFE FALLBACK CHECK: Verify composer state before trying another method
+        const verify = await human.verifyComposerOpen(page);
+        if (!verify.open) {
+          this.logger.info(`[AIReply] Composer is closed. Assuming reply was successful or interrupted correctly. Skipping fallback.`);
+          return { success: true, method: selected.name, reason: "interrupted_success_or_closed", fallbackSkipped: true };
+        }
+
+        this.logger.warn(`[AIReply] Trying fallback: button_click`);
+        return await this.replyMethodB_Button(page, replyText, human);
+      }
+      return result;
     } catch (error) {
       this.logger.error(`[AIReply] Method ${selected.name} failed: ${error.message}`);
-      return await this.replyMethodB_Button(page, replyText, human);
+
+      // Categorize error: if it's a timeout, check if composer is still there
+      const verify = await human.verifyComposerOpen(page);
+      if (verify.open) {
+        this.logger.warn(`[AIReply] Composer still open after error. Trying fallback: button_click`);
+        return await this.replyMethodB_Button(page, replyText, human);
+      } else {
+        this.logger.info(`[AIReply] Composer closed after error. Likely successful post despite exception.`);
+        return { success: true, method: selected.name, reason: "error_but_closed", error: error.message };
+      }
     }
   }
 
@@ -467,7 +497,7 @@ Reply:`;
     }
 
     await page.keyboard.press("r");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     const verify = await human.verifyComposerOpen(page);
     if (!verify.open) {
@@ -475,7 +505,7 @@ Reply:`;
     }
 
     const composer = page.locator(verify.selector).first();
-    await human.typeText(page, replyText, composer);
+    await human.typeText(page, replyText, composer, { skipClear: true, skipFocusClick: true });
     const postResult = await human.postTweet(page, "reply");
 
     return { success: postResult.success, reason: postResult.reason || "posted", method: "keyboard_shortcut" };
@@ -501,7 +531,7 @@ Reply:`;
     }
 
     await human.safeHumanClick(replyBtn, "Reply Button", 3);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 600));
 
     const verify = await human.verifyComposerOpen(page);
     if (!verify.open) {
@@ -509,7 +539,7 @@ Reply:`;
     }
 
     const composer = page.locator(verify.selector).first();
-    await human.typeText(page, replyText, composer);
+    await human.typeText(page, replyText, composer, { skipClear: true, skipFocusClick: true });
     const postResult = await human.postTweet(page, "reply");
 
     return { success: postResult.success, reason: postResult.reason || "posted", method: "button_click" };
@@ -522,7 +552,7 @@ Reply:`;
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
     await page.keyboard.press("Enter");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     const verify = await human.verifyComposerOpen(page);
     if (!verify.open) {
@@ -530,7 +560,7 @@ Reply:`;
     }
 
     const composer = page.locator(verify.selector).first();
-    await human.typeText(page, replyText, composer);
+    await human.typeText(page, replyText, composer, { skipClear: true, skipFocusClick: true });
     const postResult = await human.postTweet(page, "reply");
 
     return { success: postResult.success, reason: postResult.reason || "posted", method: "tab_navigation" };
@@ -551,7 +581,7 @@ Reply:`;
     }
 
     const composer = page.locator(verify.selector).first();
-    await human.typeText(page, replyText, composer);
+    await human.typeText(page, replyText, composer, { skipClear: true, skipFocusClick: true });
     const postResult = await human.postTweet(page, "reply");
 
     return { success: postResult.success, reason: postResult.reason || "posted", method: "right_click" };

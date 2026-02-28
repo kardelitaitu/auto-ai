@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/288</span>
+                <span class='fraction'>0/302</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/190</span>
+                <span class='fraction'>0/200</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/258</span>
+                <span class='fraction'>0/272</span>
             </div>
         
             
@@ -624,7 +624,30 @@
 <a name='L559'></a><a href='#L559'>559</a>
 <a name='L560'></a><a href='#L560'>560</a>
 <a name='L561'></a><a href='#L561'>561</a>
-<a name='L562'></a><a href='#L562'>562</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L562'></a><a href='#L562'>562</a>
+<a name='L563'></a><a href='#L563'>563</a>
+<a name='L564'></a><a href='#L564'>564</a>
+<a name='L565'></a><a href='#L565'>565</a>
+<a name='L566'></a><a href='#L566'>566</a>
+<a name='L567'></a><a href='#L567'>567</a>
+<a name='L568'></a><a href='#L568'>568</a>
+<a name='L569'></a><a href='#L569'>569</a>
+<a name='L570'></a><a href='#L570'>570</a>
+<a name='L571'></a><a href='#L571'>571</a>
+<a name='L572'></a><a href='#L572'>572</a>
+<a name='L573'></a><a href='#L573'>573</a>
+<a name='L574'></a><a href='#L574'>574</a>
+<a name='L575'></a><a href='#L575'>575</a>
+<a name='L576'></a><a href='#L576'>576</a>
+<a name='L577'></a><a href='#L577'>577</a>
+<a name='L578'></a><a href='#L578'>578</a>
+<a name='L579'></a><a href='#L579'>579</a>
+<a name='L580'></a><a href='#L580'>580</a>
+<a name='L581'></a><a href='#L581'>581</a>
+<a name='L582'></a><a href='#L582'>582</a>
+<a name='L583'></a><a href='#L583'>583</a>
+<a name='L584'></a><a href='#L584'>584</a>
+<a name='L585'></a><a href='#L585'>585</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1070,9 +1093,32 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1630,10 +1676,33 @@ Reply:`;
 <span class="cstat-no" title="statement not covered" >    this.logger.info(`[AIReply] Using method: ${selected.name}`);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >      return await selected.fn();</span>
+      const result = <span class="cstat-no" title="statement not covered" >await selected.fn();</span>
+<span class="cstat-no" title="statement not covered" >      if (result &amp;&amp; result.success === false) {</span>
+<span class="cstat-no" title="statement not covered" >        this.logger.warn(`[AIReply] Method ${selected.name} returned failure: ${result.reason || "unknown_reason"}`);</span>
+&nbsp;
+        // SAFE FALLBACK CHECK: Verify composer state before trying another method
+        const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
+<span class="cstat-no" title="statement not covered" >        if (!verify.open) {</span>
+<span class="cstat-no" title="statement not covered" >          this.logger.info(`[AIReply] Composer is closed. Assuming reply was successful or interrupted correctly. Skipping fallback.`);</span>
+<span class="cstat-no" title="statement not covered" >          return { success: true, method: selected.name, reason: "interrupted_success_or_closed", fallbackSkipped: true };</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        this.logger.warn(`[AIReply] Trying fallback: button_click`);</span>
+<span class="cstat-no" title="statement not covered" >        return await this.replyMethodB_Button(page, replyText, human);</span>
+      }
+<span class="cstat-no" title="statement not covered" >      return result;</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      this.logger.error(`[AIReply] Method ${selected.name} failed: ${error.message}`);</span>
-<span class="cstat-no" title="statement not covered" >      return await this.replyMethodB_Button(page, replyText, human);</span>
+&nbsp;
+      // Categorize error: if it's a timeout, check if composer is still there
+      const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
+<span class="cstat-no" title="statement not covered" >      if (verify.open) {</span>
+<span class="cstat-no" title="statement not covered" >        this.logger.warn(`[AIReply] Composer still open after error. Trying fallback: button_click`);</span>
+<span class="cstat-no" title="statement not covered" >        return await this.replyMethodB_Button(page, replyText, human);</span>
+      } else {
+<span class="cstat-no" title="statement not covered" >        this.logger.info(`[AIReply] Composer closed after error. Likely successful post despite exception.`);</span>
+<span class="cstat-no" title="statement not covered" >        return { success: true, method: selected.name, reason: "error_but_closed", error: error.message };</span>
+      }
     }
   }
 &nbsp;
@@ -1654,7 +1723,7 @@ Reply:`;
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    await page.keyboard.press("r");</span>
-<span class="cstat-no" title="statement not covered" >    await new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 2000))</span>;</span>
+<span class="cstat-no" title="statement not covered" >    await new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 800))</span>;</span>
 &nbsp;
     const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
 <span class="cstat-no" title="statement not covered" >    if (!verify.open) {</span>
@@ -1662,7 +1731,7 @@ Reply:`;
     }
 &nbsp;
     const composer = <span class="cstat-no" title="statement not covered" >page.locator(verify.selector).first();</span>
-<span class="cstat-no" title="statement not covered" >    await human.typeText(page, replyText, composer);</span>
+<span class="cstat-no" title="statement not covered" >    await human.typeText(page, replyText, composer, { skipClear: true, skipFocusClick: true });</span>
     const postResult = <span class="cstat-no" title="statement not covered" >await human.postTweet(page, "reply");</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return { success: postResult.success, reason: postResult.reason || "posted", method: "keyboard_shortcut" };</span>
@@ -1688,7 +1757,7 @@ Reply:`;
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    await human.safeHumanClick(replyBtn, "Reply Button", 3);</span>
-<span class="cstat-no" title="statement not covered" >    await new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 1500))</span>;</span>
+<span class="cstat-no" title="statement not covered" >    await new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 600))</span>;</span>
 &nbsp;
     const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
 <span class="cstat-no" title="statement not covered" >    if (!verify.open) {</span>
@@ -1696,7 +1765,7 @@ Reply:`;
     }
 &nbsp;
     const composer = <span class="cstat-no" title="statement not covered" >page.locator(verify.selector).first();</span>
-<span class="cstat-no" title="statement not covered" >    await human.typeText(page, replyText, composer);</span>
+<span class="cstat-no" title="statement not covered" >    await human.typeText(page, replyText, composer, { skipClear: true, skipFocusClick: true });</span>
     const postResult = <span class="cstat-no" title="statement not covered" >await human.postTweet(page, "reply");</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return { success: postResult.success, reason: postResult.reason || "posted", method: "button_click" };</span>
@@ -1709,7 +1778,7 @@ Reply:`;
 <span class="cstat-no" title="statement not covered" >      await new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 100))</span>;</span>
     }
 <span class="cstat-no" title="statement not covered" >    await page.keyboard.press("Enter");</span>
-<span class="cstat-no" title="statement not covered" >    await new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 2000))</span>;</span>
+<span class="cstat-no" title="statement not covered" >    await new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(resolve, 800))</span>;</span>
 &nbsp;
     const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
 <span class="cstat-no" title="statement not covered" >    if (!verify.open) {</span>
@@ -1717,7 +1786,7 @@ Reply:`;
     }
 &nbsp;
     const composer = <span class="cstat-no" title="statement not covered" >page.locator(verify.selector).first();</span>
-<span class="cstat-no" title="statement not covered" >    await human.typeText(page, replyText, composer);</span>
+<span class="cstat-no" title="statement not covered" >    await human.typeText(page, replyText, composer, { skipClear: true, skipFocusClick: true });</span>
     const postResult = <span class="cstat-no" title="statement not covered" >await human.postTweet(page, "reply");</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return { success: postResult.success, reason: postResult.reason || "posted", method: "tab_navigation" };</span>
@@ -1738,7 +1807,7 @@ Reply:`;
     }
 &nbsp;
     const composer = <span class="cstat-no" title="statement not covered" >page.locator(verify.selector).first();</span>
-<span class="cstat-no" title="statement not covered" >    await human.typeText(page, replyText, composer);</span>
+<span class="cstat-no" title="statement not covered" >    await human.typeText(page, replyText, composer, { skipClear: true, skipFocusClick: true });</span>
     const postResult = <span class="cstat-no" title="statement not covered" >await human.postTweet(page, "reply");</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return { success: postResult.success, reason: postResult.reason || "posted", method: "right_click" };</span>
@@ -1753,7 +1822,7 @@ export default AIReplyEngine;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

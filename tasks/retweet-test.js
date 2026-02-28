@@ -7,26 +7,26 @@ import { profileManager } from '../utils/profileManager.js';
  * Retweet Test Task
  * Navigates to a specific tweet/profile and executes the retweet function to verify robustness.
  */
-export default async function retweetTestTask(page, _payload) {
+export default async function retweetTestTask(page, payload) {
     const logger = createLogger('retweet-test.js');
     logger.info('Starting retweet test task...');
 
     // 1. Navigate to a reliable target (e.g. a popular profile)
     // Using a profile URL ensures we can always find a recent tweet
-    const targetUrl = 'https://x.com/6sixtoy/status/2024049944521474203';
+    const targetUrl = payload?.url || 'https://x.com/6sixtoy/status/2024049944521474203';
     logger.info(`Navigating to ${targetUrl}...`);
-    
+
     try {
         await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
         logger.info('Navigation complete.');
-        
+
         // Allow some time for hydration
         await page.waitForTimeout(3000);
 
         // 2. Initialize Agent with Keyboard Strategy Forced
         logger.info('Initializing agent...');
         const profile = profileManager.getStarter() || { id: 'test-user', type: 'test' };
-        
+
         // Force the keyboard strategy for testing
         const options = {
             config: {
@@ -37,23 +37,23 @@ export default async function retweetTestTask(page, _payload) {
                 }
             }
         };
-        
+
         const agent = new AITwitterAgent(page, profile, logger, options);
         logger.info('Agent initialized. Locating tweet...');
 
         // 3. Locate the main tweet
         const tweetSelector = 'article[data-testid="tweet"]';
         logger.info(`Waiting for selector: ${tweetSelector}`);
-        
+
         try {
             const tweetElement = page.locator(tweetSelector).first();
             await tweetElement.waitFor({ state: 'visible', timeout: 15000 });
             logger.info('Tweet element found and visible.');
-            
+
             // Scroll to it to ensure visibility
             await tweetElement.scrollIntoViewIfNeeded();
             logger.info('Scrolled to tweet.');
-            
+
             logger.info('Executing retweet function with Keyboard Strategy...');
 
             // 4. Execute Retweet

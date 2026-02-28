@@ -33,11 +33,10 @@ describe('logger', () => {
     createLogger('module-a');
     createLogger('module-b');
     vi.runAllTimersAsync();
-    expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
+    expect(fs.writeFileSync).not.toHaveBeenCalled();
   });
 
   it('should log with colors and write to file buffer', async () => {
-    const fs = await import('fs');
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     const { createLogger } = await import('../../utils/logger.js');
     vi.runAllTimersAsync();
@@ -49,7 +48,6 @@ describe('logger', () => {
     logger.success('[Task] success');
     await vi.runAllTimersAsync();
     expect(consoleSpy).toHaveBeenCalled();
-    expect(fs.appendFile).toHaveBeenCalled();
     consoleSpy.mockRestore();
   });
 
@@ -75,12 +73,10 @@ describe('logger', () => {
 
   it('should handle log file init failure', async () => {
     vi.resetModules();
-    const fs = await import('fs');
-    fs.writeFileSync.mockImplementation(() => { throw new Error('disk full'); });
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const { createLogger } = await import('../../utils/logger.js');
     createLogger('init-fail');
-    expect(errorSpy).toHaveBeenCalled();
+    expect(errorSpy).not.toHaveBeenCalled();
     errorSpy.mockRestore();
   });
 
@@ -97,18 +93,12 @@ describe('logger', () => {
   });
 
   it('should log appendFile errors when flushing buffer', async () => {
-    vi.resetModules();
-    const fs = await import('fs');
-    fs.appendFile.mockImplementation((...args) => {
-      const cb = args[args.length - 1];
-      if (typeof cb === 'function') cb(new Error('write fail'));
-    });
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const { createLogger } = await import('../../utils/logger.js');
     const logger = createLogger('flush-error');
     logger.info('buffered');
     await vi.runAllTimersAsync();
-    expect(errorSpy).toHaveBeenCalled();
+    expect(errorSpy).not.toHaveBeenCalled();
     errorSpy.mockRestore();
   });
 
@@ -119,234 +109,531 @@ describe('logger', () => {
     logger.info('message');
     await vi.runAllTimersAsync();
     expect(consoleSpy).toHaveBeenCalled();
+    expect(consoleSpy.mock.calls[0][0]).toContain('[plain-script]');
     consoleSpy.mockRestore();
   });
 
-  it('should flush buffered logs on process exit', async () => {
+  it('should handle null/undefined extra args gracefully', async () => {
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const { createLogger } = await import('../../utils/logger.js');
+    const logger = createLogger('null-extra');
+    logger.info('msg', null, undefined, { a: 1 });
+    await vi.runAllTimersAsync();
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
+  });
+
+  it('should handle object with circular references', async () => {
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const { createLogger } = await import('../../utils/logger.js');
+    const logger = createLogger('circular');
+    const obj = { a: 1 };
+    obj.self = obj;
+    logger.info('msg', obj);
+    await vi.runAllTimersAsync();
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
+  });
+
+  it('should skip file logging in test mode', async () => {
     const fs = await import('fs');
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     const { createLogger } = await import('../../utils/logger.js');
-    const logger = createLogger('exit-test');
-    logger.info('exit log');
-    process.emit('exit');
-    expect(fs.appendFileSync).toHaveBeenCalled();
-    consoleSpy.mockRestore();
+    const logger = createLogger('test-mode');
+    logger.info('test');
+    await vi.runAllTimersAsync();
+    expect(fs.appendFile).not.toHaveBeenCalled();
   });
 
-  it('should track session lifecycle', async () => {
-    const { sessionLogger } = await import('../../utils/logger.js');
-    const started = sessionLogger.startSession('abc', 'brave');
-    expect(started.sessionId).toBe('abc');
-    expect(sessionLogger.getSessionId()).toBe('abc');
-    const info = sessionLogger.getSessionInfo();
-    expect(info.browserInfo).toBe('brave');
-    const ended = sessionLogger.endSession();
-    expect(ended.sessionId).toBe('abc');
-    expect(sessionLogger.getSessionId()).toBe(null);
+  describe('runWithContext', () => {
+    it('should run function with context', async () => {
+      const { runWithContext, loggerContext } = await import('../../utils/logger.js');
+      const context = { sessionId: 'test-session' };
+      const result = await runWithContext(context, () => {
+        return loggerContext.getStore();
+      });
+      expect(result).toEqual(context);
+    });
   });
 
-  it('should handle session lifecycle without browser info', async () => {
-    const { sessionLogger } = await import('../../utils/logger.js');
-    const started = sessionLogger.startSession('no-browser');
-    expect(started.browserInfo).toBe(null);
-    const ended = sessionLogger.endSession();
-    expect(ended.duration).toBe(0);
+  describe('sessionLogger', () => {
+    it('should start and end session', async () => {
+      const { sessionLogger } = await import('../../utils/logger.js');
+      const session = sessionLogger.startSession('session-1', 'Brave');
+      expect(session.sessionId).toBe('session-1');
+      expect(sessionLogger.getSessionId()).toBe('session-1');
+      expect(sessionLogger.getSessionInfo().browserInfo).toBe('Brave');
+
+      sessionLogger.setCurrentSessionId('session-2');
+      expect(sessionLogger.getSessionId()).toBe('session-2');
+
+      const end = sessionLogger.endSession();
+      expect(end.sessionId).toBe('session-2');
+      expect(sessionLogger.getSessionId()).toBeNull();
+    });
+
+    it('should return 0 duration in getSessionInfo if session not started', async () => {
+      const { sessionLogger } = await import('../../utils/logger.js');
+      sessionLogger.endSession(); // Ensure reset
+      const info = sessionLogger.getSessionInfo();
+      expect(info.duration).toBe(0);
+    });
   });
 
-  it('should handle endSession when no session is active', async () => {
-    const { sessionLogger } = await import('../../utils/logger.js');
-    const ended = sessionLogger.endSession();
-    expect(ended.duration).toBe(0);
-    expect(sessionLogger.getSessionId()).toBe(null);
-  });
-
-  it('should return empty session info when no session is active', async () => {
-    const { sessionLogger } = await import('../../utils/logger.js');
-    const info = sessionLogger.getSessionInfo();
-    expect(info.sessionId).toBe(null);
-  });
-
-  it('should buffer and flush with BufferedLogger', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const { createBufferedLogger } = await import('../../utils/logger.js');
-    const buffered = createBufferedLogger('buffered', { maxBufferSize: 2, flushInterval: 10 });
-    buffered.info('one');
-    buffered.info('two');
-    vi.advanceTimersByTime(20);
-    buffered.shutdown();
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
-  });
-
-  it('should support buffered logger operations and stats', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const { createBufferedLogger } = await import('../../utils/logger.js');
-    const buffered = createBufferedLogger('ops', { maxBufferSize: 3, flushInterval: 10, minBufferSize: 1 });
-    buffered.success('ok');
-    buffered.warn('warn');
-    buffered.debug('debug');
-    buffered.error('error');
-    buffered._startTimer();
-    const stats = buffered.getStats();
-    buffered.clear();
-    buffered.shutdown();
-    expect(stats.maxBufferSize).toBe(3);
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
-  });
-
-  it('should skip buffering when disabled', async () => {
-    const { createBufferedLogger } = await import('../../utils/logger.js');
-    const buffered = createBufferedLogger('disabled', { enabled: false });
-    buffered.info('skip');
-    const stats = buffered.getStats();
-    buffered._stopTimer();
-    expect(stats.enabled).toBe(false);
-  });
-
-  it('should use default module name when not provided', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const { BufferedLogger } = await import('../../utils/logger.js');
-    const buffered = new BufferedLogger({ maxBufferSize: 1, flushInterval: 10 });
-    buffered.info('default-module');
-    buffered.flush();
-    buffered.shutdown();
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
-  });
-
-  it('should handle single entry flush', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const { createBufferedLogger } = await import('../../utils/logger.js');
-    const buffered = createBufferedLogger('single', { maxBufferSize: 5, flushInterval: 10 });
-    buffered.info('only');
-    buffered.flush();
-    buffered.shutdown();
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
-  });
-});
-
-describe('BufferedLogger edge cases', () => {
-  it('should handle flush when buffer is empty', async () => {
-    const { createBufferedLogger } = await import('../../utils/logger.js');
-    const buffered = createBufferedLogger('empty-flush', { flushInterval: 10 });
-    // Should not throw
-    buffered.flush();
-    buffered.shutdown();
-  });
-
-  it('should auto-flush when maxBufferSize is reached', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const { createBufferedLogger } = await import('../../utils/logger.js');
-    const buffered = createBufferedLogger('auto-flush', { maxBufferSize: 2, flushInterval: 10000 });
-    buffered.info('one');
-    buffered.info('two');
-    buffered.info('three'); // This should trigger auto-flush
-    buffered.shutdown();
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
-  });
-
-  it('should group multiple entries by level', async () => {
-    vi.useFakeTimers();
-    try {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  describe('BufferedLogger', () => {
+    it('should buffer logs and flush on threshold', async () => {
       const { createBufferedLogger } = await import('../../utils/logger.js');
-      const buffered = createBufferedLogger('grouped', { maxBufferSize: 10, flushInterval: 10 });
-      buffered.info('msg1');
-      buffered.info('msg2');
-      buffered.success('msg3');
-      vi.advanceTimersByTime(20);
-      buffered.shutdown();
-      expect(consoleSpy).toHaveBeenCalled();
-      consoleSpy.mockRestore();
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-});
-
-describe('Logger colorizeTags edge cases', () => {
-  it('should handle URLs in tags', async () => {
-    const { createLogger } = await import('../../utils/logger.js');
-    const logger = createLogger('test');
-    // The colorizeTags method is internal, test through logging
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    logger.info('[http://example.com] message');
-    consoleSpy.mockRestore();
-  });
-
-  it('should handle nested brackets in script name', async () => {
-    const { createLogger } = await import('../../utils/logger.js');
-    const logger = createLogger('task [Browser-1]');
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    logger.info('test message');
-    consoleSpy.mockRestore();
-  });
-});
-
-describe('Logger file logging edge cases', () => {
-  it('should handle structured data in log args', async () => {
-    vi.useFakeTimers();
-    try {
-      const { createLogger } = await import('../../utils/logger.js');
-      const logger = createLogger('structured-test');
+      const logger = createBufferedLogger('test-module', { maxBufferSize: 2, flushInterval: 10000 });
+      
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       
-      logger.info('message with data', { key: 'value', nested: { a: 1 } });
+      logger.info('message 1');
+      expect(consoleSpy).not.toHaveBeenCalled();
       
-      vi.runAllTimersAsync();
+      logger.info('message 2'); // Should trigger flush
+      expect(consoleSpy).toHaveBeenCalled();
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should flush on interval', async () => {
+      const { createBufferedLogger } = await import('../../utils/logger.js');
+      const logger = createBufferedLogger('test-module', { flushInterval: 100 });
+      
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      
+      logger.info('message 1');
+      await vi.advanceTimersByTimeAsync(150);
+      
       expect(consoleSpy).toHaveBeenCalled();
       consoleSpy.mockRestore();
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-});
+    });
 
-describe('Logger exit handler', () => {
-  it('should flush buffer on process exit', async () => {
-    vi.useFakeTimers();
-    try {
-      // Clear any existing buffer
-      vi.resetModules();
+    it('should handle different log levels', async () => {
+      const { createBufferedLogger } = await import('../../utils/logger.js');
+      const logger = createBufferedLogger('test-module');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       
-      // Mock fs.appendFileSync to track calls
-      const fs = await import('fs');
-      const appendSpy = vi.spyOn(fs, 'appendFileSync').mockImplementation(() => {});
+      logger.success('success');
+      logger.warn('warn');
+      logger.error('error'); // Immediate flush
+      logger.debug('debug');
       
-      // Emit exit event to trigger the handler
-      process.emit('exit');
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+
+    it('should provide stats and clear buffer', async () => {
+      const { createBufferedLogger } = await import('../../utils/logger.js');
+      const logger = createBufferedLogger('test-module');
+      logger.info('msg');
       
-      // With fake timers, the buffer won't have time to flush async
-      // But we can check if the sync exit handler works
-      expect(appendSpy).toHaveBeenCalled();
-      appendSpy.mockRestore();
-    } finally {
-      vi.useRealTimers();
-    }
+      expect(logger.getStats().bufferSize).toBe(1);
+      logger.clear();
+      expect(logger.getStats().bufferSize).toBe(0);
+    });
+
+    it('should shutdown and flush remaining', async () => {
+      const { createBufferedLogger } = await import('../../utils/logger.js');
+      const logger = createBufferedLogger('test-module');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      
+      logger.info('remaining');
+      logger.shutdown();
+      
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle multiple entries in flush', async () => {
+      const { createBufferedLogger } = await import('../../utils/logger.js');
+      const logger = createBufferedLogger('test-module', { maxBufferSize: 10 });
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      
+      logger.info('msg 1');
+      logger.info('msg 2');
+      logger.flush();
+      
+      expect(consoleSpy).toHaveBeenCalled();
+      expect(consoleSpy.mock.calls[0][0]).toContain('(+1 more)');
+      consoleSpy.mockRestore();
+    });
   });
 
-  it('should handle file write error on exit gracefully', async () => {
-    vi.useFakeTimers();
-    try {
-      vi.resetModules();
+  describe('Coloring Edge Cases', () => {
+    const stripAnsi = (str) => str.replace(/\x1b\[[0-9;]*m/g, '');
+
+    it('should colorize special script name formats', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       
-      const fs = await import('fs');
-      const appendSpy = vi.spyOn(fs, 'appendFileSync').mockImplementation(() => {
-        throw new Error('Disk full');
+      const logger = createLogger('Implicit [Info]');
+      logger.info('msg');
+      expect(stripAnsi(consoleSpy.mock.calls[0][0])).toContain('[Implicit][Info]');
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should include taskName and sessionId from context in script name', async () => {
+      const { createLogger, runWithContext } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('myscript');
+      
+      await runWithContext({ taskName: 'testTask', sessionId: 'sess123' }, () => {
+        logger.info('msg');
       });
       
-      // Should not throw
-      process.emit('exit');
+      const output = stripAnsi(consoleSpy.mock.calls[0][0]);
+      expect(output).toContain('[testTask.js]');
+      expect(output).toContain('[sess123]');
       
-      appendSpy.mockRestore();
-    } catch (_e) {
-      // Should not reach here
-      expect(false).toBe(true);
-    } finally {
-      vi.useRealTimers();
-    }
+      consoleSpy.mockRestore();
+    });
+
+    it('should colorize various tags with correct priorities', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('test');
+      
+      // Hit all 4 colorizeTags branches
+      logger.info('[Agent:Bot] [User:Me]');
+      logger.info('[Brave] [Chrome] [Firefox]');
+      logger.info('[module.js] [Task] [Module] [main]');
+      logger.info('[Metrics] [Stats]');
+      
+      // Success and debug levels for color coverage in _log
+      logger.success('yay');
+      logger.debug('low-level');
+      
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle displayScript starting with brackets', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      
+      // Branch: displayScript starts with '['
+      const logger = createLogger('[preset]');
+      logger.info('msg');
+      expect(stripAnsi(consoleSpy.mock.calls[0][0])).toContain('[preset]');
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle displayScript with nested brackets structure', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      
+      // Branch: displayScript.includes('[') && !displayScript.startsWith('[')
+      const logger = createLogger('task [browser]');
+      logger.info('msg');
+      expect(stripAnsi(consoleSpy.mock.calls[0][0])).toContain('[task][browser]');
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle displayScript when taskName already exists but sessionId is missing', async () => {
+      const { createLogger, runWithContext } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      
+      // scriptName already contains taskBase (e.g. from manual setup)
+      const logger = createLogger('[task.js]');
+      
+      await runWithContext({ taskName: 'task', sessionId: 'sess123' }, () => {
+        logger.info('msg');
+      });
+      
+      // Should find [task.js] and insert [sess123] after it
+      const output = stripAnsi(consoleSpy.mock.calls[0][0]);
+      expect(output).toContain('[task.js][sess123]');
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle complex message formats including @mentions and quotes', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('test');
+      
+      logger.info('Hello @world, "double", \'single\', (parens), https://example.com');
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle tight packing if message starts with a tag', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('test');
+      
+      logger.info('[Tag]message');
+      const output = stripAnsi(consoleSpy.mock.calls[0][0]);
+      // Check if there's no space between [test] and [Tag]
+      // Wait, displayScript is [test], message is [Tag]message.
+      // Logic: if message.trim().startsWith('['), separator = ''
+      expect(output).toContain('][Tag]'); 
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle tight packing if message starts with a tag', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('test');
+      
+      logger.info('[Tag]message');
+      const output = stripAnsi(consoleSpy.mock.calls[0][0]);
+      expect(output).toContain('][Tag]'); 
+      
+      // Also test non-tag start for separator branch
+      consoleSpy.mockClear();
+      logger.info(' message'); 
+      expect(stripAnsi(consoleSpy.mock.calls[0][0])).toContain(']  message');
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should colorize all URL protocols and handle ANSI safety checks', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('test');
+      
+      logger.info('Protocols: http://a.com, https://b.com, ws://c.com, wss://d.com');
+      
+      // Hit ANSI safety checks in regex replaces
+      logger.info('\x1b[31m@masked\x1b[0m "\x1b[32mquoted\x1b[0m" (\x1b[33mparen\x1b[0m) \x1b[34mhttps://masked.com\x1b[0m');
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle displayScript with existing brackets', async () => {
+      const { createLogger } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('[already-bracketed]');
+      
+      logger.info('msg');
+      const output = stripAnsi(consoleSpy.mock.calls[0][0]);
+      expect(output).toContain('[already-bracketed]');
+      expect(output).not.toContain('[[already-bracketed]]');
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle context with existing sessionId in displayScript', async () => {
+      const { createLogger, runWithContext } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('task.js');
+      
+      await runWithContext({ taskName: 'task', sessionId: 'sess123' }, () => {
+        // displayScript will be [task.js][sess123] because of pre-processing
+        logger.info('msg1');
+      });
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle taskName not ending in .js', async () => {
+      const { createLogger, runWithContext } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('test');
+      
+      await runWithContext({ taskName: 'mytask', sessionId: 's1' }, () => {
+        logger.info('msg');
+      });
+      
+      expect(stripAnsi(consoleSpy.mock.calls[0][0])).toContain('[mytask.js]');
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle displayScript already containing sessionId', async () => {
+      const { createLogger, runWithContext } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('task.js [sess123]');
+      
+      await runWithContext({ taskName: 'task.js', sessionId: 'sess123' }, () => {
+        logger.info('msg');
+      });
+      
+      const output = stripAnsi(consoleSpy.mock.calls[0][0]);
+      expect(output.match(/sess123/g).length).toBe(1);
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should append sessionId to existing bracketed taskName', async () => {
+      const { createLogger, runWithContext } = await import('../../utils/logger.js');
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const logger = createLogger('[task.js]');
+      
+      await runWithContext({ taskName: 'task.js', sessionId: 'sess123' }, () => {
+        logger.info('msg');
+      });
+      
+      const output = stripAnsi(consoleSpy.mock.calls[0][0]);
+      expect(output).toContain('[task.js][sess123]');
+      
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('File Logging branches', () => {
+    it('should handle writeToLogFile with structured data', async () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      const originalVitest = process.env.VITEST;
+      delete process.env.NODE_ENV;
+      delete process.env.VITEST;
+
+      try {
+        const { createLogger } = await import('../../utils/logger.js');
+        const logger = createLogger('test');
+        logger.info('msg', { key: 'value' }); // Hit structuredData check
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        process.env.VITEST = originalVitest;
+      }
+    });
+
+    it('should handle writeToLogFile without context store', async () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      const originalVitest = process.env.VITEST;
+      delete process.env.NODE_ENV;
+      delete process.env.VITEST;
+
+      try {
+        const { createLogger, loggerContext } = await import('../../utils/logger.js');
+        vi.spyOn(loggerContext, 'getStore').mockReturnValue(null);
+        const logger = createLogger('test');
+        logger.info('msg');
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        process.env.VITEST = originalVitest;
+      }
+    });
+
+    it('should handle non-object first argument in writeToLogFile', async () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      const originalVitest = process.env.VITEST;
+      delete process.env.NODE_ENV;
+      delete process.env.VITEST;
+
+      try {
+        const { createLogger } = await import('../../utils/logger.js');
+        const logger = createLogger('test');
+        logger.info('msg', 'not-an-object'); // args[0] is string
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        process.env.VITEST = originalVitest;
+      }
+    });
+
+    it('should include traceId in log entry if present in context', async () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      const originalVitest = process.env.VITEST;
+      delete process.env.NODE_ENV;
+      delete process.env.VITEST;
+
+      try {
+        const { createLogger, runWithContext, logEmitter } = await import('../../utils/logger.js');
+        const logger = createLogger('test');
+        
+        let capturedEntry;
+        logEmitter.once('log', (entry) => { capturedEntry = entry; });
+        
+        await runWithContext({ sessionId: 's1', traceId: 't1' }, () => {
+          logger.info('msg');
+        });
+        
+        expect(capturedEntry.traceId).toBe('t1');
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        process.env.VITEST = originalVitest;
+      }
+    });
+
+    it('should handle writeToLogFile errors gracefully', async () => {
+      // Temporarily unset test env to hit the code
+      const originalNodeEnv = process.env.NODE_ENV;
+      const originalVitest = process.env.VITEST;
+      delete process.env.NODE_ENV;
+      delete process.env.VITEST;
+
+      try {
+        const { createLogger } = await import('../../utils/logger.js');
+        const logger = createLogger('test');
+        logger.info('test message', { some: 'data' });
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        process.env.VITEST = originalVitest;
+      }
+    });
+
+    it('should hit the process exit handler logic', async () => {
+      const fs = await import('fs');
+      // Mock some data in buffer
+      // We can't access LOG_BUFFER directly, but we can trigger it
+      const originalNodeEnv = process.env.NODE_ENV;
+      const originalVitest = process.env.VITEST;
+      delete process.env.NODE_ENV;
+      delete process.env.VITEST;
+
+      try {
+        const { createLogger } = await import('../../utils/logger.js');
+        const logger = createLogger('exit-test');
+        logger.info('msg');
+        
+        process.emit('exit');
+        expect(fs.appendFileSync).toHaveBeenCalled();
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        process.env.VITEST = originalVitest;
+      }
+    });
+
+    it('should handle initLogFile error', async () => {
+      const fs = await import('fs');
+      fs.writeFileSync.mockImplementationOnce(() => { throw new Error('write fail'); });
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      
+      const originalNodeEnv = process.env.NODE_ENV;
+      const originalVitest = process.env.VITEST;
+      delete process.env.NODE_ENV;
+      delete process.env.VITEST;
+
+      try {
+        const { createLogger } = await import('../../utils/logger.js');
+        createLogger('fail-test');
+        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to initialize log file'));
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        process.env.VITEST = originalVitest;
+        consoleSpy.mockRestore();
+      }
+    });
+
+    it('should handle flushLogBuffer error', async () => {
+      const fs = await import('fs');
+      fs.appendFile.mockImplementationOnce((path, data, opt, cb) => cb(new Error('append fail')));
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      
+      const originalNodeEnv = process.env.NODE_ENV;
+      const originalVitest = process.env.VITEST;
+      delete process.env.NODE_ENV;
+      delete process.env.VITEST;
+
+      try {
+        const { createLogger } = await import('../../utils/logger.js');
+        const logger = createLogger('flush-fail');
+        logger.info('msg');
+        
+        await vi.advanceTimersByTimeAsync(1500); // Trigger flush
+        expect(consoleSpy).toHaveBeenCalledWith(
+          expect.stringContaining('Failed to write log buffer'),
+          expect.stringContaining('append fail')
+        );
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        process.env.VITEST = originalVitest;
+        consoleSpy.mockRestore();
+      }
+    });
   });
 });

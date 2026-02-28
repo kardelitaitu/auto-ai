@@ -1,6 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { motorControl } from '../../utils/motor-control.js';
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        visible: vi.fn().mockImplementation(async (el) => {
+            if (el && typeof el.isVisible === 'function') return await el.isVisible();
+            return true;
+        }),
+        wait: vi.fn().mockResolvedValue(undefined),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
+    }
+}));
+import { api } from '../../api/index.js';
+
 vi.mock('../../utils/logger.js', () => ({
     createLogger: vi.fn(() => ({
         info: vi.fn(),

@@ -4,6 +4,7 @@
  * @module utils/ai-reply-engine/execution
  */
 
+import { api } from '../../api/index.js';
 import { HumanInteraction } from "../human-interaction.js";
 
 export async function executeReply(engine, page, replyText, _options = {}) {
@@ -40,6 +41,13 @@ export async function executeReply(engine, page, replyText, _options = {}) {
 
   try {
     const result = await selected.fn();
+    if (result && result.success === false) {
+      engine.logger.warn(
+        `[AIReply] Method ${selected.name} returned failure: ${result.reason || 'unknown_reason'}`,
+      );
+      engine.logger.warn(`[AIReply] Trying fallback: button_click`);
+      return await replyMethodB_Button(engine, page, replyText, human);
+    }
     return result;
   } catch (error) {
     engine.logger.error(`[AIReply] Method ${selected.name} failed: ${error.message}`);
@@ -65,7 +73,7 @@ async function replyMethodA_Keyboard(engine, page, replyText, human) {
 
   human.logStep("ESCAPE", "Closing open menus");
   await page.keyboard.press("Escape");
-  await new Promise((resolve) => setTimeout(resolve, 300));
+  await api.wait(1000);
 
   const focusSelectors = [
     "article time",
@@ -84,7 +92,7 @@ async function replyMethodA_Keyboard(engine, page, replyText, human) {
         if ((await el.count()) > 0) {
           const success = await human.safeHumanClick(el, "Main Tweet - Focus", 3, { precision: 'high' });
           if (success) {
-            await new Promise((resolve) => setTimeout(resolve, 300));
+            await api.wait(1000);
             focused = true;
             human.logStep("FOCUS_MAIN", `Clicked with ${selector}`);
             break;
@@ -99,7 +107,7 @@ async function replyMethodA_Keyboard(engine, page, replyText, human) {
       const x = viewport ? Math.floor(viewport.width * 0.5) : 300;
       const y = viewport ? Math.floor(viewport.height * 0.35) : 300;
       await page.mouse.click(x, y);
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await api.wait(1000);
     }
   };
 
@@ -107,14 +115,14 @@ async function replyMethodA_Keyboard(engine, page, replyText, human) {
 
   human.logStep("R_KEY", "Opening reply composer");
   await page.keyboard.press("r");
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await api.wait(1000);
 
   const verify = await human.verifyComposerOpen(page);
   if (!verify.open) {
     human.logStep("VERIFY_FAILED", "Composer did not open");
     await focusMainTweet();
     await page.keyboard.press("r");
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await api.wait(1000);
     const verify2 = await human.verifyComposerOpen(page);
     if (!verify2.open) {
       human.logStep("VERIFY_FAILED_2", "Composer still not open after retry");
@@ -170,7 +178,7 @@ async function replyMethodB_Button(engine, page, replyText, human) {
   human.logStep("CLICK_REPLY_BTN", `Clicking reply button: ${btnSelector}`);
   await human.safeHumanClick(replyBtn, "Reply Button", 3);
 
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+  await api.wait(1000);
 
   const verify = await human.verifyComposerOpen(page);
   if (!verify.open) {
@@ -196,14 +204,14 @@ async function replyMethodC_Tab(engine, page, replyText, human) {
   human.logStep("TAB_PRESS", "Pressing Tab to focus tweet");
   for (let i = 0; i < 8; i++) {
     await page.keyboard.press("Tab");
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await api.wait(1000);
   }
 
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  await api.wait(1000);
 
   human.logStep("ENTER_PRESS", "Pressing Enter to open reply");
   await page.keyboard.press("Enter");
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await api.wait(1000);
 
   const verify = await human.verifyComposerOpen(page);
   if (!verify.open) {
@@ -252,7 +260,7 @@ async function replyMethodD_RightClick(engine, page, replyText, human) {
 
   human.logStep("RIGHT_CLICK_TWEET", "Right-clicking tweet");
   await tweetEl.click({ button: "right" });
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await api.wait(1000);
 
   const replyOptionSelectors = [
     '[role="menuitem"]:has-text("Reply")',
@@ -276,11 +284,11 @@ async function replyMethodD_RightClick(engine, page, replyText, human) {
   if (!replyOption) {
     human.logStep("REPLY_OPTION_NOT_FOUND", "Reply option not in context menu");
     await page.keyboard.press("Escape");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await api.wait(1000);
   } else {
     human.logStep("CLICK_REPLY_OPTION", "Clicking Reply in context menu");
     await replyOption.click();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await api.wait(1000);
   }
 
   const verify = await human.verifyComposerOpen(page);

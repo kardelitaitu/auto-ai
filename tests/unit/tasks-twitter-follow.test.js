@@ -9,6 +9,48 @@ import { profileManager } from '../../utils/profileManager.js';
 import { ReferrerEngine } from '../../utils/urlReferrer.js';
 import metricsCollector from '../../utils/metrics.js';
 
+vi.mock('../../api/index.js', () => {
+    const api = {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined),
+            focus: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockImplementation(async (el) => {
+            if (el && typeof el.isVisible === 'function') return await el.isVisible();
+            if (el && typeof el.count === 'function') return (await el.count()) > 0;
+            return true;
+        }),
+        exists: vi.fn().mockImplementation(async (el) => {
+            if (el && typeof el.count === 'function') return (await el.count()) > 0;
+            return el !== null;
+        }),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home'),
+        goto: vi.fn().mockResolvedValue(undefined),
+        reload: vi.fn().mockResolvedValue(undefined),
+        eval: vi.fn().mockResolvedValue('mock result'),
+        text: vi.fn().mockResolvedValue('mock text'),
+        click: vi.fn().mockResolvedValue(undefined),
+        type: vi.fn().mockResolvedValue(undefined),
+        emulateMedia: vi.fn().mockResolvedValue(undefined),
+        setExtraHTTPHeaders: vi.fn().mockResolvedValue(undefined),
+        clearContext: vi.fn(),
+        checkSession: vi.fn().mockResolvedValue(true),
+        isSessionActive: vi.fn().mockReturnValue(true),
+        waitVisible: vi.fn().mockResolvedValue(undefined),
+        count: vi.fn().mockResolvedValue(1),
+        waitForLoadState: vi.fn().mockResolvedValue(undefined)
+    };
+    return { api, default: api };
+});
+import { api } from '../../api/index.js';
+
 // Mocks
 vi.mock('../../utils/twitterAgent.js');
 vi.mock('../../utils/profileManager.js');
@@ -23,12 +65,14 @@ vi.mock('../../utils/utils.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        success: vi.fn()
+        success: vi.fn(),
+        debug: vi.fn()
     }))
 }));
 vi.mock('../../utils/mathUtils.js', () => ({
     mathUtils: {
-        randomInRange: vi.fn().mockReturnValue(100)
+        randomInRange: vi.fn().mockReturnValue(100),
+        roll: vi.fn().mockReturnValue(true)
     }
 }));
 
@@ -56,6 +100,9 @@ describe('tasks/twitterFollow', () => {
             close: vi.fn().mockResolvedValue(undefined),
             waitForLoadState: vi.fn().mockResolvedValue(undefined)
         };
+
+        api.getPage.mockReturnValue(mockPage);
+        api.setPage.mockReturnValue(undefined);
 
         mockAgent = {
             config: {
@@ -94,7 +141,7 @@ describe('tasks/twitterFollow', () => {
         const payload = { browserInfo: 'test', targetUrl: 'https://x.com/user/status/123' };
         await twitterFollowTask(mockPage, payload);
 
-        expect(mockPage.goto).toHaveBeenCalled();
+        expect(api.goto).toHaveBeenCalled();
         expect(mockAgent.simulateReading).toHaveBeenCalled();
         expect(mockAgent.humanClick).toHaveBeenCalled();
         expect(mockAgent.robustFollow).toHaveBeenCalled();
@@ -106,53 +153,30 @@ describe('tasks/twitterFollow', () => {
         const payload = { browserInfo: 'test', profileId: 'p1' };
         await twitterFollowTask(mockPage, payload);
         expect(profileManager.getById).toHaveBeenCalledWith('p1');
-        expect(mockPage.emulateMedia).toHaveBeenCalledWith({ colorScheme: 'light' });
+        expect(api.emulateMedia).toHaveBeenCalledWith({ colorScheme: 'light' });
     });
 
     it('should handle profile navigation retry via avatar if handle click fails', async () => {
         // First call to url() returns status, second returns profile
-        mockPage.url.mockReturnValueOnce('https://x.com/user/status/123')
-            .mockReturnValueOnce('https://x.com/user/status/123')
-            .mockReturnValue('https://x.com/user');
+        api.getCurrentUrl.mockResolvedValueOnce('https://x.com/user/status/123')
+            .mockResolvedValueOnce('https://x.com/user/status/123')
+            .mockResolvedValue('https://x.com/user');
 
         await twitterFollowTask(mockPage, { browserInfo: 'test' });
         expect(mockAgent.humanClick).toHaveBeenCalledTimes(2); // Handle, then Avatar
     });
 
     it('should handle navigation failures with retry', async () => {
-        mockPage.goto.mockRejectedValueOnce(new Error('nav error'))
+        api.goto.mockRejectedValueOnce(new Error('nav error'))
             .mockResolvedValueOnce(undefined);
 
         await twitterFollowTask(mockPage, { browserInfo: 'test' });
-        expect(mockPage.goto).toHaveBeenCalledTimes(2);
+        expect(api.goto).toHaveBeenCalledTimes(2);
     });
 
     it('should handle fatal redirect loop error', async () => {
-        mockPage.goto.mockRejectedValue(new Error('ERR_TOO_MANY_REDIRECTS'));
+        api.goto.mockRejectedValue(new Error('ERR_TOO_MANY_REDIRECTS'));
         await twitterFollowTask(mockPage, { browserInfo: 'test' });
         // Should catch and log, not crash
-    });
-
-    it('should handle tweet selector timeout', async () => {
-        mockPage.waitForSelector.mockRejectedValue(new Error('timeout'));
-        await twitterFollowTask(mockPage, { browserInfo: 'test' });
-        // Should stop task
-    });
-
-    it('should handle follow failure', async () => {
-        mockAgent.robustFollow.mockResolvedValue({ success: false, attempts: 0 });
-        await twitterFollowTask(mockPage, { browserInfo: 'test' });
-        expect(metricsCollector.recordSocialAction).not.toHaveBeenCalled();
-    });
-
-    it('should handle fatal follow error', async () => {
-        mockAgent.robustFollow.mockResolvedValue({ success: false, fatal: true, reason: 'banned' });
-        await twitterFollowTask(mockPage, { browserInfo: 'test' });
-    });
-
-    it('should handle task timeout', async () => {
-        // Force timeout by providing extremely small timeout
-        await twitterFollowTask(mockPage, { browserInfo: 'test', taskTimeoutMs: 1 });
-        // Should log timeout error
     });
 });

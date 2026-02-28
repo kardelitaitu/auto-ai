@@ -7,6 +7,8 @@
 /**
  * Reply Methods - Various strategies for posting replies
  */
+import { api } from '../api/index.js';
+
 export const replyMethods = {
     /**
      * Method A: Keyboard shortcut (R key)
@@ -22,32 +24,32 @@ export const replyMethods = {
         while (!composerOpened && attempt <= maxRetries) {
             if (attempt > 0) {
                 logger.info(`[replyA] Retry ${attempt}/${maxRetries}...`);
-                await page.waitForTimeout(500);
+                await api.wait(1000);
             }
 
             // Reset state
-            await page.evaluate(() => window.scrollTo(0, 0));
-            await page.waitForTimeout(500);
+            await api.scroll.toTop();
+            await api.wait(1000);
 
             // Click main tweet to focus
             logger.info(`[replyA] Focusing main tweet...`);
             const timeElement = page.locator('article time').first();
-            if (await timeElement.count() > 0) {
-                await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });
+            if (await api.exists(timeElement)) {
+                await human.click(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });
                 logger.info(`[replyA] Clicked tweet timestamp`);
             } else {
                 const tweetText = page.locator('[data-testid="tweetText"]').first();
-                if (await tweetText.count() > 0) {
-                    await human.safeHumanClick(tweetText, 'Tweet Text', 3, { precision: 'high' });
+                if (await api.exists(tweetText)) {
+                    await human.click(tweetText, 'Tweet Text', 3, { precision: 'high' });
                     logger.info(`[replyA] Clicked tweet text (fallback)`);
                 }
             }
-            await page.waitForTimeout(300);
+            await api.wait(1000);
 
             // Press R to open reply composer
             logger.info(`[replyA] Pressing R key...`);
             await page.keyboard.press('r');
-            await page.waitForTimeout(2000);
+            await api.wait(1000);
 
             // Verify composer opened
             const verify = await human.verifyComposerOpen(page);
@@ -82,8 +84,8 @@ export const replyMethods = {
     replyB: async (page, text, human, logger, _options = {}) => {
         logger.info(`[replyB] Starting button click method`);
 
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await page.waitForTimeout(500);
+        await api.scroll.toTop();
+        await api.wait(1000);
 
         // Enhanced button finding with more detailed logging
         const btnResult = await human.findElement(page,
@@ -114,7 +116,7 @@ export const replyMethods = {
 
         if (elementInfo.disabled) {
             logger.warn(`[replyB] Reply button is disabled! Waiting...`);
-            await page.waitForTimeout(1000);
+            await api.wait(1000);
             const isDisabled = await btnResult.element.evaluate(el => el.disabled || el.getAttribute('aria-disabled') === 'true');
             if (isDisabled) {
                 logger.warn(`[replyB] Reply button still disabled. Attempting to click anyway.`);
@@ -144,7 +146,7 @@ export const replyMethods = {
             logger.info(`[replyB] safeHumanClick successful.`);
         }
 
-        await page.waitForTimeout(2000);
+        await api.wait(1000);
 
         const verify = await human.verifyComposerOpen(page);
         if (!verify.open) {
@@ -176,17 +178,17 @@ export const replyMethods = {
     replyC: async (page, text, human, logger, _options = {}) => {
         logger.info(`[replyC] Starting direct composer focus method`);
 
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await page.waitForTimeout(500);
+        await api.scroll.toTop();
+        await api.wait(1000);
 
         // Step 1: Focus main tweet by clicking timestamp
         logger.info(`[replyC] Focusing main tweet...`);
         const timeElement = page.locator('article time').first();
-        if (await timeElement.count() > 0) {
-            await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });
+        if (await api.exists(timeElement)) {
+            await human.click(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });
             logger.info(`[replyC] Clicked tweet timestamp`);
         }
-        await page.waitForTimeout(500);
+        await api.wait(1000);
 
         // Step 2: Find and scroll to reply box
         logger.info(`[replyC] Looking for reply box...`);
@@ -201,7 +203,7 @@ export const replyMethods = {
                     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             });
-            await page.waitForTimeout(1000);
+            await api.wait(1000);
         }
 
         // Re-check after scroll
@@ -229,14 +231,14 @@ export const replyMethods = {
         // Step 3: Click the reply box
         await replyBoxAfter.focus();
         logger.info(`[replyC] Focused reply box`);
-        await page.waitForTimeout(300);
+        await api.wait(1000);
 
         await replyBoxAfter.scrollIntoViewIfNeeded();
-        await page.waitForTimeout(300);
+        await api.wait(1000);
 
         await human.safeHumanClick(replyBoxAfter, 'Reply Box', 3, { precision: 'high' });
         logger.info(`[replyC] Clicked reply box`);
-        await page.waitForTimeout(300);
+        await api.wait(1000);
 
         // Step 4: Type
         logger.info(`[replyC] Typing...`);
@@ -266,31 +268,31 @@ export const quoteMethods = {
     quoteA: async (page, text, human, logger, _options = {}) => {
         logger.info(`[quoteA] Starting keyboard compose method`);
 
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await page.waitForTimeout(500);
+        await api.scroll.toTop();
+        await api.wait(1000);
 
         // Click time element to focus tweet
         const quoteTimeElement = page.locator('article time').first();
-        if (await quoteTimeElement.count() > 0) {
-            await human.safeHumanClick(quoteTimeElement, 'Tweet Timestamp', 3, { precision: 'high' });
+        if (await api.exists(quoteTimeElement)) {
+            await human.click(quoteTimeElement, 'Tweet Timestamp', 3, { precision: 'high' });
             logger.info(`[quoteA] Clicked tweet timestamp`);
         }
-        await page.waitForTimeout(500);
+        await api.wait(1000);
 
         // Press T to open composer
         await page.keyboard.press('t');
         logger.info(`[quoteA] Pressed T`);
-        await page.waitForTimeout(750);
+        await api.wait(1000);
 
         // Navigate to quote option
         await page.keyboard.press('ArrowDown');
         logger.info(`[quoteA] Pressed ArrowDown`);
-        await page.waitForTimeout(500);
+        await api.wait(1000);
 
         // Select quote option
         await page.keyboard.press('Enter');
         logger.info(`[quoteA] Pressed Enter`);
-        await page.waitForTimeout(1500);
+        await api.wait(1000);
 
         // Verify quote composer is ready
         const verifyA = await human.verifyComposerOpen(page);
@@ -306,7 +308,7 @@ export const quoteMethods = {
         await human.safeHumanClick(composerA, 'Quote Composer', 3, { precision: 'high' });
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Delete');
-        await page.waitForTimeout(200);
+        await api.wait(1000);
 
         // Type the quote text
         await human.typeText(page, text, composerA);
@@ -329,12 +331,12 @@ export const quoteMethods = {
     quoteB: async (page, text, human, logger, _options = {}) => {
         logger.info(`[quoteB] Starting retweet menu method`);
 
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await page.waitForTimeout(500);
+        await api.scroll.toTop();
+        await api.wait(1000);
 
         // Reset any open menus
         await page.keyboard.press('Escape');
-        await page.waitForTimeout(300);
+        await api.wait(1000);
 
         // Find retweet button
         logger.info(`[quoteB] Looking for retweet button...`);
@@ -352,7 +354,7 @@ export const quoteMethods = {
             const elements = await page.locator(selector).all();
             for (const el of elements) {
                 try {
-                    const isVisible = await el.isVisible();
+                    const isVisible = await api.visible(el);
                     if (isVisible) {
                         retweetBtn = el;
                         retweetSelector = selector;
@@ -405,7 +407,7 @@ export const quoteMethods = {
             }
         }
 
-        await page.waitForTimeout(1000);
+        await api.wait(1000);
 
         // Verify menu opened (look for Quote option)
         logger.info(`[quoteB] Looking for Quote option...`);
@@ -421,14 +423,14 @@ export const quoteMethods = {
         let quoteSelector = null;
 
         // Wait a bit for menu animation
-        await page.waitForTimeout(500);
+        await api.wait(1000);
 
         for (const selector of quoteMenuSelectors) {
             try {
                 const elements = await page.locator(selector).all();
                 for (const el of elements) {
                     try {
-                        const isVisible = await el.isVisible();
+                        const isVisible = await api.visible(el);
                         const text = await el.innerText().catch(() => '');
 
                         if (isVisible && text.toLowerCase().includes('quote')) {
@@ -472,7 +474,7 @@ export const quoteMethods = {
             }
         }
 
-        await page.waitForTimeout(1500);
+        await api.wait(1000);
 
         // Verify composer is open
         const verifyB = await human.verifyComposerOpen(page);
@@ -488,7 +490,7 @@ export const quoteMethods = {
         await human.safeHumanClick(composerB, 'Quote Composer', 3, { precision: 'high' });
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Delete');
-        await page.waitForTimeout(200);
+        await api.wait(1000);
 
         await human.typeText(page, text, composerB);
 
@@ -507,15 +509,17 @@ export const quoteMethods = {
      * Flow: Click Compose → Type comment → Enter → Paste URL → Submit
      */
     quoteC: async (page, text, human, logger, _options = {}) => {
+        console.log('[DEBUG] quoteC called');
         logger.info(`[quoteC] Starting new post + paste URL method`);
 
         // Get current tweet URL
-        const currentUrl = page.url();
+        const currentUrl = await api.getCurrentUrl();
+        console.log('[DEBUG] currentUrl:', currentUrl);
         logger.info(`[quoteC] Current URL: ${currentUrl}`);
 
         // Close any open menus
         await page.keyboard.press('Escape');
-        await page.waitForTimeout(300);
+        await api.wait(1000);
 
         // Find Compose button
         logger.info(`[quoteC] Looking for Compose button...`);
@@ -530,9 +534,10 @@ export const quoteMethods = {
         let composeBtn = null;
         for (const selector of composeBtnSelectors) {
             const elements = await page.locator(selector).all();
+            console.log(`[DEBUG] Found ${elements.length} elements for selector ${selector}`);
             for (const el of elements) {
                 try {
-                    const isVisible = await el.isVisible();
+                    const isVisible = await api.visible(el);
                     if (isVisible) {
                         composeBtn = el;
                         logger.info(`[quoteC] Found Compose button: ${selector}`);
@@ -546,19 +551,26 @@ export const quoteMethods = {
         }
 
         if (!composeBtn) {
-            logger.warn(`[quoteC] Compose button not found`);
-            return { success: false, method: 'quoteC', reason: 'compose_button_not_found' };
+            logger.warn(`[quoteC] Compose button not found - trying direct navigation`);
+            await api.goto('https://x.com/compose/tweet');
+            
+            // Re-verify composer after direct nav
+            const verifyNav = await human.verifyComposerOpen(page);
+            if (!verifyNav.open) {
+                return { success: false, method: 'quoteC', reason: 'direct_nav_failed' };
+            }
+            // Continue with typed text below...
+        } else {
+            // Click Compose
+            await composeBtn.scrollIntoViewIfNeeded();
+            await human.fixation(300, 800);
+            await human.microMove(page, 20);
+            await human.safeHumanClick(composeBtn, 'Compose Button', 3, { precision: 'high' });
+            logger.info(`[quoteC] Clicked Compose button`);
+            await api.wait(1000);
         }
 
-        // Click Compose
-        await composeBtn.scrollIntoViewIfNeeded();
-        await human.fixation(300, 800);
-        await human.microMove(page, 20);
-        await human.safeHumanClick(composeBtn, 'Compose Button', 3, { precision: 'high' });
-        logger.info(`[quoteC] Clicked Compose button`);
-        await page.waitForTimeout(1500);
-
-        // Verify composer is open
+        // Verify composer is open (if not already verified in fallback)
         const verifyC = await human.verifyComposerOpen(page);
         if (!verifyC.open) {
             logger.warn(`[quoteC] Composer did not open`);
@@ -575,7 +587,7 @@ export const quoteMethods = {
         // Create new line for URL
         logger.info(`[quoteC] Creating new line for URL...`);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(500);
+        await api.wait(1000);
 
         // Paste the URL
         logger.info(`[quoteC] Pasting URL: ${currentUrl}`);
@@ -583,7 +595,7 @@ export const quoteMethods = {
             navigator.clipboard.writeText(url);
         }, currentUrl);
         await page.keyboard.press('Control+v');
-        await page.waitForTimeout(500);
+        await api.wait(1000);
 
         // Submit
         const postC = await human.postTweet(page);

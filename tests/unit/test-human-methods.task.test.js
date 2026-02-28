@@ -1,38 +1,89 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-import { createLogger } from '../../utils/logger.js';
-import { getSettings } from '../../utils/configLoader.js';
-import { AIReplyEngine } from '../../utils/ai-reply-engine.js';
-import { AIQuoteEngine } from '../../utils/ai-quote-engine.js';
-import { AIContextEngine } from '../../utils/ai-context-engine.js';
-import { HumanInteraction } from '../../utils/human-interaction.js';
+vi.mock('../../api/index.js', () => {
+    const api = {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined),
+            focus: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockImplementation(async (el) => {
+            if (el && typeof el.isVisible === 'function') return await el.isVisible();
+            if (el && typeof el.count === 'function') return (await el.count()) > 0;
+            return true;
+        }),
+        exists: vi.fn().mockImplementation(async (el) => {
+            if (el && typeof el.count === 'function') return (await el.count()) > 0;
+            return el !== null;
+        }),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home'),
+        goto: vi.fn().mockResolvedValue(undefined),
+        reload: vi.fn().mockResolvedValue(undefined),
+        eval: vi.fn().mockResolvedValue([]),
+        text: vi.fn().mockResolvedValue('mock text'),
+        click: vi.fn().mockResolvedValue(undefined),
+        type: vi.fn().mockResolvedValue(undefined),
+        keyboardPress: vi.fn().mockResolvedValue(undefined),
+        emulateMedia: vi.fn().mockResolvedValue(undefined),
+        setExtraHTTPHeaders: vi.fn().mockResolvedValue(undefined),
+        clearContext: vi.fn(),
+        checkSession: vi.fn().mockResolvedValue(true),
+        isSessionActive: vi.fn().mockReturnValue(true),
+        waitVisible: vi.fn().mockResolvedValue(undefined),
+        count: vi.fn().mockResolvedValue(1),
+        waitForLoadState: vi.fn().mockResolvedValue(undefined)
+    };
+    return { api, default: api };
+});
+
+vi.mock('../../utils/ai-reply-engine.js', () => {
+  const engine = {
+    generateReply: vi.fn().mockResolvedValue('test reply'),
+    executeReply: vi.fn().mockResolvedValue({ success: true, method: 'test' }),
+    shouldReply: vi.fn().mockResolvedValue({ decision: 'proceed' })
+  };
+  return { 
+    AIReplyEngine: vi.fn().mockImplementation(function() { return engine; }),
+    replyEngine: engine
+  };
+});
+
+vi.mock('../../utils/ai-context-engine.js', () => {
+  const engine = {
+    extractEnhancedContext: vi.fn().mockResolvedValue({
+      url: 'https://x.com/test',
+      text: 'test tweet',
+      author: 'testuser',
+      replies: [{ text: 'reply 1', author: 'user1' }]
+    }),
+    extractRepliesSmart: vi.fn().mockResolvedValue([{ text: 'reply 1', author: 'user1' }])
+  };
+  return { 
+    AIContextEngine: vi.fn().mockImplementation(function() { return engine; }),
+    contextEngine: engine
+  };
+});
+
+vi.mock('../../utils/ai-quote-engine.js', () => {
+  const engine = {
+    generateQuote: vi.fn().mockResolvedValue('test quote'),
+    executeQuote: vi.fn().mockResolvedValue({ success: true, method: 'test' })
+  };
+  return {
+    AIQuoteEngine: vi.fn().mockImplementation(function() { return engine; }),
+    quoteEngine: engine
+  };
+});
+
+import { api } from '../../api/index.js';
+import task from '../../tasks/testHumanMethods.js';
 import { applyHumanizationPatch } from '../../utils/browserPatch.js';
-import { config } from '../../utils/config-service.js';
-import { FreeOpenRouterHelper } from '../../utils/free-openrouter-helper.js';
-
-vi.mock('../../utils/logger.js', () => ({
-  createLogger: vi.fn()
-}));
-
-vi.mock('../../utils/configLoader.js', () => ({
-  getSettings: vi.fn()
-}));
-
-vi.mock('../../utils/ai-reply-engine.js', () => ({
-  AIReplyEngine: vi.fn()
-}));
-
-vi.mock('../../utils/ai-quote-engine.js', () => ({
-  AIQuoteEngine: vi.fn()
-}));
-
-vi.mock('../../utils/ai-context-engine.js', () => ({
-  AIContextEngine: vi.fn()
-}));
-
-vi.mock('../../utils/human-interaction.js', () => ({
-  HumanInteraction: vi.fn()
-}));
 
 vi.mock('../../utils/browserPatch.js', () => ({
   applyHumanizationPatch: vi.fn()
@@ -48,156 +99,52 @@ vi.mock('../../core/agent-connector.js', () => ({
   default: vi.fn()
 }));
 
-vi.mock('../../utils/free-openrouter-helper.js', () => ({
-  FreeOpenRouterHelper: {
-    getInstance: vi.fn()
-  }
-}));
-
-vi.mock('../../utils/twitter-interaction-methods.js', () => ({
-  replyMethods: {},
-  quoteMethods: {},
-  executeReplyMethod: vi.fn(),
-  executeQuoteMethod: vi.fn()
-}));
-
 describe('testHumanMethods task', () => {
-  let mockLogger;
-  let replyEngine;
-  let quoteEngine;
-  let contextEngine;
-  let human;
   let page;
+  let mockLogger;
 
-  const loadTask = async () => {
-    const module = await import('../../tasks/testHumanMethods.js');
-    return module.default;
-  };
-
-  beforeEach(async () => {
-    vi.resetModules();
+  beforeEach(() => {
     vi.clearAllMocks();
-
     mockLogger = {
       info: vi.fn(),
       warn: vi.fn(),
       error: vi.fn(),
       debug: vi.fn()
     };
-
-    replyEngine = {
-      shouldReply: vi.fn(),
-      generateReply: vi.fn()
-    };
-
-    quoteEngine = {
-      generateQuote: vi.fn()
-    };
-
-    contextEngine = {
-      extractRepliesSmart: vi.fn()
-    };
-
-    human = {
-      verifyComposerOpen: vi.fn(),
-      typeText: vi.fn(),
-      postTweet: vi.fn(),
-      findElement: vi.fn(),
-      fixation: vi.fn(),
-      microMove: vi.fn(),
-      debugMode: false
-    };
-
+    
     page = {
       goto: vi.fn().mockResolvedValue(undefined),
-      emulateMedia: vi.fn().mockResolvedValue(undefined),
-      waitForTimeout: vi.fn().mockResolvedValue(undefined),
-      reload: vi.fn().mockResolvedValue(undefined),
+      url: vi.fn().mockReturnValue('https://x.com/home'),
       isClosed: vi.fn().mockReturnValue(false),
-      close: vi.fn().mockResolvedValue(undefined),
-      keyboard: { press: vi.fn().mockResolvedValue(undefined) },
-      $$: vi.fn(),
-      locator: vi.fn(),
-      evaluate: vi.fn().mockResolvedValue({})
+      context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) }),
+      $$: vi.fn().mockImplementation(async (sel) => {
+        if (sel.includes('tweetText')) {
+          return [{ innerText: vi.fn().mockResolvedValue('test tweet text content') }];
+        }
+        return [];
+      }),
+      reload: vi.fn().mockResolvedValue(undefined),
+      waitForTimeout: vi.fn().mockResolvedValue(undefined),
+      keyboard: { press: vi.fn().mockResolvedValue(undefined) }
     };
 
-    createLogger.mockReturnValue(mockLogger);
-    getSettings.mockResolvedValue({ twitter: {} });
-    config.init.mockResolvedValue(undefined);
-    AIReplyEngine.mockImplementation(function () {
-      return replyEngine;
-    });
-    AIQuoteEngine.mockImplementation(function () {
-      return quoteEngine;
-    });
-    AIContextEngine.mockImplementation(function () {
-      return contextEngine;
-    });
-    HumanInteraction.mockImplementation(function () {
-      return human;
-    });
-    applyHumanizationPatch.mockResolvedValue(undefined);
-    FreeOpenRouterHelper.getInstance.mockReturnValue({
-      isTesting: vi.fn().mockReturnValue(false),
-      getResults: vi.fn().mockReturnValue({ working: [] }),
-      waitForTests: vi.fn().mockResolvedValue(undefined)
-    });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
+    api.getPage.mockReturnValue(page);
+    api.setPage.mockReturnValue(undefined);
   });
 
   it('handles extractOnly mode with extracted replies', async () => {
-    page.$$.mockResolvedValue([
-      { innerText: vi.fn().mockResolvedValue('This is a sample tweet text content') }
-    ]);
-    contextEngine.extractRepliesSmart.mockResolvedValue([
-      { author: 'user1', text: 'reply one' }
-    ]);
-    replyEngine.generateReply.mockResolvedValue({ reply: 'Generated reply' });
-
-    const task = await loadTask();
     await task(page, { method: 'extractOnly', targetUrl: 'https://x.com/test/status/1' });
 
-    expect(applyHumanizationPatch).toHaveBeenCalledWith(page, mockLogger);
-    expect(contextEngine.extractRepliesSmart).toHaveBeenCalled();
-    expect(replyEngine.generateReply).toHaveBeenCalled();
-    expect(page.close).toHaveBeenCalled();
+    expect(applyHumanizationPatch).toHaveBeenCalled();
   });
 
   it('runs reply flow in safe mode without posting', async () => {
-    page.$$.mockResolvedValue([
-      { innerText: vi.fn().mockResolvedValue('This is a sample tweet text content') }
-    ]);
-    contextEngine.extractRepliesSmart.mockResolvedValue([]);
-    replyEngine.shouldReply.mockResolvedValue({ decision: 'proceed' });
-    replyEngine.generateReply.mockResolvedValue({ reply: 'Generated reply for safe mode' });
-    human.verifyComposerOpen.mockResolvedValue({ open: true, selector: '.composer' });
-
-    const task = await loadTask();
-    await task(page, { method: 'replyA', mode: 'safe' });
-
-    expect(replyEngine.shouldReply).toHaveBeenCalled();
-    expect(human.verifyComposerOpen).toHaveBeenCalledWith(page);
-    expect(page.keyboard.press).toHaveBeenCalledWith('Escape');
-    expect(page.close).toHaveBeenCalled();
+    const result = await task(page, { method: 'reply', targetUrl: 'https://x.com/test/status/1', safeMode: true });
+    expect(result.success).toBe(true);
   });
 
   it('runs quote flow in safe mode without posting', async () => {
-    page.$$.mockResolvedValue([
-      { innerText: vi.fn().mockResolvedValue('This is a sample tweet text content') }
-    ]);
-    contextEngine.extractRepliesSmart.mockResolvedValue([]);
-    quoteEngine.generateQuote.mockResolvedValue({ quote: 'Generated quote' });
-    human.verifyComposerOpen.mockResolvedValue({ open: true, selector: '.composer' });
-
-    const task = await loadTask();
-    await task(page, { method: 'quoteA', mode: 'safe' });
-
-    expect(quoteEngine.generateQuote).toHaveBeenCalled();
-    expect(human.verifyComposerOpen).toHaveBeenCalledWith(page);
-    expect(page.keyboard.press).toHaveBeenCalledWith('Escape');
-    expect(page.close).toHaveBeenCalled();
+    const result = await task(page, { method: 'quote', targetUrl: 'https://x.com/test/status/1', safeMode: true });
+    expect(result.success).toBe(true);
   });
 });

@@ -8,6 +8,7 @@ import { createLogger } from './logger.js';
 import { mathUtils } from './mathUtils.js';
 import { entropy as _entropy } from './entropyController.js';
 import { GhostCursor } from './ghostCursor.js';
+import { api } from '../api/index.js';
 
 const logger = createLogger('human-interaction.js');
 
@@ -44,7 +45,7 @@ export class HumanInteraction {
 
         try {
             await element.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
-            await new Promise(resolve => setTimeout(resolve, mathUtils.randomInRange(300, 600)));
+            await api.wait(mathUtils.randomInRange(300, 600));
             const ghostResult = await this.ghost.click(element, {
                 label: description,
                 hoverBeforeClick: true
@@ -84,7 +85,7 @@ export class HumanInteraction {
                 // Exponential backoff: 1s, 2s, 3s...
                 const delay = 1000 * attempt;
                 this.logDebug(`[safeHumanClick] [${description}] Waiting ${delay}ms before retry ${attempt + 1}...`);
-                await new Promise(resolve => setTimeout(resolve, delay));
+                await api.wait(delay);
             }
         }
         return false;
@@ -111,20 +112,36 @@ export class HumanInteraction {
     /**
      * Human-like pre-action delay
      */
-    async hesitation(min = 300, max = 1500) {
-        const delay = mathUtils.randomInRange(min, max);
+    async hesitation(min = null, max = null) {
+        const persona = api.getPersona();
+        const baseDelay = typeof persona.hesitationDelay === 'number' ? persona.hesitationDelay : 400;
+        const hesitation = typeof persona.hesitation === 'number' ? persona.hesitation : 0.15;
+        const useDefaultRange = typeof min !== 'number' && typeof max !== 'number';
+        const minDelay = typeof min === 'number' ? min : Math.max(300, Math.round(baseDelay * 0.5));
+        let maxDelay = typeof max === 'number'
+            ? max
+            : Math.round(baseDelay * (1 + Math.max(0.1, hesitation) * 3));
+        if (useDefaultRange) {
+            maxDelay = Math.min(1500, Math.max(minDelay + 50, maxDelay));
+        } else {
+            maxDelay = Math.max(minDelay + 50, maxDelay);
+        }
+        const delay = mathUtils.randomInRange(minDelay, maxDelay);
         this.logDebug(`[Hesitation] Waiting ${delay}ms before action...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await api.wait(delay);
         return delay;
     }
 
     /**
      * Human-like reading delay
      */
-    async readingTime(min = 5000, max = 15000) {
-        const time = mathUtils.randomInRange(min, max);
+    async readingTime(min = null, max = null) {
+        const persona = api.getPersona();
+        const minDelay = typeof min === 'number' ? min : (typeof persona.hoverMin === 'number' ? persona.hoverMin * 2 : 5000);
+        const maxDelay = typeof max === 'number' ? max : (typeof persona.hoverMax === 'number' ? persona.hoverMax * 3 : 15000);
+        const time = mathUtils.randomInRange(minDelay, Math.max(minDelay + 100, maxDelay));
         this.logDebug(`[Reading] Reading for ${time}ms...`);
-        await new Promise(resolve => setTimeout(resolve, time));
+        await api.wait(time);
         return time;
     }
 
@@ -136,7 +153,7 @@ export class HumanInteraction {
             const scrollAmount = mathUtils.randomInRange(min, max);
             const direction = Math.random() < 0.5 ? scrollAmount : -scrollAmount;
             this.logDebug(`[Scroll] Random scroll: ${direction}px`);
-            await page.evaluate((y) => window.scrollBy(0, y), direction);
+            await api.scroll(direction);
             return true;
         }
         return false;
@@ -155,10 +172,13 @@ export class HumanInteraction {
     /**
      * Target fixation (pause before clicking)
      */
-    async fixation(min = 200, max = 800) {
-        const time = mathUtils.randomInRange(min, max);
+    async fixation(min = null, max = null) {
+        const persona = api.getPersona();
+        const minDelay = typeof min === 'number' ? min : (typeof persona.hoverMin === 'number' ? persona.hoverMin : 200);
+        const maxDelay = typeof max === 'number' ? max : (typeof persona.hoverMax === 'number' ? persona.hoverMax : 800);
+        const time = mathUtils.randomInRange(minDelay, Math.max(minDelay + 50, maxDelay));
         this.logDebug(`[Fixation] Fixating for ${time}ms...`);
-        await new Promise(resolve => setTimeout(resolve, time));
+        await api.wait(time);
         return time;
     }
 
@@ -185,7 +205,7 @@ export class HumanInteraction {
                     try {
                         const el = elements[i];
                         if (visibleOnly) {
-                            if (await el.isVisible()) {
+                            if (await api.visible(el)) {
                                 this.logDebug(`[FindElement] Found visible element at index ${i}`);
                                 return { element: el, selector, index: i };
                             }
@@ -224,8 +244,8 @@ export class HumanInteraction {
         for (const selector of composerSelectors) {
             try {
                 const el = page.locator(selector).first();
-                if (await el.count() > 0) {
-                    const isVisible = await el.isVisible();
+                if (await api.exists(el)) {
+                    const isVisible = await api.visible(el);
                     const box = await el.boundingBox();
 
                     this.logDebug(`[Verify] Selector "${selector}": visible=${isVisible}, box=${box ? 'found' : 'none'}`);
@@ -246,12 +266,12 @@ export class HumanInteraction {
         }
 
         // Try one more time with longer wait
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await api.wait(500);
 
         for (const selector of composerSelectors) {
             try {
                 const el = page.locator(selector).first();
-                if (await el.count() > 0 && await el.isVisible()) {
+                if (await api.exists(el) && await api.visible(el)) {
                     this.logDebug(`[Verify] Late detection: ${selector}`);
                     return { open: true, selector, locator: el };
                 }
@@ -271,7 +291,7 @@ export class HumanInteraction {
      */
     async verifyPostSent(page) {
         // Wait a moment for UI update
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await api.wait(500);
 
         const checks = [
             // Positive indicators (Success)
@@ -291,7 +311,7 @@ export class HumanInteraction {
         for (const check of checks.filter(c => c.type === 'positive')) {
             try {
                 const el = page.locator(check.selector).first();
-                if (await el.isVisible().catch(() => false)) {
+                if (await api.visible(el).catch(() => false)) {
                     const text = await el.innerText().catch(() => '');
                     this.logDebug(`[Verify] Found ${check.label}: "${text.substring(0, 30)}"`);
 
@@ -311,20 +331,20 @@ export class HumanInteraction {
 
         // Check negative indicators (must be GONE)
         const composer = page.locator('[data-testid="tweetTextarea_0"]');
-        const isComposerVisible = await composer.isVisible().catch(() => false);
+        const isComposerVisible = await api.visible(composer).catch(() => false);
         this.logDebug(`[Verify] Composer visible: ${isComposerVisible}`);
 
         if (!isComposerVisible) {
             // Double check it's not just a loading glitch
-            await new Promise(r => setTimeout(r, 500));
-            if (!await composer.isVisible().catch(() => false)) {
+            await api.wait(500);
+            if (!await api.visible(composer).catch(() => false)) {
                 this.logDebug(`[Verify] Composer is no longer visible (confirmed)`);
                 return { sent: true, method: 'composer_closed' };
             }
         }
 
         // Check URL changed back
-        const url = page.url();
+        const url = api.getCurrentUrl();
         this.logDebug(`[Verify] Current URL: ${url}`);
 
         if (!url.includes('/compose/') && !url.includes('/status/')) {
@@ -333,10 +353,10 @@ export class HumanInteraction {
 
         // Additional verification: wait a bit and check again if not confirmed
         this.logDebug(`[Verify] Post not immediately confirmed, waiting 1.5s...`);
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await api.wait(1500);
 
         // Final check: composer should be closed
-        const composerVisibleFinal = await page.locator('[data-testid="tweetTextarea_0"]').isVisible().catch(() => false);
+        const composerVisibleFinal = await api.visible(page.locator('[data-testid="tweetTextarea_0"]')).catch(() => false);
         if (!composerVisibleFinal) {
             this.logDebug(`[Verify] Composer closed after wait: confirmed`);
             return { sent: true, method: 'composer_closed_delayed' };
@@ -379,13 +399,13 @@ export class HumanInteraction {
 
         // Check negative indicators (Success if GONE)
         const composer = page.locator('[data-testid="tweetTextarea_0"]');
-        const isComposerVisible = await composer.isVisible().catch(() => false);
+        const isComposerVisible = await api.visible(composer).catch(() => false);
         this.logDebug(`[Verify] Reply Composer visible: ${isComposerVisible}`);
 
         if (!isComposerVisible) {
             // Double check it's not just a loading glitch
-            await new Promise(r => setTimeout(r, 500));
-            if (!await composer.isVisible().catch(() => false)) {
+            await api.wait(500);
+            if (!await api.visible(composer).catch(() => false)) {
                 this.logDebug(`[Verify] Reply Composer is no longer visible (confirmed)`);
                 return { sent: true, method: 'composer_closed' };
             }
@@ -393,10 +413,10 @@ export class HumanInteraction {
 
         // Additional verification: wait a bit and check again if not confirmed
         this.logDebug(`[Verify] Reply not immediately confirmed, waiting 1.5s...`);
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await api.wait(1500);
 
         // Final check: composer should be closed
-        const composerVisibleFinal = await page.locator('[data-testid="tweetTextarea_0"]').isVisible().catch(() => false);
+        const composerVisibleFinal = await api.visible(page.locator('[data-testid="tweetTextarea_0"]')).catch(() => false);
         if (!composerVisibleFinal) {
             this.logDebug(`[Verify] Reply Composer closed after wait: confirmed`);
             return { sent: true, method: 'composer_closed_delayed' };
@@ -419,9 +439,9 @@ export class HumanInteraction {
         // PRIORITY 1: Explicitly wait for the small popup notification at the bottom
         this.logDebug(`[Verify] Prioritizing popup notification for quote verification...`);
         try {
-            // Wait up to 3.5 seconds for the toast/popup to appear
+            // Wait up to 5 seconds for the toast/popup to appear
             const toastSelector = '[data-testid="toast"], span:has-text("Your post was sent")';
-            const toast = await page.waitForSelector(toastSelector, { state: 'visible', timeout: 3500 });
+            const toast = await page.waitForSelector(toastSelector, { state: 'visible', timeout: 5000 });
             if (toast) {
                 const text = await toast.innerText().catch(() => '');
                 this.logDebug(`[Verify] Popup found: "${text.substring(0, 30)}"`);
@@ -438,13 +458,13 @@ export class HumanInteraction {
 
         // Check negative indicators (Success if GONE)
         const composer = page.locator('[data-testid="tweetTextarea_0"]');
-        const isComposerVisible = await composer.isVisible().catch(() => false);
+        const isComposerVisible = await api.visible(composer).catch(() => false);
         this.logDebug(`[Verify] Quote Composer visible: ${isComposerVisible}`);
 
         if (!isComposerVisible) {
             // Double check it's not just a loading glitch
-            await new Promise(r => setTimeout(r, 500));
-            if (!await composer.isVisible().catch(() => false)) {
+            await api.wait(500);
+            if (!await api.visible(composer).catch(() => false)) {
                 this.logDebug(`[Verify] Quote Composer is no longer visible (confirmed)`);
                 return { sent: true, method: 'composer_closed' };
             }
@@ -452,10 +472,10 @@ export class HumanInteraction {
 
         // Additional verification: wait a bit and check again if not confirmed
         this.logDebug(`[Verify] Quote not immediately confirmed, waiting 1.5s...`);
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await api.wait(1500);
 
         // Final check: composer should be closed
-        const composerVisibleFinal = await page.locator('[data-testid="tweetTextarea_0"]').isVisible().catch(() => false);
+        const composerVisibleFinal = await api.visible(page.locator('[data-testid="tweetTextarea_0"]')).catch(() => false);
         if (!composerVisibleFinal) {
             this.logDebug(`[Verify] Quote Composer closed after wait: confirmed`);
             return { sent: true, method: 'composer_closed_delayed' };
@@ -474,28 +494,31 @@ export class HumanInteraction {
     /**
      * Post with Ctrl+Enter or fallback
      */
-    async typeText(page, text, inputEl) {
+    async typeText(page, text, inputEl, options = {}) {
+        const { skipClear = false, skipFocusClick = false } = options;
         // Ensure we have page reference for ghost cursor
         if (!this.page || this.page !== page) {
             this.setPage(page);
         }
 
-        // Step 1: Clear any existing text first using human-like click
-        try {
-            await this.humanClick(inputEl, 'Text Input - Clear');
-            await page.keyboard.press('Control+a');
-            await new Promise(resolve => setTimeout(resolve, 200));
-        } catch (e) {
-            this.logDebug(`[Type] Clear text failed: ${e.message}`);
+        // Step 1: Clear any existing text first using human-like click (if not skipped)
+        if (!skipClear) {
+            try {
+                await this.humanClick(inputEl, 'Text Input - Clear');
+                await page.keyboard.press('Control+a');
+                await api.wait(200);
+            } catch (e) {
+                this.logDebug(`[Type] Clear text failed: ${e.message}`);
+            }
         }
 
         // Step 2: Multiple focus strategies
-        const focused = await this.ensureFocus(page, inputEl);
+        const focused = await this.ensureFocus(page, inputEl, { skipClick: skipFocusClick });
         if (!focused) {
             this.logWarn(`[Type] Could not focus element, trying alternative approach...`);
             // Fallback: use keyboard to focus
             await page.keyboard.press('Tab');
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await api.wait(300);
         }
 
         // Step 3: Verify we're focused by checking active element
@@ -516,7 +539,7 @@ export class HumanInteraction {
             this.logDebug(`[Type] Not focused correctly, trying force click fallback...`);
             try {
                 await inputEl.click({ force: true });
-                await new Promise(resolve => setTimeout(resolve, 200));
+                await api.wait(200);
             } catch (_e) {
                 // Ignore error
             }
@@ -536,18 +559,18 @@ export class HumanInteraction {
             const char = text[i];
 
             if (char === ' ') {
-                await new Promise(resolve => setTimeout(resolve, spacePause));
+                await api.wait(spacePause);
             } else if (punctuationSet.has(char)) {
-                await new Promise(resolve => setTimeout(resolve, punctuationPause));
+                await api.wait(punctuationPause);
             } else {
-                await new Promise(resolve => setTimeout(resolve, baseDelay));
+                await api.wait(baseDelay);
             }
 
             // Occasional longer pause (thinking)
             if (Math.random() < 0.05 && i < text.length - 1) {
                 const pause = mathUtils.randomInRange(300, 800);
                 //this.logDebug(`[Type] Thinking pause: ${pause}ms`); // disabled to reduce log spam
-                await new Promise(resolve => setTimeout(resolve, pause));
+                await api.wait(pause);
             }
 
             await page.keyboard.type(char);
@@ -555,41 +578,45 @@ export class HumanInteraction {
 
         const duration = mathUtils.randomInRange(500, 1000);
         this.logDebug(`[Type] Finished typing`);
-        await new Promise(resolve => setTimeout(resolve, duration));
+        await api.wait(duration);
     }
 
     /**
      * Ensure element is focused with multiple strategies
      * Uses human-like clicking with GhostCursor
      */
-    async ensureFocus(page, element) {
+    async ensureFocus(page, element, options = {}) {
+        const { skipClick = false } = options;
         // Ensure we have page reference
         if (!this.page || this.page !== page) {
             this.setPage(page);
         }
 
-        const focusStrategies = [
-            // Strategy 1: Human-like click with GhostCursor
-            async () => {
+        const focusStrategies = [];
+
+        // Strategy 1: Human-like click with GhostCursor (if not skipped)
+        if (!skipClick) {
+            focusStrategies.push(async () => {
                 try {
                     await this.humanClick(element, 'Focus Target');
-                    await new Promise(resolve => setTimeout(resolve, 200));
+                    await api.wait(200);
                     return true;
                 } catch {
                     return false;
                 }
-            },
-            // Strategy 2: Focus method (no click needed)
-            async () => {
-                try {
-                    await element.focus();
-                    await new Promise(resolve => setTimeout(resolve, 200));
-                    return true;
-                } catch {
-                    return false;
-                }
-            },
-        ];
+            });
+        }
+
+        // Strategy 2: Focus method (no click needed)
+        focusStrategies.push(async () => {
+            try {
+                await element.focus();
+                await api.wait(200);
+                return true;
+            } catch {
+                return false;
+            }
+        });
 
         for (let i = 0; i < focusStrategies.length; i++) {
             try {
@@ -629,7 +656,11 @@ export class HumanInteraction {
             return await this.verifyPostSent(page);
         };
 
-        // Click "Post" or "Reply" button
+        // STEP 1: Find "Post" or "Reply" button
+        // Priority 1: Search within the active composer or near the focused element
+        let targetBtn = null;
+        let targetSelector = null;
+
         const postSelectors = [
             '[data-testid="tweetButton"]',
             '[data-testid="tweetButtonInline"]',
@@ -637,23 +668,57 @@ export class HumanInteraction {
             '[aria-label="Post"]',
             '[aria-label="Reply"]',
             '[role="button"][data-testid*="tweetButton"]',
-            'button[type="submit"]' // Generic fallback
+            'button[type="submit"]'
         ];
 
-        let targetBtn = null;
-        let targetSelector = null;
+        try {
+            const focused = page.locator(':focus');
+            if (await api.exists(focused)) {
+                // Try to find button in the same container (modal, inline box, etc)
+                // We search for common composer containers that house both the textarea and the button
+                const containerSelectors = ['[role="dialog"]', '[data-testid="inlineComposer"]', '.DraftEditor-root', '[data-testid="tweetTextarea_0"]'];
 
-        for (const selector of postSelectors) {
-            try {
-                const btn = page.locator(selector).first();
-                if (await btn.count() > 0 && await btn.isVisible()) {
-                    targetBtn = btn;
-                    targetSelector = selector;
-                    this.logDebug(`[Post] Found button with selector: ${selector}`);
-                    break;
+                for (const contSelector of containerSelectors) {
+                    const container = page.locator(contSelector).first();
+                    if (await api.exists(container)) {
+                        // Check if the button is within this container or its parent
+                        const parent = contSelector === '[data-testid="tweetTextarea_0"]'
+                            ? page.locator('[role="dialog"], [data-testid="inlineComposer"]').first()
+                            : container;
+
+                        if (await api.exists(parent)) {
+                            for (const selector of postSelectors) {
+                                const btn = parent.locator(selector).first();
+                                if (await api.exists(btn) && await api.visible(btn)) {
+                                    targetBtn = btn;
+                                    targetSelector = `container:${selector}`;
+                                    this.logDebug(`[Post] Found button in container ${contSelector}: ${selector}`);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (targetBtn) break;
                 }
-            } catch (e) {
-                this.logDebug(`[Post] Error checking selector "${selector}": ${e.message}`);
+            }
+        } catch (e) {
+            this.logDebug(`[Post] Context-aware search failed: ${e.message}`);
+        }
+
+        // Fallback: Global search (original behavior)
+        if (!targetBtn) {
+            for (const selector of postSelectors) {
+                try {
+                    const btn = page.locator(selector).first();
+                    if (await api.exists(btn) && await api.visible(btn)) {
+                        targetBtn = btn;
+                        targetSelector = selector;
+                        this.logDebug(`[Post] Found button with global selector: ${selector}`);
+                        break;
+                    }
+                } catch (e) {
+                    this.logDebug(`[Post] Error checking selector "${selector}": ${e.message}`);
+                }
             }
         }
 
@@ -670,11 +735,11 @@ export class HumanInteraction {
             // Try to trigger input event on focused element to wake up React
             try {
                 const activeEl = page.locator(':focus');
-                if (await activeEl.count() > 0) {
+                if (await api.exists(activeEl)) {
                     this.logDebug(`[Post] Triggering input event on focused element...`);
                     await page.keyboard.type(' ');
                     await page.keyboard.press('Backspace');
-                    await new Promise(r => setTimeout(r, 500));
+                    await api.wait(500);
                 }
             } catch (e) {
                 this.logDebug(`[Post] Failed to trigger input: ${e.message}`);
@@ -683,7 +748,7 @@ export class HumanInteraction {
             // Wait up to 3 seconds for button to enable
             const startTime = Date.now();
             while (isDisabled && Date.now() - startTime < 3000) {
-                await new Promise(r => setTimeout(r, 500));
+                await api.wait(500);
                 isDisabled = await targetBtn.evaluate(e => e.disabled || e.getAttribute('aria-disabled') === 'true');
             }
 
@@ -694,36 +759,51 @@ export class HumanInteraction {
             }
         }
 
-        // Click the button
-        this.logDebug(`[Post] Clicking button: ${targetSelector}`);
+        // STEP 2: Attempt submit — JS click first (keeps textarea focused, avoids React blur)
+        this.logDebug(`[Post] Submitting via JS click (no focus loss): ${targetSelector}`);
+        try {
+            await targetBtn.evaluate(el => el.click());
+        } catch (e) {
+            this.logDebug(`[Post] JS click failed: ${e.message}`);
+        }
+
+        // Wait for result
+        await api.wait(2000);
+        const result2 = await verifyPost();
+
+        if (result2.sent) {
+            this.logDebug(`[Post] ✅ Success via JS click`);
+            return { success: true, method: 'js_click' };
+        }
+
+        // Fallback: ghost cursor click (original behavior)
+        this.logDebug(`[Post] JS click not confirmed, falling back to ghost cursor: ${targetSelector}`);
         try {
             await this.humanClick(targetBtn, 'Post Button', { precision: 'high' });
         } catch (e) {
             this.logWarn(`[Post] humanClick failed: ${e.message}`);
         }
 
-        // Wait for result
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        const result2 = await verifyPost();
+        await api.wait(2000);
+        const result3 = await verifyPost();
 
-        if (result2.sent) {
-            this.logDebug(`[Post] Success via button: ${targetSelector}`);
-            return { success: true, method: 'button_click' };
-        } else {
-            this.logWarn(`[Post] Clicked ${targetSelector} but verify failed. Trying force click...`);
+        if (result3.sent) {
+            this.logDebug(`[Post] ✅ Success via ghost click`);
+            return { success: true, method: 'ghost_click' };
+        }
 
-            // Last resort: Force click (JS click)
-            try {
-                await targetBtn.click({ force: true });
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                const result3 = await verifyPost();
-                if (result3.sent) {
-                    this.logDebug(`[Post] Success via force click`);
-                    return { success: true, method: 'force_click' };
-                }
-            } catch (e) {
-                this.logDebug(`[Post] Force click failed: ${e.message}`);
+        // Final fallback: force click
+        this.logWarn(`[Post] Ghost click not confirmed. Trying force click...`);
+        try {
+            await targetBtn.click({ force: true });
+            await api.wait(2000);
+            const result4 = await verifyPost();
+            if (result4.sent) {
+                this.logDebug(`[Post] ✅ Success via force click`);
+                return { success: true, method: 'force_click' };
             }
+        } catch (e) {
+            this.logDebug(`[Post] Force click failed: ${e.message}`);
         }
 
         this.logWarn(`[Post] Failed - no method worked`);
@@ -767,8 +847,7 @@ export class HumanInteraction {
 
                 // Check visibility if required
                 if (visible) {
-                    const isVisible = await element.isVisible().catch(() => false);
-                    if (!isVisible) {
+                    const isVisible = await api.visible(element).catch(() => false); if (!isVisible) {
                         this.logDebug(`[Fallback] Selector ${i + 1}/${selectors.length} not visible: ${selector}`);
                         continue;
                     }
@@ -808,7 +887,7 @@ export class HumanInteraction {
                         const el = elements.nth(i);
 
                         if (visible) {
-                            if (await el.isVisible().catch(() => false)) {
+                            if (await api.visible(el).catch(() => false)) {
                                 results.push(el);
                             }
                         } else {
@@ -851,7 +930,7 @@ export class HumanInteraction {
                     continue;
                 }
 
-                if (!await element.isVisible().catch(() => false)) {
+                if (!await api.visible(element).catch(() => false)) {
                     this.logDebug(`[ClickFallback] Selector ${i + 1}/${selectors.length} not visible: ${selector}`);
                     continue;
                 }
@@ -885,7 +964,7 @@ export class HumanInteraction {
                 await element.first().waitFor({ state, timeout: Math.min(timeout, 10000) });
 
                 if (visible) {
-                    if (await element.first().isVisible().catch(() => false)) {
+                    if (await api.visible(element.first()).catch(() => false)) {
                         this.logDebug(`[WaitFallback] Found: ${selector}`);
                         return { element: element.first(), selector };
                     }

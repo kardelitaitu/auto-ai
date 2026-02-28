@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0.8% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/124</span>
+                <span class='fraction'>0/124</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.11% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/9</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0.84% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/118</span>
+                <span class='fraction'>0/118</span>
             </div>
         
             
@@ -303,13 +303,15 @@
 <a name='L238'></a><a href='#L238'>238</a>
 <a name='L239'></a><a href='#L239'>239</a>
 <a name='L240'></a><a href='#L240'>240</a>
-<a name='L241'></a><a href='#L241'>241</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">99x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -543,12 +545,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BaseHandler } from './BaseHandler.js';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { api } from '../../api/index.js';
+import { BaseHandler } from './BaseHandler.js';
 import { scrollRandom } from '../scroll-helper.js';
 &nbsp;
 export class NavigationHandler extends BaseHandler {
-    constructor(agent) {
-        super(agent);
+<span class="fstat-no" title="function not covered" >    constructor(</span>agent) {
+<span class="cstat-no" title="statement not covered" >        super(agent);</span>
     }
 &nbsp;
     /**
@@ -565,7 +568,7 @@ export class NavigationHandler extends BaseHandler {
 <span class="cstat-no" title="statement not covered" >        if (this.mathUtils.roll(0.10)) {</span>
 <span class="cstat-no" title="statement not covered" >            this.log('[Navigation] 🎲 Random 10%: Using direct URL navigation.');</span>
 <span class="cstat-no" title="statement not covered" >            try {</span>
-<span class="cstat-no" title="statement not covered" >                await this.page.goto('https://x.com/home');</span>
+<span class="cstat-no" title="statement not covered" >                await api.goto('https://x.com/home');</span>
 <span class="cstat-no" title="statement not covered" >                await this.ensureForYouTab();</span>
 <span class="cstat-no" title="statement not covered" >                return;</span>
             } catch (e) {
@@ -579,35 +582,35 @@ export class NavigationHandler extends BaseHandler {
             let targetName = <span class="cstat-no" title="statement not covered" >useHomeIcon ? 'Home Icon' : 'X Logo';</span>
             let target = <span class="cstat-no" title="statement not covered" >this.page.locator(targetSelector).first();</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >            if (!(await target.isVisible().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >false)</span>)) {</span>
+<span class="cstat-no" title="statement not covered" >            if (!(await api.visible(target).catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >false)</span>)) {</span>
 <span class="cstat-no" title="statement not covered" >                this.log(`Preferred nav target (${targetName}) not visible. Switching...`);</span>
 <span class="cstat-no" title="statement not covered" >                targetSelector = useHomeIcon ? '[aria-label="X"]' : '[data-testid="AppTabBar_Home_Link"]';</span>
 <span class="cstat-no" title="statement not covered" >                targetName = useHomeIcon ? 'X Logo' : 'Home Icon';</span>
 <span class="cstat-no" title="statement not covered" >                target = this.page.locator(targetSelector).first();</span>
             }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >            if (await target.isVisible()) {</span>
+<span class="cstat-no" title="statement not covered" >            if (await api.visible(target)) {</span>
                 // First click
 <span class="cstat-no" title="statement not covered" >                this.log(`[Navigation] Clicking '${targetName}' (1st click for reload)...`);</span>
 <span class="cstat-no" title="statement not covered" >                await this.safeHumanClick(target, targetName, 3);</span>
-<span class="cstat-no" title="statement not covered" >                await this.page.waitForTimeout(this.mathUtils.randomInRange(800, 1500));</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(this.mathUtils.randomInRange(800, 1500));</span>
 &nbsp;
                 // Second click to ensure fresh content
 <span class="cstat-no" title="statement not covered" >                this.log(`[Navigation] Clicking '${targetName}' again (2nd click to reload)...`);</span>
 <span class="cstat-no" title="statement not covered" >                await this.safeHumanClick(target, targetName, 3);</span>
-<span class="cstat-no" title="statement not covered" >                await this.page.waitForTimeout(this.mathUtils.randomInRange(500, 1000));</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(this.mathUtils.randomInRange(500, 1000));</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >                try {</span>
-<span class="cstat-no" title="statement not covered" >                    await this.page.waitForURL('**/home**', { timeout: 5000 });</span>
+<span class="cstat-no" title="statement not covered" >                    await api.waitForURL('**/home**', { timeout: 5000 });</span>
 <span class="cstat-no" title="statement not covered" >                    this.log('[Navigation] Navigate to /home Success.');</span>
 <span class="cstat-no" title="statement not covered" >                    await this.ensureForYouTab();</span>
 <span class="cstat-no" title="statement not covered" >                    return;</span>
                 } catch {
 <span class="cstat-no" title="statement not covered" >                    this.log('[Navigation] Ghost click did not trigger nav. Trying native...');</span>
 <span class="cstat-no" title="statement not covered" >                    await target.click();</span>
-<span class="cstat-no" title="statement not covered" >                    await this.page.waitForTimeout(this.mathUtils.randomInRange(800, 1500));</span>
+<span class="cstat-no" title="statement not covered" >                    await api.wait(this.mathUtils.randomInRange(800, 1500));</span>
 <span class="cstat-no" title="statement not covered" >                    await target.click();</span>
-<span class="cstat-no" title="statement not covered" >                    await this.page.waitForURL('**/home**', { timeout: 5000 });</span>
+<span class="cstat-no" title="statement not covered" >                    await api.waitForURL('**/home**', { timeout: 5000 });</span>
 <span class="cstat-no" title="statement not covered" >                    this.log('[Navigation] Native Click navigated to home.');</span>
 <span class="cstat-no" title="statement not covered" >                    await this.ensureForYouTab();</span>
 <span class="cstat-no" title="statement not covered" >                    return;</span>
@@ -618,7 +621,7 @@ export class NavigationHandler extends BaseHandler {
         }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        this.log('[Navigation] Fallback to direct URL goto.');</span>
-<span class="cstat-no" title="statement not covered" >        await this.page.goto('https://x.com/home');</span>
+<span class="cstat-no" title="statement not covered" >        await api.goto('https://x.com/home');</span>
 <span class="cstat-no" title="statement not covered" >        await this.ensureForYouTab();</span>
     }
 &nbsp;
@@ -678,11 +681,11 @@ export class NavigationHandler extends BaseHandler {
 <span class="cstat-no" title="statement not covered" >                return;</span>
             }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >            if (await target.isVisible()) {</span>
+<span class="cstat-no" title="statement not covered" >            if (await api.visible(target)) {</span>
 <span class="cstat-no" title="statement not covered" >                this.log(`[Tab] Switching to "${targetText}" tab...`);</span>
 <span class="cstat-no" title="statement not covered" >                try {</span>
 <span class="cstat-no" title="statement not covered" >                    await this.safeHumanClick(target, 'For You Tab', 3);</span>
-<span class="cstat-no" title="statement not covered" >                    await this.page.waitForTimeout(this.mathUtils.randomInRange(800, 1500));</span>
+<span class="cstat-no" title="statement not covered" >                    await api.wait(this.mathUtils.randomInRange(800, 1500));</span>
                 } catch {
 <span class="cstat-no" title="statement not covered" >                    this.log('[Tab] Ghost click failed, trying native...');</span>
 <span class="cstat-no" title="statement not covered" >                    await target.click();</span>
@@ -706,7 +709,7 @@ export class NavigationHandler extends BaseHandler {
 <span class="cstat-no" title="statement not covered" >        try {</span>
             // Wait 2-3 seconds for button to appear (as per user feedback)
 <span class="cstat-no" title="statement not covered" >            this.log('[Posts] Waiting for "Show X posts" button to appear...');</span>
-<span class="cstat-no" title="statement not covered" >            await this.page.waitForTimeout(this.mathUtils.randomInRange(2000, 3000));</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(this.mathUtils.randomInRange(2000, 3000));</span>
 &nbsp;
             // Multiple selector patterns to catch variations:
             // - "Show 34 posts"
@@ -728,7 +731,7 @@ export class NavigationHandler extends BaseHandler {
 <span class="cstat-no" title="statement not covered" >            for (const selector of buttonSelectors) {</span>
 <span class="cstat-no" title="statement not covered" >                try {</span>
                     const btn = <span class="cstat-no" title="statement not covered" >this.page.locator(selector).first();</span>
-<span class="cstat-no" title="statement not covered" >                    if (await btn.count() &gt; 0 &amp;&amp; await btn.isVisible()) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (await api.exists(btn) &amp;&amp; await api.visible(btn)) {</span>
                         const text = <span class="cstat-no" title="statement not covered" >await btn.textContent().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'')</span>;</span>
                         // Validate it matches the pattern
 <span class="cstat-no" title="statement not covered" >                        if (/show\s+\d+\s+post/i.test(text)) {</span>
@@ -748,7 +751,7 @@ export class NavigationHandler extends BaseHandler {
                 // HUMAN-LIKE: Additional pre-click behavior for this specific button
                 // 1. Ensure button is in viewport (scroll if needed)
 <span class="cstat-no" title="statement not covered" >                await showPostsBtn.evaluate(<span class="fstat-no" title="function not covered" >el </span>=&gt; <span class="cstat-no" title="statement not covered" >el.scrollIntoView({ block: 'center', inline: 'center' }))</span>;</span>
-<span class="cstat-no" title="statement not covered" >                await this.page.waitForTimeout(this.mathUtils.randomInRange(300, 600));</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(this.mathUtils.randomInRange(300, 600));</span>
                 
                 // 2. Move cursor to vicinity first (not directly on button)
                 const box = <span class="cstat-no" title="statement not covered" >await showPostsBtn.boundingBox();</span>
@@ -756,7 +759,7 @@ export class NavigationHandler extends BaseHandler {
                     const offsetX = <span class="cstat-no" title="statement not covered" >this.mathUtils.randomInRange(-30, 30);</span>
                     const offsetY = <span class="cstat-no" title="statement not covered" >this.mathUtils.randomInRange(-20, 20);</span>
 <span class="cstat-no" title="statement not covered" >                    await this.ghost.move(box.x + box.width/2 + offsetX, box.y + box.height/2 + offsetY, this.mathUtils.randomInRange(15, 25));</span>
-<span class="cstat-no" title="statement not covered" >                    await this.page.waitForTimeout(this.mathUtils.randomInRange(400, 800));</span>
+<span class="cstat-no" title="statement not covered" >                    await api.wait(this.mathUtils.randomInRange(400, 800));</span>
                 }
                 
                 // 3. Use safeHumanClick for full simulated interaction with retry
@@ -765,12 +768,12 @@ export class NavigationHandler extends BaseHandler {
                 // 3. HUMAN-LIKE: "Reading" the new posts after loading
 <span class="cstat-no" title="statement not covered" >                this.log('[Posts] Posts loading, simulating reading behavior...');</span>
                 const waitTime = <span class="cstat-no" title="statement not covered" >this.mathUtils.randomInRange(1200, 2500);</span>
-<span class="cstat-no" title="statement not covered" >                await this.page.waitForTimeout(waitTime);</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(waitTime);</span>
                 
                 // 4. Scroll down slightly to show the new posts (human-like discovery)
                 const scrollVariance = <span class="cstat-no" title="statement not covered" >0.8 + Math.random() * 0.4;</span>
-<span class="cstat-no" title="statement not covered" >                await scrollRandom(this.page, Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));</span>
-<span class="cstat-no" title="statement not covered" >                await this.page.waitForTimeout(this.mathUtils.randomInRange(600, 1000));</span>
+<span class="cstat-no" title="statement not covered" >                await scrollRandom(Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(this.mathUtils.randomInRange(600, 1000));</span>
                 
 <span class="cstat-no" title="statement not covered" >                this.log('[Posts] New posts loaded successfully.');</span>
 <span class="cstat-no" title="statement not covered" >                return true;</span>
@@ -790,7 +793,7 @@ export class NavigationHandler extends BaseHandler {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

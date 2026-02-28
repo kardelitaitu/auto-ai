@@ -6,6 +6,7 @@
 
 import { createLogger } from './logger.js';
 import { mathUtils } from './mathUtils.js';
+import { api } from '../api/index.js';
 
 /**
  * AIContextEngine - Extracts enhanced context from tweets
@@ -17,7 +18,7 @@ export class AIContextEngine {
    */
   constructor(options = {}) {
     this.logger = createLogger('ai-context-engine.js');
-    
+
     // Sentiment indicators (simple keyword-based)
     this.sentimentIndicators = {
       positive: [
@@ -140,12 +141,12 @@ export class AIContextEngine {
       // Parse metrics from aria-labels and text
       for (const item of metricsText) {
         const text = item.text || item.aria;
-        
+
         // Extract numbers with K/M suffixes
         const numberMatch = text.match(/[\d,.]+[KM]?/);
         if (numberMatch) {
           const num = this.parseNumber(numberMatch[0]);
-          
+
           if (text.toLowerCase().includes('like') && metrics.likes === 0) {
             metrics.likes = num;
           } else if (text.toLowerCase().includes('retweet') && metrics.retweets === 0) {
@@ -173,7 +174,7 @@ export class AIContextEngine {
   parseNumber(str) {
     if (!str) return 0;
     str = str.toUpperCase().replace(/,/g, '');
-    
+
     if (str.includes('K')) {
       return Math.floor(parseFloat(str) * 1000);
     } else if (str.includes('M')) {
@@ -187,10 +188,10 @@ export class AIContextEngine {
    */
   calculateEngagementLevel(metrics) {
     if (!metrics) return 'unknown';
-    
+
     const total = (metrics.likes || 0) + (metrics.retweets || 0) + (metrics.replies || 0);
     const views = metrics.views || 0;
-    
+
     if (views > 100000) return 'viral';
     if (total > 1000) return 'high';
     if (total > 100) return 'medium';
@@ -209,11 +210,11 @@ export class AIContextEngine {
         // Check for tweet photos or video thumbnails in the first article (main tweet)
         const mainTweet = document.querySelector('article');
         if (!mainTweet) return false;
-        
+
         const hasPhoto = mainTweet.querySelector('[data-testid="tweetPhoto"]') !== null;
         const hasVideo = mainTweet.querySelector('[data-testid="videoPlayer"]') !== null;
         const hasCard = mainTweet.querySelector('[data-testid="card.wrapper"]') !== null;
-        
+
         return hasPhoto || hasVideo || hasCard;
       });
     } catch (error) {
@@ -229,16 +230,16 @@ export class AIContextEngine {
    */
   async captureTweetScreenshot(page) {
     try {
-      // Scroll to top to ensure tweet is visible
-      await page.evaluate(() => window.scrollTo(0, 0));
-      await page.waitForTimeout(500); // Wait for scroll/render
-      
+      // Scroll to top to ensure tweet is visible (natural 2s scroll)
+      await api.scroll.toTop(2000);
+      await api.wait(500); // Wait for scroll/render
+
       // Try to capture just the tweet element first
       const tweetElement = await page.$('article');
       if (tweetElement) {
         return await tweetElement.screenshot({ type: 'jpeg', quality: 80 });
       }
-      
+
       // Fallback to viewport screenshot
       return await page.screenshot({ type: 'jpeg', quality: 80, fullPage: false });
     } catch (error) {
@@ -258,20 +259,21 @@ export class AIContextEngine {
     try {
       this.logger.info(`[Context] Starting comprehensive reply extraction...`);
 
-      // Step 1: Scroll to bottom slowly to trigger lazy loading (human-like)
-      this.logger.debug(`[Context] Step 1: Slowly scrolling to load all replies...`);
-      
-      for (let scroll = 0; scroll < 10; scroll++) {
-        await page.evaluate(() => window.scrollBy(0, 500)); // Scroll incrementally
-        await page.waitForTimeout(mathUtils.randomInRange(800, 1500)); // Slow delay
+      // Step 1: Use api.scroll.read to load replies naturally
+      this.logger.debug(`[Context] Step 1: Using api.scroll.read to load replies...`);
+      try {
+        await api.scroll.read(null, { pauses: 10, scrollAmount: 500 });
+      } catch (scrollError) {
+        this.logger.error(`[Context] Scroll read failed during reply extraction: ${scrollError.message}`);
+        // We continue anyway, as some replies might already be visible on the screen
       }
 
       // Step 2: Wait for content to settle
-      await page.waitForTimeout(1000);
+      await api.wait(1000);
 
       // Step 3: Now scroll UP through the page while extracting
       this.logger.debug(`[Context] Step 2: Extracting while scrolling up...`);
-      
+
       const viewportHeight = await page.evaluate(() => window.innerHeight);
       const scrollHeight = await page.evaluate(() => document.body.scrollHeight);
       const extractSteps = Math.min(20, Math.ceil(scrollHeight / viewportHeight));
@@ -281,7 +283,7 @@ export class AIContextEngine {
         const visibleTexts = await page.evaluate(() => {
           const found = [];
           const seen = new Set();
-          
+
           // Multiple selectors for current Twitter DOM
           const selectors = [
             '[data-testid="tweetText"]',
@@ -290,7 +292,7 @@ export class AIContextEngine {
             'article [dir="auto"]',
             '[role="article"] span'
           ];
-          
+
           for (const selector of selectors) {
             const elements = document.querySelectorAll(selector);
             elements.forEach(el => {
@@ -312,19 +314,19 @@ export class AIContextEngine {
         for (const text of visibleTexts) {
           const key = text.toLowerCase().substring(0, 50);
           if (seenTexts.has(key)) continue;
-          
+
           // Extract author from @mention if present, otherwise use DOM hierarchy
           const mentionMatch = text.match(/@(\w+)/);
           let author = mentionMatch ? mentionMatch[1] : 'unknown';
-          
+
           // If no @mention, try to extract author from DOM context
           if (author === 'unknown') {
             author = await this.extractAuthorFromVisibleText(page, text);
           }
-          
+
           // Clean the reply text - preserve @mentions that are in-content
           const cleaned = this.cleanReplyText(text);
-          
+
           // Accept shorter replies (3+ chars) to capture short responses
           if (cleaned.length > 3) {
             seenTexts.add(key);
@@ -337,13 +339,10 @@ export class AIContextEngine {
           }
         }
 
-        // Scroll up for next extraction (slow and human-like)
+        // Scroll up for next extraction (slow and human-like using API)
         if (step < extractSteps - 1) {
-          await page.evaluate(({ step, totalSteps }) => {
-            const pos = (document.body.scrollHeight / totalSteps) * step;
-            window.scrollTo(0, document.body.scrollHeight - pos);
-          }, { step, totalSteps: extractSteps });
-          await page.waitForTimeout(mathUtils.randomInRange(600, 1200)); // Slower extraction
+          await api.scroll.back();
+          await api.think(mathUtils.randomInRange(600, 1200)); // Slower extraction
         }
 
         if (replies.length >= 30) {
@@ -352,9 +351,8 @@ export class AIContextEngine {
         }
       }
 
-      // Step 4: Final scroll to top and extract any remaining
-      await page.evaluate(() => window.scrollTo(0, 0));
-      await page.waitForTimeout(500);
+      // Step 4: Final natural scroll to top
+      await api.scroll.toTop(3000);
 
       // Strategy 1: Use article elements (most reliable) - but filter out main tweet
       if (replies.length < 15) {
@@ -388,7 +386,7 @@ export class AIContextEngine {
       if (replies.length < 15) {
         this.logger.debug(`[Context] Strategy 2: Using tweetText selectors...`);
         const tweetTexts = await page.$$('[data-testid="tweetText"]');
-        
+
         for (const el of tweetTexts.slice(1, 60)) {
           try {
             const text = await el.innerText().catch(() => '');
@@ -414,24 +412,24 @@ export class AIContextEngine {
       // Strategy 3: Deep DOM extraction if still few replies
       if (replies.length < 10) {
         this.logger.debug(`[Context] Strategy 3: Deep DOM extraction...`);
-        
+
         // For deep extraction, accept any text that looks like a reply
         // Not just @mentions - includes Korean, Japanese, emoji-heavy replies
         const deepTexts = await page.evaluate(() => {
           const found = [];
           const seen = new Set();
-          
+
           // Look for text in article elements (replies are always in articles)
           const articles = document.querySelectorAll('article');
-          
+
           articles.forEach((article, index) => {
             // Skip the first article (main tweet)
             if (index === 0) return;
-            
+
             // Get all text content from the article
             const textContent = [];
             const paragraphs = article.querySelectorAll('[data-testid="tweetText"], [dir="auto"]');
-            
+
             paragraphs.forEach(p => {
               if (!(p instanceof HTMLElement)) return;
               const text = p.innerText.trim();
@@ -443,14 +441,14 @@ export class AIContextEngine {
                 }
               }
             });
-            
+
             if (textContent.length > 0) {
               // Join multiple paragraphs and take the longest
               const joined = textContent.join(' ').substring(0, 280);
               found.push(joined);
             }
           });
-          
+
           return found;
         });
 
@@ -461,7 +459,7 @@ export class AIContextEngine {
             // Extract author from @mention or use 'unknown'
             const mentionMatch = text.match(/@([a-zA-Z0-9_]+)/);
             const author = mentionMatch ? mentionMatch[1] : 'unknown';
-            
+
             // Filter out pure numbers/engagement metrics
             if (!/^[\d,.\sK]+$/.test(text)) {
               replies.push({
@@ -501,148 +499,148 @@ export class AIContextEngine {
     }
   }
 
-    /**
-     * Extract author from visible text when no @mention is present
-     * Useful for Korean/Japanese tweets
-     */
-    async extractAuthorFromVisibleText(page, text) {
-      try {
-        // Try to find the author from the DOM context near tweet text
-        const authorInfo = await page.evaluate((_searchText) => {
-          const elements = document.querySelectorAll('[data-testid="User-Name"], [class*="UserName"], [class*="author"]');
-          for (const el of elements) {
-            const elText = el instanceof HTMLElement ? el.innerText : '';
-            if (elText.includes('@')) {
-              const match = elText.match(/@([a-zA-Z0-9_]+)/);
-              if (match) return match[1];
-            }
+  /**
+   * Extract author from visible text when no @mention is present
+   * Useful for Korean/Japanese tweets
+   */
+  async extractAuthorFromVisibleText(page, text) {
+    try {
+      // Try to find the author from the DOM context near tweet text
+      const authorInfo = await page.evaluate((_searchText) => {
+        const elements = document.querySelectorAll('[data-testid="User-Name"], [class*="UserName"], [class*="author"]');
+        for (const el of elements) {
+          const elText = el instanceof HTMLElement ? el.innerText : '';
+          if (elText.includes('@')) {
+            const match = elText.match(/@([a-zA-Z0-9_]+)/);
+            if (match) return match[1];
           }
-          return null;
-        }, text);
-        
-        return authorInfo || 'unknown';
-      } catch (error) {
-        this.logger.debug(`[Context] Visible author extraction: ${error.message}`);
-        return 'unknown';
-      }
+        }
+        return null;
+      }, text);
+
+      return authorInfo || 'unknown';
+    } catch (error) {
+      this.logger.debug(`[Context] Visible author extraction: ${error.message}`);
+      return 'unknown';
     }
+  }
 
-    /**
-     * Extract reply data from article element
-    */
-   async extractReplyFromArticle(article) {
-     try {
-       // Get tweet text
-       const textEl = await article.$('[data-testid="tweetText"], [dir="auto"]');
-       const text = textEl ? await textEl.innerText().catch(() => '') : '';
+  /**
+   * Extract reply data from article element
+  */
+  async extractReplyFromArticle(article) {
+    try {
+      // Get tweet text
+      const textEl = await article.$('[data-testid="tweetText"], [dir="auto"]');
+      const text = textEl ? await textEl.innerText().catch(() => '') : '';
 
-       if (!text || text.length < 5) {
-         this.logger.debug(`[extractReplyFromArticle] No text found or too short`);
-         return null;
-       }
+      if (!text || text.length < 5) {
+        this.logger.debug(`[extractReplyFromArticle] No text found or too short`);
+        return null;
+      }
 
-       // Get author
-       const author = await this.extractAuthorFromArticle(article);
-       this.logger.debug(`[extractReplyFromArticle] Extracted: @${author}: "${text.substring(0, 30)}..."`);
+      // Get author
+      const author = await this.extractAuthorFromArticle(article);
+      this.logger.debug(`[extractReplyFromArticle] Extracted: @${author}: "${text.substring(0, 30)}..."`);
 
-       // Clean text
-       const cleaned = this.cleanReplyText(text);
+      // Clean text
+      const cleaned = this.cleanReplyText(text);
 
-       // Filter out engagement metrics (just numbers)
-       if (/^[\d,.\sK]+$/.test(cleaned)) {
-         this.logger.debug(`[extractReplyFromArticle] Skipping engagement metrics: "${cleaned}"`);
-         return null;
-       }
+      // Filter out engagement metrics (just numbers)
+      if (/^[\d,.\sK]+$/.test(cleaned)) {
+        this.logger.debug(`[extractReplyFromArticle] Skipping engagement metrics: "${cleaned}"`);
+        return null;
+      }
 
-       return {
-         author: author,
-         text: cleaned,
-         length: cleaned.length,
-         hasMention: cleaned.includes('@')
-       };
+      return {
+        author: author,
+        text: cleaned,
+        length: cleaned.length,
+        hasMention: cleaned.includes('@')
+      };
 
-     } catch (error) {
-       this.logger.debug(`[extractReplyFromArticle] Error: ${error.message}`);
-       return null;
-     }
-   }
+    } catch (error) {
+      this.logger.debug(`[extractReplyFromArticle] Error: ${error.message}`);
+      return null;
+    }
+  }
 
-    /**
-     * Extract author from article
-     */
-    async extractAuthorFromArticle(article) {
-      try {
-        // Strategy 1: Find username in header links (most reliable)
-        const headerSelectors = [
-          'a[href^="/"][role="link"]',
-          'a[href*="/status/"]',
-          '[class*="UserName"] a',
-          '[class*="userName"] a',
-          '[data-testid="User-Name"] a'
-        ];
-        
-        for (const selector of headerSelectors) {
-          try {
-            const headerLink = await article.$(selector);
-            if (headerLink) {
-              const href = await headerLink.getAttribute('href');
-              if (href) {
-                // Handle various URL formats: /username, /username/status/123
-                const username = href.replace(/^\/|\/$/g, '').split('/')[0];
-                // Username validation: alphanumeric + underscores, 4-15 chars
-                if (username && /^[a-zA-Z0-9_]{4,15}$/.test(username) && 
-                    !username.match(/^\d+$/)) { // Exclude pure numbers
-                  return username;
-                }
-              }
-            }
-          } catch (error) {
-            this.logger.debug(`[Context] Header selector lookup failed: ${error.message}`);
-          }
-        }
+  /**
+   * Extract author from article
+   */
+  async extractAuthorFromArticle(article) {
+    try {
+      // Strategy 1: Find username in header links (most reliable)
+      const headerSelectors = [
+        'a[href^="/"][role="link"]',
+        'a[href*="/status/"]',
+        '[class*="UserName"] a',
+        '[class*="userName"] a',
+        '[data-testid="User-Name"] a'
+      ];
 
-        // Strategy 2: Extract from display name containing @username
-        const nameEl = await article.$('[data-testid="User-Name"], [class*="username"], [class*="screenName"]');
-        if (nameEl) {
-          try {
-            const nameText = await nameEl.innerText();
-            const match = nameText.match(/@([a-zA-Z0-9_]+)/);
-            if (match && match[1].length >= 4) return match[1];
-          } catch (error) {
-            this.logger.debug(`[Context] Display name lookup failed: ${error.message}`);
-          }
-        }
-
-        // Strategy 3: Look for any link with /username pattern
+      for (const selector of headerSelectors) {
         try {
-          const allLinks = await article.$$('a[href^="/"]');
-          for (const link of allLinks.slice(0, 5)) {
-            const href = await link.getAttribute('href');
-            if (href && href.startsWith('/') && !href.includes('status')) {
-              const username = href.replace(/^\/|\/$/g, '');
-              if (/^[a-zA-Z0-9_]{4,15}$/.test(username) && !username.match(/^\d+$/)) {
+          const headerLink = await article.$(selector);
+          if (headerLink) {
+            const href = await headerLink.getAttribute('href');
+            if (href) {
+              // Handle various URL formats: /username, /username/status/123
+              const username = href.replace(/^\/|\/$/g, '').split('/')[0];
+              // Username validation: alphanumeric + underscores, 4-15 chars
+              if (username && /^[a-zA-Z0-9_]{4,15}$/.test(username) &&
+                !username.match(/^\d+$/)) { // Exclude pure numbers
                 return username;
               }
             }
           }
         } catch (error) {
-          this.logger.debug(`[Context] Username link scan failed: ${error.message}`);
+          this.logger.debug(`[Context] Header selector lookup failed: ${error.message}`);
         }
-
-        // Strategy 4: Fallback - try to find any @mention in the article
-        try {
-          const articleText = await article.innerText();
-          const match = articleText.match(/@([a-zA-Z0-9_]{4,15})/);
-          if (match) return match[1];
-        } catch (error) {
-          this.logger.debug(`[Context] Timeline reply extraction failed: ${error.message}`);
-        }
-
-        return 'unknown';
-      } catch {
-        return 'unknown';
       }
+
+      // Strategy 2: Extract from display name containing @username
+      const nameEl = await article.$('[data-testid="User-Name"], [class*="username"], [class*="screenName"]');
+      if (nameEl) {
+        try {
+          const nameText = await nameEl.innerText();
+          const match = nameText.match(/@([a-zA-Z0-9_]+)/);
+          if (match && match[1].length >= 4) return match[1];
+        } catch (error) {
+          this.logger.debug(`[Context] Display name lookup failed: ${error.message}`);
+        }
+      }
+
+      // Strategy 3: Look for any link with /username pattern
+      try {
+        const allLinks = await article.$$('a[href^="/"]');
+        for (const link of allLinks.slice(0, 5)) {
+          const href = await link.getAttribute('href');
+          if (href && href.startsWith('/') && !href.includes('status')) {
+            const username = href.replace(/^\/|\/$/g, '');
+            if (/^[a-zA-Z0-9_]{4,15}$/.test(username) && !username.match(/^\d+$/)) {
+              return username;
+            }
+          }
+        }
+      } catch (error) {
+        this.logger.debug(`[Context] Username link scan failed: ${error.message}`);
+      }
+
+      // Strategy 4: Fallback - try to find any @mention in the article
+      try {
+        const articleText = await article.innerText();
+        const match = articleText.match(/@([a-zA-Z0-9_]{4,15})/);
+        if (match) return match[1];
+      } catch (error) {
+        this.logger.debug(`[Context] Timeline reply extraction failed: ${error.message}`);
+      }
+
+      return 'unknown';
+    } catch {
+      return 'unknown';
     }
+  }
 
   /**
    * Extract replies from timeline
@@ -652,7 +650,7 @@ export class AIContextEngine {
 
     try {
       const tweetTexts = await page.$$('[data-testid="tweetText"]');
-      
+
       for (const el of tweetTexts.slice(1, 40)) { // Skip first (main tweet)
         try {
           const text = await el.innerText().catch(() => '');
@@ -674,20 +672,20 @@ export class AIContextEngine {
     return replies;
   }
 
-   /**
-    * Clean reply text - preserve meaningful content
-    */
-   cleanReplyText(text) {
-     if (!text) return '';
-     
-     // Preserve @mentions that are in-content (not just leading)
-     // Remove only excessive whitespace and truncate
-     return text
-       .replace(/\n+/g, ' ')    // Normalize newlines to spaces
-       .replace(/\s+/g, ' ')    // Collapse multiple spaces
-       .trim()
-       .substring(0, 280);
-   }
+  /**
+   * Clean reply text - preserve meaningful content
+   */
+  cleanReplyText(text) {
+    if (!text) return '';
+
+    // Preserve @mentions that are in-content (not just leading)
+    // Remove only excessive whitespace and truncate
+    return text
+      .replace(/\n+/g, ' ')    // Normalize newlines to spaces
+      .replace(/\s+/g, ' ')    // Collapse multiple spaces
+      .trim()
+      .substring(0, 280);
+  }
 
   /**
    * Analyze sentiment of text
@@ -750,9 +748,9 @@ export class AIContextEngine {
     }
 
     // Check for promotional content
-    if (lower.includes('link in bio') || lower.includes('check out') || 
-        lower.includes('sign up') || lower.includes('buy now') ||
-        lower.includes('limited time') || lower.includes('offer')) {
+    if (lower.includes('link in bio') || lower.includes('check out') ||
+      lower.includes('sign up') || lower.includes('buy now') ||
+      lower.includes('limited time') || lower.includes('offer')) {
       tones.promotional++;
     }
 
@@ -789,27 +787,27 @@ export class AIContextEngine {
 
     // Question detection
     if (lower.includes('?') || lower.includes('what') || lower.includes('how') ||
-        lower.includes('why') || lower.includes('when') || lower.includes('who')) {
+      lower.includes('why') || lower.includes('when') || lower.includes('who')) {
       return 'question';
     }
 
     // News/Announcement
-    if (lower.includes('breaking') || lower.includes('update') || 
-        lower.includes('just announced') || lower.includes('official statement')) {
+    if (lower.includes('breaking') || lower.includes('update') ||
+      lower.includes('just announced') || lower.includes('official statement')) {
       return 'news';
     }
 
     // Opinion/Thought
-    if (replies.length > 3 && replies.some(r => 
-        r.text.toLowerCase().includes('agree') || 
-        r.text.toLowerCase().includes('disagree') ||
-        r.text.toLowerCase().includes('think'))) {
+    if (replies.length > 3 && replies.some(r =>
+      r.text.toLowerCase().includes('agree') ||
+      r.text.toLowerCase().includes('disagree') ||
+      r.text.toLowerCase().includes('think'))) {
       return 'discussion';
     }
 
     // Fan/Reaction
-    if (replies.length > 5 && replies.some(r => 
-        r.author !== 'unknown' && r.text.length < 50)) {
+    if (replies.length > 5 && replies.some(r =>
+      r.author !== 'unknown' && r.text.length < 50)) {
       return 'reaction';
     }
 
@@ -882,7 +880,7 @@ export class AIContextEngine {
         .filter(r => r.text && r.text.length > 5)
         .sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))
         .slice(0, 30);
-      
+
       enhancedPrompt += `\nRecent replies:\n`;
       for (const reply of sortedReplies) {
         enhancedPrompt += `- @${reply.author}: "${reply.text.substring(0, 150)}"\n`;

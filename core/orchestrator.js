@@ -7,8 +7,9 @@ import { EventEmitter } from 'events';
 import SessionManager from './sessionManager.js';
 import Discovery from './discovery.js';
 import Automator from './automator.js';
-import { createLogger, loggerContext } from '../utils/logger.js';
-import { getSettings } from '../utils/configLoader.js';
+import { api } from '../api/index.js';
+import { createLogger } from '../utils/logger.js';
+import { getSettings, getTimeoutValue } from '../utils/configLoader.js';
 import { validateTaskExecution, validatePayload } from '../utils/validator.js';
 import { isDevelopment } from '../utils/envLoader.js';
 import metricsCollector from '../utils/metrics.js';
@@ -21,9 +22,6 @@ const logger = createLogger('orchestrator.js');
  * @description Coordinates browser discovery, session management, and task execution.
  */
 class Orchestrator extends EventEmitter {
-  /**
-   * Creates a new Orchestrator instance
-   */
   constructor() {
     super();
     /** @type {Automator} */
@@ -35,6 +33,7 @@ class Orchestrator extends EventEmitter {
     this.isProcessingTasks = false;
     this.processTimeout = null;
     this.maxTaskQueueSize = 500;
+    this.maxTaskRetries = 2; // Default retry limit
     this.taskDispatchMode = 'centralized';
     this.reuseSharedContext = false;
     this.workerWaitTimeoutMs = 10000;
@@ -62,12 +61,15 @@ class Orchestrator extends EventEmitter {
   async _loadConfig() {
     try {
       const settings = await getSettings();
+      const orchConfig = await getTimeoutValue('orchestration', {});
+
       this.taskDispatchMode = 'centralized';
-      this.reuseSharedContext = settings?.orchestration?.reuseSharedContext || false;
-      this.maxTaskQueueSize = settings?.orchestration?.maxTaskQueueSize || settings?.maxTaskQueueSize || this.maxTaskQueueSize;
-      this.workerWaitTimeoutMs = settings?.orchestration?.workerWaitTimeoutMs || settings?.workerWaitTimeoutMs || this.workerWaitTimeoutMs;
-    } catch (error) {
-      logger.warn(`Failed to load orchestrator config: ${error.message}`);
+      this.reuseSharedContext = orchConfig.reuseSharedContext ?? this.reuseSharedContext;
+      this.maxTaskQueueSize = orchConfig.maxTaskQueueSize ?? this.maxTaskQueueSize;
+      this.workerWaitTimeoutMs = orchConfig.workerWaitTimeoutMs ?? this.workerWaitTimeoutMs;
+      this.defaultColorScheme = settings?.ui?.dashboard?.colorScheme || null;
+    } catch (_error) {
+      logger.warn(`Failed to load orchestrator config: ${_error.message}`);
     }
   }
 
@@ -140,8 +142,8 @@ class Orchestrator extends EventEmitter {
       if (connectedCount > 0) {
         this.automator.startHealthChecks();
       }
-    } catch (error) {
-      logger.error("Browser discovery failed:", error.message);
+    } catch (_error) {
+      logger.error("Browser discovery failed:", _error.message);
     }
   }
 
@@ -169,13 +171,15 @@ class Orchestrator extends EventEmitter {
     }
 
     this.taskQueue.push({ taskName, payload });
-    logger.info(`Task '${taskName}' added to queue. Queue size: ${this.taskQueue.length}. Queue contents: ${this.taskQueue.map(t => t.taskName).join(', ')}`);
+    logger.info(`Task '${taskName}' added to queue. Queue size: ${this.taskQueue.length}`);
 
     if (this.processTimeout) {
       clearTimeout(this.processTimeout);
     }
-    this.processTimeout = setTimeout(() => {
-      this.processTasks();
+
+    this.processTimeout = setTimeout(async () => {
+      this.processTimeout = null;
+      await this.processTasks();
     }, 50); // Debounce task processing
   }
 
@@ -185,11 +189,14 @@ class Orchestrator extends EventEmitter {
    */
   async processTasks() {
     if (this.isProcessingTasks || this.taskQueue.length === 0) {
+      this.emit('tasksProcessed');
       return;
     }
 
     if (this.sessionManager.activeSessionsCount === 0) {
       logger.warn("No active sessions available to process tasks.");
+      this.isProcessingTasks = false;
+      this.emit('tasksProcessed');
       return;
     }
 
@@ -200,7 +207,7 @@ class Orchestrator extends EventEmitter {
     const reuseSharedContext = this.reuseSharedContext || false;
 
     const sharedTasks = [...this.taskQueue];
-    logger.info(`Dispatching ${sharedTasks.length} tasks across sessions using centralized mode: ${sharedTasks.map(t => t.taskName).join(', ')}`);
+    logger.info(`Dispatching ${sharedTasks.length} tasks across sessions.`);
     this.taskQueue.length = 0;
 
     const orderedSessions = [...sessions].sort((a, b) => this._getSessionFailureScore(a.id) - this._getSessionFailureScore(b.id));
@@ -213,7 +220,14 @@ class Orchestrator extends EventEmitter {
       return this.processSharedChecklistForSession(session, tasksForSession, { reuseSharedContext });
     });
 
-    await Promise.allSettled(allSessionPromises);
+    const results = await Promise.allSettled(allSessionPromises);
+
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        const sessionId = orderedSessions[index].id;
+        logger.error(`[${sessionId}] Checklist processing failed with error:`, result.reason?.message || result.reason);
+      }
+    });
 
     this.isProcessingTasks = false;
     logger.info("All sessions have completed their task checklists.");
@@ -232,144 +246,81 @@ class Orchestrator extends EventEmitter {
    * Manages the concurrent execution of a checklist of tasks for a single browser session.
    * @param {object} session - The session object from the SessionManager.
    * @param {Array<object>} tasks - The array of task objects to execute.
+   * @param {object} [options={}] - Execution options.
    * @private
    */
-  async processChecklistForSession(session, tasks, options = {}) {
-    logger.info(`[${session.id}] Starting checklist of ${tasks.length} tasks with up to ${session.workers.length} parallel tabs.`);
-
-    const taskQueue = tasks.slice();
-    let taskIndex = 0;
-    const retryStack = [];
-    const takeTask = () => {
-      if (retryStack.length > 0) {
-        return retryStack.pop();
-      }
-      if (taskIndex >= taskQueue.length) {
-        return null;
-      }
-      const task = taskQueue[taskIndex];
-      taskIndex += 1;
-      return task;
-    };
-    const requeueTask = (task) => {
-      retryStack.push(task);
-    };
-    const reuseSharedContext = options.reuseSharedContext || false;
-    if (reuseSharedContext && !session.sharedContext) {
-      const contexts = session.browser.contexts();
-      session.sharedContext = contexts.length > 0 ? contexts[0] : await session.browser.newContext();
-    }
-    const contexts = session.browser.contexts();
-    const sharedContext = reuseSharedContext ? session.sharedContext : (contexts.length > 0 ? contexts[0] : await session.browser.newContext());
-
-    try {
-      const workerPromises = session.workers.map(async (worker) => {
-        logger.debug(`[${session.id}][Worker ${worker.id}] Starting...`);
-
-        while (true) {
-          // Check for global shutdown signal
-          if (this.isShuttingDown) {
-            logger.debug(`[${session.id}][Worker ${worker.id}] Shutdown signal received. Exiting loop.`);
-            break;
-          }
-
-          const task = takeTask();
-          if (!task) {
-            logger.debug(`[${session.id}][Worker ${worker.id}] No more tasks. Exiting.`);
-            break;
-          }
-
-          // Use atomic worker allocation with await
-          const allocatedWorker = await this.sessionManager.acquireWorker(session.id, { timeoutMs: this.workerWaitTimeoutMs });
-          if (!allocatedWorker) {
-            logger.warn(`[${session.id}] No idle workers available, retrying...`);
-            // Put task back at the front of the list
-            requeueTask(task);
-            continue;
-          }
-
-          let page = null;
-          try {
-            page = await this.sessionManager.acquirePage(session.id, sharedContext);
-
-            logger.info(`[${session.id}][Worker ${worker.id}] Starting task '${task.taskName}' in new tab.`);
-            await this.executeTask(task, page, session);
-          } catch (e) {
-            logger.error(`[${session.id}][Worker ${worker.id}] Critical error during task '${task.taskName}':`, e);
-          } finally {
-            if (page) {
-              await this.sessionManager.releasePage(session.id, page);
-            }
-            // Use atomic worker release with await
-            await this.sessionManager.releaseWorker(session.id, allocatedWorker.id);
-            logger.info(`[${session.id}][Worker ${worker.id}] Finished task '${task.taskName}'. Worker is now idle.`);
-          }
-        }
-      });
-
-      await Promise.all(workerPromises);
-    } finally {
-      // Only close context if we are NOT shutting down globally, 
-      // because sessionManager.shutdown() handles context closing more gracefully now.
-      // Or we can leave it, as double closing is usually fine.
-      if (!this.isShuttingDown && !reuseSharedContext) {
-        await sharedContext.close();
-        logger.info(`[${session.id}] All tasks complete. Closed shared browser context.`);
-      }
-    }
-
-    logger.info(`[${session.id}] Completed all tasks in the checklist.`);
-  }
-
   async processSharedChecklistForSession(session, tasks, options = {}) {
     logger.info(`[${session.id}] Starting shared checklist with ${tasks.length} tasks and up to ${session.workers.length} parallel tabs.`);
 
     const reuseSharedContext = options.reuseSharedContext || false;
-    if (reuseSharedContext && !session.sharedContext) {
+    let sharedContext;
+    let createdNewContext = false;
+
+    if (reuseSharedContext) {
+      if (!session.sharedContext) {
+        const contexts = session.browser.contexts();
+        session.sharedContext = contexts.length > 0 ? contexts[0] : await session.browser.newContext();
+      }
+      sharedContext = session.sharedContext;
+    } else {
       const contexts = session.browser.contexts();
-      session.sharedContext = contexts.length > 0 ? contexts[0] : await session.browser.newContext();
+      // Prefer existing context to maintain session state (theme, cookies, etc.)
+      if (contexts.length > 0) {
+        sharedContext = contexts[0];
+      } else {
+        // Fallback to new context with dark mode forced if possible
+        sharedContext = await session.browser.newContext({
+          colorScheme: this.defaultColorScheme || undefined
+        });
+        createdNewContext = true;
+      }
     }
-    const contexts = session.browser.contexts();
-    const sharedContext = reuseSharedContext ? session.sharedContext : (contexts.length > 0 ? contexts[0] : await session.browser.newContext());
 
     try {
       const taskQueue = tasks.slice();
       let taskIndex = 0;
       const retryStack = [];
       const takeTask = () => {
-        if (retryStack.length > 0) {
-          return retryStack.pop();
-        }
-        if (taskIndex >= taskQueue.length) {
-          return null;
-        }
+        if (retryStack.length > 0) return retryStack.pop();
+        if (taskIndex >= taskQueue.length) return null;
         const task = taskQueue[taskIndex];
         taskIndex += 1;
         return task;
       };
-      const requeueTask = (task) => {
-        retryStack.push(task);
-      };
+      const requeueTask = (task) => retryStack.push(task);
 
       const workerPromises = session.workers.map(async (worker) => {
-        logger.debug(`[${session.id}][Worker ${worker.id}] Starting...`);
+        let lastHealthCheck = 0;
+        const healthCheckInterval = 300000; // 5 minutes
 
         while (true) {
-          if (this.isShuttingDown) {
-            logger.debug(`[${session.id}][Worker ${worker.id}] Shutdown signal received. Exiting loop.`);
+          if (this.isShuttingDown) break;
+
+          // Health check: Ensure browser is still connected
+          if (!session.browser.isConnected()) {
+            logger.error(`[${session.id}][Worker ${worker.id}] Browser disconnected. Cannot process tasks.`);
+            this.sessionManager.markSessionFailed(session.id);
             break;
           }
 
           const task = takeTask();
-          if (!task) {
-            logger.debug(`[${session.id}][Worker ${worker.id}] No more tasks. Exiting.`);
-            break;
+          if (!task) break;
+
+          // Proactive Health Check
+          if (Date.now() - lastHealthCheck > healthCheckInterval) {
+            const health = await this.automator.checkConnectionHealth(session.wsEndpoint);
+            if (!health.healthy) {
+              logger.warn(`[${session.id}] Unhealthy connection detected during checklist. Attempting recovery...`);
+              await this.automator.recoverConnection(session.wsEndpoint);
+            }
+            lastHealthCheck = Date.now();
           }
 
           const allocatedWorker = await this.sessionManager.acquireWorker(session.id, { timeoutMs: this.workerWaitTimeoutMs });
           if (!allocatedWorker) {
-            logger.warn(`[${session.id}] No idle workers available, retrying...`);
+            logger.warn(`[${session.id}] No idle workers available for task '${task.taskName}', retrying...`);
             requeueTask(task);
+            await this._sleep(5000); // Increased delay to reduce log spam
             continue;
           }
 
@@ -377,29 +328,47 @@ class Orchestrator extends EventEmitter {
           try {
             page = await this.sessionManager.acquirePage(session.id, sharedContext);
 
-            logger.info(`[${session.id}][Worker ${worker.id}] Starting task '${task.taskName}' in new tab.`);
-            await this.executeTask(task, page, session);
-          } catch (e) {
-            logger.error(`[${session.id}][Worker ${worker.id}] Critical error during task '${task.taskName}':`, e);
-          } finally {
-            if (page) {
-              await this.sessionManager.releasePage(session.id, page);
+            // Final page health check before task
+            const pageHealth = await this.automator.checkPageResponsive(page);
+            if (!pageHealth.healthy) {
+              logger.warn(`[${session.id}] Page unresponsive before task '${task.taskName}'. Re-creating page.`);
+              await page.close().catch(() => { });
+              page = await this.sessionManager.acquirePage(session.id, sharedContext);
             }
+
+            logger.info(`[${session.id}][Worker ${allocatedWorker.id}] Starting task '${task.taskName}'`);
+            await this.executeTask(task, page, session);
+            session.completedTaskCount = (session.completedTaskCount || 0) + 1;
+          } catch (e) {
+            logger.error(`[${session.id}][Worker ${allocatedWorker.id}] Error during task '${task.taskName}':`, e.message);
+            this._recordSessionOutcome(session.id, false);
+
+            if (task.retriesLeft === undefined) task.retriesLeft = this.maxTaskRetries;
+            if (task.retriesLeft > 0) {
+              task.retriesLeft--;
+              logger.warn(`[${session.id}] Retrying task '${task.taskName}'. Retries left: ${task.retriesLeft}`);
+              requeueTask(task);
+            } else {
+              logger.error(`[${session.id}] Task '${task.taskName}' failed after multiple retries.`);
+              this.emit('taskFailed', { sessionId: session.id, task: task, error: e });
+            }
+          } finally {
+            if (page) await this.sessionManager.releasePage(session.id, page);
             await this.sessionManager.releaseWorker(session.id, allocatedWorker.id);
-            logger.info(`[${session.id}][Worker ${worker.id}] Finished task '${task.taskName}'. Worker is now idle.`);
           }
         }
       });
 
       await Promise.all(workerPromises);
     } finally {
-      if (!this.isShuttingDown && !reuseSharedContext) {
-        await sharedContext.close();
-        logger.info(`[${session.id}] Shared checklist complete. Closed shared browser context.`);
+      if (!this.isShuttingDown && createdNewContext) {
+        try {
+          if (sharedContext) await sharedContext.close();
+        } catch (e) {
+          logger.warn(`[${session.id}] Error closing temporary context:`, e.message);
+        }
       }
     }
-
-    logger.info(`[${session.id}] Completed shared checklist.`);
   }
 
   /**
@@ -408,16 +377,14 @@ class Orchestrator extends EventEmitter {
    */
   async waitForTasksToComplete() {
     if (this.taskQueue.length === 0 && !this.isProcessingTasks) {
-      logger.info("waitForTasksToComplete: No tasks in queue and not processing. Resolving immediately.");
-      return Promise.resolve();
+      logger.info('Resolving immediately as queue is empty and not processing');
+      return;
     }
-
-    logger.info("waitForTasksToComplete: Waiting for tasks to finish using event-driven approach...");
 
     return new Promise(resolve => {
       const checkCompletion = () => {
-        if (this.taskQueue.length === 0 && !this.isProcessingTasks) {
-          logger.info("waitForTasksToComplete: All tasks completed.");
+        if (this.taskQueue.length === 0 && !this.isProcessingTasks && !this.processTimeout) {
+          logger.info('All tasks completed, resolving');
           this.removeListener('tasksProcessed', checkCompletion);
           this.removeListener('allTasksComplete', onComplete);
           resolve();
@@ -425,7 +392,7 @@ class Orchestrator extends EventEmitter {
       };
 
       const onComplete = () => {
-        logger.info("waitForTasksToComplete: Received completion event.");
+        logger.info('Received completion event');
         this.removeListener('tasksProcessed', checkCompletion);
         this.removeListener('allTasksComplete', onComplete);
         resolve();
@@ -433,14 +400,14 @@ class Orchestrator extends EventEmitter {
 
       this.on('tasksProcessed', checkCompletion);
       this.on('allTasksComplete', onComplete);
+
+      // Final check in case it completed right as we attached listeners
+      checkCompletion();
     });
   }
 
   /**
-   * Starts the dashboard server if enabled in config
-   * Non-intrusive: optional module, graceful degradation if missing
-   * @param {number} [port=3001] - Port to start dashboard server on
-   * @returns {Promise<void>}
+   * Stats/Dashboard helpers
    */
   async startDashboard(port = 3001) {
     try {
@@ -456,137 +423,70 @@ class Orchestrator extends EventEmitter {
         const { DashboardServer } = await import('../ui/electron-dashboard/dashboard.js');
         this.dashboardServer = new DashboardServer(port, broadcastIntervalMs);
         await this.dashboardServer.start(this);
-        logger.info(`Dashboard server started on port ${port} (broadcast every ${broadcastIntervalMs}ms)`);
-      } else {
-        logger.info('UI folder not found, dashboard disabled');
+        logger.info(`Dashboard server started on port ${port}`);
       }
-    } catch (error) {
-      logger.warn('Failed to start dashboard server:', error.message);
-      logger.info('Continuing without dashboard...');
+    } catch (_error) {
+      logger.warn('Failed to start dashboard:', _error.message);
     }
   }
 
-  /**
-   * Stops the dashboard server
-   */
-  stopDashboard() {
+  async stopDashboard() {
     if (this.dashboardServer) {
-      this.dashboardServer.stop();
+      await this.dashboardServer.stop();
       this.dashboardServer = null;
     }
   }
 
-  /**
-   * Gets session metrics for dashboard
-   * @returns {Array<object>} Array of session metrics
-   */
   getSessionMetrics() {
     try {
       const sessions = this.sessionManager.getAllSessions() || [];
-      return sessions.map(session => {
-        try {
-          return {
-            id: session.id,
-            name: session.displayName || session.id,
-            status: session.browser?.isConnected() ? 'online' : 'offline',
-            activeWorkers: (session.workers || []).filter(w => w?.isActive).length,
-            totalWorkers: (session.workers || []).length,
-            completedTasks: session.completedTaskCount || 0,
-            taskName: session.currentTaskName || null,
-            processing: session.currentProcessing || null,
-            browserType: session.browserType || null
-          };
-        } catch (_sessionError) {
-          return {
-            id: session?.id || 'unknown',
-            name: session?.displayName || 'Unknown',
-            status: 'offline',
-            activeWorkers: 0,
-            totalWorkers: 0,
-            completedTasks: 0,
-            taskName: null,
-            processing: null,
-            browserType: null
-          };
-        }
-      });
-    } catch (error) {
-      logger.error('Error getting session metrics:', error.message);
+      return sessions.map(session => ({
+        id: session.id,
+        name: session.displayName || session.id,
+        status: session.browser?.isConnected() ? 'online' : 'offline',
+        activeWorkers: (session.workers || []).filter(w => w?.isActive).length,
+        totalWorkers: (session.workers || []).length,
+        completedTasks: session.completedTaskCount || 0,
+        taskName: session.currentTaskName || null,
+        processing: session.currentProcessing || null,
+        browserType: session.browserType || null
+      }));
+    } catch (_error) {
       return [];
     }
   }
 
-  /**
-   * Gets queue status for dashboard
-   * @returns {object} Queue status
-   */
   getQueueStatus() {
-    try {
-      return {
-        queueLength: this.taskQueue?.length || 0,
-        isProcessing: this.isProcessingTasks || false,
-        maxQueueSize: this.maxTaskQueueSize || 500
-      };
-    } catch (error) {
-      logger.error('Error getting queue status:', error.message);
-      return { queueLength: 0, isProcessing: false, maxQueueSize: 500 };
-    }
+    return {
+      queueLength: this.taskQueue.length,
+      isProcessing: this.isProcessingTasks,
+      maxQueueSize: this.maxTaskQueueSize
+    };
   }
 
-  /**
-   * Gets comprehensive metrics for dashboard
-   * @returns {object} Dashboard metrics
-   */
   getMetrics() {
     try {
-      const stats = metricsCollector?.getStats?.() || {};
+      const stats = metricsCollector.getStats() || {};
       return {
         ...stats,
-        startTime: metricsCollector?.metrics?.startTime || Date.now(),
-        lastResetTime: metricsCollector?.metrics?.lastResetTime || Date.now()
+        startTime: metricsCollector.metrics?.startTime,
+        lastResetTime: metricsCollector.metrics?.lastResetTime
       };
-    } catch (error) {
-      logger.error('Error getting metrics:', error.message);
+    } catch (_error) {
       return {};
     }
   }
 
-  /**
-   * Gets recent task history for dashboard
-   * @param {number} [limit=10] - Number of recent tasks to return
-   * @returns {Array<object>} Recent task executions
-   */
   getRecentTasks(limit = 10) {
-    try {
-      return metricsCollector?.getRecentTasks?.(limit) || [];
-    } catch (error) {
-      logger.error('Error getting recent tasks:', error.message);
-      return [];
-    }
+    return metricsCollector?.getRecentTasks?.(limit) || [];
   }
 
-  /**
-   * Gets task statistics breakdown for dashboard
-   * @returns {object} Task statistics
-   */
   getTaskBreakdown() {
-    try {
-      return metricsCollector?.getTaskBreakdown?.() || {};
-    } catch (error) {
-      logger.error('Error getting task breakdown:', error.message);
-      return {};
-    }
+    return metricsCollector?.getTaskBreakdown?.() || {};
   }
 
-  /**
-   * Logs current metrics for dashboard
-   */
   logMetrics() {
-    try {
-      metricsCollector?.logStats?.();
-    } catch (error) {
-      logger.error('Error logging metrics:', error.message);
-    }
+    metricsCollector?.logStats?.();
   }
 
   /**
@@ -595,80 +495,49 @@ class Orchestrator extends EventEmitter {
    * @returns {Promise<void>}
    */
   async shutdown(force = false) {
-    logger.info(`Orchestrator shutting down... (Force: ${force})`);
     this.isShuttingDown = true;
-    if (this.processTimeout) {
-      clearTimeout(this.processTimeout);
-      this.processTimeout = null;
-    }
+    if (this.processTimeout) clearTimeout(this.processTimeout);
 
-    if (!force) {
-      logger.info("Waiting for task processing to complete...");
-      await this.waitForTasksToComplete();
-    } else {
-      logger.info("Force shutdown requested. Skipping task completion wait.");
-    }
+    if (!force) await this.waitForTasksToComplete();
 
-    logger.info("Final system metrics:");
-    metricsCollector.logStats();
-    await metricsCollector.generateJsonReport();
-
-    // CRITICAL: Call sessionManager.shutdown() to close tabs!
-    if (this.sessionManager) {
-      await this.sessionManager.shutdown();
-    }
-
-    // Dashboard server cleanup
-    if (this.dashboardServer) {
-      this.dashboardServer.stop();
-      this.dashboardServer = null;
-    }
-
+    if (this.sessionManager) await this.sessionManager.shutdown();
+    if (this.dashboardServer) await this.stopDashboard();
     await this.automator.shutdown();
+
+    // Log final stats summary before exiting
+    this.logMetrics();
+
+    // Also generate the persistence report
+    await metricsCollector.generateJsonReport();
 
     logger.info("Orchestrator shutdown completed");
   }
 
-  /**
-   * Helper to import task modules (extracted for testing/mocking)
-   * Handles case-insensitive task names (e.g., twitterfollow -> twitterFollow)
-   * @param {string} taskName 
-   * @returns {Promise<any>}
-   * @private
-   */
   async _importTaskModule(taskName) {
     const cacheBuster = isDevelopment() ? `?v=${Date.now()}` : '';
     const fs = await import('fs');
     const path = await import('path');
-    const aliasMap = new Map([
-      ['run-retweet-test', 'retweet-test']
-    ]);
-    const normalizedName = String(taskName).toLowerCase();
-    const resolvedTaskName = aliasMap.get(normalizedName) || taskName;
 
-    // Try exact match first
-    if (fs.existsSync(path.join(process.cwd(), 'tasks', `${resolvedTaskName}.js`))) {
-      return import(`../tasks/${resolvedTaskName}.js${cacheBuster}`);
+    if (fs.existsSync(path.join(process.cwd(), 'tasks', `${taskName}.js`))) {
+      return import(`../tasks/${taskName}.js${cacheBuster}`);
     }
 
-    // Case-insensitive search
     const taskFiles = fs.readdirSync(path.join(process.cwd(), 'tasks')).filter(f => f.endsWith('.js'));
-    const matchedFile = taskFiles.find(f => f.replace(/\.js$/i, '').toLowerCase() === normalizedName);
+    const matchedFile = taskFiles.find(f => f.replace(/\.js$/i, '').toLowerCase() === taskName.toLowerCase());
 
     if (matchedFile) {
       const actualName = matchedFile.replace('.js', '');
       return import(`../tasks/${actualName}.js${cacheBuster}`);
     }
 
-    // Fallback to original
-    return import(`../tasks/${resolvedTaskName}.js${cacheBuster}`);
+    return import(`../tasks/${taskName}.js${cacheBuster}`);
   }
 
   /**
    * Loads and executes a single task.
    * @param {{taskName: string, payload: object}} task - The task object.
-   * @param {object} page - The Playwright Page object to run the task in.
-   * @param {object} session - The session to use.
+   * @param {object} page - The Playwright Page object.
+   * @param {object} session - The session.
    * @private
    */
   async executeTask(task, page, session) {
@@ -679,46 +548,36 @@ class Orchestrator extends EventEmitter {
     session.currentTaskName = task.taskName;
     session.currentProcessing = 'Executing task...';
 
-    // Debug log
-    logger.info(`[Orchestrator] Executing task: '${task.taskName}' with payload: ${JSON.stringify(task.payload)}`);
-
     try {
       const validation = validateTaskExecution(page, task.payload);
-      if (!validation.isValid) {
-        throw new Error(`Task execution validation failed: ${validation.errors.join(', ')}`);
-      }
+      if (!validation.isValid) throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
 
       const taskModule = await this._importTaskModule(task.taskName);
-      if (typeof taskModule.default === 'function') {
-        const augmentedPayload = {
-          ...task.payload,
-          browserInfo: session.browserInfo || 'unknown_profile'
-        };
+      if (typeof taskModule.default !== 'function') throw new Error(`Task '${task.taskName}' missing default export.`);
 
-        const payloadValidation = validatePayload(augmentedPayload);
-        if (!payloadValidation.isValid) {
-          throw new Error(`Augmented payload validation failed: ${payloadValidation.errors.join(', ')}`);
-        }
+      const augmentedPayload = {
+        ...task.payload,
+        browserInfo: session.browserInfo || 'unknown'
+      };
 
-        // The task now receives a Page object directly.
-        await loggerContext.run({ taskName: task.taskName, sessionId: session.id }, async () => {
-          await taskModule.default(page, augmentedPayload);
+      await api.withPage(page, async () => {
+        await api.init(page, {
+          persona: augmentedPayload.persona || 'casual',
+          logger: logger,
+          colorScheme: augmentedPayload.colorScheme || this.defaultColorScheme || null,
         });
-        success = true;
-      } else {
-        throw new Error(`Task '${task.taskName}' does not export a default function.`);
-      }
+        await taskModule.default(page, augmentedPayload);
+      });
+      success = true;
+      this._recordSessionOutcome(session.id, true);
     } catch (err) {
       error = err;
       success = false;
-      logger.error(`Error executing task '${task.taskName}' on session ${session.id}:`, err);
+      logger.error(`Task '${task.taskName}' error:`, err.message);
     } finally {
       session.currentTaskName = null;
       session.currentProcessing = null;
-      const duration = Date.now() - startTime;
-      const wasSuccessful = success === true;
-      metricsCollector.recordTaskExecution(task.taskName, duration, wasSuccessful, session.id, error);
-      this._recordSessionOutcome(session.id, wasSuccessful);
+      metricsCollector.recordTaskExecution(task.taskName, Date.now() - startTime, success, session.id, error);
     }
   }
 
@@ -730,14 +589,11 @@ class Orchestrator extends EventEmitter {
     const current = this.sessionFailureScores.get(sessionId) || 0;
     if (success) {
       const next = Math.max(0, current - 1);
-      if (next === 0) {
-        this.sessionFailureScores.delete(sessionId);
-      } else {
-        this.sessionFailureScores.set(sessionId, next);
-      }
-      return;
+      if (next === 0) this.sessionFailureScores.delete(sessionId);
+      else this.sessionFailureScores.set(sessionId, next);
+    } else {
+      this.sessionFailureScores.set(sessionId, current + 1);
     }
-    this.sessionFailureScores.set(sessionId, current + 1);
   }
 }
 

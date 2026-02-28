@@ -52,5 +52,29 @@ export const mathUtils = {
     sample: (array) => {
         if (!array || array.length === 0) return null;
         return array[Math.floor(Math.random() * array.length)];
+    },
+
+    /**
+     * PID Controller step.
+     * Calculates the next position/velocity based on target error.
+     * @param {object} state - Persistent state (pos, integral, prevError)
+     * @param {number} target - Target coordinate
+     * @param {object} model - PID constants (Kp, Ki, Kd)
+     * @param {number} dt - Time step delta
+     * @returns {number} New position
+     */
+    pidStep: (state, target, model, dt = 0.1) => {
+        const error = target - state.pos;
+        state.integral = (state.integral || 0) + (error * dt);
+        // Prevent integral windup
+        state.integral = Math.max(-10, Math.min(10, state.integral));
+        const derivative = (error - (state.prevError || 0)) / dt;
+
+        const output = (model.Kp * error) + (model.Ki * state.integral) + (model.Kd * derivative);
+
+        state.prevError = error;
+        state.pos += output; // Simplified accumulation
+        return state.pos;
     }
 };
+

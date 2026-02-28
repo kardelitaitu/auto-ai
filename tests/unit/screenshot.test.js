@@ -1,5 +1,15 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { takeScreenshot } from '../../../utils/screenshot.js';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+
+vi.mock('../../api/index.js', () => {
+  const api = {
+    getPage: vi.fn(),
+    eval: vi.fn().mockResolvedValue({ width: 1280, height: 720 })
+  };
+  return { api, default: api };
+});
+
+import { api } from '../../api/index.js';
+import { takeScreenshot } from '../../utils/screenshot.js';
 
 vi.mock('fs', async () => {
   const actual = await vi.importActual('fs');
@@ -10,7 +20,7 @@ vi.mock('fs', async () => {
   };
 });
 
-vi.mock('../../../utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   createLogger: vi.fn(() => ({
     debug: vi.fn(),
     info: vi.fn(),
@@ -24,8 +34,10 @@ describe('screenshot.js', () => {
 
   beforeEach(() => {
     mockPage = {
-      screenshot: vi.fn().mockResolvedValue(Buffer.from('fake-image'))
+      screenshot: vi.fn().mockResolvedValue(Buffer.from('fake-image')),
+      setViewportSize: vi.fn().mockResolvedValue(undefined)
     };
+    api.getPage.mockReturnValue(mockPage);
   });
 
   describe('takeScreenshot', () => {

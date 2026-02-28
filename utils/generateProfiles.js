@@ -11,7 +11,7 @@ const OUTPUT_FILE = path.join(__dirname, '../data/twitterActivityProfiles.json')
 // Tweaked Bounds
 const BOUNDS = {
     Skimmer: {
-        readingPhase: { mean: 60000, deviation: 20000 },
+        readingPhase: { mean: 10000, deviation: 3000 },
         scrollPause: { mean: 800, deviation: 300 },
         refresh: 0.2, dive: 0.2,
         tweetDive: 0.05, like: 0.01,
@@ -19,7 +19,7 @@ const BOUNDS = {
         tweet: 0.01 // 1%
     },
     Balanced: {
-        readingPhase: { mean: 120000, deviation: 45000 },
+        readingPhase: { mean: 15000, deviation: 5000 },
         scrollPause: { mean: 2000, deviation: 800 },
         refresh: 0.1, dive: 0.3,
         tweetDive: 0.1, like: 0.015,
@@ -27,7 +27,7 @@ const BOUNDS = {
         tweet: 0.05 // 5%
     },
     DeepDiver: {
-        readingPhase: { mean: 210000, deviation: 70000 },
+        readingPhase: { mean: 20000, deviation: 5000 },
         scrollPause: { mean: 4000, deviation: 1500 },
         refresh: 0.05, dive: 0.6,
         tweetDive: 0.2, like: 0.018,
@@ -35,7 +35,7 @@ const BOUNDS = {
         tweet: 0.02 // 2%
     },
     Lurker: {
-        readingPhase: { mean: 250000, deviation: 90000 },
+        readingPhase: { mean: 20000, deviation: 8000 },
         scrollPause: { mean: 3000, deviation: 1000 },
         refresh: 0.05, dive: 0.1,
         tweetDive: 0.15, like: 0.005,
@@ -43,7 +43,7 @@ const BOUNDS = {
         tweet: 0.001 // 0.1%
     },
     DoomScroller: {
-        readingPhase: { mean: 30000, deviation: 12000 },
+        readingPhase: { mean: 8000, deviation: 2000 },
         scrollPause: { mean: 600, deviation: 200 },
         refresh: 0.1, dive: 0.05,
         tweetDive: 0.02, like: 0.005,
@@ -51,7 +51,7 @@ const BOUNDS = {
         tweet: 0.001 // 0.1%
     },
     NewsJunkie: {
-        readingPhase: { mean: 40000, deviation: 15000 },
+        readingPhase: { mean: 12000, deviation: 4000 },
         scrollPause: { mean: 1200, deviation: 400 },
         refresh: 0.6, dive: 0.1,
         tweetDive: 0.3, like: 0.01,
@@ -59,7 +59,7 @@ const BOUNDS = {
         tweet: 0.15 // 15%
     },
     Stalker: {
-        readingPhase: { mean: 120000, deviation: 40000 },
+        readingPhase: { mean: 15000, deviation: 4000 },
         scrollPause: { mean: 2000, deviation: 800 },
         refresh: 0.1, dive: 0.9,
         tweetDive: 0.05, like: 0.01,
@@ -85,8 +85,8 @@ class ProfileFactory {
 
         // 1. Timings
         const pReading = {
-            mean: Math.floor(Math.max(15000, this.gaussian(bounds.readingPhase.mean, 10000))),
-            deviation: Math.floor(Math.max(5000, this.gaussian(bounds.readingPhase.deviation, 2000)))
+            mean: Math.floor(Math.max(5000, this.gaussian(bounds.readingPhase.mean, 5000))),
+            deviation: Math.floor(Math.max(2000, this.gaussian(bounds.readingPhase.deviation, 1000)))
         };
 
         const pScroll = {

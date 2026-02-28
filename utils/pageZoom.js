@@ -1,3 +1,4 @@
+import { api } from '../api/index.js';
 /**
  * Page Zoom Utilities
  * Provides keyboard and mouse-based zoom control for Playwright pages
@@ -5,7 +6,7 @@
  */
 
 import { createLogger } from './logger.js';
-import { mathUtils } from './mathUtils.js';
+import { _mathUtils } from './mathUtils.js';
 
 const logger = createLogger('pageZoom.js');
 
@@ -22,7 +23,7 @@ export async function pageZoomIn(page, times = 1) {
     try {
         for (let i = 0; i < times; i++) {
             await page.keyboard.press('Control+=');
-            await page.waitForTimeout(mathUtils.randomInRange(100, 200));
+            await api.wait(1000);
         }
         logger.info(`[pageZoom] Zoom IN successful using keyboard (${times} steps)`);
         return { success: true, method: 'keyboard' };
@@ -37,7 +38,7 @@ export async function pageZoomIn(page, times = 1) {
             for (let i = 0; i < times; i++) {
                 await page.mouse.move(centerX, centerY);
                 await page.mouse.wheel(0, -300);
-                await page.waitForTimeout(mathUtils.randomInRange(100, 200));
+                await api.wait(1000);
             }
             logger.info(`[pageZoom] Zoom IN successful using mouse wheel fallback (${times} steps)`);
             return { success: true, method: 'mouse_wheel' };
@@ -61,7 +62,7 @@ export async function pageZoomOut(page, times = 1) {
     try {
         for (let i = 0; i < times; i++) {
             await page.keyboard.press('Control+-');
-            await page.waitForTimeout(mathUtils.randomInRange(100, 200));
+            await api.wait(1000);
         }
         logger.info(`[pageZoom] Zoom OUT successful using keyboard (${times} steps)`);
         return { success: true, method: 'keyboard' };
@@ -76,7 +77,7 @@ export async function pageZoomOut(page, times = 1) {
             for (let i = 0; i < times; i++) {
                 await page.mouse.move(centerX, centerY);
                 await page.mouse.wheel(0, 300);
-                await page.waitForTimeout(mathUtils.randomInRange(100, 200));
+                await api.wait(1000);
             }
             logger.info(`[pageZoom] Zoom OUT successful using mouse wheel fallback (${times} steps)`);
             return { success: true, method: 'mouse_wheel' };
@@ -97,7 +98,7 @@ export async function pageZoomReset(page) {
 
     try {
         await page.keyboard.press('Control+0');
-        await page.waitForTimeout(mathUtils.randomInRange(100, 200));
+        await api.wait(1000);
         logger.info(`[pageZoom] Zoom reset successful using keyboard`);
         return { success: true, method: 'keyboard' };
     } catch (keyboardError) {
@@ -109,7 +110,7 @@ export async function pageZoomReset(page) {
                 document.body.style.transform = 'scale(1)';
                 document.body.style.transformOrigin = 'top left';
             });
-            await page.waitForTimeout(mathUtils.randomInRange(100, 200));
+            await api.wait(1000);
             logger.info(`[pageZoom] Zoom reset successful using JavaScript`);
             return { success: true, method: 'javascript' };
         } catch (jsError) {

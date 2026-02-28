@@ -1,12 +1,14 @@
 /**
- * Scroll Humanizer Module
+ * Scroll Humanizer Module - Now uses Unified API
  * Provides natural scroll patterns with easing and variability
- * Simulates human scrolling behavior.
+ * Uses api.scroll() and api.scroll.focus() for human-like behavior
  * 
  * @module utils/scroll-humanizer
  */
 
+import { api } from '../api/index.js';
 import { humanTiming } from './human-timing.js';
+import { mathUtils } from './mathUtils.js';
 
 const SCROLL_DEFAULTS = {
     distanceMin: 300,
@@ -21,12 +23,12 @@ const SCROLL_DEFAULTS = {
 
 function getScrollDistance(options = {}) {
     const { min = SCROLL_DEFAULTS.distanceMin, max = SCROLL_DEFAULTS.distanceMax } = options;
-    return humanTiming.randomInRange(min, max);
+    return mathUtils.randomInRange(min, max);
 }
 
 function getScrollDuration(options = {}) {
     const { min = SCROLL_DEFAULTS.durationMin, max = SCROLL_DEFAULTS.durationMax } = options;
-    return humanTiming.randomInRange(min, max);
+    return mathUtils.randomInRange(min, max);
 }
 
 function getPauseDuration(options = {}) {
@@ -34,55 +36,38 @@ function getPauseDuration(options = {}) {
     return humanTiming.getScrollPause({ min, max });
 }
 
-async function naturalScroll(page, options = {}) {
+/**
+ * Natural scroll - now uses api.scroll()
+ * @param {number} distance - Scroll distance
+ * @param {object} options - Options
+ */
+async function naturalScroll(distance, options = {}) {
     const {
-        distance = getScrollDistance(options),
         duration = getScrollDuration(options),
-        direction = 'down',
-        smooth = true
+        direction = 'down'
     } = options;
 
     const scrollAmount = direction === 'down' ? distance : -distance;
-    
-    if (smooth) {
-        await page.evaluate((deltaY, durationMs) => {
-            const start = window.scrollY;
-            const startTime = performance.now();
-            
-            function easeOutQuad(t) {
-                return t * (2 - t);
-            }
-            
-            function animate(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / durationMs, 1);
-                const easedProgress = easeOutQuad(progress);
-                window.scrollTo(0, start + (deltaY * easedProgress));
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                }
-            }
-            
-            requestAnimationFrame(animate);
-        }, scrollAmount, duration);
-    } else {
-        await page.evaluate((deltaY) => {
-            window.scrollBy(0, deltaY);
-        }, scrollAmount);
-    }
 
-    return { distance, duration };
+    // Use API for human-like scrolling
+    await api.scroll(scrollAmount);
+
+    return { distance: scrollAmount, duration };
 }
 
-async function scrollWithPause(page, options = {}) {
+/**
+ * Scroll with pause after
+ * @param {number} distance - Scroll distance
+ * @param {object} options - Options including pauseMin, pauseMax
+ */
+async function scrollWithPause(distance, options = {}) {
     const {
         pauseMin = SCROLL_DEFAULTS.pauseMin,
         pauseMax = SCROLL_DEFAULTS.pauseMax,
         ...scrollOptions
     } = options;
 
-    await naturalScroll(page, scrollOptions);
+    await naturalScroll(distance, scrollOptions);
 
     const pauseDuration = getPauseDuration({ min: pauseMin, max: pauseMax });
     await humanTiming.humanDelay(pauseDuration);
@@ -90,15 +75,21 @@ async function scrollWithPause(page, options = {}) {
     return pauseDuration;
 }
 
-async function scrollMultiple(page, count = 3, options = {}) {
+/**
+ * Scroll multiple times with pauses
+ * @param {number} count - Number of scrolls
+ * @param {object} options - Scroll options
+ */
+async function scrollMultiple(count = 3, options = {}) {
     const results = [];
-    
+
     for (let i = 0; i < count; i++) {
-        const result = await scrollWithPause(page, options);
+        const distance = getScrollDistance(options);
+        const result = await scrollWithPause(distance, options);
         results.push(result);
 
         if (i < count - 1) {
-            const breakDuration = humanTiming.randomInRange(500, 1500);
+            const breakDuration = mathUtils.randomInRange(500, 1500);
             await humanTiming.humanDelay(breakDuration);
         }
     }
@@ -106,103 +97,65 @@ async function scrollMultiple(page, count = 3, options = {}) {
     return results;
 }
 
-async function scrollToElement(page, selector, options = {}) {
+/**
+ * Scroll to element - now uses api.scroll.focus()
+ * @param {string} selector - CSS selector
+ * @param {object} options - Options
+ */
+async function scrollToElement(selector, options = {}) {
     const {
-        offset = 100,
-        smooth = true,
         timeout = 5000
     } = options;
 
-    const startTime = Date.now();
+    // Use API's golden view scroll
+    await api.scroll.focus(selector, { timeout });
 
-    while (Date.now() - startTime < timeout) {
-        const element = await page.$(selector);
-        
-        if (element) {
-            const box = await element.boundingBox();
-            if (box) {
-                const targetY = box.y - offset;
-                await page.evaluate((y, smoothScroll) => {
-                    if (smoothScroll) {
-                        window.scrollTo({ top: y, behavior: 'smooth' });
-                    } else {
-                        window.scrollTo(0, y);
-                    }
-                }, targetY, smooth);
-                return true;
-            }
-        }
-
-        await humanTiming.humanDelay(200);
-    }
-
-    return false;
+    return true;
 }
 
-async function scrollToTop(page, options = {}) {
-    const { smooth = true } = options;
-    await page.evaluate((isSmooth) => {
-        window.scrollTo({ top: 0, behavior: isSmooth ? 'smooth' : 'auto' });
-    }, smooth);
+/**
+ * Quick scroll for Twitter timelines
+ * Uses api.scroll() with human-like behavior
+ * @param {number} [distance] - Optional distance, random if not provided
+ */
+async function timelineScroll(distance = null) {
+    const scrollDistance = distance || mathUtils.randomInRange(300, 600);
+    await api.scroll(scrollDistance);
+    await humanTiming.humanDelay(mathUtils.randomInRange(200, 500));
 }
 
-async function scrollToBottom(page, options = {}) {
-    const { smooth = true } = options;
-    await page.evaluate((isSmooth) => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: isSmooth ? 'smooth' : 'auto' });
-    }, smooth);
+/**
+ * Backscroll (up) 
+ * @param {number} [distance] - Optional distance
+ */
+async function backScroll(distance = null) {
+    const scrollDistance = distance || mathUtils.randomInRange(100, 300);
+    await api.scroll(-scrollDistance);
 }
 
-async function getScrollPosition(page) {
-    return await page.evaluate(() => ({
-        y: window.scrollY,
-        x: window.scrollX,
-        height: window.innerHeight,
-        scrollHeight: document.body.scrollHeight,
-        percent: (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100
-    }));
-}
-
-async function scrollUntil(page, conditionFn, options = {}) {
-    const {
-        maxScrolls = 20,
-        delay: _delay = 1000
-    } = options;
-
-    for (let i = 0; i < maxScrolls; i++) {
-        const position = await getScrollPosition(page);
-        
-        if (await conditionFn(position)) {
-            return { success: true, scrolls: i, position };
-        }
-
-        await scrollWithPause(page, options);
-    }
-
-    return { success: false, scrolls: maxScrolls, position: await getScrollPosition(page) };
-}
-
-function calculateScrollProgress(pagePosition) {
-    if (pagePosition.scrollHeight <= pagePosition.height) {
-        return 100;
-    }
-    return Math.min(100, Math.max(0, pagePosition.percent));
-}
-
-export const scrollHumanizer = {
-    defaults: SCROLL_DEFAULTS,
-    getScrollDistance,
-    getScrollDuration,
-    getPauseDuration,
+// Export all functions
+export {
     naturalScroll,
     scrollWithPause,
     scrollMultiple,
     scrollToElement,
-    scrollToTop,
-    scrollToBottom,
-    getScrollPosition,
-    scrollUntil,
-    calculateScrollProgress
+    timelineScroll,
+    backScroll,
+    getScrollDistance,
+    getScrollDuration,
+    getPauseDuration,
+    SCROLL_DEFAULTS
 };
 
-export default scrollHumanizer;
+export default {
+    naturalScroll,
+    scrollWithPause,
+    scrollMultiple,
+    scrollToElement,
+    timelineScroll,
+    backScroll,
+    getScrollDistance,
+    getScrollDuration,
+    getPauseDuration,
+    SCROLL_DEFAULTS
+};

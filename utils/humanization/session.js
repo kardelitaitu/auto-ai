@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 /**
  * Session Manager
  * Human-like session patterns based on time-of-day
@@ -14,9 +15,10 @@ import { mathUtils } from '../mathUtils.js';
 import { scrollRandom } from '../scroll-helper.js';
 
 export class SessionManager {
-    constructor(page, logger) {
+    constructor(page, logger, agent = null) {
         this.page = page;
         this.logger = logger;
+        this.agent = agent;
     }
 
     /**
@@ -25,6 +27,23 @@ export class SessionManager {
      * @returns {object} Session configuration
      */
     getOptimalLength() {
+        // Use agent config if available, otherwise fallback to heuristics
+        const configMinSec = this.agent?.config?.session?.minDuration;
+        const configMaxSec = this.agent?.config?.session?.maxDuration;
+
+        if (configMinSec && configMaxSec) {
+            const minMs = configMinSec * 1000;
+            const maxMs = configMaxSec * 1000;
+            const targetMs = mathUtils.randomInRange(minMs, maxMs);
+
+            return {
+                minMs,
+                maxMs,
+                targetMs,
+                reason: `configured ${configMinSec}-${configMaxSec}s session`
+            };
+        }
+
         const hour = new Date().getHours();
         const isWeekend = [0, 6].includes(new Date().getDay());
 
@@ -110,8 +129,8 @@ export class SessionManager {
 
         for (let i = 0; i < steps; i++) {
             // Gradual ramp up
-            const factor = (i + 1) / steps;
-            await this.page.waitForTimeout(mathUtils.gaussian(1000 * factor, 300));
+            const _factor = (i + 1) / steps;
+            await api.wait(1000);
         }
     }
 
@@ -120,7 +139,7 @@ export class SessionManager {
      * Every few cycles, humans take a "boredom" break
      */
     async boredomPause(page) {
-        const duration = mathUtils.randomInRange(2000, 5000);
+        const _duration = mathUtils.randomInRange(2000, 5000);
 
         // Human boredom behaviors:
         // 1. Scroll randomly
@@ -147,7 +166,7 @@ export class SessionManager {
         const behavior = mathUtils.sample(behaviors);
         await behavior();
 
-        await page.waitForTimeout(duration);
+        await api.wait(1000);
 
         // Move mouse back
         await page.mouse.move(400, 400);
@@ -166,12 +185,12 @@ export class SessionManager {
             async () => {
                 // Bookmark (simulated)
                 await page.mouse.move(800, 300);
-                await page.waitForTimeout(500);
+                await api.wait(1000);
             },
             async () => {
                 // Check mentions
                 await page.mouse.move(100, 100);
-                await page.waitForTimeout(1000);
+                await api.wait(1000);
             },
             async () => {
                 // Final scroll
@@ -193,7 +212,7 @@ export class SessionManager {
         await behavior();
 
         // Final pause
-        await page.waitForTimeout(mathUtils.gaussian(1500, 500));
+        await api.wait(1000);
     }
 
     /**
@@ -211,6 +230,11 @@ export class SessionManager {
      */
     shouldEndSession(sessionDurationMs) {
         const config = this.getOptimalLength();
+
+        // Strictly enforce minimum session length
+        if (sessionDurationMs < config.minMs) {
+            return false;
+        }
 
         // End if past max or at 90% with some randomness
         if (sessionDurationMs > config.maxMs) {

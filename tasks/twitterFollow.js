@@ -2,21 +2,14 @@
  * @fileoverview Twitter Follow Task
  * @module tasks/twitterFollow.js
  */
-import { takeScreenshot } from '../utils/screenshot.js';
-// --- CONFIGURATION ---
-const DEFAULT_TASK_TIMEOUT_MS = 3 * 60 * 1000; // 4 Minutes Hard Limit
-const TARGET_TWEET_URL = 'https://x.com/_nadiku/status/1998218314703852013';
-
-// Manual Referrer Override (optional, for testing specific sources)
-// Set to '' to disable. When set, has 20% chance to be used instead of dynamic engine.
-let MANUAL_REFERRER = ''; // Example: 'https://www.reddit.com/r/technology/'
-
 import { createLogger } from '../utils/utils.js';
 import { TwitterAgent } from '../utils/twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
 import { mathUtils } from '../utils/mathUtils.js';
 import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
+import { api } from '../api/index.js';
+import { takeScreenshot } from '../utils/screenshot.js';
 
 // Helper: Extract username from tweet URL
 function extractUsername(tweetUrl) {
@@ -42,7 +35,9 @@ export default async function twitterFollowTask(page, payload) {
     // const startTime = process.hrtime.bigint();
     const browserInfo = payload.browserInfo || "unknown_profile";
     const logger = createLogger(`twitterFollowTask [${browserInfo}]`);
+    const DEFAULT_TASK_TIMEOUT_MS = 3 * 60 * 1000;
     const taskTimeoutMs = payload.taskTimeoutMs || DEFAULT_TASK_TIMEOUT_MS;
+    const TARGET_TWEET_URL = 'https://x.com/_nadiku/status/1998218314703852013';
 
     logger.info(`[twitterFollow] Initializing Entropy Agent... (Timeout: ${(taskTimeoutMs / 1000 / 60).toFixed(1)}m)`);
 
@@ -71,23 +66,16 @@ export default async function twitterFollowTask(page, payload) {
 
                 // Enforce Theme
                 if (profile.theme) {
-                    await page.emulateMedia({ colorScheme: profile.theme });
+                    await api.emulateMedia({ colorScheme: profile.theme });
                 }
 
-                // 2. Apply Humanization
-                await applyHumanizationPatch(page, logger);
-
-                // 3. WARM-UP JITTER (Decouple browser launch from action)
+                // 2. WARM-UP JITTER (Decouple browser launch from action)
                 const wakeUpTime = mathUtils.randomInRange(2000, 8000);
                 logger.info(`[Startup] Warming up (Human Jitter) for ${(wakeUpTime / 1000).toFixed(1)}s...`);
-                await page.waitForTimeout(wakeUpTime);
+                await api.wait(wakeUpTime);
 
 
-                // 4. Initial Login Check - SKIPPED to preserve Referrer Mechanism
-                // We rely on the target page navigation to handle auth states naturally
-
-
-                // 5. Navigation with Advanced Referrer Engine
+                // 3. Navigation with Advanced Referrer Engine
                 logger.info(`[twitterFollow] Initializing Referrer Engine...`);
 
                 const targetUrl = payload.targetUrl || payload.url || TARGET_TWEET_URL;
@@ -98,60 +86,37 @@ export default async function twitterFollowTask(page, payload) {
                 }
 
                 const engine = new ReferrerEngine({ addUTM: false });
-                let ctx;
-
-                // Manual Override Logic: 20% chance to use MANUAL_REFERRER if set
-                if (MANUAL_REFERRER && MANUAL_REFERRER.length > 0 && Math.random() < 0.20) {
-                    logger.info(`[twitterFollow][Anti-Sybil] Using Manual Referrer (20% chance): ${MANUAL_REFERRER}`);
-                    ctx = {
-                        strategy: 'manual_override',
-                        referrer: MANUAL_REFERRER,
-                        headers: {
-                            'Referer': MANUAL_REFERRER,
-                            'Sec-Fetch-Site': 'cross-site',
-                            'Sec-Fetch-Mode': 'navigate',
-                            'Sec-Fetch-User': '?1',
-                            'Sec-Fetch-Dest': 'document'
-                        },
-                        targetWithParams: targetUrl
-                    };
-                } else {
-                    // Use Dynamic Engine
-                    ctx = engine.generateContext(targetUrl);
-                    logger.info(`[twitterFollow][Anti-Sybil] Engine Strategy: ${ctx.strategy}`);
-                    logger.info(`[twitterFollow][Anti-Sybil] Referrer: ${ctx.referrer || '(Direct Traffic - No Referrer)'}`);
-                }
+                const ctx = engine.generateContext(targetUrl);
+                logger.info(`[twitterFollow][Anti-Sybil] Engine Strategy: ${ctx.strategy}`);
+                logger.info(`[twitterFollow][Anti-Sybil] Referrer: ${ctx.referrer || '(Direct Traffic - No Referrer)'}`);
 
                 // Set Headers (Referer + Sec-Fetch-*)
-                await page.setExtraHTTPHeaders(ctx.headers);
+                await api.setExtraHTTPHeaders(ctx.headers);
 
                 // Navigate to target
                 logger.info(`[twitterFollow] Navigating to Target Tweet: ${targetUrl}`);
                 try {
-                    await page.goto(ctx.targetWithParams, { waitUntil: 'domcontentloaded', timeout: 90000 });
+                    await api.goto(ctx.targetWithParams, { waitUntil: 'domcontentloaded', timeout: 90000 });
                 } catch (navError) {
                     logger.warn(`[twitterFollow] Navigation failed: ${navError.message}`);
                     if (navError.message.includes('ERR_TOO_MANY_REDIRECTS')) {
                         logger.error(`[twitterFollow] 🛑 Fatal: Infinite redirect loop detected on ${targetUrl}. Aborting task.`);
                         throw new Error('Fatal: ERR_TOO_MANY_REDIRECTS', { cause: navError });
                     }
-                    // For other errors, maybe retry once or let general catch handle it?
-                    // Let's try a fallback to direct goto without params if headers failed us
                     logger.warn(`[twitterFollow] Retrying navigation without referrer headers...`);
-                    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                    await api.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
                 }
 
                 // Explicitly wait for the tweet to be visible
                 try {
                     logger.info(`[twitterFollow] Waiting for tweet content to load...`);
-                    await page.waitForSelector('article[data-testid="tweet"]', { state: 'visible', timeout: 60000 });
+                    await api.waitVisible('article[data-testid="tweet"]', { timeout: 60000 });
                 } catch (e) {
                     logger.warn(`[twitterFollow] Timed out waiting for tweet selector. Page might be incomplete.`);
                     throw new Error('Fatal: Tweet selector timeout - likely stuck or no internet', { cause: e });
                 }
 
-                // 6. Simulate Reading (Tweet Thread)
-                // Use agent.simulateReading() but force it to be purely reading (disable diving) by overriding probabilities temporarily
+                // 4. Simulate Reading (Tweet Thread)
                 const originalProbs = { ...agent.config.probabilities };
                 agent.config.probabilities = {
                     refresh: 0, profileDive: 0, tweetDive: 0, idle: 0.8,
@@ -161,67 +126,55 @@ export default async function twitterFollowTask(page, payload) {
                 const tweetReadTime = mathUtils.randomInRange(5000, 10000);
                 logger.info(`[twitterFollow] Reading Tweet for ${(tweetReadTime / 1000).toFixed(1)}s...`);
 
-                // Manually trigger a read phase (hack: overwrite config timings slightly to match desired duration)
                 agent.config.timings.readingPhase = { mean: tweetReadTime, deviation: 1000 };
                 await agent.simulateReading();
 
                 // Restore config
                 agent.config.probabilities = originalProbs;
 
-                // 7. Click on Profile
+                // 5. Click on Profile
                 logger.info(`[twitterFollow] Finding and clicking profile...`);
 
-                // Extract names used for targeting
                 const targetUsername = extractUsername(targetUrl).toLowerCase();
                 const safeUsername = targetUsername.replace('@', '');
 
-                // Potential Selectors
                 const handleSelector = `article[data-testid="tweet"] a[href="/${safeUsername}"]`;
                 const avatarSelector = `article[data-testid="tweet"] [data-testid="Tweet-User-Avatar"]`;
                 const fallbackSelector = 'article[data-testid="tweet"] div[data-testid="User-Name"] a[href^="/"]';
 
-                // let navSuccess = false;
-
-                // Attempt 1: Click specific Handle/Name link
                 let targetEl = page.locator(handleSelector).first();
-                if (!await targetEl.count()) {
+                if (!await api.count(handleSelector)) {
                     targetEl = page.locator(fallbackSelector).first();
                 }
 
-                if (await targetEl.isVisible()) {
+                if (await api.visible(handleSelector) || await api.visible(fallbackSelector)) {
                     await agent.humanClick(targetEl, 'Profile Link (Handle/Name)');
-                    await page.waitForTimeout(3000); // Wait for nav
+                    await api.wait(3000); 
                 }
 
                 // Verification & Retry
-                if (page.url().includes('/status/')) {
+                const currentUrl = await api.getCurrentUrl();
+                if (currentUrl.includes('/status/')) {
                     logger.warn(`[twitterFollow] ⚠️ Navigation check: Still on status page. Retrying with Avatar...`);
 
-                    // Attempt 2: Click Avatar
                     const avatarEl = page.locator(avatarSelector).first();
-                    if (await avatarEl.isVisible()) {
+                    if (await api.visible(avatarSelector)) {
                         await agent.humanClick(avatarEl, 'Profile Avatar');
-                        await page.waitForTimeout(3000);
+                        await api.wait(3000);
                     }
                 }
 
                 // Final Verify
-                if (!page.url().includes('/status/')) {
-                    // We likely navigated!
-                    await page.waitForLoadState('domcontentloaded');
-                    // navSuccess = true;
+                const finalUrl = await api.getCurrentUrl();
+                if (!finalUrl.includes('/status/')) {
+                    await api.waitForLoadState('domcontentloaded');
                 } else {
-                    logger.warn(`[twitterFollow] 🛑 Failed to navigate to profile. Still on status page: ${page.url()}`);
-                    // Depending on strictness, we might want to return here.
-                    // But for now, let's see if the logic below can handle it (maybe we are already on profile?)
-                    // Actually, if we are on status page, checking 'Already Following' might yield false positives from the tweet itself.
-                    // But the user wants to proceed, so we continue but log heavily.
+                    logger.warn(`[twitterFollow] 🛑 Failed to navigate to profile. Still on status page: ${finalUrl}`);
                 }
 
-                // 8. Simulate Reading on Profile
+                // 6. Simulate Reading on Profile
                 logger.info(`[twitterFollow] Reading Profile...`);
 
-                // Disable diving while reading profile to avoid navigating away
                 const probsBeforeProfile = { ...agent.config.probabilities };
                 agent.config.probabilities = {
                     ...probsBeforeProfile,
@@ -229,16 +182,15 @@ export default async function twitterFollowTask(page, payload) {
                     idle: 0.8
                 };
 
-                agent.config.timings.readingPhase = { mean: 15000, deviation: 5000 }; // 15s avg
+                agent.config.timings.readingPhase = { mean: 15000, deviation: 5000 };
                 await agent.simulateReading();
 
                 // Restore
                 agent.config.probabilities = probsBeforeProfile;
 
 
-                // 9. Follow (Using Robust Follow from TwitterAgent)
+                // 7. Follow
                 logger.info(`[twitterFollow] Executing follow action...`);
-                // Construct explicit profile URL for robust reloads
                 const profileUrl = `https://x.com/${safeUsername}`;
                 const followResult = await agent.robustFollow('[twitterFollow]', profileUrl);
 
@@ -246,13 +198,11 @@ export default async function twitterFollowTask(page, payload) {
                     const username = extractUsername(targetUrl);
                     logger.info(`[twitterFollow] ✅✅✅ Followed '\x1b[94m${username}\x1b[0m' Successfully ✅✅✅`);
 
-                    // Report follow to global metrics (safe: validates internally)
                     metricsCollector.recordSocialAction('follow', 1);
 
-                    // Post-follow delay: Human "satisfaction" reaction time before leaving
                     const postFollowDelay = mathUtils.randomInRange(2000, 4000);
                     logger.info(`[twitterFollow] Lingering on profile for ${(postFollowDelay / 1000).toFixed(1)}s...`);
-                    await page.waitForTimeout(postFollowDelay);
+                    await api.wait(postFollowDelay);
                     
                     await takeScreenshot(page, `Follow-${username}`);
                 } else if (followResult.fatal) {
@@ -260,18 +210,15 @@ export default async function twitterFollowTask(page, payload) {
                 }
 
 
-                // 10. Return Home & "Cool Down" Reading
+                // 8. Return Home & "Cool Down" Reading
                 logger.info(`[twitterFollow] Navigating Home for cool-down...`);
                 await agent.navigateHome();
 
-                // Check login state here as requested (verifying session health at end)
                 if (!await agent.checkLoginState()) {
                     logger.warn('[twitterFollow] ⚠️ Potential logout detected after task completion.');
                 }
 
-                // Read feed for a bit (1-2 mins)
                 agent.config.timings.readingPhase = { mean: 90000, deviation: 30000 };
-                // Allow mild interaction (likes/retweets) during cool down
                 agent.config.probabilities.tweetDive = 0.1;
 
                 await agent.simulateReading();
@@ -293,7 +240,6 @@ export default async function twitterFollowTask(page, payload) {
             logger.info(`[Metrics] Task Finished. Duration: ${duration}m`);
         }
 
-        // Proper page closing
         try {
             if (page && !page.isClosed()) await page.close();
         } catch (closeError) {
@@ -307,7 +253,7 @@ export default async function twitterFollowTask(page, payload) {
  * @param {object} page - The Playwright page instance. 
  * @param {object} logger 
  */
-async function applyHumanizationPatch(page, logger) {
+async function _applyHumanizationPatch(page, logger) {
     const { applyHumanizationPatch: sharedPatch } = await import('../utils/browserPatch.js');
     await sharedPatch(page, logger);
 }

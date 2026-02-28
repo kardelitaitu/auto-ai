@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 import { mathUtils } from '../mathUtils.js';
 import { entropy } from '../entropyController.js';
 
@@ -111,7 +112,7 @@ export class BaseHandler {
             const softError = this.page.locator('text=/Something went wrong/i').first();
 
             // Check if error is visible (fast check)
-            if (await softError.isVisible({ timeout: 1000 }).catch(() => false)) {
+            if (await api.visible(softError).catch(() => false)) {
                 this.state.consecutiveSoftErrors = (this.state.consecutiveSoftErrors || 0) + 1;
                 this.log(`⚠️ Soft Error detected: 'Something went wrong'. (Attempt ${this.state.consecutiveSoftErrors}/3)`);
 
@@ -124,10 +125,10 @@ export class BaseHandler {
                 // LIMIT: Only try this 1x (on the first error detection)
                 if (this.state.consecutiveSoftErrors === 1) {
                     const retryBtn = this.page.locator('[role="button"][name="Retry"], button:has-text("Retry")').first();
-                    if (await retryBtn.isVisible().catch(() => false)) {
+                    if (await api.visible(retryBtn).catch(() => false)) {
                         this.log(`[SoftError] Found Retry button. Clicking...`);
                         await retryBtn.click().catch(() => { });
-                        await this.page.waitForTimeout(3000);
+                        await api.wait(3000);
                         return true;
                     }
                 }
@@ -136,21 +137,21 @@ export class BaseHandler {
                 this.log(`[SoftError] No retry button found. Initializing Page Reload...`);
                 try {
                     // Reduce chance of infinite reloading the same bad state by waiting a bit
-                    await this.page.waitForTimeout(2000);
+                    await api.wait(2000);
 
-                    const targetUrl = reloadUrl || this.page.url();
+                    const targetUrl = reloadUrl || await api.getCurrentUrl();
                     if (targetUrl.startsWith('http')) {
                         this.log(`[SoftError] Simulating Refresh by re-entering URL: ${targetUrl}`);
-                        await this.page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+                        await api.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
                     } else {
                         // Fallback if URL is weird (e.g. about:blank)
-                        await this.page.reload({ waitUntil: 'domcontentloaded', timeout: 45000 });
+                        await api.reload({ waitUntil: 'domcontentloaded', timeout: 45000 });
                     }
 
-                    await this.page.waitForTimeout(5000); // Post-refresh wait
+                    await api.wait(5000); // Post-refresh wait
 
                     // VERIFICATION: Did the refresh fix it?
-                    if (!await this.page.locator('text=/Something went wrong/i').isVisible({ timeout: 1000 }).catch(() => false)) {
+                    if (!await api.visible(this.page.locator('text=/Something went wrong/i')).catch(() => false)) {
                         this.log(`[SoftError] Refresh successful. Error cleared. Resuming task...`);
                         this.state.consecutiveSoftErrors = 0;
                     }
@@ -179,7 +180,7 @@ export class BaseHandler {
 
     normalizeProbabilities(p) {
         const merged = { ...this.config.probabilities, ...p };
-        
+
         // Ensure probabilities are valid numbers
         Object.keys(merged).forEach(key => {
             if (typeof merged[key] === 'number') {
@@ -222,7 +223,7 @@ export class BaseHandler {
 
             // 2. Check for Critical Error Pages
             // Simple text content scan is usually enough for these standard chrome error pages
-            const content = await this.page.content();
+            const content = await api.eval(() => document.documentElement.outerHTML);
             if (content.includes('ERR_TOO_MANY_REDIRECTS') ||
                 content.includes('This page isn’t working') ||
                 content.includes('redirected you too many times')) {
@@ -244,15 +245,15 @@ export class BaseHandler {
      */
     async humanClick(target, description = 'Target') {
         if (!target) return;
-        
+
         // HUMAN-LIKE: Thinking pause before clicking
         await this.human.think(description);
-        
+
         try {
             await target.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
             const fixationDelay = this.mathUtils.randomInRange(200, 500);
-            await this.page.waitForTimeout(fixationDelay);
-            await this.page.waitForTimeout(this.mathUtils.randomInRange(300, 600));
+            await api.wait(fixationDelay);
+            await api.wait(this.mathUtils.randomInRange(300, 600));
             const ghostResult = await this.ghost.click(target, {
                 label: description,
                 hoverBeforeClick: true
@@ -267,7 +268,7 @@ export class BaseHandler {
 
         } catch (e) {
             this.log(`[Interaction] humanClick failed on ${description}: ${e.message}`);
-            
+
             // HUMAN-LIKE: Error recovery
             await this.human.recoverFromError('click_failed', { locator: target });
             throw e;
@@ -295,7 +296,7 @@ export class BaseHandler {
                     this.log(`[Interaction] [${description}] All ${retries} attempts failed: ${attemptLogs.join('; ')}`);
                     return false;
                 }
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(1000, 2000));
+                await api.wait(this.mathUtils.randomInRange(1000, 2000));
             }
         }
         return false;
@@ -349,26 +350,9 @@ export class BaseHandler {
      */
     async scrollToGoldenZone(element) {
         try {
-            await element.evaluate(el => {
-                const viewportHeight = window.innerHeight;
-                const goldenZoneStart = viewportHeight * 0.3; // 30% from top
-                const goldenZoneEnd = viewportHeight * 0.7;   // 70% from top
-                
-                const rect = el.getBoundingClientRect();
-                const elementCenterY = rect.top + (rect.height / 2);
-                
-                if (elementCenterY < goldenZoneStart) {
-                    // Element is above golden zone, scroll down
-                    const scrollAmount = goldenZoneStart - elementCenterY + 50;
-                    window.scrollBy(0, scrollAmount);
-                } else if (elementCenterY > goldenZoneEnd) {
-                    // Element is below golden zone, scroll up
-                    const scrollAmount = elementCenterY - goldenZoneEnd + 50;
-                    window.scrollBy(0, -scrollAmount);
-                }
-            });
-            
-            await this.page.waitForTimeout(this.mathUtils.randomInRange(200, 400));
+            // Use the unified API's focus method which is designed exactly for this
+            // It centers the element with entropy and moves the cursor to it
+            await api.scroll.focus(element);
         } catch (e) {
             this.log(`[Interaction] scrollToGoldenZone error: ${e.message}`);
         }
@@ -382,18 +366,18 @@ export class BaseHandler {
     async humanType(element, text) {
         try {
             await element.click();
-            await this.page.waitForTimeout(this.mathUtils.randomInRange(200, 500));
-            
+            await api.wait(this.mathUtils.randomInRange(200, 500));
+
             for (const char of text) {
                 await element.press(char);
                 if (this.mathUtils.roll(0.05)) {
                     // 5% chance to make a typing error and correct it
-                    await this.page.waitForTimeout(this.mathUtils.randomInRange(100, 200));
+                    await api.wait(this.mathUtils.randomInRange(100, 200));
                     await element.press('Backspace');
-                    await this.page.waitForTimeout(this.mathUtils.randomInRange(50, 150));
+                    await api.wait(this.mathUtils.randomInRange(50, 150));
                     await element.press(char);
                 }
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(50, 150));
+                await api.wait(this.mathUtils.randomInRange(50, 150));
             }
         } catch (e) {
             this.log(`[Interaction] humanType error: ${e.message}`);
@@ -408,16 +392,16 @@ export class BaseHandler {
         try {
             // Check for toast notifications
             const toasts = this.page.locator('[data-testid="toast"], [role="alert"]');
-            if (await toasts.count() > 0) {
+            if (await api.exists(toasts)) {
                 await this.page.keyboard.press('Escape');
-                await this.page.waitForTimeout(300);
+                await api.wait(300);
             }
 
             // Check for modals/dialogs
             const modals = this.page.locator('[role="dialog"], [aria-modal="true"]');
-            if (await modals.count() > 0) {
+            if (await api.exists(modals)) {
                 await this.page.keyboard.press('Escape');
-                await this.page.waitForTimeout(300);
+                await api.wait(300);
             }
         } catch {
             // Ignore overlay dismissal errors
@@ -447,7 +431,7 @@ export class BaseHandler {
             // 15% chance to scroll during reading
             if (this.mathUtils.roll(0.15)) {
                 await this.human.scroll('down', 'small');
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(300, 800));
+                await api.wait(this.mathUtils.randomInRange(300, 800));
             }
 
             // 25% chance to move mouse during reading
@@ -463,7 +447,7 @@ export class BaseHandler {
             // 15% chance to type something
             if (this.mathUtils.roll(0.15)) {
                 await this.page.keyboard.type(' ', { delay: this.mathUtils.randomInRange(50, 150) });
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(50, 140));
+                await api.wait(this.mathUtils.randomInRange(50, 140));
             }
 
             // 15% chance to look around
@@ -481,7 +465,7 @@ export class BaseHandler {
                 }
             }
 
-            await this.page.waitForTimeout(chunkTime);
+            await api.wait(chunkTime);
             now = Date.now();
         }
     }

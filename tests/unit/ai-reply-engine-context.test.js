@@ -5,6 +5,20 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+vi.mock('../../api/index.js', () => ({
+  api: {
+    getPage: vi.fn(),
+    wait: vi.fn().mockResolvedValue(undefined),
+    think: vi.fn().mockResolvedValue(undefined),
+    scroll: {
+      read: vi.fn().mockResolvedValue(undefined),
+      back: vi.fn().mockResolvedValue(undefined),
+      toTop: vi.fn().mockResolvedValue(undefined)
+    }
+  }
+}));
+import { api } from '../../api/index.js';
+
 vi.mock('../../utils/logger.js', () => ({
   createLogger: vi.fn(() => ({
     info: vi.fn(),
@@ -59,6 +73,7 @@ describe('ai-reply-engine/context', () => {
         press: vi.fn().mockResolvedValue(undefined)
       }
     };
+    api.getPage.mockReturnValue(mockPage);
   });
 
   describe('captureContext', () => {
@@ -196,11 +211,10 @@ describe('ai-reply-engine/context', () => {
         return 500;
       });
       mockPage.$$ = vi.fn().mockResolvedValue([]);
-      mockPage.keyboard = { press: vi.fn().mockResolvedValue() };
       
-      const replies = await extractRepliesMultipleStrategies(mockEngine, mockPage);
+      await extractRepliesMultipleStrategies(mockEngine, mockPage);
       
-      expect(mockPage.keyboard.press).toHaveBeenCalled();
+      expect(api.scroll.toTop).toHaveBeenCalled();
     });
   });
 
@@ -327,7 +341,7 @@ describe('ai-reply-engine/context', () => {
       
       await extractRepliesMultipleStrategies(mockEngine, mockPage);
       
-      expect(mockPage.waitForTimeout).toHaveBeenCalled();
+      expect(api.wait).toHaveBeenCalled();
     });
 
     it('should extract author from time element (line 294-296)', async () => {

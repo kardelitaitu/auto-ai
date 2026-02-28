@@ -87,73 +87,88 @@ const logger = createLogger('main.js');
       logger.info(`Successfully connected to ${sessionManager.idleSessionsCount} browser(s). Ready for automation.`);
     }
 
-    logger.info('Adding specified tasks to the queue...');
-
-    // Parse arguments: first arg is task, rest are key=value pairs
-    let currentTask = null;
-    let currentPayload = {};
-
-    logger.info(`[CLI] Parsing args: ${JSON.stringify(tasksToRun)}`);
+    // Parse tasks into sequential groups separated by 'then'
+    const taskGroups = [];
+    let currentGroup = [];
 
     tasksToRun.forEach(arg => {
-      // Handle taskName=value format (e.g., pageview=www.example.com)
-      // Split on first '=' only
-      const firstEqualIndex = arg.indexOf('=');
-      if (firstEqualIndex > 0) {
-        const potentialTask = arg.substring(0, firstEqualIndex);
-        const potentialValue = arg.substring(firstEqualIndex + 1);
-
-        logger.info(`[CLI] Found '=' in arg: task='${potentialTask}', value='${potentialValue}'`);
-
-        // If we already have a task and this looks like key=value, add to payload
-        if (currentTask && potentialTask !== currentTask) {
-          currentPayload[potentialTask] = potentialValue;
-          return;
+      if (arg.toLowerCase() === 'then') {
+        if (currentGroup.length > 0) {
+          taskGroups.push(currentGroup);
+          currentGroup = [];
         }
-
-        // If no current task, treat "taskName=value" as task with url=value
-        if (!currentTask) {
-          currentTask = potentialTask;
-          currentPayload = { url: potentialValue };
-          logger.info(`[CLI] Set currentTask='${currentTask}', currentPayload=${JSON.stringify(currentPayload)}`);
-          return;
-        }
-      }
-
-      // If arg contains '=', it's a key=value parameter for the current task
-      if (arg.includes('=') && currentTask) {
-        const parts = arg.split('=');
-        const key = parts[0];
-        let value = parts.slice(1).join('=');
-
-        // Remove surrounding quotes if present
-        if (value.startsWith('"') && value.endsWith('"')) {
-          value = value.slice(1, -1);
-        }
-
-        currentPayload[key] = value;
-      } else if (!arg.startsWith('--')) {
-        // This is a task name
-        if (currentTask) {
-          // Add previous task to queue
-          orchestrator.addTask(currentTask, currentPayload);
-        }
-        currentTask = arg.endsWith('.js') ? arg.slice(0, -3) : arg;
-        currentPayload = {};
+      } else {
+        currentGroup.push(arg);
       }
     });
-
-    // Add the last task
-    if (currentTask) {
-      orchestrator.addTask(currentTask, currentPayload);
+    if (currentGroup.length > 0) {
+      taskGroups.push(currentGroup);
     }
 
-    logger.info("MultiBrowseAutomation - System initialized. All tasks queued.");
+    if (taskGroups.length === 0) {
+      logger.info("No tasks specified. System initialized in idle mode.");
+    } else {
+      logger.info(`MultiBrowseAutomation - Initialized. Processing ${taskGroups.length} sequential task groups.`);
 
-    // Wait for completion
-    logger.info("Waiting for all tasks to be processed...");
-    await orchestrator.waitForTasksToComplete();
-    logger.info("All tasks completed successfully.");
+      for (let i = 0; i < taskGroups.length; i++) {
+        const group = taskGroups[i];
+        logger.info(`[Queue] Processing Task Group ${i + 1}/${taskGroups.length}: ${JSON.stringify(group)}`);
+
+        let currentTask = null;
+        let currentPayload = {};
+
+        group.forEach(arg => {
+          const firstEqualIndex = arg.indexOf('=');
+
+          if (firstEqualIndex > 0) {
+            const key = arg.substring(0, firstEqualIndex);
+            let value = arg.substring(firstEqualIndex + 1);
+            if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+
+            // Shorthand detection: taskName=URL
+            // If the key matches the current task, or we don't have a current task,
+            // assume it's a new task starting.
+            const isNewTaskShorthand = currentTask && (key === currentTask);
+
+            if (!currentTask || isNewTaskShorthand) {
+              if (isNewTaskShorthand) {
+                orchestrator.addTask(currentTask, currentPayload);
+              }
+              currentTask = key.endsWith('.js') ? key.slice(0, -3) : key;
+
+              // Auto-prepend protocol for shorthand URL values
+              let urlValue = value;
+              if (urlValue && !urlValue.includes('://') && (urlValue.includes('.') || urlValue === 'localhost')) {
+                urlValue = 'https://' + urlValue;
+              }
+              currentPayload = { url: urlValue };
+            } else {
+              // It's a parameter for the current task
+              let paramValue = value;
+              if (key === 'url' && paramValue && !paramValue.includes('://') && (paramValue.includes('.') || paramValue === 'localhost')) {
+                paramValue = 'https://' + paramValue;
+              }
+              currentPayload[key] = paramValue;
+            }
+          } else {
+            // No '=' - this must be a new task name (start of a new task in group)
+            if (currentTask) {
+              orchestrator.addTask(currentTask, currentPayload);
+            }
+            currentTask = arg.endsWith('.js') ? arg.slice(0, -3) : arg;
+            currentPayload = {};
+          }
+        });
+
+        if (currentTask) {
+          orchestrator.addTask(currentTask, currentPayload);
+        }
+
+        logger.info(`[Queue] Tasks for Group ${i + 1} added. Waiting for completion...`);
+        await orchestrator.waitForTasksToComplete();
+        logger.info(`[Queue] Group ${i + 1} completed successfully.`);
+      }
+    }
 
   } catch (error) {
     logger.error('An unexpected error occurred during execution:', error);

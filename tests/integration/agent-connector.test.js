@@ -7,11 +7,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
-    getSettings: vi.fn()
+    getSettings: vi.fn(),
+    getTimeoutValue: vi.fn().mockResolvedValue({})
 }));
 
 vi.mock('../../utils/configLoader.js', () => ({
-    getSettings: mocks.getSettings
+    getSettings: mocks.getSettings,
+    getTimeoutValue: mocks.getTimeoutValue
 }));
 
 vi.mock('../../utils/free-openrouter-helper.js', () => ({

@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/400</span>
+                <span class='fraction'>0/393</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/45</span>
+                <span class='fraction'>0/41</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/361</span>
+                <span class='fraction'>0/358</span>
             </div>
         
             
@@ -966,9 +966,7 @@
 <a name='L901'></a><a href='#L901'>901</a>
 <a name='L902'></a><a href='#L902'>902</a>
 <a name='L903'></a><a href='#L903'>903</a>
-<a name='L904'></a><a href='#L904'>904</a>
-<a name='L905'></a><a href='#L905'>905</a>
-<a name='L906'></a><a href='#L906'>906</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L904'></a><a href='#L904'>904</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -986,6 +984,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1230,10 +1229,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1311,9 +1311,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1323,7 +1320,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1881,6 +1877,7 @@
 &nbsp;
 import { createLogger } from './logger.js';
 import { mathUtils } from './mathUtils.js';
+import { api } from '../api/index.js';
 &nbsp;
 /**
  * AIContextEngine - Extracts enhanced context from tweets
@@ -1892,7 +1889,7 @@ export class AIContextEngine {
    */
 <span class="fstat-no" title="function not covered" >  constructor(</span>options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
 <span class="cstat-no" title="statement not covered" >    this.logger = createLogger('ai-context-engine.js');</span>
-    
+&nbsp;
     // Sentiment indicators (simple keyword-based)
 <span class="cstat-no" title="statement not covered" >    this.sentimentIndicators = {</span>
       positive: [
@@ -2015,12 +2012,12 @@ export class AIContextEngine {
       // Parse metrics from aria-labels and text
 <span class="cstat-no" title="statement not covered" >      for (const item of metricsText) {</span>
         const text = <span class="cstat-no" title="statement not covered" >item.text || item.aria;</span>
-        
+&nbsp;
         // Extract numbers with K/M suffixes
         const numberMatch = <span class="cstat-no" title="statement not covered" >text.match(/[\d,.]+[KM]?/);</span>
 <span class="cstat-no" title="statement not covered" >        if (numberMatch) {</span>
           const num = <span class="cstat-no" title="statement not covered" >this.parseNumber(numberMatch[0]);</span>
-          
+&nbsp;
 <span class="cstat-no" title="statement not covered" >          if (text.toLowerCase().includes('like') &amp;&amp; metrics.likes === 0) {</span>
 <span class="cstat-no" title="statement not covered" >            metrics.likes = num;</span>
           } else <span class="cstat-no" title="statement not covered" >if (text.toLowerCase().includes('retweet') &amp;&amp; metrics.retweets === 0) {</span>
@@ -2048,7 +2045,7 @@ export class AIContextEngine {
 <span class="fstat-no" title="function not covered" >  parseNumber(</span>str) {
 <span class="cstat-no" title="statement not covered" >    if (!str) <span class="cstat-no" title="statement not covered" >return 0;</span></span>
 <span class="cstat-no" title="statement not covered" >    str = str.toUpperCase().replace(/,/g, '');</span>
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    if (str.includes('K')) {</span>
 <span class="cstat-no" title="statement not covered" >      return Math.floor(parseFloat(str) * 1000);</span>
     } else <span class="cstat-no" title="statement not covered" >if (str.includes('M')) {</span>
@@ -2062,10 +2059,10 @@ export class AIContextEngine {
    */
 <span class="fstat-no" title="function not covered" >  calculateEngagementLevel(</span>metrics) {
 <span class="cstat-no" title="statement not covered" >    if (!metrics) <span class="cstat-no" title="statement not covered" >return 'unknown';</span></span>
-    
+&nbsp;
     const total = <span class="cstat-no" title="statement not covered" >(metrics.likes || 0) + (metrics.retweets || 0) + (metrics.replies || 0);</span>
     const views = <span class="cstat-no" title="statement not covered" >metrics.views || 0;</span>
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    if (views &gt; 100000) <span class="cstat-no" title="statement not covered" >return 'viral';</span></span>
 <span class="cstat-no" title="statement not covered" >    if (total &gt; 1000) <span class="cstat-no" title="statement not covered" >return 'high';</span></span>
 <span class="cstat-no" title="statement not covered" >    if (total &gt; 100) <span class="cstat-no" title="statement not covered" >return 'medium';</span></span>
@@ -2084,11 +2081,11 @@ export class AIContextEngine {
         // Check for tweet photos or video thumbnails in the first article (main tweet)
         const mainTweet = <span class="cstat-no" title="statement not covered" >document.querySelector('article');</span>
 <span class="cstat-no" title="statement not covered" >        if (!mainTweet) <span class="cstat-no" title="statement not covered" >return false;</span></span>
-        
+&nbsp;
         const hasPhoto = <span class="cstat-no" title="statement not covered" >mainTweet.querySelector('[data-testid="tweetPhoto"]') !== null;</span>
         const hasVideo = <span class="cstat-no" title="statement not covered" >mainTweet.querySelector('[data-testid="videoPlayer"]') !== null;</span>
         const hasCard = <span class="cstat-no" title="statement not covered" >mainTweet.querySelector('[data-testid="card.wrapper"]') !== null;</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        return hasPhoto || hasVideo || hasCard;</span>
       });
     } catch (error) {
@@ -2104,16 +2101,16 @@ export class AIContextEngine {
    */
   async <span class="fstat-no" title="function not covered" >captureTweetScreenshot(</span>page) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      // Scroll to top to ensure tweet is visible
-<span class="cstat-no" title="statement not covered" >      await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
-<span class="cstat-no" title="statement not covered" >      await page.waitForTimeout(500); </span>// Wait for scroll/render
-      
+      // Scroll to top to ensure tweet is visible (natural 2s scroll)
+<span class="cstat-no" title="statement not covered" >      await api.scroll.toTop(2000);</span>
+<span class="cstat-no" title="statement not covered" >      await api.wait(500); </span>// Wait for scroll/render
+&nbsp;
       // Try to capture just the tweet element first
       const tweetElement = <span class="cstat-no" title="statement not covered" >await page.$('article');</span>
 <span class="cstat-no" title="statement not covered" >      if (tweetElement) {</span>
 <span class="cstat-no" title="statement not covered" >        return await tweetElement.screenshot({ type: 'jpeg', quality: 80 });</span>
       }
-      
+&nbsp;
       // Fallback to viewport screenshot
 <span class="cstat-no" title="statement not covered" >      return await page.screenshot({ type: 'jpeg', quality: 80, fullPage: false });</span>
     } catch (error) {
@@ -2133,20 +2130,21 @@ export class AIContextEngine {
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      this.logger.info(`[Context] Starting comprehensive reply extraction...`);</span>
 &nbsp;
-      // Step 1: Scroll to bottom slowly to trigger lazy loading (human-like)
-<span class="cstat-no" title="statement not covered" >      this.logger.debug(`[Context] Step 1: Slowly scrolling to load all replies...`);</span>
-      
-<span class="cstat-no" title="statement not covered" >      for (let scroll = <span class="cstat-no" title="statement not covered" >0;</span> scroll &lt; 10; scroll++) {</span>
-<span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollBy(0, 500))</span>; </span>// Scroll incrementally
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(mathUtils.randomInRange(800, 1500)); </span>// Slow delay
+      // Step 1: Use api.scroll.read to load replies naturally
+<span class="cstat-no" title="statement not covered" >      this.logger.debug(`[Context] Step 1: Using api.scroll.read to load replies...`);</span>
+<span class="cstat-no" title="statement not covered" >      try {</span>
+<span class="cstat-no" title="statement not covered" >        await api.scroll.read(null, { pauses: 10, scrollAmount: 500 });</span>
+      } catch (scrollError) {
+<span class="cstat-no" title="statement not covered" >        this.logger.error(`[Context] Scroll read failed during reply extraction: ${scrollError.message}`);</span>
+        // We continue anyway, as some replies might already be visible on the screen
       }
 &nbsp;
       // Step 2: Wait for content to settle
-<span class="cstat-no" title="statement not covered" >      await page.waitForTimeout(1000);</span>
+<span class="cstat-no" title="statement not covered" >      await api.wait(1000);</span>
 &nbsp;
       // Step 3: Now scroll UP through the page while extracting
 <span class="cstat-no" title="statement not covered" >      this.logger.debug(`[Context] Step 2: Extracting while scrolling up...`);</span>
-      
+&nbsp;
       const viewportHeight = <span class="cstat-no" title="statement not covered" >await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.innerHeight)</span>;</span>
       const scrollHeight = <span class="cstat-no" title="statement not covered" >await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >document.body.scrollHeight)</span>;</span>
       const extractSteps = <span class="cstat-no" title="statement not covered" >Math.min(20, Math.ceil(scrollHeight / viewportHeight));</span>
@@ -2156,7 +2154,7 @@ export class AIContextEngine {
         const visibleTexts = <span class="cstat-no" title="statement not covered" >await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
           const found = <span class="cstat-no" title="statement not covered" >[];</span>
           const seen = <span class="cstat-no" title="statement not covered" >new Set();</span>
-          
+&nbsp;
           // Multiple selectors for current Twitter DOM
           const selectors = <span class="cstat-no" title="statement not covered" >[</span>
             '[data-testid="tweetText"]',
@@ -2165,7 +2163,7 @@ export class AIContextEngine {
             'article [dir="auto"]',
             '[role="article"] span'
           ];
-          
+&nbsp;
 <span class="cstat-no" title="statement not covered" >          for (const selector of selectors) {</span>
             const elements = <span class="cstat-no" title="statement not covered" >document.querySelectorAll(selector);</span>
 <span class="cstat-no" title="statement not covered" >            elements.forEach(<span class="fstat-no" title="function not covered" >el </span>=&gt; {</span>
@@ -2187,19 +2185,19 @@ export class AIContextEngine {
 <span class="cstat-no" title="statement not covered" >        for (const text of visibleTexts) {</span>
           const key = <span class="cstat-no" title="statement not covered" >text.toLowerCase().substring(0, 50);</span>
 <span class="cstat-no" title="statement not covered" >          if (seenTexts.has(key)) <span class="cstat-no" title="statement not covered" >continue;</span></span>
-          
+&nbsp;
           // Extract author from @mention if present, otherwise use DOM hierarchy
           const mentionMatch = <span class="cstat-no" title="statement not covered" >text.match(/@(\w+)/);</span>
           let author = <span class="cstat-no" title="statement not covered" >mentionMatch ? mentionMatch[1] : 'unknown';</span>
-          
+&nbsp;
           // If no @mention, try to extract author from DOM context
 <span class="cstat-no" title="statement not covered" >          if (author === 'unknown') {</span>
 <span class="cstat-no" title="statement not covered" >            author = await this.extractAuthorFromVisibleText(page, text);</span>
           }
-          
+&nbsp;
           // Clean the reply text - preserve @mentions that are in-content
           const cleaned = <span class="cstat-no" title="statement not covered" >this.cleanReplyText(text);</span>
-          
+&nbsp;
           // Accept shorter replies (3+ chars) to capture short responses
 <span class="cstat-no" title="statement not covered" >          if (cleaned.length &gt; 3) {</span>
 <span class="cstat-no" title="statement not covered" >            seenTexts.add(key);</span>
@@ -2212,13 +2210,10 @@ export class AIContextEngine {
           }
         }
 &nbsp;
-        // Scroll up for next extraction (slow and human-like)
+        // Scroll up for next extraction (slow and human-like using API)
 <span class="cstat-no" title="statement not covered" >        if (step &lt; extractSteps - 1) {</span>
-<span class="cstat-no" title="statement not covered" >          await page.evaluate(<span class="fstat-no" title="function not covered" >({</span> step, totalSteps }) =&gt; {</span>
-            const pos = <span class="cstat-no" title="statement not covered" >(document.body.scrollHeight / totalSteps) * step;</span>
-<span class="cstat-no" title="statement not covered" >            window.scrollTo(0, document.body.scrollHeight - pos);</span>
-          }, { step, totalSteps: extractSteps });
-<span class="cstat-no" title="statement not covered" >          await page.waitForTimeout(mathUtils.randomInRange(600, 1200)); </span>// Slower extraction
+<span class="cstat-no" title="statement not covered" >          await api.scroll.back();</span>
+<span class="cstat-no" title="statement not covered" >          await api.think(mathUtils.randomInRange(600, 1200)); </span>// Slower extraction
         }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (replies.length &gt;= 30) {</span>
@@ -2227,9 +2222,8 @@ export class AIContextEngine {
         }
       }
 &nbsp;
-      // Step 4: Final scroll to top and extract any remaining
-<span class="cstat-no" title="statement not covered" >      await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
-<span class="cstat-no" title="statement not covered" >      await page.waitForTimeout(500);</span>
+      // Step 4: Final natural scroll to top
+<span class="cstat-no" title="statement not covered" >      await api.scroll.toTop(3000);</span>
 &nbsp;
       // Strategy 1: Use article elements (most reliable) - but filter out main tweet
 <span class="cstat-no" title="statement not covered" >      if (replies.length &lt; 15) {</span>
@@ -2263,7 +2257,7 @@ export class AIContextEngine {
 <span class="cstat-no" title="statement not covered" >      if (replies.length &lt; 15) {</span>
 <span class="cstat-no" title="statement not covered" >        this.logger.debug(`[Context] Strategy 2: Using tweetText selectors...`);</span>
         const tweetTexts = <span class="cstat-no" title="statement not covered" >await page.$$('[data-testid="tweetText"]');</span>
-        
+&nbsp;
 <span class="cstat-no" title="statement not covered" >        for (const el of tweetTexts.slice(1, 60)) {</span>
 <span class="cstat-no" title="statement not covered" >          try {</span>
             const text = <span class="cstat-no" title="statement not covered" >await el.innerText().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'')</span>;</span>
@@ -2289,24 +2283,24 @@ export class AIContextEngine {
       // Strategy 3: Deep DOM extraction if still few replies
 <span class="cstat-no" title="statement not covered" >      if (replies.length &lt; 10) {</span>
 <span class="cstat-no" title="statement not covered" >        this.logger.debug(`[Context] Strategy 3: Deep DOM extraction...`);</span>
-        
+&nbsp;
         // For deep extraction, accept any text that looks like a reply
         // Not just @mentions - includes Korean, Japanese, emoji-heavy replies
         const deepTexts = <span class="cstat-no" title="statement not covered" >await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
           const found = <span class="cstat-no" title="statement not covered" >[];</span>
           const seen = <span class="cstat-no" title="statement not covered" >new Set();</span>
-          
+&nbsp;
           // Look for text in article elements (replies are always in articles)
           const articles = <span class="cstat-no" title="statement not covered" >document.querySelectorAll('article');</span>
-          
+&nbsp;
 <span class="cstat-no" title="statement not covered" >          articles.forEach(<span class="fstat-no" title="function not covered" >(a</span>rticle, index) =&gt; {</span>
             // Skip the first article (main tweet)
 <span class="cstat-no" title="statement not covered" >            if (index === 0) <span class="cstat-no" title="statement not covered" >return;</span></span>
-            
+&nbsp;
             // Get all text content from the article
             const textContent = <span class="cstat-no" title="statement not covered" >[];</span>
             const paragraphs = <span class="cstat-no" title="statement not covered" >article.querySelectorAll('[data-testid="tweetText"], [dir="auto"]');</span>
-            
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            paragraphs.forEach(<span class="fstat-no" title="function not covered" >p </span>=&gt; {</span>
 <span class="cstat-no" title="statement not covered" >              if (!(p instanceof HTMLElement)) <span class="cstat-no" title="statement not covered" >return;</span></span>
               const text = <span class="cstat-no" title="statement not covered" >p.innerText.trim();</span>
@@ -2318,14 +2312,14 @@ export class AIContextEngine {
                 }
               }
             });
-            
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            if (textContent.length &gt; 0) {</span>
               // Join multiple paragraphs and take the longest
               const joined = <span class="cstat-no" title="statement not covered" >textContent.join(' ').substring(0, 280);</span>
 <span class="cstat-no" title="statement not covered" >              found.push(joined);</span>
             }
           });
-          
+&nbsp;
 <span class="cstat-no" title="statement not covered" >          return found;</span>
         });
 &nbsp;
@@ -2336,7 +2330,7 @@ export class AIContextEngine {
             // Extract author from @mention or use 'unknown'
             const mentionMatch = <span class="cstat-no" title="statement not covered" >text.match(/@([a-zA-Z0-9_]+)/);</span>
             const author = <span class="cstat-no" title="statement not covered" >mentionMatch ? mentionMatch[1] : 'unknown';</span>
-            
+&nbsp;
             // Filter out pure numbers/engagement metrics
 <span class="cstat-no" title="statement not covered" >            if (!/^[\d,.\sK]+$/.test(text)) {</span>
 <span class="cstat-no" title="statement not covered" >              replies.push({</span>
@@ -2376,148 +2370,148 @@ export class AIContextEngine {
     }
   }
 &nbsp;
-    /**
-     * Extract author from visible text when no @mention is present
-     * Useful for Korean/Japanese tweets
-     */
-    async <span class="fstat-no" title="function not covered" >extractAuthorFromVisibleText(</span>page, text) {
-<span class="cstat-no" title="statement not covered" >      try {</span>
-        // Try to find the author from the DOM context near tweet text
-        const authorInfo = <span class="cstat-no" title="statement not covered" >await page.evaluate(<span class="fstat-no" title="function not covered" >(_</span>searchText) =&gt; {</span>
-          const elements = <span class="cstat-no" title="statement not covered" >document.querySelectorAll('[data-testid="User-Name"], [class*="UserName"], [class*="author"]');</span>
-<span class="cstat-no" title="statement not covered" >          for (const el of elements) {</span>
-            const elText = <span class="cstat-no" title="statement not covered" >el instanceof HTMLElement ? el.innerText : '';</span>
-<span class="cstat-no" title="statement not covered" >            if (elText.includes('@')) {</span>
-              const match = <span class="cstat-no" title="statement not covered" >elText.match(/@([a-zA-Z0-9_]+)/);</span>
-<span class="cstat-no" title="statement not covered" >              if (match) <span class="cstat-no" title="statement not covered" >return match[1];</span></span>
-            }
+  /**
+   * Extract author from visible text when no @mention is present
+   * Useful for Korean/Japanese tweets
+   */
+  async <span class="fstat-no" title="function not covered" >extractAuthorFromVisibleText(</span>page, text) {
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      // Try to find the author from the DOM context near tweet text
+      const authorInfo = <span class="cstat-no" title="statement not covered" >await page.evaluate(<span class="fstat-no" title="function not covered" >(_</span>searchText) =&gt; {</span>
+        const elements = <span class="cstat-no" title="statement not covered" >document.querySelectorAll('[data-testid="User-Name"], [class*="UserName"], [class*="author"]');</span>
+<span class="cstat-no" title="statement not covered" >        for (const el of elements) {</span>
+          const elText = <span class="cstat-no" title="statement not covered" >el instanceof HTMLElement ? el.innerText : '';</span>
+<span class="cstat-no" title="statement not covered" >          if (elText.includes('@')) {</span>
+            const match = <span class="cstat-no" title="statement not covered" >elText.match(/@([a-zA-Z0-9_]+)/);</span>
+<span class="cstat-no" title="statement not covered" >            if (match) <span class="cstat-no" title="statement not covered" >return match[1];</span></span>
           }
-<span class="cstat-no" title="statement not covered" >          return null;</span>
-        }, text);
-        
-<span class="cstat-no" title="statement not covered" >        return authorInfo || 'unknown';</span>
-      } catch (error) {
-<span class="cstat-no" title="statement not covered" >        this.logger.debug(`[Context] Visible author extraction: ${error.message}`);</span>
-<span class="cstat-no" title="statement not covered" >        return 'unknown';</span>
-      }
+        }
+<span class="cstat-no" title="statement not covered" >        return null;</span>
+      }, text);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      return authorInfo || 'unknown';</span>
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      this.logger.debug(`[Context] Visible author extraction: ${error.message}`);</span>
+<span class="cstat-no" title="statement not covered" >      return 'unknown';</span>
     }
+  }
 &nbsp;
-    /**
-     * Extract reply data from article element
-    */
-   async <span class="fstat-no" title="function not covered" >extractReplyFromArticle(</span>article) {
-<span class="cstat-no" title="statement not covered" >     try {</span>
-       // Get tweet text
-       const textEl = <span class="cstat-no" title="statement not covered" >await article.$('[data-testid="tweetText"], [dir="auto"]');</span>
-       const text = <span class="cstat-no" title="statement not covered" >textEl ? await textEl.innerText().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'')</span> : '';</span>
+  /**
+   * Extract reply data from article element
+  */
+  async <span class="fstat-no" title="function not covered" >extractReplyFromArticle(</span>article) {
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      // Get tweet text
+      const textEl = <span class="cstat-no" title="statement not covered" >await article.$('[data-testid="tweetText"], [dir="auto"]');</span>
+      const text = <span class="cstat-no" title="statement not covered" >textEl ? await textEl.innerText().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'')</span> : '';</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >       if (!text || text.length &lt; 5) {</span>
-<span class="cstat-no" title="statement not covered" >         this.logger.debug(`[extractReplyFromArticle] No text found or too short`);</span>
-<span class="cstat-no" title="statement not covered" >         return null;</span>
-       }
+<span class="cstat-no" title="statement not covered" >      if (!text || text.length &lt; 5) {</span>
+<span class="cstat-no" title="statement not covered" >        this.logger.debug(`[extractReplyFromArticle] No text found or too short`);</span>
+<span class="cstat-no" title="statement not covered" >        return null;</span>
+      }
 &nbsp;
-       // Get author
-       const author = <span class="cstat-no" title="statement not covered" >await this.extractAuthorFromArticle(article);</span>
-<span class="cstat-no" title="statement not covered" >       this.logger.debug(`[extractReplyFromArticle] Extracted: @${author}: "${text.substring(0, 30)}..."`);</span>
+      // Get author
+      const author = <span class="cstat-no" title="statement not covered" >await this.extractAuthorFromArticle(article);</span>
+<span class="cstat-no" title="statement not covered" >      this.logger.debug(`[extractReplyFromArticle] Extracted: @${author}: "${text.substring(0, 30)}..."`);</span>
 &nbsp;
-       // Clean text
-       const cleaned = <span class="cstat-no" title="statement not covered" >this.cleanReplyText(text);</span>
+      // Clean text
+      const cleaned = <span class="cstat-no" title="statement not covered" >this.cleanReplyText(text);</span>
 &nbsp;
-       // Filter out engagement metrics (just numbers)
-<span class="cstat-no" title="statement not covered" >       if (/^[\d,.\sK]+$/.test(cleaned)) {</span>
-<span class="cstat-no" title="statement not covered" >         this.logger.debug(`[extractReplyFromArticle] Skipping engagement metrics: "${cleaned}"`);</span>
-<span class="cstat-no" title="statement not covered" >         return null;</span>
-       }
+      // Filter out engagement metrics (just numbers)
+<span class="cstat-no" title="statement not covered" >      if (/^[\d,.\sK]+$/.test(cleaned)) {</span>
+<span class="cstat-no" title="statement not covered" >        this.logger.debug(`[extractReplyFromArticle] Skipping engagement metrics: "${cleaned}"`);</span>
+<span class="cstat-no" title="statement not covered" >        return null;</span>
+      }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >       return {</span>
-         author: author,
-         text: cleaned,
-         length: cleaned.length,
-         hasMention: cleaned.includes('@')
-       };
+<span class="cstat-no" title="statement not covered" >      return {</span>
+        author: author,
+        text: cleaned,
+        length: cleaned.length,
+        hasMention: cleaned.includes('@')
+      };
 &nbsp;
-     } catch (error) {
-<span class="cstat-no" title="statement not covered" >       this.logger.debug(`[extractReplyFromArticle] Error: ${error.message}`);</span>
-<span class="cstat-no" title="statement not covered" >       return null;</span>
-     }
-   }
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      this.logger.debug(`[extractReplyFromArticle] Error: ${error.message}`);</span>
+<span class="cstat-no" title="statement not covered" >      return null;</span>
+    }
+  }
 &nbsp;
-    /**
-     * Extract author from article
-     */
-    async <span class="fstat-no" title="function not covered" >extractAuthorFromArticle(</span>article) {
-<span class="cstat-no" title="statement not covered" >      try {</span>
-        // Strategy 1: Find username in header links (most reliable)
-        const headerSelectors = <span class="cstat-no" title="statement not covered" >[</span>
-          'a[href^="/"][role="link"]',
-          'a[href*="/status/"]',
-          '[class*="UserName"] a',
-          '[class*="userName"] a',
-          '[data-testid="User-Name"] a'
-        ];
-        
-<span class="cstat-no" title="statement not covered" >        for (const selector of headerSelectors) {</span>
-<span class="cstat-no" title="statement not covered" >          try {</span>
-            const headerLink = <span class="cstat-no" title="statement not covered" >await article.$(selector);</span>
-<span class="cstat-no" title="statement not covered" >            if (headerLink) {</span>
-              const href = <span class="cstat-no" title="statement not covered" >await headerLink.getAttribute('href');</span>
-<span class="cstat-no" title="statement not covered" >              if (href) {</span>
-                // Handle various URL formats: /username, /username/status/123
-                const username = <span class="cstat-no" title="statement not covered" >href.replace(/^\/|\/$/g, '').split('/')[0];</span>
-                // Username validation: alphanumeric + underscores, 4-15 chars
-<span class="cstat-no" title="statement not covered" >                if (username &amp;&amp; /^[a-zA-Z0-9_]{4,15}$/.test(username) &amp;&amp; </span>
-                    !username.match(/^\d+$/)) { // Exclude pure numbers
-<span class="cstat-no" title="statement not covered" >                  return username;</span>
-                }
-              }
-            }
-          } catch (error) {
-<span class="cstat-no" title="statement not covered" >            this.logger.debug(`[Context] Header selector lookup failed: ${error.message}`);</span>
-          }
-        }
+  /**
+   * Extract author from article
+   */
+  async <span class="fstat-no" title="function not covered" >extractAuthorFromArticle(</span>article) {
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      // Strategy 1: Find username in header links (most reliable)
+      const headerSelectors = <span class="cstat-no" title="statement not covered" >[</span>
+        'a[href^="/"][role="link"]',
+        'a[href*="/status/"]',
+        '[class*="UserName"] a',
+        '[class*="userName"] a',
+        '[data-testid="User-Name"] a'
+      ];
 &nbsp;
-        // Strategy 2: Extract from display name containing @username
-        const nameEl = <span class="cstat-no" title="statement not covered" >await article.$('[data-testid="User-Name"], [class*="username"], [class*="screenName"]');</span>
-<span class="cstat-no" title="statement not covered" >        if (nameEl) {</span>
-<span class="cstat-no" title="statement not covered" >          try {</span>
-            const nameText = <span class="cstat-no" title="statement not covered" >await nameEl.innerText();</span>
-            const match = <span class="cstat-no" title="statement not covered" >nameText.match(/@([a-zA-Z0-9_]+)/);</span>
-<span class="cstat-no" title="statement not covered" >            if (match &amp;&amp; match[1].length &gt;= 4) <span class="cstat-no" title="statement not covered" >return match[1];</span></span>
-          } catch (error) {
-<span class="cstat-no" title="statement not covered" >            this.logger.debug(`[Context] Display name lookup failed: ${error.message}`);</span>
-          }
-        }
-&nbsp;
-        // Strategy 3: Look for any link with /username pattern
+<span class="cstat-no" title="statement not covered" >      for (const selector of headerSelectors) {</span>
 <span class="cstat-no" title="statement not covered" >        try {</span>
-          const allLinks = <span class="cstat-no" title="statement not covered" >await article.$$('a[href^="/"]');</span>
-<span class="cstat-no" title="statement not covered" >          for (const link of allLinks.slice(0, 5)) {</span>
-            const href = <span class="cstat-no" title="statement not covered" >await link.getAttribute('href');</span>
-<span class="cstat-no" title="statement not covered" >            if (href &amp;&amp; href.startsWith('/') &amp;&amp; !href.includes('status')) {</span>
-              const username = <span class="cstat-no" title="statement not covered" >href.replace(/^\/|\/$/g, '');</span>
-<span class="cstat-no" title="statement not covered" >              if (/^[a-zA-Z0-9_]{4,15}$/.test(username) &amp;&amp; !username.match(/^\d+$/)) {</span>
+          const headerLink = <span class="cstat-no" title="statement not covered" >await article.$(selector);</span>
+<span class="cstat-no" title="statement not covered" >          if (headerLink) {</span>
+            const href = <span class="cstat-no" title="statement not covered" >await headerLink.getAttribute('href');</span>
+<span class="cstat-no" title="statement not covered" >            if (href) {</span>
+              // Handle various URL formats: /username, /username/status/123
+              const username = <span class="cstat-no" title="statement not covered" >href.replace(/^\/|\/$/g, '').split('/')[0];</span>
+              // Username validation: alphanumeric + underscores, 4-15 chars
+<span class="cstat-no" title="statement not covered" >              if (username &amp;&amp; /^[a-zA-Z0-9_]{4,15}$/.test(username) &amp;&amp;</span>
+                !username.match(/^\d+$/)) { // Exclude pure numbers
 <span class="cstat-no" title="statement not covered" >                return username;</span>
               }
             }
           }
         } catch (error) {
-<span class="cstat-no" title="statement not covered" >          this.logger.debug(`[Context] Username link scan failed: ${error.message}`);</span>
+<span class="cstat-no" title="statement not covered" >          this.logger.debug(`[Context] Header selector lookup failed: ${error.message}`);</span>
         }
-&nbsp;
-        // Strategy 4: Fallback - try to find any @mention in the article
-<span class="cstat-no" title="statement not covered" >        try {</span>
-          const articleText = <span class="cstat-no" title="statement not covered" >await article.innerText();</span>
-          const match = <span class="cstat-no" title="statement not covered" >articleText.match(/@([a-zA-Z0-9_]{4,15})/);</span>
-<span class="cstat-no" title="statement not covered" >          if (match) <span class="cstat-no" title="statement not covered" >return match[1];</span></span>
-        } catch (error) {
-<span class="cstat-no" title="statement not covered" >          this.logger.debug(`[Context] Timeline reply extraction failed: ${error.message}`);</span>
-        }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >        return 'unknown';</span>
-      } catch {
-<span class="cstat-no" title="statement not covered" >        return 'unknown';</span>
       }
+&nbsp;
+      // Strategy 2: Extract from display name containing @username
+      const nameEl = <span class="cstat-no" title="statement not covered" >await article.$('[data-testid="User-Name"], [class*="username"], [class*="screenName"]');</span>
+<span class="cstat-no" title="statement not covered" >      if (nameEl) {</span>
+<span class="cstat-no" title="statement not covered" >        try {</span>
+          const nameText = <span class="cstat-no" title="statement not covered" >await nameEl.innerText();</span>
+          const match = <span class="cstat-no" title="statement not covered" >nameText.match(/@([a-zA-Z0-9_]+)/);</span>
+<span class="cstat-no" title="statement not covered" >          if (match &amp;&amp; match[1].length &gt;= 4) <span class="cstat-no" title="statement not covered" >return match[1];</span></span>
+        } catch (error) {
+<span class="cstat-no" title="statement not covered" >          this.logger.debug(`[Context] Display name lookup failed: ${error.message}`);</span>
+        }
+      }
+&nbsp;
+      // Strategy 3: Look for any link with /username pattern
+<span class="cstat-no" title="statement not covered" >      try {</span>
+        const allLinks = <span class="cstat-no" title="statement not covered" >await article.$$('a[href^="/"]');</span>
+<span class="cstat-no" title="statement not covered" >        for (const link of allLinks.slice(0, 5)) {</span>
+          const href = <span class="cstat-no" title="statement not covered" >await link.getAttribute('href');</span>
+<span class="cstat-no" title="statement not covered" >          if (href &amp;&amp; href.startsWith('/') &amp;&amp; !href.includes('status')) {</span>
+            const username = <span class="cstat-no" title="statement not covered" >href.replace(/^\/|\/$/g, '');</span>
+<span class="cstat-no" title="statement not covered" >            if (/^[a-zA-Z0-9_]{4,15}$/.test(username) &amp;&amp; !username.match(/^\d+$/)) {</span>
+<span class="cstat-no" title="statement not covered" >              return username;</span>
+            }
+          }
+        }
+      } catch (error) {
+<span class="cstat-no" title="statement not covered" >        this.logger.debug(`[Context] Username link scan failed: ${error.message}`);</span>
+      }
+&nbsp;
+      // Strategy 4: Fallback - try to find any @mention in the article
+<span class="cstat-no" title="statement not covered" >      try {</span>
+        const articleText = <span class="cstat-no" title="statement not covered" >await article.innerText();</span>
+        const match = <span class="cstat-no" title="statement not covered" >articleText.match(/@([a-zA-Z0-9_]{4,15})/);</span>
+<span class="cstat-no" title="statement not covered" >        if (match) <span class="cstat-no" title="statement not covered" >return match[1];</span></span>
+      } catch (error) {
+<span class="cstat-no" title="statement not covered" >        this.logger.debug(`[Context] Timeline reply extraction failed: ${error.message}`);</span>
+      }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      return 'unknown';</span>
+    } catch {
+<span class="cstat-no" title="statement not covered" >      return 'unknown';</span>
     }
+  }
 &nbsp;
   /**
    * Extract replies from timeline
@@ -2527,7 +2521,7 @@ export class AIContextEngine {
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const tweetTexts = <span class="cstat-no" title="statement not covered" >await page.$$('[data-testid="tweetText"]');</span>
-      
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      for (const el of tweetTexts.slice(1, 40)) { // Skip first (main tweet)</span>
 <span class="cstat-no" title="statement not covered" >        try {</span>
           const text = <span class="cstat-no" title="statement not covered" >await el.innerText().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'')</span>;</span>
@@ -2549,20 +2543,20 @@ export class AIContextEngine {
 <span class="cstat-no" title="statement not covered" >    return replies;</span>
   }
 &nbsp;
-   /**
-    * Clean reply text - preserve meaningful content
-    */
-<span class="fstat-no" title="function not covered" >   cleanReplyText(</span>text) {
-<span class="cstat-no" title="statement not covered" >     if (!text) <span class="cstat-no" title="statement not covered" >return '';</span></span>
-     
-     // Preserve @mentions that are in-content (not just leading)
-     // Remove only excessive whitespace and truncate
-<span class="cstat-no" title="statement not covered" >     return text</span>
-       .replace(/\n+/g, ' ')    // Normalize newlines to spaces
-       .replace(/\s+/g, ' ')    // Collapse multiple spaces
-       .trim()
-       .substring(0, 280);
-   }
+  /**
+   * Clean reply text - preserve meaningful content
+   */
+<span class="fstat-no" title="function not covered" >  cleanReplyText(</span>text) {
+<span class="cstat-no" title="statement not covered" >    if (!text) <span class="cstat-no" title="statement not covered" >return '';</span></span>
+&nbsp;
+    // Preserve @mentions that are in-content (not just leading)
+    // Remove only excessive whitespace and truncate
+<span class="cstat-no" title="statement not covered" >    return text</span>
+      .replace(/\n+/g, ' ')    // Normalize newlines to spaces
+      .replace(/\s+/g, ' ')    // Collapse multiple spaces
+      .trim()
+      .substring(0, 280);
+  }
 &nbsp;
   /**
    * Analyze sentiment of text
@@ -2625,9 +2619,9 @@ export class AIContextEngine {
     }
 &nbsp;
     // Check for promotional content
-<span class="cstat-no" title="statement not covered" >    if (lower.includes('link in bio') || lower.includes('check out') || </span>
-        lower.includes('sign up') || lower.includes('buy now') ||
-        lower.includes('limited time') || lower.includes('offer')) {
+<span class="cstat-no" title="statement not covered" >    if (lower.includes('link in bio') || lower.includes('check out') ||</span>
+      lower.includes('sign up') || lower.includes('buy now') ||
+      lower.includes('limited time') || lower.includes('offer')) {
 <span class="cstat-no" title="statement not covered" >      tones.promotional++;</span>
     }
 &nbsp;
@@ -2664,27 +2658,27 @@ export class AIContextEngine {
 &nbsp;
     // Question detection
 <span class="cstat-no" title="statement not covered" >    if (lower.includes('?') || lower.includes('what') || lower.includes('how') ||</span>
-        lower.includes('why') || lower.includes('when') || lower.includes('who')) {
+      lower.includes('why') || lower.includes('when') || lower.includes('who')) {
 <span class="cstat-no" title="statement not covered" >      return 'question';</span>
     }
 &nbsp;
     // News/Announcement
-<span class="cstat-no" title="statement not covered" >    if (lower.includes('breaking') || lower.includes('update') || </span>
-        lower.includes('just announced') || lower.includes('official statement')) {
+<span class="cstat-no" title="statement not covered" >    if (lower.includes('breaking') || lower.includes('update') ||</span>
+      lower.includes('just announced') || lower.includes('official statement')) {
 <span class="cstat-no" title="statement not covered" >      return 'news';</span>
     }
 &nbsp;
     // Opinion/Thought
-<span class="cstat-no" title="statement not covered" >    if (replies.length &gt; 3 &amp;&amp; replies.some(<span class="fstat-no" title="function not covered" >r </span>=&gt; </span>
-<span class="cstat-no" title="statement not covered" >        r.text.toLowerCase().includes('agree') || </span>
-        r.text.toLowerCase().includes('disagree') ||
-        r.text.toLowerCase().includes('think'))) {
+<span class="cstat-no" title="statement not covered" >    if (replies.length &gt; 3 &amp;&amp; replies.some(<span class="fstat-no" title="function not covered" >r </span>=&gt;</span>
+<span class="cstat-no" title="statement not covered" >      r.text.toLowerCase().includes('agree') ||</span>
+      r.text.toLowerCase().includes('disagree') ||
+      r.text.toLowerCase().includes('think'))) {
 <span class="cstat-no" title="statement not covered" >      return 'discussion';</span>
     }
 &nbsp;
     // Fan/Reaction
-<span class="cstat-no" title="statement not covered" >    if (replies.length &gt; 5 &amp;&amp; replies.some(<span class="fstat-no" title="function not covered" >r </span>=&gt; </span>
-<span class="cstat-no" title="statement not covered" >        r.author !== 'unknown' &amp;&amp; r.text.length &lt; 50)</span>) {
+<span class="cstat-no" title="statement not covered" >    if (replies.length &gt; 5 &amp;&amp; replies.some(<span class="fstat-no" title="function not covered" >r </span>=&gt;</span>
+<span class="cstat-no" title="statement not covered" >      r.author !== 'unknown' &amp;&amp; r.text.length &lt; 50)</span>) {
 <span class="cstat-no" title="statement not covered" >      return 'reaction';</span>
     }
 &nbsp;
@@ -2757,7 +2751,7 @@ export class AIContextEngine {
         .filter(<span class="fstat-no" title="function not covered" >r </span>=&gt; <span class="cstat-no" title="statement not covered" >r.text &amp;&amp; r.text.length &gt; 5)</span>
         .sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >(b.text?.length || 0) - (a.text?.length || 0))</span>
         .slice(0, 30);
-      
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      enhancedPrompt += `\nRecent replies:\n`;</span>
 <span class="cstat-no" title="statement not covered" >      for (const reply of sortedReplies) {</span>
 <span class="cstat-no" title="statement not covered" >        enhancedPrompt += `- @${reply.author}: "${reply.text.substring(0, 150)}"\n`;</span>
@@ -2785,7 +2779,7 @@ export default AIContextEngine;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -5,6 +5,7 @@
  */
 
 import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 
 const logger = createLogger('idle-ghosting.js');
 
@@ -15,6 +16,24 @@ const logger = createLogger('idle-ghosting.js');
  */
 class IdleGhosting {
     constructor() {
+        this._configLoaded = false;
+        
+        this.isActive = false;
+        this.wiggleInterval = null;
+        this.wiggleFrequency = 2000;
+        this.wiggleMagnitude = 5;
+        this.scrollInterval = null;
+        this.scrollFrequency = 5000;
+        this.scrollMagnitude = 50;
+        
+        this._loadConfig();
+    }
+
+    async _loadConfig() {
+        if (this._configLoaded) return;
+
+        const idleConfig = (await getTimeoutValue('humanization', {})).idle ?? {};
+
         /** @type {boolean} Whether ghosting is currently active */
         this.isActive = false;
 
@@ -22,12 +41,13 @@ class IdleGhosting {
         this.wiggleInterval = null;
 
         /** @type {number} Wiggle frequency in ms */
-        this.wiggleFrequency = 2000;
+        this.wiggleFrequency = idleConfig.wiggleFrequency ?? 2000;
 
         /** @type {number} Wiggle magnitude in pixels */
-        this.wiggleMagnitude = 5;
+        this.wiggleMagnitude = idleConfig.wiggleMagnitude ?? 5;
 
         logger.info('IdleGhosting initialized');
+        this._configLoaded = true;
     }
 
     /**

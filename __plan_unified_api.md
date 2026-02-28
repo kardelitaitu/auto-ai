@@ -17,7 +17,7 @@
 - [x] Phase 11 — Error recovery (`api/recover.js`)
 - [x] Phase 12 — Attention modeling (`api/attention.js` - gaze, exit intent)
 - [x] Phase 13 — Idle & patch (`api/idle.js`, `api/patch.js`)
-- [ ] Phase 14 — Integration testing
+- [x] Phase 14 — Integration testing
 - [ ] Phase 15 — Agentic migration (refactor existing tasks)
 
 ---
@@ -567,6 +567,24 @@ await api.click('.target', { focusShift: true });  // Click nearby element first
 | 13 | | Idle & Patch. Build idle simulation and detection API patching |
 | 14 | | Integration Testing. Test all modules together |
 | 15 | | Agentic Migration. Refactor existing orchestration tasks to consume the unified api |
+
+---
+
+## 8.1 Phase 15 Plan — Agentic Migration
+
+- Inventory task modules still using raw page operations
+- Prefer api navigation, waits, scrolls, and actions inside tasks
+- Migrate low-risk tasks first (reply-test, popup-closer)
+- Introduce a pageOps adapter for agent and utility modules
+- Add migration flags in task config for controlled rollout
+- Validate with integration tests and task-level smoke runs
+
+### Phase 15 Acceptance Criteria
+
+- Tasks prefer api calls over direct page usage when available
+- Cursor ownership remains centralized via api.cursor
+- Rollback to legacy behavior works via migration flags
+- Integration tests and task smoke runs pass
 
 ---
 

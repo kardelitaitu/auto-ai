@@ -5,6 +5,7 @@
  */
 
 import { mathUtils } from "../mathUtils.js";
+import { api } from "../../api/index.js";
 
 export async function captureContext(engine, page, tweetUrl = "") {
   const context = {
@@ -38,8 +39,8 @@ export async function extractRepliesMultipleStrategies(engine, page) {
         '[data-testid="tweetText"], article, [role="article"]',
         { timeout: 5000 },
       )
-      .catch(() => {});
-    await page.waitForTimeout(mathUtils.randomInRange(500, 1000));
+      .catch(() => { });
+    await api.wait(mathUtils.randomInRange(500, 1000));
     engine.logger.debug(`[AIReply] Tweet page loaded`);
   } catch (e) {
     engine.logger.debug(`[AIReply] Page load check: ${e.message}`);
@@ -111,13 +112,9 @@ export async function extractRepliesMultipleStrategies(engine, page) {
   };
 
   try {
-    engine.logger.debug(`[AIReply] Step 1: Scrolling to bottom to load replies...`);
-
-    for (let scroll = 0; scroll < 6; scroll++) {
-      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-      await page.waitForTimeout(mathUtils.randomInRange(150, 300));
-      engine.logger.debug(`[AIReply] Scroll to bottom ${scroll + 1}/6`);
-    }
+    engine.logger.debug(`[AIReply] Step 1: Using api.scroll.read to load replies...`);
+    await api.scroll.read(null, { pauses: 6, scrollAmount: 800 });
+    await api.wait(500);
 
     const scrollUpSteps = 15;
     for (let i = 0; i < scrollUpSteps; i++) {
@@ -142,8 +139,8 @@ export async function extractRepliesMultipleStrategies(engine, page) {
         addReply("unknown", text);
       }
 
-      await page.evaluate(() => window.scrollBy(0, -300));
-      await page.waitForTimeout(mathUtils.randomInRange(100, 200));
+      await api.scroll.back(300);
+      await api.think(mathUtils.randomInRange(100, 200));
     }
   } catch (e) {
     engine.logger.debug(`[AIReply] Scroll extraction failed: ${e.message}`);
@@ -215,35 +212,12 @@ export async function extractRepliesMultipleStrategies(engine, page) {
   return replies.slice(0, 50);
 }
 
-async function returnToMainTweet(engine, page) {
+async function returnToMainTweet(engine, _page) {
   try {
-    engine.logger.debug(`[AIReply] Returning to main tweet...`);
-    await page.waitForTimeout(mathUtils.randomInRange(500, 1000));
-
-    for (let i = 0; i < 3; i++) {
-      await page.keyboard.press("Home");
-      await page.waitForTimeout(mathUtils.randomInRange(200, 400));
-    }
-
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(mathUtils.randomInRange(300, 600));
-
-    await page.evaluate(() => {
-      const main = document.querySelector('main, [role="main"]');
-      if (main) {
-        main.scrollTop = 0;
-      }
-    });
-
-    await page.waitForTimeout(mathUtils.randomInRange(400, 800));
-
-    const scrollPos = await page.evaluate(() => window.scrollY);
-    if (scrollPos > 100) {
-      await page.evaluate(() => window.scrollTo(0, 0));
-    }
-
-    await page.waitForTimeout(mathUtils.randomInRange(300, 500));
-    engine.logger.debug(`[AIReply] Returned to main tweet (scrollY: ${scrollPos})`);
+    engine.logger.debug(`[AIReply] Returning to main tweet using API...`);
+    await api.scroll.toTop(2500);
+    await api.wait(500);
+    engine.logger.debug(`[AIReply] Returned to main tweet`);
   } catch (e) {
     engine.logger.debug(`[AIReply] Return scroll failed: ${e.message}`);
   }

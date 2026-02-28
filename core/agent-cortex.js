@@ -7,15 +7,25 @@
 import { createLogger } from '../utils/logger.js';
 import VisionInterpreter from './vision-interpreter.js';
 import LocalClient from './local-client.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 import crypto from 'crypto';
 
 const logger = createLogger('agent-cortex.js');
 
-// Configuration Constants
-const STUCK_THRESHOLD = 3;           // Number of identical screens before "stuck"
-const FAILURE_THRESHOLD = 2;         // Consecutive failures before warning
-const HISTORY_WINDOW = 5;            // Number of recent actions to keep in context
-const MAX_HISTORY_SIZE = 50;         // Maximum total history entries
+// Configuration Constants - loaded from config
+let STUCK_THRESHOLD = 3;
+let FAILURE_THRESHOLD = 2;
+let HISTORY_WINDOW = 5;
+let MAX_HISTORY_SIZE = 50;
+
+async function _loadAgentConfig() {
+    const agentConfig = await getTimeoutValue('agent', {}) || {};
+    STUCK_THRESHOLD = agentConfig.stuckThreshold ?? STUCK_THRESHOLD;
+    
+    const stateConfig = await getTimeoutValue('state', {}) || {};
+    MAX_HISTORY_SIZE = stateConfig.maxBreadcrumbs ?? MAX_HISTORY_SIZE;
+}
+_loadAgentConfig();
 
 class AgentCortex {
     /**

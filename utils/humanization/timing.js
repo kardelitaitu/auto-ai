@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 /**
  * Human Timing Engine
  * Natural timing patterns for human-like behavior
@@ -146,8 +147,8 @@ export class HumanTiming {
 
         for (let i = 1; i <= rampUpSteps; i++) {
             const factor = i / rampUpSteps;
-            const delay = mathUtils.gaussian(800 * factor, 300);
-            await this.page.waitForTimeout(delay);
+            const _delay = mathUtils.gaussian(800 * factor, 300);
+            await api.wait(1000);
         }
     }
 

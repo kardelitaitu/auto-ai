@@ -99,6 +99,7 @@ describe('core/ollama-client.js', () => {
       });
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Test prompt',
         temperature: 0.7,
@@ -166,6 +167,7 @@ describe('core/ollama-client.js', () => {
       });
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       await client.initialize(); // Ensure config is loaded from our mock
 
       const result = await client.generate({
@@ -188,6 +190,7 @@ describe('core/ollama-client.js', () => {
       });
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Test prompt'
       });
@@ -200,6 +203,7 @@ describe('core/ollama-client.js', () => {
       mockFetch.mockRejectedValueOnce({ name: 'AbortError' });
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Test prompt'
       });
@@ -564,6 +568,7 @@ describe('core/ollama-client.js', () => {
 
       const client = new OllamaClient();
       client.model = 'llava:latest';
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Test prompt'
       });
@@ -581,6 +586,7 @@ describe('core/ollama-client.js', () => {
       });
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Tweet from @user about #topic',
         systemPrompt: 'Twitter context'
@@ -601,6 +607,7 @@ describe('core/ollama-client.js', () => {
       });
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Tweet from @user EMOJI',
         systemPrompt: 'Twitter with EMOJI'
@@ -619,6 +626,7 @@ describe('core/ollama-client.js', () => {
       });
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Tweet from @user'
       });
@@ -640,6 +648,7 @@ describe('core/ollama-client.js', () => {
       });
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Tweet from @user'
       });
@@ -659,6 +668,7 @@ describe('core/ollama-client.js', () => {
 
       const client = new OllamaClient();
       client.model = 'llama3.2';
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Test',
         system: 'System context'
@@ -718,6 +728,7 @@ describe('core/ollama-client.js', () => {
       mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
       const client = new OllamaClient();
+      client._warmedUp = true;
       const result = await client.generate({
         prompt: 'Test'
       });

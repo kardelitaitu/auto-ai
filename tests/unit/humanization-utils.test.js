@@ -4,6 +4,17 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+    }
+}));
+import { api } from '../../api/index.js';
 import { HumanizationEngine } from '../../utils/humanization/engine.js';
 import { HumanScroll } from '../../utils/humanization/scroll.js';
 import { HumanTiming } from '../../utils/humanization/timing.js';
@@ -67,8 +78,11 @@ describe('HumanizationEngine', () => {
             waitForTimeout: vi.fn(),
             mouse: {
                 wheel: vi.fn()
-            }
+            },
+            isClosed: vi.fn().mockReturnValue(false),
+            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
         };
+        api.getPage.mockReturnValue(mockPage);
         mockAgent = {
             log: vi.fn()
         };
@@ -153,7 +167,7 @@ describe('HumanizationEngine', () => {
         it('should execute think', async () => {
             await engine.think('like');
             expect(engine._timingEngine.getThinkTime).toHaveBeenCalledWith('like', {});
-            expect(mockPage.waitForTimeout).toHaveBeenCalledWith(1000);
+            expect(api.wait).toHaveBeenCalledWith(1000);
         });
 
         it('should consume content with defaults', async () => {
@@ -188,7 +202,7 @@ describe('HumanizationEngine', () => {
             await engine.sessionStart();
             
             expect(engine._timingEngine.sessionRampUp).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
             expect(scrollSpy).toHaveBeenCalledWith('down', 'light');
         });
 
@@ -196,7 +210,7 @@ describe('HumanizationEngine', () => {
             await engine.sessionEnd();
             
             expect(engine._sessionEngine.wrapUp).toHaveBeenCalledWith(mockPage);
-            expect(scrollRandom).toHaveBeenCalledWith(mockPage, -50, 100);
+            expect(scrollRandom).toHaveBeenCalledWith(-50, 100);
         });
 
         it('should return session duration config', () => {
@@ -232,7 +246,7 @@ describe('HumanizationEngine', () => {
         it('should perform natural pause', async () => {
             await engine.naturalPause('transition');
             expect(engine._timingEngine.getNaturalPause).toHaveBeenCalledWith('transition');
-            expect(mockPage.waitForTimeout).toHaveBeenCalledWith(500);
+            expect(api.wait).toHaveBeenCalledWith(500);
         });
 
         it('should perform read behavior', async () => {

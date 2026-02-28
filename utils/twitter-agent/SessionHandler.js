@@ -1,6 +1,13 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { api } from '../../api/index.js';
 import { BaseHandler } from './BaseHandler.js';
 import { mathUtils } from '../mathUtils.js';
 import { scrollDown, scrollRandom } from '../scroll-helper.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ACCOUNT_ISSUES_FILE = path.join(__dirname, '../../account-issues.txt');
 
 export class SessionHandler extends BaseHandler {
     constructor(agent) {
@@ -50,7 +57,7 @@ export class SessionHandler extends BaseHandler {
         // Apply theme if configured
         if (this.config.theme) {
             try {
-                await this.page.emulateMedia({ colorScheme: this.config.theme });
+                await api.emulateMedia({ colorScheme: this.config.theme });
                 this.log(`🎨 Applied theme: ${this.config.theme}`);
             } catch (e) {
                 this.log(`⚠️ Failed to apply theme: ${e.message}`);
@@ -65,7 +72,7 @@ export class SessionHandler extends BaseHandler {
             } catch (e) {
                 this.log(`❌ Navigation attempt ${i + 1}/3 failed: ${e.message}`);
                 if (i < 2) {
-                    await this.page.waitForTimeout(2000);
+                    await api.wait(2000);
                 }
             }
         }
@@ -105,7 +112,7 @@ export class SessionHandler extends BaseHandler {
 
             // Add variable delay between cycles
             const cycleDelay = mathUtils.randomInRange(3000, 8000);
-            await this.page.waitForTimeout(cycleDelay);
+            await api.wait(cycleDelay);
         }
 
         this.log('🏁 Session completed successfully.');
@@ -129,7 +136,7 @@ export class SessionHandler extends BaseHandler {
 
         // Random engagement selection with weighted probabilities
         const activityRoll = Math.random();
-        
+
         if (activityRoll < 0.6) {
             // 60% chance: Tweet engagement
             await this.agent.engagement.diveTweet();
@@ -156,10 +163,10 @@ export class SessionHandler extends BaseHandler {
     async simulateReading() {
         const duration = mathUtils.randomInRange(8000, 20000);
         const endTime = Date.now() + duration;
-        
+
         if (this.state.activityMode === 'BURST') {
             this.log('[Reading] 🌀 Burst mode: Short reading simulation.');
-            await this.page.waitForTimeout(mathUtils.randomInRange(2000, 5000));
+            await api.wait(mathUtils.randomInRange(2000, 5000));
             return;
         }
 
@@ -182,9 +189,9 @@ export class SessionHandler extends BaseHandler {
             if (mathUtils.roll(0.15)) {
                 const method = this.getScrollMethod();
                 if (method === 'WHEEL_DOWN') {
-                    await scrollDown(this.page, mathUtils.randomInRange(1, 3));
+                    await scrollDown(mathUtils.randomInRange(1, 3));
                 } else {
-                    await scrollRandom(this.page, mathUtils.randomInRange(100, 300));
+                    await scrollRandom(mathUtils.randomInRange(100, 300));
                 }
             }
 
@@ -195,7 +202,7 @@ export class SessionHandler extends BaseHandler {
 
             // Micro-pauses
             if (mathUtils.roll(0.15)) {
-                await this.page.waitForTimeout(mathUtils.randomInRange(1000, 3000));
+                await api.wait(mathUtils.randomInRange(1000, 3000));
             }
 
             // Random mouse movements
@@ -209,7 +216,7 @@ export class SessionHandler extends BaseHandler {
             }
 
             // Short pause between actions
-            await this.page.waitForTimeout(mathUtils.randomInRange(500, 1500));
+            await api.wait(mathUtils.randomInRange(500, 1500));
             now = Date.now();
         }
 
@@ -230,12 +237,12 @@ export class SessionHandler extends BaseHandler {
                 // Select random text on page
                 const textElements = this.page.locator('p, span, div, h1, h2, h3, h4, h5, h6');
                 const count = await textElements.count();
-                
+
                 if (count > 0) {
                     const visibleIndices = [];
                     for (let i = 0; i < Math.min(count, 20); i++) {
                         const element = textElements.nth(i);
-                        if (await element.isVisible()) {
+                        if (await api.visible(element)) {
                             const box = await element.boundingBox().catch(() => null);
                             if (box && box.height > 0) {
                                 visibleIndices.push(i);
@@ -246,16 +253,16 @@ export class SessionHandler extends BaseHandler {
                     if (visibleIndices.length > 0) {
                         const randomIndex = visibleIndices[Math.floor(Math.random() * visibleIndices.length)];
                         const targetElement = textElements.nth(randomIndex);
-                        
+
                         // Simulate text selection
                         const box = await targetElement.boundingBox();
                         if (box) {
                             await this.page.mouse.move(box.x + 10, box.y + 5);
-                            await this.page.waitForTimeout(200);
+                            await api.wait(200);
                             await this.page.mouse.down();
-                            await this.page.waitForTimeout(100);
+                            await api.wait(100);
                             await this.page.mouse.move(box.x + box.width - 10, box.y + 5);
-                            await this.page.waitForTimeout(100);
+                            await api.wait(100);
                             await this.page.mouse.up();
                         }
                     }
@@ -266,21 +273,21 @@ export class SessionHandler extends BaseHandler {
                 const viewport = this.page.viewportSize();
                 const x = mathUtils.randomInRange(100, viewport.width - 100);
                 const y = mathUtils.randomInRange(100, viewport.height - 100);
-                
+
                 await this.page.mouse.move(x, y);
-                await this.page.waitForTimeout(300);
+                await api.wait(300);
                 await this.page.mouse.click(x, y);
 
             } else if (fidgetType === 'SCROLL_JITTER') {
                 // Random scroll jitter
                 for (let i = 0; i < 3; i++) {
-                    await scrollRandom(this.page, mathUtils.randomInRange(-100, 100));
-                    await this.page.waitForTimeout(mathUtils.randomInRange(100, 300));
+                    await scrollRandom(mathUtils.randomInRange(-100, 100));
+                    await api.wait(mathUtils.randomInRange(100, 300));
                 }
             }
 
-            await this.page.waitForTimeout(mathUtils.randomInRange(500, 1500));
-            
+            await api.wait(mathUtils.randomInRange(500, 1500));
+
         } catch (error) {
             this.log(`[Fidget] Error: ${error.message}`);
         }
@@ -294,26 +301,26 @@ export class SessionHandler extends BaseHandler {
 
         try {
             await element.click();
-            await this.page.waitForTimeout(mathUtils.randomInRange(300, 800));
+            await api.wait(mathUtils.randomInRange(300, 800));
 
             // Type with human-like timing and errors
             for (const char of text) {
                 await element.press(char);
-                
+
                 // Variable typing speed (50-150ms per character)
-                await this.page.waitForTimeout(mathUtils.randomInRange(50, 150));
-                
+                await api.wait(mathUtils.randomInRange(50, 150));
+
                 // Occasional typos and corrections (5% chance)
                 if (mathUtils.roll(0.05)) {
                     await element.press('Backspace');
-                    await this.page.waitForTimeout(mathUtils.randomInRange(100, 300));
+                    await api.wait(mathUtils.randomInRange(100, 300));
                     await element.press(char);
-                    await this.page.waitForTimeout(mathUtils.randomInRange(50, 150));
+                    await api.wait(mathUtils.randomInRange(50, 150));
                 }
             }
 
-            await this.page.waitForTimeout(mathUtils.randomInRange(500, 1000));
-            
+            await api.wait(mathUtils.randomInRange(500, 1000));
+
         } catch (error) {
             this.log(`[Type] Error: ${error.message}`);
             throw error;
@@ -331,15 +338,15 @@ export class SessionHandler extends BaseHandler {
             const composerButton = this.page.locator('[data-testid="SideNav_NewTweet_Button"], a[href="/compose/tweet"]');
             let composerOpened = false;
 
-            if (await composerButton.count() > 0 && await composerButton.isVisible()) {
+            if (await api.exists(composerButton) && await api.visible(composerButton)) {
                 await this.safeHumanClick(composerButton, 'Composer Button');
                 composerOpened = true;
             }
 
             if (!composerOpened) {
                 // Fallback: Direct URL
-                await this.page.goto('https://x.com/compose/tweet');
-                await this.page.waitForTimeout(2000);
+                await api.goto('https://x.com/compose/tweet');
+                await api.wait(2000);
             }
 
             // Wait for composer to appear
@@ -351,12 +358,12 @@ export class SessionHandler extends BaseHandler {
 
             // Post the tweet
             const postButton = this.page.locator('[data-testid="tweetButton"], [data-testid="tweetButtonInline"]');
-            if (await postButton.count() > 0 && await postButton.isVisible()) {
+            if (await api.exists(postButton) && await api.visible(postButton)) {
                 await this.safeHumanClick(postButton, 'Post Button');
-                
+
                 // Wait for post confirmation
-                await this.page.waitForTimeout(3000);
-                
+                await api.wait(3000);
+
                 this.state.tweets++;
                 this.log(`✅ Tweet posted successfully! Total tweets: ${this.state.tweets}`);
                 return true;
@@ -370,12 +377,67 @@ export class SessionHandler extends BaseHandler {
     }
 
     /**
+     * Logs account issues to a separate file
+     * @param {string} status - The detected status (Locked, Verify, LoggedOut)
+     */
+    _logAccountIssue(status) {
+        try {
+            const timestamp = new Date().toLocaleString();
+            const sessionId = this.agent.logger?.currentSessionId || 'unknown-session';
+            const profileId = this.config.id || 'unknown-profile';
+            const logEntry = `[${timestamp}] [Session:${sessionId}] [Account:${profileId}] STATUS: ${status}\n`;
+
+            fs.appendFileSync(ACCOUNT_ISSUES_FILE, logEntry, 'utf8');
+            this.log(`🚨 Account issue logged to account-issues.txt: ${status}`);
+        } catch (e) {
+            this.log(`⚠️ Failed to log account issue: ${e.message}`);
+        }
+    }
+
+    /**
      * Check if user is logged in
      * @returns {Promise<boolean>} - True if logged in, false otherwise
      */
     async checkLoginState() {
         try {
-            // Check for specific text content indicating logged out state (Relaxed Matching)
+            // 1. Check for Account Locked / Restricted States
+            const lockedText = [
+                'Account locked',
+                'Help us keep your account safe',
+                'Your account is temporarily limited',
+                'Automated behavior'
+            ];
+
+            for (const text of lockedText) {
+                const element = this.page.getByText(text).first();
+                if (await api.visible(element).catch(() => false)) {
+                    this.log(`[CRITICAL] Account LOCKED detected: "${text}"`);
+                    this._logAccountIssue('Locked');
+                    this.state.consecutiveLoginFailures++;
+                    return false;
+                }
+            }
+
+            // 2. Check for Verification Challenges
+            const verifyText = [
+                'Verify your identity',
+                'Confirm your email',
+                'suspicious activity',
+                'Enter the verification code',
+                'Authenticate your account'
+            ];
+
+            for (const text of verifyText) {
+                const element = this.page.getByText(text).first();
+                if (await api.visible(element).catch(() => false)) {
+                    this.log(`[IMPORTANT] Verification challenge detected: "${text}"`);
+                    this._logAccountIssue('Verify');
+                    this.state.consecutiveLoginFailures++;
+                    return false;
+                }
+            }
+
+            // 3. Check for specific text content indicating logged out state (Relaxed Matching)
             const signedOutText = [
                 'Sign in',
                 'Sign up with Google',
@@ -387,8 +449,9 @@ export class SessionHandler extends BaseHandler {
             for (const text of signedOutText) {
                 // Removed { exact: true } to be more robust against whitespace/styling
                 const element = this.page.getByText(text).first();
-                if (await element.isVisible().catch(() => false)) {
+                if (await api.visible(element).catch(() => false)) {
                     this.log(`[WARN] Not logged in. Found text: "${text}"`);
+                    this._logAccountIssue('LoggedOut');
                     this.state.consecutiveLoginFailures++;
                     return false;
                 }
@@ -404,17 +467,19 @@ export class SessionHandler extends BaseHandler {
             ];
 
             for (const selector of loginSelectors) {
-                if (await this.page.locator(selector).first().isVisible().catch(() => false)) {
+                const element = this.page.locator(selector).first();
+                if (await api.visible(element).catch(() => false)) {
                     this.log(`[WARN] Not logged in. Found selector: "${selector}"`);
+                    this._logAccountIssue('LoggedOut');
                     this.state.consecutiveLoginFailures++;
                     return false;
                 }
             }
 
             // Heuristic: If we are supposedly on Home but can't see the primary column or interacting elements
-            if (this.page.url().includes('home')) {
+            if ((await api.getCurrentUrl()).includes('home')) {
                 const mainColumn = this.page.locator('[data-testid="primaryColumn"]');
-                if (await mainColumn.count() === 0 || !(await mainColumn.isVisible())) {
+                if (await mainColumn.count() === 0 || !(await api.visible(mainColumn))) {
                     const timeline = this.page.locator('[aria-label="Home timeline"]');
                     if (await timeline.count() === 0) {
                         this.log(`[WARN] Suspected not logged in: Primary Timeline not visible on /home.`);

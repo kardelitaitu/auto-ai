@@ -84,7 +84,7 @@ describe('local-ollama-manager', () => {
             expect(result).toBe(true);
         });
 
-        it('should return false if API fails', async () => {
+        it('should return true if API fails but process is running', async () => {
             const { execSync } = await import('child_process');
             execSync.mockReturnValue('ollama.exe');
 
@@ -93,7 +93,7 @@ describe('local-ollama-manager', () => {
             const { isOllamaRunning } = await import('../../utils/local-ollama-manager.js');
             const result = await isOllamaRunning();
 
-            expect(result).toBe(false);
+            expect(result).toBe(true);
         });
 
         it('should use default endpoint when settings are missing', async () => {

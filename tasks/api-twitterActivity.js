@@ -17,7 +17,6 @@ import PopupCloser from '../utils/popup-closer.js';
 import { humanTiming } from '../utils/human-timing.js';
 import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
 
-const TARGET_URL = 'https://x.com';
 const DEFAULT_CYCLES = 20;
 const DEFAULT_MIN_DURATION = 360;
 const DEFAULT_MAX_DURATION = 600;
@@ -29,7 +28,10 @@ const LOGIN_CHECK_DELAY = 3000;
 const PAGE_TIMEOUT_MS = 60000;
 
 const ENTRY_POINTS = [
+    // Primary Entry (Remainder: 100% - 32% - 4% - 5% = 59%)
     { url: 'https://x.com/', weight: 59 },
+
+    // 4% Weight Group (Total 32%)
     { url: 'https://x.com/i/jf/global-trending/home', weight: 4 },
     { url: 'https://x.com/explore', weight: 4 },
     { url: 'https://x.com/explore/tabs/for-you', weight: 4 },
@@ -38,22 +40,30 @@ const ENTRY_POINTS = [
     { url: 'https://x.com/notifications', weight: 4 },
     { url: 'https://x.com/notifications/mentions', weight: 4 },
     { url: 'https://x.com/i/chat/', weight: 4 },
+
+    // 2% Weight Group (Total 4%)
     { url: 'https://x.com/i/connect_people?show_topics=false', weight: 2 },
     { url: 'https://x.com/i/connect_people?is_creator_only=true', weight: 2 },
+
+    // Legacy/Supplementary Exploratory Points (1% each to fill entropy, Total 5%)
     { url: 'https://x.com/explore/tabs/news', weight: 1 },
     { url: 'https://x.com/explore/tabs/sports', weight: 1 },
     { url: 'https://x.com/explore/tabs/entertainment', weight: 1 },
-    { url: 'https://x.com/explore/tabs/for_you', weight: 1 },
-    { url: 'https://x.com/notifications', weight: 1 },
+    { url: 'https://x.com/explore/tabs/for_you', weight: 1 }, // Note: legacy underscore version
+    { url: 'https://x.com/notifications', weight: 1 }        // Secondary notification hit
 ];
 
 function selectEntryPoint() {
     const totalWeight = ENTRY_POINTS.reduce((sum, ep) => sum + ep.weight, 0);
     let random = Math.random() * totalWeight;
+
     for (const entry of ENTRY_POINTS) {
         random -= entry.weight;
-        if (random <= 0) return entry.url;
+        if (random <= 0) {
+            return entry.url;
+        }
     }
+
     return ENTRY_POINTS[0].url;
 }
 
@@ -108,20 +118,19 @@ export default async function apiTwitterActivityTask(page, payload) {
     const logger = createLogger(`api-twitterActivity.js [${browserInfo}]`);
 
     logger.info(`[api-twitterActivity] Initializing with Unified API...`);
-    logger.info(`[api-twitterActivity] Step 1: Starting api.init()...`);
 
+    // Initialize API context
     await api.init(page, {
         logger,
         patch: true,
         humanizationPatch: true,
         autoInitNewPages: true,
         colorScheme: 'dark',
-        sensors: false, // Temporarily disable sensor spoofing to isolate hanging issue
+        sensors: false,
     });
 
-    logger.info(`[api-twitterActivity] Step 2: api.init() completed, setting page...`);
-    api.setPage(page);
-    logger.info(`[api-twitterActivity] Step 3: Page set successfully`);
+    // Note: Page context is now set via orchestrator's api.withPage()
+    // or use: await api.withPage(page, async () => { ... }) for standalone execution
 
     // Profile resolution
     const resolveProfile = () => {
@@ -137,8 +146,8 @@ export default async function apiTwitterActivityTask(page, payload) {
     };
 
     // Startup jitter
-    const startupJitter = Math.floor(Math.random() * 1000); // Max 1 second
-    logger.info(`[api-twitterActivity] ⏳ Startup Jitter: ${startupJitter}ms...`);
+    const startupJitter = Math.floor(Math.random() * 5000); // 5 seconds
+    logger.info(`[api-twitterActivity] ⏳ Startup: Running parallel initialization (Jitter: ${startupJitter}ms)...`);
 
     // Parallel initialization
     let taskConfig, profile;
@@ -157,20 +166,6 @@ export default async function apiTwitterActivityTask(page, payload) {
         throw new Error(`Task initialization failed: ${initError.message}`, { cause: initError });
     }
 
-    const apiMigration = taskConfig.system?.apiMigration ?? {};
-    const useUnifiedApiInTask = apiMigration.useUnifiedApiInTask === true;
-
-    // Set persona and attention patterns
-    if (profile) {
-        await api.setPersona(resolvePersona(profile));
-        logger.info(`[api-twitterActivity] Persona: ${api.getPersonaName()}`);
-        
-        const persona = api.getPersona();
-        const distractionChance = typeof persona.idleChance === 'number' ? persona.idleChance : 0.2;
-        api.setDistractionChance(distractionChance);
-        logger.info(`[api-twitterActivity] Distraction chance: ${(distractionChance * 100).toFixed(0)}%`);
-    }
-
     let agent;
     let hasAgent = false;
     let agentState = { follows: 0, likes: 0, retweets: 0, tweets: 0 };
@@ -180,7 +175,7 @@ export default async function apiTwitterActivityTask(page, payload) {
     let sessionStart;
     let popupCloser;
     let hasPopupCloser = false;
-    let stopPopupCloser = () => {};
+    let stopPopupCloser = () => { };
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
 
@@ -189,48 +184,6 @@ export default async function apiTwitterActivityTask(page, payload) {
             const reason = abortSignal.reason instanceof Error ? abortSignal.reason : new Error('Aborted');
             throw reason;
         }
-    };
-
-    const navigateHomePreferBack = async (withPageLock, reason = 'navigateHome') => {
-        const preferBack = Math.random() < 0.9;
-
-        if (preferBack) {
-            try {
-                const canGoBack = await withPageLock(async () => {
-                    if (useUnifiedApiInTask) {
-                        return await api.back({ timeout: TWITTER_TIMEOUTS.NAVIGATION });
-                    }
-                    const response = await page.goBack({
-                        timeout: TWITTER_TIMEOUTS.NAVIGATION,
-                        waitUntil: WAIT_UNTIL
-                    }).catch(() => null);
-                    return Boolean(response);
-                });
-
-                if (canGoBack) {
-                    logger.info(`[api-twitterActivity] ${reason}: trying api.back()...`);
-
-                    const xLoaded = await Promise.race([
-                        api.waitVisible('[data-testid="AppTabBar_Home_Link"]').then(() => 'home').catch(() => null),
-                        api.waitVisible('[role="main"]').then(() => 'main').catch(() => null),
-                        api.wait(TWITTER_TIMEOUTS.NAVIGATION).then(() => null)
-                    ]);
-
-                    if (xLoaded) {
-                        logger.info(`[api-twitterActivity] ${reason}: api.back() landed (${xLoaded})`);
-                        return;
-                    }
-
-                    logger.info(`[api-twitterActivity] ${reason}: api.back() did not resolve, falling back...`);
-                } else if (useUnifiedApiInTask) {
-                    await withPageLock(async () => api.goBack());
-                }
-            } catch (backError) {
-                logger.warn(`[api-twitterActivity] ${reason}: api.back() failed: ${backError.message}`);
-            }
-        }
-
-        await withPageLock(async () => agent.navigateHome());
     };
 
     try {
@@ -260,8 +213,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                 replyProbability: taskConfig.engagement.probabilities.reply,
                                 quoteProbability: taskConfig.engagement.probabilities.quote,
                                 engagementLimits: taskConfig.engagement.limits,
-                                config: taskConfig,
-                                useUnifiedApiInAgent: apiMigration.useUnifiedApiInAgent === true
+                                config: taskConfig
                             });
                             hasAgent = true;
                             agentState = agent.state;
@@ -270,13 +222,30 @@ export default async function apiTwitterActivityTask(page, payload) {
                             getEngagementProgress = () => agent.diveQueue?.getEngagementProgress?.();
                             sessionStart = agent.sessionStart;
 
-                            const withPageLock = agent.diveQueue.add.bind(agent.diveQueue);
+                            const withPageLock = async (fn, opts) => {
+                                const res = await agent.diveQueue.add(fn, opts);
+                                return res.success ? res.result : null;
+                            };
 
                             if (taskConfig.system.debugMode) {
                                 logger.info(`[api-twitterActivity] AITwitterAgent initialized`);
                             }
 
-                            // Set theme using page directly (api doesn't have emulateMedia)
+                            // Persona setup
+                            if (profile) {
+                                await api.setPersona(resolvePersona(profile));
+                                logger.info(`[api-twitterActivity] Persona: ${api.getPersonaName()}`);
+
+                                const persona = api.getPersona();
+                                const distractionChance = typeof persona.microMoveChance === 'number'
+                                    ? persona.microMoveChance
+                                    : (typeof persona.idleChance === 'number' ? persona.idleChance : 0.2);
+
+                                api.setDistractionChance(distractionChance);
+                                logger.info(`[api-twitterActivity] Distraction chance: ${(distractionChance * 100).toFixed(0)}%`);
+                            }
+
+                            // Set theme using API
                             const theme = profile?.theme || 'dark';
                             logger.info(`[api-twitterActivity] Enforcing theme: ${theme}`);
                             await withPageLock(async () => api.emulateMedia({ colorScheme: theme }));
@@ -286,8 +255,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                 popupCloser = new PopupCloser(page, logger, {
                                     lock: withPageLock,
                                     signal: abortSignal,
-                                    api,
-                                    useUnifiedApiInUtilities: apiMigration.useUnifiedApiInUtilities === true
+                                    api
                                 });
                                 stopPopupCloser = async () => {
                                     try {
@@ -300,15 +268,22 @@ export default async function apiTwitterActivityTask(page, payload) {
                                 await popupCloser.start();
                             }
 
-                            // Start idle simulation for human-like presence
-                            const personaName = api.getPersonaName();
-                            api.idle.start({
-                                wiggle: true,
-                                scroll: true,
-                                frequency: 4000,
-                                magnitude: personaName === 'glitchy' ? 8 : 3
-                            });
-                            logger.info(`[api-twitterActivity] Idle simulation started`);
+                            // Start idle simulation
+                            const persona = api.getPersona();
+                            const idleChance = typeof persona.idleChance === 'number' ? persona.idleChance : 0.02;
+                            const speed = typeof persona.speed === 'number' && persona.speed > 0 ? persona.speed : 1;
+                            const idleRoll = Math.random();
+                            const shouldIdle = idleRoll < Math.max(0.05, Math.min(0.4, idleChance * 2));
+
+                            if (shouldIdle) {
+                                api.idle.start({
+                                    wiggle: true,
+                                    scroll: idleChance > 0.02,
+                                    frequency: Math.min(8000, Math.max(2000, Math.round(4000 / speed))),
+                                    magnitude: api.getPersonaName() === 'glitchy' ? 8 : 3
+                                });
+                                logger.info(`[api-twitterActivity] Idle simulation started`);
+                            }
 
                             // Warmup
                             const wakeUp = humanTiming.getWarmupDelay({
@@ -320,172 +295,70 @@ export default async function apiTwitterActivityTask(page, payload) {
 
                             throwIfAborted();
 
-                            // Referrer engine
+                            // Navigation with ReferrerEngine and API
                             const entryUrl = selectEntryPoint();
                             const entryName = entryUrl.replace('https://x.com/', '').replace('https://x.com', '') || 'home';
-                            logger.info(`[api-twitterActivity] 🎲 Entry: ${entryName} → ${entryUrl}`);
-                            logger.info(`[api-twitterActivity] Step 10: Starting simplified navigation...`);
-                            const useUnifiedApiInUtilities = apiMigration.useUnifiedApiInUtilities === true;
-                            const referrerEngine = new ReferrerEngine({
-                                addUTM: true,
-                                api,
-                                useUnifiedApiInUtilities
-                            });
+                            logger.info(`[api-twitterActivity] 🎲 Rolled entry point: ${entryName} → ${entryUrl}`);
+
+                            const referrerEngine = new ReferrerEngine({ addUTM: true });
                             const ctx = referrerEngine.generateContext(entryUrl);
 
-                            if (useUnifiedApiInUtilities) {
-                                await referrerEngine.navigate(page, entryUrl, ctx);
-                            } else {
-                                if (useUnifiedApiInTask) {
-                                    await withPageLock(async () => api.setExtraHTTPHeaders({
-                                        ...ctx.headers,
-                                        'Sec-Fetch-Site': 'none',
-                                        'Sec-Fetch-Mode': 'navigate'
-                                    }));
-                                } else {
-                                    await withPageLock(async () => page.setExtraHTTPHeaders({
-                                        ...ctx.headers,
-                                        'Sec-Fetch-Site': 'none',
-                                        'Sec-Fetch-Mode': 'navigate'
-                                    }));
-                                }
+                            await withPageLock(async () => {
+                                await api.setExtraHTTPHeaders({
+                                    ...ctx.headers,
+                                    'Sec-Fetch-Site': 'none',
+                                    'Sec-Fetch-Mode': 'navigate'
+                                });
 
-                                if (useUnifiedApiInTask) {
-                                    await api.goto(entryUrl, {
-                                        waitUntil: WAIT_UNTIL,
-                                        timeout: PAGE_TIMEOUT_MS,
-                                        resolveOnSelector: '[data-testid="AppTabBar_Home_Link"]',
-                                        warmup: true,
-                                        warmupMouse: true,
-                                        warmupFakeRead: false,
-                                        warmupPause: true
-                                    });
-                                } else {
-                                    await page.goto(entryUrl, {
-                                        waitUntil: WAIT_UNTIL,
-                                        timeout: PAGE_TIMEOUT_MS
-                                    });
-                                }
-                            }
-                            logger.info(`[api-twitterActivity] Step 15: page.goto completed, starting page load detection...`);
+                                await api.goto(entryUrl, {
+                                    waitUntil: WAIT_UNTIL,
+                                    timeout: PAGE_TIMEOUT_MS,
+                                    referer: ctx.referrer || undefined
+                                });
+                            });
 
-                            // Simplified page load detection to isolate hanging issue
-                            let xLoaded = null;
-                            try {
-                                logger.info(`[api-twitterActivity] Step 16: Starting basic element detection...`);
-                                if (useUnifiedApiInTask) {
-                                    const existsQuick = await Promise.race([
-                                        api.exists('[data-testid="AppTabBar_Home_Link"]').then((exists) => exists ? 'home' : null),
-                                        api.exists('[data-testid="loginButton"]').then((exists) => exists ? 'login' : null),
-                                        api.exists('[role="main"]').then((exists) => exists ? 'main' : null),
-                                        api.wait(500).then(() => null)
-                                    ]);
-                                    xLoaded = existsQuick || await Promise.race([
-                                        api.waitVisible('[data-testid="AppTabBar_Home_Link"]', { timeout: 3000 }).then(() => 'home').catch(() => null),
-                                        api.waitVisible('[data-testid="loginButton"]', { timeout: 3000 }).then(() => 'login').catch(() => null),
-                                        api.waitVisible('[role="main"]', { timeout: 3000 }).then(() => 'main').catch(() => null),
-                                        api.wait(5000).then(() => 'timeout')
-                                    ]);
-                                } else {
-                                    xLoaded = await Promise.race([
-                                        page.waitForSelector('[data-testid="AppTabBar_Home_Link"]', { state: 'visible', timeout: 3000 }).then(() => 'home').catch(() => null),
-                                        page.waitForSelector('[data-testid="loginButton"]', { state: 'visible', timeout: 3000 }).then(() => 'login').catch(() => null),
-                                        page.waitForSelector('[role="main"]', { state: 'visible', timeout: 3000 }).then(() => 'main').catch(() => null),
-                                        page.waitForTimeout(5000).then(() => 'timeout')
-                                    ]);
-                                }
-                                logger.info(`[api-twitterActivity] Step 17: Element detection completed: ${xLoaded}`);
-                            } catch (raceError) {
-                                logger.warn(`[api-twitterActivity] Page load detection failed: ${raceError.message}`);
-                                xLoaded = 'error';
-                            }
+                            // Page load detection
+                            const xLoaded = await withPageLock(async () => Promise.race([
+                                api.waitVisible('[data-testid="AppTabBar_Home_Link"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'home').catch(() => { }),
+                                api.waitVisible('[data-testid="loginButton"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'login').catch(() => { }),
+                                api.waitVisible('[role="main"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }).then(() => 'main').catch(() => { }),
+                                api.wait(TWITTER_TIMEOUTS.NAVIGATION).then(() => { throw new Error('X.com load timeout'); }).catch(() => { })
+                            ])).catch(() => null);
 
                             logger.info(`[api-twitterActivity] X.com loaded (${xLoaded || 'partial'})`);
 
-                            // Network idle wait - reduced timeout for faster activity start
-                            const idleTimeout = xLoaded && xLoaded !== 'timeout' && xLoaded !== 'error' ? 1000 : 3000;
-                            logger.info(`[api-twitterActivity] Waiting for network (${idleTimeout}ms)...`);
+                            const idleTimeout = xLoaded ? 4000 : 12000;
+                            logger.info(`[api-twitterActivity] Waiting for network settlement (${idleTimeout}ms)...`);
 
                             try {
-                                if (useUnifiedApiInTask) {
-                                    await api.waitForLoadState('networkidle', { timeout: idleTimeout });
-                                } else {
-                                    await withPageLock(async () => page.waitForLoadState('networkidle', { timeout: idleTimeout }));
-                                }
+                                await withPageLock(async () => api.waitForLoadState('networkidle', { timeout: idleTimeout }));
                                 logger.info(`[api-twitterActivity] Network idle reached.`);
-                            } catch (idleError) {
-                                logger.warn(`[api-twitterActivity] Network idle timeout: ${idleError.message}`);
-                                // Continue anyway - Twitter might still be loading but we can proceed
+                            } catch (_e) {
+                                logger.info(`[api-twitterActivity] Network active, proceeding after ${idleTimeout}ms...`);
                             }
 
                             throwIfAborted();
 
-                            // Reading simulation if not on home (with error handling)
-                            let currentUrl;
-                            try {
-                                currentUrl = await api.getCurrentUrl();
-                            } catch (urlError) {
-                                logger.warn(`[api-twitterActivity] Failed to get current URL: ${urlError.message}`);
-                                currentUrl = 'https://x.com/'; // Assume home
-                            }
-                            
+                            const currentUrl = await api.getCurrentUrl();
                             const onHome = currentUrl.includes('/home') || currentUrl === 'https://x.com/' || currentUrl === 'https://x.com';
                             if (!onHome) {
-                                const scrollDuration = mathUtils.randomInRange(5000, 10000);
+                                const scrollDuration = mathUtils.randomInRange(10000, 20000);
                                 const scrollDurationSec = (scrollDuration / 1000).toFixed(2);
-                                logger.info(`[api-twitterActivity] 📖 Reading on ${entryName} for ${scrollDurationSec}s...`);
+                                logger.info(`[api-twitterActivity] 📖 Simulating reading on ${entryName} for ${scrollDurationSec}s...`);
 
-                                const scrollStartTime = Date.now();
-                                while (Date.now() - scrollStartTime < scrollDuration) {
-                                    if (useUnifiedApiInTask) {
-                                        await api.scroll.read(null, {
-                                            pauses: 1,
-                                            scrollAmount: mathUtils.randomInRange(200, 600)
-                                        });
-                                    } else {
-                                        const delta = mathUtils.randomInRange(200, 600);
-                                        try {
-                                            await page.mouse.wheel(0, delta);
-                                        } catch (wheelError) {
-                                            logger.warn(`[api-twitterActivity] CDP wheel failed: ${wheelError.message}, using JS scrollBy`);
-                                            try {
-                                                await page.evaluate((dy) => window.scrollBy(0, dy), delta);
-                                            } catch (scrollError) {
-                                                logger.warn(`[api-twitterActivity] JS scrollBy failed: ${scrollError.message}`);
-                                            }
-                                        }
-                                    }
-                                    
-                                    // Add attention distractions during reading (with error handling)
-                                    try {
-                                        await api.maybeDistract(['[data-testid="sidebarColumn"] a', '[data-testid="trend"]', '[aria-label*="timeline"]']);
-                                    } catch (distractError) {
-                                        // Silently ignore distraction errors
-                                    }
+                                const scrollStart = Date.now();
+                                while (Date.now() - scrollStart < scrollDuration) {
+                                    await withPageLock(async () => api.scroll.read(null, {
+                                        pauses: 1,
+                                        scrollAmount: mathUtils.randomInRange(200, 600)
+                                    }));
                                     await api.wait(mathUtils.randomInRange(200, 500));
                                 }
-
-                                logger.info(`[api-twitterActivity] ✅ Navigating to home...`);
-                                try {
-                                    await navigateHomePreferBack(withPageLock, 'entryReturnHome');
-                                } catch (navError) {
-                                    logger.warn(`[api-twitterActivity] Navigate home failed: ${navError.message}`);
-                                    // Try direct navigation as fallback
-                                    try {
-                                        if (useUnifiedApiInTask) {
-                                            await api.goto('https://x.com/home', { waitUntil: 'domcontentloaded' });
-                                        } else {
-                                            await withPageLock(async () => page.goto('https://x.com/home', { waitUntil: 'domcontentloaded' }));
-                                        }
-                                    } catch (fallbackError) {
-                                        logger.warn(`[api-twitterActivity] Fallback navigation failed: ${fallbackError.message}`);
-                                    }
-                                }
+                                logger.info(`[api-twitterActivity] ✅ Finished reading, navigating to home...`);
+                                await withPageLock(async () => agent.navigateHome());
                             }
 
                             throwIfAborted();
-
-                            // Login check with loops
                             logger.info(`[api-twitterActivity] Checking login state...`);
                             let loginCheckDelay = LOGIN_CHECK_DELAY;
                             for (let i = 0; i < LOGIN_CHECK_LOOPS; i++) {
@@ -496,15 +369,13 @@ export default async function apiTwitterActivityTask(page, payload) {
                                     break;
                                 }
                                 if (i < LOGIN_CHECK_LOOPS - 1) {
-                                    logger.info(`[api-twitterActivity] Not logged in, waiting ${loginCheckDelay}ms...`);
+                                    logger.info(`[api-twitterActivity] Not logged in yet, waiting ${loginCheckDelay}ms...`);
                                     await api.wait(loginCheckDelay);
                                     loginCheckDelay = Math.min(loginCheckDelay + 1000, 5000);
                                 }
                             }
 
                             throwIfAborted();
-
-                            // Run session
                             const cycles = typeof payload.cycles === 'number' ? payload.cycles : DEFAULT_CYCLES;
                             const minDuration = typeof payload.minDuration === 'number' ? payload.minDuration : DEFAULT_MIN_DURATION;
                             const maxDuration = typeof payload.maxDuration === 'number' ? payload.maxDuration : DEFAULT_MAX_DURATION;
@@ -521,11 +392,11 @@ export default async function apiTwitterActivityTask(page, payload) {
                                 logger.warn(`[api-twitterActivity] Session error: ${sessionError.message}`);
                                 try {
                                     if (agent && agent.page && !agent.page.isClosed()) {
-                                        await navigateHomePreferBack(withPageLock, 'sessionRecoveryHome');
-                                        logger.info('[api-twitterActivity] Recovered to home');
+                                        await withPageLock(async () => agent.navigateHome());
+                                        logger.info('[api-twitterActivity] Recovered to home page');
                                     }
                                 } catch (recoveryError) {
-                                    logger.warn(`[api-twitterActivity] Recovery failed: ${recoveryError.message}`);
+                                    logger.warn(`[api-twitterActivity] Recovery attempt failed: ${recoveryError.message}`);
                                 }
                             }
 
@@ -552,13 +423,11 @@ export default async function apiTwitterActivityTask(page, payload) {
     } catch (error) {
         logger.error(`[api-twitterActivity] Error: ${error.message}`);
     } finally {
-        // Stop idle
         if (api.idle.isRunning()) {
             api.idle.stop();
         }
 
         if (hasAgent) {
-            // Record metrics
             const agentStateSnapshot = { ...agentState };
             if (agentStateSnapshot.follows > 0) metricsCollector.recordSocialAction('follow', agentStateSnapshot.follows);
             if (agentStateSnapshot.likes > 0) metricsCollector.recordSocialAction('like', agentStateSnapshot.likes);
@@ -584,14 +453,13 @@ export default async function apiTwitterActivityTask(page, payload) {
                 const sessionStartTime = sessionStart || Date.now();
                 const duration = ((Date.now() - sessionStartTime) / 1000 / 60).toFixed(1);
 
-                // Deferred logging
                 setTimeout(async () => {
                     if (abortSignal.aborted) return;
                     try {
                         const logConfig = await getLoggingConfig();
 
                         if (queueStatsSnapshot && logConfig?.finalStats?.showQueueStatus !== false) {
-                            logger.info(`[api-twitterActivity] DiveQueue: queue=${queueStatsSnapshot.queue.queueLength}, active=${queueStatsSnapshot.queue.activeCount}, util=${queueStatsSnapshot.queue.utilizationPercent}%`);
+                            logger.info(`[api-twitterActivity] DiveQueue: queue=${queueStatsSnapshot.queue.queueLength}, active=${queueStatsSnapshot.queue.activeCount}, utilization=${queueStatsSnapshot.queue.utilizationPercent}%`);
                         }
 
                         if (logConfig?.finalStats?.showEngagement !== false && logConfig?.engagementProgress?.enabled) {
@@ -609,25 +477,21 @@ export default async function apiTwitterActivityTask(page, payload) {
                 logger.info(`[api-twitterActivity] Task Finished. Duration: ${duration}m`);
             }
 
-            // Shutdown agent
             if (typeof agent.shutdown === 'function') {
                 await agent.shutdown();
             }
         }
 
-        // Cleanup
         try {
             if (hasPopupCloser) {
                 await stopPopupCloser();
                 hasPopupCloser = false;
             }
         } catch (closeError) {
-            logger.warn(`[api-twitterActivity] Page close warning: ${closeError.message}`);
+            logger.warn(`[api-twitterActivity] Cleanup warning: ${closeError.message}`);
         }
 
-        // Clear API context
         api.clearContext();
-
         const duration = (Number(process.hrtime.bigint() - startTime) / 1e9).toFixed(2);
         logger.info(`[api-twitterActivity] Done in ${duration}s`);
     }

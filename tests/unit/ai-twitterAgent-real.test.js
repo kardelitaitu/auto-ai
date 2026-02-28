@@ -5,6 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { api } from '../../api/index.js';
 
 // Mock all dependencies before importing AITwitterAgent
 vi.mock('../../utils/ai-reply-engine.js', () => ({
@@ -31,6 +32,21 @@ vi.mock('../../utils/ai-context-engine.js', () => ({
     async extractEnhancedContext() {
       return { sentiment: 'positive', topics: ['test'], replies: [] };
     }
+  }
+}));
+
+vi.mock('../../api/index.js', () => ({
+  api: {
+    getCurrentUrl: vi.fn().mockReturnValue('https://x.com/home'),
+    goto: vi.fn().mockResolvedValue(undefined),
+    waitForURL: vi.fn().mockResolvedValue(undefined),
+    waitVisible: vi.fn().mockResolvedValue(undefined),
+    wait: vi.fn((ms) => new Promise((resolve) => setTimeout(resolve, ms))),
+    getPersona: vi.fn().mockReturnValue({ hoverMin: 1000, hoverMax: 3000 }),
+    maybeDistract: vi.fn().mockResolvedValue(undefined),
+    isSessionActive: vi.fn().mockReturnValue(true),
+    emulateMedia: vi.fn().mockResolvedValue(undefined),
+    think: vi.fn().mockResolvedValue(undefined)
   }
 }));
 
@@ -246,6 +262,7 @@ vi.mock('../../utils/twitterAgent.js', () => ({
         fatigueBias: 0
       };
       this.sessionStart = Date.now();
+      this.engagement = { diveTweet: vi.fn() };
       this.ghost = { click: vi.fn() };
       this.human = {
         think: vi.fn().mockResolvedValue(undefined),
@@ -518,7 +535,7 @@ describe('AITwitterAgent - Real Implementation', () => {
       await agent.endDive(true, false);
       expect(agent.operationLock).toBe(false);
       expect(agent.diveLockAcquired).toBe(false);
-      expect(agent.scrollingEnabled).toBe(true);
+      expect(agent.scrollingEnabled).toBe(true); 
     });
 
     it('should return home when ending dive with returnHome=true', async () => {
@@ -533,9 +550,9 @@ describe('AITwitterAgent - Real Implementation', () => {
       expect(agent.isDiving()).toBe(true);
     });
 
-    it('should check if on tweet page', () => {
-      agent.page.url = vi.fn().mockReturnValue('https://x.com/user/status/123');
-      expect(agent.isOnTweetPage()).toBe(true);
+    it('should check if on tweet page', async () => {
+      api.getCurrentUrl.mockResolvedValue('https://x.com/user/status/123');
+      expect(await agent.isOnTweetPage()).toBe(true);
     });
 
     it('should check if can scroll', async () => {
@@ -544,14 +561,14 @@ describe('AITwitterAgent - Real Implementation', () => {
       expect(agent.canScroll()).toBe(false);
     });
 
-    it('should get page state', () => {
-      const state = agent.getPageState();
+    it('should get page state', async () => {
+      const state = await agent.getPageState();
       expect(state.state).toBe('HOME');
       expect(state.scrollingEnabled).toBe(true);
     });
 
-    it('should log dive status', () => {
-      agent.logDiveStatus();
+    it('should log dive status', async () => {
+      await agent.logDiveStatus();
       expect(mockLogger.info).toHaveBeenCalled();
     });
 
@@ -713,6 +730,11 @@ describe('AITwitterAgent - Real Implementation', () => {
 
   describe('Read Expanded Tweet', () => {
     it('should read expanded tweet', async () => {
+      vi.useFakeTimers();
+      agent.wait = vi.fn().mockImplementation(async (ms) => {
+        await vi.advanceTimersByTimeAsync(ms);
+      });
+
       // Mock mathUtils.roll to return false (skip media check)
       const { mathUtils } = await import('../../utils/mathUtils.js');
       mathUtils.roll = vi.fn().mockReturnValue(false);
@@ -723,7 +745,10 @@ describe('AITwitterAgent - Real Implementation', () => {
         isVisible: vi.fn().mockResolvedValue(false)
       });
 
-      await agent._readExpandedTweet();
+      const readPromise = agent._readExpandedTweet();
+      await vi.advanceTimersByTimeAsync(10000);
+      await readPromise;
+      vi.useRealTimers();
     });
   });
 

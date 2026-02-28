@@ -1,20 +1,20 @@
 # AGENTS.md
 
+# AGENTS.md
+
 This file provides guidance to agents when working with code in this repository.
 
-## Tooling (MCP)
+## Codebase Overview
 
-Agents are allowed to use MCP tools for filesystem access, code search, web fetch, and diagnostics when available.
+**Auto-AI** is a multi-browser automation framework for orchestrating browser automation across multiple anti-detect browser profiles (ixBrowser, MoreLogin, Dolphin Anty, Undetectable, etc.) using Playwright's CDP (Chrome DevTools Protocol). It leverages AI (local Ollama/Docker LLMs and cloud OpenRouter) for intelligent decision-making and includes sophisticated human-like behavior patterns to avoid detection.
 
 ## Workflow Reminder
 
-Every time you make changes or modifications, append a new line to AGENTS-JOURNAL.md using this format:
-dd-mm-yyy--HH-MM > filename > changes description
-Always check 'npx eslint .' after doing large code changes
-
-## Project Overview
-
-**Auto-AI** is a multi-browser automation framework for orchestrating browser automation across multiple anti-detect browser profiles (ixBrowser, MoreLogin, Dolphin Anty, Undetectable, etc.) using Playwright's CDP (Chrome DevTools Protocol). It leverages AI (local Ollama/Docker LLMs and cloud OpenRouter) for intelligent decision-making and includes sophisticated human-like behavior patterns to avoid detection.
+1. Every time you make changes or modifications, append a new line to `AGENT-JOURNAL.md` using this format: `dd-mm-yyy--HH-MM > filename > changes description`
+2. NEVER delete lines on `AGENT-JOURNAL.md`
+3. Always check 'npx eslint .' after doing large code changes
+4. If we do a lot of files modifications, append `summarized patch notes` on `patchnotes.md`
+5. Note: When editing test files, run the test suite to ensure no regressions. Run `npx vitest run --coverage --silent --reporter=dot tests/unit/api/` as a baseline check.
 
 ## Code Style Conventions
 
@@ -24,7 +24,7 @@ Always check 'npx eslint .' after doing large code changes
 - Dynamic imports are used for task modules (`import(\`../tasks/${task.taskName}.js\`)`)
 - Tasks export a default async function taking browser and payload parameters
 
-## Testing Strategy
+## Vitest Testing Strategy
 
 - **Framework**: Vitest is used for both unit and integration testing.
 - **Running Tests**: Run `npm run test:coverage` to execute the full test suite.
@@ -38,7 +38,7 @@ npm run test:coverage -- file1.test.js file2.test.js | Select-String -Pattern "%
 npm run test:coverage -- tests/unit/async-queue.test.js 2>&1 | grep -E "(async-queue|% coverage|Branch|Statement|Line|Function)" | head -20
 ```
 
-- **Coverage**: Aim for 98%+ code coverage using Vitest's built-in coverage reporter.
+- **Coverage**: Aim for 90%+ code coverage using Vitest's built-in coverage reporter.
 - **Structure**:
   - `tests/unit/`: Unit tests for individual modules (e.g., `agent-connector.test.js`).
   - `tests/integration/`: Integration tests for cross-module interactions (e.g., `cloud-client.test.js`).
@@ -49,136 +49,174 @@ npm run test:coverage -- tests/unit/async-queue.test.js 2>&1 | grep -E "(async-q
 You have access to a specific set of tools. You must use the most appropriate tool for the task to save resources and ensure accuracy.
 
 ### Reasoning & Memory
-* **Sequential Thinking**:
-    * **Use when:** You face a complex, multi-step problem (e.g., debugging a race condition, planning a new feature architecture).
+* **Sequential Thinking (Use when you face a complex, multi-step problem (e.g., debugging a race condition, planning a new feature architecture.))**:
     * **Action:** Break down your thought process into steps before writing any code.
-* **Memory**:
-    * **Use when:** You need to remember user preferences, project-specific facts, or architectural decisions for *future* conversations.
-    * **Action:** Read from memory to check for established patterns; write to memory when new key facts are decided.
-* **context7 (Upstash)**:
-    * **Use when:** You need to retrieve high-volume context or historical data that doesn't fit in the standard "Memory" graph.
-
-### Coding & Navigation (The "Roo Code" Workflow)
-* **code-index**:
-    * **Use when:** You are exploring the codebase and don't know where files are located. (e.g., "Where is the authentication logic?").
-    * **Action:** Query this *first* to find relevant file paths.
-* **tree-sitter**:
-    * **Use when:** You know the file path but need to read a specific function or class without reading the entire file.
-    * **Action:** Use this to extract code signatures or specific blocks to save context window space.
-* **filesystem**:
-    * **Use when:** You need to read full file contents or write changes to the disk.
-    * **Scope:** Limited to `C:\My Script\auto-ai`.
-* **File Context Server**:
-    * **Use when:** You need to list files, get a directory overview, or manage the active file context efficiently.
-
-### Research & Internet
-* **Tavily**:
-    * **Use when:** You need deep, complex research (e.g., "Find the latest documentation for Vercel AI SDK 3.0" or "Compare 3 different libraries").
-    * **Action:** Use this for multi-source synthesis.
-* **DuckDuckGo Search Server**:
-    * **Use when:** You need a quick fact check or need to find a specific URL (e.g., "What is the URL for the React docs?").
-    * **Action:** Use this for simple, single-query lookups (faster/cheaper than Tavily).
-* **Fetch**:
-    * **Use when:** You have a specific URL (found via Search) and need to read its content.
-    * **Action:** Retrieve the text of a webpage for analysis.
-
-### System Interaction
-* **Desktop Commander**:
-    * **Use when:** You need to interact with the OS UI (e.g., take a screenshot to verify a UI layout). *Use with caution.*
+    * **Note:** Sometimes i turned this tool off, if LLM endpoints is unresponsive.
+* **Memory (Use when you need to remember user preferences, project-specific facts, or architectural decisions for *future* conversations.)**:
+    * `Memory_create_entities` : Create multiple new entities in the knowledge graph
+    * `Memory_create_relations` : Create multiple relations between entities
+    * `Memory_add_observations` : Add new observations to existing entities
+    * `Memory_delete_entities` : Delete entities and their relations
+    * `Memory_delete_observations` : Delete specific observations from entities
+    * `Memory_delete_relations` : Delete relations from the graph
+    * `Memory_read_graph` : Read the entire knowledge graph
+    * `Memory_search_nodes` : Search nodes by query (matches name, type, observations)
+    * `Memory_open_nodes` : Open specific entities by their names
+* **context7 (Upstash) (Use when you need to retrieve high-volume SDK documentation or code examples that doesn't fit in the standard "Memory" graph.)**:
+    * `context7_resolve-library-id` : Resolve a package/library name to Context7-compatible library ID  (e.g., "react", "express")
+    * `context7_query-docs` : Query documentation and code examples from Context7
+* **code-index (Use when you are exploring the codebase and don't know where files are located. (e.g., "Where is the authentication logic?").)**:
+    * `code-index_find_files` : Find files matching glob patterns (e.g., *.js, test_*.ts)
+    * `code-index_search_code_advanced` : Search code patterns using regex with fuzzy matching, case sensitivity, file filtering
+    * `code-index_get_file_summary` : Get file summary including line count, function/class definitions, imports, complexity metrics
+* **filesystem (Use when you need to read full file contents or write changes to the disk.)**:
+    * `filesystem_read_text_file` : Read complete file as text (supports head/tail for partial reads)
+    * `filesystem_read_multiple_files` : Read multiple files simultaneously
+    * `filesystem_write_file` : Create or overwrite file (supports append mode)
+    * `filesystem_edit_file` : Make line-based edits with diff output
+    * `filesystem_create_directory` : Create directory (supports nested)
+    * `filesystem_move_file` : Move or rename files
+    * `filesystem_list_directory` : List files (with depth parameter)
+    * `filesystem_list_directory_with_sizes` : List files with sizes
+    * `filesystem_directory_tree` : Get recursive tree view (JSON)
+* **File Context Server (Use when you need to list files, get a directory overview, or manage the active file context efficiently)**:
+    * `File_Context_Server_read_context` : Read and analyze code files with advanced filtering and chunking
+    * `File_Context_Server_get_chunk_count` : Get total chunks for large files
+    * `File_Context_Server_set_profile` : Set active profile for context generation
+    * `File_Context_Server_get_profile_context` : Get repository context based on profile settings
+    * `File_Context_Server_generate_outline` : Generate file outline showing classes, functions, imports
+* **Tavily (Use when you need deep, complex research (e.g., "Find the latest documentation for Vercel AI SDK 3.0" or "Compare 3 different libraries").)**:
+    * `Tavily_tavily-search` : Search with AI for comprehensive, real-time results
+    * `Tavily_tavily-extract` : Extract and parse raw content from URLs
+* **DuckDuckGo Search Server (Use when you need a quick fact check or need to find a specific URL (e.g., "What is the URL for the React docs?").)**:
+    * `DuckDuckGo_Search_Server_search` : Search DuckDuckGo and return formatted results
+    * `DuckDuckGo_Search_Server_fetch_content` : Fetch and parse content from a webpage URL
+* **Fetch (Use when you have a specific URL (found via Search) and need to read its content.)**:
+    * `Fetch_fetch` : Fetch URL content with format options (markdown/text/html)
+* **Desktop Commander (Use when you need to interact with the OS UI (e.g., take a screenshot to verify a UI layout). *Use with caution.*)**:
+    * `Desktop_Commander_get_config` : Get complete server configuration as JSON
+    * `Desktop_Commander_set_config_value` : Set a specific configuration value by key
+    * `Desktop_Commander_read_file` : Read file contents (supports PDF, Excel, DOCX, images)
+    * `Desktop_Commander_read_multiple_files` : Read multiple files simultaneously
+    * `Desktop_Commander_write_file` : Write or append to file contents
+    * `Desktop_Commander_write_pdf` : Create or modify PDF files
+    * `Desktop_Commander_create_directory` : Create new directory
+    * `Desktop_Commander_move_file` : Move or rename files
+    * `Desktop_Commander_list_directory` : List files with depth parameter
+    * `Desktop_Commander_start_search` : Start streaming search (files or content)
+    * `Desktop_Commander_get_more_search_results` : Get search results with pagination
+    * `Desktop_Commander_stop_search` : Stop active search
+    * `Desktop_Commander_list_searches` : List all active searches
+    * `Desktop_Commander_get_file_info` : Get file metadata (size, dates, permissions, line count)
+    * `Desktop_Commander_edit_block` : Apply surgical edits to files
+    * `Desktop_Commander_start_process` : Start terminal process (Python, Node, etc.)
+    * `Desktop_Commander_read_process_output` : Read output from running process
+    * `Desktop_Commander_interact_with_process` : Send input to running process
+    * `Desktop_Commander_force_terminate` : Force terminate terminal session
+    * `Desktop_Commander_list_sessions` : List all active terminal sessions
+    * `Desktop_Commander_list_processes` : List running processes
+    * `Desktop_Commander_kill_process` : Terminate process by PID
+    * `Desktop_Commander_get_usage_stats` : Get usage statistics
+    * `Desktop_Commander_get_recent_tool_calls` : Get recent tool call history
+    * `Desktop_Commander_get_prompts` : Retrieve onboarding prompts
 
 ---
 
-## Project Structure
+## Project Structure & Codebase Map
 
+This section provides a high-level overview of the project structure, key modules, and their responsibilities to assist LLMs in navigating the codebase.
+
+### Tree View
 ```
 C:\My Script\auto-ai\
-├── main.js                    # Main entry point
-├── main-browser-use.js        # Alternative entry point
-├── package.json               # Project manifest (v0.0.30)
-├── AGENTS.md                  # This file
-├── CONFIG.md                  # Configuration documentation
-├── README.md                  # Quick start guide
-├── GEMINI.md                  # Claude/Gemini integration notes
-├── VISION-WORKFLOW.md         # Vision processing workflow
-├── whitepaper-implementation.md
+├── main.js                    # Main entry point (CLI)
+├── main-browser-use.js           # Alternative entry point (browser-use library)
+├── package.json                  # Project manifest & scripts
+├── AGENTS.md                     # This file (Rules & Architecture) 
+├── CONFIG.md                     # Configuration documentation
+├── README.md                     # Quick start guide
+├── vitest.config.js              # Test configuration (pool: 'forks')
+├── eslint.config.js              # Linter configuration
 │
-├── core/                      # Core orchestration modules
-│   ├── orchestrator.js        # Task queue & parallel execution
-│   ├── discovery.js           # Browser discovery via connectors
-│   ├── sessionManager.js      # Browser session lifecycle management
-│   ├── automator.js           # Playwright CDP connections & health checks
-│   ├── agent-connector.js     # AI request router (local vs cloud)
-│   ├── intent-classifier.js   # Task complexity analysis & routing
-│   ├── local-client.js        # Local LLM (Ollama/Docker) facade
-│   ├── cloud-client.js        # OpenRouter cloud LLM interface
-│   ├── ollama-client.js       # Ollama-specific implementation
-│   ├── vision-interpreter.js  # Vision task processing
-│   ├── semantic-parser.js     # Page semantic analysis
-│   ├── humanizer-engine.js    # Human-like behavior patterns
-│   ├── state-manager.js       # Session state management
-│   ├── history-compactor.js   # Context optimization
-│   ├── audit-verifier.js      # Task verification
-│   ├── idle-ghosting.js       # Idle behavior simulation
-│   └── vision-packager.js     # Vision data packaging
+├── api/                       # Unified API (New Architecture)
+│   ├── index.js                  # Primary exports (api.goto, api.scroll, etc.)
+│   ├── agent/                    # AI agent components (executor, finder, observer)
+│   ├── behaviors/                # Human-like behaviors (attention, idle, persona)
+│   ├── core/                     # System core (context, events, hooks, logger)
+│   ├── interactions/             # User actions (actions, cursor, navigation, scroll)
+│   ├── utils/                    # Internal API utilities (fingerprint, math, timing)
+│   └── _api-overview.md          # Detailed API documentation
 │
-├── connectors/                # Browser discovery connectors
-│   ├── baseDiscover.js        # Base connector class
-│   └── discovery/             # Specific browser connectors
-│       ├── ixbrowser.js       # ixBrowser integration
-│       ├── localChrome.js     # Local Chrome CDP
-│       ├── localBrave.js      # Local Brave CDP
-│       ├── localEdge.js       # Local Edge CDP
-│       ├── localVivaldi.js    # Local Vivaldi CDP
-│       ├── roxybrowser.js     # RoxyBrowser API
-│       ├── morelogin.js       # MoreLogin API
-│       └── undetectable.js    # Undetectable browser API
+├── core/                      # Legacy/Orchestrator Core
+│   ├── orchestrator.js           # Task queue & parallel execution management
+│   ├── discovery.js              # Browser endpoint discovery via connectors
+│   ├── sessionManager.js         # Browser session lifecycle & health
+│   ├── automator.js              # Playwright CDP connections & monitoring
+│   ├── agent-connector.js        # AI request router (Local/Cloud failover)
+│   ├── intent-classifier.js      # Task complexity analysis
+│   └── ... humanizer, vision, state-manager (legacy)
 │
-├── tasks/                     # Automation task modules (dynamically loaded)
-│   ├── _template.js           # Task template
-│   ├── agent.js               # Generic agent task
-│   ├── agentNavigate.js       # AI-navigated task
-│   ├── twitterActivity.js     # Twitter automation
-│   ├── twitterscroll.js       # Twitter scrolling
-│   ├── twitterFollow.js       # Twitter following
-│   ├── twitterTweet.js        # Tweet posting
-│   └── ... more tasks
+├── connectors/                # Browser Discovery Connectors
+│   ├── baseDiscover.js           # Base class for all adapters
+│   └── discovery/                # Specific adapters (ixbrowser, morelogin, etc.)
 │
-├── utils/                     # Utility modules
-│   ├── configLoader.js        # Config file management
-│   ├── envLoader.js           # Environment variable loading
-│   ├── logger.js              # Logging utility
-│   ├── banner.js              # ASCII banner display
-│   ├── validator.js           # Task/payload validation
-│   ├── retry.js               # Retry logic with exponential backoff
-│   ├── apiHandler.js          # HTTP API client
-│   ├── metrics.js             # Metrics collection
-│   ├── screenshot.js          # Screenshot utilities
-│   ├── ghostCursor.js         # Human-like cursor movement
-│   ├── randomScrolling.js     # Human-like scrolling
-│   ├── randomZoom.js          # Human-like zoom behavior
-│   ├── browserPatch.js        # Visibility spoofing
-│   ├── profileManager.js      # Profile management
-│   ├── entropyController.js   # Randomness for anti-detection
-│   ├── dockerLLM.js           # Docker LLM management
-│   └── ... more utilities
+├── tasks/                     # Modular Automation Tasks
+│   ├── ai-twitterActivity.js     # Main AI driving loop for Twitter
+│   ├── twitterFollow.js          # Isolated following task
+│   └── twitterTweet.js           # Isolated tweeting task
 │
-├── tools/                     # Browser extensions and tools
-│   └── extension-tco-grabber/ # Twitter Content Observer extension
+├── utils/                     # Legacy/Shared Utilities
+│   ├── async-queue.js            # Per-session execution serialization
+│   ├── ghostCursor.js            # Human-like mouse movement physics
+│   └── ... config, env, logger helpers
 │
-└── config/                    # Configuration files
-    ├── settings.json          # Main settings (LLM, humanization, vision)
-    ├── browserAPI.json        # Browser API endpoints for 18+ browsers
-    └── timeouts.json          # Timeout configurations
+├── tests/                     # Test Suite
+│   ├── unit/                     # Unit tests (mirrors source structure)
+│   └── integration/              # End-to-end integration scenarios
+│
+├── config/                    # Static Configuration
+│   ├── settings.json             # Global LLM/Humanization settings
+│   └── browserAPI.json           # Browser vendor API ports/endpoints
+│
+└── tools/                     # Extensions & Sidecar tools
+    └── extension-tco-grabber/    # Twitter Content Observer
 ```
 
-## Architecture Patterns
+### 1. Project Root (Entry Points)
+- `main.js`: Primary entry point. Initializes the Orchestrator and starts the automation loop.
+- `main-browser-use.js`: Alternative entry point using `browser-use` library (experimental).
+- `AGENTS.md`: Comprehensive guide for agents (rules, architecture, patterns).
+- `CONFIG.md`: Documentation for configuration files.
+- `vitest.config.js`: **Critical**. Uses `pool: 'forks'` to ensure `AsyncLocalStorage` stability during API tests.
 
-### Browser Connection Flow
-```
-main.js → Orchestrator.startDiscovery() → Discovery.loadConnectors()
-         → Discovery.discoverBrowsers() → Each Connector's discover()
-         → Automator.connectToBrowser() → SessionManager.addSession()
-```
+### 2. Unified API (`api/`)
+*The modern foundation for all interactions. Preferred for all new development.*
+- `index.js`: Exports the `api` object. Usage: `api.goto()`, `api.wait()`, `api.scroll.read()`.
+- `core/context.js`: Manages session isolation and page tracking via `contextStore`.
+- `behaviors/persona.js`: Implements the 16-profile persona system for unique interaction signatures.
+
+### 3. Core System (`core/`) [LEGACY]
+- `orchestrator.js`: Manages task queueing (being superseded by modular tasks).
+- `discovery.js`: Handles multi-browser port detection.
+- `sessionManager.js`: **Legacy**. Use `api/core/context.js` for session-aware logic.
+
+### 4. Shared Utilities (`utils/`) [LEGACY]
+- `ghostCursor.js`: **Deprecated**. Use `api/utils/ghostCursor.js`.
+- `async-queue.js`: Internal concurrency management for legacy agents.
+
+---
+
+## Ghost 3.0: Stealth Pillars
+
+The project implements the "Phantom Protocol" (version 0.3.0+) for industry-leading anti-detection. 
+
+1.  **Layer 0 Hardening**: Source-level driver masking via recursive proxy-based `navigator` spoofing and `patch.js`.
+2.  **Deep Sensor Spoofing**: Hardened Permissions API and deep `navigator` property spoofing (plugins, memory, hardware).
+3.  **Kinetic Interaction**: Fitts's Law motion physics and Physiological Jitter for organic movement.
+4.  **Bio-Profiles**: PID-driven "Muscle Models" providing unique per-persona acceleration signatures for every session.
+5.  **Semantic Presence**: Visual-Semantic Guards (Obstruction detection) and "Flinch" reactions to moving UI elements.
+6.  **Sensory Simulation**: Injection of noisy battery status, network speed, and device orientation mocks.
+7.  **Temporal Hygiene**: Performance-aware "Impatience" (Page Lag detection) and session longevity tracking.
 
 ### Task Execution Flow
 ```
@@ -203,106 +241,45 @@ Task → IntentClassifier.classify() → Decision: local vs cloud
 All browser connectors extend `BaseDiscover` and implement:
 - `async discover()` - Returns array of `{ws, http, windowName, port, etc.}`
 
-## # Auto-AI Codebase Map
+### Context Management & Hygiene
+The Unified API uses `AsyncLocalStorage` to manage per-session state (cursor, persona, configuration) without global variables.
 
-This map provides a high-level overview of the project structure, key modules, and their responsibilities to assist LLMs in navigating the codebase.
+#### [DEPRECATED] `api.setPage(page)`
+Sets the context for the current synchronous execution tree.
+- **Risk**: Potential context leakage in complex parallel execution.
+- **Usage**: Only for simple one-off scripts.
 
-## 1. Project Root (Entry Points)
-- `main.js`: Primary entry point. Initializes the Orchestrator and starts the automation loop.
-- `main-browser-use.js`: Alternative entry point using `browser-use` library (experimental).
-- `AGENTS.md`: Comprehensive guide for agents (rules, architecture, patterns).
-- `CONFIG.md`: Documentation for configuration files.
+#### [RECOMMENDED] `api.withPage(page, async () => { ... })`
+Executes a function block within a strictly isolated context.
+- **Benefit**: Guaranteed isolation for multi-agent orchestration.
+- **Integration**: Automatically binds session-aware logging (loggerContext).
 
-## 2. Core System (`core/`)
-*The "Brain" and "Nervous System" of the framework.*
+```js
+// Standard pattern for tasks
+await api.withPage(page, async () => {
+    await api.goto('https://twitter.com');
+    await api.think('explorer');
+    await api.click('[data-testid="login"]');
+});
+```
 
-### Orchestration & Lifecycle
-- `orchestrator.js`: Central manager. Handles task queues, worker allocation, and parallel execution across sessions.
-  - `startDiscovery(options)`: Starts the browser discovery process via Connectors.
-  - `addTask(taskName, payload)`: Adds a new task to the global queue.
-  - `processTasks()`: Main loop that assigns tasks to available workers in sessions.
-- `sessionManager.js`: Manages browser session lifecycle (start, stop, health checks, persistence).
-  - `addSession(browser, info)`: Registers a new connected browser session.
-  - `getSession(id)`: Retrieves session object by ID.
-  - `startCleanupTimer()`: Periodically cleans up stale sessions.
-- `state-manager.js`: Tracks state across sessions.
-- `automator.js`: Handles low-level Playwright CDP connections and health monitoring.
-  - `connectToBrowser(wsEndpoint)`: Establishes CDP connection with retry logic.
-  - `testConnection(browser)`: Verifies if the browser connection is still active.
-  - `reconnect(wsEndpoint)`: Attempts to re-establish a dropped connection.
-- `discovery.js`: Discovers running browser instances via Connectors.
-  - `loadConnectors(allowed)`: Dynamically imports connector modules.
-  - `discoverBrowsers()`: Aggregates browser endpoints from all loaded connectors.
+## Unified API Architecture
 
-### AI & Intelligence
-- `agent-connector.js`: Router for AI requests. Decides between Local/Cloud LLMs and handles failover.
-  - `processRequest(request)`: Main entry point for AI tasks. Routes to Local or Cloud client based on complexity/availability.
-- `intent-classifier.js`: Analyzes task complexity to route to appropriate LLM (Local vs Cloud).
-  - `classify(task)`: Determines if a task needs "fast" (local) or "smart" (cloud) processing.
-- `local-client.js`: Facade for local LLMs (Ollama/Docker).
-- `cloud-client.js`: Interface for OpenRouter/Cloud APIs.
-- `vision-interpreter.js`: Processes images/screenshots for visual context.
-- `humanizer-engine.js`: Core engine for generating human-like behavior patterns.
+The `api/` directory follows a modular, middleware-driven architecture designed for reliability and humanization.
 
-## 3. Browser Connectivity (`connectors/`)
-*Adapters for different anti-detect browsers.*
+### Pattern: Lifecycle of an Interaction
+↓ `api.init(page, settings)`: Sets up context, applies humanization patches.
+↓ `api.goto(url)`: Navigates with smart retry and self-healing.
+↓ `api.think(persona)`: Calculates variable delay based on current persona/state.
+↓ `api.interactions.*`: Performs the high-level action (scroll, click, type).
+↓ `api.verify()`: Confirms the action had the intended effect on the DOM.
 
-- `baseDiscover.js`: Base class for all browser connectors.
-  - `discover()`: Abstract method that must be implemented by subclasses to return browser endpoints.
-- `discovery/`:
-  - `ixbrowser.js`, `morelogin.js`, etc.: Connectors for specific anti-detect browsers. Implement `discover()`.
-
-## 4. Task Modules (`tasks/`)
-*Specific jobs that agents perform. Dynamically loaded.*
-
-- `_template.js`: Template for creating new tasks.
-- `agent.js`: Generic agent task implementation.
-- `ai-twitterActivity.js`: **Critical**. Main task for AI-driven Twitter automation (replies, quotes, engagement).
-  - `default function(page, payload)`: Main execution loop. Handles initialization, profile loading, and agent lifecycle.
-- `twitterTweet.js`: Task for posting tweets.
-- `twitterFollow.js`: Task for following users.
-
-## 5. Utilities & Helpers (`utils/`)
-*The Toolbox. Extensive collection of helper modules.*
-
-### AI Components
-- `ai-twitterAgent.js`: **Core Logic**. Extends `twitterAgent.js`. Handles split-phase diving (Scan vs AI), queue management, and action execution.
-  - `diveTweet(tweetElement)`: Orchestrates the dive process. Splits into Scan Phase (no queue) and AI Phase (queue).
-  - `startDive(tweetUrl)`: Initiates the diving logic for a specific tweet.
-  - `executeAILogic(context)`: Runs the AI decision/action process inside the `DiveQueue`.
-- `ai-context-engine.js`: Extracts and enhances context from tweets (replies, sentiment).
-- `ai-reply-engine.js`: Generates replies using AI.
-- `async-queue.js`: **New**. Implements `DiveQueue` and `AsyncQueue` to manage concurrency and prevent race conditions.
-  - `addDive(taskFn, fallbackFn, options)`: Adds a task to the queue with timeout protection and optional fallback.
-  - `_processQueue()`: Internal method to serialize task execution.
-
-### AI Actions (`utils/actions/`)
-- `index.js`: `ActionRunner` logic for smart action selection.
-  - `selectAction()`: Probabilistically selects the next action (reply, like, quote) based on engagement limits.
-  - `executeAction(action, context)`: Routes the execution to the specific action handler.
-- `ai-twitter-reply.js`: `execute(agent, context)`: Generates and posts a reply.
-- `ai-twitter-quote.js`: `execute(agent, context)`: Generates and posts a quote tweet.
-
-### Humanization & Anti-Detection
-- `twitterAgent.js`: Base class for Twitter interactions. Implements 6-layer click strategy and human behaviors.
-  - `humanClick(target, description)`: Robust click method with scrolling, pausing, micro-movements, and ghost clicking.
-  - `scrollDown()`, `scrollUp()`, `scrollRandom()`: Natural scrolling helpers with variable speed.
-- `ghostCursor.js`: Simulates realistic mouse movements.
-  - `move(x, y)`: Moves mouse using Bezier curves.
-  - `click(selector)`: Human-like click sequence.
-- `browserPatch.js`: Spoofs visibility and other browser properties.
-  - `applyHumanizationPatch(page)`: Injects scripts to hide automation signals.
-
-## 6. Configuration (`config/`)
-- `settings.json`: Main configuration (LLM providers, humanization settings, timeouts).
-- `browserAPI.json`: API endpoints for different browser vendors.
-- `timeouts.json`: Centralized timeout definitions.
-
-## Key Relationships
-1.  **Task Execution**: `main.js` -> `Orchestrator.processTasks()` -> `SessionManager` -> `Task` (e.g., `ai-twitterActivity.js`).
-2.  **AI Flow**: `Task` -> `AITwitterAgent.diveTweet()` -> `DiveQueue` -> `AgentConnector` -> `LocalClient`/`CloudClient`.
-3.  **Concurrency**: `AITwitterAgent` uses `DiveQueue` (from `async-queue.js`) to serialize AI operations per session, ensuring thread safety during multi-browser runs.
-
+### Pattern: Execution with Recovery
+All high-level actions use `executeWithRecovery` to automatically handle:
+- Element detached from DOM
+- Element obscured by overlays
+- Page navigation resets
+- Unexpected dialogs/popups
 
 ## Supported Browsers
 
@@ -326,12 +303,21 @@ This map provides a high-level overview of the project structure, key modules, a
 
 ## Humanization Features
 
-- **Mouse Movement**: Variable speed, jitter, Bezier curves (`utils/ghostCursor.js`)
-- **Keystroke Dynamics**: Randomized delays, punctuation pauses
-- **Scrolling Patterns**: Natural reading rhythm, pauses (`utils/randomScrolling.js`)
-- **Idle Behavior**: Periodic mouse wiggles when idle (`core/idle-ghosting.js`)
-- **Viewport Spoofing**: Random zoom levels (`utils/randomZoom.js`)
-- **Visibility Spoofing**: Navigator and screen property manipulation (`utils/browserPatch.js`)
+- **Mouse Movement**: Variable speed, jitter, Bezier curves (`api/utils/ghostCursor.js`)
+- **Keystroke Dynamics**: Randomized delays, punctuation pauses via `typeText`
+- **Scrolling Patterns**: Natural reading rhythm via `api.scroll.read()`
+- **Idle Behavior**: Periodic micro-fidgeting when waiting (`api/behaviors/idle.js`)
+- **PID Muscle Model**: Individualized movement acceleration per session.
+- **Sensor Noise**: Dynamic battery/network/orientation spoofing.
+
+## Testing Strategy
+
+All new development must be verified using **Vitest**.
+
+- **Command**: `npm run test:api` or `npx vitest api/`
+- **Configuration**: `vitest.config.js` MUST use `pool: 'forks'`.
+- **Reasoning**: Worker processes provide isolation for `AsyncLocalStorage` and prevent global namespace pollution during browser patching.
+- **Coverage**: Target >90% line coverage for all interactions and core logic.
 
 ## Task System
 
@@ -343,7 +329,8 @@ Tasks are dynamically loaded from `tasks/` directory:
 
 **Example Task Command:**
 ```bash
-node main.js simpleNavigate targetUrl=https://example.com
+node main.js pageview=https://example.com
+node main.js pageview=www.example.com
 ```
 
 ## Configuration Management
@@ -356,97 +343,11 @@ Configuration hierarchy:
 
 ## Critical Project-Specific Patterns
 
-- Browser connection discovery prioritizes CDP endpoints from local browser APIs (not launching new instances)
-- Orchestrator simulates browser discovery in startDiscovery() using Playwright launch for demonstration
-- Roxybrowser API requires X-API-Key header for connection_info endpoint
-- No linter configuration exists; code style is enforced through manual review
-- Package.json test script is placeholder only ("echo \"Error: no test specified\"")
-
-## Phase 1: Race Condition Resolution (COMPLETED)
-
-### 1.1 Async Queue Implementation
-
-**File: `utils/async-queue.js`**
-
-Created a new `AsyncQueue` and `DiveQueue` classes that replace the simple boolean lock with a proper async queue system:
-
-```javascript
-// BEFORE: Simple boolean lock (race condition prone)
-this.aiReplyLock = true;
-try {
-    await this._diveTweetWithAI();
-} finally {
-    this.aiReplyLock = false;
-}
-
-// AFTER: Proper async queue (race-condition-free)
-this.diveQueue = new DiveQueue({
-    maxConcurrent: 3,      // Configurable concurrency
-    maxQueueSize: 30,      // Queue capacity
-    defaultTimeout: 5000,  // 5s timeout with fallback
-    fallbackEngagement: true
-});
-
-// Usage:
-await this.diveQueue.addDive(
-    primaryDiveFn,         // AI processing
-    fallbackFn,            // Quick engagement fallback
-    { timeout: 5000 }
-);
-```
-
-**Key Features:**
-- **Configurable concurrency**: Max 3 concurrent dives (prevents overload)
-- **Automatic timeout**: 5s timeout with immediate fallback engagement
-- **Queue management**: Priority queue with size limits
-- **Comprehensive stats**: Queue length, active count, utilization
-
-### 1.2 Immediate Fallback Engagement
-
-**Quick Fallback Mode** - When AI pipeline times out:
-```javascript
-async _quickFallbackEngagement() {
-    // Perform basic engagement without AI processing
-    const engagementRoll = Math.random();
-    if (engagementRoll < 0.4) await this.handleLike();
-    else if (engagementRoll < 0.7) await this.handleBookmark();
-}
-```
-
-**Engagement Limit Tracking** - Dual tracking from both systems:
-```javascript
-// Check limits from both systems
-const canEngage = this.engagementTracker.canPerform('likes') && 
-                  this.diveQueue.canEngage('likes');
-
-// Record in both systems
-this.engagementTracker.record('likes');
-this.diveQueue.recordEngagement('likes');
-```
-
-**Quick Mode for Cooldown**:
-```javascript
-// Enable quick mode during cooldown (faster timeouts)
-if (this.isInCooldown() && !this.quickModeEnabled) {
-    this.diveQueue.enableQuickMode();  // 3s timeout instead of 5s
-    this.quickModeEnabled = true;
-}
-```
-
-### Files Modified
-
-| File | Changes |
-|------|---------|
-| `utils/async-queue.js` | New file - AsyncQueue and DiveQueue classes |
-| `utils/ai-twitterAgent.js` | Replaced boolean lock with DiveQueue, added fallback engagement |
-| `tasks/ai-twitterActivity.js` | Added dive queue status logging |
-
-### Expected Improvements
-
-- **Race Conditions**: Eliminated (queue instead of boolean lock)
-- **Concurrent Processing**: Up to 3 dives simultaneously
-- **Error Recovery**: 90% faster fallback engagement
-- **Engagement Limits**: Dual tracking prevents over-engagement
+- **API Precedence**: Always use `api.*` methods instead of raw `page.*` calls for humanized interactions.
+- **CDP Stability**: Connection discovery prioritizes existing CDP endpoints via browser vendor APIs.
+- **Async Safety**: `api.getCurrentUrl()` and navigation helpers are strictly `async` and must be `await`ed.
+- **Lock Management**: Use `DiveQueue` in `utils/async-queue.js` to manage concurrent AI operations.
+- **Error Recovery**: Prefer `api.recover()` and `executeWithRecovery` over manual try-catch loops.
 
 ## Technology Stack
 
@@ -480,11 +381,6 @@ Wait 500-1000ms (settle)
 Type reply/quote
 ```
 
-### Alternative Names
-- Step-by-step flow diagram
-- Sequential flow chart
-- Vertical process flow
-
 ## Global Scroll Multiplier
 
 All scrolling operations support a configurable multiplier in `config/settings.json`:
@@ -506,23 +402,4 @@ All scrolling operations support a configurable multiplier in `config/settings.j
 - `2.0` = Double speed (quick runs)
 
 **Implementation:**
-```javascript
-// OLD - Direct scrolling (won't use multiplier):
-await page.mouse.wheel(0, 300);
-
-// NEW - Using scroll helper (applies multiplier):
-import { scrollDown, scrollUp, scrollRandom } from './utils/scroll-helper.js';
-
-await scrollDown(page, 300);
-await scrollUp(page, 200);
-await scrollRandom(page, 150, 300);
-```
-
-**Affects All Scroll Operations:**
-- Reply reading scrolls
-- Quote context gathering
-- Timeline navigation
-- Tweet diving
-- Humanization behaviors
-
-**Anti-Detection:** Vary the multiplier per session by changing `config/settings.json` before starting the agent.
+All `api.scroll.*` and `utils/scroll-helper.js` functions automatically apply this multiplier to their base distances and timings.

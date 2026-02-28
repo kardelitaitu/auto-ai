@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/47</span>
+                <span class='fraction'>0/60</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/19</span>
+                <span class='fraction'>0/27</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/47</span>
+                <span class='fraction'>0/59</span>
             </div>
         
             
@@ -256,7 +256,28 @@
 <a name='L191'></a><a href='#L191'>191</a>
 <a name='L192'></a><a href='#L192'>192</a>
 <a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a>
+<a name='L204'></a><a href='#L204'>204</a>
+<a name='L205'></a><a href='#L205'>205</a>
+<a name='L206'></a><a href='#L206'>206</a>
+<a name='L207'></a><a href='#L207'>207</a>
+<a name='L208'></a><a href='#L208'>208</a>
+<a name='L209'></a><a href='#L209'>209</a>
+<a name='L210'></a><a href='#L210'>210</a>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -273,6 +294,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -285,6 +321,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -456,6 +496,7 @@
  */
 &nbsp;
 import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 &nbsp;
 const logger =<span class="cstat-no" title="statement not covered" > createLogger('idle-ghosting.js');</span>
 &nbsp;
@@ -466,6 +507,24 @@ const logger =<span class="cstat-no" title="statement not covered" > createLogge
  */
 class IdleGhosting {
 <span class="fstat-no" title="function not covered" >    constructor(</span>) {
+<span class="cstat-no" title="statement not covered" >        this._configLoaded = false;</span>
+        
+<span class="cstat-no" title="statement not covered" >        this.isActive = false;</span>
+<span class="cstat-no" title="statement not covered" >        this.wiggleInterval = null;</span>
+<span class="cstat-no" title="statement not covered" >        this.wiggleFrequency = 2000;</span>
+<span class="cstat-no" title="statement not covered" >        this.wiggleMagnitude = 5;</span>
+<span class="cstat-no" title="statement not covered" >        this.scrollInterval = null;</span>
+<span class="cstat-no" title="statement not covered" >        this.scrollFrequency = 5000;</span>
+<span class="cstat-no" title="statement not covered" >        this.scrollMagnitude = 50;</span>
+        
+<span class="cstat-no" title="statement not covered" >        this._loadConfig();</span>
+    }
+&nbsp;
+    async <span class="fstat-no" title="function not covered" >_loadConfig(</span>) {
+<span class="cstat-no" title="statement not covered" >        if (this._configLoaded) <span class="cstat-no" title="statement not covered" >return;</span></span>
+&nbsp;
+        const idleConfig = <span class="cstat-no" title="statement not covered" >(await getTimeoutValue('humanization', {})).idle ?? {};</span>
+&nbsp;
         /** @type {boolean} Whether ghosting is currently active */
 <span class="cstat-no" title="statement not covered" >        this.isActive = false;</span>
 &nbsp;
@@ -473,12 +532,13 @@ class IdleGhosting {
 <span class="cstat-no" title="statement not covered" >        this.wiggleInterval = null;</span>
 &nbsp;
         /** @type {number} Wiggle frequency in ms */
-<span class="cstat-no" title="statement not covered" >        this.wiggleFrequency = 2000;</span>
+<span class="cstat-no" title="statement not covered" >        this.wiggleFrequency = idleConfig.wiggleFrequency ?? 2000;</span>
 &nbsp;
         /** @type {number} Wiggle magnitude in pixels */
-<span class="cstat-no" title="statement not covered" >        this.wiggleMagnitude = 5;</span>
+<span class="cstat-no" title="statement not covered" >        this.wiggleMagnitude = idleConfig.wiggleMagnitude ?? 5;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        logger.info('IdleGhosting initialized');</span>
+<span class="cstat-no" title="statement not covered" >        this._configLoaded = true;</span>
     }
 &nbsp;
     /**
@@ -649,7 +709,7 @@ export default IdleGhosting;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -116,7 +116,7 @@ export class ActionOrchestrator {
             this.history.shift();
         }
     }
-    
+
     /**
      * Get the next routine (convenience method)
      */

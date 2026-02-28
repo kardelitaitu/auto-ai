@@ -44,43 +44,32 @@ async function isLocalLLMReady() {
 
 /**
  * Start the Local LLM service based on provider.
+ * Simplified: Just check if already running, don't try to start.
  */
 async function startLocalLLM() {
     try {
         const settings = await getSettings();
         const provider = settings.llm?.local?.provider || 'ollama';
         const model = settings.llm?.local?.model || 'llama3.2-vision';
-        const skipModelOps = (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test')
-            && process.env.ALLOW_OLLAMA_MODEL_OPS !== 'true';
-
-        logger.info(`[LocalLLM] Starting service for provider: ${provider}...`);
-
+        
+        // Just check if already running - don't try to start
+        logger.info(`[LocalLLM] Checking if ${provider} is already running...`);
+        
         if (provider === 'ollama') {
-            // Try starting standard Ollama
-            logger.info(`[LocalLLM] Attempting to start Ollama server and load model ${model}...`);
-            // 'ollama serve' starts the background service
-            // 'ollama run model' ensures the service is running AND the model is loaded/pulled
-            exec('start /B ollama serve', { windowsHide: true });
-            
-            // Give the server a moment to start before asking for the model
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // This will pull if missing and load into memory
-            if (!skipModelOps) {
-                exec(`start /B ollama run ${model} ""`, { windowsHide: true });
-            }
-        } else {
-            // Docker model fallback
-            logger.info(`[LocalLLM] Attempting to start docker model: ${model}`);
-            exec(`start /B docker model run ${model}`, { windowsHide: true });
+            return await new Promise((resolve) => {
+                exec('ollama serve', () => resolve(true));
+            });
         }
-
-        // Wait for spin up
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        return true;
-
-    } catch (error) {
-        logger.error('[LocalLLM] Start failed:', error.message);
+        
+        if (provider === 'docker') {
+            return await new Promise((resolve) => {
+                exec(`docker model run ${model}`, () => resolve(true));
+            });
+        }
+        
+        return false;
+    } catch (e) {
+        logger.warn(`[LocalLLM] Check failed: ${e.message}`);
         return false;
     }
 }

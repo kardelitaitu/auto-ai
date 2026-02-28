@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/153</span>
+                <span class='fraction'>0/158</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/102</span>
+                <span class='fraction'>0/110</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/150</span>
+                <span class='fraction'>0/155</span>
             </div>
         
             
@@ -518,7 +518,18 @@
 <a name='L453'></a><a href='#L453'>453</a>
 <a name='L454'></a><a href='#L454'>454</a>
 <a name='L455'></a><a href='#L455'>455</a>
-<a name='L456'></a><a href='#L456'>456</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L456'></a><a href='#L456'>456</a>
+<a name='L457'></a><a href='#L457'>457</a>
+<a name='L458'></a><a href='#L458'>458</a>
+<a name='L459'></a><a href='#L459'>459</a>
+<a name='L460'></a><a href='#L460'>460</a>
+<a name='L461'></a><a href='#L461'>461</a>
+<a name='L462'></a><a href='#L462'>462</a>
+<a name='L463'></a><a href='#L463'>463</a>
+<a name='L464'></a><a href='#L464'>464</a>
+<a name='L465'></a><a href='#L465'>465</a>
+<a name='L466'></a><a href='#L466'>466</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -535,6 +546,15 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -982,15 +1002,25 @@
 import { createLogger } from '../utils/logger.js';
 import VisionInterpreter from './vision-interpreter.js';
 import LocalClient from './local-client.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 import crypto from 'crypto';
 &nbsp;
 const logger =<span class="cstat-no" title="statement not covered" > createLogger('agent-cortex.js');</span>
 &nbsp;
-// Configuration Constants
-const STUCK_THRESHOLD = <span class="cstat-no" title="statement not covered" >3;</span>           // Number of identical screens before "stuck"
-const FAILURE_THRESHOLD = <span class="cstat-no" title="statement not covered" >2;</span>         // Consecutive failures before warning
-const HISTORY_WINDOW = <span class="cstat-no" title="statement not covered" >5;</span>            // Number of recent actions to keep in context
-const MAX_HISTORY_SIZE = <span class="cstat-no" title="statement not covered" >50;</span>         // Maximum total history entries
+// Configuration Constants - loaded from config
+let STUCK_THRESHOLD = <span class="cstat-no" title="statement not covered" >3;</span>
+let FAILURE_THRESHOLD = <span class="cstat-no" title="statement not covered" >2;</span>
+let HISTORY_WINDOW = <span class="cstat-no" title="statement not covered" >5;</span>
+let MAX_HISTORY_SIZE = <span class="cstat-no" title="statement not covered" >50;</span>
+&nbsp;
+async function <span class="fstat-no" title="function not covered" >_loadAgentConfig(</span>) {
+    const agentConfig = <span class="cstat-no" title="statement not covered" >await getTimeoutValue('agent', {}) || {};</span>
+<span class="cstat-no" title="statement not covered" >    STUCK_THRESHOLD = agentConfig.stuckThreshold ?? STUCK_THRESHOLD;</span>
+    
+    const stateConfig = <span class="cstat-no" title="statement not covered" >await getTimeoutValue('state', {}) || {};</span>
+<span class="cstat-no" title="statement not covered" >    MAX_HISTORY_SIZE = stateConfig.maxBreadcrumbs ?? MAX_HISTORY_SIZE;</span>
+}
+<span class="cstat-no" title="statement not covered" >_loadAgentConfig();</span>
 &nbsp;
 class AgentCortex {
     /**
@@ -1435,7 +1465,7 @@ export default AgentCortex;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../prettify.js"></script>
         <script>

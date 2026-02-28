@@ -11,6 +11,7 @@
  * @version 6.1.0 (Niche-Entropy-Expanded)
  */
 
+import { api } from '../api/index.js';
 import { randomBytes } from 'crypto';
 import { URL } from 'url';
 import fs from 'fs';
@@ -403,6 +404,7 @@ export class ReferrerEngine {
     constructor(config = {}) {
         this.deviceType = DEVICE_TYPES.DESKTOP;
         this.addUTM = config.addUTM || false;
+        this.api = config.api;
     }
 
     _selectStrategy(targetUrl) {
@@ -504,6 +506,7 @@ export class ReferrerEngine {
      */
     async trampolineNavigate(page, targetUrl, context = null) {
         const ctx = context || this.generateContext(targetUrl);
+        const useApi = this.api?.goto;
 
         console.log(`[ReferrerEngine] Strategy: ${ctx.strategy}`);
         console.log(`[ReferrerEngine] Target: ${ctx.targetWithParams}`);
@@ -511,8 +514,18 @@ export class ReferrerEngine {
 
         // If Direct, just go there
         if (!ctx.referrer || ctx.strategy === 'direct') {
-            await page.setExtraHTTPHeaders(ctx.headers);
-            return page.goto(ctx.targetWithParams);
+            if (useApi) {
+                await this.api.setExtraHTTPHeaders(ctx.headers);
+                return this.api.goto(ctx.targetWithParams, {
+                    waitUntil: 'domcontentloaded',
+                    warmup: false,
+                    warmupMouse: false,
+                    warmupFakeRead: false,
+                    warmupPause: false
+                });
+            }
+            await api.setExtraHTTPHeaders(ctx.headers);
+            return api.goto(ctx.targetWithParams);
         }
 
         // For complex referrers (Social, Search), use Trampoline
@@ -565,26 +578,56 @@ export class ReferrerEngine {
 
             // 2. Go to the "Fake" Referrer (which we just routed)
             // This puts the Referrer URL in the address bar momentarily
-            await page.goto(ctx.referrer, { waitUntil: 'commit' });
+            if (useApi) {
+                await this.api.goto(ctx.referrer, {
+                    waitUntil: 'commit',
+                    timeout: 30000,
+                    warmup: false,
+                    warmupMouse: false,
+                    warmupFakeRead: false,
+                    warmupPause: false
+                });
+            } else {
+                await api.goto(ctx.referrer, { waitUntil: 'commit' });
+            }
 
             // 3. Wait for the click to trigger navigation to the REAL target
             // The click happens via script above, or we can force it:
             try {
-                await page.click('#trampoline', { timeout: 2000 });
+                if (this.api?.click) {
+                    await this.api.click('#trampoline', { timeout: 2000 });
+                } else {
+                    await api.click('#trampoline', { timeout: 2000 });
+                }
             } catch (_e) {
                 // Ignore if auto-click worked
             }
 
             // 4. Wait for real target load
-            await page.waitForURL(url => url.toString().includes(new URL(targetUrl).hostname), { timeout: 30000, waitUntil: 'domcontentloaded' });
+            if (useApi && this.api?.waitForURL) {
+                await this.api.waitForURL(url => url.toString().includes(new URL(targetUrl).hostname), { timeout: 30000, waitUntil: 'domcontentloaded' });
+            } else {
+                await api.waitForURL(url => url.toString().includes(new URL(targetUrl).hostname), { timeout: 30000, waitUntil: 'domcontentloaded' });
+            }
 
             // Cleanup route (optional, but good practice)
             await page.unroute(ctx.referrer);
 
         } catch (e) {
             console.warn(`[ReferrerEngine] Trampoline failed: ${e.message}. Fallback to direct goto.`);
-            await page.setExtraHTTPHeaders(ctx.headers);
-            await page.goto(ctx.targetWithParams, { referer: ctx.referrer });
+            if (useApi) {
+                await this.api.setExtraHTTPHeaders(ctx.headers);
+                await this.api.goto(ctx.targetWithParams, {
+                    waitUntil: 'domcontentloaded',
+                    warmup: false,
+                    warmupMouse: false,
+                    warmupFakeRead: false,
+                    warmupPause: false
+                });
+                return;
+            }
+            await api.setExtraHTTPHeaders(ctx.headers);
+            await api.goto(ctx.targetWithParams, { referer: ctx.referrer });
         }
     }
 }

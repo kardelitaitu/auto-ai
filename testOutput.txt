@@ -1,0 +1,86 @@
+[2m16:27:13[0m [90m⚪[0m [0m[38;5;208m[configLoader.js][0m [0mLoaded configuration from settings.json[0m
+[2m16:27:13[0m [90m⚪[0m [0m[38;5;208m[ollama-manager.js][0m[0m[0m[33m[OllamaManager][0m[0m Ollama is already running.[0m
+
+Prompt Test — Provider: Ollama
+
+
+══════════════════════════════════════════════════════════════════════
+  TEST: Tech Thread
+══════════════════════════════════════════════════════════════════════
+
+📤 SYSTEM PROMPT:
+──────────────────────────────────────────────────────────────────────
+You are a real Twitter user. React naturally to the tweet and the replies.
+
+## RULES
+- Read the replies first — match the consensus tone
+- Be specific — react to actual content, not generic praise
+- Sound casual and human, like a real person scrolling Twitter
+
+## FORMATTING (CRITICAL)
+- **NO @mentions**, **NO #hashtags**, **NO emojis** (unless instructed)
+- **NO quotes** around your reply
+- **MAX 10 WORDS** — one short sentence only
+- No period at end. Lowercase start preferred.
+
+## BANNED WORDS (sound like AI — never use)
+Tapestry, Testament, Symphony, Delve, Foster, Crucial, Landscape, Game-changer,
+Underscore, Utilize, Enhance, Spearhead, Resonate, Vibrant, Seamless, Robust,
+Dynamic, Realm, Nuance, Harness, Leverage, Meticulous, Paradigm, Synergy,
+Holistic, Integral, Pivotal, Noteworthy, Compelling, Intriguing, Fascinating,
+Captivating, Enthralling, Empower, Revolutionize, Deep dive, Unpack
+
+## IMAGE HANDLING
+If image provided: analyze visuals, comment on a specific visual detail (e.g., "that dog is huge").
+
+Reply ONLY with your response text. Output immediately — no labels, no thinking.
+──────────────────────────────────────────────────────────────────────
+   ~277 tokens
+
+📤 USER PROMPT:
+──────────────────────────────────────────────────────────────────────
+Tweet from @technews:
+"Just discovered that AI can now write code better than most junior developers. The future is here."
+
+=== OTHER REPLIES ===
+1. @dev1: This is terrifying for new grads honestly
+2. @coder42: Meanwhile I still cant get AI to center a div
+3. @skeptical_sam: Give it a few years and it will be writing entire microservices
+4. @senior_lead: It writes the code, but can it explain *why* it chose that specific pattern? Dou
+5. @stack_overflow_vet: RIP to my reputation points. AI is the new Google.
+6. @product_pro: If it speeds up the MVP phase, I am all for it. Juniors need to level up to arch
+7. @bug_hunter: I spent 3 hours debugging AI code yesterday. It was confident, but completely wr
+8. @frontend_fan: Still waiting for it to handle complex CSS animations without losing its mind.
+9. @backend_guru: The logic is 80% there, but the edge cases are where the real engineering happen
+10. @ai_optimist: This just means we get to spend more time on high-level strategy and less on boi
+11. @security_first: Hope people realize the security risks of blindly pasting AI-generated snippets.
+12. @old_school_c: Wake me up when it can manage memory as well as a human in C++.
+13. @career_coach: Juniors: Start learning how to prompt and audit. That is your new job descriptio
+14. @open_source_hero: Is the training data even legal? The licensing discussion is going to be a mess.
+15. @no_code_nic: First it was low-code, now its AI. The barrier to entry is officially gone.
+16. @crypto_coder: Wait until we integrate this into smart contract auditing. Game changer.
+17. @ui_ux_designer: Coding is one thing. Understanding user empathy is another.
+18. @data_viz_expert: It handled my Python data cleaning script in seconds. I am impressed.
+19. @embedded_guy: I would like to see it write a driver for a custom FPGA. Then we can talk.
+20. @quantum_leap: We are just scratching the surface. This is the 1990s internet moment for dev.
+
+**SPECIAL INSTRUCTION**: Make a witty, playful, or slightly sarcastic observation. MAX 10 WORDS. One sentence. No mentions.
+=== YOUR REPLY ===
+Your reply:
+──────────────────────────────────────────────────────────────────────
+   ~525 tokens
+
+📊 TOTAL SENT: ~802 tokens
+
+⏳ Calling LLM...
+
+📥 RECEIVED:
+──────────────────────────────────────────────────────────────────────
+still coding but slower.
+──────────────────────────────────────────────────────────────────────
+   Time: 2326ms
+   Tokens — prompt: 912, completion: 852, total: 1764
+
+
+Done.
+

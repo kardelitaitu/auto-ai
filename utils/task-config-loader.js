@@ -269,6 +269,7 @@ export class TaskConfigLoader {
         queueMonitor: { enabled: true, interval: 30000 },
         engagementProgress: { enabled: true, showProgressBar: true },
       },
+      system: {},
     };
   }
 

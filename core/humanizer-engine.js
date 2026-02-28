@@ -5,6 +5,7 @@
  */
 
 import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 
 const logger = createLogger('humanizer-engine.js');
 
@@ -27,17 +28,38 @@ const logger = createLogger('humanizer-engine.js');
  */
 class HumanizerEngine {
     constructor() {
-        /** @type {number} Minimum movement duration in ms */
+        this._configLoaded = false;
+        
+        this.keyNeighbors = {
+            'q': 'wa', 'w': 'qeas', 'e': 'wrsd', 'r': 'edtf', 't': 'rfgy', 'y': 'tghu', 'u': 'yhji', 'i': 'ujko', 'o': 'iklp', 'p': 'ol',
+            'a': 'qwsz', 's': 'qweadzx', 'd': 'ersfcx', 'f': 'rtgvcd', 'g': 'tyhbvf', 'h': 'yujnbg', 'j': 'uikmnh', 'k': 'iolmj', 'l': 'opk',
+            'z': 'asx', 'x': 'zsdc', 'c': 'xdfv', 'v': 'cfgb', 'b': 'vghn', 'n': 'bhjm', 'm': 'njk'
+        };
+        
         this.minDuration = 300;
+        this.maxDuration = 2000;
+        this.baseSpeed = 1.5;
+        this.jitterRange = 2;
+        
+        this._loadConfig();
+    }
+
+    async _loadConfig() {
+        if (this._configLoaded) return;
+
+        const mouseConfig = (await getTimeoutValue('humanization', {})).mouse ?? {};
+
+        /** @type {number} Minimum movement duration in ms */
+        this.minDuration = mouseConfig.minDuration ?? 300;
 
         /** @type {number} Maximum movement duration in ms */
-        this.maxDuration = 2000;
+        this.maxDuration = mouseConfig.maxDuration ?? 2000;
 
         /** @type {number} Base movement speed (pixels per ms) */
-        this.baseSpeed = 1.5; // Slower, more deliberate
+        this.baseSpeed = mouseConfig.baseSpeed ?? 1.5; // Slower, more deliberate
 
         /** @type {number} Jitter range in pixels */
-        this.jitterRange = 2; // Reduced jitter, rely on curves more
+        this.jitterRange = mouseConfig.jitterRange ?? 2; // Reduced jitter, rely on curves more
 
         // QWERTY Neighbor Map for realistic typos
         this.keyNeighbors = {
@@ -48,6 +70,7 @@ class HumanizerEngine {
         };
 
         logger.info('HumanizerEngine v2 (Advanced) initialized');
+        this._configLoaded = true;
     }
 
     /**

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">4.16% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/72</span>
+                <span class='fraction'>0/72</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.11% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/9</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">4.68% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/64</span>
+                <span class='fraction'>0/64</span>
             </div>
         
             
@@ -252,7 +252,8 @@
 <a name='L187'></a><a href='#L187'>187</a>
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -270,9 +271,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">99x</span>
-<span class="cline-any cline-yes">99x</span>
-<span class="cline-any cline-yes">99x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -441,7 +443,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { api } from '../../api/index.js';
+/**
  * Human Scroll Engine
  * Human-like scrolling patterns with bursts, pauses, and micro-adjustments
  * 
@@ -458,10 +461,10 @@ import { entropy } from '../entropyController.js';
 import { scrollRandom } from '../scroll-helper.js';
 &nbsp;
 export class HumanScroll {
-    constructor(page, logger) {
-        this.page = page;
-        this.logger = logger;
-        this.agent = null;
+<span class="fstat-no" title="function not covered" >    constructor(</span>page, logger) {
+<span class="cstat-no" title="statement not covered" >        this.page = page;</span>
+<span class="cstat-no" title="statement not covered" >        this.logger = logger;</span>
+<span class="cstat-no" title="statement not covered" >        this.agent = null;</span>
     }
 &nbsp;
 <span class="fstat-no" title="function not covered" >    setAgent(</span>agent) {
@@ -507,24 +510,24 @@ export class HumanScroll {
             const variation = <span class="cstat-no" title="statement not covered" >(Math.random() - 0.5) * 0.2;</span> // ±10%
             const adjustedScroll = <span class="cstat-no" title="statement not covered" >Math.round(scrollAmount * (1 + variation));</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >            await scrollRandom(this.page, adjustedScroll, adjustedScroll);</span>
+<span class="cstat-no" title="statement not covered" >            await scrollRandom(adjustedScroll, adjustedScroll);</span>
 &nbsp;
             // Pause between bursts (looking time)
 <span class="cstat-no" title="statement not covered" >            if (i &lt; burstCount - 1) {</span>
                 const pauseTime = <span class="cstat-no" title="statement not covered" >mathUtils.gaussian(400, 200);</span>
-<span class="cstat-no" title="statement not covered" >                await this.page.waitForTimeout(pauseTime);</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(1000);</span>
 &nbsp;
                 // Occasionally scroll back slightly (re-reading)
 <span class="cstat-no" title="statement not covered" >                if (mathUtils.roll(0.2) &amp;&amp; i &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >                    await scrollRandom(this.page, 20, 50);</span>
-<span class="cstat-no" title="statement not covered" >                    await this.page.waitForTimeout(mathUtils.randomInRange(100, 200));</span>
+<span class="cstat-no" title="statement not covered" >                    await scrollRandom(20, 50);</span>
+<span class="cstat-no" title="statement not covered" >                    await api.wait(1000);</span>
                 }
             }
         }
 &nbsp;
         // Final pause (processing time)
         const endPause = <span class="cstat-no" title="statement not covered" >intensity === 'light' ? mathUtils.gaussian(800, 300) : mathUtils.gaussian(1500, 500);</span>
-<span class="cstat-no" title="statement not covered" >        await this.page.waitForTimeout(endPause);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (this.agent) {</span>
 <span class="cstat-no" title="statement not covered" >            this.agent.log(`[Scroll] ${direction} (${burstCount} bursts, ${Math.abs(scrollAmount)}px)`);</span>
@@ -550,7 +553,7 @@ export class HumanScroll {
 &nbsp;
 <span class="cstat-no" title="statement not covered" >            if (Math.abs(distance) &lt; 100) {</span>
                 // Already close, just micro-adjust
-<span class="cstat-no" title="statement not covered" >                await scrollRandom(this.page, Math.abs(distance * 0.5), Math.abs(distance * 0.5));</span>
+<span class="cstat-no" title="statement not covered" >                await scrollRandom(Math.abs(distance * 0.5), Math.abs(distance * 0.5));</span>
             } else {
                 // Human approach: quick-jump → slow-approach
                 const approachCount = <span class="cstat-no" title="statement not covered" >2;</span>
@@ -559,20 +562,20 @@ export class HumanScroll {
                     const remaining = <span class="cstat-no" title="statement not covered" >distance * ((approachCount - i) / approachCount);</span>
                     const scrollAmount = <span class="cstat-no" title="statement not covered" >remaining * 0.6;</span> // Overshoot slightly
 &nbsp;
-<span class="cstat-no" title="statement not covered" >                    await scrollRandom(this.page, Math.abs(scrollAmount), Math.abs(scrollAmount));</span>
-<span class="cstat-no" title="statement not covered" >                    await this.page.waitForTimeout(mathUtils.randomInRange(200, 400));</span>
+<span class="cstat-no" title="statement not covered" >                    await scrollRandom(Math.abs(scrollAmount), Math.abs(scrollAmount));</span>
+<span class="cstat-no" title="statement not covered" >                    await api.wait(1000);</span>
                 }
 &nbsp;
                 // Fine-tuning
-<span class="cstat-no" title="statement not covered" >                await scrollRandom(this.page, Math.abs(distance * 0.1), Math.abs(distance * 0.1));</span>
+<span class="cstat-no" title="statement not covered" >                await scrollRandom(Math.abs(distance * 0.1), Math.abs(distance * 0.1));</span>
             }
 &nbsp;
             // Pause to "look" at element
-<span class="cstat-no" title="statement not covered" >            await this.page.waitForTimeout(mathUtils.gaussian(300, 100));</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
 &nbsp;
         } catch (_e) {
             // Fallback to direct scroll
-<span class="cstat-no" title="statement not covered" >            await scrollRandom(this.page, 200, 200);</span>
+<span class="cstat-no" title="statement not covered" >            await scrollRandom(200, 200);</span>
         }
     }
 &nbsp;
@@ -584,8 +587,8 @@ export class HumanScroll {
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; adjustments; i++) {</span>
             // Tiny random movements
-<span class="cstat-no" title="statement not covered" >            await scrollRandom(this.page, -30, 30);</span>
-<span class="cstat-no" title="statement not covered" >            await this.page.waitForTimeout(mathUtils.randomInRange(100, 300));</span>
+<span class="cstat-no" title="statement not covered" >            await scrollRandom(-30, 30);</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
         }
     }
 &nbsp;
@@ -607,8 +610,8 @@ export class HumanScroll {
 &nbsp;
             // Occasionally go back up slightly
 <span class="cstat-no" title="statement not covered" >            if (mathUtils.roll(0.3)) {</span>
-<span class="cstat-no" title="statement not covered" >                await scrollRandom(this.page, 50, 100);</span>
-<span class="cstat-no" title="statement not covered" >                await this.page.waitForTimeout(mathUtils.randomInRange(200, 400));</span>
+<span class="cstat-no" title="statement not covered" >                await scrollRandom(50, 100);</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(1000);</span>
             }
         }
     }
@@ -619,13 +622,13 @@ export class HumanScroll {
     async <span class="fstat-no" title="function not covered" >scrollToTop(</span>) {
         // Quick jumps up
 <span class="cstat-no" title="statement not covered" >        for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; 3; i++) {</span>
-<span class="cstat-no" title="statement not covered" >            await scrollRandom(this.page, 500, 500);</span>
-<span class="cstat-no" title="statement not covered" >            await this.page.waitForTimeout(mathUtils.randomInRange(50, 100));</span>
+<span class="cstat-no" title="statement not covered" >            await scrollRandom(500, 500);</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
         }
 &nbsp;
         // Fine adjustment
-<span class="cstat-no" title="statement not covered" >        await scrollRandom(this.page, 100, 100);</span>
-<span class="cstat-no" title="statement not covered" >        await this.page.waitForTimeout(entropy.reactionTime());</span>
+<span class="cstat-no" title="statement not covered" >        await scrollRandom(100, 100);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
     }
 }
 &nbsp;
@@ -637,7 +640,7 @@ export default HumanScroll;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

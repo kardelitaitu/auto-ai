@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">5.49% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/182</span>
+                <span class='fraction'>10/182</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">2.94% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/102</span>
+                <span class='fraction'>3/102</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">8.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/24</span>
+                <span class='fraction'>2/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">5.78% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/173</span>
+                <span class='fraction'>10/173</span>
             </div>
         
             
@@ -686,7 +686,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -694,7 +694,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -730,8 +730,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -806,13 +806,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1291,7 +1291,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1302,15 +1302,15 @@
 &nbsp;
 import { createLogger } from './logger.js';
 &nbsp;
-const logger =<span class="cstat-no" title="statement not covered" > createLogger('metrics.js');</span>
+const logger = createLogger('metrics.js');
 &nbsp;
 /**
  * @class MetricsCollector
  * @description A class for tracking system performance and statistics.
  */
 class MetricsCollector {
-<span class="fstat-no" title="function not covered" >  constructor(</span>) {
-<span class="cstat-no" title="statement not covered" >    this.metrics = {</span>
+  constructor() {
+    this.metrics = {
       tasksExecuted: 0,
       tasksFailed: 0,
       totalTaskDuration: 0,
@@ -1346,8 +1346,8 @@ class MetricsCollector {
       lastResetTime: Date.now()
     };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    this.taskHistory = [];</span>
-<span class="cstat-no" title="statement not covered" >    this.maxHistorySize = 100;</span>
+    this.taskHistory = [];
+    this.maxHistorySize = 100;
   }
 &nbsp;
   /**
@@ -1421,14 +1421,14 @@ class MetricsCollector {
    * @param {string} event - The type of event ('created' or 'closed').
    * @param {number} activeCount - The current number of active sessions.
    */
-<span class="fstat-no" title="function not covered" >  recordSessionEvent(</span>event, activeCount) {
-<span class="cstat-no" title="statement not covered" >    if (event === 'created') {</span>
-<span class="cstat-no" title="statement not covered" >      this.metrics.sessionsCreated++;</span>
-    } else <span class="cstat-no" title="statement not covered" >if (event === 'closed') {</span>
-<span class="cstat-no" title="statement not covered" >      this.metrics.sessionsClosed++;</span>
+  recordSessionEvent(event, activeCount) {
+    if (event === 'created') {
+      this.metrics.sessionsCreated++;
+    } else <span class="missing-if-branch" title="else path not taken" >E</span>if (event === 'closed') {
+      this.metrics.sessionsClosed++;
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    this.metrics.sessionsActive = activeCount;</span>
+    this.metrics.sessionsActive = activeCount;
   }
 &nbsp;
   /**
@@ -1907,7 +1907,7 @@ class MetricsCollector {
   }
 }
 &nbsp;
-const metricsCollector = <span class="cstat-no" title="statement not covered" >new MetricsCollector();</span>
+const metricsCollector = new MetricsCollector();
 &nbsp;
 export default metricsCollector;
 export { MetricsCollector };
@@ -1918,7 +1918,7 @@ export { MetricsCollector };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../prettify.js"></script>
         <script>

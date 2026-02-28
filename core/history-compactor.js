@@ -5,6 +5,7 @@
  */
 
 import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 
 const logger = createLogger('history-compactor.js');
 
@@ -31,13 +32,23 @@ const logger = createLogger('history-compactor.js');
  */
 class HistoryCompactor {
     constructor() {
-        /** @type {number} Threshold for triggering compaction */
+        this._configLoaded = false;
+        
         this.compactionThreshold = 20;
-
-        /** @type {number} Target summary length after compaction */
         this.targetLength = 5;
+        
+        this._loadConfig();
+    }
+
+    async _loadConfig() {
+        if (this._configLoaded) return;
+
+        const histConfig = await getTimeoutValue('history', {});
+        this.compactionThreshold = histConfig.compactionThreshold ?? 20;
+        this.targetLength = histConfig.targetLength ?? 5;
 
         logger.info('HistoryCompactor initialized');
+        this._configLoaded = true;
     }
 
     /**

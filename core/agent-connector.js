@@ -54,7 +54,14 @@ class AgentConnector {
      */
     async processRequest(request) {
         const { action, payload, sessionId } = request;
+        const requestStartTime = Date.now();
+        
         logger.info(`[${sessionId}] Processing request: ${action}`);
+        logger.debug(`[${sessionId}] Request payload keys: ${Object.keys(payload || {}).join(', ')}`);
+        
+        // Check queue status before enqueueing
+        const queueStats = this.requestQueue.getStats();
+        logger.debug(`[${sessionId}] Queue status before enqueue: running=${queueStats.running}, queued=${queueStats.queued}`);
 
         const startTime = Date.now();
         this.stats.totalRequests++;
@@ -67,9 +74,23 @@ class AgentConnector {
         try {
             const priority = payload.priority || 0;
 
-            const queueResult = await this.requestQueue.enqueue(async () => {
-                return this._executeWithCircuitBreaker(request, action);
-            }, { priority });
+            // Wrap the queue call with a timeout to prevent infinite hangs
+            const REQUEST_TIMEOUT_MS = 60000; // 60 second timeout for any AI request
+            
+            logger.debug(`[${sessionId}] Enqueueing request with timeout ${REQUEST_TIMEOUT_MS}ms`);
+            
+            const queueResult = await Promise.race([
+                this.requestQueue.enqueue(async () => {
+                    return this._executeWithCircuitBreaker(request, action);
+                }, { priority }),
+                new Promise((_, reject) => {
+                    setTimeout(() => {
+                        reject(new Error(`Request timeout after ${REQUEST_TIMEOUT_MS}ms`));
+                    }, REQUEST_TIMEOUT_MS);
+                })
+            ]);
+
+            logger.debug(`[${sessionId}] Request dequeued after ${Date.now() - requestStartTime}ms`);
 
             this.stats.successfulRequests++;
 
@@ -418,7 +439,25 @@ class AgentConnector {
             logger.warn(`[${sessionId}] Local exception: ${lastError}`);
         }
 
-        // Try cloud fallback if local failed
+        // Try cloud fallback if local failed (but only if cloud is enabled)
+        let cloudEnabled = false;
+        try {
+            const settings = await getSettings();
+            cloudEnabled = settings.llm?.cloud?.enabled === true;
+        } catch (_e) {
+            // ignore
+        }
+        
+        if (!cloudEnabled) {
+            logger.warn(`[${sessionId}] Cloud is disabled in config, skipping fallback`);
+            logger.error(`[${sessionId}] All providers failed. Last error: ${lastError}`);
+            return {
+                success: false,
+                error: lastError || 'Local failed and cloud is disabled',
+                metadata: { routedTo: 'none' }
+            };
+        }
+        
         logger.info(`[${sessionId}] Trying cloud fallback...`);
         try {
             const cloudRequest = {

@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 import { BaseHandler } from './BaseHandler.js';
 
 export class EngagementHandler extends BaseHandler {
@@ -21,13 +22,13 @@ export class EngagementHandler extends BaseHandler {
 
         for (let i = 0; i < maxPolls; i++) {
             // Check if Unfollow button appeared (success case)
-            if (await unfollowBtn.isVisible().catch(() => false)) {
+            if (await api.visible(unfollowBtn).catch(() => false)) {
                 this.log('[Follow] ✅ Successfully followed (Unfollow button visible).');
                 return true;
             }
 
             // Check if Follow button disappeared (success case)
-            if (!(await followBtn.isVisible().catch(() => false))) {
+            if (!(await api.visible(followBtn).catch(() => false))) {
                 this.log('[Follow] ✅ Successfully followed (Follow button disappeared).');
                 return true;
             }
@@ -40,7 +41,7 @@ export class EngagementHandler extends BaseHandler {
             }
 
             if (i < maxPolls - 1) {
-                await this.page.waitForTimeout(pollInterval);
+                await api.wait(pollInterval);
             }
         }
 
@@ -54,59 +55,71 @@ export class EngagementHandler extends BaseHandler {
      */
     async sixLayerClick(element, logPrefix) {
         const layers = [
-            { name: 'Ghost Click (Primary)', method: async (el) => {
-                try {
-                    const handle = await el.elementHandle();
-                    if (handle) {
-                        await this.page.evaluate(el => {
-                            el.scrollIntoView({ block: 'center', inline: 'center' });
-                        }, handle);
-                        await this.page.waitForTimeout(this.mathUtils.randomInRange(300, 600));
-                        return await this.ghost.click(handle, { allowNativeFallback: false });
+            {
+                name: 'Ghost Click (Primary)', method: async (el) => {
+                    try {
+                        const handle = await el.elementHandle();
+                        if (handle) {
+                            await api.eval((el) => {
+                                el.scrollIntoView({ block: 'center', inline: 'center' });
+                            }, handle);
+                            await api.wait(this.mathUtils.randomInRange(300, 600));
+                            return await this.ghost.click(handle, { allowNativeFallback: false });
+                        }
+                    } catch (e) {
+                        return { success: false, error: e.message };
                     }
-                } catch (e) {
-                    return { success: false, error: e.message };
                 }
-            }},
-            { name: 'Ghost Click (Fallback)', method: async (el) => {
-                try {
-                    return await this.ghost.click(el, { allowNativeFallback: true });
-                } catch (e) {
-                    return { success: false, error: e.message };
+            },
+            {
+                name: 'Ghost Click (Fallback)', method: async (el) => {
+                    try {
+                        return await this.ghost.click(el, { allowNativeFallback: true });
+                    } catch (e) {
+                        return { success: false, error: e.message };
+                    }
                 }
-            }},
-            { name: 'Human Click', method: async (el) => {
-                try {
-                    await this.humanClick(el, 'SixLayer Human');
-                    return { success: true };
-                } catch (e) {
-                    return { success: false, error: e.message };
+            },
+            {
+                name: 'Human Click', method: async (el) => {
+                    try {
+                        await this.humanClick(el, 'SixLayer Human');
+                        return { success: true };
+                    } catch (e) {
+                        return { success: false, error: e.message };
+                    }
                 }
-            }},
-            { name: 'Safe Human Click', method: async (el) => {
-                try {
-                    await this.safeHumanClick(el, 'SixLayer SafeHuman', 2);
-                    return { success: true };
-                } catch (e) {
-                    return { success: false, error: e.message };
+            },
+            {
+                name: 'Safe Human Click', method: async (el) => {
+                    try {
+                        await this.safeHumanClick(el, 'SixLayer SafeHuman', 2);
+                        return { success: true };
+                    } catch (e) {
+                        return { success: false, error: e.message };
+                    }
                 }
-            }},
-            { name: 'Native Click (Element)', method: async (el) => {
-                try {
-                    await el.click();
-                    return { success: true };
-                } catch (e) {
-                    return { success: false, error: e.message };
+            },
+            {
+                name: 'Native Click (Element)', method: async (el) => {
+                    try {
+                        await el.click();
+                        return { success: true };
+                    } catch (e) {
+                        return { success: false, error: e.message };
+                    }
                 }
-            }},
-            { name: 'JavaScript Click', method: async (el) => {
-                try {
-                    await el.evaluate(el => el.click());
-                    return { success: true };
-                } catch (e) {
-                    return { success: false, error: e.message };
+            },
+            {
+                name: 'JavaScript Click', method: async (el) => {
+                    try {
+                        await el.evaluate(el => el.click());
+                        return { success: true };
+                    } catch (e) {
+                        return { success: false, error: e.message };
+                    }
                 }
-            }}
+            }
         ];
 
         for (let i = 0; i < layers.length; i++) {
@@ -126,7 +139,7 @@ export class EngagementHandler extends BaseHandler {
 
             // Delay between layers (300-800ms)
             if (i < layers.length - 1) {
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(300, 800));
+                await api.wait(this.mathUtils.randomInRange(300, 800));
             }
         }
 
@@ -141,12 +154,12 @@ export class EngagementHandler extends BaseHandler {
     async robustFollow(logPrefix = '[Follow]', reloadUrl = null) {
         const followBtnSelector = 'div[data-testid="placementTracking"] [data-testid$="-follow"], div[role="button"][data-testid$="-follow"]';
         const unfollowBtnSelector = 'div[data-testid="placementTracking"] [data-testid$="-unfollow"], div[role="button"][data-testid$="-unfollow"]';
-        
+
         const MAX_ATTEMPTS = 3;
         // Always allow one extra attempt for reload/recovery
         const totalAttempts = MAX_ATTEMPTS + 1;
         let hasReloaded = false;
-        
+
         const result = {
             success: false,
             attempts: 0,
@@ -156,7 +169,7 @@ export class EngagementHandler extends BaseHandler {
 
         // Pre-check: If already unfollowing, skip
         const preCheckUnfollow = this.page.locator(unfollowBtnSelector).first();
-        if (await preCheckUnfollow.isVisible().catch(() => false)) {
+        if (await api.visible(preCheckUnfollow).catch(() => false)) {
             this.log(`${logPrefix} ⚠️ Already unfollowing (unfollow button visible). Skipping.`);
             result.success = true;
             result.skipped = true;
@@ -165,7 +178,7 @@ export class EngagementHandler extends BaseHandler {
 
         // Pre-check: If already following with different text
         const preCheckFollow = this.page.locator(followBtnSelector).first();
-        if (await preCheckFollow.isVisible().catch(() => false)) {
+        if (await api.visible(preCheckFollow).catch(() => false)) {
             const preTextRaw = await preCheckFollow.textContent().catch(() => '');
             const preText = preTextRaw.toLowerCase();
             if (preText.includes('following')) {
@@ -192,11 +205,11 @@ export class EngagementHandler extends BaseHandler {
                 try {
                     if (reloadUrl) {
                         this.log(`${logPrefix} 🔄 Force Navigating to: ${reloadUrl}`);
-                        await this.page.goto(reloadUrl);
+                        await api.goto(reloadUrl);
                     } else {
-                        await this.page.reload();
+                        await api.reload();
                     }
-                    await this.page.waitForTimeout(2000);
+                    await api.wait(2000);
                     hasReloaded = true;
                     result.reloaded = true;
                 } catch (reloadError) {
@@ -219,16 +232,16 @@ export class EngagementHandler extends BaseHandler {
             const freshUnfollowBtn = this.page.locator(unfollowBtnSelector).first();
 
             // Check if already unfollowing after reload
-            if (await freshUnfollowBtn.isVisible().catch(() => false)) {
+            if (await api.visible(freshUnfollowBtn).catch(() => false)) {
                 this.log(`${logPrefix} ✅ Successfully followed (unfollow button visible after reload).`);
                 result.success = true;
                 break;
             }
 
-            if (await freshFollowBtn.isVisible()) {
+            if (await api.visible(freshFollowBtn)) {
                 const buttonTextRaw = await freshFollowBtn.textContent().catch(() => '');
                 const buttonText = buttonTextRaw.toLowerCase();
-                
+
                 // Check if already in following state
                 if (buttonText.includes('following') || buttonText.includes('unfollow')) {
                     this.log(`${logPrefix} ✅ Already following (button text: '${buttonTextRaw}').`);
@@ -243,23 +256,23 @@ export class EngagementHandler extends BaseHandler {
                         const isActionable = await this.isElementActionable(freshFollowBtn);
                         if (!isActionable) {
                             this.log(`${logPrefix} Button not actionable (covered by overlay?). Retrying...`);
-                            await this.page.waitForTimeout(1000);
+                            await api.wait(1000);
                             continue;
                         }
 
-                         // Pre-click text check
-                         const preClickTextRaw = await freshFollowBtn.textContent().catch(() => '');
-                         const preClickText = preClickTextRaw.toLowerCase();
-                         if (preClickText.includes('following') || preClickText.includes('pending')) {
-                             this.log(`${logPrefix} ⚠️ Already in following/pending state: '${preClickTextRaw}'.`);
-                             if (await this.page.locator(unfollowBtnSelector).first().isVisible().catch(() => false)) {
-                                 result.success = true;
-                                 break;
-                             }
-                             // If unfollow not visible, we're in a pending state - treat as skipped
-                             result.skipped = true;
-                             break;
-                         }
+                        // Pre-click text check
+                        const preClickTextRaw = await freshFollowBtn.textContent().catch(() => '');
+                        const preClickText = preClickTextRaw.toLowerCase();
+                        if (preClickText.includes('following') || preClickText.includes('pending')) {
+                            this.log(`${logPrefix} ⚠️ Already in following/pending state: '${preClickTextRaw}'.`);
+                            if (await api.visible(this.page.locator(unfollowBtnSelector).first()).catch(() => false)) {
+                                result.success = true;
+                                break;
+                            }
+                            // If unfollow not visible, we're in a pending state - treat as skipped
+                            result.skipped = true;
+                            break;
+                        }
 
                         // Perform the click using six-layer strategy
                         const clickPerformed = await this.sixLayerClick(freshFollowBtn, logPrefix);
@@ -269,7 +282,7 @@ export class EngagementHandler extends BaseHandler {
                         }
 
                         // Verify follow was successful
-                        await this.page.waitForTimeout(1500);
+                        await api.wait(1500);
                         const verified = await this.pollForFollowState(unfollowBtnSelector, followBtnSelector, 5000);
                         if (verified) {
                             this.state.follows++;
@@ -307,7 +320,7 @@ export class EngagementHandler extends BaseHandler {
                 // Exponential backoff before retry
                 const backoff = Math.min(2000 * Math.pow(2, attempt - 1), 8000);
                 this.log(`${logPrefix} ⏸️ Waiting ${backoff}ms before retry...`);
-                await this.page.waitForTimeout(backoff);
+                await api.wait(backoff);
             }
         }
 
@@ -326,21 +339,27 @@ export class EngagementHandler extends BaseHandler {
      * Main engagement method for interacting with tweet content
      */
     async diveTweet() {
+        // ENHANCEMENT: Respect agent operation lock if present (prevents duplication during AI dives)
+        if (this.agent.operationLock) {
+            this.log('[Dive] ⏭ Operation lock active, skipping base engagement dive.');
+            return;
+        }
+
         this.log('[Dive] Starting tweet dive engagement...');
 
         // Find tweet targets
         for (let attempt = 0; attempt < 3; attempt++) {
             const tweetTargets = this.page.locator('[data-testid="tweet"], article[data-testid="tweet"], [role="article"]');
             const count = await tweetTargets.count();
-            
+
             if (count > 0) {
                 // Evaluate all visible tweets and select one
                 let targetTweet = null;
                 let maxScore = -1;
-                
+
                 for (let i = 0; i < Math.min(count, 10); i++) {
                     const tweet = tweetTargets.nth(i);
-                    if (await tweet.isVisible()) {
+                    if (await api.visible(tweet)) {
                         const box = await tweet.boundingBox().catch(() => null);
                         if (box && box.height > 0 && box.y > -50 && box.y < 1000) {
                             // Score based on position (prefer center of viewport)
@@ -355,28 +374,27 @@ export class EngagementHandler extends BaseHandler {
 
                 if (targetTweet) {
                     try {
-                        // Scroll target into view
-                        await targetTweet.scrollIntoViewIfNeeded();
-                        await this.page.waitForTimeout(this.mathUtils.randomInRange(800, 1500));
+                        // Scroll target into view and move cursor
+                        await api.scroll.focus(targetTweet);
 
                         // Check for text content to ensure it's a real tweet
                         const textContent = targetTweet.locator('[data-testid="tweetText"], [lang]');
-                        if (await textContent.count() > 0 && await textContent.isVisible()) {
+                        if (await api.exists(textContent) && await api.visible(textContent)) {
                             this.log('[Dive] Found valid tweet target, engaging...');
-                            
+
                             // Human-like reading behavior
                             await this.simulateReading();
-                            
+
                             // Like engagement
                             if (this.mathUtils.roll(this.config.probabilities?.likeTweetAfterDive || 0.3)) {
                                 await this.likeTweet(targetTweet);
                             }
-                            
+
                             // Bookmark engagement
                             if (this.mathUtils.roll(this.config.probabilities?.bookmarkAfterDive || 0.1)) {
                                 await this.bookmarkTweet(targetTweet);
                             }
-                            
+
                             return true;
                         }
                     } catch (error) {
@@ -384,9 +402,9 @@ export class EngagementHandler extends BaseHandler {
                     }
                 }
             }
-            
+
             if (attempt < 2) {
-                await this.page.waitForTimeout(1000);
+                await api.wait(1000);
             }
         }
 
@@ -400,7 +418,7 @@ export class EngagementHandler extends BaseHandler {
     async likeTweet(tweetElement) {
         try {
             const likeButton = tweetElement.locator('[data-testid="like"], [aria-label*="Like"], [aria-label*="like"]');
-            if (await likeButton.count() > 0 && await likeButton.isVisible()) {
+            if (await api.exists(likeButton) && await api.visible(likeButton)) {
                 await this.safeHumanClick(likeButton, 'Like Button');
                 this.state.likes++;
                 this.log(`[Like] ✅ Liked tweet! Total likes: ${this.state.likes}`);
@@ -418,7 +436,7 @@ export class EngagementHandler extends BaseHandler {
     async bookmarkTweet(tweetElement) {
         try {
             const bookmarkButton = tweetElement.locator('[data-testid="bookmark"], [aria-label*="Bookmark"], [aria-label*="bookmark"]');
-            if (await bookmarkButton.count() > 0 && await bookmarkButton.isVisible()) {
+            if (await api.exists(bookmarkButton) && await api.visible(bookmarkButton)) {
                 await this.safeHumanClick(bookmarkButton, 'Bookmark Button');
                 this.log('[Bookmark] ✅ Bookmarked tweet!');
                 return true;
@@ -438,7 +456,8 @@ export class EngagementHandler extends BaseHandler {
         const selector = 'article[data-testid="tweet"] a[href^="/"]';
 
         // Evaluate all to find valid profile links (exclude /status/, /hashtag/, etc.)
-        const validIndices = await this.page.$$eval(selector, (els) => {
+        const validIndices = await api.eval((selector) => {
+            const els = Array.from(document.querySelectorAll(selector));
             const reserved = ['home', 'explore', 'notifications', 'messages', 'compose', 'settings', 'search', 'i'];
             return els.map((el, i) => {
                 let href = el.getAttribute('href');
@@ -462,7 +481,7 @@ export class EngagementHandler extends BaseHandler {
                 }
                 return -1;
             });
-        });
+        }, selector);
 
         // Filter out invalid indices
         const indices = validIndices.filter(i => i !== -1);
@@ -471,18 +490,18 @@ export class EngagementHandler extends BaseHandler {
             // Pick a random valid profile link
             const randomIndex = indices[Math.floor(Math.random() * indices.length)];
             const target = this.page.locator(selector).nth(randomIndex);
-            
+
             try {
                 this.log('[Dive] Clicking user profile...');
                 await this.safeHumanClick(target, 'Profile Link');
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(2000, 4000));
-                
+                await api.wait(this.mathUtils.randomInRange(2000, 4000));
+
                 // Perform profile actions (follow, scroll, etc.)
                 // TODO: Implement specific profile interactions here if needed
-                
+
                 // Return to feed
                 await this.page.goBack();
-                await this.page.waitForTimeout(1000);
+                await api.wait(1000);
                 return true;
             } catch (e) {
                 this.log(`[Dive] Profile interaction failed: ${e.message}`);

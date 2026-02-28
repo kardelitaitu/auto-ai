@@ -5,6 +5,25 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockResolvedValue(true),
+        exists: vi.fn().mockResolvedValue(true),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
+    }
+}));
+import { api } from '../../api/index.js';
+
 vi.mock('../../utils/logger.js', () => ({
     createLogger: vi.fn().mockReturnValue({
         info: vi.fn(),
@@ -27,6 +46,8 @@ describe('utils/global-scroll-controller', () => {
     let gsc;
 
     beforeEach(async () => {
+        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         vi.clearAllMocks();
         vi.clearAllMocks();
         gsc = await import('../../utils/global-scroll-controller.js');
@@ -55,7 +76,7 @@ describe('utils/global-scroll-controller', () => {
         
         await gsc.scrollDown(mockPage, 100, { delay: 100 });
         
-        expect(mockPage.waitForTimeout).toHaveBeenCalledWith(100);
+        expect(api.wait).toHaveBeenCalledWith(100);
         expect(mockPage.mouse.wheel).toHaveBeenCalledWith(0, 200);
     });
 
@@ -67,7 +88,7 @@ describe('utils/global-scroll-controller', () => {
         
         await gsc.scrollUp(mockPage, 100, { delay: 50 });
         
-        expect(mockPage.waitForTimeout).toHaveBeenCalledWith(50);
+        expect(api.wait).toHaveBeenCalledWith(50);
         expect(mockPage.mouse.wheel).toHaveBeenCalledWith(0, -200);
     });
 
@@ -79,7 +100,7 @@ describe('utils/global-scroll-controller', () => {
         
         vi.spyOn(Math, 'random').mockReturnValue(0.6); // > 0.5 means direction = 1
         await gsc.scrollRandom(mockPage, 100, 100, { delay: 30 });
-        expect(mockPage.waitForTimeout).toHaveBeenCalledWith(30);
+        expect(api.wait).toHaveBeenCalledWith(30);
         expect(mockPage.mouse.wheel).toHaveBeenCalledWith(0, 200);
     });
 
@@ -115,7 +136,7 @@ describe('utils/global-scroll-controller', () => {
             waitForTimeout: vi.fn().mockResolvedValue()
         };
         await gsc.scrollBy(mockPage, 200, { delay: 10 });
-        expect(mockPage.waitForTimeout).toHaveBeenCalledWith(10);
+        expect(api.wait).toHaveBeenCalledWith(10);
         expect(mockPage.mouse.wheel).toHaveBeenCalledWith(0, 400);
     });
 

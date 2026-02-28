@@ -4,6 +4,7 @@
  */
 
 import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 
 const logger = createLogger('circuit-breaker.js');
 
@@ -26,13 +27,32 @@ class CircuitOpenError extends Error {
  */
 class CircuitBreaker {
     constructor(options = {}) {
-        this.failureThreshold = options.failureThreshold || 50;
-        this.successThreshold = options.successThreshold || 2;
-        this.halfOpenTime = options.halfOpenTime || 30000;
-        this.monitoringWindow = options.monitoringWindow || 60000;
-        this.minSamples = options.minSamples || 5;
-
+        // Set defaults synchronously first
+        this.failureThreshold = options.failureThreshold ?? 50;
+        this.successThreshold = options.successThreshold ?? 2;
+        this.halfOpenTime = options.halfOpenTime ?? 30000;
+        this.monitoringWindow = options.monitoringWindow ?? 60000;
+        this.minSamples = options.minSamples ?? 5;
         this.breakers = new Map();
+        
+        // Then async load to override with config values
+        this._configLoaded = false;
+        this._loadConfig(options);
+    }
+
+    async _loadConfig(_options = {}) {
+        if (this._configLoaded) return;
+
+        const cbConfig = await getTimeoutValue('circuitBreaker', {});
+
+        // Only override if config provides values
+        if (cbConfig.failureThreshold !== undefined) this.failureThreshold = cbConfig.failureThreshold;
+        if (cbConfig.successThreshold !== undefined) this.successThreshold = cbConfig.successThreshold;
+        if (cbConfig.halfOpenTime !== undefined) this.halfOpenTime = cbConfig.halfOpenTime;
+        if (cbConfig.monitoringWindow !== undefined) this.monitoringWindow = cbConfig.monitoringWindow;
+        if (cbConfig.minSamples !== undefined) this.minSamples = cbConfig.minSamples;
+
+        this._configLoaded = true;
     }
 
     /**

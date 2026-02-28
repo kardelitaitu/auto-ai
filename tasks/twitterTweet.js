@@ -11,6 +11,7 @@ import { TwitterAgent } from '../utils/twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
 import { mathUtils } from '../utils/mathUtils.js';
 import metricsCollector from '../utils/metrics.js';
+import { api } from '../api/index.js';
 import { takeScreenshot } from '../utils/screenshot.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -56,7 +57,7 @@ export default async function twitterTweetTask(page, payload) {
                 agent = new TwitterAgent(page, profile, logger);
 
                 if (profile.theme) {
-                    await page.emulateMedia({ colorScheme: profile.theme });
+                    await api.emulateMedia({ colorScheme: profile.theme });
                 }
 
                 // 2. Apply Humanization

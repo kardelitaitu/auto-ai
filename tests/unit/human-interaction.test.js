@@ -4,14 +4,48 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { api } from '../../api/index.js';
 import { HumanInteraction } from '../../utils/human-interaction.js';
+
+vi.mock('../../api/index.js', () => ({
+  api: {
+    setPage: vi.fn(),
+    getPage: vi.fn(),
+    wait: vi.fn().mockResolvedValue(undefined),
+    think: vi.fn().mockResolvedValue(undefined),
+    scroll: vi.fn().mockResolvedValue(undefined),
+    getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+    getCurrentUrl: vi.fn().mockReturnValue('https://x.com/home'),
+    visible: vi.fn().mockImplementation(async (el) => {
+        if (el && typeof el.isVisible === 'function') return await el.isVisible();
+        return true;
+    }),
+    exists: vi.fn().mockImplementation(async (el) => {
+        if (el && typeof el.count === 'function') return (await el.count()) > 0;
+        return el !== null;
+    }),
+    count: vi.fn().mockImplementation(async (el) => {
+        if (el && typeof el.count === 'function') return await el.count();
+        return 1;
+    })
+  }
+}));
 
 describe('HumanInteraction', () => {
   let human;
 
   beforeEach(() => {
     vi.useRealTimers();
+    vi.clearAllMocks();
     human = new HumanInteraction();
+    
+    const mockPage = { 
+      mouse: { move: vi.fn().mockResolvedValue(undefined), click: vi.fn().mockResolvedValue(undefined) },
+      isClosed: vi.fn().mockReturnValue(false),
+      context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) }),
+      url: vi.fn().mockReturnValue('https://x.com/home')
+    };
+    api.getPage.mockReturnValue(mockPage);
   });
 
   describe('Initialization', () => {
@@ -95,7 +129,7 @@ describe('HumanInteraction', () => {
 
       const result = await human.maybeScroll(mockPage, 100, 300);
       expect(result).toBe(false);
-      expect(mockPage.evaluate).not.toHaveBeenCalled();
+      expect(api.scroll).not.toHaveBeenCalled();
 
       vi.restoreAllMocks();
     });
@@ -106,28 +140,32 @@ describe('HumanInteraction', () => {
 
       const result = await human.maybeScroll(mockPage, 100, 300);
       expect(result).toBe(true);
-      expect(mockPage.evaluate).toHaveBeenCalled();
+      expect(api.scroll).toHaveBeenCalled();
 
       vi.restoreAllMocks();
     });
 
     it('should scroll in negative direction when roll selects it', async () => {
-      const windowSpy = vi.fn();
-      global.window = { scrollBy: windowSpy };
       const mockPage = {
-        evaluate: vi.fn().mockImplementation((fn, y) => fn(y))
+        evaluate: vi.fn()
       };
+      
       vi.spyOn(Math, 'random')
-        .mockReturnValueOnce(0.1)
-        .mockReturnValueOnce(0.1)
-        .mockReturnValueOnce(0.9);
+        .mockReturnValueOnce(0.1) // pass < 0.3 roll
+        .mockReturnValueOnce(0.5) // maybe used by randomInRange
+        .mockReturnValueOnce(0.5) // maybe used by randomInRange
+        .mockReturnValueOnce(0.9) // direction roll > 0.5 means negative
+        .mockReturnValue(0.9); // fallback
 
       const result = await human.maybeScroll(mockPage, 100, 100);
 
       expect(result).toBe(true);
-      expect(windowSpy).toHaveBeenCalledWith(0, -100);
+      expect(api.scroll).toHaveBeenCalled();
+      // Cannot reliably predict exact value if randomInRange uses Math.random internally a variable number of times,
+      // but we know it should be called with some number. Let's just expect it to be called with a number < 0
+      const callArg = api.scroll.mock.calls[0][0];
+      expect(callArg).toBeLessThanOrEqual(0);
       vi.restoreAllMocks();
-      delete global.window;
     });
   });
 

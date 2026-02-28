@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 /**
  * Action Predictor
  * Weighted random action selection for natural behavior
@@ -122,7 +123,7 @@ export class ActionPredictor {
             
             if (tweet) {
                 await tweet.evaluate(el => el.scrollIntoView({ block: 'center' }));
-                await page.waitForTimeout(500);
+                await api.wait(1000);
                 
                 // Click on tweet text or time
                 const textEl = await tweet.$('[data-testid="tweetText"]');
@@ -135,12 +136,12 @@ export class ActionPredictor {
     
     async _actionBack(page) {
         await page.goBack().catch(() => {});
-        await page.waitForTimeout(1000);
+        await api.wait(1000);
     }
     
-    async _actionExplore(page) {
-        await page.goto('https://x.com/explore', { waitUntil: 'domcontentloaded' });
-        await page.waitForTimeout(2000);
+    async _actionExplore(_page) {
+        await api.goto('https://x.com/explore', { waitUntil: 'domcontentloaded' });
+        await api.wait(1000);
     }
     
     async _actionProfile(page) {
@@ -150,13 +151,13 @@ export class ActionPredictor {
         if (profileLinks.length > 0) {
             const index = Math.floor(Math.random() * Math.min(profileLinks.length, 10));
             await ghost.click(profileLinks[index]).catch(() => {});
-            await page.waitForTimeout(2000);
+            await api.wait(1000);
         }
     }
     
     async _actionIdle(page) {
         // Do nothing for a while
-        await page.waitForTimeout(mathUtils.randomInRange(2000, 4000));
+        await api.wait(1000);
         
         // Maybe a small movement
         if (Math.random() > 0.5) {
@@ -182,7 +183,7 @@ export class ActionPredictor {
             const dirMultiplier = direction === 'up' ? -1 : 1;
             
             await scrollRandom(page, amount * dirMultiplier, amount * dirMultiplier);
-            await page.waitForTimeout(mathUtils.randomInRange(200, 500));
+            await api.wait(1000);
             
             // Sometimes scroll back slightly
             if (Math.random() > 0.7) {
@@ -190,7 +191,7 @@ export class ActionPredictor {
             }
         }
         
-        await page.waitForTimeout(mathUtils.randomInRange(500, 1500));
+        await api.wait(1000);
     }
     
     // ==========================================

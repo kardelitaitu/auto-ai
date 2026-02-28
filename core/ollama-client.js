@@ -30,28 +30,44 @@ class OllamaClient {
      * Initialize client with configuration
      */
     async initialize() {
-        if (this.config) return;
-
-        try {
-            const settings = await getSettings();
-            const localConfig = settings.llm?.local || {};
-
-            // Allow override of endpoint and model
-            this.baseUrl = localConfig.endpoint || 'http://localhost:11434';
-            // Clean up endpoint if it has /api/generate
-            this.baseUrl = this.baseUrl.replace(/\/api\/generate$/, '').replace(/\/api\/chat$/, '');
-
-            this.model = localConfig.model || 'llama3.2-vision';
-            this.timeout = localConfig.timeout || 60000;
-
-            // Ensure service is running
-            await ensureOllama();
-
-            logger.info(`[Ollama] Initialized: ${this.baseUrl} (Model: ${this.model})`);
-            this.config = localConfig;
-        } catch (error) {
-            logger.warn('[Ollama] Failed to load config, using defaults:', error.message);
+        if (this._initializing) {
+            return await this._initializing;
         }
+        
+        if (this.config) {
+            return;
+        }
+        
+        this._initializing = (async () => {
+            try {
+                const settings = await getSettings();
+                const localConfig = settings.llm?.local || {};
+
+                // Allow override of endpoint and model
+                this.baseUrl = localConfig.endpoint || 'http://localhost:11434';
+                // Clean up endpoint if it has /api/generate
+                this.baseUrl = this.baseUrl.replace(/\/api\/generate$/, '').replace(/\/api\/chat$/, '');
+
+                this.model = localConfig.model || 'llama3.2-vision';
+                const desiredTimeout = localConfig.timeout || 60000;
+                if (desiredTimeout < 60000) {
+                    logger.warn(`[Ollama] Timeout ${desiredTimeout}ms is low for model load; using 60000ms minimum.`);
+                }
+                this.timeout = Math.max(desiredTimeout, 60000);
+
+                // Ensure service is running
+                await ensureOllama();
+
+                logger.info(`[Ollama] Initialized: ${this.baseUrl} (Model: ${this.model})`);
+                this.config = localConfig;
+            } catch (error) {
+                logger.warn('[Ollama] Failed to load config, using defaults:', error.message);
+            } finally {
+                this._initializing = null;
+            }
+        })();
+        
+        return await this._initializing;
     }
 
     /**
@@ -62,7 +78,14 @@ class OllamaClient {
     async generate(request) {
         await this.initialize();
 
+        // Track request count for debugging
+        this._requestCount = (this._requestCount || 0) + 1;
+        const requestNum = this._requestCount;
         const startTime = Date.now();
+        
+        // Log EVERY request for debugging
+        const requestType = (request.vision || request.images) ? 'VISION' : 'TEXT';
+        logger.info(`[Ollama] 🔔 REQUEST #${requestNum} START: ${requestType} request to ${this.model}`);
 
         // Pre-flight check: verify Ollama is reachable before making request (using cache)
         const { isOllamaRunning } = await import('../utils/local-ollama-manager.js');
@@ -82,8 +105,7 @@ class OllamaClient {
             isVision = false;
         }
 
-        // Warmup model on first vision request
-        if (isVision && !this._warmedUp) {
+        if (!this._warmedUp) {
             logger.info(`[Ollama] Warming up ${this.model}...`);
             if (!this._warmupInFlight) {
                 this._warmupInFlight = this._warmupModel()
@@ -97,15 +119,16 @@ class OllamaClient {
                         this._warmupInFlight = null;
                     });
             }
+            await this._warmupInFlight;
         }
 
         // For vision models like llava, we MUST use /api/chat
         if (isVision) {
-            return this._chatRequest(request, startTime);
+            return this._chatRequest(request, startTime, requestNum);
         }
 
         // For text-only, try generate endpoint first (faster for text)
-        return this._generateRequest(request, startTime);
+        return this._generateRequest(request, startTime, requestNum);
     }
 
     /**
@@ -129,7 +152,7 @@ class OllamaClient {
             };
 
         const controller = new AbortController();
-        const warmupTimeoutMs = Math.min(this.timeout, 8000);
+        const warmupTimeoutMs = Math.min(this.timeout, 30000);
         const timeoutId = setTimeout(() => controller.abort(), warmupTimeoutMs);
 
         try {
@@ -153,7 +176,7 @@ class OllamaClient {
     /**
       * Use /api/chat endpoint (required for LLaVA vision models)
       */
-    async _chatRequest(request, startTime) {
+    async _chatRequest(request, startTime, requestNum = '?') {
         const endpoint = `${this.baseUrl}/api/chat`;
 
         // Convert image to base64 if needed
@@ -286,7 +309,7 @@ class OllamaClient {
                 logger.debug(`[Ollama] Cleaned response: ${content}`);
             }
 
-            logger.success(`[Ollama] Chat request completed in ${duration}ms`);
+            logger.success(`[Ollama] 🔔 REQUEST #${requestNum} COMPLETED in ${duration}ms`);
 
             return {
                 success: true,
@@ -303,12 +326,12 @@ class OllamaClient {
             const duration = Date.now() - startTime;
 
             if (error.name === 'AbortError') {
-                logger.error(`[Ollama] Chat request timed out after ${this.timeout}ms`);
+                logger.error(`[Ollama] 🔔 REQUEST #${requestNum} TIMED OUT after ${this.timeout}ms`);
                 return { success: false, error: 'Request timeout', duration };
             }
 
             this._triggerOllamaList(error.message);
-            logger.error(`[Ollama] Chat request failed: ${error.message}`);
+            logger.error(`[Ollama] 🔔 REQUEST #${requestNum} FAILED: ${error.message}`);
             return { success: false, error: error.message, duration };
         }
     }
@@ -470,7 +493,7 @@ class OllamaClient {
     /**
       * Use /api/generate endpoint (for text-only models)
       */
-    async _generateRequest(request, startTime) {
+    async _generateRequest(request, startTime, _requestNum = '?') {
         const endpoint = `${this.baseUrl}/api/generate`;
 
         // Handle system prompt

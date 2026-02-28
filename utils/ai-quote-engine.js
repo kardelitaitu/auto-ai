@@ -5,6 +5,7 @@
  */
 
 import { createLogger } from './logger.js';
+import { api } from '../api/index.js';
 import { mathUtils } from './mathUtils.js';
 import { sentimentService } from './sentiment-service.js';
 import { HumanInteraction } from './human-interaction.js';
@@ -789,18 +790,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
      * @param {object} options - Execution options
      * @returns {Promise<object>} Execution result
      */
-    async executeQuote(page, quoteText, options = {}) {
-        const { logger: _logger = console, humanTyping } = options;
+    async executeQuote(page, quoteText, _options = {}) {
         this.logger.info(`[AIQuote] Executing quote (${quoteText.length} chars)...`);
 
         const human = new HumanInteraction(page);
-        human.debugMode = true;
-
-        // If humanTyping function is provided, wrap it
-        if (humanTyping) {
-            // We can attach it to human interaction or use it directly in methods
-            // For now, let's assume methods use human.type or page.fill
-        }
 
         const methods = [
             { name: 'keyboard_compose', weight: 30, fn: () => this.quoteMethodA_Keyboard(page, quoteText, human) },
@@ -809,7 +802,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         ];
 
         const selected = human.selectMethod(methods);
-        this.logger.info(`[AIQuote] Using method: ${selected.name}`);
+        this.logger.info(`[AIQuote] Selected strategy: ${selected.name}`);
 
         try {
             const result = await selected.fn();
@@ -1005,162 +998,101 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
      * Click Tweet Text → T → Down → Down → Enter → [type] → Ctrl+Enter
      */
     async quoteMethodA_Keyboard(page, quoteText, human) {
-        human.logStep('KEYBOARD_COMPOSE', 'Starting');
+        this.logger.info(`[QuoteMethodA] Starting keyboard compose method`);
 
         // Close any open menus
-        human.logStep('ESCAPE', 'Closing menus');
-        await page.keyboard.press('Escape');
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await api.getPage().keyboard.press('Escape');
+        await api.wait(300);
 
         // STEP 1: Click on the main tweet text first (required for quote to work)
-        human.logStep('CLICK_TWEET', 'Clicking main tweet text');
         const tweetTextSelector = '[data-testid="tweetText"]';
 
         try {
-            const tweetEl = page.locator(tweetTextSelector).first();
-            if (await tweetEl.count() > 0) {
-                await human.safeHumanClick(tweetEl, 'Main Tweet Focus', 3, { precision: 'high' });
-                await new Promise(resolve => setTimeout(resolve, 500));
-                human.logStep('CLICK_TWEET', 'Tweet text clicked');
+            const tweetEl = api.getPage().locator(tweetTextSelector).first();
+            if (await api.exists(tweetEl)) {
+                await api.click(tweetEl, { precision: 'high' });
+                await api.wait(500);
+                this.logger.info(`[QuoteMethodA] Tweet text focused`);
             } else {
-                human.logStep('CLICK_TWEET', 'Tweet text not found');
+                this.logger.warn(`[QuoteMethodA] Tweet text not found`);
             }
-        } catch (e) {
-            human.logStep('CLICK_TWEET', `Error: ${e.message}`);
+        } catch (_e) {
+            this.logger.error(`[QuoteMethodA] Focus error: ${_e.message}`);
         }
 
         // STEP 2: Press T to open compose with quote options
-        human.logStep('T_KEY', 'Opening quote composer');
-        await page.keyboard.press('t');
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await api.getPage().keyboard.press('t');
+        await api.wait(1500);
 
         // Verify composer opened
         let verify = await human.verifyComposerOpen(page);
         if (!verify.open) {
-            human.logStep('VERIFY_FAILED', 'Composer did not open with T');
+            this.logger.error(`[QuoteMethodA] Composer did not open with T`);
             return { success: false, reason: 'composer_not_open', method: 'keyboard_compose' };
         }
 
         // STEP 3: Navigate to quote option (usually Down + Enter)
-        const menuQuote = page.locator('div[role="menu"] >> text=/Quote/i').first();
-        if (await menuQuote.count() > 0) {
-            human.logStep('MENU_CLICK', 'Selecting quote');
-            await menuQuote.click();
-            await new Promise(resolve => setTimeout(resolve, 1200));
+        const menuQuote = api.getPage().locator('div[role="menu"] >> text=/Quote/i').first();
+        if (await api.exists(menuQuote)) {
+            await api.click(menuQuote);
+            await api.wait(1200);
         } else {
-            for (let i = 0; i < 1; i++) { //lets only do it once
-                human.logStep('NAVIGATE', 'Attempting selection via keys');
-                await page.keyboard.press('ArrowDown');
-                await new Promise(resolve => setTimeout(resolve, 500));
-                await page.keyboard.press('Enter');
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                const found = await page.locator('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]').count();
-                if (found > 0) break;
-            }
+            // Fallback selection via keys
+            await api.getPage().keyboard.press('ArrowDown');
+            await api.wait(500);
+            await api.getPage().keyboard.press('Enter');
+            await api.wait(1500);
         }
 
-        // Verify quote mode (check for quoted tweet preview using multiple strategies)
-        const quoteDetectionStrategies = [
-            // Strategy 1: Check standard quotedTweet selectors
-            async () => {
-                const selectors = [
-                    '[data-testid="quotedTweet"]',
-                    '[data-testid="quotedTweetPlaceholder"]',
-                    '[data-testid="tweetText"]',
-                    '[class*="quoted"]',
-                    '[class*="quoteCard"]',
-                    '[class*="QuotedTweet"]',
-                    '[class*="quotedTweet"]',
-                    '[aria-label*="Quoted"]',
-                    '[role="article"][tabindex]'
-                ];
-                for (const selector of selectors) {
-                    const count = await page.locator(selector).count();
-                    if (count > 0) {
-                        human.logStep('QUOTE_DETECTED', selector);
-                        return true;
-                    }
-                }
-                return false;
-            },
-            // Strategy 2: Check composer HTML for embedded quote
-            async () => {
-                const composerHTML = await page.evaluate(() => {
-                    const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
-                    return composer?.innerHTML || '';
-                });
-                const hasQuote = composerHTML.includes('quoted') ||
-                    composerHTML.includes('Pop Base') ||
-                    composerHTML.includes('tweet-') ||
-                    composerHTML.includes(' TweetText') ||
-                    composerHTML.length > 800;
-                if (hasQuote) {
-                    human.logStep('QUOTE_DETECTED', 'composer_content');
-                }
-                return hasQuote;
-            },
-            // Strategy 3: Check composer value for embedded tweet text
-            async () => {
-                try {
-                    const composer = page.locator('[data-testid="tweetTextarea_0"], [role="textbox"][contenteditable="true"]').first();
-                    const text = await composer.textContent().catch(() => '');
-                    if (text && text.length > 50) {
-                        human.logStep('QUOTE_DETECTED', 'composer_text');
-                        return true;
-                    }
-                    return false;
-                } catch (_e) {
-                    return false;
-                }
-            }
+        // Unified quote preview selectors for detection
+        const quotePreviewSelectors = [
+            '[data-testid="quotedTweet"]',
+            '[data-testid="quotedTweetPlaceholder"]',
+            '[data-testid="quoteDetail"]',
+            '[data-testid="attachment-preview"]',
+            'div[aria-label="Quoted Tweet"]',
+            '[data-testid="card.wrapper"]',
+            '.public-DraftEditorPlaceholder-inner:has-text("Add a comment")' // User suggested
         ];
 
+        // Wait for any of these to appear
         let hasQuotePreview = false;
-        for (const strategy of quoteDetectionStrategies) {
-            try {
-                if (await strategy()) {
-                    hasQuotePreview = true;
-                    break;
-                }
-            } catch (e) {
-                human.logStep('DETECTION_ERROR', e.message);
-            }
+        try {
+            await api.waitVisible(quotePreviewSelectors.join(', '), { timeout: 5000 });
+            hasQuotePreview = true;
+        } catch (_e) {
+            this.logger.warn(`[QuoteMethodA] Quote preview visibility timeout`);
         }
 
         if (!hasQuotePreview) {
-            human.logStep('FALLBACK', 'Trying retweet menu approach');
-            await page.keyboard.press('Escape');
-            await new Promise(resolve => setTimeout(resolve, 500));
+            this.logger.warn(`[QuoteMethodA] Quote preview not detected, falling back to retweet menu`);
+            await api.getPage().keyboard.press('Escape');
+            await api.wait(500);
             return await this.quoteMethodB_Retweet(page, quoteText, human);
         }
 
-        // Wait for quote preview to be fully loaded before typing
-        human.logStep('WAIT_QUOTE', 'Waiting for quote preview to load...');
-        await page.waitForSelector('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]', {
-            timeout: 5000,
-            state: 'visible'
-        }).catch(() => {
-            human.logStep('QUOTE_WAIT_TIMEOUT', 'Quote preview not visible, proceeding anyway');
-        });
-        await new Promise(resolve => setTimeout(resolve, 500));  // Additional settle time
+        await api.wait(500);
 
         // Find composer textarea
         verify = await human.verifyComposerOpen(page);
-        const composer = page.locator(verify.selector).first();
+        const composer = api.getPage().locator(verify.selector).first();
 
         // Verify quote preview is still present
-        const quotePreviewCheck = await page.locator('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]').first();
-        if (await quotePreviewCheck.count() > 0) {
-            human.logStep('QUOTE_READY', 'Quote preview confirmed');
+        const quotePreviewCheck = api.getPage().locator('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]').first();
+        if (await api.exists(quotePreviewCheck)) {
+            await api.click(quotePreviewCheck, { precision: 'high' });
+            this.logger.info(`[QuoteMethodA] Quote preview confirmed`);
         } else {
-            human.logStep('QUOTE_WARN', 'Quote preview may not be loaded');
+            this.logger.warn(`[QuoteMethodA] Quote preview vanished - aborting to prevent regular tweet`);
+            await api.getPage().keyboard.press('Escape');
+            return { success: false, reason: 'quote_preview_vanished', method: 'keyboard_compose' };
         }
 
         // Type quote
-        human.logStep('TYPE_QUOTE', `Typing ${quoteText.length} chars...`);
-        await human.typeText(page, quoteText, composer);
+        this.logger.info(`[QuoteMethodA] Typing quote...`);
+        await api.type(composer, quoteText, { clearFirst: true });
 
-        // Post with Ctrl+Enter or Post Button
+        // Post the quote
         const postResult = await human.postTweet(page, 'quote');
 
         return {
@@ -1176,80 +1108,60 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
      * Click Retweet → Find Quote → Click → [type] → Ctrl+Enter
      */
     async quoteMethodB_Retweet(page, quoteText, human) {
-        human.logStep('RETWEET_MENU', 'Starting');
+        this.logger.info(`[QuoteMethodB] Starting retweet menu method`);
 
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await api.scroll.toTop(2000);
+        await api.wait(500);
 
         // Close any open menus
-        await page.keyboard.press('Escape');
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await api.getPage().keyboard.press('Escape');
+        await api.wait(300);
 
-        // STEP 1: Find and click retweet button with specific selectors
-        human.logStep('FIND_RETWEET', 'Locating retweet button');
-
+        // STEP 1: Find and click retweet button
         const retweetBtnSelectors = [
             '[data-testid="retweet"]',
-            '[aria-label*="Repost"]',
-            '[aria-label*="Retweet"]',
-            'button[aria-label*="repost"]',
-            'button[aria-label*="retweet"]'
+            'button[aria-label*="repost"]:not([aria-label*="metrics"]):not([aria-label*="stats"])',
+            'button[aria-label*="retweet"]:not([aria-label*="metrics"]):not([aria-label*="stats"])',
+            '[aria-label*="Repost"]:not([aria-label*="metrics"])',
+            '[aria-label*="Retweet"]:not([aria-label*="metrics"])'
         ];
 
-        let retweetBtn = null;
-        for (const selector of retweetBtnSelectors) {
-            const elements = await page.locator(selector).all();
-            for (const el of elements) {
-                const isVisible = await el.isVisible().catch(() => false);
-                const ariaLabel = (await el.getAttribute('aria-label').catch(() => null)) || '';
-                const count = await el.count().catch(() => 0);
-                if (count > 0 && isVisible) {
-                    retweetBtn = el;
-                    human.logStep('RETWEET_FOUND', `${selector} (aria-label: ${ariaLabel})`);
-                    break;
-                }
-            }
-            if (retweetBtn) break;
-        }
+        let retweetBtnSelector = await api.findElement(retweetBtnSelectors);
 
-        if (!retweetBtn) {
-            human.logStep('FIND_FAILED', 'Retweet button not found');
+        if (!retweetBtnSelector) {
+            this.logger.warn(`[QuoteMethodB] Retweet button not found`);
             return { success: false, reason: 'retweet_button_not_found', method: 'retweet_menu' };
         }
 
-        // Human-like click sequence
-        await retweetBtn.scrollIntoViewIfNeeded();
+        this.logger.info(`[QuoteMethodB] Clicking retweet button using selector: ${retweetBtnSelector}`);
 
-        // Click Retweet button with high precision
-        const rtClickSuccess = await human.safeHumanClick(
-            retweetBtn,
-            "Retweet Button",
-            3,
-            { precision: 'high' }
-        );
+        // Click Retweet button
+        const rtClickSuccess = await api.click(retweetBtnSelector, { precision: 'high' });
 
         let menuReady = false;
         if (rtClickSuccess) {
-            for (let i = 0; i < 5; i++) {
-                const menu = page.locator('[role="menu"]').first();
-                const visible = await menu.isVisible().catch(() => false);
-                if (visible) {
+            // Increased wait loop for menu (8x500ms = 4s) to allow for slow transitions
+            for (let i = 0; i < 8; i++) {
+                if (await api.visible('[role="menu"]')) {
                     menuReady = true;
                     break;
                 }
-                await new Promise(resolve => setTimeout(resolve, 400));
+                await api.wait(500);
             }
         }
 
         if (!menuReady) {
-            // Try one more click if menu didn't open
-            human.logStep('RETRY', 'Menu not open, clicking Retweet button again');
-            await human.safeHumanClick(retweetBtn, "Retweet Button (Retry)", 2, { precision: 'high' });
-            await new Promise(resolve => setTimeout(resolve, 800));
+            this.logger.warn(`[QuoteMethodB] Retweet menu did not open, checking if already open or if click failed...`);
 
-            const menu = page.locator('[role="menu"]').first();
-            if (await menu.isVisible().catch(() => false)) {
+            // Final check before retry
+            if (await api.visible('[role="menu"]')) {
                 menuReady = true;
+            } else {
+                // Retry click ONLY if menu still hidden
+                this.logger.warn(`[QuoteMethodB] Retrying click on retweet button...`);
+                await api.click(retweetBtnSelector, { precision: 'high' });
+                await api.wait(1000);
+                menuReady = await api.visible('[role="menu"]');
             }
         }
 
@@ -1258,138 +1170,82 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         // STEP 2: Find and click Quote option in dropdown menu
-        human.logStep('FIND_QUOTE', 'Looking for Quote option in menu');
-
         const quoteOptionSelectors = [
+            '[data-testid="retweetQuote"]',
             'a[role="menuitem"]:has-text("Quote")',
             '[role="menuitem"]:has-text("Quote")',
             'a:has-text("Quote"):not([href])',
-            '[data-testid="retweetQuote"]',
             'text=Quote'
         ];
 
-        let quoteOption = null;
-        for (const selector of quoteOptionSelectors) {
-            try {
-                const elements = await page.locator(selector).all();
-                for (const el of elements) {
-                    const isVisible = await el.isVisible().catch(() => false);
-                    const text = await el.innerText().catch(() => '');
-                    const count = await el.count().catch(() => 0);
-                    if (count > 0 && isVisible && text.toLowerCase().includes('quote')) {
-                        quoteOption = el;
-                        human.logStep('QUOTE_FOUND', `${selector} (text: "${text}")`);
-                        break;
-                    }
-                }
-                if (quoteOption) break;
-            } catch (e) {
-                human.logStep('SELECTOR_ERROR', `${selector}: ${e.message}`);
-            }
-        }
+        let quoteOptionSelector = await api.findElement(quoteOptionSelectors, { timeout: 2500 });
 
-        if (!quoteOption) {
-            human.logStep('QUOTE_NOT_FOUND', 'Quote option not found in menu');
-            // Debug: show what's in the menu
-            const menuItems = await page.locator('[role="menuitem"]').all();
-            human.logStep('DEBUG', `Found ${menuItems.length} menu items`);
-
-            // Fallback to keyboard method
-            await page.keyboard.press('Escape');
-            await new Promise(resolve => setTimeout(resolve, 500));
+        if (!quoteOptionSelector) {
+            this.logger.warn(`[QuoteMethodB] Quote option not found in menu`);
+            await api.getPage().keyboard.press('Escape');
+            await api.wait(500);
             return await this.quoteMethodA_Keyboard(page, quoteText, human);
         }
 
-        // Click Quote option with human-like behavior
-        const quoteClickSuccess = await human.safeHumanClick(
-            quoteOption,
-            "Quote Option",
-            3,
-            { precision: 'high' }
-        );
+        // Click Quote option
+        const quoteClickSuccess = await api.click(quoteOptionSelector, { precision: 'high' });
 
         if (!quoteClickSuccess) {
-            human.logStep('CLICK_FAIL', 'Failed to click Quote option');
+            this.logger.warn(`[QuoteMethodB] Failed to click Quote option`);
             return { success: false, reason: 'quote_click_failed', method: 'retweet_menu' };
         }
-        human.logStep('QUOTE_CLICK', 'Clicked Quote option');
-        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // Wait for quote preview to load before typing
-        human.logStep('WAIT_QUOTE', 'Waiting for quote preview...');
-        await page.waitForSelector('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]', {
-            timeout: 5000,
-            state: 'visible'
-        }).catch(() => {
-            human.logStep('QUOTE_WAIT_TIMEOUT', 'Quote preview not visible');
-        });
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await api.wait(2000); // Wait for composer to animate in
+
+        // Unified quote preview selectors for detection
+        const quotePreviewSelectors = [
+            '[data-testid="quotedTweet"]', // Primary
+            '[data-testid="quotedTweetPlaceholder"]',
+            '[data-testid="quoteDetail"]',
+            '[data-testid="attachment-preview"]',
+            'div[aria-label="Quoted Tweet"]',
+            '[data-testid="card.wrapper"]',
+            '.public-DraftEditorPlaceholder-inner:has-text("Add a comment")',
+            '.public-DraftEditor-content:has-text("Add a comment")'
+        ];
+
+        // Wait for any of these to appear
+        let hasQuotePreview = false;
+        try {
+            // Check for existence first, then wait
+            const foundPreview = await api.findElement(quotePreviewSelectors, { timeout: 1000 });
+            if (foundPreview) {
+                hasQuotePreview = true;
+            } else {
+                await api.waitVisible(quotePreviewSelectors.join(', '), { timeout: 6000 });
+                hasQuotePreview = true;
+            }
+        } catch (_e) {
+            this.logger.warn(`[QuoteMethodB] Quote preview visibility timeout`);
+        }
+
+        await api.wait(500);
 
         // STEP 3: Verify composer is ready
         const verify = await human.verifyComposerOpen(page);
         if (!verify.open) {
-            human.logStep('VERIFY_FAILED', 'Composer did not open');
+            this.logger.warn(`[QuoteMethodB] Composer did not open`);
             return { success: false, reason: 'composer_not_open', method: 'retweet_menu' };
         }
-        human.logStep('COMPOSER_READY', verify.selector);
 
         // STEP 4: Enhanced quote detection
-        const quoteDetectionStrategies = [
-            async () => {
-                const selectors = [
-                    '[data-testid="quotedTweet"]',
-                    '[data-testid="quotedTweetPlaceholder"]',
-                    '[class*="quoted"]',
-                    '[class*="quoteCard"]'
-                ];
-                for (const sel of selectors) {
-                    const count = await page.locator(sel).count();
-                    if (count > 0) return true;
-                }
-                return false;
-            },
-            async () => {
-                try {
-                    const composer = page.locator('[data-testid="tweetTextarea_0"], [role="textbox"][contenteditable="true"]').first();
-                    const text = await composer.textContent().catch(() => '');
-                    return !!text && text.length > 50;
-                } catch (_e) {
-                    return false;
-                }
-            }
-        ];
-
-        let hasQuotePreview = false;
-        for (const strategy of quoteDetectionStrategies) {
-            try {
-                if (await strategy()) {
-                    hasQuotePreview = true;
-                    break;
-                }
-            } catch (e) {
-                human.logStep('DETECTION_ERROR', e.message);
-            }
-        }
-
         if (!hasQuotePreview) {
-            human.logStep('WARNING', 'Quote preview not detected - continuing anyway');
+            this.logger.warn(`[QuoteMethodB] Quote preview not detected - aborting to prevent regular tweet`);
+            await api.getPage().keyboard.press('Escape');
+            await api.wait(500);
+            return { success: false, reason: 'quote_preview_missing', method: 'retweet_menu' };
         }
 
         // STEP 5: Type and post
-        const composer = page.locator(verify.selector).first();
+        const composer = api.getPage().locator(verify.selector).first();
 
-        // Clear and type
-        await human.safeHumanClick(composer, 'Composer Focus', 3, { precision: 'high' });
-
-        const isMac = process.platform === 'darwin';
-        const modifier = isMac ? 'Meta' : 'Control';
-        await page.keyboard.press(`${modifier}+a`);
-
-        await page.keyboard.press('Delete');
-        await new Promise(resolve => setTimeout(resolve, 200));
-
-        human.logStep('TYPING', `Entering ${quoteText.length} chars`);
-        await human.typeText(page, quoteText, composer);
+        this.logger.info(`[QuoteMethodB] Typing quote...`);
+        await api.type(composer, quoteText, { clearFirst: true });
 
         // Post
         const postResult = await human.postTweet(page, 'quote');
@@ -1406,24 +1262,22 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
      * Method C: New Post Button → Paste URL → Type Comment (10%)
      */
     async quoteMethodC_Url(page, quoteText, human) {
-        human.logStep('NEW_POST_URL', 'Starting');
+        this.logger.info(`[QuoteMethodC] Starting new post + paste URL method`);
 
         // Get current tweet URL
-        const currentUrl = page.url();
-        human.logStep('CURRENT_URL', currentUrl);
+        const currentUrl = await api.getCurrentUrl();
+        this.logger.info(`[QuoteMethodC] Current URL: ${currentUrl}`);
 
         // Copy URL to clipboard for pasting
-        await page.evaluate((url) => {
+        await api.eval((url) => {
             navigator.clipboard.writeText(url);
         }, currentUrl);
-        human.logStep('CLIPBOARD', 'URL copied to clipboard');
 
         // Close any open menus
-        await page.keyboard.press('Escape');
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await api.getPage().keyboard.press('Escape');
+        await api.wait(300);
 
         // STEP 1: Find and click Compose / New Post button
-        human.logStep('FIND_COMPOSE', 'Looking for Compose button');
         const composeBtnSelectors = [
             '[data-testid="SideNav_NewTweet_Button"]',
             '[aria-label="Post"]',
@@ -1433,118 +1287,83 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             'button:has-text("New post")'
         ];
 
-        let composeBtn = null;
-        for (const selector of composeBtnSelectors) {
-            const elements = await page.locator(selector).all();
-            for (const el of elements) {
-                const isVisible = await el.isVisible().catch(() => false);
-                const ariaLabel = (await el.getAttribute('aria-label').catch(() => null)) || '';
-                const count = await el.count().catch(() => 0);
-                if (count > 0 && isVisible) {
-                    composeBtn = el;
-                    human.logStep('COMPOSE_FOUND', `${selector} (aria-label: "${ariaLabel}")`);
-                    break;
-                }
-            }
-            if (composeBtn) break;
-        }
+        let composeBtnSelector = await api.findElement(composeBtnSelectors);
 
-        if (!composeBtn) {
-            human.logStep('FIND_FAILED', 'Compose button not found');
+        if (!composeBtnSelector) {
+            this.logger.warn(`[QuoteMethodC] Compose button not found`);
             return { success: false, reason: 'compose_button_not_found', method: 'new_post' };
         }
 
-        // Human-like click sequence
-        await composeBtn.scrollIntoViewIfNeeded();
-        await human.fixation(300, 800);
-        await human.microMove(page, 20);
-        await human.safeHumanClick(composeBtn, "Compose Button", 3, { precision: 'high' });
-        human.logStep('CLICK', 'Clicked Compose button');
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // Click Compose Button
+        await api.click(composeBtnSelector, { precision: 'high' });
+        await api.wait(1500);
 
         // Wait for composer to be fully loaded
-        await page.waitForSelector('[data-testid="tweetTextarea_0"]', {
-            timeout: 5000,
-            state: 'visible'
-        }).catch(() => {
-            human.logStep('COMPOSER_WAIT_TIMEOUT', 'Composer not visible');
-        });
+        await api.waitVisible('[data-testid="tweetTextarea_0"]', { timeout: 5000 })
+            .catch(() => this.logger.warn(`[QuoteMethodC] Composer visibility timeout`));
 
         // STEP 2: Verify composer is open
         const verify = await human.verifyComposerOpen(page);
         if (!verify.open) {
-            human.logStep('VERIFY_FAILED', 'Composer did not open');
+            this.logger.warn(`[QuoteMethodC] Composer did not open`);
             return { success: false, reason: 'composer_not_open', method: 'new_post' };
         }
-        human.logStep('COMPOSER_READY', verify.selector);
-
-        // Additional wait for composer to be fully interactive
-        await new Promise(resolve => setTimeout(resolve, 500));
 
         // STEP 3: Type the comment FIRST
-        const composer = page.locator(verify.selector).first();
+        const composer = api.getPage().locator(verify.selector).first();
 
-        human.logStep('TYPING', `Entering ${quoteText.length} chars`);
-        await human.typeText(page, quoteText, composer);
+        this.logger.info(`[QuoteMethodC] Typing comment...`);
+        await api.type(composer, quoteText);
 
         // Step 4: Create new line AFTER typing comment
-        human.logStep('NEWLINE', 'Creating new line...');
-        await page.keyboard.press('Enter');
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await api.getPage().keyboard.press('Enter');
+        await api.wait(500);
 
         // Verify new line was created
-        const contentAfterEnter = await page.evaluate(() => {
+        const contentAfterEnter = await api.eval(() => {
             const composer = document.querySelector('[data-testid="tweetTextarea_0"]');
             return composer?.innerHTML || '';
         });
 
         // If no <br> or new div, try Enter again
         if (!contentAfterEnter.includes('<br>') && !contentAfterEnter.includes('<div>')) {
-            human.logStep('NEWLINE', 'Pressing Enter again...');
-            await page.keyboard.press('Enter');
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await api.getPage().keyboard.press('Enter');
+            await api.wait(500);
         }
 
         // Step 5: Paste the URL LAST (appears as preview/card below comment)
-        human.logStep('PASTE_URL', 'Pasting tweet URL...');
+        this.logger.info(`[QuoteMethodC] Pasting tweet URL...`);
 
-        // Ensure focus before pasting
-        await human.ensureFocus(page, composer);
+        // Focus composer
+        await api.click(composer);
 
         const isMac = process.platform === 'darwin';
         const modifier = isMac ? 'Meta' : 'Control';
-        await page.keyboard.press(`${modifier}+v`);
+        await api.getPage().keyboard.press(`${modifier}+v`);
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await api.wait(1000);
 
         // Verify URL was pasted with retry
         let urlPasted = false;
         for (let i = 0; i < 3; i++) {
-            const finalContent = await page
-                .locator('[data-testid="tweetTextarea_0"], [role="textbox"][contenteditable="true"]')
-                .first()
-                .textContent()
-                .catch(() => '');
+            const finalContent = await api.text(composer);
 
             if (finalContent.includes('x.com') || finalContent.includes('twitter.com')) {
-                human.logStep('URL_PASTED', 'URL pasted successfully');
                 urlPasted = true;
                 break;
             }
 
             if (i < 2) {
-                human.logStep('PASTE_RETRY', `URL not found, retrying paste (attempt ${i + 2})`);
-                await human.ensureFocus(page, composer);
-                await page.keyboard.press(`${modifier}+v`);
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                this.logger.warn(`[QuoteMethodC] URL not found, retrying paste (attempt ${i + 2})`);
+                await api.click(composer);
+                await api.getPage().keyboard.press(`${modifier}+v`);
+                await api.wait(1000);
             }
         }
 
         if (!urlPasted) {
-            human.logStep('PASTE_WARN', 'URL may not have pasted correctly');
-            // Last resort: type it manually
-            human.logStep('PASTE_FALLBACK', 'Typing URL manually');
-            await page.keyboard.type(currentUrl, { delay: 10 });
+            this.logger.warn(`[QuoteMethodC] URL may not have pasted correctly, typing manually`);
+            await api.getPage().keyboard.type(currentUrl, { delay: 10 });
         }
 
         // STEP 6: Post

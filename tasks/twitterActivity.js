@@ -7,12 +7,11 @@ import { createLogger } from '../utils/logger.js';
 import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
 import { mathUtils } from '../utils/mathUtils.js';
-import { scrollRandom } from '../utils/scroll-helper.js';
+import { api } from '../api/index.js';
 import fs from 'fs';
 import path from 'path';
 import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
-import { applyHumanizationPatch } from '../utils/browserPatch.js';
 
 // Helper to extract username
 const extractUsername = (url) => {
@@ -69,7 +68,7 @@ export default async function twitterActivityTask(page, payload) {
 
     const startupJitter = Math.floor(Math.random() * 10000);
     logger.info(`[twitterActivity.js] Warming up for ${startupJitter}ms...`);
-    await page.waitForTimeout(startupJitter);
+    await api.wait(startupJitter);
 
     try {
         // Wrap execution in a Promise.race to enforce hard time limit
@@ -86,7 +85,7 @@ export default async function twitterActivityTask(page, payload) {
                     try {
                         if (attempt > 0) {
                             logger.info(`[twitterActivity] 🔄 Retry Attempt ${attempt}/${MAX_RETRIES} starting in 5s...`);
-                            await page.waitForTimeout(5000);
+                            await api.wait(5000);
                             logger.info(`[twitterActivity] 🔄 Retrying now...`);
                         }
 
@@ -112,16 +111,16 @@ export default async function twitterActivityTask(page, payload) {
                         const theme = profile.theme || 'dark';
                         if (theme) {
                             logger.info(`[Agent:${profile.id}] Enforcing theme: ${theme}`);
-                            await page.emulateMedia({ colorScheme: theme });
+                            await api.emulateMedia({ colorScheme: theme });
                         }
 
                         // 3. Navigate & Organic Entry
-                        await applyHumanizationPatch(page, logger);
+                        // Note: api.init is already called by Orchestrator
 
                         // WARM-UP JITTER: Randomize start time to decouple Browser Launch from Nav Request
                         const wakeUpTime = mathUtils.randomInRange(CONFIG.TIMINGS.WARMUP_MIN, CONFIG.TIMINGS.WARMUP_MAX);
                         logger.info(`[Startup] Warming up (Human Jitter) for ${(wakeUpTime / 1000).toFixed(1)}s...`);
-                        await page.waitForTimeout(wakeUpTime);
+                        await api.wait(wakeUpTime);
 
                         // ORGANIC ENTRY with Referrer & Conditional Follow
                         logger.info(`[twitterActivity] Configuring Organic Application Entry...`);
@@ -157,16 +156,16 @@ export default async function twitterActivityTask(page, payload) {
                         logger.info(`[twitterActivity][referrerEngine] Strategy: ${ctx.strategy} | Referrer: ${ctx.referrer || '(Direct)'}`);
 
                         // Execute Navigation
-                        await page.setExtraHTTPHeaders(ctx.headers);
+                        await api.setExtraHTTPHeaders(ctx.headers);
                         try {
                             if (ctx.referrer && ctx.strategy !== 'direct') {
                                 await referrerEngine.navigate(page, targetUrl, ctx);
                             } else {
-                                await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                                await api.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
                             }
                         } catch (e) {
                             logger.warn(`[twitterActivity] Navigation failed: ${e.message}. Fallback to direct goto.`);
-                            await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                            await api.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
                         }
 
                         // Only enforce 'For You' if we actually landed on a timeline that supports it
@@ -181,17 +180,17 @@ export default async function twitterActivityTask(page, payload) {
                             while (Date.now() - startTimeRead < readTime) {
                                 // Random Scroll Down
                                 const distance = mathUtils.randomInRange(CONFIG.TIMINGS.SCROLL_MIN, CONFIG.TIMINGS.SCROLL_MAX);
-                                await scrollRandom(page, distance, distance);
+                                await api.scroll(distance);
 
                                 // Random Pause
                                 const pause = mathUtils.randomInRange(CONFIG.TIMINGS.SCROLL_PAUSE_MIN, CONFIG.TIMINGS.SCROLL_PAUSE_MAX);
-                                await page.waitForTimeout(pause);
+                                await api.wait(pause);
                             }
 
                             // Quick Scroll Top for Follow visibility
                             logger.info(`[twitterActivity] Reading done. Scrolling to top for actions...`);
-                            await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
-                            await page.waitForTimeout(mathUtils.randomInRange(1000, 2000));
+                            await api.scroll.toTop();
+                            await api.wait(mathUtils.randomInRange(1000, 2000));
 
                             // Conditional Follow (20% Chance)
                             if (mathUtils.roll(CONFIG.FOLLOW.PROBABILITY)) {
@@ -202,14 +201,12 @@ export default async function twitterActivityTask(page, payload) {
                                 const followBtnSelector = '[data-testid$="-follow"]';
 
                                 // Check 1: Already Following?
-                                const unfollowBtn = page.locator(unfollowBtnSelector).first();
-                                if (await unfollowBtn.isVisible()) {
+                                if (await api.visible(unfollowBtnSelector)) {
                                     logger.info(`[twitterActivity] ✅ Already followed @${username}`);
                                 } else {
                                     // Check 2: Try to find Follow button
-                                    const followBtn = page.locator(followBtnSelector).first();
-                                    if (await followBtn.isVisible()) {
-                                        const btnText = (await followBtn.textContent()).toLowerCase();
+                                    if (await api.visible(followBtnSelector)) {
+                                        const btnText = (await api.text(followBtnSelector)).toLowerCase();
 
                                         if (btnText.includes('following')) {
                                             logger.info(`[twitterActivity] ✅ Already followed @${username} (Text Check)`);
@@ -217,12 +214,13 @@ export default async function twitterActivityTask(page, payload) {
                                             // Action: Follow
                                             logger.info(`[twitterActivity] Clicking Follow button for @${username}...`);
                                             try {
+                                                const followBtn = page.locator(followBtnSelector).first();
                                                 await agent.humanClick(followBtn, 'Follow Button');
-                                                await page.waitForTimeout(mathUtils.randomInRange(2000, 5000));
+                                                await api.wait(mathUtils.randomInRange(2000, 5000));
 
                                                 // Verify
-                                                const isNowFollowing = (await unfollowBtn.isVisible().catch(() => false)) ||
-                                                    (await followBtn.textContent().catch(() => '')).toLowerCase().includes('following');
+                                                const isNowFollowing = (await api.visible(unfollowBtnSelector)) ||
+                                                    (await api.text(followBtnSelector)).toLowerCase().includes('following');
 
                                                 if (isNowFollowing) {
                                                     agent.state.follows++;
@@ -250,7 +248,7 @@ export default async function twitterActivityTask(page, payload) {
                         // Hesitation before decision
                         const hesitation = mathUtils.randomInRange(CONFIG.TWEET.HESITATION_MIN, CONFIG.TWEET.HESITATION_MAX);
                         logger.info(`[twitterActivity] 🤔 Hesitating for ${(hesitation / 1000).toFixed(1)}s before tweet decision...`);
-                        await page.waitForTimeout(hesitation);
+                        await api.wait(hesitation);
 
                         if (mathUtils.roll(CONFIG.TWEET.PROBABILITY)) {
                             logger.info(`[twitterActivity] 🎲 Opportunity: Decided to post a tweet (${(CONFIG.TWEET.PROBABILITY * 100).toFixed(0)}% chance)`);

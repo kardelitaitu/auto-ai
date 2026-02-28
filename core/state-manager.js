@@ -5,6 +5,7 @@
  */
 
 import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 
 const logger = createLogger('state-manager.js');
 
@@ -23,8 +24,20 @@ class StateManager {
 
         /** @type {number} Maximum breadcrumb history per session */
         this.maxBreadcrumbs = 50;
+        
+        this._configLoaded = false;
+        this._loadConfig();
+    }
+
+    async _loadConfig() {
+        if (this._configLoaded) return;
+
+        const stateConfig = await getTimeoutValue('state', {});
+
+        this.maxBreadcrumbs = stateConfig.maxBreadcrumbs ?? 50;
 
         logger.info('StateManager initialized');
+        this._configLoaded = true;
     }
 
     /**

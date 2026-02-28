@@ -1,0 +1,1 @@
+npx vitest run tests/unit/api/ --coverage --coverage.include="api/**/*.js"

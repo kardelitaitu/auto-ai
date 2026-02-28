@@ -1,3 +1,4 @@
+import { api } from '../api/index.js';
 /**
  * Mistake Engine Module
  * Simulates human imperfections: misclicks, abandonment, typing errors
@@ -57,7 +58,7 @@ function createMistakeEngine(options = {}) {
                 logger.info(`[MistakeEngine] Misclick simulation: aiming at (${Math.round(box.x)}, ${Math.round(box.y)}) → missing at (${Math.round(missX)}, ${Math.round(missY)})`);
                 
                 await page.mouse.move(missX, missY);
-                await page.waitForTimeout(mathUtils.randomInRange(200, 500));
+                await api.wait(1000);
                 
                 return { success: true, missedAt: { x: missX, y: missY }, recovered: false };
                 
@@ -81,7 +82,7 @@ function createMistakeEngine(options = {}) {
             const delay = this.getAbandonmentDelay();
             logger.info(`[MistakeEngine] Abandoning action (${reason}) for ${delay}ms...`);
             
-            await page.waitForTimeout(delay);
+            await api.wait(1000);
             
             return { abandoned: true, reason, delay };
         },
@@ -93,8 +94,8 @@ function createMistakeEngine(options = {}) {
         async simulateTypingError(page, _text, _inputEl, options = {}) {
             const { logger: _logger = console } = options;
             
-            const errorDelay = mathUtils.randomInRange(80, 200);
-            await page.waitForTimeout(errorDelay);
+            const _errorDelay = mathUtils.randomInRange(80, 200);
+            await api.wait(1000);
             
             return {
                 errorMade: true,
@@ -116,7 +117,7 @@ function createMistakeEngine(options = {}) {
                 const wrongEl = await page.$(wrongSelector);
                 if (wrongEl) {
                     await wrongEl.click();
-                    await page.waitForTimeout(mathUtils.randomInRange(1000, 2000));
+                    await api.wait(1000);
                     return { navigatedToWrong: true, recovery: 'back' };
                 }
             }
@@ -134,7 +135,7 @@ function createMistakeEngine(options = {}) {
             const delay = this.getRecoveryDelay();
             logger.info(`[MistakeEngine] Recovering from ${errorType} after ${delay}ms...`);
             
-            await page.waitForTimeout(delay);
+            await api.wait(1000);
             
             return { recovered: true, delay };
         },
@@ -205,13 +206,13 @@ function createHumanizedClick(page, selector, options = {}) {
             logger.info(`[HumanizedClick] Misclick corrected: (${Math.round(centerX)}, ${Math.round(centerY)}) → (${Math.round(finalX)}, ${Math.round(finalY)})`);
             
             await page.mouse.move(finalX, finalY);
-            await page.waitForTimeout(engine.getRecoveryDelay());
+            await api.wait(1000);
             
             return { clicked: true, corrected: true, x: finalX, y: finalY };
         }
         
         await page.mouse.move(centerX, centerY);
-        await page.waitForTimeout(mathUtils.randomInRange(100, 300));
+        await api.wait(1000);
         
         return { clicked: true, corrected: false, x: centerX, y: centerY };
     };

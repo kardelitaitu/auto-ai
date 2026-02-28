@@ -8,8 +8,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { EventEmitter } from 'events';
 import { AsyncLocalStorage } from 'async_hooks';
+import { randomUUID as _randomUUID } from 'crypto';
 
 export const loggerContext = new AsyncLocalStorage();
+
+export function runWithContext(context, fn) {
+  return loggerContext.run(context, fn);
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LOG_FILE = path.join(__dirname, '../logs.txt');
@@ -149,12 +154,22 @@ function writeToLogFile(level, scriptName, message, args) {
     // Use pre-compiled regex
     const cleanMessage = message.replace(ANSI_REGEX, '');
 
+    let context = {};
+    try {
+      context = loggerContext.getStore() || {};
+    } catch {
+      // Ignore TLS errors in tests
+    }
+    const sessionId = context.sessionId || currentSessionId;
+    const traceId = context.traceId;
+
     // Build structured log line
     const logEntry = {
       timestamp,
       level: level.toUpperCase(),
       module: scriptName,
-      sessionId: currentSessionId,
+      sessionId,
+      traceId,
       message: cleanMessage,
       ...(structuredData && { data: structuredData })
     };
@@ -236,7 +251,18 @@ class Logger {
       displayScript = `[${displayScript}]`;
     }
 
-    const context = loggerContext.getStore();
+    let context = null;
+    let _sessionPart = '';
+    try {
+      const ctx = loggerContext.getStore();
+      if (ctx?.sessionId) {
+        const _sessionPart = `[${ctx.sessionId}]`;
+        context = ctx; // Assign ctx to context for subsequent checks
+      }
+    } catch {
+      // Ignore TLS errors in tests
+    }
+
     if (context && context.taskName && context.sessionId) {
       const taskBase = context.taskName.endsWith('.js') ? context.taskName : `${context.taskName}.js`;
 
@@ -303,7 +329,11 @@ class Logger {
     // Wrap the message in the base color
     const coloredMessageFinal = `${msgColor}${coloredInnerMessage}${COLORS.RESET}`;
 
-    console.log(`${timeStr} ${levelStr} ${coloredScript}${separator}${coloredMessageFinal}`, ...args);
+    try {
+      console.log(`${timeStr} ${levelStr} ${coloredScript}${separator}${coloredMessageFinal}`, ...args);
+    } catch (_e) {
+      // In some environments (like Vitest threads), console.log can throw after MessagePort is closed
+    }
 
     // Write clean version to file
     writeToLogFile(level, this.scriptName, message, args);

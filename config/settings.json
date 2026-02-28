@@ -20,22 +20,40 @@
       "emojiChance": 0.3,
       "questionChance": 0.2,
       "methods": {
-        "replyA": { "weight": 40, "enabled": true },
-        "replyB": { "weight": 35, "enabled": true },
-        "replyC": { "weight": 25, "enabled": true }
+        "replyA": {
+          "weight": 40,
+          "enabled": true
+        },
+        "replyB": {
+          "weight": 40,
+          "enabled": true
+        },
+        "replyC": {
+          "weight": 20,
+          "enabled": true
+        }
       }
     },
     "quote": {
       "probability": 0.2,
       "methods": {
-        "quoteA": { "weight": 40, "enabled": true },
-        "quoteB": { "weight": 35, "enabled": true },
-        "quoteC": { "weight": 25, "enabled": true }
+        "quoteA": {
+          "weight": 40,
+          "enabled": true
+        },
+        "quoteB": {
+          "weight": 40,
+          "enabled": true
+        },
+        "quoteC": {
+          "weight": 10,
+          "enabled": true
+        }
       }
     },
     "timing": {
-      "warmupMin": 2000,
-      "warmupMax": 10000,
+      "warmupMin": 1000,
+      "warmupMax": 3000,
       "scrollMin": 300,
       "scrollMax": 700,
       "scrollPauseMin": 1500,
@@ -43,7 +61,7 @@
       "readMin": 5000,
       "readMax": 15000,
       "diveRead": 10000,
-      "globalScrollMultiplier": 1.0
+      "globalScrollMultiplier": 2.0
     },
     "phases": {
       "warmupPercent": 0.1,
@@ -80,7 +98,8 @@
     "dashboard": {
       "enabled": true,
       "port": 3001,
-      "broadcastIntervalMs": 2000
+      "broadcastIntervalMs": 2000,
+      "colorScheme": "dark"
     }
   },
   "llm": {
@@ -94,10 +113,10 @@
       "enabled": true,
       "provider": "ollama",
       "endpoint": "http://localhost:11434",
-      "model": "hermes3:8b",
-      "textModel": "hermes3:8b",
-      "timeout": 30000,
-      "warmup": true,
+      "model": "llama3.2:3b",
+      "textModel": "llama3.2:3b",
+      "timeout": 60000,
+      "warmup": false,
       "vision": false
     },
     "cloud": {
@@ -114,47 +133,47 @@
       "providers": [
         {
           "name": "openrouter1",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "arcee-ai/trinity-large-preview:free"
         },
         {
           "name": "openrouter2",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "tngtech/deepseek-r1t2-chimera:free"
         },
         {
           "name": "openrouter3",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "z-ai/glm-4.5-air:free"
         },
         {
           "name": "openrouter4",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "stepfun/step-3.5-flash:free"
         },
         {
           "name": "openrouter5",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "tngtech/deepseek-r1t-chimera:free"
         },
         {
           "name": "openrouter6",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "arcee-ai/trinity-mini:free"
         },
         {
           "name": "openrouter7",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "meta-llama/llama-3.3-70b-instruct:free"
         },
         {
           "name": "openrouter8",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "qwen/qwen3-next-80b-a3b-instruct:free"
         },
         {
           "name": "openrouter9",
-          "apiKey": "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",
+          "apiKey": "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",
           "model": "google/gemma-3-27b-it:free"
         }
       ]
@@ -163,6 +182,19 @@
       "enabled": true,
       "maxRetries": 2,
       "retryDelay": 2000
+    },
+    "deepseek": {
+      "enabled": false,
+      "apiKey": "sk-0d65d64dd6fd46eabfeeacf74b5cd1d3",
+      "endpoint": "https://api.deepseek.com/v1",
+      "model": "deepseek-chat",
+      "timeout": 60000
+    },
+    "apifreellm": {
+      "enabled": false,
+      "apiKey": "apf_f6ma5k766oa5kl5wvrmnlchc",
+      "endpoint": "https://apifreellm.com/api/v1",
+      "timeout": 60000
     }
   },
   "humanization": {
@@ -200,36 +232,22 @@
     "sessionTimeoutMs": 1800000,
     "cleanupIntervalMs": 300000
   },
-  "concurrencyPerBrowser": 2,
+  "concurrencyPerBrowser": 50,
   "open_router_free_api": {
     "enabled": false,
+    "reasoning": {
+      "exclude": true
+    },
     "api_keys": [
-      "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",
-      "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",
-      "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",
-      "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",
-      "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",
-      "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",
-      "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",
-      "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",
-      "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",
-      "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",
-      "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"
+      "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",
+      "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",
+      "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"
     ],
     "models": {
       "primary": "arcee-ai/trinity-large-preview:free",
       "fallbacks": [
-        "nousresearch/hermes-3-llama-3.1-405b:free",
-        "meta-llama/llama-3.3-70b-instruct:free",
-        "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
-        "google/gemma-3-27b-it:free",
-        "qwen/qwen3-next-80b-a3b-instruct:free",
-        "mistralai/mistral-small-3.1-24b-instruct:free",
-        "tngtech/deepseek-r1t-chimera:free",
-        "tngtech/deepseek-r1t2-chimera:free",
-        "upstage/solar-pro-3:free",
-        "stepfun/step-3.5-flash:free",
-        "openrouter/free"
+        "fallback1",
+        "fallback2"
       ]
     },
     "proxy": {
@@ -268,7 +286,6 @@
       ]
     }
   },
-
   "logging": {
     "engagementProgress": {
       "enabled": true,
@@ -277,12 +294,30 @@
       "showPercent": true,
       "showCounts": true,
       "types": {
-        "replies": { "show": true, "label": "replies" },
-        "retweets": { "show": true, "label": "retweets" },
-        "quotes": { "show": true, "label": "quotes" },
-        "likes": { "show": true, "label": "likes" },
-        "follows": { "show": true, "label": "follows" },
-        "bookmarks": { "show": true, "label": "bookmarks" }
+        "replies": {
+          "show": true,
+          "label": "replies"
+        },
+        "retweets": {
+          "show": true,
+          "label": "retweets"
+        },
+        "quotes": {
+          "show": true,
+          "label": "quotes"
+        },
+        "likes": {
+          "show": true,
+          "label": "likes"
+        },
+        "follows": {
+          "show": true,
+          "label": "follows"
+        },
+        "bookmarks": {
+          "show": true,
+          "label": "bookmarks"
+        }
       }
     },
     "finalStats": {

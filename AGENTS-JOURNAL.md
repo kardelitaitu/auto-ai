@@ -1,4 +1,0 @@
-22-02-2026--08-05 > utils/ai-twitterAgent/index.js, utils/async-queue.js, tasks/ai-twitterActivity.js, tests/unit/* > Implemented shutdown() methods and afterEach cleanup hooks to resolve Vitest hangs.
-22-02-2026--08-52 > __plan_unified_api.md > Restructured to scalable domain-based folders (actions/, queries/, navigation/, wait/, focus/), each with index.js barrel file + individual function files, added queries domain, improved naming conventions
-
-22-02-2026--09-15 > __plan_unified_api.md > Refined to scalable domain-based folders (actions/, queries/, navigation/, wait/, focus/), added Naming Conventions with "What Goes Where" guide, Module Design Principles, namespace-style API examples, tools.js class structure with getter-based namespace access

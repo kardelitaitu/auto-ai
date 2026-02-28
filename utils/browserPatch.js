@@ -22,14 +22,17 @@ export async function applyHumanizationPatch(page, logger) {
             else if (ua.includes('Linux')) platform = 'Linux x86_64';
 
             Object.defineProperty(navigator, 'platform', { get: () => platform });
-        } catch (_e) { // Ignore error
+        } catch (_e) {
+            void _e;
         }
 
-        // 2. API Leak: Hide WebDriver
         try {
-            Object.defineProperty(navigator, 'webdriver', { get: () => false });
-        } catch (_e) { // Ignore error
+            Object.defineProperty(navigator, 'webdriver', { get: () => false, configurable: true });
+        } catch (_e) {
+            void _e;
         }
+
+
 
         // 3. Canvas Fingerprint Noise
         try {
@@ -47,7 +50,8 @@ export async function applyHumanizationPatch(page, logger) {
                 }
                 return originalToDataURL.apply(this, args);
             };
-        } catch (_e) { // Ignore error
+        } catch (_e) {
+            void _e;
         }
 
 
@@ -62,11 +66,12 @@ export async function applyHumanizationPatch(page, logger) {
             const originalAddEventListener = document.addEventListener;
             document.addEventListener = function (type, listener, options) {
                 if (type === 'visibilitychange') {
-                    // Suppress or wrap if needed. For now, we let it bind but state is frozen.
+                    void listener;
                 }
                 return originalAddEventListener.call(this, type, listener, options);
             };
-        } catch (_e) { // Ignore error
+        } catch (_e) {
+            void _e;
         }
     });
 

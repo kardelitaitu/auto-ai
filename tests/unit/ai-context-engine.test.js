@@ -1,5 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+vi.mock('../../api/index.js', () => ({
+  api: {
+    wait: vi.fn().mockResolvedValue(undefined),
+    think: vi.fn().mockResolvedValue(undefined),
+    scroll: { 
+      toTop: vi.fn().mockResolvedValue(undefined),
+      read: vi.fn().mockResolvedValue(undefined),
+      back: vi.fn().mockResolvedValue(undefined)
+    }
+  }
+}));
+import { api } from '../../api/index.js';
+
 vi.mock('../../utils/logger.js', () => ({
   createLogger: vi.fn(() => ({
     info: vi.fn(),
@@ -147,6 +160,7 @@ describe('ai-context-engine', () => {
 
   it('returns null when screenshot capture fails', async () => {
     const page = createPageMock();
+    page.screenshot = vi.fn().mockRejectedValue(new Error('fail'));
     page.evaluate = vi.fn(() => {
       throw new Error('fail');
     });

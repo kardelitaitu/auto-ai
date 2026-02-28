@@ -129,6 +129,17 @@ class Automator {
 
           await this.testConnection(connectionInfo.browser);
 
+          // Deep Health Check: Verify page responsiveness if we have active sessions
+          // We can't easily get the page here without deeper integration, 
+          // so we'll rely on the orchestrator to pass pages to checkConnectionHealth
+          // but we can at least check network connectivity periodically
+          if (Math.random() < 0.1) { // 10% chance per interval
+            const netHealth = await this.checkNetworkConnectivity();
+            if (!netHealth.healthy) {
+              //logger.debug(`Network connectivity issues detected: ${netHealth.error}`);
+            }
+          }
+
           // Only log if status changed from unhealthy to healthy
           const wasUnhealthy = !connectionInfo.healthy;
 
@@ -144,7 +155,7 @@ class Automator {
           logger.error(`Health check failed for ${endpoint}:`, error.message);
           connectionInfo.healthy = false;
 
-          this.attemptBackgroundReconnect(endpoint, connectionInfo);
+          await this.attemptBackgroundReconnect(endpoint, connectionInfo);
         }
       }
     }, checkInterval);
@@ -160,7 +171,17 @@ class Automator {
    */
   async attemptBackgroundReconnect(endpoint, connectionInfo) {
     if (connectionInfo.reconnectAttempts >= 3) {
-      logger.error(`Max reconnect attempts reached for ${endpoint}, removing connection`);
+      logger.error(`Max reconnect attempts reached for ${endpoint}, triggering re-discovery fallback`);
+
+      // Proactive Re-discovery: If a terminal failure occurs, we might need new endpoints
+      if (typeof this.onReconnectFailed === 'function') {
+        try {
+          await this.onReconnectFailed(endpoint);
+        } catch (e) {
+          logger.error(`onReconnectFailed handler failed: ${e.message}`);
+        }
+      }
+
       this.connections.delete(endpoint);
       return;
     }
@@ -272,23 +293,23 @@ class Automator {
    */
   async checkNetworkConnectivity() {
     const startTime = Date.now();
-    
+
     try {
       // Try to fetch a simple known URL to check network
       const { chromium } = await import('playwright');
       const testContext = await chromium.launch({ headless: true });
       const testPage = await testContext.newPage();
-      
+
       // Use a very short timeout for quick check
-      await testPage.goto('https://x.com', { 
-        waitUntil: 'domcontentloaded', 
-        timeout: 5000 
+      await testPage.goto('https://x.com', {
+        waitUntil: 'domcontentloaded',
+        timeout: 5000
       });
-      
+
       await testContext.close();
-      
+
       const latency = Date.now() - startTime;
-      
+
       return {
         healthy: true,
         latency,
@@ -329,7 +350,7 @@ class Automator {
       }).catch(() => ({ error: 'Evaluation failed' }));
 
       const isResponsive = result.documentReady === 'complete' || result.documentReady === 'interactive';
-      
+
       return {
         healthy: isResponsive,
         documentState: result.documentReady,
@@ -353,7 +374,7 @@ class Automator {
    */
   async checkConnectionHealth(wsEndpoint, page = null) {
     const connectionInfo = this.connections.get(wsEndpoint);
-    
+
     const checks = {
       browserConnection: false,
       network: null,
@@ -380,9 +401,9 @@ class Automator {
     }
 
     // Determine overall health
-    const healthy = checks.browserConnection && 
-                   (checks.network?.healthy !== false) &&
-                   (checks.page?.healthy !== false);
+    const healthy = checks.browserConnection &&
+      (checks.network?.healthy !== false) &&
+      (checks.page?.healthy !== false);
 
     const result = {
       endpoint: wsEndpoint,
@@ -416,7 +437,7 @@ class Automator {
     try {
       if (connectionInfo?.browser?.isConnected()) {
         recoverySteps.push({ step: 'browser_check', success: true });
-        
+
         // Step 2: Try page navigation if page provided
         if (page && !page.isClosed()) {
           try {
@@ -424,7 +445,7 @@ class Automator {
             recoverySteps.push({ step: 'page_reload', success: true });
           } catch (error) {
             recoverySteps.push({ step: 'page_reload', success: false, error: error.message });
-            
+
             // Step 3: Try navigating directly to home
             try {
               await page.goto('https://x.com/home', { waitUntil: 'domcontentloaded', timeout: 20000 });
@@ -436,7 +457,7 @@ class Automator {
         }
       } else {
         recoverySteps.push({ step: 'browser_check', success: false, error: 'Browser disconnected' });
-        
+
         // Try to reconnect
         try {
           await this.reconnect(wsEndpoint);
@@ -451,7 +472,7 @@ class Automator {
 
     // Determine if recovery was successful
     const recoverySuccessful = recoverySteps.some(step => step.success);
-    
+
     logger.warn(`[Health] Recovery ${recoverySuccessful ? 'succeeded' : 'failed'} for ${wsEndpoint}`);
 
     return {
@@ -477,7 +498,7 @@ class Automator {
     for (const endpoint of endpoints) {
       const health = await this.checkConnectionHealth(endpoint);
       summary.connections[endpoint] = health;
-      
+
       if (health.healthy) {
         summary.healthy++;
       } else {

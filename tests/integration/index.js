@@ -19,6 +19,7 @@ import multiApi from './test-multi-api.js';
 import cloudApi from './test-cloud-api.js';
 import cloudClient from './cloud-client.test.js';
 import agentConnector from './agent-connector.test.js';
+import unifiedApi from './unified-api.test.js';
 
 export {
   agentConnectorHealth,
@@ -32,7 +33,8 @@ export {
   multiApi,
   cloudApi,
   cloudClient,
-  agentConnector
+  agentConnector,
+  unifiedApi
 };
 
 /**
@@ -57,7 +59,8 @@ export async function runAllIntegrationTests() {
     { name: 'multi-api', module: multiApi },
     { name: 'cloud-api', module: cloudApi },
     { name: 'cloud-client', module: cloudClient },
-    { name: 'agent-connector', module: agentConnector }
+    { name: 'agent-connector', module: agentConnector },
+    { name: 'unified-api', module: unifiedApi }
   ];
 
   for (const { name } of testModules) {

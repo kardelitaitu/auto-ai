@@ -1,0 +1,1177 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for api/interactions/cursor.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">api/interactions</a> cursor.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">6.91% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>11/159</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">3.44% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>2/58</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">9.52% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>2/21</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">7.33% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>11/150</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a>
+<a name='L204'></a><a href='#L204'>204</a>
+<a name='L205'></a><a href='#L205'>205</a>
+<a name='L206'></a><a href='#L206'>206</a>
+<a name='L207'></a><a href='#L207'>207</a>
+<a name='L208'></a><a href='#L208'>208</a>
+<a name='L209'></a><a href='#L209'>209</a>
+<a name='L210'></a><a href='#L210'>210</a>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a>
+<a name='L232'></a><a href='#L232'>232</a>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a>
+<a name='L297'></a><a href='#L297'>297</a>
+<a name='L298'></a><a href='#L298'>298</a>
+<a name='L299'></a><a href='#L299'>299</a>
+<a name='L300'></a><a href='#L300'>300</a>
+<a name='L301'></a><a href='#L301'>301</a>
+<a name='L302'></a><a href='#L302'>302</a>
+<a name='L303'></a><a href='#L303'>303</a>
+<a name='L304'></a><a href='#L304'>304</a>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a>
+<a name='L307'></a><a href='#L307'>307</a>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a>
+<a name='L332'></a><a href='#L332'>332</a>
+<a name='L333'></a><a href='#L333'>333</a>
+<a name='L334'></a><a href='#L334'>334</a>
+<a name='L335'></a><a href='#L335'>335</a>
+<a name='L336'></a><a href='#L336'>336</a>
+<a name='L337'></a><a href='#L337'>337</a>
+<a name='L338'></a><a href='#L338'>338</a>
+<a name='L339'></a><a href='#L339'>339</a>
+<a name='L340'></a><a href='#L340'>340</a>
+<a name='L341'></a><a href='#L341'>341</a>
+<a name='L342'></a><a href='#L342'>342</a>
+<a name='L343'></a><a href='#L343'>343</a>
+<a name='L344'></a><a href='#L344'>344</a>
+<a name='L345'></a><a href='#L345'>345</a>
+<a name='L346'></a><a href='#L346'>346</a>
+<a name='L347'></a><a href='#L347'>347</a>
+<a name='L348'></a><a href='#L348'>348</a>
+<a name='L349'></a><a href='#L349'>349</a>
+<a name='L350'></a><a href='#L350'>350</a>
+<a name='L351'></a><a href='#L351'>351</a>
+<a name='L352'></a><a href='#L352'>352</a>
+<a name='L353'></a><a href='#L353'>353</a>
+<a name='L354'></a><a href='#L354'>354</a>
+<a name='L355'></a><a href='#L355'>355</a>
+<a name='L356'></a><a href='#L356'>356</a>
+<a name='L357'></a><a href='#L357'>357</a>
+<a name='L358'></a><a href='#L358'>358</a>
+<a name='L359'></a><a href='#L359'>359</a>
+<a name='L360'></a><a href='#L360'>360</a>
+<a name='L361'></a><a href='#L361'>361</a>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ * @fileoverview Low-Level Cursor Control
+ * Thin wrapper around GhostCursor's move() for direct spatial manipulation.
+ * Includes trajectory sophistication for advanced path patterns.
+ * Uses context-aware state for session isolation.
+ * 
+ * @module api/cursor
+ */
+&nbsp;
+import { getCursor, getPage, setSessionInterval, clearSessionInterval } from '../core/context.js';
+import { getStatePathStyle, setStatePathStyle, getStatePathOptions } from '../core/context-state.js';
+import { getPersona } from '../behaviors/persona.js';
+import { mathUtils } from '../utils/math.js';
+import { createLogger } from '../core/logger.js';
+&nbsp;
+const logger = createLogger('api/cursor.js');
+&nbsp;
+const FIDGET_INTERVAL_NAME = 'cursor_fidgeting';
+&nbsp;
+/**
+ * Set cursor path style for movement.
+ * @param {string} style - Path style: 'bezier' | 'arc' | 'zigzag' | 'overshoot' | 'stopped'
+ * @param {object} [options] - Style-specific options
+ * @param {number} [options.overshootDistance=20] - For overshoot style
+ * @param {number} [options.stops=3] - For stopped style
+ * @returns {void}
+ */
+export function <span class="fstat-no" title="function not covered" >setPathStyle(</span>style, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+<span class="cstat-no" title="statement not covered" >    setStatePathStyle(style, options);</span>
+}
+&nbsp;
+/**
+ * Get current path style.
+ * @returns {string}
+ */
+export function <span class="fstat-no" title="function not covered" >getPathStyle(</span>) {
+<span class="cstat-no" title="statement not covered" >    return getStatePathStyle();</span>
+}
+&nbsp;
+/**
+ * Move cursor to a DOM element using Bezier path.
+ * Resolves selector to bounding box, calculates Gaussian target point,
+ * and delegates to GhostCursor.move().
+ * @param {string} selector - CSS selector to move to
+ * @param {object} [options]
+ * @param {string} [options.pathStyle] - Override path style for this move
+ * @param {boolean} [options.correction=false] - Add correction movement after reaching target
+ * @returns {Promise&lt;void&gt;}
+ */
+export async function <span class="fstat-no" title="function not covered" >move(</span>selector, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+    const page =<span class="cstat-no" title="statement not covered" > getPage();</span>
+    const cursor =<span class="cstat-no" title="statement not covered" > getCursor();</span>
+    const persona =<span class="cstat-no" title="statement not covered" > getPersona();</span>
+&nbsp;
+    const locator = <span class="cstat-no" title="statement not covered" >page.locator(selector).first();</span>
+&nbsp;
+    // Scroll element into view first
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >        await locator.scrollIntoViewIfNeeded();</span>
+    } catch (_e) {
+<span class="cstat-no" title="statement not covered" >        logger.debug(`Scroll into view failed for ${selector}: ${_e.message}`);</span>
+    }
+&nbsp;
+    const box = <span class="cstat-no" title="statement not covered" >await locator.boundingBox();</span>
+&nbsp;
+    // Debug: Show bounding box info
+<span class="cstat-no" title="statement not covered" >    logger.debug(`Selector: ${selector}`);</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug(`Bounding box:`, box);</span>
+&nbsp;
+    // Validate bounding box
+<span class="cstat-no" title="statement not covered" >    if (!box || !box.width || !box.height || isNaN(box.x) || isNaN(box.y)) {</span>
+<span class="cstat-no" title="statement not covered" >        logger.debug(`Invalid bounding box, skipping movement`);</span>
+<span class="cstat-no" title="statement not covered" >        return; </span>// Skip movement, let cursor.click() handle it
+    }
+&nbsp;
+    // Use box center with small random offset instead of gaussian distribution
+    const centerX = <span class="cstat-no" title="statement not covered" >box.x + box.width / 2;</span>
+    const centerY = <span class="cstat-no" title="statement not covered" >box.y + box.height / 2;</span>
+    const randomOffsetX = <span class="cstat-no" title="statement not covered" >mathUtils.randomInRange(-10, 10);</span>
+    const randomOffsetY = <span class="cstat-no" title="statement not covered" >mathUtils.randomInRange(-5, 5);</span>
+&nbsp;
+    const targetX = <span class="cstat-no" title="statement not covered" >centerX + randomOffsetX;</span>
+    const targetY = <span class="cstat-no" title="statement not covered" >centerY + randomOffsetY;</span>
+&nbsp;
+    // Debug: Show calculated targets
+<span class="cstat-no" title="statement not covered" >    logger.debug(`Target coordinates: (${Math.round(targetX)}, ${Math.round(targetY)})`);</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug(`Box center: (${Math.round(centerX)}, ${Math.round(centerY)})`);</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug(`Box dimensions: ${Math.round(box.width)}x${Math.round(box.height)} at (${Math.round(box.x)}, ${Math.round(box.y)})`);</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug(`Random offset: (${randomOffsetX}, ${randomOffsetY})`);</span>
+<span class="cstat-no" title="statement not covered" >    logger.debug(`Target from center: (${Math.round(targetX - centerX)}, ${Math.round(targetY - centerY)})`);</span>
+&nbsp;
+    // Validate target coordinates
+<span class="cstat-no" title="statement not covered" >    if (isNaN(targetX) || isNaN(targetY)) {</span>
+<span class="cstat-no" title="statement not covered" >        return; </span>// Skip movement, let cursor.click() handle it
+    }
+&nbsp;
+    const style = <span class="cstat-no" title="statement not covered" >options.pathStyle || getStatePathStyle();</span>
+    const useCorrection = <span class="cstat-no" title="statement not covered" >options.correction || persona.microMoveChance &gt; 0;</span>
+&nbsp;
+    // 1. Fitts's Law duration calculation: T = a + b * log2(2D / W)
+    const distance = <span class="cstat-no" title="statement not covered" >Math.sqrt(Math.pow(targetX - box.x, 2) + Math.pow(targetY - box.y, 2));</span>
+    const targetSize = <span class="cstat-no" title="statement not covered" >Math.min(box.width, box.height);</span>
+    const id = <span class="cstat-no" title="statement not covered" >Math.log2((2 * distance) / targetSize + 1);</span>
+    const baseDuration = <span class="cstat-no" title="statement not covered" >(100 + 150 * id) * (1 / persona.speed);</span>
+&nbsp;
+    // Ghost 3.0: Flinch Detection (Periodic target stability check during move)
+    const flinchInterval = <span class="cstat-no" title="statement not covered" >setInterval(<span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
+        const currentBox = <span class="cstat-no" title="statement not covered" >await locator.boundingBox().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>;</span>
+<span class="cstat-no" title="statement not covered" >        if (currentBox) {</span>
+            const shift = <span class="cstat-no" title="statement not covered" >Math.abs(currentBox.x - box.x) + Math.abs(currentBox.y - box.y);</span>
+<span class="cstat-no" title="statement not covered" >            if (shift &gt; 10) { // Significant movement threshold</span>
+                // Note: We don't throw here to avoid breaking GhostCursor's internal state,
+                // but a more advanced implementation would cancel and recalculate.
+                // For now, we log it for "Visual Guarding" awareness.
+            }
+        }
+    }, 150);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >        await _moveWithStyle(cursor, targetX, targetY, style, useCorrection, baseDuration);</span>
+    } finally {
+<span class="cstat-no" title="statement not covered" >        clearInterval(flinchInterval);</span>
+    }
+}
+&nbsp;
+/**
+ * Internal: Move with specified path style and biological jitter.
+ */
+async function <span class="fstat-no" title="function not covered" >_moveWithStyle(</span>cursor, targetX, targetY, style, useCorrection, duration) {
+    const start = <span class="cstat-no" title="statement not covered" >cursor.previousPos || { x: 0, y: 0 };</span>
+    const distance = <span class="cstat-no" title="statement not covered" >Math.sqrt(Math.pow(targetX - start.x, 2) + Math.pow(targetY - start.y, 2));</span>
+    const persona =<span class="cstat-no" title="statement not covered" > getPersona();</span>
+    const pathOptions =<span class="cstat-no" title="statement not covered" > getStatePathOptions();</span>
+&nbsp;
+    // Physiological Jitter (Micro-steps with Gaussian noise)
+    const applyJitter = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(x, y) =&gt; {</span>
+        const tremorAmplitude = <span class="cstat-no" title="statement not covered" >0.8;</span> // px
+        const jitterX = <span class="cstat-no" title="statement not covered" >mathUtils.gaussian(0, tremorAmplitude);</span>
+        const jitterY = <span class="cstat-no" title="statement not covered" >mathUtils.gaussian(0, tremorAmplitude);</span>
+<span class="cstat-no" title="statement not covered" >        await cursor.move(x + jitterX, y + jitterY);</span>
+    };
+&nbsp;
+    const runStandard = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
+        const steps = <span class="cstat-no" title="statement not covered" >Math.max(2, Math.floor(duration / 40));</span>
+<span class="cstat-no" title="statement not covered" >        for (let i = <span class="cstat-no" title="statement not covered" >1;</span> i &lt;= steps; i++) {</span>
+            const progress = <span class="cstat-no" title="statement not covered" >i / steps;</span>
+            const easedProgress = <span class="cstat-no" title="statement not covered" >1 - Math.pow(1 - progress, 2);</span>
+            const baseX = <span class="cstat-no" title="statement not covered" >start.x + (targetX - start.x) * easedProgress;</span>
+            const baseY = <span class="cstat-no" title="statement not covered" >start.y + (targetY - start.y) * easedProgress;</span>
+<span class="cstat-no" title="statement not covered" >            await applyJitter(baseX, baseY);</span>
+        }
+    };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    switch (style) {</span>
+        case 'arc':
+<span class="cstat-no" title="statement not covered" >            await _moveArc(cursor, start, targetX, targetY, distance, applyJitter);</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+        case 'zigzag':
+<span class="cstat-no" title="statement not covered" >            await _moveZigzag(cursor, start, targetX, targetY, distance, applyJitter);</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+        case 'overshoot':
+<span class="cstat-no" title="statement not covered" >            await _moveOvershoot(cursor, start, targetX, targetY, distance, applyJitter, pathOptions);</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+        case 'stopped':
+<span class="cstat-no" title="statement not covered" >            await _moveStopped(cursor, start, targetX, targetY, distance, applyJitter, pathOptions);</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+        case 'muscle':
+<span class="cstat-no" title="statement not covered" >            await _moveMuscle(cursor, targetX, targetY, persona, applyJitter);</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+        case 'bezier':
+<span class="cstat-no" title="statement not covered" >            await runStandard();</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+        default:
+<span class="cstat-no" title="statement not covered" >            await runStandard();</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+    }
+&nbsp;
+    // Final snap to target to ensure accuracy
+<span class="cstat-no" title="statement not covered" >    await cursor.move(targetX, targetY);</span>
+&nbsp;
+&nbsp;
+    // Optional correction movement after reaching target
+<span class="cstat-no" title="statement not covered" >    if (useCorrection) {</span>
+        const correctionX = <span class="cstat-no" title="statement not covered" >targetX + mathUtils.randomInRange(-3, 3);</span>
+        const correctionY = <span class="cstat-no" title="statement not covered" >targetY + mathUtils.randomInRange(-3, 3);</span>
+<span class="cstat-no" title="statement not covered" >        await cursor.move(correctionX, correctionY);</span>
+    }
+}
+&nbsp;
+/**
+ * Arc path - curved movement.
+ */
+async function <span class="fstat-no" title="function not covered" >_moveArc(</span>cursor, start, targetX, targetY, distance, applyJitter) {
+    // Calculate arc control point
+    const midX = <span class="cstat-no" title="statement not covered" >(start.x + targetX) / 2;</span>
+    const midY = <span class="cstat-no" title="statement not covered" >(start.y + targetY) / 2 - distance * 0.3 * (Math.random() &gt; 0.5 ? 1 : -1);</span>
+&nbsp;
+    // Two-step arc via control point
+    // const midPoint = { x: midX, y: midY };
+<span class="cstat-no" title="statement not covered" >    await applyJitter(midX, midY);</span>
+<span class="cstat-no" title="statement not covered" >    await applyJitter(targetX, targetY);</span>
+}
+&nbsp;
+/**
+ * Zigzag path - slight back-and-forth.
+ */
+async function <span class="fstat-no" title="function not covered" >_moveZigzag(</span>cursor, start, targetX, targetY, distance, applyJitter) {
+    const steps = <span class="cstat-no" title="statement not covered" >4;</span>
+    const zigzagAmount = <span class="cstat-no" title="statement not covered" >distance * 0.1;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    for (let i = <span class="cstat-no" title="statement not covered" >1;</span> i &lt; steps; i++) {</span>
+        const progress = <span class="cstat-no" title="statement not covered" >i / steps;</span>
+        const baseX = <span class="cstat-no" title="statement not covered" >start.x + (targetX - start.x) * progress;</span>
+        const baseY = <span class="cstat-no" title="statement not covered" >start.y + (targetY - start.y) * progress;</span>
+&nbsp;
+        // Perpendicular offset for zigzag
+        const perpX = <span class="cstat-no" title="statement not covered" >-(targetY - start.y) / distance * zigzagAmount * (i % 2 === 0 ? 1 : -1);</span>
+        const perpY = <span class="cstat-no" title="statement not covered" >(targetX - start.x) / distance * zigzagAmount * (i % 2 === 0 ? 1 : -1);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        await applyJitter(baseX + perpX, baseY + perpY);</span>
+    }
+}
+&nbsp;
+/**
+ * Overshoot path - go past target, come back.
+ */
+async function <span class="fstat-no" title="function not covered" >_moveOvershoot(</span>cursor, start, targetX, targetY, distance, applyJitter, pathOptions) {
+    const overshootScale = <span class="cstat-no" title="statement not covered" >1 + (pathOptions.overshootDistance || 20) / 100;</span>
+    const overshootX = <span class="cstat-no" title="statement not covered" >start.x + (targetX - start.x) * overshootScale;</span>
+    const overshootY = <span class="cstat-no" title="statement not covered" >start.y + (targetY - start.y) * overshootScale;</span>
+&nbsp;
+    // Move to overshoot point
+<span class="cstat-no" title="statement not covered" >    await applyJitter(overshootX, overshootY);</span>
+&nbsp;
+    // Brief pause
+<span class="cstat-no" title="statement not covered" >    await new Promise(<span class="fstat-no" title="function not covered" >r </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(r, mathUtils.randomInRange(50, 150)))</span>;</span>
+&nbsp;
+    // Move back to actual target
+<span class="cstat-no" title="statement not covered" >    await applyJitter(targetX, targetY);</span>
+}
+&nbsp;
+/**
+ * Stopped path - micro-stops along the way.
+ */
+async function <span class="fstat-no" title="function not covered" >_moveStopped(</span>cursor, start, targetX, targetY, distance, applyJitter, pathOptions) {
+    const stops = <span class="cstat-no" title="statement not covered" >pathOptions.stops || 3;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    for (let i = <span class="cstat-no" title="statement not covered" >1;</span> i &lt;= stops; i++) {</span>
+        const progress = <span class="cstat-no" title="statement not covered" >i / stops;</span>
+        const x = <span class="cstat-no" title="statement not covered" >start.x + (targetX - start.x) * progress;</span>
+        const y = <span class="cstat-no" title="statement not covered" >start.y + (targetY - start.y) * progress;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        await applyJitter(x, y);</span>
+&nbsp;
+        // Brief stop at each point
+<span class="cstat-no" title="statement not covered" >        if (i &lt; stops) {</span>
+<span class="cstat-no" title="statement not covered" >            await new Promise(<span class="fstat-no" title="function not covered" >r </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(r, mathUtils.randomInRange(30, 80)))</span>;</span>
+        }
+    }
+}
+&nbsp;
+/**
+ * Muscle path - PID-driven biologically-modeled movement.
+ * Creates unique acceleration/deceleration signatures.
+ */
+async function <span class="fstat-no" title="function not covered" >_moveMuscle(</span>cursor, targetX, targetY, persona) {
+    const start = <span class="cstat-no" title="statement not covered" >cursor.previousPos || { x: 0, y: 0 };</span>
+    const model = <span class="cstat-no" title="statement not covered" >persona.muscleModel || { Kp: 0.8, Ki: 0.01, Kd: 0.2 };</span>
+&nbsp;
+    // State for X and Y controllers
+    const stateX = <span class="cstat-no" title="statement not covered" >{ pos: start.x, integral: 0, prevError: 0 };</span>
+    const stateY = <span class="cstat-no" title="statement not covered" >{ pos: start.y, integral: 0, prevError: 0 };</span>
+&nbsp;
+    const maxSteps = <span class="cstat-no" title="statement not covered" >20;</span> // Safety break
+    const tolerance = <span class="cstat-no" title="statement not covered" >2.0;</span> // px
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; maxSteps; i++) {</span>
+        const nextX = <span class="cstat-no" title="statement not covered" >mathUtils.pidStep(stateX, targetX, model);</span>
+        const nextY = <span class="cstat-no" title="statement not covered" >mathUtils.pidStep(stateY, targetY, model);</span>
+&nbsp;
+        // Bounds check - prevent going off-screen
+        const boundedX = <span class="cstat-no" title="statement not covered" >Math.max(0, Math.min(1280, nextX));</span>
+        const boundedY = <span class="cstat-no" title="statement not covered" >Math.max(0, Math.min(720, nextY));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        logger.debug(`Muscle Step ${i}: Moving to (${Math.round(boundedX)}, ${Math.round(boundedY)}) distance: ${Math.round(Math.sqrt(Math.pow(targetX - stateX.pos, 2) + Math.pow(targetY - stateY.pos, 2)))}px`);</span>
+&nbsp;
+        // Direct mouse move with bounds
+<span class="cstat-no" title="statement not covered" >        await cursor.page.mouse.move(boundedX, boundedY);</span>
+<span class="cstat-no" title="statement not covered" >        cursor.previousPos = { x: boundedX, y: boundedY };</span>
+&nbsp;
+        const distToTarget = <span class="cstat-no" title="statement not covered" >Math.sqrt(Math.pow(targetX - boundedX, 2) + Math.pow(targetY - boundedY, 2));</span>
+<span class="cstat-no" title="statement not covered" >        if (distToTarget &lt; tolerance) {</span>
+<span class="cstat-no" title="statement not covered" >            logger.debug(`Muscle Target reached within ${tolerance}px tolerance`);</span>
+<span class="cstat-no" title="statement not covered" >            logger.debug(`Muscle Final distance from target: ${Math.round(distToTarget)}px`);</span>
+<span class="cstat-no" title="statement not covered" >            logger.debug(`Muscle Target was (${Math.round(targetX)}, ${Math.round(targetY)})`);</span>
+<span class="cstat-no" title="statement not covered" >            logger.debug(`Muscle Final position (${Math.round(boundedX)}, ${Math.round(boundedY)})`);</span>
+<span class="cstat-no" title="statement not covered" >            logger.debug(`Muscle X diff: ${Math.round(targetX - boundedX)}px, Y diff: ${Math.round(targetY - boundedY)}px`);</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+        }
+&nbsp;
+        // Minimal delay for 2-3 second target
+        const stepDelay = <span class="cstat-no" title="statement not covered" >Math.max(1, (3 / persona.speed));</span>
+<span class="cstat-no" title="statement not covered" >        await new Promise(<span class="fstat-no" title="function not covered" >r </span>=&gt; <span class="cstat-no" title="statement not covered" >setTimeout(r, stepDelay))</span>;</span>
+    }
+}
+&nbsp;
+&nbsp;
+/**
+ * Move cursor up by relative pixels.
+ * @param {number} distance - Pixels to move up
+ * @returns {Promise&lt;void&gt;}
+ */
+export async function <span class="fstat-no" title="function not covered" >up(</span>distance) {
+    const cursor =<span class="cstat-no" title="statement not covered" > getCursor();</span>
+    const currentPos = <span class="cstat-no" title="statement not covered" >cursor.previousPos || { x: 0, y: 0 };</span>
+    const targetY = <span class="cstat-no" title="statement not covered" >Math.max(0, currentPos.y - distance);</span>
+<span class="cstat-no" title="statement not covered" >    await cursor.move(currentPos.x, targetY);</span>
+}
+&nbsp;
+/**
+ * Move cursor down by relative pixels.
+ * @param {number} distance - Pixels to move down
+ * @returns {Promise&lt;void&gt;}
+ */
+export async function <span class="fstat-no" title="function not covered" >down(</span>distance) {
+    const cursor =<span class="cstat-no" title="statement not covered" > getCursor();</span>
+    const currentPos = <span class="cstat-no" title="statement not covered" >cursor.previousPos || { x: 0, y: 0 };</span>
+    const targetY = <span class="cstat-no" title="statement not covered" >currentPos.y + distance;</span>
+<span class="cstat-no" title="statement not covered" >    await cursor.move(currentPos.x, targetY);</span>
+}
+&nbsp;
+/**
+ * Start background micro-fidgeting (idle tremors).
+ * Performs subtle 1-2px movements when the cursor is idle.
+ * @returns {void}
+ */
+export function startFidgeting() {
+    setSessionInterval(FIDGET_INTERVAL_NAME, async () =&gt; {
+        try {
+            const cursor = getCursor();
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!cursor) <span class="cstat-no" title="statement not covered" >return;</span>
+&nbsp;
+            const currentPos = cursor.previousPos || <span class="branch-1 cbranch-no" title="branch not covered" >{ x: 0, y: 0 };</span>
+            const tremorAmplitude = 1.0; // 1px breathing
+&nbsp;
+            const jitterX = mathUtils.gaussian(0, tremorAmplitude);
+            const jitterY = mathUtils.gaussian(0, tremorAmplitude);
+&nbsp;
+            // Subtle move without updating previousPos if possible, 
+            // but GhostCursor usually updates it. That's fine.
+            await cursor.move(currentPos.x + jitterX, currentPos.y + jitterY);
+        } catch (_e) {
+            // Ignore (likely page navigation or context loss)
+        }
+    }, mathUtils.randomInRange(3000, 8000)); // Every few seconds
+}
+&nbsp;
+/**
+ * Stop micro-fidgeting.
+ * @returns {void}
+ */
+export function <span class="fstat-no" title="function not covered" >stopFidgeting(</span>) {
+<span class="cstat-no" title="statement not covered" >    clearSessionInterval(FIDGET_INTERVAL_NAME);</span>
+}
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-02-28T03:54:19.070Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    

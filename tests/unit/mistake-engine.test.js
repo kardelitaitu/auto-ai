@@ -1,11 +1,32 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mistakeEngine } from '../../utils/mistake-engine.js';
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockResolvedValue(true),
+        exists: vi.fn().mockResolvedValue(true),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
+    }
+}));
+import { api } from '../../api/index.js';
+
 describe('MistakeEngine', () => {
   let engine;
   let mockPage;
 
   beforeEach(() => {
+        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
     engine = mistakeEngine.createMistakeEngine({
       misclickChance: 1, // Always misclick for testing
       abandonmentChance: 1, // Always abandon for testing
@@ -50,7 +71,7 @@ describe('MistakeEngine', () => {
   it('should simulate abandonment', async () => {
     const result = await engine.simulateAbandonment(mockPage);
     expect(result.abandoned).toBe(true);
-    expect(mockPage.waitForTimeout).toHaveBeenCalled();
+    expect(api.wait).toHaveBeenCalled();
   });
 
   it('should simulate typing error', async () => {
@@ -61,7 +82,7 @@ describe('MistakeEngine', () => {
   it('should simulate navigation error', async () => {
     const result = await engine.simulateNavigationError(mockPage, 'http://url', { wrongSelector: '#wrong' });
     expect(result.navigatedToWrong).toBe(true);
-    expect(mockPage.waitForTimeout).toHaveBeenCalled();
+    expect(api.wait).toHaveBeenCalled();
   });
 
   it('should execute with mistakes (misclick)', async () => {

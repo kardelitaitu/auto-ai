@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 import { BaseHandler } from './BaseHandler.js';
 import { scrollRandom } from '../scroll-helper.js';
 
@@ -20,7 +21,7 @@ export class NavigationHandler extends BaseHandler {
         if (this.mathUtils.roll(0.10)) {
             this.log('[Navigation] 🎲 Random 10%: Using direct URL navigation.');
             try {
-                await this.page.goto('https://x.com/home');
+                await api.goto('https://x.com/home');
                 await this.ensureForYouTab();
                 return;
             } catch (e) {
@@ -34,35 +35,35 @@ export class NavigationHandler extends BaseHandler {
             let targetName = useHomeIcon ? 'Home Icon' : 'X Logo';
             let target = this.page.locator(targetSelector).first();
 
-            if (!(await target.isVisible().catch(() => false))) {
+            if (!(await api.visible(target).catch(() => false))) {
                 this.log(`Preferred nav target (${targetName}) not visible. Switching...`);
                 targetSelector = useHomeIcon ? '[aria-label="X"]' : '[data-testid="AppTabBar_Home_Link"]';
                 targetName = useHomeIcon ? 'X Logo' : 'Home Icon';
                 target = this.page.locator(targetSelector).first();
             }
 
-            if (await target.isVisible()) {
+            if (await api.visible(target)) {
                 // First click
                 this.log(`[Navigation] Clicking '${targetName}' (1st click for reload)...`);
                 await this.safeHumanClick(target, targetName, 3);
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(800, 1500));
+                await api.wait(this.mathUtils.randomInRange(800, 1500));
 
                 // Second click to ensure fresh content
                 this.log(`[Navigation] Clicking '${targetName}' again (2nd click to reload)...`);
                 await this.safeHumanClick(target, targetName, 3);
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(500, 1000));
+                await api.wait(this.mathUtils.randomInRange(500, 1000));
 
                 try {
-                    await this.page.waitForURL('**/home**', { timeout: 5000 });
+                    await api.waitForURL('**/home**', { timeout: 5000 });
                     this.log('[Navigation] Navigate to /home Success.');
                     await this.ensureForYouTab();
                     return;
                 } catch {
                     this.log('[Navigation] Ghost click did not trigger nav. Trying native...');
                     await target.click();
-                    await this.page.waitForTimeout(this.mathUtils.randomInRange(800, 1500));
+                    await api.wait(this.mathUtils.randomInRange(800, 1500));
                     await target.click();
-                    await this.page.waitForURL('**/home**', { timeout: 5000 });
+                    await api.waitForURL('**/home**', { timeout: 5000 });
                     this.log('[Navigation] Native Click navigated to home.');
                     await this.ensureForYouTab();
                     return;
@@ -73,7 +74,7 @@ export class NavigationHandler extends BaseHandler {
         }
 
         this.log('[Navigation] Fallback to direct URL goto.');
-        await this.page.goto('https://x.com/home');
+        await api.goto('https://x.com/home');
         await this.ensureForYouTab();
     }
 
@@ -133,11 +134,11 @@ export class NavigationHandler extends BaseHandler {
                 return;
             }
 
-            if (await target.isVisible()) {
+            if (await api.visible(target)) {
                 this.log(`[Tab] Switching to "${targetText}" tab...`);
                 try {
                     await this.safeHumanClick(target, 'For You Tab', 3);
-                    await this.page.waitForTimeout(this.mathUtils.randomInRange(800, 1500));
+                    await api.wait(this.mathUtils.randomInRange(800, 1500));
                 } catch {
                     this.log('[Tab] Ghost click failed, trying native...');
                     await target.click();
@@ -161,7 +162,7 @@ export class NavigationHandler extends BaseHandler {
         try {
             // Wait 2-3 seconds for button to appear (as per user feedback)
             this.log('[Posts] Waiting for "Show X posts" button to appear...');
-            await this.page.waitForTimeout(this.mathUtils.randomInRange(2000, 3000));
+            await api.wait(this.mathUtils.randomInRange(2000, 3000));
 
             // Multiple selector patterns to catch variations:
             // - "Show 34 posts"
@@ -183,7 +184,7 @@ export class NavigationHandler extends BaseHandler {
             for (const selector of buttonSelectors) {
                 try {
                     const btn = this.page.locator(selector).first();
-                    if (await btn.count() > 0 && await btn.isVisible()) {
+                    if (await api.exists(btn) && await api.visible(btn)) {
                         const text = await btn.textContent().catch(() => '');
                         // Validate it matches the pattern
                         if (/show\s+\d+\s+post/i.test(text)) {
@@ -203,7 +204,7 @@ export class NavigationHandler extends BaseHandler {
                 // HUMAN-LIKE: Additional pre-click behavior for this specific button
                 // 1. Ensure button is in viewport (scroll if needed)
                 await showPostsBtn.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(300, 600));
+                await api.wait(this.mathUtils.randomInRange(300, 600));
                 
                 // 2. Move cursor to vicinity first (not directly on button)
                 const box = await showPostsBtn.boundingBox();
@@ -211,7 +212,7 @@ export class NavigationHandler extends BaseHandler {
                     const offsetX = this.mathUtils.randomInRange(-30, 30);
                     const offsetY = this.mathUtils.randomInRange(-20, 20);
                     await this.ghost.move(box.x + box.width/2 + offsetX, box.y + box.height/2 + offsetY, this.mathUtils.randomInRange(15, 25));
-                    await this.page.waitForTimeout(this.mathUtils.randomInRange(400, 800));
+                    await api.wait(this.mathUtils.randomInRange(400, 800));
                 }
                 
                 // 3. Use safeHumanClick for full simulated interaction with retry
@@ -220,12 +221,12 @@ export class NavigationHandler extends BaseHandler {
                 // 3. HUMAN-LIKE: "Reading" the new posts after loading
                 this.log('[Posts] Posts loading, simulating reading behavior...');
                 const waitTime = this.mathUtils.randomInRange(1200, 2500);
-                await this.page.waitForTimeout(waitTime);
+                await api.wait(waitTime);
                 
                 // 4. Scroll down slightly to show the new posts (human-like discovery)
                 const scrollVariance = 0.8 + Math.random() * 0.4;
-                await scrollRandom(this.page, Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));
-                await this.page.waitForTimeout(this.mathUtils.randomInRange(600, 1000));
+                await scrollRandom(Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));
+                await api.wait(this.mathUtils.randomInRange(600, 1000));
                 
                 this.log('[Posts] New posts loaded successfully.');
                 return true;

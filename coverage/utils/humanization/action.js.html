@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.15% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/95</span>
+                <span class='fraction'>0/95</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">4.76% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/21</span>
+                <span class='fraction'>0/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.4% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/88</span>
+                <span class='fraction'>0/88</span>
             </div>
         
             
@@ -327,7 +327,8 @@
 <a name='L262'></a><a href='#L262'>262</a>
 <a name='L263'></a><a href='#L263'>263</a>
 <a name='L264'></a><a href='#L264'>264</a>
-<a name='L265'></a><a href='#L265'>265</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -345,10 +346,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">99x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">99x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -358,7 +360,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">99x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -591,7 +593,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { api } from '../../api/index.js';
+/**
  * Action Predictor
  * Weighted random action selection for natural behavior
  * 
@@ -608,11 +611,11 @@ import { scrollRandom } from '../scroll-helper.js';
 import { GhostCursor } from '../ghostCursor.js';
 &nbsp;
 export class ActionPredictor {
-    constructor(logger) {
-        this.logger = logger;
+<span class="fstat-no" title="function not covered" >    constructor(</span>logger) {
+<span class="cstat-no" title="statement not covered" >        this.logger = logger;</span>
         
         // Base action probabilities
-        this.baseProbabilities = {
+<span class="cstat-no" title="statement not covered" >        this.baseProbabilities = {</span>
             scroll: { weight: 0.40, min: 0.35, max: 0.45 },
             click: { weight: 0.25, min: 0.20, max: 0.30 },
             back: { weight: 0.12, min: 0.08, max: 0.15 },
@@ -622,7 +625,7 @@ export class ActionPredictor {
         };
         
         // Cycle modifiers
-        this.cycleCount = 0;
+<span class="cstat-no" title="statement not covered" >        this.cycleCount = 0;</span>
     }
     
     /**
@@ -715,7 +718,7 @@ export class ActionPredictor {
             
 <span class="cstat-no" title="statement not covered" >            if (tweet) {</span>
 <span class="cstat-no" title="statement not covered" >                await tweet.evaluate(<span class="fstat-no" title="function not covered" >el </span>=&gt; <span class="cstat-no" title="statement not covered" >el.scrollIntoView({ block: 'center' }))</span>;</span>
-<span class="cstat-no" title="statement not covered" >                await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(1000);</span>
                 
                 // Click on tweet text or time
                 const textEl = <span class="cstat-no" title="statement not covered" >await tweet.$('[data-testid="tweetText"]');</span>
@@ -728,12 +731,12 @@ export class ActionPredictor {
     
     async <span class="fstat-no" title="function not covered" >_actionBack(</span>page) {
 <span class="cstat-no" title="statement not covered" >        await page.goBack().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; {});</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(1000);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
     }
     
     async <span class="fstat-no" title="function not covered" >_actionExplore(</span>page) {
-<span class="cstat-no" title="statement not covered" >        await page.goto('https://x.com/explore', { waitUntil: 'domcontentloaded' });</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(2000);</span>
+<span class="cstat-no" title="statement not covered" >        await api.goto('https://x.com/explore', { waitUntil: 'domcontentloaded' });</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
     }
     
     async <span class="fstat-no" title="function not covered" >_actionProfile(</span>page) {
@@ -743,13 +746,13 @@ export class ActionPredictor {
 <span class="cstat-no" title="statement not covered" >        if (profileLinks.length &gt; 0) {</span>
             const index = <span class="cstat-no" title="statement not covered" >Math.floor(Math.random() * Math.min(profileLinks.length, 10));</span>
 <span class="cstat-no" title="statement not covered" >            await ghost.click(profileLinks[index]).catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; {});</span>
-<span class="cstat-no" title="statement not covered" >            await page.waitForTimeout(2000);</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
         }
     }
     
     async <span class="fstat-no" title="function not covered" >_actionIdle(</span>page) {
         // Do nothing for a while
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(mathUtils.randomInRange(2000, 4000));</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
         
         // Maybe a small movement
 <span class="cstat-no" title="statement not covered" >        if (Math.random() &gt; 0.5) {</span>
@@ -775,7 +778,7 @@ export class ActionPredictor {
             const dirMultiplier = <span class="cstat-no" title="statement not covered" >direction === 'up' ? -1 : 1;</span>
             
 <span class="cstat-no" title="statement not covered" >            await scrollRandom(page, amount * dirMultiplier, amount * dirMultiplier);</span>
-<span class="cstat-no" title="statement not covered" >            await page.waitForTimeout(mathUtils.randomInRange(200, 500));</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
             
             // Sometimes scroll back slightly
 <span class="cstat-no" title="statement not covered" >            if (Math.random() &gt; 0.7) {</span>
@@ -783,7 +786,7 @@ export class ActionPredictor {
             }
         }
         
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(mathUtils.randomInRange(500, 1500));</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
     }
     
     // ==========================================
@@ -862,7 +865,7 @@ export default ActionPredictor;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

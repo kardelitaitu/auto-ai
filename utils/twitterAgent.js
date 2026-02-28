@@ -676,14 +676,14 @@ export class TwitterAgent {
      * @returns {string} Scroll method name
      */
     getScrollMethod() {
-        const methods = this.config.inputMethods || { wheelDown: 0.8, wheelUp: 0.05, space: 0.05, keysDown: 0.1, keysUp: 0 };
+        const methods = this.config.inputMethods || { wheelDown: 0.8, wheelUp: 0.03, space: 0.05, keysDown: 0.1, keysUp: 0 };
         const roll = Math.random();
         let sum = 0;
         if (roll < (sum += methods.wheelDown)) return 'WHEEL_DOWN';
         if (roll < (sum += methods.wheelUp)) return 'WHEEL_UP';
         if (roll < (sum += methods.space)) return 'SPACE';
         if (roll < (sum + methods.keysDown)) return 'KEYS_DOWN';
-        return 'KEYS_UP';
+        return 'WHEEL_DOWN';
     }
 
     /**
@@ -694,7 +694,7 @@ export class TwitterAgent {
     normalizeProbabilities(p) {
         // Fallback to default safe probabilities if not specified
         const base = {
-            refresh: 0.1,        // refresh feed
+            refresh: 0.050,        // refresh feed
             profileDive: 0.15,   // dive into a profile
             tweetDive: 0.1,      // open an expanded tweet
             idle: 0.3,           // explicit idle
@@ -814,7 +814,7 @@ export class TwitterAgent {
 
             // Micro: tiny jitter scroll
             if (mathUtils.roll(0.15)) {
-                await scrollRandom(this.page, -60, 60);
+                await scrollRandom(-60, 60);
                 await this.page.waitForTimeout(mathUtils.randomInRange(50, 140));
             }
 
@@ -822,7 +822,7 @@ export class TwitterAgent {
 
             if (method === 'WHEEL_DOWN') {
                 const distance = mathUtils.gaussian(400, 150);
-                await scrollDown(this.page, distance);
+                await scrollDown(distance);
                 if (mathUtils.roll(0.2)) {
                     const viewport = this.page.viewportSize() || { width: 1280, height: 720 };
                     // Random move within viewport
@@ -832,7 +832,7 @@ export class TwitterAgent {
                 }
             } else if (method === 'WHEEL_UP') {
                 const distance = mathUtils.gaussian(300, 100);
-                await scrollRandom(this.page, distance, distance);
+                await scrollRandom(-distance, -distance);
             } else if (method === 'SPACE') {
                 await this.page.keyboard.press('Space', { delay: mathUtils.randomInRange(50, 150) });
                 const d = actionDelays.space;
@@ -910,7 +910,7 @@ export class TwitterAgent {
 
                 // Not found? Scroll a bit and retry
                 this.log('[Dive] No suitable tweets in view. Scrolling...');
-                await scrollRandom(this.page, 300, 300);
+                await scrollRandom(300, 300);
                 await this.page.waitForTimeout(entropy.retryDelay(attempt));
             }
 
@@ -1025,11 +1025,11 @@ export class TwitterAgent {
 
             // Read replies
             this.log('[Scroll] Reading replies...');
-            await scrollRandom(this.page, 300, 600);
+            await scrollRandom(300, 600);
             await this.page.waitForTimeout(mathUtils.randomInRange(2000, 4000));
 
             // Asymmetric return (don't scroll back exactly the same amount)
-            await scrollRandom(this.page, 240, 660);
+            await scrollRandom(-660, -240);
             await this.page.waitForTimeout(mathUtils.randomInRange(1000, 2000));
 
             const p = this.normalizeProbabilities(this.config.probabilities);
@@ -1456,7 +1456,7 @@ export class TwitterAgent {
 
                 // 4. Scroll down slightly to show the new posts (human-like discovery)
                 const scrollVariance = 0.8 + Math.random() * 0.4;
-                await scrollRandom(this.page, Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));
+                await scrollRandom(Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));
                 await this.page.waitForTimeout(mathUtils.randomInRange(600, 1000));
 
                 this.log('[Posts] New posts loaded successfully.');
@@ -1776,13 +1776,13 @@ export class TwitterAgent {
                 }
             } else if (fidgetType === 'OVERSHOOT') {
                 // Scroll down a bit, then up immediately (simulating missing target)
-                await scrollRandom(this.page, 200, 400);
+                await scrollRandom(200, 400);
 
                 // Reaction time: Pause to realize we went too far (increased from 100-300ms)
                 await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
 
                 // Correction scroll (slightly less than overshoot to stay offset)
-                await scrollRandom(this.page, 140, 360);
+                await scrollRandom(-360, -140);
 
                 // SAFETY: Check if we accidentally navigated (OVERSHOOT can trigger clicks)
                 await this.page.waitForTimeout(500);

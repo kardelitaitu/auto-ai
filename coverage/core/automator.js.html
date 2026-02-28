@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/161</span>
+                <span class='fraction'>0/168</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/59</span>
+                <span class='fraction'>0/65</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/159</span>
+                <span class='fraction'>0/166</span>
             </div>
         
             
@@ -587,7 +587,28 @@
 <a name='L522'></a><a href='#L522'>522</a>
 <a name='L523'></a><a href='#L523'>523</a>
 <a name='L524'></a><a href='#L524'>524</a>
-<a name='L525'></a><a href='#L525'>525</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L525'></a><a href='#L525'>525</a>
+<a name='L526'></a><a href='#L526'>526</a>
+<a name='L527'></a><a href='#L527'>527</a>
+<a name='L528'></a><a href='#L528'>528</a>
+<a name='L529'></a><a href='#L529'>529</a>
+<a name='L530'></a><a href='#L530'>530</a>
+<a name='L531'></a><a href='#L531'>531</a>
+<a name='L532'></a><a href='#L532'>532</a>
+<a name='L533'></a><a href='#L533'>533</a>
+<a name='L534'></a><a href='#L534'>534</a>
+<a name='L535'></a><a href='#L535'>535</a>
+<a name='L536'></a><a href='#L536'>536</a>
+<a name='L537'></a><a href='#L537'>537</a>
+<a name='L538'></a><a href='#L538'>538</a>
+<a name='L539'></a><a href='#L539'>539</a>
+<a name='L540'></a><a href='#L540'>540</a>
+<a name='L541'></a><a href='#L541'>541</a>
+<a name='L542'></a><a href='#L542'>542</a>
+<a name='L543'></a><a href='#L543'>543</a>
+<a name='L544'></a><a href='#L544'>544</a>
+<a name='L545'></a><a href='#L545'>545</a>
+<a name='L546'></a><a href='#L546'>546</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -719,6 +740,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -750,6 +782,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1242,6 +1284,17 @@ class Automator {
 &nbsp;
 <span class="cstat-no" title="statement not covered" >          await this.testConnection(connectionInfo.browser);</span>
 &nbsp;
+          // Deep Health Check: Verify page responsiveness if we have active sessions
+          // We can't easily get the page here without deeper integration, 
+          // so we'll rely on the orchestrator to pass pages to checkConnectionHealth
+          // but we can at least check network connectivity periodically
+<span class="cstat-no" title="statement not covered" >          if (Math.random() &lt; 0.1) { // 10% chance per interval</span>
+            const netHealth = <span class="cstat-no" title="statement not covered" >await this.checkNetworkConnectivity();</span>
+<span class="cstat-no" title="statement not covered" >            if (!netHealth.healthy) {</span>
+              //logger.debug(`Network connectivity issues detected: ${netHealth.error}`);
+            }
+          }
+&nbsp;
           // Only log if status changed from unhealthy to healthy
           const wasUnhealthy = <span class="cstat-no" title="statement not covered" >!connectionInfo.healthy;</span>
 &nbsp;
@@ -1257,7 +1310,7 @@ class Automator {
 <span class="cstat-no" title="statement not covered" >          logger.error(`Health check failed for ${endpoint}:`, error.message);</span>
 <span class="cstat-no" title="statement not covered" >          connectionInfo.healthy = false;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >          this.attemptBackgroundReconnect(endpoint, connectionInfo);</span>
+<span class="cstat-no" title="statement not covered" >          await this.attemptBackgroundReconnect(endpoint, connectionInfo);</span>
         }
       }
     }, checkInterval);
@@ -1273,7 +1326,17 @@ class Automator {
    */
   async <span class="fstat-no" title="function not covered" >attemptBackgroundReconnect(</span>endpoint, connectionInfo) {
 <span class="cstat-no" title="statement not covered" >    if (connectionInfo.reconnectAttempts &gt;= 3) {</span>
-<span class="cstat-no" title="statement not covered" >      logger.error(`Max reconnect attempts reached for ${endpoint}, removing connection`);</span>
+<span class="cstat-no" title="statement not covered" >      logger.error(`Max reconnect attempts reached for ${endpoint}, triggering re-discovery fallback`);</span>
+&nbsp;
+      // Proactive Re-discovery: If a terminal failure occurs, we might need new endpoints
+<span class="cstat-no" title="statement not covered" >      if (typeof this.onReconnectFailed === 'function') {</span>
+<span class="cstat-no" title="statement not covered" >        try {</span>
+<span class="cstat-no" title="statement not covered" >          await this.onReconnectFailed(endpoint);</span>
+        } catch (e) {
+<span class="cstat-no" title="statement not covered" >          logger.error(`onReconnectFailed handler failed: ${e.message}`);</span>
+        }
+      }
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      this.connections.delete(endpoint);</span>
 <span class="cstat-no" title="statement not covered" >      return;</span>
     }
@@ -1385,23 +1448,23 @@ class Automator {
    */
   async <span class="fstat-no" title="function not covered" >checkNetworkConnectivity(</span>) {
     const startTime = <span class="cstat-no" title="statement not covered" >Date.now();</span>
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
       // Try to fetch a simple known URL to check network
       const { chromium } = <span class="cstat-no" title="statement not covered" >await import('playwright');</span>
       const testContext = <span class="cstat-no" title="statement not covered" >await chromium.launch({ headless: true });</span>
       const testPage = <span class="cstat-no" title="statement not covered" >await testContext.newPage();</span>
-      
+&nbsp;
       // Use a very short timeout for quick check
-<span class="cstat-no" title="statement not covered" >      await testPage.goto('https://x.com', { </span>
-        waitUntil: 'domcontentloaded', 
-        timeout: 5000 
+<span class="cstat-no" title="statement not covered" >      await testPage.goto('https://x.com', {</span>
+        waitUntil: 'domcontentloaded',
+        timeout: 5000
       });
-      
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      await testContext.close();</span>
-      
+&nbsp;
       const latency = <span class="cstat-no" title="statement not covered" >Date.now() - startTime;</span>
-      
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      return {</span>
         healthy: true,
         latency,
@@ -1442,7 +1505,7 @@ class Automator {
       }).catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; (<span class="cstat-no" title="statement not covered" >{ error: 'Evaluation failed' })</span>);
 &nbsp;
       const isResponsive = <span class="cstat-no" title="statement not covered" >result.documentReady === 'complete' || result.documentReady === 'interactive';</span>
-      
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      return {</span>
         healthy: isResponsive,
         documentState: result.documentReady,
@@ -1466,7 +1529,7 @@ class Automator {
    */
   async <span class="fstat-no" title="function not covered" >checkConnectionHealth(</span>wsEndpoint, page = <span class="branch-0 cbranch-no" title="branch not covered" >null)</span> {
     const connectionInfo = <span class="cstat-no" title="statement not covered" >this.connections.get(wsEndpoint);</span>
-    
+&nbsp;
     const checks = <span class="cstat-no" title="statement not covered" >{</span>
       browserConnection: false,
       network: null,
@@ -1493,9 +1556,9 @@ class Automator {
     }
 &nbsp;
     // Determine overall health
-    const healthy = <span class="cstat-no" title="statement not covered" >checks.browserConnection &amp;&amp; </span>
-                   (checks.network?.healthy !== false) &amp;&amp;
-                   (checks.page?.healthy !== false);
+    const healthy = <span class="cstat-no" title="statement not covered" >checks.browserConnection &amp;&amp;</span>
+      (checks.network?.healthy !== false) &amp;&amp;
+      (checks.page?.healthy !== false);
 &nbsp;
     const result = <span class="cstat-no" title="statement not covered" >{</span>
       endpoint: wsEndpoint,
@@ -1529,7 +1592,7 @@ class Automator {
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      if (connectionInfo?.browser?.isConnected()) {</span>
 <span class="cstat-no" title="statement not covered" >        recoverySteps.push({ step: 'browser_check', success: true });</span>
-        
+&nbsp;
         // Step 2: Try page navigation if page provided
 <span class="cstat-no" title="statement not covered" >        if (page &amp;&amp; !page.isClosed()) {</span>
 <span class="cstat-no" title="statement not covered" >          try {</span>
@@ -1537,7 +1600,7 @@ class Automator {
 <span class="cstat-no" title="statement not covered" >            recoverySteps.push({ step: 'page_reload', success: true });</span>
           } catch (error) {
 <span class="cstat-no" title="statement not covered" >            recoverySteps.push({ step: 'page_reload', success: false, error: error.message });</span>
-            
+&nbsp;
             // Step 3: Try navigating directly to home
 <span class="cstat-no" title="statement not covered" >            try {</span>
 <span class="cstat-no" title="statement not covered" >              await page.goto('https://x.com/home', { waitUntil: 'domcontentloaded', timeout: 20000 });</span>
@@ -1549,7 +1612,7 @@ class Automator {
         }
       } else {
 <span class="cstat-no" title="statement not covered" >        recoverySteps.push({ step: 'browser_check', success: false, error: 'Browser disconnected' });</span>
-        
+&nbsp;
         // Try to reconnect
 <span class="cstat-no" title="statement not covered" >        try {</span>
 <span class="cstat-no" title="statement not covered" >          await this.reconnect(wsEndpoint);</span>
@@ -1564,7 +1627,7 @@ class Automator {
 &nbsp;
     // Determine if recovery was successful
     const recoverySuccessful = <span class="cstat-no" title="statement not covered" >recoverySteps.some(<span class="fstat-no" title="function not covered" >step </span>=&gt; <span class="cstat-no" title="statement not covered" >step.success)</span>;</span>
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    logger.warn(`[Health] Recovery ${recoverySuccessful ? 'succeeded' : 'failed'} for ${wsEndpoint}`);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return {</span>
@@ -1590,7 +1653,7 @@ class Automator {
 <span class="cstat-no" title="statement not covered" >    for (const endpoint of endpoints) {</span>
       const health = <span class="cstat-no" title="statement not covered" >await this.checkConnectionHealth(endpoint);</span>
 <span class="cstat-no" title="statement not covered" >      summary.connections[endpoint] = health;</span>
-      
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      if (health.healthy) {</span>
 <span class="cstat-no" title="statement not covered" >        summary.healthy++;</span>
       } else {
@@ -1642,7 +1705,7 @@ export { Automator };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../prettify.js"></script>
         <script>

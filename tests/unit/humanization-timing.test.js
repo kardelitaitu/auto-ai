@@ -3,6 +3,25 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HumanTiming } from '../../utils/humanization/timing.js';
 import { mathUtils } from '../../utils/mathUtils.js';
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockResolvedValue(true),
+        exists: vi.fn().mockResolvedValue(true),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
+    }
+}));
+import { api } from '../../api/index.js';
+
 // Mock dependencies
 vi.mock('../../utils/mathUtils.js', () => ({
     mathUtils: {
@@ -24,6 +43,8 @@ describe('HumanTiming', () => {
     let mockLogger;
 
     beforeEach(() => {
+        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         vi.useFakeTimers();
         vi.setSystemTime(new Date('2024-01-01T12:00:00'));
         vi.clearAllMocks();
@@ -145,7 +166,7 @@ describe('HumanTiming', () => {
             await humanTiming.sessionRampUp();
             
             // 2 steps
-            expect(mockPage.waitForTimeout).toHaveBeenCalledTimes(2);
+            expect(api.wait).toHaveBeenCalledTimes(2);
         });
     });
 

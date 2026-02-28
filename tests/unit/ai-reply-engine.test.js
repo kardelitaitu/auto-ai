@@ -266,7 +266,7 @@ describe('ai-reply-engine', () => {
   });
 
   it('generates reply and extracts from response', async () => {
-    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99);
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     sentimentService.analyzeForReplySelection.mockReturnValue({
       strategy: 'mixed',
       distribution: { positive: 1, negative: 0, sarcastic: 0 },
@@ -279,7 +279,7 @@ describe('ai-reply-engine', () => {
     };
     engine = new AIReplyEngine(agent, { replyProbability: 1, maxRetries: 1 });
     const result = await engine.generateReply('tweet text', 'user', { replies: [{ author: 'a', text: 'nice' }] });
-    randomSpy.mockRestore();
+    Math.random.mockRestore();
     expect(result.success).toBe(true);
     expect(result.reply).toContain('Great point');
   });
@@ -316,12 +316,12 @@ describe('ai-reply-engine', () => {
   });
 
   it('generates quick fallback replies by pattern', () => {
-    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0);
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     expect(engine.generateQuickFallback('Why is this?')).toBe('Great point!');
     expect(engine.generateQuickFallback('This is amazing')).toBe('Great point!');
     expect(engine.generateQuickFallback('This is the worst')).toBe("Great point!");
     expect(engine.generateQuickFallback('Just a statement')).toBe('Great point!');
-    randomSpy.mockRestore();
+    Math.random.mockRestore();
   });
 
   it('returns advanced validation failures for generic template and mentions', () => {

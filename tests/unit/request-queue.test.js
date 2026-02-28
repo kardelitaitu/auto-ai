@@ -194,14 +194,13 @@ describe('core/request-queue', () => {
         });
 
         it('should clear queue', async () => {
-            const task = () => new Promise(r => setTimeout(r, 1000));
-            queue.enqueue(task).catch(() => { });
-            queue.enqueue(task).catch(() => { });
-
+            queue.pause();
+            const task = () => Promise.resolve();
+            
             const p1 = queue.enqueue(task);
             const p2 = queue.enqueue(task);
-            p1.catch(() => {});
-            p2.catch(() => {});
+            
+            expect(queue.queue.length).toBe(2);
 
             queue.clear();
 

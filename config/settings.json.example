@@ -1,0 +1,300 @@
+{
+  "twitter": {
+    "session": {
+      "minSeconds": 300,
+      "maxSeconds": 540,
+      "randomProfile": true
+    },
+    "engagement": {
+      "maxReplies": 3,
+      "maxRetweets": 1,
+      "maxQuotes": 1,
+      "maxLikes": 5,
+      "maxFollows": 2,
+      "maxBookmarks": 2
+    },
+    "reply": {
+      "probability": 0.6,
+      "minChars": 10,
+      "maxChars": 200,
+      "emojiChance": 0.3,
+      "questionChance": 0.2,
+      "methods": {
+        "replyA": {
+          "weight": 40,
+          "enabled": true
+        },
+        "replyB": {
+          "weight": 40,
+          "enabled": true
+        },
+        "replyC": {
+          "weight": 20,
+          "enabled": true
+        }
+      }
+    },
+    "quote": {
+      "probability": 0.2,
+      "methods": {
+        "quoteA": {
+          "weight": 40,
+          "enabled": true
+        },
+        "quoteB": {
+          "weight": 40,
+          "enabled": true
+        },
+        "quoteC": {
+          "weight": 10,
+          "enabled": true
+        }
+      }
+    },
+    "timing": {
+      "warmupMin": 1000,
+      "warmupMax": 3000,
+      "scrollMin": 300,
+      "scrollMax": 700,
+      "scrollPauseMin": 1500,
+      "scrollPauseMax": 4000,
+      "readMin": 5000,
+      "readMax": 15000,
+      "diveRead": 10000,
+      "globalScrollMultiplier": 2.0
+    },
+    "phases": {
+      "warmupPercent": 0.1,
+      "activePercent": 0.7,
+      "cooldownPercent": 0.2
+    },
+    "actions": {
+      "reply": {
+        "probability": 0.6,
+        "enabled": true
+      },
+      "quote": {
+        "probability": 0.2,
+        "enabled": true
+      },
+      "like": {
+        "probability": 0.15,
+        "enabled": true
+      },
+      "bookmark": {
+        "probability": 0.05,
+        "enabled": true
+      },
+      "retweet": {
+        "probability": 0.2,
+        "enabled": true
+      }
+    },
+    "goHome": {
+      "enabled": true
+    }
+  },
+  "ui": {
+    "dashboard": {
+      "enabled": true,
+      "port": 3001,
+      "broadcastIntervalMs": 2000,
+      "colorScheme": "dark"
+    }
+  },
+  "llm": {
+    "vllm": {
+      "enabled": false,
+      "endpoint": "http://localhost:8000/v1",
+      "model": "meta-llama/Llama-3.3-70B-Instruct",
+      "timeout": 120000
+    },
+    "local": {
+      "enabled": false,
+      "provider": "ollama",
+      "endpoint": "http://localhost:11434",
+      "model": "hermes3:8b",
+      "textModel": "hermes3:8b",
+      "timeout": 30000,
+      "warmup": false,
+      "vision": false
+    },
+    "cloud": {
+      "provider": "openrouter",
+      "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+      "timeout": 120000,
+      "enabled": true,
+      "retryAttempts": 1,
+      "retryDelay": 3000,
+      "requestQueue": {
+        "enabled": true,
+        "interval": 300
+      },
+      "providers": [
+        {
+          "name": "openrouter1",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "arcee-ai/trinity-large-preview:free"
+        },
+        {
+          "name": "openrouter2",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "tngtech/deepseek-r1t2-chimera:free"
+        },
+        {
+          "name": "openrouter3",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "z-ai/glm-4.5-air:free"
+        },
+        {
+          "name": "openrouter4",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "stepfun/step-3.5-flash:free"
+        },
+        {
+          "name": "openrouter5",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "tngtech/deepseek-r1t-chimera:free"
+        },
+        {
+          "name": "openrouter6",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "arcee-ai/trinity-mini:free"
+        },
+        {
+          "name": "openrouter7",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "meta-llama/llama-3.3-70b-instruct:free"
+        },
+        {
+          "name": "openrouter8",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "qwen/qwen3-next-80b-a3b-instruct:free"
+        },
+        {
+          "name": "openrouter9",
+          "apiKey": "YOUR_OPENROUTER_API_KEY",
+          "model": "google/gemma-3-27b-it:free"
+        }
+      ]
+    },
+    "fallback": {
+      "enabled": true,
+      "maxRetries": 2,
+      "retryDelay": 2000
+    }
+  },
+  "humanization": {
+    "mouse": {
+      "minDuration": 300,
+      "maxDuration": 1500,
+      "baseSpeed": 2.0,
+      "jitterRange": 2
+    },
+    "keystroke": {
+      "baseDelay": 120,
+      "stdDev": 40,
+      "punctuationPause": 300,
+      "spacePause": 150
+    },
+    "idle": {
+      "wiggleFrequency": 2000,
+      "wiggleMagnitude": 5,
+      "enabled": true
+    }
+  },
+  "verification": {
+    "auditTimeout": 5000,
+    "preFlightEnabled": true,
+    "postFlightEnabled": true,
+    "waitForStateTimeout": 5000
+  },
+  "state": {
+    "maxBreadcrumbs": 50,
+    "compactionThreshold": 20
+  },
+  "system": {
+    "environment": "development",
+    "logLevel": "info",
+    "sessionTimeoutMs": 1800000,
+    "cleanupIntervalMs": 300000
+  },
+  "concurrencyPerBrowser": 50,
+  "open_router_free_api": {
+    "enabled": false,
+    "api_keys": [
+      "YOUR_OPENROUTER_API_KEY_1",
+      "YOUR_OPENROUTER_API_KEY_2",
+      "YOUR_OPENROUTER_API_KEY_3"
+    ],
+    "models": {
+      "primary": "arcee-ai/trinity-large-preview:free",
+      "fallbacks": [
+        "nousresearch/hermes-3-llama-3.1-405b:free",
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+        "google/gemma-3-27b-it:free",
+        "qwen/qwen3-next-80b-a3b-instruct:free",
+        "mistralai/mistral-small-3.1-24b-instruct:free",
+        "tngtech/deepseek-r1t-chimera:free",
+        "tngtech/deepseek-r1t2-chimera:free",
+        "upstage/solar-pro-3:free",
+        "stepfun/step-3.5-flash:free",
+        "openrouter/free"
+      ]
+    },
+    "proxy": {
+      "enabled": true,
+      "fallback_to_direct": true,
+      "list": [
+        "PROXY_HOST:PORT:USERNAME:PASSWORD",
+        "PROXY_HOST:PORT:USERNAME:PASSWORD"
+      ]
+    }
+  },
+  "logging": {
+    "engagementProgress": {
+      "enabled": true,
+      "showProgressBar": true,
+      "progressBarStyle": "blocks",
+      "showPercent": true,
+      "showCounts": true,
+      "types": {
+        "replies": {
+          "show": true,
+          "label": "replies"
+        },
+        "retweets": {
+          "show": true,
+          "label": "retweets"
+        },
+        "quotes": {
+          "show": true,
+          "label": "quotes"
+        },
+        "likes": {
+          "show": true,
+          "label": "likes"
+        },
+        "follows": {
+          "show": true,
+          "label": "follows"
+        },
+        "bookmarks": {
+          "show": true,
+          "label": "bookmarks"
+        }
+      }
+    },
+    "finalStats": {
+      "enabled": true,
+      "showQueueStatus": true,
+      "showEngagement": true,
+      "showDuration": true
+    },
+    "queueMonitor": {
+      "enabled": true,
+      "interval": 30000
+    }
+  }
+}

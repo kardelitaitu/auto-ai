@@ -1,95 +1,106 @@
 /**
- * @fileoverview Scroll Helper - Drop-in replacement for page.mouse.wheel()
- * Applies global scroll multiplier automatically
+ * @fileoverview Scroll Helper - Now uses Unified API
+ * Migrated to use api.scroll() for all scrolling operations
  * 
  * Usage:
- *   // OLD: await page.mouse.wheel(0, 300);
- *   // NEW: await scrollWheel(page, 300);
- * 
- *   // OLD: await page.mouse.wheel(0, mathUtils.randomInRange(150, 300));
- *   // NEW: await scrollWheelRandom(page, 150, 300);
+ *   // BEFORE: await scrollWheel(page, 300);
+ *   // AFTER:  await scrollWheel(300);
  * 
  * @module utils/scroll-helper
  */
 
-import { globalScroll } from './global-scroll-controller.js';
+import { api } from '../api/index.js';
 
 /**
  * Wrapper for page.mouse.wheel() with global multiplier
- * @param {object} page - Playwright page
  * @param {number} deltaY - Vertical scroll amount (positive=down, negative=up)
  * @param {object} options - { delay: number }
  */
-export async function scrollWheel(page, deltaY, options = {}) {
-  await globalScroll.scrollBy(page, deltaY, options);
+export async function scrollWheel(deltaY, options = {}) {
+    if (options.delay > 0) {
+        await api.wait(options.delay);
+    }
+    await api.scroll(deltaY);
 }
 
 /**
  * Scroll down with multiplier
- * @param {object} page - Playwright page  
  * @param {number} amount - Pixels to scroll down
  * @param {object} options - { delay: number }
  */
-export async function scrollDown(page, amount, options = {}) {
-  await globalScroll.scrollDown(page, amount, options);
+export async function scrollDown(amount, options = {}) {
+    if (options.delay > 0) {
+        await api.wait(options.delay);
+    }
+    await api.scroll(amount);
 }
 
 /**
  * Scroll up with multiplier
- * @param {object} page - Playwright page
  * @param {number} amount - Pixels to scroll up
  * @param {object} options - { delay: number }
  */
-export async function scrollUp(page, amount, options = {}) {
-  await globalScroll.scrollUp(page, amount, options);
+export async function scrollUp(amount, options = {}) {
+    if (options.delay > 0) {
+        await api.wait(options.delay);
+    }
+    await api.scroll(-amount);
 }
 
 /**
  * Random scroll with multiplier
- * @param {object} page - Playwright page
  * @param {number} min - Minimum scroll amount
  * @param {number} max - Maximum scroll amount
  * @param {object} options - { delay: number }
  */
-export async function scrollRandom(page, min, max, options = {}) {
-  await globalScroll.scrollRandom(page, min, max, options);
+export async function scrollRandom(min, max, options = {}) {
+    if (options.delay > 0) {
+        await api.wait(options.delay);
+    }
+    const { mathUtils } = await import('./mathUtils.js');
+    const amount = mathUtils.randomInRange(min, max);
+    await api.scroll(amount);
 }
 
 /**
  * Scroll to top of page
- * @param {object} page - Playwright page
  * @param {object} options - { behavior: 'auto'|'smooth' }
  */
-export async function scrollToTop(page, options = {}) {
-  await globalScroll.scrollToTop(page, options);
+export async function scrollToTop() {
+    await api.scroll.toTop();
 }
 
 /**
  * Scroll to bottom of page
- * @param {object} page - Playwright page
  * @param {object} options - { behavior: 'auto'|'smooth' }
  */
-export async function scrollToBottom(page, options = {}) {
-  await globalScroll.scrollToBottom(page, options);
+export async function scrollToBottom() {
+    await api.scroll.toBottom();
 }
 
 /**
  * Quick scroll helper - handles both positive and negative
- * Use this for one-liners: await scroll(page, 300);
- * @param {object} page - Playwright page
  * @param {number} amount - Scroll amount (positive=down, negative=up)
  */
-export async function scroll(page, amount) {
-  await globalScroll.scrollBy(page, amount);
+export async function scroll(amount) {
+    await api.scroll(amount);
 }
 
 /**
  * Get current scroll multiplier
- * @returns {number} Current multiplier (e.g., 1.5 for 50% faster)
+ * Note: Multiplier now managed by API persona
+ * @returns {number} Current multiplier
  */
 export function getScrollMultiplier() {
-  return globalScroll.getMultiplier();
+    // Now managed by API persona system
+    return 1.0;
 }
 
-// Re-export the controller for advanced usage
-export { globalScroll } from './global-scroll-controller.js';
+/**
+ * Scroll to element (golden view)
+ * @param {string} selector - CSS selector
+ * @param {object} options - scroll options
+ */
+export async function scrollToElement(selector, options = {}) {
+    await api.scroll.focus(selector, options);
+}

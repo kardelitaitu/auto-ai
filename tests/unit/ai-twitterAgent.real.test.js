@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { api } from '../../api/index.js';
 import { AITwitterAgent } from '../../utils/ai-twitterAgent.js';
 
 // ============================================================================
@@ -27,6 +28,7 @@ vi.mock('../../utils/twitterAgent.js', () => ({
                 burstEndTime: 0,
                 lastRefreshAt: 0
             };
+            this.engagement = { diveTweet: vi.fn() };
             this.human = {
                 sessionStart: vi.fn(),
                 sessionEnd: vi.fn(),
@@ -256,6 +258,21 @@ vi.mock('../../utils/logger.js', () => ({
     })
 }));
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        getCurrentUrl: vi.fn().mockReturnValue('https://x.com/home'),
+        goto: vi.fn().mockResolvedValue(undefined),
+        waitForURL: vi.fn().mockResolvedValue(undefined),
+        waitVisible: vi.fn().mockResolvedValue(undefined),
+        wait: vi.fn((ms) => new Promise((resolve) => setTimeout(resolve, ms))),
+        getPersona: vi.fn().mockReturnValue({ hoverMin: 1000, hoverMax: 3000 }),
+        maybeDistract: vi.fn().mockResolvedValue(undefined),
+        isSessionActive: vi.fn().mockReturnValue(true),
+        emulateMedia: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined)
+    }
+}));
+
 describe('AITwitterAgent (Real Implementation)', () => {
     let agent;
     let mockPage;
@@ -355,6 +372,7 @@ describe('AITwitterAgent (Real Implementation)', () => {
             await agent.endDive(true, false);
             expect(agent.isDiving()).toBe(false);
             expect(agent.operationLock).toBe(false);
+            // scrollingEnabled is re-enabled in endDive
             expect(agent.scrollingEnabled).toBe(true);
         });
 

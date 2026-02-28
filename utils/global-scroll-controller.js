@@ -1,3 +1,4 @@
+import { api } from '../api/index.js';
 /**
  * @fileoverview Global Scroll Controller
  * Centralizes all scrolling operations with configurable multiplier
@@ -72,7 +73,7 @@ class GlobalScrollController {
     const { delay = 0 } = options;
     
     if (delay > 0) {
-      await page.waitForTimeout(delay);
+      await api.wait(delay);
     }
     
     await page.mouse.wheel(0, adjustedAmount);
@@ -87,7 +88,7 @@ class GlobalScrollController {
     const { delay = 0 } = options;
     
     if (delay > 0) {
-      await page.waitForTimeout(delay);
+      await api.wait(delay);
     }
     
     await page.mouse.wheel(0, -adjustedAmount);
@@ -103,7 +104,7 @@ class GlobalScrollController {
     const { delay = 0 } = options;
     
     if (delay > 0) {
-      await page.waitForTimeout(delay);
+      await api.wait(delay);
     }
     
     await page.mouse.wheel(0, amount * direction);
@@ -157,7 +158,7 @@ class GlobalScrollController {
     const { delay = 0 } = options;
     
     if (delay > 0) {
-      await page.waitForTimeout(delay);
+      await api.wait(delay);
     }
     
     await page.mouse.wheel(0, adjustedAmount);
@@ -175,7 +176,7 @@ class GlobalScrollController {
     
     for (let i = 0; i < steps; i++) {
       await page.mouse.wheel(0, stepAmount);
-      await page.waitForTimeout(mathUtils.randomInRange(minDelay, maxDelay));
+      await api.wait(mathUtils.randomInRange(minDelay, maxDelay));
     }
   }
 
@@ -189,7 +190,7 @@ class GlobalScrollController {
     for (let i = 0; i < iterations; i++) {
       const scrollAmount = this.applyRandom(minScroll, maxScroll);
       await page.mouse.wheel(0, scrollAmount);
-      await page.waitForTimeout(mathUtils.randomInRange(minDelay, maxDelay));
+      await api.wait(mathUtils.randomInRange(minDelay, maxDelay));
     }
   }
 

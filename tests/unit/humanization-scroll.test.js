@@ -49,12 +49,33 @@ import { mathUtils } from '../../utils/mathUtils.js';
 import { entropy } from '../../utils/entropyController.js';
 import * as scrollHelper from '../../utils/scroll-helper.js';
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockResolvedValue(true),
+        exists: vi.fn().mockResolvedValue(true),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
+    }
+}));
+import { api } from '../../api/index.js';
+
 describe('HumanScroll', () => {
     let humanScroll;
     let mockPage;
     let mockLogger;
 
     beforeEach(() => {
+        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         // Reset mocks
         vi.clearAllMocks();
 
@@ -95,7 +116,7 @@ describe('HumanScroll', () => {
             // Should call scrollRandom at least once
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
             // Should wait between bursts
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
 
         it('should handle "up" direction', async () => {
@@ -163,7 +184,7 @@ describe('HumanScroll', () => {
 
             await humanScroll.execute('down', 'normal');
 
-            expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(mockPage, 20, 50);
+            expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(20, 50);
         });
     });
 
@@ -173,6 +194,8 @@ describe('HumanScroll', () => {
         let mockBox;
 
         beforeEach(() => {
+        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
             mockBox = { x: 0, y: 1000, width: 100, height: 100 };
             mockElement = {
                 boundingBox: vi.fn().mockResolvedValue(mockBox)
@@ -227,7 +250,7 @@ describe('HumanScroll', () => {
             await humanScroll.toElement(mockLocator);
 
             // Should call scrollRandom as fallback
-            expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(mockPage, 200, 200);
+            expect(scrollHelper.scrollRandom).toHaveBeenCalledWith(200, 200);
         });
     });
 
@@ -238,7 +261,7 @@ describe('HumanScroll', () => {
             await humanScroll.microAdjustments();
 
             expect(scrollHelper.scrollRandom).toHaveBeenCalledTimes(2);
-            expect(mockPage.waitForTimeout).toHaveBeenCalledTimes(2);
+            expect(api.wait).toHaveBeenCalledTimes(2);
         });
     });
 
@@ -269,7 +292,7 @@ describe('HumanScroll', () => {
             await humanScroll.deepScroll();
 
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 });

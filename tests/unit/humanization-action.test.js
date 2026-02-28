@@ -1,5 +1,17 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        goto: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+    }
+}));
+import { api } from '../../api/index.js';
 import { ActionPredictor } from '../../utils/humanization/action.js';
 import { mathUtils } from '../../utils/mathUtils.js';
 import * as scrollHelper from '../../utils/scroll-helper.js';
@@ -47,8 +59,11 @@ describe('ActionPredictor', () => {
             mouse: {
                 move: vi.fn().mockResolvedValue(undefined)
             },
-            evaluate: vi.fn().mockResolvedValue(undefined)
+            evaluate: vi.fn().mockResolvedValue(undefined),
+            isClosed: vi.fn().mockReturnValue(false),
+            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
         };
+        api.getPage.mockReturnValue(mockPage);
 
         mockLogger = {
             log: vi.fn(),
@@ -169,7 +184,7 @@ describe('ActionPredictor', () => {
             await actionPredictor._actionScroll(mockPage);
             
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
 
         it('should use random direction when Math.random is low', async () => {
@@ -214,7 +229,7 @@ describe('ActionPredictor', () => {
             await actionPredictor._actionBack(mockPage);
             
             expect(mockPage.goBack).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
 
         it('should tolerate goBack rejection', async () => {
@@ -222,7 +237,7 @@ describe('ActionPredictor', () => {
             
             await actionPredictor._actionBack(mockPage);
             
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 
@@ -230,8 +245,8 @@ describe('ActionPredictor', () => {
         it('should navigate to explore and wait', async () => {
             await actionPredictor._actionExplore(mockPage);
             
-            expect(mockPage.goto).toHaveBeenCalledWith('https://x.com/explore', expect.any(Object));
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.goto).toHaveBeenCalledWith('https://x.com/explore', expect.any(Object));
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 
@@ -243,7 +258,7 @@ describe('ActionPredictor', () => {
             await actionPredictor._actionProfile(mockPage);
             
             expect(mockLink.click).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
 
         it('should tolerate profile click rejection', async () => {
@@ -252,7 +267,7 @@ describe('ActionPredictor', () => {
             
             await actionPredictor._actionProfile(mockPage);
             
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
         });
     });
 
@@ -263,7 +278,7 @@ describe('ActionPredictor', () => {
             
             await actionPredictor._actionIdle(mockPage);
             
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
             expect(mockPage.mouse.move).toHaveBeenCalled();
         });
     });

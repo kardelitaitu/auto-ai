@@ -1,6 +1,27 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { microInteractions } from '../../utils/micro-interactions.js';
 
+vi.mock('../../api/index.js', () => ({
+    api: {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        scroll: vi.fn().mockResolvedValue(undefined),
+        scrollToTop: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        click: vi.fn().mockResolvedValue(undefined),
+    }
+}));
+
+vi.mock('../../api/core/context.js', () => ({
+    setSessionInterval: vi.fn(),
+    clearSessionInterval: vi.fn(),
+    withPage: vi.fn((page, fn) => fn())
+}));
+
+import { api } from '../../api/index.js';
+import { setSessionInterval, clearSessionInterval } from '../../api/core/context.js';
+
 describe('microInteractions', () => {
     let handler;
     let mockPage;
@@ -27,8 +48,11 @@ describe('microInteractions', () => {
             },
             waitForTimeout: vi.fn(),
             click: vi.fn(),
-            viewportSize: vi.fn().mockReturnValue({ width: 1280, height: 720 })
+            viewportSize: vi.fn().mockReturnValue({ width: 1280, height: 720 }),
+            isClosed: vi.fn().mockReturnValue(false),
+            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
         };
+        api.getPage.mockReturnValue(mockPage);
         
         vi.useFakeTimers();
     });
@@ -106,14 +130,14 @@ describe('microInteractions', () => {
             expect(result.success).toBe(true);
             expect(result.type).toBe('logo_click');
             expect(mockLogo.click).toHaveBeenCalled();
-        });
+        }, 10000);
 
         it('should return failure if logo not found', async () => {
             mockPage.$.mockResolvedValue(null);
             const result = await handler.logoClick(mockPage, { logger: mockLogger });
             expect(result.success).toBe(false);
             expect(result.reason).toBe('no_logo');
-        });
+        }, 10000);
     });
 
     describe('whitespaceClick', () => {
@@ -122,7 +146,7 @@ describe('microInteractions', () => {
 
             expect(result.success).toBe(true);
             expect(result.type).toBe('whitespace_click');
-            expect(mockPage.click).toHaveBeenCalled();
+            expect(mockPage.mouse.click).toHaveBeenCalled();
         });
     });
 
@@ -162,18 +186,17 @@ describe('microInteractions', () => {
     
     describe('fidgetLoop', () => {
         it('should start and stop fidget loop', () => {
-            const interval = handler.startFidgetLoop(mockPage, { logger: mockLogger });
-            expect(interval).toBeDefined();
+            handler.startFidgetLoop(mockPage, { logger: mockLogger });
+            expect(setSessionInterval).toHaveBeenCalled();
             
-            const stopped = handler.stopFidgetLoop();
-            expect(stopped).toBe(true);
+            handler.stopFidgetLoop();
+            expect(clearSessionInterval).toHaveBeenCalled();
         });
 
         it('should clear existing interval when starting new loop', () => {
             handler.startFidgetLoop(mockPage, { logger: mockLogger });
-            const interval2 = handler.startFidgetLoop(mockPage, { logger: mockLogger });
-            expect(interval2).toBeDefined();
-            handler.stopFidgetLoop();
+            handler.startFidgetLoop(mockPage, { logger: mockLogger });
+            expect(clearSessionInterval).toHaveBeenCalled();
         });
     });
 

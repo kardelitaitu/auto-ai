@@ -23,10 +23,10 @@ export default defineConfig({
 
     cache: true,
 
-    pool: 'threads',
+    pool: 'forks',
     maxWorkers,
     fileParallelism: true,
-    isolate: false,
+    isolate: true,
 
     coverage: {
       provider: 'v8',
@@ -47,10 +47,10 @@ export default defineConfig({
         'ui/electron-dashboard/',
       ],
       thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 80,
-        statements: 80,
+        lines: 98.14,
+        functions: 90,
+        branches: 100,
+        statements: 98.4,
         autoUpdate: true
       }
     },

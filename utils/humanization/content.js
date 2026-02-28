@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 /**
  * Content Skimmer
  * Human-like content consumption patterns
@@ -19,11 +20,11 @@ export class ContentSkimmer {
         this.logger = logger;
         this.agent = null;
     }
-    
+
     setAgent(agent) {
         this.agent = agent;
     }
-    
+
     /**
      * Main content consumption method
      * 
@@ -37,9 +38,9 @@ export class ContentSkimmer {
             read: { read: 5000, scroll: 150, pause: 1500 },
             deep: { read: 10000, scroll: 200, pause: 2500 }
         };
-        
+
         const config = durationConfig[duration] || durationConfig.skim;
-        
+
         switch (type) {
             case 'tweet':
                 await this._skimTweet(config);
@@ -57,7 +58,7 @@ export class ContentSkimmer {
                 await this._skimTweet(config);
         }
     }
-    
+
     /**
      * Reading behavior (for "reading" logs)
      */
@@ -67,92 +68,92 @@ export class ContentSkimmer {
             normal: { min: 2000, max: 4000 },
             long: { min: 4000, max: 8000 }
         };
-        
+
         const config = durationMap[duration] || durationMap.normal;
         const readTime = mathUtils.randomInRange(config.min, config.max);
-        
-        await this.page.waitForTimeout(readTime);
-        
+
+        await api.wait(readTime);
+
         if (this.agent) {
             this.agent.log(`[Read] Reading for ${readTime}ms...`);
         }
     }
-    
+
     // ==========================================
     // PRIVATE METHODS
     // ==========================================
-    
+
     /**
      * Skim a single tweet
      */
     async _skimTweet(config) {
         // Quick glance
-        await this.page.waitForTimeout(config.read);
-        
+        await api.wait(1000);
+
         // Sometimes scroll a bit
         if (mathUtils.roll(0.3)) {
-            await scrollRandom(this.page, config.scroll, config.scroll);
-            await this.page.waitForTimeout(config.pause);
+            await scrollRandom(config.scroll, config.scroll);
+            await api.wait(1000);
         }
-        
+
         // Micro-adjustments
         await this._microAdjustments(2);
     }
-    
+
     /**
      * Skim a thread
      */
     async _skimThread(config) {
         // Read first tweet
-        await this.page.waitForTimeout(config.read);
-        
+        await api.wait(1000);
+
         // Scroll through thread (2-4 tweets)
         const tweetCount = mathUtils.randomInRange(2, 4);
-        
+
         for (let i = 0; i < tweetCount; i++) {
-            await scrollRandom(this.page, config.scroll, config.scroll);
-            await this.page.waitForTimeout(config.pause);
+            await scrollRandom(config.scroll, config.scroll);
+            await api.wait(1000);
         }
-        
+
         // Go back up slightly (finished reading)
         if (mathUtils.roll(0.5)) {
-            await scrollRandom(this.page, 100, 200);
+            await scrollRandom(-200, -100);
         }
     }
-    
+
     /**
      * Skim media (image/video)
      */
     async _skimMedia(config) {
         // Quick glance at media
-        await this.page.waitForTimeout(config.read * 0.5);
-        
+        await api.wait(1000);
+
         // Sometimes zoom or interact
         if (mathUtils.roll(0.2)) {
             // Simulate "looking closer"
-            await scrollRandom(this.page, config.scroll, config.scroll);
+            await scrollRandom(config.scroll, config.scroll);
         }
-        
-        await this.page.waitForTimeout(config.pause);
+
+        await api.wait(1000);
     }
-    
+
     /**
      * Skim profile
      */
     async _skimProfile(config) {
         // Check profile info
-        await this.page.waitForTimeout(config.read);
-        
+        await api.wait(config.pause);
+
         // Scroll through bio and recent tweets
-        await scrollRandom(this.page, config.scroll * 2, config.scroll * 2);
-        await this.page.waitForTimeout(config.pause);
-        
+        await scrollRandom(config.scroll * 2, config.scroll * 2);
+        await api.wait(config.pause);
+
         // Sometimes check pinned tweet
         if (mathUtils.roll(0.3)) {
-            await this.page.waitForTimeout(2000);
+            await api.wait(config.pause * 2);
         }
     }
-    
+
     /**
      * Micro-adjustments during "reading"
      */
@@ -162,57 +163,57 @@ export class ContentSkimmer {
             const x = mathUtils.randomInRange(-20, 20);
             const y = mathUtils.randomInRange(-10, 10);
             await this.page.mouse.move(x, y);
-            await this.page.waitForTimeout(mathUtils.randomInRange(100, 300));
+            await api.wait(1000);
         }
     }
-    
+
     // ==========================================
     // SPECIALIZED PATTERNS
     // ==========================================
-    
+
     /**
      * "Skimming" pattern - quick scan through feed
      */
     async skimFeed() {
         const cycleCount = mathUtils.randomInRange(3, 6);
-        
+
         for (let i = 0; i < cycleCount; i++) {
             // Quick scroll
-            await scrollRandom(this.page, 100, 200);
-            
+            await scrollRandom(100, 200);
+
             // Brief pause (glance)
-            await this.page.waitForTimeout(mathUtils.randomInRange(200, 500));
-            
+            await api.wait(1000);
+
             // Occasional stop (interesting content)
             if (mathUtils.roll(0.2)) {
-                await this.page.waitForTimeout(mathUtils.randomInRange(1000, 2000));
+                await api.wait(1000);
             }
         }
     }
-    
+
     /**
      * "Deep reading" pattern - focus on interesting content
      */
     async deepRead() {
         // Settle in
-        await this.page.waitForTimeout(1000);
-        
+        await api.wait(2000);
+
         // Read for extended period
-        await this.page.waitForTimeout(mathUtils.randomInRange(5000, 10000));
-        
+        await api.wait(2000);
+
         // Occasional note-taking (bookmark/save)
         if (mathUtils.roll(0.2)) {
             // Simulate "bookmarking for later"
-            await this.page.waitForTimeout(2000);
+            await api.wait(2000);
         }
     }
-    
+
     /**
      * "Quick glance" pattern - almost no time
      */
     async quickGlance() {
-        await this.page.waitForTimeout(mathUtils.randomInRange(500, 1000));
-        
+        await api.wait(1000);
+
         // Tiny movement to show "looking"
         await this.page.mouse.move(mathUtils.randomInRange(-10, 10), 0);
     }

@@ -5,6 +5,7 @@
  */
 
 import { createLogger } from '../utils/logger.js';
+import { getTimeoutValue } from '../utils/configLoader.js';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -25,22 +26,32 @@ const logger = createLogger('vision-packager.js');
  */
 class VisionPackager {
     constructor() {
+        this._configLoaded = false;
+        this._loadConfig();
+    }
+
+    async _loadConfig() {
+        if (this._configLoaded) return;
+
+        const visionConfig = await getTimeoutValue('vision', {});
+
         /** @type {string} Screenshot storage directory */
         this.screenshotDir = path.join(process.cwd(), 'screenshot');
 
         /** @type {number} Maximum image width for compression */
-        this.maxWidth = 1280;
+        this.maxWidth = visionConfig.maxWidth ?? 1280;
 
         /** @type {number} Maximum image height for compression */
-        this.maxHeight = 720;
+        this.maxHeight = visionConfig.maxHeight ?? 720;
 
         /** @type {number} JPEG quality (1-100) */
-        this.quality = 80;
+        this.quality = visionConfig.quality ?? 80;
 
         /** @type {number} Target file size in KB */
-        this.targetSizeKB = 50;
+        this.targetSizeKB = visionConfig.targetSizeKB ?? 50;
 
         logger.info(`VisionPackager initialized. Screenshot dir: ${this.screenshotDir}`);
+        this._configLoaded = true;
     }
 
     /**

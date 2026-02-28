@@ -4,6 +4,7 @@
  * Naming convention: yyyy-mm-dd-hh-mm-ss-[sessionname].jpg
  */
 
+import { api } from '../api/index.js';
 import fs from 'fs';
 import path from 'path';
 import { createLogger } from './logger.js';
@@ -26,8 +27,8 @@ export async function takeScreenshot(page, sessionName = 'unknown', suffix = '')
         }
 
         let actualSize = { width: 0, height: 0 };
-        if (page && typeof page.evaluate === 'function') {
-            actualSize = await page.evaluate(() => ({
+        if (api.getPage()) {
+            actualSize = await api.eval(() => ({
                 width: window.innerWidth,
                 height: window.innerHeight
             }));

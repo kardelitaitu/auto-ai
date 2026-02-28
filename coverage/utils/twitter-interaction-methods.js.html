@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/334</span>
+                <span class='fraction'>0/335</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/110</span>
+                <span class='fraction'>0/112</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/22</span>
+                <span class='fraction'>0/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/324</span>
+                <span class='fraction'>0/330</span>
             </div>
         
             
@@ -713,7 +713,19 @@
 <a name='L648'></a><a href='#L648'>648</a>
 <a name='L649'></a><a href='#L649'>649</a>
 <a name='L650'></a><a href='#L650'>650</a>
-<a name='L651'></a><a href='#L651'>651</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L651'></a><a href='#L651'>651</a>
+<a name='L652'></a><a href='#L652'>652</a>
+<a name='L653'></a><a href='#L653'>653</a>
+<a name='L654'></a><a href='#L654'>654</a>
+<a name='L655'></a><a href='#L655'>655</a>
+<a name='L656'></a><a href='#L656'>656</a>
+<a name='L657'></a><a href='#L657'>657</a>
+<a name='L658'></a><a href='#L658'>658</a>
+<a name='L659'></a><a href='#L659'>659</a>
+<a name='L660'></a><a href='#L660'>660</a>
+<a name='L661'></a><a href='#L661'>661</a>
+<a name='L662'></a><a href='#L662'>662</a>
+<a name='L663'></a><a href='#L663'>663</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -722,6 +734,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1222,11 +1236,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1252,12 +1268,18 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1266,12 +1288,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1372,6 +1396,8 @@
 /**
  * Reply Methods - Various strategies for posting replies
  */
+import { api } from '../api/index.js';
+&nbsp;
 export const replyMethods = <span class="cstat-no" title="statement not covered" >{</span>
     /**
      * Method A: Keyboard shortcut (R key)
@@ -1387,32 +1413,32 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >        while (!composerOpened &amp;&amp; attempt &lt;= maxRetries) {</span>
 <span class="cstat-no" title="statement not covered" >            if (attempt &gt; 0) {</span>
 <span class="cstat-no" title="statement not covered" >                logger.info(`[replyA] Retry ${attempt}/${maxRetries}...`);</span>
-<span class="cstat-no" title="statement not covered" >                await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >                await api.wait(1000);</span>
             }
 &nbsp;
             // Reset state
-<span class="cstat-no" title="statement not covered" >            await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
-<span class="cstat-no" title="statement not covered" >            await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >            await api.scroll.toTop();</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
 &nbsp;
             // Click main tweet to focus
 <span class="cstat-no" title="statement not covered" >            logger.info(`[replyA] Focusing main tweet...`);</span>
             const timeElement = <span class="cstat-no" title="statement not covered" >page.locator('article time').first();</span>
-<span class="cstat-no" title="statement not covered" >            if (await timeElement.count() &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >                await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });</span>
+<span class="cstat-no" title="statement not covered" >            if (await api.exists(timeElement)) {</span>
+<span class="cstat-no" title="statement not covered" >                await human.click(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >                logger.info(`[replyA] Clicked tweet timestamp`);</span>
             } else {
                 const tweetText = <span class="cstat-no" title="statement not covered" >page.locator('[data-testid="tweetText"]').first();</span>
-<span class="cstat-no" title="statement not covered" >                if (await tweetText.count() &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >                    await human.safeHumanClick(tweetText, 'Tweet Text', 3, { precision: 'high' });</span>
+<span class="cstat-no" title="statement not covered" >                if (await api.exists(tweetText)) {</span>
+<span class="cstat-no" title="statement not covered" >                    await human.click(tweetText, 'Tweet Text', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >                    logger.info(`[replyA] Clicked tweet text (fallback)`);</span>
                 }
             }
-<span class="cstat-no" title="statement not covered" >            await page.waitForTimeout(300);</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
 &nbsp;
             // Press R to open reply composer
 <span class="cstat-no" title="statement not covered" >            logger.info(`[replyA] Pressing R key...`);</span>
 <span class="cstat-no" title="statement not covered" >            await page.keyboard.press('r');</span>
-<span class="cstat-no" title="statement not covered" >            await page.waitForTimeout(2000);</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
 &nbsp;
             // Verify composer opened
             const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
@@ -1447,8 +1473,8 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
     replyB: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyB] Starting button click method`);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.scroll.toTop();</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Enhanced button finding with more detailed logging
         const btnResult = <span class="cstat-no" title="statement not covered" >await human.findElement(page,</span>
@@ -1479,7 +1505,7 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (elementInfo.disabled) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.warn(`[replyB] Reply button is disabled! Waiting...`);</span>
-<span class="cstat-no" title="statement not covered" >            await page.waitForTimeout(1000);</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
             const isDisabled = <span class="cstat-no" title="statement not covered" >await btnResult.element.evaluate(<span class="fstat-no" title="function not covered" >el </span>=&gt; <span class="cstat-no" title="statement not covered" >el.disabled || el.getAttribute('aria-disabled') === 'true')</span>;</span>
 <span class="cstat-no" title="statement not covered" >            if (isDisabled) {</span>
 <span class="cstat-no" title="statement not covered" >                logger.warn(`[replyB] Reply button still disabled. Attempting to click anyway.`);</span>
@@ -1509,7 +1535,7 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >            logger.info(`[replyB] safeHumanClick successful.`);</span>
         }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(2000);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         const verify = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
 <span class="cstat-no" title="statement not covered" >        if (!verify.open) {</span>
@@ -1541,17 +1567,17 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
     replyC: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Starting direct composer focus method`);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.scroll.toTop();</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Step 1: Focus main tweet by clicking timestamp
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Focusing main tweet...`);</span>
         const timeElement = <span class="cstat-no" title="statement not covered" >page.locator('article time').first();</span>
-<span class="cstat-no" title="statement not covered" >        if (await timeElement.count() &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >            await human.safeHumanClick(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });</span>
+<span class="cstat-no" title="statement not covered" >        if (await api.exists(timeElement)) {</span>
+<span class="cstat-no" title="statement not covered" >            await human.click(timeElement, 'Tweet Timestamp', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >            logger.info(`[replyC] Clicked tweet timestamp`);</span>
         }
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Step 2: Find and scroll to reply box
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Looking for reply box...`);</span>
@@ -1566,7 +1592,7 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });</span>
                 }
             });
-<span class="cstat-no" title="statement not covered" >            await page.waitForTimeout(1000);</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
         }
 &nbsp;
         // Re-check after scroll
@@ -1594,14 +1620,14 @@ export const replyMethods = <span class="cstat-no" title="statement not covered"
         // Step 3: Click the reply box
 <span class="cstat-no" title="statement not covered" >        await replyBoxAfter.focus();</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Focused reply box`);</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(300);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        await replyBoxAfter.scrollIntoViewIfNeeded();</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(300);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        await human.safeHumanClick(replyBoxAfter, 'Reply Box', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Clicked reply box`);</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(300);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Step 4: Type
 <span class="cstat-no" title="statement not covered" >        logger.info(`[replyC] Typing...`);</span>
@@ -1631,31 +1657,31 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
     quoteA: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteA] Starting keyboard compose method`);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.scroll.toTop();</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Click time element to focus tweet
         const quoteTimeElement = <span class="cstat-no" title="statement not covered" >page.locator('article time').first();</span>
-<span class="cstat-no" title="statement not covered" >        if (await quoteTimeElement.count() &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >            await human.safeHumanClick(quoteTimeElement, 'Tweet Timestamp', 3, { precision: 'high' });</span>
+<span class="cstat-no" title="statement not covered" >        if (await api.exists(quoteTimeElement)) {</span>
+<span class="cstat-no" title="statement not covered" >            await human.click(quoteTimeElement, 'Tweet Timestamp', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >            logger.info(`[quoteA] Clicked tweet timestamp`);</span>
         }
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Press T to open composer
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('t');</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteA] Pressed T`);</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(750);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Navigate to quote option
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('ArrowDown');</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteA] Pressed ArrowDown`);</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Select quote option
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Enter');</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteA] Pressed Enter`);</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(1500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Verify quote composer is ready
         const verifyA = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
@@ -1671,7 +1697,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >        await human.safeHumanClick(composerA, 'Quote Composer', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Control+a');</span>
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Delete');</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(200);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Type the quote text
 <span class="cstat-no" title="statement not covered" >        await human.typeText(page, text, composerA);</span>
@@ -1694,12 +1720,12 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
     quoteB: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteB] Starting retweet menu method`);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        await page.evaluate(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >window.scrollTo(0, 0))</span>;</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.scroll.toTop();</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Reset any open menus
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Escape');</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(300);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Find retweet button
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteB] Looking for retweet button...`);</span>
@@ -1717,7 +1743,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
             const elements = <span class="cstat-no" title="statement not covered" >await page.locator(selector).all();</span>
 <span class="cstat-no" title="statement not covered" >            for (const el of elements) {</span>
 <span class="cstat-no" title="statement not covered" >                try {</span>
-                    const isVisible = <span class="cstat-no" title="statement not covered" >await el.isVisible();</span>
+                    const isVisible = <span class="cstat-no" title="statement not covered" >await api.visible(el);</span>
 <span class="cstat-no" title="statement not covered" >                    if (isVisible) {</span>
 <span class="cstat-no" title="statement not covered" >                        retweetBtn = el;</span>
 <span class="cstat-no" title="statement not covered" >                        retweetSelector = selector;</span>
@@ -1770,7 +1796,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
             }
         }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(1000);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Verify menu opened (look for Quote option)
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteB] Looking for Quote option...`);</span>
@@ -1786,14 +1812,14 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
         let quoteSelector = <span class="cstat-no" title="statement not covered" >null;</span>
 &nbsp;
         // Wait a bit for menu animation
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        for (const selector of quoteMenuSelectors) {</span>
 <span class="cstat-no" title="statement not covered" >            try {</span>
                 const elements = <span class="cstat-no" title="statement not covered" >await page.locator(selector).all();</span>
 <span class="cstat-no" title="statement not covered" >                for (const el of elements) {</span>
 <span class="cstat-no" title="statement not covered" >                    try {</span>
-                        const isVisible = <span class="cstat-no" title="statement not covered" >await el.isVisible();</span>
+                        const isVisible = <span class="cstat-no" title="statement not covered" >await api.visible(el);</span>
                         const text = <span class="cstat-no" title="statement not covered" >await el.innerText().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'')</span>;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >                        if (isVisible &amp;&amp; text.toLowerCase().includes('quote')) {</span>
@@ -1837,7 +1863,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
             }
         }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(1500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Verify composer is open
         const verifyB = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
@@ -1853,7 +1879,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >        await human.safeHumanClick(composerB, 'Quote Composer', 3, { precision: 'high' });</span>
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Control+a');</span>
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Delete');</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(200);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        await human.typeText(page, text, composerB);</span>
 &nbsp;
@@ -1872,15 +1898,17 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
      * Flow: Click Compose → Type comment → Enter → Paste URL → Submit
      */
     quoteC: <span class="fstat-no" title="function not covered" >async </span>(page, text, human, logger, _options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >        console.log('[DEBUG] quoteC called');</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteC] Starting new post + paste URL method`);</span>
 &nbsp;
         // Get current tweet URL
-        const currentUrl = <span class="cstat-no" title="statement not covered" >page.url();</span>
+        const currentUrl = <span class="cstat-no" title="statement not covered" >await api.getCurrentUrl();</span>
+<span class="cstat-no" title="statement not covered" >        console.log('[DEBUG] currentUrl:', currentUrl);</span>
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteC] Current URL: ${currentUrl}`);</span>
 &nbsp;
         // Close any open menus
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Escape');</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(300);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Find Compose button
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteC] Looking for Compose button...`);</span>
@@ -1895,9 +1923,10 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
         let composeBtn = <span class="cstat-no" title="statement not covered" >null;</span>
 <span class="cstat-no" title="statement not covered" >        for (const selector of composeBtnSelectors) {</span>
             const elements = <span class="cstat-no" title="statement not covered" >await page.locator(selector).all();</span>
+<span class="cstat-no" title="statement not covered" >            console.log(`[DEBUG] Found ${elements.length} elements for selector ${selector}`);</span>
 <span class="cstat-no" title="statement not covered" >            for (const el of elements) {</span>
 <span class="cstat-no" title="statement not covered" >                try {</span>
-                    const isVisible = <span class="cstat-no" title="statement not covered" >await el.isVisible();</span>
+                    const isVisible = <span class="cstat-no" title="statement not covered" >await api.visible(el);</span>
 <span class="cstat-no" title="statement not covered" >                    if (isVisible) {</span>
 <span class="cstat-no" title="statement not covered" >                        composeBtn = el;</span>
 <span class="cstat-no" title="statement not covered" >                        logger.info(`[quoteC] Found Compose button: ${selector}`);</span>
@@ -1911,19 +1940,26 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
         }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!composeBtn) {</span>
-<span class="cstat-no" title="statement not covered" >            logger.warn(`[quoteC] Compose button not found`);</span>
-<span class="cstat-no" title="statement not covered" >            return { success: false, method: 'quoteC', reason: 'compose_button_not_found' };</span>
+<span class="cstat-no" title="statement not covered" >            logger.warn(`[quoteC] Compose button not found - trying direct navigation`);</span>
+<span class="cstat-no" title="statement not covered" >            await api.goto('https://x.com/compose/tweet');</span>
+            
+            // Re-verify composer after direct nav
+            const verifyNav = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
+<span class="cstat-no" title="statement not covered" >            if (!verifyNav.open) {</span>
+<span class="cstat-no" title="statement not covered" >                return { success: false, method: 'quoteC', reason: 'direct_nav_failed' };</span>
+            }
+            // Continue with typed text below...
+        } else {
+            // Click Compose
+<span class="cstat-no" title="statement not covered" >            await composeBtn.scrollIntoViewIfNeeded();</span>
+<span class="cstat-no" title="statement not covered" >            await human.fixation(300, 800);</span>
+<span class="cstat-no" title="statement not covered" >            await human.microMove(page, 20);</span>
+<span class="cstat-no" title="statement not covered" >            await human.safeHumanClick(composeBtn, 'Compose Button', 3, { precision: 'high' });</span>
+<span class="cstat-no" title="statement not covered" >            logger.info(`[quoteC] Clicked Compose button`);</span>
+<span class="cstat-no" title="statement not covered" >            await api.wait(1000);</span>
         }
 &nbsp;
-        // Click Compose
-<span class="cstat-no" title="statement not covered" >        await composeBtn.scrollIntoViewIfNeeded();</span>
-<span class="cstat-no" title="statement not covered" >        await human.fixation(300, 800);</span>
-<span class="cstat-no" title="statement not covered" >        await human.microMove(page, 20);</span>
-<span class="cstat-no" title="statement not covered" >        await human.safeHumanClick(composeBtn, 'Compose Button', 3, { precision: 'high' });</span>
-<span class="cstat-no" title="statement not covered" >        logger.info(`[quoteC] Clicked Compose button`);</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(1500);</span>
-&nbsp;
-        // Verify composer is open
+        // Verify composer is open (if not already verified in fallback)
         const verifyC = <span class="cstat-no" title="statement not covered" >await human.verifyComposerOpen(page);</span>
 <span class="cstat-no" title="statement not covered" >        if (!verifyC.open) {</span>
 <span class="cstat-no" title="statement not covered" >            logger.warn(`[quoteC] Composer did not open`);</span>
@@ -1940,7 +1976,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
         // Create new line for URL
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteC] Creating new line for URL...`);</span>
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Enter');</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Paste the URL
 <span class="cstat-no" title="statement not covered" >        logger.info(`[quoteC] Pasting URL: ${currentUrl}`);</span>
@@ -1948,7 +1984,7 @@ export const quoteMethods = <span class="cstat-no" title="statement not covered"
 <span class="cstat-no" title="statement not covered" >            navigator.clipboard.writeText(url);</span>
         }, currentUrl);
 <span class="cstat-no" title="statement not covered" >        await page.keyboard.press('Control+v');</span>
-<span class="cstat-no" title="statement not covered" >        await page.waitForTimeout(500);</span>
+<span class="cstat-no" title="statement not covered" >        await api.wait(1000);</span>
 &nbsp;
         // Submit
         const postC = <span class="cstat-no" title="statement not covered" >await human.postTweet(page);</span>
@@ -2020,7 +2056,7 @@ export default { replyMethods, quoteMethods, executeReplyMethod, executeQuoteMet
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T01:01:57.868Z
+                at 2026-02-28T03:54:19.070Z
             </div>
         <script src="../prettify.js"></script>
         <script>

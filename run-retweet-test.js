@@ -6,41 +6,55 @@ const logger = createLogger('run-retweet-test');
 async function main() {
     logger.info("Starting retweet test runner...");
     const orchestrator = new Orchestrator();
-    
+
     // Start discovery to find running browsers or launch one if configured
     await orchestrator.startDiscovery();
-    
+
     if (orchestrator.sessionManager.activeSessionsCount === 0) {
         logger.error("No active browser sessions found. Please ensure a browser is running with debugging enabled (e.g. chrome --remote-debugging-port=9222).");
         process.exit(1);
     }
-    
-    // Add the task
+
+    // Parse CLI arguments for URL override
+    const args = process.argv.slice(2);
+    // Look for URL in arguments (supports 'node script.js URL' or 'node script.js url=URL')
+    let targetUrl = args.find(arg => arg.startsWith('http'));
+    if (!targetUrl) {
+        const urlArg = args.find(arg => arg.toLowerCase().startsWith('url='));
+        if (urlArg) targetUrl = urlArg.split('=')[1];
+    }
+
+    // Add the task with optional URL payload
     try {
-        orchestrator.addTask('retweet-test', {});
-        logger.info("Task 'retweet-test' added to queue.");
+        const payload = targetUrl ? { url: targetUrl } : {};
+        orchestrator.addTask('retweet-test', payload);
+        if (targetUrl) {
+            logger.info(`Task 'retweet-test' added with URL override: ${targetUrl}`);
+        } else {
+            logger.info("Task 'retweet-test' added to queue.");
+        }
     } catch (e) {
         logger.error(`Failed to add task: ${e.message}`);
         process.exit(1);
     }
-    
+
     try {
         // Process tasks
         await orchestrator.processTasks();
-        
+
         // Wait for completion with timeout
         logger.info("Waiting for task completion...");
-        
+
         // 3 minute timeout should be enough for a single retweet test
-        const WAIT_TIMEOUT = 180000; 
-        
+        const WAIT_TIMEOUT = 180000;
+
         const waitPromise = orchestrator.waitForTasksToComplete();
         const timeoutPromise = new Promise((_, reject) => {
             setTimeout(() => reject(new Error("Timeout waiting for tasks")), WAIT_TIMEOUT);
         });
 
         await Promise.race([waitPromise, timeoutPromise]);
-        
+
         logger.info("Test run completed successfully.");
         await orchestrator.shutdown(false);
     } catch (err) {

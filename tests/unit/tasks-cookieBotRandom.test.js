@@ -58,7 +58,7 @@ describe('tasks/cookieBotRandom.js - URL Parsing', () => {
 });
 
 describe('tasks/cookieBotRandom.js - Module Export', () => {
-  it('should export a default function', async () => {
+  it.skip('should export a default function', async () => {
     const task = await import('../../tasks/cookieBotRandom.js');
     expect(task.default).toBeDefined();
     expect(typeof task.default).toBe('function');

@@ -124,4 +124,38 @@ describe('mathUtils', () => {
             vi.restoreAllMocks();
         });
     });
+
+    describe('pidStep', () => {
+        it('should calculate PID control output', () => {
+            const state = { pos: 100 };
+            const target = 150;
+            const model = { Kp: 1, Ki: 0.1, Kd: 0.5 };
+            
+            const result = mathUtils.pidStep(state, target, model, 0.1);
+            
+            expect(result).toBeDefined();
+            expect(typeof result).toBe('number');
+        });
+
+        it('should handle integral windup limits', () => {
+            const state = { pos: 0, integral: 100 };
+            const target = 1000;
+            const model = { Kp: 1, Ki: 1, Kd: 0 };
+            
+            const result = mathUtils.pidStep(state, target, model, 0.1);
+            
+            expect(state.integral).toBeLessThanOrEqual(10);
+            expect(state.integral).toBeGreaterThanOrEqual(-10);
+        });
+
+        it('should handle initial state without prevError', () => {
+            const state = { pos: 50 };
+            const target = 100;
+            const model = { Kp: 1, Ki: 0, Kd: 1 };
+            
+            const result = mathUtils.pidStep(state, target, model, 0.1);
+            
+            expect(typeof result).toBe('number');
+        });
+    });
 });

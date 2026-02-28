@@ -3,8 +3,12 @@
  * @module tests/integration/request-queue.test
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import RequestQueue from '../../core/request-queue.js';
+
+vi.mock('../../utils/configLoader.js', () => ({
+    getTimeoutValue: vi.fn().mockResolvedValue({})
+}));
 
 describe('RequestQueue', () => {
     let queue;

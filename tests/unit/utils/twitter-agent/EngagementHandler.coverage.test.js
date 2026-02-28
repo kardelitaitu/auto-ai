@@ -1,6 +1,48 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EngagementHandler } from '../../../../utils/twitter-agent/EngagementHandler.js';
 
+vi.mock('../../../../api/index.js', () => {
+    const api = {
+        setPage: vi.fn(),
+        getPage: vi.fn(),
+        wait: vi.fn().mockResolvedValue(undefined),
+        think: vi.fn().mockResolvedValue(undefined),
+        getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
+        scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
+            toTop: vi.fn().mockResolvedValue(undefined),
+            back: vi.fn().mockResolvedValue(undefined),
+            read: vi.fn().mockResolvedValue(undefined),
+            focus: vi.fn().mockResolvedValue(undefined)
+        }),
+        visible: vi.fn().mockImplementation(async (el) => {
+            if (el && typeof el.isVisible === 'function') return await el.isVisible();
+            if (el && typeof el.count === 'function') return (await el.count()) > 0;
+            return true;
+        }),
+        exists: vi.fn().mockImplementation(async (el) => {
+            if (el && typeof el.count === 'function') return (await el.count()) > 0;
+            return el !== null;
+        }),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home'),
+        goto: vi.fn().mockResolvedValue(undefined),
+        reload: vi.fn().mockResolvedValue(undefined),
+        eval: vi.fn().mockResolvedValue('mock result'),
+        text: vi.fn().mockResolvedValue('mock text'),
+        click: vi.fn().mockResolvedValue(undefined),
+        type: vi.fn().mockResolvedValue(undefined),
+        emulateMedia: vi.fn().mockResolvedValue(undefined),
+        setExtraHTTPHeaders: vi.fn().mockResolvedValue(undefined),
+        clearContext: vi.fn(),
+        checkSession: vi.fn().mockResolvedValue(true),
+        isSessionActive: vi.fn().mockReturnValue(true)
+    };
+    return { api, default: api };
+});
+import { api } from '../../../../api/index.js';
+
+
+
+
 describe('EngagementHandler Coverage', () => {
     let handler;
     let mockPage;
@@ -9,6 +51,25 @@ describe('EngagementHandler Coverage', () => {
     let mathUtils;
 
     beforeEach(() => {
+        const pageMockForApi = { 
+                isClosed: () => false, 
+                context: () => ({ browser: () => ({ isConnected: () => true }) }),
+                title: vi.fn().mockResolvedValue('mock title'),
+                url: vi.fn().mockResolvedValue('https://x.com/home'),
+                locator: vi.fn().mockReturnValue({ 
+                    first: vi.fn().mockReturnThis(), 
+                    count: vi.fn().mockResolvedValue(1), 
+                    isVisible: vi.fn().mockResolvedValue(true),
+                    boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, width: 100, height: 100 }),
+                    click: vi.fn().mockResolvedValue(undefined)
+                }),
+                keyboard: { press: vi.fn().mockResolvedValue(undefined), type: vi.fn().mockResolvedValue(undefined) },
+                mouse: { move: vi.fn().mockResolvedValue(undefined), click: vi.fn().mockResolvedValue(undefined), wheel: vi.fn().mockResolvedValue(undefined) },
+                reload: vi.fn().mockResolvedValue(undefined),
+                goto: vi.fn().mockResolvedValue(undefined)
+            };
+        if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(pageMockForApi);
+        if (typeof api !== 'undefined' && api.setPage) api.setPage(pageMockForApi);
         mockPage = {
             locator: vi.fn().mockReturnValue({
                 first: vi.fn().mockReturnValue({
@@ -132,7 +193,7 @@ describe('EngagementHandler Coverage', () => {
 
             const result = await handler.robustFollow('[Test]');
             
-            expect(mockPage.reload).toHaveBeenCalled();
+            expect(api.reload).toHaveBeenCalled();
             expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Reloading page'));
             expect(result.reloaded).toBe(true);
         });
@@ -154,7 +215,7 @@ describe('EngagementHandler Coverage', () => {
             });
 
             vi.spyOn(handler, 'sixLayerClick').mockResolvedValue(false);
-            mockPage.reload.mockRejectedValue(new Error('Reload crash'));
+            api.reload.mockRejectedValue(new Error('Reload crash'));
 
             const result = await handler.robustFollow('[Test]');
             
@@ -350,7 +411,7 @@ describe('EngagementHandler Coverage', () => {
             await handler.diveTweet();
             
             // Should select tweet2 (better score)
-            expect(tweet2.scrollIntoViewIfNeeded).toHaveBeenCalled();
+            expect(api.scroll.focus).toHaveBeenCalledWith(tweet2);
             expect(likeSpy).toHaveBeenCalledWith(tweet2);
         });
 

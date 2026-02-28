@@ -1,4 +1,5 @@
 import { createLogger } from './logger.js';
+import { setSessionInterval, clearSessionInterval } from '../api/core/context.js';
 
 class PopupCloser {
   constructor(page, logger, options = {}) {
@@ -12,24 +13,22 @@ class PopupCloser {
     this.signal = options.signal;
     this.shouldSkip = options.shouldSkip;
     this.running = false;
+    this.api = options.api;
   }
 
   start() {
     if (this.timer) return;
-    this.timer = setInterval(() => {
-      this.runOnce().catch(() => {});
-    }, this.intervalMs);
+    this.timer = setSessionInterval('popup_closer', () => { this.runOnce().catch(() => {}); }, this.intervalMs);
   }
 
   stop() {
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = null;
-    }
+    clearSessionInterval('popup_closer');
+    this.timer = null;
   }
 
   async runOnce() {
     if (!this.page || this.page.isClosed()) return;
+    if (this.api?.isSessionActive && !this.api.isSessionActive()) return;
     if (this.signal?.aborted) return;
     if (this.shouldSkip?.()) return;
     if (this.running) return;
@@ -48,22 +47,14 @@ class PopupCloser {
     if (!this.page || this.page.isClosed()) return;
     if (this.signal?.aborted) return;
     try {
-      const btn = this.page.getByRole('button', { name: /Keep less relevant ads/i }).first();
-      const count = await btn.count();
-      if (count > 0) {
-        if (await btn.isVisible().catch(() => false)) {
-          await btn.scrollIntoViewIfNeeded();
-          await btn.click();
-          this.lastClosedAt = Date.now();
-          this.nextNotifyMinutes = 2;
-          this.logger.info('[popup-closer] Popup closed');
-          return true;
-        }
-      }
-      const alt = this.page.locator('button:has-text("Keep less relevant ads")').first();
-      if (await alt.count() > 0 && await alt.isVisible().catch(() => false)) {
-        await alt.scrollIntoViewIfNeeded();
-        await alt.click();
+      const selectors = [
+        'button:has-text("Keep less relevant ads")',
+        '[role="button"]:has-text("Keep less relevant ads")'
+      ];
+      for (const selector of selectors) {
+        const exists = await this.api.exists(selector).catch(() => false);
+        if (!exists) continue;
+        await this.api.click(selector);
         this.lastClosedAt = Date.now();
         this.nextNotifyMinutes = 2;
         this.logger.info('[popup-closer] Popup closed');

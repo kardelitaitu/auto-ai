@@ -1,3 +1,4 @@
+import { api } from '../api/index.js';
 /**
  * Motor Control Module
  * Provides robust, human-like click targeting with recovery behaviors:
@@ -117,7 +118,7 @@ function createMotorController(options = {}) {
             try {
                 const primaryEl = await page.$(primary);
                 if (primaryEl) {
-                    const isVisible = await primaryEl.isVisible().catch(() => false);
+                    const isVisible = await api.visible(primaryEl).catch(() => false);
                     if (isVisible) {
                         logger.info(`[Motor] Primary selector found: ${primary}`);
                         return { selector: primary, element: primaryEl, usedFallback: false };
@@ -133,7 +134,7 @@ function createMotorController(options = {}) {
                 try {
                     const fallbackEl = await page.$(fallback.selector);
                     if (fallbackEl) {
-                        const isVisible = await fallbackEl.isVisible().catch(() => false);
+                        const isVisible = await api.visible(fallbackEl).catch(() => false);
                         if (isVisible) {
                             logger.info(`[Motor] Using fallback selector [${i + 1}/${fallbacks.length}]: ${fallback.selector}`);
                             return {
@@ -166,14 +167,14 @@ function createMotorController(options = {}) {
                     const element = await page.$(selector);
 
                     if (!element) {
-                        await page.waitForTimeout(config.retryDelay);
+                        await api.wait(1000);
                         continue;
                     }
 
                     const box = await element.boundingBox();
 
                     if (!box) {
-                        await page.waitForTimeout(config.retryDelay);
+                        await api.wait(1000);
                         continue;
                     }
 
@@ -193,10 +194,10 @@ function createMotorController(options = {}) {
                     }
 
                     lastBox = box;
-                    await page.waitForTimeout(50);
+                    await api.wait(1000);
 
                 } catch (_error) {
-                    await page.waitForTimeout(config.retryDelay);
+                    await api.wait(1000);
                 }
             }
 
@@ -277,7 +278,7 @@ function createMotorController(options = {}) {
 
                     if (recovery === 'scroll') {
                         await page.evaluate(() => window.scrollBy(0, 200));
-                        await page.waitForTimeout(500);
+                        await api.wait(1000);
 
                         return await this.clickWithRecovery(page, selector, { ...options, recovery: 'spiral' });
                     }
@@ -328,7 +329,7 @@ function createMotorController(options = {}) {
             const result = await this.clickWithRecovery(page, selector, { logger, ...options });
 
             if (result.success && verifySelector) {
-                await page.waitForTimeout(500);
+                await api.wait(1000);
 
                 try {
                     const verified = await page.waitForSelector(verifySelector, { timeout: verifyTimeout });
@@ -368,7 +369,7 @@ function createMotorController(options = {}) {
                     window.scrollTo({ top: y, behavior: smoothScroll ? 'smooth' : 'auto' });
                 }, targetY, smooth);
 
-                await page.waitForTimeout(500);
+                await api.wait(1000);
 
                 return { success: true, y: targetY };
 
@@ -394,7 +395,7 @@ function createMotorController(options = {}) {
                     return await fn(attempt);
                 } catch (error) {
                     lastError = error;
-                    const delay = calculateBackoffDelay(attempt, {
+                    const _delay = calculateBackoffDelay(attempt, {
                         baseDelay,
                         maxDelay,
                         factor,
@@ -403,7 +404,7 @@ function createMotorController(options = {}) {
                     });
 
                     if (attempt < maxRetries - 1) {
-                        await page.waitForTimeout(delay);
+                        await api.wait(1000);
                     }
                 }
             }
@@ -455,7 +456,7 @@ function createMotorController(options = {}) {
             if (!stableResult.success) {
                 logger.warn(`[Motor] Target not stable, attempting scroll recovery...`);
                 await page.evaluate(() => window.scrollBy(0, config.scrollRecoveryAmount));
-                await page.waitForTimeout(500);
+                await api.wait(1000);
 
                 const retryResult = await this.getStableTarget(page, smartResult.selector, {
                     timeout: 2000,
@@ -508,7 +509,7 @@ function createMotorController(options = {}) {
             await page.mouse.click(targetX, targetY);
 
             if (verifySelector) {
-                await page.waitForTimeout(500);
+                await api.wait(1000);
                 try {
                     await page.waitForSelector(verifySelector, { timeout: verifyTimeout });
                     logger.info(`[Motor] Click verified: ${verifySelector}`);

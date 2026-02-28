@@ -31,14 +31,13 @@ import { getSettings } from '../utils/configLoader.js';
 import { AIReplyEngine } from '../utils/ai-reply-engine.js';
 import { AIQuoteEngine } from '../utils/ai-quote-engine.js';
 import { AIContextEngine } from '../utils/ai-context-engine.js';
-// import { profileManager } from '../utils/profileManager.js';
-// import { mathUtils } from '../utils/mathUtils.js';
 import { HumanInteraction } from '../utils/human-interaction.js';
-import { applyHumanizationPatch } from '../utils/browserPatch.js';
+import { api } from '../api/index.js';
 import { config } from '../utils/config-service.js';
 import AgentConnector from '../core/agent-connector.js';
 import { FreeOpenRouterHelper } from '../utils/free-openrouter-helper.js';
 import { executeReplyMethod, executeQuoteMethod } from '../utils/twitter-interaction-methods.js';
+import { applyHumanizationPatch } from '../utils/browserPatch.js';
 
 const logger = createLogger('testHumanMethods.js');
 
@@ -48,6 +47,10 @@ export default async function testHumanMethodsTask(page, payload) {
     const TEST_MODE = payload?.mode || 'test'; // 'test' or 'safe'
 
     logger.info(`[TestHumanMethods] Starting...`);
+    
+    // Apply humanization patch
+    await applyHumanizationPatch(page, logger);
+
     logger.info(`[TestHumanMethods] Target URL: ${TARGET_URL}`);
     logger.info(`[TestHumanMethods] Test Method: ${TEST_METHOD}`);
     logger.info(`[TestHumanMethods] Test Mode: ${TEST_MODE}`);
@@ -75,7 +78,7 @@ export default async function testHumanMethodsTask(page, payload) {
         includeMetrics: true
     });
 
-    const human = new HumanInteraction();
+    const human = new HumanInteraction(page);
     human.debugMode = true;
 
     /**
@@ -132,17 +135,15 @@ export default async function testHumanMethodsTask(page, payload) {
     }
 
     try {
-        await applyHumanizationPatch(page, logger);
-
-        logger.info(`[TestHumanMethods] Navigating to ${TARGET_URL}...`);
-        await page.goto(TARGET_URL, { waitUntil: 'load', timeout: 30000 });
-        
         // Enforce dark theme IMMEDIATELY to prevent light mode flash
         logger.info(`[TestHumanMethods] Enforcing dark theme...`);
-        await page.emulateMedia({ colorScheme: 'dark' });
+        await api.emulateMedia({ colorScheme: 'dark' });
+
+        logger.info(`[TestHumanMethods] Navigating to ${TARGET_URL}...`);
+        await api.goto(TARGET_URL, { waitUntil: 'load', timeout: 30000 });
         
         // Wait for content to settle
-        await page.waitForTimeout(5000);
+        await api.wait(5000);
 
         // Extract tweet text
         let mainTweetText = null;
@@ -158,8 +159,8 @@ export default async function testHumanMethodsTask(page, payload) {
         } else {
             logger.warn(`[TestHumanMethods] No tweet found, refreshing...`);
             await page.reload({ waitUntil: 'load' });
-            await page.emulateMedia({ colorScheme: 'dark' }); // Re-apply after refresh
-            await page.waitForTimeout(5000);
+            await api.emulateMedia({ colorScheme: 'dark' }); // Re-apply after refresh
+            await api.wait(5000);
             
             const retryResult = await extractTweetText(page);
             if (retryResult) {
@@ -172,7 +173,7 @@ export default async function testHumanMethodsTask(page, payload) {
 
         if (!tweetFound) {
             logger.error(`[TestHumanMethods] ✗ Could not extract tweet text`);
-            return;
+            return { success: false, error: 'tweet_not_found' };
         }
 
         let replyContext = [];
@@ -226,7 +227,7 @@ export default async function testHumanMethodsTask(page, payload) {
             
             logger.info(`[TestHumanMethods] Extract only mode completed.`);
             await page.waitForTimeout(2000);
-            return;
+            return { success: true, method: 'extractOnly', replies: replyContext.length };
         }
 
         if (mainTweetText && mainTweetText !== 'NOT FOUND' && mainTweetText.length > 5) {
@@ -354,9 +355,11 @@ export default async function testHumanMethodsTask(page, payload) {
 
         logger.info(`[TestHumanMethods] Test completed. Waiting 10s for review...`);
         await page.waitForTimeout(10000);
+        return { success: true };
 
     } catch (error) {
         logger.error(`[TestHumanMethods] Error: ${error.message}`);
+        return { success: false, error: error.message };
     } finally {
         try { if (page && !page.isClosed()) await page.close(); } catch { logger.warn('[TestHumanMethods] Failed to close page'); }
         logger.info(`[TestHumanMethods] Done.`);

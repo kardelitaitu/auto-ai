@@ -1,3 +1,4 @@
+import { api } from '../../api/index.js';
 /**
  * Go Home Action
  * Handles navigation back to home feed
@@ -51,7 +52,7 @@ export class GoHomeAction {
       if (this.agent?.scrollToGoldenZone && this.agent?.page) {
         const page = this.agent.page;
         const homeTarget = page.locator('[data-testid="AppTabBar_Home_Link"], [aria-label="X"]').first();
-        if (await homeTarget.isVisible().catch(() => false)) {
+        if (await api.visible(homeTarget).catch(() => false)) {
           try {
             await this.agent.scrollToGoldenZone(homeTarget);
           } catch (_error) {
@@ -62,7 +63,7 @@ export class GoHomeAction {
       await this.agent.navigateHome();
       this.stats.successes++;
 
-      const currentUrl = this.agent.page?.url() || 'unknown';
+      const currentUrl = await api.getCurrentUrl() || 'unknown';
 
       this.logger.info(`[GoHomeAction] ✅ Returned to home: ${currentUrl}`);
 

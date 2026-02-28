@@ -4,7 +4,7 @@
  */
 
 import { createLogger } from './logger.js';
-const logger = createLogger('banner');
+const _logger = createLogger('banner');
 
 const BANNER = `
 \x1b[36m   ______            __                  \x1b[0m
@@ -27,5 +27,5 @@ const BANNER = `
  */
 export function showBanner() {
     console.log(BANNER);
-    logger.info("Initializing Agent Environment...");
+    // logger.info("Initializing Agent Environment...");
 }

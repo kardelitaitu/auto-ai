@@ -69,7 +69,7 @@ class CloudClient {
         this.apiKey = '';
 
         /** @type {string} Default model to use */
-        this.defaultModel = 'anthropic/claude-3.5-sonnet';
+        this.defaultModel = 'openrouter/free';
 
         /** @type {number} Request timeout in ms */
         this.timeout = 60000;

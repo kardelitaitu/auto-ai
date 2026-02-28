@@ -15,8 +15,10 @@ vi.mock('../../utils/logger.js', () => ({
 describe('HumanizerEngine', () => {
     let engine;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         engine = new HumanizerEngine();
+        // Wait for async config loading
+        await new Promise(resolve => setTimeout(resolve, 10));
     });
 
     describe('generateMousePath', () => {

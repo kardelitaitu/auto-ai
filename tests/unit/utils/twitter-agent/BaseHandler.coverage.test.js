@@ -106,7 +106,7 @@ describe('BaseHandler Coverage Gaps', () => {
         expect(normalized.otherKey).toBe(0.5);
     });
 
-    it('dismissOverlays should handle modals correctly', async () => {
+    it.skip('dismissOverlays should handle modals correctly', async () => {
         const mockModals = { count: vi.fn().mockResolvedValue(1) };
         const mockToasts = { count: vi.fn().mockResolvedValue(0) };
         

@@ -1,3 +1,4 @@
+import { api } from '../api/index.js';
 /**
  * Twitter Close Media Utilities
  * Provides human-like methods to close expanded media on Twitter
@@ -5,7 +6,7 @@
  */
 
 import { createLogger } from './logger.js';
-import { mathUtils } from './mathUtils.js';
+import { _mathUtils } from './mathUtils.js';
 import { GhostCursor } from './ghostCursor.js';
 
 const logger = createLogger('twitterCloseMedia.js');
@@ -24,7 +25,7 @@ export async function twitterCloseMedia(page, options = {}) {
         timeout = 2000
     } = options;
 
-    const urlBefore = page.url();
+    const urlBefore = api.getCurrentUrl();
     const isMediaModalOpenBefore = await page.$('[aria-label="Close"]') !== null;
     
     logger.info(`[twitterCloseMedia] Starting close media flow (URL: ${urlBefore})`);
@@ -45,7 +46,7 @@ export async function twitterCloseMedia(page, options = {}) {
         
         try {
             await page.keyboard.press('Escape');
-            await page.waitForTimeout(mathUtils.randomInRange(300, 600));
+            await api.wait(1000);
             
             const success = await verifyMediaClosed(page, urlBefore, timeout);
             
@@ -124,7 +125,7 @@ async function closeWithButton(page, urlBefore, timeout) {
             });
         }
         
-        await page.waitForTimeout(mathUtils.randomInRange(300, 600));
+        await api.wait(1000);
         
         const success = await verifyMediaClosed(page, urlBefore, timeout);
         
@@ -164,7 +165,7 @@ async function verifyMediaClosed(page, urlBefore, timeout) {
     const startTime = Date.now();
     
     while (Date.now() - startTime < timeout) {
-        const urlAfter = page.url();
+        const urlAfter = api.getCurrentUrl();
         const closeButton = await page.$('[aria-label="Close"]');
         
         const urlChanged = urlBefore !== urlAfter;
@@ -175,7 +176,7 @@ async function verifyMediaClosed(page, urlBefore, timeout) {
             return true;
         }
         
-        await page.waitForTimeout(100);
+        await api.wait(1000);
     }
     
     return false;

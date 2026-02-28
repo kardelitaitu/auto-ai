@@ -28,6 +28,7 @@ import { ActionRunner } from "../actions/index.js";
 import { TWITTER_TIMEOUTS } from "../../constants/twitter-timeouts.js";
 import { HumanInteraction } from "../human-interaction.js";
 import { createBufferedLogger } from "../logger.js";
+import { api } from "../../api/index.js";
 
 /**
  * @deprecated Use config.getEngagementLimits() instead (supports env overrides)
@@ -300,7 +301,7 @@ export class AITwitterAgent extends TwitterAgent {
   /**
    * Cleanup resources when agent is no longer needed
    */
-  shutdown() {
+  shutdownLegacy() {
     this.log(`[AITwitterAgent] Shutting down resources`);
     if (this.queueLogger && typeof this.queueLogger.shutdown === 'function') {
       this.queueLogger.shutdown();
@@ -313,6 +314,10 @@ export class AITwitterAgent extends TwitterAgent {
     }
   }
 
+  /**
+   * Proper cleanup of all agent resources, timers, and listeners.
+   * Calls base class shutdown and ensures fidget loop is stopped.
+   */
   // ================================================================
   // DIVE LOCK MECHANISM - State Management Methods
   // ================================================================
@@ -375,10 +380,10 @@ export class AITwitterAgent extends TwitterAgent {
         // Navigate back to home
         await this._safeNavigateHome();
         // Reduced wait - let simulateReading() handle actual reading delay
-        await this.page.waitForTimeout(500);
+        await api.wait(1000);
 
         // Verify we're on home page
-        const currentUrl = this.page.url();
+        const currentUrl = api.getCurrentUrl();
         if (currentUrl.includes("/home") || currentUrl === "https://x.com/") {
           this.log(`[DiveLock] ✓ Successfully returned to home`);
           await this._postDiveHomeScroll();
@@ -421,7 +426,7 @@ export class AITwitterAgent extends TwitterAgent {
    * Check if currently on tweet page
    */
   isOnTweetPage() {
-    const url = this.page.url();
+    const url = api.getCurrentUrl();
     return url.includes("/status/") || this.pageState === PAGE_STATE.TWEET_PAGE;
   }
 
@@ -440,7 +445,7 @@ export class AITwitterAgent extends TwitterAgent {
       state: this.pageState,
       scrollingEnabled: this.scrollingEnabled,
       operationLock: this.operationLock,
-      url: this.page.url(),
+      url: api.getCurrentUrl(),
     };
   }
 
@@ -459,7 +464,7 @@ export class AITwitterAgent extends TwitterAgent {
    */
   async _safeNavigateHome() {
     try {
-      const currentUrl = this.page.url();
+      const currentUrl = api.getCurrentUrl();
       if (currentUrl.includes("/home") || currentUrl === "https://x.com/") {
         this.log("[DiveLock] Already on home page");
         return true;
@@ -467,7 +472,7 @@ export class AITwitterAgent extends TwitterAgent {
 
       // Use keyboard navigation first (Escape to close composer if open)
       await this.page.keyboard.press("Escape").catch(() => { });
-      await this.page.waitForTimeout(500);
+      await api.wait(1000);
 
       // Try to navigate to home with hard timeout
       const hardTimeoutMs = TWITTER_TIMEOUTS.NAVIGATION || 30000;
@@ -490,7 +495,7 @@ export class AITwitterAgent extends TwitterAgent {
         );
 
         await Promise.race([
-          this.page.goto("https://x.com/home", {
+          api.goto("https://x.com/home", {
             waitUntil: "domcontentloaded",
             timeout: TWITTER_TIMEOUTS.NAVIGATION,
           }),
@@ -509,11 +514,11 @@ export class AITwitterAgent extends TwitterAgent {
       const steps = mathUtils.randomInRange(2, 4);
       for (let i = 0; i < steps; i++) {
         const distance = mathUtils.randomInRange(260, 520);
-        await scrollDown(this.page, distance);
-        await this.page.waitForTimeout(mathUtils.randomInRange(300, 800));
+        await scrollDown(distance);
+        await api.wait(mathUtils.randomInRange(500, 1500));
         if (Math.random() < 0.3) {
-          await scrollRandom(this.page, -120, 80);
-          await this.page.waitForTimeout(mathUtils.randomInRange(200, 600));
+          await scrollRandom(-120, 80);
+          await api.wait(mathUtils.randomInRange(500, 1500));
         }
       }
       this._lastScrollY = await this.page.evaluate(() => window.scrollY);
@@ -556,7 +561,7 @@ export class AITwitterAgent extends TwitterAgent {
         const x = Math.random() * (viewport.width - 200) + 100;
         const y = Math.random() * (viewport.height - 200) + 100;
         await this.page.mouse.move(x, y);
-        await this.page.waitForTimeout(Math.random() * 1000 + 500);
+        await api.wait(1000);
       }
     } catch (_error) {
       // Silent fail - cursor movement is optional
@@ -922,8 +927,8 @@ export class AITwitterAgent extends TwitterAgent {
         // Increased scroll distance (300 -> 600) with variance for natural behavior
         const variance = 0.85 + Math.random() * 0.3;
         const scrollAmount = Math.floor(600 * variance);
-        await scrollDown(this.page, scrollAmount);
-        await this.page.waitForTimeout(entropy.retryDelay(attempt));
+        await scrollDown(scrollAmount);
+        await api.wait(mathUtils.randomInRange(500, 1500));
 
         // Update scroll tracking
         this._lastScrollY = await this.page.evaluate(() => window.scrollY);
@@ -932,7 +937,7 @@ export class AITwitterAgent extends TwitterAgent {
 
       if (!targetTweet) {
         this.log("[Dive] No suitable tweets found. Refreshing Home...");
-        await this.page.goto("https://x.com/");
+        await api.goto('https://x.com/');
         await this.ensureForYouTab();
         // Release lock before returning
         await this.endDive(false, true);
@@ -969,19 +974,19 @@ export class AITwitterAgent extends TwitterAgent {
 
       if (
         (await permalinkLink.count()) > 0 &&
-        (await permalinkLink.isVisible())
+        (await api.visible(permalinkLink))
       ) {
         clickTarget = permalinkLink;
         this.log("[Debug] Targeting tweet permalink link (Primary).");
       } else if (
         (await tweetTextEl.count()) > 0 &&
-        (await tweetTextEl.isVisible())
+        (await api.visible(tweetTextEl))
       ) {
         clickTarget = tweetTextEl;
         this.log("[Debug] Targeting tweet text body (Fallback).");
       } else if (
         (await timeStamp.count()) > 0 &&
-        (await timeStamp.isVisible())
+        (await api.visible(timeStamp))
       ) {
         const parentLink = timeStamp.locator("xpath=./ancestor::a[1]");
         clickTarget = (await parentLink.count()) > 0 ? parentLink : timeStamp;
@@ -995,15 +1000,47 @@ export class AITwitterAgent extends TwitterAgent {
         await clickTarget.evaluate((el) =>
           el.scrollIntoView({ block: "center", inline: "center" }),
         );
-        await this.page.waitForTimeout(entropy.scrollSettleTime());
+        await api.wait(entropy.scrollSettleTime());
 
         const dbgBox = await clickTarget.boundingBox();
         this.log(
           `[Debug] Target: Box=${dbgBox ? `x:${Math.round(dbgBox.x)},y:${Math.round(dbgBox.y)}` : "null"}`,
         );
 
-        this.log("[Attempt] Ghost Click on Permalink...");
-        await this.humanClick(clickTarget, "Tweet Permalink", { precision: 'high' });
+        const permalinkHref = await permalinkLink
+          .getAttribute("href")
+          .catch(() => null);
+        const selectorForApi = permalinkHref
+          ? `a[href="${String(permalinkHref).replace(/\\"/g, "\\\\\"")}"]`
+          : null;
+
+        this.log("[Attempt] API Click on Permalink...");
+
+        await api.withPage(this.page, async () => {
+          if (selectorForApi) {
+            await api.click(selectorForApi, {
+              precision: "high",
+              hoverBeforeClick: true,
+              ensureStable: true,
+              maxRetries: 1,
+            });
+          } else {
+            await this.humanClick(clickTarget, "Tweet Permalink", {
+              precision: "high",
+            });
+          }
+        });
+
+        try {
+          await this.page.waitForURL("**/status/**", { timeout: 1500 });
+        } catch (_e) {
+          if (selectorForApi) {
+            this.log("[Retry] API smartClick on Permalink...");
+            await api.withPage(this.page, async () => {
+              await api.smartClick(selectorForApi).catch(() => null);
+            });
+          }
+        }
       }
 
       // Wait for navigation to tweet page
@@ -1023,7 +1060,7 @@ export class AITwitterAgent extends TwitterAgent {
       try {
         // Wait for URL to contain /status/
         await safeWaitForURL("**/status/**", TWITTER_TIMEOUTS.NAVIGATION);
-        tweetUrl = this.page.url();
+        tweetUrl = api.getCurrentUrl();
         this.log("[Success] Navigated to tweet page.");
         this.log(`[Debug] Tweet URL: ${tweetUrl}`);
         expanded = true;
@@ -1036,7 +1073,7 @@ export class AITwitterAgent extends TwitterAgent {
         }
         try {
           await safeWaitForURL("**/status/**", TWITTER_TIMEOUTS.NAVIGATION);
-          tweetUrl = this.page.url();
+          tweetUrl = api.getCurrentUrl();
           this.log("[Success] Native Click navigated to tweet.");
           expanded = true;
         } catch (_error2) {
@@ -1082,7 +1119,7 @@ export class AITwitterAgent extends TwitterAgent {
         this.log("[AI] Timeout waiting for non-empty text content to hydrate, proceeding with fallback extraction...");
       }
 
-      await this.page.waitForTimeout(300); // Brief final settle time
+      await api.wait(1000); // Brief final settle time
 
       // Extract FRESH tweet text AFTER navigation
       let tweetText = "";
@@ -1115,7 +1152,7 @@ export class AITwitterAgent extends TwitterAgent {
       // Extract username from page URL
       if (username === "unknown") {
         try {
-          const url = this.page.url();
+          const url = await api.getCurrentUrl();
           const match = url && url.match(/x\.com\/(\w+)\/status/);
           if (match) username = match[1];
         } catch (error) {
@@ -1304,11 +1341,9 @@ export class AITwitterAgent extends TwitterAgent {
       );
       // Scroll with variance (0.8x - 1.2x) for natural behavior
       const variance = 0.8 + Math.random() * 0.4;
-      const scrollAmount = Math.floor(
-        this._scrollExplorationThreshold * variance,
-      );
-      await scrollDown(this.page, scrollAmount);
-      await this.page.waitForTimeout(mathUtils.randomInRange(800, 1500));
+      const scrollAmount = Math.floor(this._scrollExplorationThreshold * variance);
+      await scrollDown(scrollAmount);
+      await api.wait(mathUtils.randomInRange(500, 1500));
       this._lastScrollY = await this.page.evaluate(() => window.scrollY);
       this._lastScrollTime = Date.now();
       return true;
@@ -1338,7 +1373,7 @@ export class AITwitterAgent extends TwitterAgent {
       fidgetInterval = this.startFidgetLoop();
     }
 
-    await this.page.waitForTimeout(readTime);
+    await api.wait(1000);
 
     if (fidgetInterval) {
       this.stopFidgetLoop();
@@ -1352,29 +1387,29 @@ export class AITwitterAgent extends TwitterAgent {
     // Optional media
     if (mathUtils.roll(0.2)) {
       const media = this.page.locator('[data-testid="tweetPhoto"]').first();
-      if ((await media.count()) > 0 && (await media.isVisible())) {
+      if ((await media.count()) > 0 && (await api.visible(media))) {
         this.log("[Action] Open media viewer");
         await this.humanClick(media, "Media Viewer", { precision: 'high' });
         const viewTime = mathUtils.randomInRange(5000, 12000);
         this.log(
           `[Media] Viewing media for ${(viewTime / 1000).toFixed(1)}s...`,
         );
-        await this.page.waitForTimeout(viewTime);
+        await api.wait(1000);
         await this.page.keyboard.press("Escape", {
           delay: mathUtils.randomInRange(50, 150),
         });
-        await this.page.waitForTimeout(mathUtils.randomInRange(400, 900));
+        await api.wait(mathUtils.randomInRange(500, 1500));
       }
     }
 
     // Read replies
     this.log("[Scroll] Reading replies...");
-    await scrollRandom(this.page, 300, 600);
-    await this.page.waitForTimeout(mathUtils.randomInRange(2000, 4000));
+    await scrollRandom(300, 600);
+    await api.wait(mathUtils.randomInRange(500, 1500));
 
     // Return scroll
-    await scrollRandom(this.page, 240, 660);
-    await this.page.waitForTimeout(mathUtils.randomInRange(1000, 2000));
+    await scrollRandom(240, 660);
+    await api.wait(mathUtils.randomInRange(500, 1500));
 
     // Note: Post-Dive engagement removed to favor strictly single-action-per-dive policy
 
@@ -1384,9 +1419,9 @@ export class AITwitterAgent extends TwitterAgent {
     this._lastTweetUrl = null;
 
     // Idle and return home
-    await this.page.waitForTimeout(mathUtils.randomInRange(1200, 2400));
+    await api.wait(mathUtils.randomInRange(500, 1500));
     await this.navigateHome();
-    await this.page.waitForTimeout(mathUtils.randomInRange(1500, 3000));
+    await api.wait(mathUtils.randomInRange(500, 1500));
   }
 
   /**
@@ -1433,7 +1468,7 @@ export class AITwitterAgent extends TwitterAgent {
       };
 
       // Initialize session from parent
-      this.log(`Starting Session on ${this.page.url()}`);
+      this.log(`Starting Session on ${await api.getCurrentUrl()}`);
 
       if (abortSignal?.aborted) {
         this.log("[AITwitterAgent] Session aborted");
@@ -1457,7 +1492,7 @@ export class AITwitterAgent extends TwitterAgent {
         return;
       }
 
-      if (!this.page.url().includes("home")) {
+      if (!(await api.getCurrentUrl()).includes("home")) {
         await this.navigateHome();
       }
 
@@ -1494,7 +1529,7 @@ export class AITwitterAgent extends TwitterAgent {
           this.log(
             `[Validation] Login check failed (${i + 1}/3). Retrying in ${(delay / 1000).toFixed(1)}s...`,
           );
-          await this.page.waitForTimeout(delay);
+          await api.wait(1000);
         }
       }
 
@@ -1565,7 +1600,7 @@ export class AITwitterAgent extends TwitterAgent {
             // Attempt recovery by navigating home
             try {
               await this.navigateHome();
-              await this.page.waitForTimeout(2000);
+              await api.wait(1000);
               const retryHealth = await this.performHealthCheck();
               if (!retryHealth.healthy) {
                 this.logWarn(
@@ -1702,9 +1737,7 @@ export class AITwitterAgent extends TwitterAgent {
           this.log("[Branch] Refresh Feed");
           this.state.lastRefreshAt = Date.now();
           await this.navigateHome();
-          await this.page.waitForTimeout(
-            Math.max(50, mathUtils.gaussian(1500, 600)),
-          );
+          await api.wait(1000);
         } else if (roll < profileCutoff) {
           await this.diveProfile();
         } else if (roll < tweetCutoff) {
@@ -1718,11 +1751,11 @@ export class AITwitterAgent extends TwitterAgent {
             mean: 5000,
             deviation: 2000,
           };
-          const duration = Math.max(
+          const _duration = Math.max(
             1000,
             mathUtils.gaussian(idleCfg.mean, idleCfg.deviation),
           );
-          await this.page.waitForTimeout(duration);
+          await api.wait(1000);
         }
 
         // Wind-down if under 20s remaining
@@ -1731,7 +1764,7 @@ export class AITwitterAgent extends TwitterAgent {
             "Winding down session... Navigating Home and idling briefly.",
           );
           await this.navigateHome();
-          await this.page.waitForTimeout(mathUtils.randomInRange(1500, 3000));
+          await api.wait(mathUtils.randomInRange(500, 1500));
           break;
         }
 
@@ -2066,14 +2099,14 @@ export class AITwitterAgent extends TwitterAgent {
   async verifyReplyPosted(replyText) {
     try {
       // Get current page URL to verify we're still on tweet page
-      const currentUrl = this.page.url();
+      const currentUrl = api.getCurrentUrl();
       if (!currentUrl.includes("/status/")) {
         this.log("[Verify] No longer on tweet page");
         return false;
       }
 
       // Wait a bit for DOM to update
-      await this.page.waitForTimeout(1000);
+      await api.wait(1000);
 
       // Look for the reply text in article elements (newly posted reply)
       const articles = await this.page.$$("article");
@@ -2292,11 +2325,11 @@ export class AITwitterAgent extends TwitterAgent {
               const wrongChar =
                 adjacent[Math.floor(Math.random() * adjacent.length)];
               await this.page.keyboard.type(wrongChar, { delay: baseDelay });
-              await this.page.waitForTimeout(mathUtils.randomInRange(80, 200));
+              await api.wait(mathUtils.randomInRange(500, 1500));
               await this.page.keyboard.press("Backspace", {
                 delay: mathUtils.randomInRange(40, 100),
               });
-              await this.page.waitForTimeout(mathUtils.randomInRange(30, 80));
+              await api.wait(mathUtils.randomInRange(500, 1500));
               await this.page.keyboard.type(char, {
                 delay: baseDelay + mathUtils.randomInRange(20, 60),
               });
@@ -2311,9 +2344,9 @@ export class AITwitterAgent extends TwitterAgent {
             // Type the same char twice by accident
             if (Math.random() < 0.6) {
               await this.page.keyboard.type(char, { delay: baseDelay });
-              await this.page.waitForTimeout(mathUtils.randomInRange(20, 60));
+              await api.wait(mathUtils.randomInRange(500, 1500));
               await this.page.keyboard.type(char, { delay: baseDelay });
-              await this.page.waitForTimeout(mathUtils.randomInRange(50, 150));
+              await api.wait(mathUtils.randomInRange(500, 1500));
               // Backspace once to fix
               await this.page.keyboard.press("Backspace", {
                 delay: mathUtils.randomInRange(40, 100),
@@ -2330,7 +2363,7 @@ export class AITwitterAgent extends TwitterAgent {
               await this.page.keyboard.type(nextCharTyped, {
                 delay: baseDelay,
               });
-              await this.page.waitForTimeout(mathUtils.randomInRange(50, 120));
+              await api.wait(mathUtils.randomInRange(500, 1500));
               await this.page.keyboard.press("Backspace", {
                 delay: mathUtils.randomInRange(40, 100),
               });
@@ -2353,7 +2386,7 @@ export class AITwitterAgent extends TwitterAgent {
         }
       } else if (errorType === "pause") {
         // Human paused while typing (thinking)
-        await this.page.waitForTimeout(mathUtils.randomInRange(300, 800));
+        await api.wait(mathUtils.randomInRange(500, 1500));
         await this.page.keyboard.type(char, { delay: baseDelay });
       } else {
         // Normal typing - add slight variation
@@ -2365,7 +2398,7 @@ export class AITwitterAgent extends TwitterAgent {
 
       // Random "thinking pause" - 3% chance during typing
       if (Math.random() < 0.03 && charsTyped > 5 && charsRemaining > 5) {
-        await this.page.waitForTimeout(mathUtils.randomInRange(200, 600));
+        await api.wait(mathUtils.randomInRange(500, 1500));
       }
 
       // Micro mouse movements (hand adjustment) - 5% chance
@@ -2379,7 +2412,7 @@ export class AITwitterAgent extends TwitterAgent {
     }
 
     // Final human touch - sometimes cursor moves away at end
-    await this.page.waitForTimeout(mathUtils.randomInRange(100, 300));
+    await api.wait(mathUtils.randomInRange(500, 1500));
   }
 
   /**
@@ -2401,7 +2434,7 @@ export class AITwitterAgent extends TwitterAgent {
           const bm = this.page
             .locator('button[data-testid="bookmark"]')
             .first();
-          if ((await bm.count()) > 0 && (await bm.isVisible())) {
+          if ((await bm.count()) > 0 && (await api.visible(bm))) {
             this.log("[AI-Fallback] Bookmarking tweet");
             await this.humanClick(bm, "Bookmark", { precision: 'high' });
 
@@ -2538,7 +2571,7 @@ export class AITwitterAgent extends TwitterAgent {
         }
 
         if (stableCount < 3) {
-          await this.page.waitForTimeout(100);
+          await api.wait(1000);
           stableCount++;
         }
       }
@@ -2565,7 +2598,7 @@ export class AITwitterAgent extends TwitterAgent {
         );
         try {
           await likeButton.scrollIntoViewIfNeeded();
-          await this.page.waitForTimeout(500);
+          await api.wait(1000);
         } catch (error) {
           this.log(`[Like] Scroll adjustment failed: ${error.message}`);
         }
@@ -2596,14 +2629,14 @@ export class AITwitterAgent extends TwitterAgent {
       // ================================================================
       // POST-CLICK VERIFICATION & TRACKING
       // ================================================================
-      await this.page.waitForTimeout(mathUtils.randomInRange(1000, 2000));
+      await api.wait(mathUtils.randomInRange(500, 1500));
 
       // Check if like was registered (button should now show "Unlike")
       let likeRegistered = false;
       for (const selector of unlikeSelectors) {
         try {
           const el = this.page.locator(selector).first();
-          if (await el.isVisible().catch(() => false)) {
+          if (await api.visible(el).catch(() => false)) {
             likeRegistered = true;
             break;
           }
@@ -2626,7 +2659,7 @@ export class AITwitterAgent extends TwitterAgent {
 
       // Return to home page to continue main loop
       await this.navigateHome();
-      await this.page.waitForTimeout(mathUtils.randomInRange(1500, 3000));
+      await api.wait(mathUtils.randomInRange(500, 1500));
     } catch (error) {
       this.log(`[Like] ❌ Error: ${error.message}`);
     }
@@ -2722,7 +2755,7 @@ export class AITwitterAgent extends TwitterAgent {
         }
 
         if (stableCount < 3) {
-          await this.page.waitForTimeout(100);
+          await api.wait(1000);
           stableCount++;
         }
       }
@@ -2735,7 +2768,7 @@ export class AITwitterAgent extends TwitterAgent {
         );
         try {
           await bm.scrollIntoViewIfNeeded();
-          await this.page.waitForTimeout(500);
+          await api.wait(1000);
         } catch (error) {
           this.log(`[Bookmark] Scroll adjustment failed: ${error.message}`);
         }
@@ -2764,14 +2797,14 @@ export class AITwitterAgent extends TwitterAgent {
       // ================================================================
       // POST-CLICK VERIFICATION & TRACKING
       // ================================================================
-      await this.page.waitForTimeout(mathUtils.randomInRange(1000, 2000));
+      await api.wait(mathUtils.randomInRange(500, 1500));
 
       // Check if bookmark was registered
       let bookmarkRegistered = false;
       for (const selector of removeBookmarkSelectors) {
         try {
           const el = this.page.locator(selector).first();
-          if (await el.isVisible().catch(() => false)) {
+          if (await api.visible(el).catch(() => false)) {
             bookmarkRegistered = true;
             break;
           }
@@ -2795,7 +2828,7 @@ export class AITwitterAgent extends TwitterAgent {
 
       // Return to home page to continue main loop
       await this.navigateHome();
-      await this.page.waitForTimeout(mathUtils.randomInRange(1500, 3000));
+      await api.wait(mathUtils.randomInRange(500, 1500));
     } catch (error) {
       this.log(`[Bookmark] ❌ Error: ${error.message}`);
     }
@@ -2831,7 +2864,7 @@ export class AITwitterAgent extends TwitterAgent {
 
     // Log basic sentiment (backward compatible)
     this.log(
-      `[SentimentGuard] ${sentimentResult.isNegative ? "🚫 NEGATIVE" : "✅ Neutral/Positive"} content (score: ${sentimentResult.score.toFixed(2)})`,
+      `[Sentiment] ${sentimentResult.isNegative ? "🚫 NEGATIVE" : "✅ Neutral/Positive"} content (score: ${sentimentResult.score.toFixed(2)})`,
     );
 
     // Log advanced dimensions
@@ -2926,16 +2959,15 @@ export class AITwitterAgent extends TwitterAgent {
       let composerClosed = false;
       for (let i = 0; i < 5; i++) {
         try {
-          const composerVisible = await this.page
-            .locator('[data-testid="tweetTextarea_0"]')
-            .isVisible()
+          const composerVisible = await api.visible(this.page
+            .locator('[data-testid="tweetTextarea_0"]'))
             .catch(() => false);
           if (!composerVisible) {
             composerClosed = true;
             this.log(`[AI-Quote] Composer verified closed`);
             break;
           }
-          await this.page.waitForTimeout(1000);
+          await api.wait(1000);
         } catch (e) {
           composerClosed = true;
           this.log(
@@ -2951,7 +2983,7 @@ export class AITwitterAgent extends TwitterAgent {
         );
         try {
           await this.page.keyboard.press("Escape");
-          await this.page.waitForTimeout(500);
+          await api.wait(1000);
         } catch (e) {
           this.log(`[AI-Quote] Composer close failed: ${e.message}`);
         }
@@ -3041,7 +3073,7 @@ export class AITwitterAgent extends TwitterAgent {
       }
 
       // Check if still on expected domain
-      const currentUrl = this.page.url();
+      const currentUrl = await api.getCurrentUrl();
       if (
         !currentUrl.includes("x.com") &&
         !currentUrl.includes("twitter.com")
@@ -3098,6 +3130,14 @@ export class AITwitterAgent extends TwitterAgent {
       }
     } catch (e) {
       this.logWarn(`[Shutdown] Error stopping fidget loop: ${e.message}`);
+    }
+
+    try {
+      if (typeof this.shutdownLegacy === 'function') {
+        this.shutdownLegacy();
+      }
+    } catch (e) {
+      this.logWarn(`[Shutdown] Error in legacy shutdown: ${e.message}`);
     }
 
     // 2. Flush logs

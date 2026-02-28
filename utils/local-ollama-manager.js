@@ -38,6 +38,46 @@ function execWithTimeout(command, options = {}) {
     });
 }
 
+function execWithExitCode(command, options = {}) {
+    return new Promise((resolve) => {
+        let settled = false;
+        const finish = (success) => {
+            if (!settled) {
+                settled = true;
+                resolve(success);
+            }
+        };
+
+        try {
+            const child = exec(command, { ...options, windowsHide: true }, (error) => {
+                if (error) {
+                    finish(false);
+                } else {
+                    finish(true);
+                }
+            });
+
+            if (child && typeof child.on === 'function') {
+                child.on('exit', (code) => finish(code === 0));
+                child.on('error', () => finish(false));
+            }
+        } catch {
+            finish(false);
+        }
+    });
+}
+
+/**
+ * Kill any existing ollama processes to prevent duplicates
+ */
+function killOllamaProcesses() {
+    try {
+        execSync('taskkill /F /IM ollama.exe 2>nul', { timeout: 5000, windowsHide: true });
+    } catch {
+        // Ignore if no process found
+    }
+}
+
 /**
  * Check if the Ollama process is running in Windows.
  * @returns {boolean}
@@ -172,9 +212,9 @@ export async function isOllamaRunning(forceRefresh = false) {
                 return false;
             }
 
-            _cachedIsRunning = false;
+            _cachedIsRunning = true;
             _cacheTimestamp = Date.now();
-            return false;
+            return true;
         } catch {
             _cachedIsRunning = false;
             _cacheTimestamp = Date.now();
@@ -225,27 +265,26 @@ export async function startOllama() {
         const baseUrl = await getOllamaBaseUrl();
         const ollamaCmd = resolveOllamaCommand();
 
+        // Kill any existing processes first to prevent duplicates
+        if (isOllamaProcessRunning()) {
+            logger.info(`[OllamaManager] Existing process found, killing first...`);
+            killOllamaProcesses();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
         if (!isOllamaProcessRunning()) {
-            logger.info(`[OllamaManager] Process not found. Triggering via 'ollama list'...`);
+            logger.info(`[OllamaManager] Starting Ollama via command...`);
 
-            exec(`${ollamaCmd} list`, (err) => {
-                if (err) {
-                    logger.debug(`[OllamaManager] 'ollama list' trigger result: ${err.message}`);
-                }
-            });
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            if (!isOllamaProcessRunning()) {
-                logger.info(`[OllamaManager] 'ollama list' didn't start process. Trying "ollama app.exe"...`);
-                exec('start "" "ollama app.exe"', (err) => {
-                    if (err) {
-                        logger.debug('[OllamaManager] Failed to start via "ollama app.exe", trying "ollama serve"');
-                        exec(`start /B "" ${ollamaCmd} serve`, { windowsHide: true });
-                    }
-                });
-                await new Promise(resolve => setTimeout(resolve, 6000));
+            // Use spawn-like approach with execSync for reliability
+            try {
+                execSync(`start /B "" ${ollamaCmd} serve`, { timeout: 10000, windowsHide: true });
+                logger.info(`[OllamaManager] Started ollama serve`);
+            } catch (serveErr) {
+                logger.debug(`[OllamaManager] serve error: ${serveErr.message}`);
             }
+
+            // Wait for process to start
+            await new Promise(resolve => setTimeout(resolve, 5000));
         }
 
         const apiReady = await waitForOllamaReady(baseUrl, 12, 2000);
@@ -254,28 +293,21 @@ export async function startOllama() {
             return false;
         }
 
-        // 3. Ensure Model exists (Pull if missing)
-        if (!await doesModelExist(model)) {
-            logger.warn(`[OllamaManager] Model '${model}' not found in local library. Pulling...`);
-            if (!skipModelOps) {
-                await new Promise((resolve, reject) => {
-                    const child = exec(`${ollamaCmd} pull ${model}`);
-                    child.on('exit', (code) => {
-                        if (code === 0) {
-                            logger.success(`[OllamaManager] Successfully pulled ${model}`);
-                            resolve();
-                        } else {
-                            reject(new Error(`Pull failed with code ${code}`));
-                        }
-                    });
-                });
-            }
+        // Skip model ops if in test mode
+        if (skipModelOps) {
+            logger.info('[OllamaManager] Skipping model operations (test mode)');
+            return true;
         }
 
-        // 4. Load model into memory
-        if (!skipModelOps) {
-            logger.info(`[OllamaManager] Loading model into memory: ${model}...`);
-            exec(`${ollamaCmd} run ${model} ""`, { windowsHide: true });
+        // Ensure Model exists (Pull if missing)
+        if (!await doesModelExist(model)) {
+            logger.warn(`[OllamaManager] Model '${model}' not found. Pulling...`);
+            const pulled = await execWithExitCode(`${ollamaCmd} pull ${model}`, { timeout: 300000 });
+            if (!pulled) {
+                logger.error(`[OllamaManager] Pull failed for ${model}`);
+                return false;
+            }
+            logger.success(`[OllamaManager] Successfully pulled ${model}`);
         }
 
         return true;

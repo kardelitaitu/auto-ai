@@ -1,9 +1,19 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+vi.mock('fs');
+vi.mock('path');
 
 describe('ReferrerEngine Initialization', () => {
     beforeEach(() => {
+        vi.resetAllMocks();
         vi.resetModules();
+        
+        vi.mocked(path.resolve).mockImplementation((...args) => args.join('/'));
+    });
+
+    afterEach(() => {
         vi.restoreAllMocks();
     });
 
@@ -15,139 +25,123 @@ describe('ReferrerEngine Initialization', () => {
             SUBREDDITS: ['mock_sub']
         };
         
-        vi.doMock('fs', () => ({
-            default: {
-                existsSync: vi.fn().mockImplementation((p) => p.includes('referrer_dict.json')),
-                readFileSync: vi.fn().mockImplementation((p) => {
-                    if (p.includes('referrer_dict.json')) return JSON.stringify(mockData);
-                    return '{}';
-                }),
-            },
-            existsSync: vi.fn().mockImplementation((p) => p.includes('referrer_dict.json')),
-            readFileSync: vi.fn().mockImplementation((p) => {
-                if (p.includes('referrer_dict.json')) return JSON.stringify(mockData);
-                return '{}';
-            }),
-        }));
+        vi.mocked(fs.existsSync).mockImplementation((p) => {
+            if (p.includes('ved_data.json')) return true;
+            if (p.includes('referrer_dict.json')) return true;
+            if (p.includes('tco_links.json')) return true;
+            return false;
+        });
+        vi.mocked(fs.readFileSync).mockImplementation((p) => {
+            if (p.includes('referrer_dict.json')) return JSON.stringify(mockData);
+            return '{}';
+        });
 
-        const module = await import('../../utils/urlReferrer.js?update=' + Date.now());
-        const ReferrerEngine = module.ReferrerEngine;
+        const { ReferrerEngine } = await import('../../utils/urlReferrer.js');
         const engine = new ReferrerEngine();
 
-        // We can verify loaded data by generating strategies that use them.
-        // Generic fallback uses DICT.TOPICS (if not context aware)
-        // google_search calls generateQuery -> generic fallback if no context.
-        
-        // Mock random to hit google_search (0.20) and no context (empty url)
-        // Wait, generateQuery(targetUrl) with empty url -> _extractContext returns null -> generic fallback.
-        
-        vi.spyOn(Math, 'random').mockReturnValue(0.20); // google_search
+        vi.spyOn(Math, 'random').mockReturnValue(0.20);
         
         const ctx = engine.generateContext('https://target.com');
         expect(ctx.strategy).toBe('google_search');
         const decoded = decodeURIComponent(ctx.referrer);
         
-        // Should contain one of the mock topics/actions
-        // "mock_tech mock_read mock_thread" (or subset)
         expect(decoded).toMatch(/mock_tech|mock_read/);
     });
 
     it('should use emergency VEDs when VED dictionary fails to load', async () => {
-        // Force VED load failure
-        vi.doMock('fs', () => ({
-            default: {
-                existsSync: vi.fn().mockReturnValue(false),
-                readFileSync: vi.fn(),
-            },
-            existsSync: vi.fn().mockReturnValue(false),
-            readFileSync: vi.fn(),
-        }));
+        vi.mocked(fs.existsSync).mockImplementation((p) => {
+            if (p.includes('ved_data.json')) return false;
+            if (p.includes('referrer_dict.json')) return true;
+            if (p.includes('tco_links.json')) return true;
+            return false;
+        });
+        vi.mocked(fs.readFileSync).mockImplementation((p) => {
+            if (p.includes('ved_data.json')) throw new Error('File not found');
+            return '{}';
+        });
 
-        const module = await import('../../utils/urlReferrer.js?update=' + Date.now());
-        const ReferrerEngine = module.ReferrerEngine;
+        const { ReferrerEngine } = await import('../../utils/urlReferrer.js');
         const engine = new ReferrerEngine();
 
-        // Select google_search strategy (r < 0.25)
         vi.spyOn(Math, 'random').mockReturnValue(0.20);
         
         const ctx = engine.generateContext('https://target.com');
         expect(ctx.strategy).toBe('google_search');
         
-        // Extract VED from referrer
         const vedMatch = ctx.referrer.match(/ved=([^&]+)/);
         expect(vedMatch).not.toBeNull();
         const ved = vedMatch[1];
         
-        // Check if it looks like an emergency VED (starts with specific prefix)
         expect(ved).toMatch(/^0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ/);
     });
 
     it('should warn when VED dictionary loading fails', async () => {
-        const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        vi.mocked(fs.existsSync).mockImplementation((p) => {
+            if (p.includes('ved_data.json')) return true;
+            if (p.includes('referrer_dict.json')) return true;
+            if (p.includes('tco_links.json')) return true;
+            return false;
+        });
+        vi.mocked(fs.readFileSync).mockImplementation((p) => {
+            if (p.includes('ved_data.json')) throw new Error('Read error');
+            return '{}';
+        });
         
-        vi.doMock('fs', () => ({
-            default: {
-                existsSync: vi.fn().mockImplementation((p) => p.includes('ved_data.json')),
-                readFileSync: vi.fn().mockImplementation((p) => {
-                    if (p.includes('ved_data.json')) throw new Error('Read error');
-                    return '{}';
-                }),
-            },
-            existsSync: vi.fn().mockImplementation((p) => p.includes('ved_data.json')),
-            readFileSync: vi.fn().mockImplementation((p) => {
-                if (p.includes('ved_data.json')) throw new Error('Read error');
-                return '{}';
-            }),
-        }));
-
-        await import('../../utils/urlReferrer.js?update=' + Date.now());
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        vi.resetModules();
         
-        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('VED Dictionary not loaded'));
+        await import('../../utils/urlReferrer.js');
+        
+        const output = warnSpy.mock.calls.map(c => c.join(' ')).join(' ');
+        expect(output).toContain('VED Dictionary not loaded');
+        warnSpy.mockRestore();
     });
 
     it('should error when Dictionary loading fails', async () => {
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-        
-        vi.doMock('fs', () => ({
-            default: {
-                existsSync: vi.fn().mockImplementation((p) => p.includes('referrer_dict.json')),
-                readFileSync: vi.fn().mockImplementation((p) => {
-                    if (p.includes('referrer_dict.json')) throw new Error('Read error');
-                    return '{}';
-                }),
-            },
-            existsSync: vi.fn().mockImplementation((p) => p.includes('referrer_dict.json')),
-            readFileSync: vi.fn().mockImplementation((p) => {
-                if (p.includes('referrer_dict.json')) throw new Error('Read error');
-                return '{}';
-            }),
-        }));
+        vi.mocked(fs.existsSync).mockImplementation((p) => {
+            if (p.includes('ved_data.json')) return true;
+            if (p.includes('referrer_dict.json')) return true;
+            if (p.includes('tco_links.json')) return true;
+            return false;
+        });
+        vi.mocked(fs.readFileSync).mockImplementation((p) => {
+            if (p.includes('referrer_dict.json')) throw new Error('Read error');
+            if (p.includes('ved_data.json')) return '[]';
+            if (p.includes('tco_links.json')) return '[]';
+            return '{}';
+        });
 
-        await import('../../utils/urlReferrer.js?update=' + Date.now());
+        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        vi.resetModules();
         
-        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Error loading dictionary'), expect.any(Error));
+        await import('../../utils/urlReferrer.js');
+        
+        const output = errorSpy.mock.calls.map(c => c.join(' ')).join(' ');
+        expect(output).toContain('Error loading dictionary');
+        errorSpy.mockRestore();
     });
 
     it('should warn when t.co dictionary loading fails', async () => {
-        const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        vi.mocked(fs.existsSync).mockImplementation((p) => {
+            if (p.includes('ved_data.json')) return true;
+            if (p.includes('referrer_dict.json')) return true;
+            if (p.includes('tco_links.json')) return true;
+            return false;
+        });
+        vi.mocked(fs.readFileSync).mockImplementation((p) => {
+            if (p.includes('tco_links.json')) throw new Error('Read error');
+            if (p.includes('referrer_dict.json')) return '{}';
+            if (p.includes('ved_data.json')) return '[]';
+            return '{}';
+        });
         
-        vi.doMock('fs', () => ({
-            default: {
-                existsSync: vi.fn().mockImplementation((p) => p.includes('tco_links.json')),
-                readFileSync: vi.fn().mockImplementation((p) => {
-                    if (p.includes('tco_links.json')) throw new Error('Read error');
-                    return '{}';
-                }),
-            },
-            existsSync: vi.fn().mockImplementation((p) => p.includes('tco_links.json')),
-            readFileSync: vi.fn().mockImplementation((p) => {
-                if (p.includes('tco_links.json')) throw new Error('Read error');
-                return '{}';
-            }),
-        }));
-
-        await import('../../utils/urlReferrer.js?update=' + Date.now());
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        vi.resetModules();
         
-        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('t.co Dictionary not loaded'));
+        await import('../../utils/urlReferrer.js');
+        
+        const output = warnSpy.mock.calls.map(c => c.join(' ')).join(' ');
+        expect(output).toContain('t.co Dictionary not loaded');
+        warnSpy.mockRestore();
     });
 });
