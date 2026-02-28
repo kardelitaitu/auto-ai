@@ -32,43 +32,7 @@ export async function applyHumanizationPatch(page, logger) {
             void _e;
         }
 
-        try {
-            const originalCanPlayType = HTMLMediaElement.prototype.canPlayType;
-            HTMLMediaElement.prototype.canPlayType = function (type) {
-                try {
-                    if (typeof type === 'string') {
-                        const t = type.toLowerCase();
-                        if (t.includes('avc1') || t.includes('h264')) {
-                            return 'probably';
-                        }
-                    }
-                } catch (_e2) {
-                    void _e2;
-                }
 
-                return originalCanPlayType.call(this, type);
-            };
-
-            if (typeof window.MediaSource !== 'undefined' && typeof window.MediaSource.isTypeSupported === 'function') {
-                const originalIsTypeSupported = window.MediaSource.isTypeSupported.bind(window.MediaSource);
-                window.MediaSource.isTypeSupported = (type) => {
-                    try {
-                        if (typeof type === 'string') {
-                            const t = type.toLowerCase();
-                            if (t.includes('avc1') || t.includes('h264')) {
-                                return true;
-                            }
-                        }
-                    } catch (_e2) {
-                        void _e2;
-                    }
-
-                    return originalIsTypeSupported(type);
-                };
-            }
-        } catch (_e) {
-            void _e;
-        }
 
         // 3. Canvas Fingerprint Noise
         try {

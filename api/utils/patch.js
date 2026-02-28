@@ -71,43 +71,6 @@ export async function apply(fingerprint = null) {
             console.warn('[Patch] Failed to redefine webdriver', _e);
         }
 
-        /*
-        // 2. Ghost 3.0: Stack-Scrubbing (Identity Sanitization)
-        try {
-            const originalCaptureStackTrace = Error.captureStackTrace;
-            if (originalCaptureStackTrace) {
-                Error.captureStackTrace = function (targetObject, constructorOpt) {
-                    originalCaptureStackTrace(targetObject, constructorOpt);
-                    const stack = targetObject.stack;
-                    if (typeof stack === 'string') {
-                        targetObject.stack = stack
-                            .split('\n')
-                            .filter(line => !line.includes('__playwright') && !line.includes('__pw') && !line.includes('auto-ai'))
-                            .join('\n');
-                    }
-                };
-            }
-
-            const originalStackGetter = Object.getOwnPropertyDescriptor(Error.prototype, 'stack')?.get;
-            if (originalStackGetter) {
-                Object.defineProperty(Error.prototype, 'stack', {
-                    get: function () {
-                        const stack = originalStackGetter.call(this);
-                        if (typeof stack === 'string') {
-                            return stack
-                                .split('\n')
-                                .filter(line => !line.includes('__playwright') && !line.includes('__pw') && !line.includes('auto-ai'))
-                                .join('\n');
-                        }
-                        return stack;
-                    },
-                    configurable: true
-                });
-            }
-        } catch (e) {
-            void e;
-        }
-        */
 
         // 3. Advanced Navigator Patch (Timing Optimized)
         try {
