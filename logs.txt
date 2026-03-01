@@ -151,3 +151,5 @@
 {"timestamp":"2026-03-01T05:57:45.524Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] Session Timer Set: 407.2s"}
 {"timestamp":"2026-03-01T05:57:45.524Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] Enforcing theme: dark"}
 {"timestamp":"2026-03-01T05:57:45.525Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [Human] Session starting..."}
+{"timestamp":"2026-03-01T05:57:51.474Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] --- Loop 1  ---"}
+{"timestamp":"2026-03-01T05:57:54.445Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [Idle] Reading Phase (122.5s)"}
