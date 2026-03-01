@@ -219,11 +219,18 @@ export default async function apiTwitterActivityTask(page, payload) {
                             // Inject high-level unified API macros
                             agent.actions.reply.execute = async (context = {}) => {
                                 agent.actions.reply.stats.attempts++;
+                                // Guard: check engagement limit before executing
+                                if (!agent.diveQueue?.canEngage('replies')) {
+                                    logger.info(`[api-twitterActivity] Reply limit reached, skipping.`);
+                                    return { success: false, executed: false, reason: 'engagement_limit_reached', engagementType: 'replies' };
+                                }
                                 try {
                                     logger.info(`[api-twitterActivity] Delegating reply to api.replyWithAI()...`);
-                                    const result = await api.replyWithAI();
+                                    // Wrap in api.withPage() to ensure AsyncLocalStorage context is bound
+                                    const result = await api.withPage(page, () => api.replyWithAI());
                                     if (result.success) {
                                         agent.actions.reply.stats.successes++;
+                                        agent.diveQueue?.recordEngagement('replies');
                                         return {
                                             success: true,
                                             executed: true,
@@ -249,11 +256,18 @@ export default async function apiTwitterActivityTask(page, payload) {
 
                             agent.actions.quote.execute = async (context = {}) => {
                                 agent.actions.quote.stats.attempts++;
+                                // Guard: check engagement limit before executing
+                                if (!agent.diveQueue?.canEngage('quotes')) {
+                                    logger.info(`[api-twitterActivity] Quote limit reached, skipping.`);
+                                    return { success: false, executed: false, reason: 'engagement_limit_reached', engagementType: 'quotes' };
+                                }
                                 try {
                                     logger.info(`[api-twitterActivity] Delegating quote to api.quoteWithAI()...`);
-                                    const result = await api.quoteWithAI();
+                                    // Wrap in api.withPage() to ensure AsyncLocalStorage context is bound
+                                    const result = await api.withPage(page, () => api.quoteWithAI());
                                     if (result.success) {
                                         agent.actions.quote.stats.successes++;
+                                        agent.diveQueue?.recordEngagement('quotes');
                                         return {
                                             success: true,
                                             executed: true,

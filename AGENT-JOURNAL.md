@@ -1,3 +1,45 @@
+# AGENT JOURNAL - 01 March 2026
+
+01-03-2026--12-42
+Cleaned up `config/settings.json`:
+- Removed unused `twitter.actions.reply` and `twitter.actions.quote` entries.
+- These were dead duplicates — `task-config-loader.js` reads reply/quote probabilities from `twitter.reply.probability` and `twitter.quote.probability` respectively, never from `twitter.actions.*`.
+- `twitter.actions.like`, `twitter.actions.bookmark`, and `twitter.actions.retweet` remain as they are the canonical source for those probabilities.
+
+01-03-2026--12-44
+Fixed engagement limits not being enforced (quote/reply could fire more than maxQuotes/maxReplies):
+- **Root cause**: `AIQuoteAction.execute()` and `AIReplyAction.execute()` both checked `diveQueue.canEngage()` in `canExecute()` but **never called `diveQueue.recordEngagement()`** on success, so the counter was always 0 and the limit was never hit.
+- Additionally, the `agent.actions.quote.execute` and `agent.actions.reply.execute` overrides in `api-twitterActivity.js` completely bypassed `canExecute()`, so there was no limit check at all.
+- **Fix** (3 files):
+  - `utils/actions/ai-twitter-quote.js`: Added `this.agent.diveQueue?.recordEngagement('quotes')` after successful post.
+  - `utils/actions/ai-twitter-reply.js`: Added `this.agent.diveQueue?.recordEngagement('replies')` after successful post.
+  - `tasks/api-twitterActivity.js`: Added `canEngage()` guard at start of each execute override + `recordEngagement()` on success.
+- Verified syntax with `node -c` on all 3 files.
+
+
+Fixed engagement limits not being read from `config/settings.json` in `utils/config-service.js`:
+- **Root cause**: `getEngagementLimits()` was reading `twitter.activity.engagementLimits` — a path that does not exist in `settings.json`. It always fell back to hardcoded defaults (replies:3, retweets:1, etc.) regardless of what `settings.json` said.
+- **Where limits actually live**: `settings.json` → `twitter.engagement.maxReplies`, `maxRetweets`, `maxQuotes`, `maxLikes`, `maxFollows`, `maxBookmarks`.
+- **Fix**: Rewrote `getEngagementLimits()` to read `this._settings.twitter.engagement` directly and remap `maxX` → `x` keys to match the internal format expected by `DiveQueue` and `AITwitterAgent`.
+- Full chain: `settings.json` → `config-service.getEngagementLimits()` → `task-config-loader.buildConfig()` → `taskConfig.engagement.limits` → `AITwitterAgent` constructor → `DiveQueue` — all now live.
+- Verified syntax with `node -c utils/config-service.js`.
+
+
+Fixed `api.replyWithAI()` and `api.quoteWithAI()` silently failing in `tasks/api-twitterActivity.js`:
+- **Root cause**: Both `agent.actions.reply.execute` and `agent.actions.quote.execute` overrides called `api.replyWithAI()` / `api.quoteWithAI()` from an async branch with no `AsyncLocalStorage` context. The API uses `getPage()` → `checkSession()` → `contextStore.getStore()` which returns `null` if the call isn't running inside an `api.withPage()` callback, causing a `ContextNotInitializedError`.
+- **Why `reply-test.js` works**: It wraps everything in `api.withPage(page, ...)` before calling `api.replyWithAI()`, binding the page to the execution context.
+- **Fix**: Wrapped both calls with `api.withPage(page, () => api.replyWithAI())` and `api.withPage(page, () => api.quoteWithAI())` inside the execute overrides in `tasks/api-twitterActivity.js` (lines ~224 and ~254).
+- Verified syntax with `node -c tasks/api-twitterActivity.js`.
+
+
+
+01-03-2026--12-20
+Updated Roxybrowser API key:
+- Changed `ROXYBROWSER_API_KEY` to `c6ae203adfe0327a63ccc9174c178dec` in `config/browserAPI.json`.
+- Updated hardcoded default in `connectors/discovery/roxybrowser.js`.
+- Added `ROXYBROWSER_API_KEY` to `.env` file.
+- Verified syntax with `node -c`.
+
 # AGENT JOURNAL - 28 February 2026
 
 28-02-2026--20-40

@@ -150,7 +150,7 @@ function getFromEnvOrSettings(envKey, settingsValue, type = 'string') {
   if (envValue === undefined || envValue === '') {
     return settingsValue;
   }
-  
+
   try {
     switch (type) {
       case 'number':
@@ -174,19 +174,19 @@ function getFromEnvOrSettings(envKey, settingsValue, type = 'string') {
 function applyEnvOverrides(settings, envMap, path = '') {
   // Ensure settings is an object (initialize if null/undefined)
   const safeSettings = settings || {};
-  
+
   const result = Array.isArray(safeSettings) ? [...safeSettings] : { ...safeSettings };
-  
+
   for (const [key, value] of Object.entries(envMap)) {
     const currentPath = path ? `${path}.${key}` : key;
-    
+
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       // Nested override - recurse
       // Create nested structure if missing
       if (!result[key]) {
         result[key] = {};
       }
-      
+
       if (typeof result[key] === 'object') {
         result[key] = applyEnvOverrides(result[key], value, currentPath);
       }
@@ -197,32 +197,32 @@ function applyEnvOverrides(settings, envMap, path = '') {
       // Current implementation uses result[key] type.
       // If result[key] is undefined, type is 'undefined'.
       // getFromEnvOrSettings handles undefined?
-      
+
       const currentValue = result[key];
       const type = typeof currentValue !== 'undefined' ? typeof currentValue : 'string';
-      
+
       // If value is missing in settings, we might want to try to cast based on env var content?
       // But getFromEnvOrSettings takes a type.
       // For now, let's stick to string if missing, or maybe we should look up DEFAULTS?
       // Looking up defaults is hard here because we don't know where we are in the tree easily without mapping.
-      
+
       // Improvement: Try to infer type from string value (true/false/numbers) if current value is undefined
-       let effectiveType = type;
-       if (currentValue === undefined) {
-           const envVal = process.env[value];
-           if (envVal === 'true' || envVal === 'false') effectiveType = 'boolean';
-           else if (!isNaN(parseFloat(envVal))) effectiveType = 'number';
-       }
-       
-       const newValue = getFromEnvOrSettings(value, currentValue, effectiveType);
-       if (newValue !== undefined) {
-           result[key] = newValue;
-       }
-     }
-   }
-   
-   return result;
- }
+      let effectiveType = type;
+      if (currentValue === undefined) {
+        const envVal = process.env[value];
+        if (envVal === 'true' || envVal === 'false') effectiveType = 'boolean';
+        else if (!isNaN(parseFloat(envVal))) effectiveType = 'number';
+      }
+
+      const newValue = getFromEnvOrSettings(value, currentValue, effectiveType);
+      if (newValue !== undefined) {
+        result[key] = newValue;
+      }
+    }
+  }
+
+  return result;
+}
 
 /**
  * Centralized Config Service
@@ -233,14 +233,14 @@ class ConfigService {
     this._initialized = false;
     this._initPromise = null;
   }
-  
+
   /**
    * Initialize and load settings
    */
   async init() {
     if (this._initialized) return;
     if (this._initPromise) return this._initPromise;
-    
+
     this._initPromise = (async () => {
       try {
         const settings = await getSettings();
@@ -255,10 +255,10 @@ class ConfigService {
         this._initPromise = null;
       }
     })();
-    
+
     return this._initPromise;
   }
-  
+
   /**
    * Ensure service is initialized
    */
@@ -267,36 +267,36 @@ class ConfigService {
       await this.init();
     }
   }
-  
+
   /**
    * Get full settings (from settings.json with env overrides)
    */
   async getSettings() {
     await this.ensureInit();
-    
+
     if (!this._settings._envApplied) {
       this._settings = applyEnvOverrides(this._settings, ENV_OVERRIDES);
       this._settings._envApplied = true;
     }
-    
+
     return this._settings;
   }
-  
+
   /**
    * Get a specific config section with defaults
    */
   async get(section, subsection = null) {
     const settings = await this.getSettings();
-    
+
     if (!subsection) {
       return this._getWithDefaults(settings, section, DEFAULTS[section]);
     }
-    
+
     const sectionData = settings[section];
     const defaultsData = DEFAULTS[section]?.[subsection];
     return this._getWithDefaults(sectionData, subsection, defaultsData);
   }
-  
+
   /**
    * Get value with defaults fallback
    */
@@ -304,95 +304,107 @@ class ConfigService {
     if (!defaults) {
       return data?.[key];
     }
-    
+
     const value = data?.[key];
     if (value === undefined || value === null) {
       return defaults;
     }
-    
+
     if (typeof defaults === 'object' && defaults !== null && typeof value === 'object') {
       return { ...defaults, ...value };
     }
-    
+
     return value;
   }
-  
+
   // =====================================
   // Twitter Activity Config
   // =====================================
-  
+
   async getTwitterActivity() {
     return this.get('twitter', 'activity');
   }
-  
+
   async getEngagementLimits() {
-    const activity = await this.getTwitterActivity();
-    return activity?.engagementLimits || DEFAULTS.twitter.activity.engagementLimits;
+    await this.ensureInit();
+    const eng = this._settings?.twitter?.engagement;
+    const D = DEFAULTS.twitter.activity.engagementLimits;
+    if (eng) {
+      return {
+        replies: eng.maxReplies ?? D.replies,
+        retweets: eng.maxRetweets ?? D.retweets,
+        quotes: eng.maxQuotes ?? D.quotes,
+        likes: eng.maxLikes ?? D.likes,
+        follows: eng.maxFollows ?? D.follows,
+        bookmarks: eng.maxBookmarks ?? D.bookmarks,
+      };
+    }
+    return D;
   }
-  
+
   async getReplyConfig() {
     return this.get('twitter', 'reply');
   }
-  
+
   async getQuoteConfig() {
     return this.get('twitter', 'quote');
   }
-  
+
   async getTiming() {
     return this.get('twitter', 'timing');
   }
-  
+
   async getSessionPhases() {
     return this.get('twitter', 'phases');
   }
-  
+
   async getGlobalScrollMultiplier() {
     const timing = await this.getTiming();
     return timing?.globalScrollMultiplier ?? 1.0;
   }
-  
+
   // =====================================
   // Humanization Config
   // =====================================
-  
+
   async getHumanization() {
     return this.get('humanization') || DEFAULTS.humanization;
   }
-  
+
   async getMouseConfig() {
     return this.get('humanization', 'mouse') || DEFAULTS.humanization.mouse;
   }
-  
+
   async getTypingConfig() {
     return this.get('humanization', 'typing') || DEFAULTS.humanization.typing;
   }
-  
+
   async getSessionConfig() {
     return this.get('humanization', 'session') || DEFAULTS.humanization.session;
   }
-  
+
   // =====================================
   // LLM Config
   // =====================================
-  
+
   async getLLMConfig() {
     return this.get('llm') || DEFAULTS.llm;
   }
-  
+
   async isLocalLLMEnabled() {
     const llm = await this.getLLMConfig();
     return llm?.local?.vllm?.enabled || llm?.local?.ollama?.enabled || llm?.local?.docker?.enabled || false;
   }
-  
+
   async isCloudLLMEnabled() {
     const llm = await this.getLLMConfig();
     return llm?.cloud?.enabled !== false; // Default to true
   }
-  
+
   // =====================================
   // Convenience Methods
   // =====================================
-  
+
   /**
    * Get config for a specific profile type
    */
@@ -403,10 +415,10 @@ class ConfigService {
       'PowerUser': { dive: 0.55, like: 0.70, follow: 0.08 },
       'Balanced': { dive: 0.35, like: 0.50, follow: 0.03 }
     };
-    
+
     return profiles[profileType] || profiles['Balanced'];
   }
-  
+
   /**
    * Reset and reload (for testing)
    */

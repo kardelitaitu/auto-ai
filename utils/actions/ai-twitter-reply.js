@@ -110,6 +110,8 @@ export class AIReplyAction {
 
         if (posted) {
           this.stats.successes++;
+          // Record engagement so DiveQueue enforces the limit on next attempt
+          this.agent.diveQueue?.recordEngagement('replies');
 
           this.logger.info(`[AIReplyAction] ✅ Reply posted: "${result.reply.substring(0, 30)}..."`);
 

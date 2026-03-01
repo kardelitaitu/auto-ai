@@ -106,6 +106,8 @@ export class AIQuoteAction {
 
         if (posted) {
           this.stats.successes++;
+          // Record engagement so DiveQueue enforces the limit on next attempt
+          this.agent.diveQueue?.recordEngagement('quotes');
 
           this.logger.info(`[AIQuoteAction] ✅ Quote posted: "${result.quote.substring(0, 30)}..."`);
 

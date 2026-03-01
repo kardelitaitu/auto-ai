@@ -61,7 +61,7 @@
       "readMin": 5000,
       "readMax": 15000,
       "diveRead": 10000,
-      "globalScrollMultiplier": 2.0
+      "globalScrollMultiplier": 3.0
     },
     "phases": {
       "warmupPercent": 0.1,
@@ -69,14 +69,6 @@
       "cooldownPercent": 0.2
     },
     "actions": {
-      "reply": {
-        "probability": 0.6,
-        "enabled": true
-      },
-      "quote": {
-        "probability": 0.2,
-        "enabled": true
-      },
       "like": {
         "probability": 0.15,
         "enabled": true

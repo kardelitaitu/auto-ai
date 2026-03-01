@@ -1,3 +1,15 @@
+### ✅ version 0.5.0
+(01 March 2026) Engagement Limit Enforcement & Config Pipeline Fixes
+- **Fixed Reply/Quote Context Bug**: `api.replyWithAI()` and `api.quoteWithAI()` now work correctly in `api-twitterActivity.js`. Root cause: both execute overrides called these functions outside an `api.withPage()` context, causing `getPage()` → `ContextNotInitializedError`. Fixed by wrapping both calls with `api.withPage(page, ...)`.
+- **Fixed Engagement Limits Not Enforced**: Quote and reply could fire more than the configured max. Root cause: `AIQuoteAction.execute()` and `AIReplyAction.execute()` checked `diveQueue.canEngage()` but never called `diveQueue.recordEngagement()` on success — counter stayed at 0. Fixed by adding `recordEngagement()` after success in `ai-twitter-quote.js`, `ai-twitter-reply.js`, and both execute overrides in `api-twitterActivity.js`. Added `canEngage()` guard to overrides as well.
+- **Fixed settings.json Engagement Limits Ignored**: `config.getEngagementLimits()` was reading the wrong JSON path (`twitter.activity.engagementLimits` — doesn't exist) and always fell back to hardcoded defaults. Fixed to read `twitter.engagement.maxReplies/maxRetweets/maxQuotes/maxLikes/maxFollows/maxBookmarks` and remap keys to internal format.
+- **Cleaned Up Duplicate Config Keys**: Removed unused `twitter.actions.reply` and `twitter.actions.quote` entries from `settings.json` (dead duplicates; actual values are read from `twitter.reply.probability` and `twitter.quote.probability`).
+
+### ✅ version 0.4.9
+
+(01 March 2026) Roxybrowser API Update
+- **Updated API Key**: Changed Roxybrowser API key to `c6ae203adfe0327a63ccc9174c178dec` across configuration and connectors.
+
 ### ✅ version 0.4.8
 (28 February 2026) Stable Release & Video Playback Fix
 - **Fixed Media Playback**: Resolved X.com video playback issues by completely removing explicit H.264 codec spoofing from `api/utils/browserPatch.js` and `utils/browserPatch.js`. Diagnostics revealed that actively denying codec capabilities broke X.com's internal player negotiations (resulting in silent stream failures). Allowing the browser to negotiate natively restores consistent playback.
