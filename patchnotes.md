@@ -1,3 +1,12 @@
+### ✅ version 0.5.1
+(01 March 2026) Proxy Assignment Enhancements & CLI Support
+- **Enhanced Proxy Assignment (`ixbrowser-proxies-pasang-tok.js`)**:
+    - **CLI Support**: Added ability to target specific profile IDs or ranges (e.g., `node script.js 111-115`).
+    - **Robust API Handling**: Implemented a 3x retry mechanism with exponential backoff for all local API calls (`profile-list`, `profile-update`).
+    - **Direct Mapping**: Refined logic to ensure Profile ID `N` always receives Proxy Line `N` from `proxies.txt`.
+    - **Stability Delays**: Added a 200ms cooling period between profile updates to prevent local API congestion.
+- **Git Hygiene**: Updated `.gitignore` to strictly exclude `proxies.txt`, `settings.json`, and local log files.
+
 ### ✅ version 0.5.0
 (01 March 2026) Engagement Limit Enforcement & Config Pipeline Fixes
 - **Fixed Reply/Quote Context Bug**: `api.replyWithAI()` and `api.quoteWithAI()` now work correctly in `api-twitterActivity.js`. Root cause: both execute overrides called these functions outside an `api.withPage()` context, causing `getPage()` → `ContextNotInitializedError`. Fixed by wrapping both calls with `api.withPage(page, ...)`.
