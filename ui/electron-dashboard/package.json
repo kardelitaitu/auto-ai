@@ -1,0 +1,16 @@
+{
+  "name": "auto-ai-dashboard",
+  "version": "1.0.0",
+  "description": "Monitoring dashboard for Auto-AI browser automation",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron ."
+  },
+  "dependencies": {
+    "electron": "^28.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
