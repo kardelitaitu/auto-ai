@@ -296,3 +296,4 @@ Fixed media playback issues permanently and created v0.4.8:
 Fixed redundant context extraction during `api.replyWithAI()` and `api.quoteWithAI()`:
 - **Issue**: The agent was scrolling for context twice. Once sequentially in `AITwitterAgent` (legacy preparation), and again inside the new `api.replyWithAI()` macro.
 - **Fix**: Added `needsContext = false` flag to `agent.actions.reply` and `agent.actions.quote` within `tasks/api-twitterActivity.js`. Updated `ai-twitterAgent.js` line ~1272 to respect `needsContext` if present, skipping the heavy pre-fetch entirely when API macros are used.
+2026-03-01: Updated ixbrowser-proxies-pasang-tok.js - Added CLI support for profile IDs/ranges, implemented 3x retry mechanism, and 200ms stability delay.
