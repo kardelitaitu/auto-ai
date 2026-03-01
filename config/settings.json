@@ -14,7 +14,7 @@
       "maxBookmarks": 2
     },
     "reply": {
-      "probability": 0.6,
+      "probability": 0.8,
       "minChars": 10,
       "maxChars": 200,
       "emojiChance": 0.3,

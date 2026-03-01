@@ -6,7 +6,10 @@ Cleaned up `config/settings.json`:
 - These were dead duplicates — `task-config-loader.js` reads reply/quote probabilities from `twitter.reply.probability` and `twitter.quote.probability` respectively, never from `twitter.actions.*`.
 - `twitter.actions.like`, `twitter.actions.bookmark`, and `twitter.actions.retweet` remain as they are the canonical source for those probabilities.
 
-01-03-2026--12-44
+01-03-2026--12-56
+Changed `twitter.reply.probability` in `config/settings.json` from `0.6` (60%) to `0.5` (50%).
+
+
 Fixed engagement limits not being enforced (quote/reply could fire more than maxQuotes/maxReplies):
 - **Root cause**: `AIQuoteAction.execute()` and `AIReplyAction.execute()` both checked `diveQueue.canEngage()` in `canExecute()` but **never called `diveQueue.recordEngagement()`** on success, so the counter was always 0 and the limit was never hit.
 - Additionally, the `agent.actions.quote.execute` and `agent.actions.reply.execute` overrides in `api-twitterActivity.js` completely bypassed `canExecute()`, so there was no limit check at all.

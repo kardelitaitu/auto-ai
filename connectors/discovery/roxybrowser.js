@@ -23,7 +23,7 @@ class RoxybrowserDiscover extends BaseDiscover {
     if (this.apiBaseUrl && !this.apiBaseUrl.endsWith('/')) {
       this.apiBaseUrl += '/';
     }
-    this.API_KEY = getEnv('ROXYBROWSER_API_KEY','d43d36808b2bf291d76c62cd2f02b236');
+    this.API_KEY = getEnv('ROXYBROWSER_API_KEY','c6ae203adfe0327a63ccc9174c178dec');
 
     if (this.API_KEY) {
       logger.info(`Initialized RoxybrowserDiscover with API URL: ${this.apiBaseUrl}`);

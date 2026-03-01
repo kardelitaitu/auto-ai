@@ -14,7 +14,7 @@
     "roxybrowser": {
       "type": "roxybrowser",
       "apiBaseUrl": "${ROXYBROWSER_API_URL}",
-      "apiKey": "${ROXYBROWSER_API_KEY}"
+      "apiKey": "c6ae203adfe0327a63ccc9174c178dec"
     },
     "multilogin": {
       "type": "multilogin",

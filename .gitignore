@@ -2,6 +2,7 @@ node_modules
 .aider*
 .qodo
 *.log
+*.zip
 /ui
 /screenshot
 /docs
