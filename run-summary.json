@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 586290,
-      "uptimeFormatted": "9m 46s",
-      "timeSinceReset": 586290,
-      "timeSinceResetFormatted": "9m 46s"
+      "uptime": 150495,
+      "uptimeFormatted": "2m 30s",
+      "timeSinceReset": 150495,
+      "timeSinceResetFormatted": "2m 30s"
     },
     "tasks": {
       "executed": 3,
       "failed": 0,
       "succeeded": 3,
       "successRate": 100,
-      "avgDuration": 208216,
-      "totalDuration": 624648,
+      "avgDuration": 49413.33,
+      "totalDuration": 148240,
       "durationPercentiles": {
-        "p50": 105858,
-        "p95": 478530,
-        "p99": 478530
+        "p50": 50040,
+        "p95": 66703,
+        "p99": 66703
       }
     },
     "browsers": {
@@ -45,13 +45,13 @@
     "twitter": {
       "actions": {
         "likes": 0,
-        "replies": 3,
+        "replies": 0,
         "quotes": 0,
         "retweets": 0,
         "bookmarks": 0,
         "follows": 0,
         "tweets": 0,
-        "total": 3
+        "total": 0
       },
       "performance": {
         "avgDiveDuration": 0,
@@ -61,35 +61,35 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-01T06:16:40.001Z"
+    "runEndTime": "2026-03-01T06:56:09.628Z"
   },
   "tasks": [
     {
       "taskName": "pageview",
-      "duration": 40260,
+      "duration": 31497,
       "success": true,
-      "sessionId": "TEST 1:55339",
+      "sessionId": "TEST 2:51432",
       "error": null,
-      "startTime": "2026-03-01T06:06:55.392Z",
-      "timestamp": 1772345255652
+      "startTime": "2026-03-01T06:53:40.970Z",
+      "timestamp": 1772348052467
     },
     {
       "taskName": "pageview",
-      "duration": 105858,
+      "duration": 50040,
       "success": true,
-      "sessionId": "TEST 1:55339",
+      "sessionId": "TEST 2:51432",
       "error": null,
-      "startTime": "2026-03-01T06:06:55.399Z",
-      "timestamp": 1772345321257
+      "startTime": "2026-03-01T06:54:12.685Z",
+      "timestamp": 1772348102725
     },
     {
-      "taskName": "api-twitteractivity",
-      "duration": 478530,
+      "taskName": "cookiebot",
+      "duration": 66703,
       "success": true,
-      "sessionId": "TEST 1:55339",
+      "sessionId": "TEST 2:51432",
       "error": null,
-      "startTime": "2026-03-01T06:08:41.423Z",
-      "timestamp": 1772345799953
+      "startTime": "2026-03-01T06:55:02.910Z",
+      "timestamp": 1772348169613
     }
   ]
 }

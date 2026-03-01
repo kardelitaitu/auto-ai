@@ -50,7 +50,7 @@ export default async function cookieBotRandom(page, payload) {
 
   try {
     // Initialize context for unified API using isolated scope
-    return await api.withPage(page, async () => {
+    await api.withPage(page, async () => {
       await api.init(page, {
         logger,
         lite: true,
@@ -60,55 +60,45 @@ export default async function cookieBotRandom(page, payload) {
         muteAudio: true
       });
 
+      logger.info(`URL list size: ${urls.length}`);
       if (urls.length === 0) {
         logger.error('URL list from popularsite.txt is empty or failed to load. Aborting task.');
         return;
       }
 
-      const loopCount = api.randomInRange(20, 30);
+      const loopCount = api.randomInRange(5, 10);
       logger.info(`Starting random visits loop for ${loopCount} times.`);
 
       for (let i = 0; i < loopCount; i++) {
         const randomUrl = urls[Math.floor(Math.random() * urls.length)];
-        // logger.info(`(${i + 1} of ${loopCount} URL) Navigating to: ${randomUrl}`);
+        logger.info(`(${i + 1} of ${loopCount}) Navigating to: ${randomUrl}`);
 
         try {
-          // Wrap navigation and scrolling in a total timeout for the visit
-          await api.withErrorHandling(async () => {
-            const visitTimeout = 90000; // 90 seconds total for this URL
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), visitTimeout);
-
-            try {
-              // 1. Navigate with a shorter timeout
-              await api.goto(randomUrl, {
-                waitUntil: 'domcontentloaded',
-                timeout: 30000 // 30 seconds for initial load
-              });
-
-              // 2. Check responsiveness
-              try {
-                await api.waitFor(async () => {
-                  return await api.eval(() => true).catch(() => false);
-                }, { timeout: 5000 });
-              } catch (_e) {
-                logger.warn(`Page ${randomUrl} is unresponsive after load. Skipping.`);
-                return;
-              }
-
-              await api.wait(1000);
-
-              // 3. Scroll/Read
-              await api.scroll.read(null, {
-                pauses: api.randomInRange(4, 8),
-                scrollAmount: api.randomInRange(300, 600)
-              });
-
-              await api.wait(1000);
-            } finally {
-              clearTimeout(timeoutId);
-            }
+          // 1. Navigate with a timeout
+          await api.goto(randomUrl, {
+            waitUntil: 'domcontentloaded',
+            timeout: 30000 // 30 seconds for initial load
           });
+
+          // 2. Check responsiveness
+          try {
+            await api.waitFor(async () => {
+              return await api.eval(() => true).catch(() => false);
+            }, { timeout: 5000 });
+          } catch (_e) {
+            logger.warn(`Page ${randomUrl} is unresponsive after load. Skipping.`);
+            continue;
+          }
+
+          await api.wait(1000);
+
+          // 3. Scroll/Read
+          await api.scroll.read(null, {
+            pauses: api.randomInRange(4, 8),
+            scrollAmount: api.randomInRange(300, 600)
+          });
+
+          await api.wait(1000);
         } catch (navError) {
           if (navError.message.includes('interrupted by another navigation') ||
             navError.message.includes('Session closed')) {
@@ -116,7 +106,7 @@ export default async function cookieBotRandom(page, payload) {
           } else if (navError.message.includes('timeout') || navError.message.includes('Timeout')) {
             logger.warn(`Visit to ${randomUrl} timed out. Skipping to next.`);
           } else {
-            // logger.debug(`Failed to load ${randomUrl}: ${navError.message}`);
+            logger.error(`Failed to load ${randomUrl}:`, navError);
           }
         }
       }
@@ -128,15 +118,13 @@ export default async function cookieBotRandom(page, payload) {
       logger.error(`### CRITICAL ERROR in main task loop:`, error);
     }
   } finally {
-    // logger.info(`--- Reached FINALLY block ---`);
     try {
       if (page && !page.isClosed()) {
-        logger.debug(`Page is open. Attempting page.close()...`);
         await page.close();
-        logger.debug(`page.close() command EXECUTED.`);
+        logger.debug(`Page closed successfully.`);
       }
     } catch (closeError) {
-      logger.error(`### CRITICAL ERROR trying to close page:`, closeError)
+      logger.warn(`Error closing page: ${closeError.message}`);
     }
     const endTime = process.hrtime.bigint();
     const _durationInSeconds = (Number(endTime - startTime) / 1_000_000_000).toFixed(2);

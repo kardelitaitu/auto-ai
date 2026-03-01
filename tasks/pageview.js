@@ -89,48 +89,60 @@ export default async function pageview(page, payload) {
 
             // 4. Navigate using Unified API (handles warmup jitter & mouse movement internally)
             logger.info(`[pageview] Navigating...`);
+
+            // Use a Promise.race to enforce a global 50s timeout for the "work" phase
+            const taskTimeoutMs = 50000;
+
             try {
-                await api.goto(targetUrl, {
-                    waitUntil: 'domcontentloaded',
-                    timeout: 20000,
-                    warmup: true,
-                    warmupMouse: true,
-                    warmupPause: true
-                });
-            } catch (navError) {
-                logger.error(`[pageview] Navigation failed: ${navError.message}`);
-                return;
+                await Promise.race([
+                    (async () => {
+                        try {
+                            await api.goto(targetUrl, {
+                                waitUntil: 'domcontentloaded',
+                                timeout: 20000,
+                                warmup: true,
+                                warmupMouse: true,
+                                warmupPause: true
+                            });
+                        } catch (navError) {
+                            logger.error(`[pageview] Navigation failed: ${navError.message}`);
+                            return;
+                        }
+
+                        // Settle time
+                        await api.wait(api.randomInRange(1000, 2000));
+
+                        // 5. Reading Simulation
+                        const meanDurationMs = profile?.timings?.readingPhase?.mean || 30000;
+                        const devDurationMs = profile?.timings?.readingPhase?.deviation || 10000;
+
+                        const profileReadingMs = api.gaussian(meanDurationMs, devDurationMs, 10000, 45000);
+                        const readingDurationS = Math.min(Math.max(profileReadingMs / 1000, 15), 45);
+
+                        const estimatedPauses = Math.max(1, Math.floor(readingDurationS / 2.2));
+
+                        logger.info(`[pageview] Simulating reading for ~${readingDurationS.toFixed(2)}s (${estimatedPauses} cycles)`);
+
+                        await api.scroll.read(null, {
+                            pauses: estimatedPauses,
+                            scrollAmount: api.randomInRange(600, 1200),
+                            variableSpeed: true,
+                            backScroll: true
+                        });
+
+                        // Final pause
+                        await api.wait(api.randomInRange(1000, 2000));
+                    })(),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Pageview task exceeded 50s limit')), taskTimeoutMs))
+                ]);
+            } catch (error) {
+                if (error.message.includes('exceeded 50s limit')) {
+                    logger.warn(`[pageview] Task forced to stop: ${error.message}`);
+                } else {
+                    throw error;
+                }
             }
-
-            // Settle time
-            await api.wait(api.randomInRange(1000, 2000));
-
-            // 5. Reading Simulation
-            // Calculate reading duration (matching original 15-45s logic with Gaussian distribution)
-            const meanDurationMs = profile?.timings?.readingPhase?.mean || 30000;
-            const devDurationMs = profile?.timings?.readingPhase?.deviation || 10000;
-
-            // Use Gaussian distribution for more natural variance, clamp it down a bit to prevent 45s hard roof
-            const profileReadingMs = api.gaussian(meanDurationMs, devDurationMs, 10000, 45000);
-            const readingDurationS = Math.min(Math.max(profileReadingMs / 1000, 15), 45);
-
-            // Estimate pauses: cycles are roughly 2.2s each on average in api.scroll.read
-            // (1.5s reading + 0.7s scroll activity)
-            const estimatedPauses = Math.max(1, Math.floor(readingDurationS / 2.2));
-
-            logger.info(`[pageview] Simulating reading for ~${readingDurationS.toFixed(2)}s (${estimatedPauses} cycles)`);
-
-            await api.scroll.read(null, {
-                pauses: estimatedPauses,
-                scrollAmount: api.randomInRange(600, 1200),
-                variableSpeed: true,
-                backScroll: true
-            });
-
-            // Final pause
-            await api.wait(api.randomInRange(1000, 2000));
         } finally {
-            // Ensure the page is closed even if the task fails
             try {
                 if (page && !page.isClosed()) {
                     await page.close();
@@ -139,7 +151,6 @@ export default async function pageview(page, payload) {
             } catch (closeError) {
                 logger.warn(`[pageview] Error closing page: ${closeError.message}`);
             }
-
             // Cleanup (finally block in main orchestrator or task wrapper handles close)
             const endTime = process.hrtime.bigint();
             const durationInSeconds = (Number(endTime - startTime) / 1_000_000_000).toFixed(2);
