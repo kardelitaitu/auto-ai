@@ -79,6 +79,7 @@ export async function replyWithAI(options = {}) {
 
     // Step 5a: Click reply button
     const replyIconSelector = '[data-testid="reply"]';
+    logger.info(`[replyWithAI] Clicking reply icon (ghost cursor)...`);
     await click(replyIconSelector);
     await wait(1500);
 
@@ -89,7 +90,7 @@ export async function replyWithAI(options = {}) {
     }
 
     // Step 5c: Type reply
-    logger.info(`Typing reply (${finalReplyText.length} chars)...`);
+    logger.info(`[replyWithAI] Typing reply (${finalReplyText.length} chars, ghost cursor)...`);
     await type(composer, finalReplyText);
     await wait(1000);
 
@@ -206,6 +207,7 @@ async function postReply(page, methodName) {
 
     if (!foundSelector) return { success: false, reason: 'post_button_not_found', method: methodName };
 
+    logger.info(`[replyWithAI] Clicking post button (ghost cursor)...`);
     await click(foundSelector);
     await wait(2000);
 

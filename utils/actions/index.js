@@ -12,6 +12,7 @@ export { LikeAction } from "./ai-twitter-like.js";
 export { BookmarkAction } from "./ai-twitter-bookmark.js";
 export { RetweetAction } from "./ai-twitter-retweet.js";
 export { GoHomeAction } from "./ai-twitter-go-home.js";
+export { FollowAction } from "./ai-twitter-follow.js";
 
 /**
  * Smart Action Runner
@@ -40,15 +41,16 @@ export class ActionRunner {
       like: actionConfig.like || { probability: 0.15, enabled: true },
       bookmark: actionConfig.bookmark || { probability: 0.05, enabled: true },
       retweet: actionConfig.retweet || { probability: 0.2, enabled: true },
+      follow: actionConfig.follow || { probability: 0.1, enabled: true },
       goHome: actionConfig.goHome || { enabled: true },
     };
 
     const totalProb = Object.entries(this.config)
       .filter(([k]) => k !== "goHome")
-      .reduce((sum, [_, v]) => sum + v.probability, 0);
+      .reduce((sum, [_, v]) => sum + (v.probability || 0), 0);
 
     this.logger.info(
-      `[ActionRunner] Initialized: reply=${this.config.reply.probability}, quote=${this.config.quote.probability}, like=${this.config.like.probability}, bookmark=${this.config.bookmark.probability}, retweet=${this.config.retweet.probability} (total: ${(totalProb * 100).toFixed(0)}%)`,
+      `[ActionRunner] Initialized: reply=${this.config.reply.probability}, quote=${this.config.quote.probability}, like=${this.config.like.probability}, bookmark=${this.config.bookmark.probability}, retweet=${this.config.retweet.probability}, follow=${this.config.follow.probability} (total: ${(totalProb * 100).toFixed(0)}%)`,
     );
   }
 
@@ -62,6 +64,7 @@ export class ActionRunner {
       like: "likes",
       bookmark: "bookmarks",
       retweet: "retweets",
+      follow: "follows",
     };
     return mapping[actionName] || actionName;
   }
@@ -94,7 +97,7 @@ export class ActionRunner {
    * If an action is at limit, its probability is redistributed proportionally to remaining actions
    */
   calculateSmartProbabilities() {
-    const baseActions = ["reply", "quote", "like", "bookmark", "retweet"];
+    const baseActions = ["reply", "quote", "like", "bookmark", "retweet", "follow"];
 
     let totalBaseWeight = 0;
     const baseWeights = {};

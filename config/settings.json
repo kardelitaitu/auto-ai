@@ -74,11 +74,15 @@
         "enabled": true
       },
       "bookmark": {
-        "probability": 0.05,
+        "probability": 0.1,
         "enabled": true
       },
       "retweet": {
         "probability": 0.2,
+        "enabled": true
+      },
+      "follow": {
+        "probability": 0.5,
         "enabled": true
       }
     },

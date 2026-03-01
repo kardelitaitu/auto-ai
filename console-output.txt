@@ -1,6 +1,0 @@
-Navigating to https://x.com/home and scrolling down to find media...
-Scrolled down... (1/5)
-Scrolled down... (2/5)
-Scrolled down... (3/5)
-Scrolled down... (4/5)
-Scrolled down... (5/5)

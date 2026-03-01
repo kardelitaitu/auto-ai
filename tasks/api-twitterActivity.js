@@ -16,6 +16,10 @@ import { loadAiTwitterActivityConfig } from '../utils/task-config-loader.js';
 import PopupCloser from '../utils/popup-closer.js';
 import { humanTiming } from '../utils/human-timing.js';
 import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
+import { likeWithAPI } from '../api/actions/like.js';
+import { bookmarkWithAPI } from '../api/actions/bookmark.js';
+import { retweetWithAPI } from '../api/actions/retweet.js';
+import { followWithAPI } from '../api/actions/follow.js';
 
 const DEFAULT_CYCLES = 20;
 const DEFAULT_MIN_DURATION = 360;
@@ -229,84 +233,49 @@ export default async function apiTwitterActivityTask(page, payload) {
                                 }
                             });
 
-                            // Inject high-level unified API macros
-                            agent.actions.reply.execute = async (context = {}) => {
-                                agent.actions.reply.stats.attempts++;
-                                // Guard: check engagement limit before executing
-                                if (!agent.diveQueue?.canEngage('replies')) {
-                                    logger.info(`[api-twitterActivity] Reply limit reached, skipping.`);
-                                    return { success: false, executed: false, reason: 'engagement_limit_reached', engagementType: 'replies' };
+                            // ─── Unified Action API Executors ─────────────────────────────────
+                            // Factory: wraps any api-layer function as a standardised action.execute()
+                            const makeApiExecutor = (name, action, apiFn, engType) => async (context = {}) => {
+                                action.stats.attempts++;
+                                if (!agent.diveQueue?.canEngage(engType)) {
+                                    logger.info(`[api-twitterActivity] ${name} limit reached, skipping.`);
+                                    return { success: false, executed: false, reason: 'engagement_limit_reached', engagementType: engType };
                                 }
                                 try {
-                                    logger.info(`[api-twitterActivity] Delegating reply to api.replyWithAI()...`);
-                                    // Wrap in api.withPage() to ensure AsyncLocalStorage context is bound
-                                    const result = await api.withPage(page, () => api.replyWithAI());
+                                    logger.info(`[api-twitterActivity] Delegating ${name} to api.${name}WithAI/API()...`);
+                                    const result = await api.withPage(page, () => apiFn(context));
                                     if (result.success) {
-                                        agent.actions.reply.stats.successes++;
-                                        agent.diveQueue?.recordEngagement('replies');
-                                        return {
-                                            success: true,
-                                            executed: true,
-                                            reason: 'success',
-                                            data: { reply: result.reply, method: result.method },
-                                            engagementType: 'replies'
-                                        };
-                                    } else {
-                                        agent.actions.reply.stats.failures++;
-                                        return {
-                                            success: false,
-                                            executed: true,
-                                            reason: result.reason || 'api_reply_failed',
-                                            data: { error: result.reason },
-                                            engagementType: 'replies'
-                                        };
+                                        action.stats.successes++;
+                                        agent.diveQueue?.recordEngagement(engType);
+                                        return { success: true, executed: true, reason: 'success', data: result, engagementType: engType };
                                     }
+                                    action.stats.failures++;
+                                    return { success: false, executed: true, reason: result.reason || `api_${name}_failed`, data: result, engagementType: engType };
                                 } catch (error) {
-                                    agent.actions.reply.stats.failures++;
-                                    return { success: false, executed: true, reason: 'exception', data: { error: error.message }, engagementType: 'replies' };
+                                    action.stats.failures++;
+                                    return { success: false, executed: true, reason: 'exception', data: { error: error.message }, engagementType: engType };
                                 }
                             };
 
-                            agent.actions.quote.execute = async (context = {}) => {
-                                agent.actions.quote.stats.attempts++;
-                                // Guard: check engagement limit before executing
-                                if (!agent.diveQueue?.canEngage('quotes')) {
-                                    logger.info(`[api-twitterActivity] Quote limit reached, skipping.`);
-                                    return { success: false, executed: false, reason: 'engagement_limit_reached', engagementType: 'quotes' };
-                                }
-                                try {
-                                    logger.info(`[api-twitterActivity] Delegating quote to api.quoteWithAI()...`);
-                                    // Wrap in api.withPage() to ensure AsyncLocalStorage context is bound
-                                    const result = await api.withPage(page, () => api.quoteWithAI());
-                                    if (result.success) {
-                                        agent.actions.quote.stats.successes++;
-                                        agent.diveQueue?.recordEngagement('quotes');
-                                        return {
-                                            success: true,
-                                            executed: true,
-                                            reason: 'success',
-                                            data: { quote: result.quote, method: result.method },
-                                            engagementType: 'quotes'
-                                        };
-                                    } else {
-                                        agent.actions.quote.stats.failures++;
-                                        return {
-                                            success: false,
-                                            executed: true,
-                                            reason: result.reason || 'api_quote_failed',
-                                            data: { error: result.reason },
-                                            engagementType: 'quotes'
-                                        };
-                                    }
-                                } catch (error) {
-                                    agent.actions.quote.stats.failures++;
-                                    return { success: false, executed: true, reason: 'exception', data: { error: error.message }, engagementType: 'quotes' };
-                                }
+                            // Map: actionName → { engagementType, apiFn }
+                            const ACTION_API_MAP = {
+                                reply: { eng: 'replies', fn: () => api.replyWithAI() },
+                                quote: { eng: 'quotes', fn: () => api.quoteWithAI() },
+                                retweet: { eng: 'retweets', fn: (ctx) => retweetWithAPI(ctx) },
+                                like: { eng: 'likes', fn: (ctx) => likeWithAPI(ctx) },
+                                bookmark: { eng: 'bookmarks', fn: (ctx) => bookmarkWithAPI(ctx) },
+                                follow: { eng: 'follows', fn: (ctx) => followWithAPI(ctx) },
                             };
 
-                            // Disable legacy context pre-fetching since the API macros handle it natively
-                            agent.actions.reply.needsContext = false;
-                            agent.actions.quote.needsContext = false;
+                            for (const [name, { eng, fn }] of Object.entries(ACTION_API_MAP)) {
+                                const action = agent.actions[name];
+                                if (!action) continue;
+                                action.execute = makeApiExecutor(name, action, fn, eng);
+                                // Disable legacy context pre-fetching; api handlers manage context internally
+                                action.needsContext = false;
+                            }
+                            // ─────────────────────────────────────────────────────────────────
+
 
                             hasAgent = true;
                             agentState = agent.state;

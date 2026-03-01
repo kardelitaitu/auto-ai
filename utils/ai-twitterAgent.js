@@ -24,6 +24,7 @@ import { LikeAction } from "./actions/ai-twitter-like.js";
 import { BookmarkAction } from "./actions/ai-twitter-bookmark.js";
 import { RetweetAction } from "./actions/ai-twitter-retweet.js";
 import { GoHomeAction } from "./actions/ai-twitter-go-home.js";
+import { FollowAction } from "./actions/ai-twitter-follow.js";
 import { ActionRunner } from "./actions/index.js";
 import { TWITTER_TIMEOUTS } from "../constants/twitter-timeouts.js";
 import { HumanInteraction } from "./human-interaction.js";
@@ -330,6 +331,7 @@ export class AITwitterAgent extends TwitterAgent {
       like: new LikeAction(this),
       bookmark: new BookmarkAction(this),
       retweet: new RetweetAction(this),
+      follow: new FollowAction(this),
       goHome: new GoHomeAction(this),
     };
 
@@ -368,7 +370,7 @@ export class AITwitterAgent extends TwitterAgent {
       `[DiveLock] State management initialized: HOME (scrolling enabled)`,
     );
     this.log(
-      `[AITwitterAgent] Action handlers initialized: reply, quote, like, bookmark, retweet, goHome`,
+      `[AITwitterAgent] Action handlers initialized: reply, quote, like, bookmark, retweet, follow, goHome`,
     );
 
     // ================================================================
@@ -1283,6 +1285,29 @@ export class AITwitterAgent extends TwitterAgent {
           } catch (err) {
             this.log(`[AI-Engage] Context extraction failed: ${err.message}`);
           }
+        } else if (selectedAction === 'follow') {
+          // 3. Pre-navigate to author's profile page BEFORE entering queue
+          // Profile URL is derived from tweet URL: strip /status/{id} suffix
+          const profileUrl = tweetUrl?.replace(/\/status\/\d+.*/, '') || null;
+          if (!profileUrl || username === 'unknown') {
+            this.log('[AI-Engage] follow: no valid profile URL, skipping action.');
+            selectedAction = null;
+          } else {
+            this.log(`[AI-Engage] follow → clicking author link to navigate to: ${profileUrl}`);
+            try {
+              // Click the author username link — href is relative on status pages: /username
+              // No goto fallback (stealth: avoid direct URL navigation)
+              const authorLink = this.pageOps
+                .locator(`[data-testid="User-Name"] a[href="/${username}"]`)
+                .first();
+              await this.humanClick(authorLink, 'Author profile link');
+              await this.wait(mathUtils.randomInRange(1500, 3000));
+              this.log(`[AI-Engage] follow: arrived at profile page for @${username}`);
+            } catch (navErr) {
+              this.log(`[AI-Engage] follow: click failed (${navErr.message}), skipping.`);
+              selectedAction = null;
+            }
+          }
         }
       } else {
         this.log(`[AI-Engage] No action selected (all at limits or disabled)`);
@@ -1297,10 +1322,12 @@ export class AITwitterAgent extends TwitterAgent {
         if (!action) {
           // Already logged above
         } else {
+          const profileUrl = tweetUrl?.replace(/\/status\/\d+.*/, '') || null;
           const context = {
             tweetText,
             username,
             tweetUrl,
+            profileUrl,
             tweetElement: this.pageOps.locator('article[data-testid="tweet"]').first(),
             enhancedContext: enhancedContext, // Pass pre-fetched context
           };

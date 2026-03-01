@@ -1,5 +1,54 @@
 # AGENT JOURNAL - 01 March 2026
 
+01-03-2026--22-47
+Removed `goto` fallback from follow pre-navigation for stealth (both `tasks/follow-test.js` by user and `utils/ai-twitterAgent.js`):
+- `tasks/follow-test.js`: user removed goto, kept only `api.click()` with failure log.
+- `utils/ai-twitterAgent.js`: removed `count()` pre-check and `goto` fallback; now calls `humanClick(authorLink)` directly. On click failure → `selectedAction = null` (skip follow, no direct URL navigation).
+- Selector tightened: `a[href*="/${username}"]` → exact `a[href="/${username}"]` matching confirmed DOM structure.
+- Syntax: `node -c` → OK.
+
+01-03-2026--22-35
+Created `tasks/follow-test.js` — live tester for the follow flow, mirroring `tasks/reply-test.js`:
+- Navigates to a tweet URL (default: GraceGym_ tweet), extracts profile URL via regex.
+- Clicks `[data-testid="User-Name"] a[href*="/{username}"]` to navigate to profile (goto fallback).
+- Calls `api.followWithAPI({ username })` and logs pass/fail with reason.
+- Usage: `node main.js follow-test` or `node main.js follow-test --url https://x.com/SomeUser/status/123`.
+- Syntax: `node -c` → OK.
+
+01-03-2026--22-33
+Implemented follow profile pre-navigation in `utils/ai-twitterAgent.js`:
+- **Where**: Added `else if (selectedAction === 'follow')` block after the reply/quote context pre-fetch (line ~1288).
+- **Logic**: Extract `profileUrl` from `tweetUrl` via `tweetUrl.replace(/\/status\/\d+.*/, '')`. E.g. `https://x.com/GraceGym_/status/xxx` → `https://x.com/GraceGym_`.
+- **Navigation**: Clicks `[data-testid="User-Name"] a[href*="/{username}"]` (human-like). Falls back to `pageOps.goto(profileUrl)` if link not found. Skips follow entirely if navigation fails or username is unknown.
+- **Context**: `profileUrl` now passed into the `context` object for `followWithAPI`.
+- **Metrics**: Already wired — `makeApiExecutor` calls `diveQueue.recordEngagement('follows')` and `stats.successes++` on success.
+- Syntax: `node -c` → OK.
+
+01-03-2026--21-53
+Wired `follow` action slot into `AITwitterAgent` so `followWithAPI` can fire:
+- **Root cause**: `agent.actions.follow` was `undefined`; the `makeApiExecutor` loop in `api-twitterActivity.js` silently skipped it.
+- **New file**: `utils/actions/ai-twitter-follow.js` — `FollowAction` class mirroring `LikeAction` structure. `execute()` is a stub overridden at runtime by `makeApiExecutor`.
+- **Updated** `utils/actions/index.js`: exported `FollowAction`; added `follow` to `ActionRunner.loadConfig()`, `getEngagementType()` map, and `calculateSmartProbabilities()` `baseActions` array.
+- **Updated** `utils/ai-twitterAgent.js`: imported `FollowAction`, added `follow: new FollowAction(this)` to `actionInstances`.
+- **Updated** `config/settings.json`: added `twitter.actions.follow` with `probability: 0.1, enabled: true`.
+- Verified syntax: `node -c` on all 3 modified/new JS files — ALL OK.
+
+01-03-2026--21-40
+Unified Twitter action helpers in `tasks/api-twitterActivity.js`:
+- **Root cause**: The task manually monkey-patched only `reply` and `quote` action executors (~80 lines of boilerplate per action), while `like`, `bookmark`, `retweet` used a different class-based system through `AITwitterAgent`. `follow` had no api/ wrapper at all.
+- **New files** (all syntax-verified with `node -c`):
+  - `api/actions/like.js` → `likeWithAPI()` — like button with already-liked guard + toast verification
+  - `api/actions/bookmark.js` → `bookmarkWithAPI()` — bookmark with state guard + toast verification
+  - `api/actions/retweet.js` → `retweetWithAPI()` — retweet menu flow with already-retweeted guard
+  - `api/actions/follow.js` → `followWithAPI()` — follow with polling verification + retry
+- **Updated** `api/index.js`: imported and exported all 4 new functions on the `api` object.
+- **Refactored** `tasks/api-twitterActivity.js`:
+  - Removed the ~80-line manual duplicate override block.
+  - Added `makeApiExecutor` factory (~20 lines) encapsulating stats, `canEngage()` guard, `api.withPage()` wrap, and uniform return shape.
+  - Added `ACTION_API_MAP` data-driven loop covering all 6 actions: reply, quote, retweet, like, bookmark, follow.
+  - Net: **−40 lines**, all 6 actions now handled identically through the same codepath.
+- Verified syntax: `node -c` on all modified/new files — ALL OK.
+
 01-03-2026--12-42
 Cleaned up `config/settings.json`:
 - Removed unused `twitter.actions.reply` and `twitter.actions.quote` entries.
@@ -297,3 +346,11 @@ Fixed redundant context extraction during `api.replyWithAI()` and `api.quoteWith
 - **Issue**: The agent was scrolling for context twice. Once sequentially in `AITwitterAgent` (legacy preparation), and again inside the new `api.replyWithAI()` macro.
 - **Fix**: Added `needsContext = false` flag to `agent.actions.reply` and `agent.actions.quote` within `tasks/api-twitterActivity.js`. Updated `ai-twitterAgent.js` line ~1272 to respect `needsContext` if present, skipping the heavy pre-fetch entirely when API macros are used.
 2026-03-01: Updated ixbrowser-proxies-pasang-tok.js - Added CLI support for profile IDs/ranges, implemented 3x retry mechanism, and 200ms stability delay.
+
+### Twitter Actions Unification Pass (2026-03-01)
+- Refactored all 6 core actions (`like.js`, `bookmark.js`, `retweet.js`, `follow.js`, `reply.js`, `quote.js`) to use the unified `api.click()` and `api.type()` helpers.
+- Ensured **Ghost Cursor Visibility** is enabled for all browser interactions.
+- Standardized logging format with `[actionWithAPI] Clicking ... (ghost cursor)...` prefix.
+- Maintained existing guards and verification polling logic for reliability.
+- Refactored `AIQuoteEngine` methods (`quoteMethodA`, `quoteMethodB`, `quoteMethodC`) for consistent interaction behavior.
+- Verified syntax for all modified files using `node -c`.

@@ -131,6 +131,10 @@ import {
 import { click, type, hover, rightClick } from './interactions/actions.js';
 import { quoteWithAI } from './actions/quote.js';
 import { replyWithAI } from './actions/reply.js';
+import { likeWithAPI } from './actions/like.js';
+import { bookmarkWithAPI } from './actions/bookmark.js';
+import { retweetWithAPI } from './actions/retweet.js';
+import { followWithAPI } from './actions/follow.js';
 
 // ─── Scroll ───────────────────────────────────────────────────────
 import { focus, scroll, toTop, toBottom, read, back as scrollBack } from './interactions/scroll.js';
@@ -262,6 +266,10 @@ export const api = {
     rightClick,
     quoteWithAI,
     replyWithAI,
+    likeWithAPI,
+    bookmarkWithAPI,
+    retweetWithAPI,
+    followWithAPI,
 
     // ── Scroll (dual: api.scroll(300) + api.scroll.focus('.el')) ─
     scroll: scrollFn,
@@ -421,7 +429,7 @@ export {
     // Note: setPage is deprecated - use withPage instead
     withPage, clearContext, isSessionActive, checkSession, getPage, getCursor, evalPage as eval,
     getContextState, setContextState, getStateSection, updateStateSection,
-    click, type, hover, rightClick, quoteWithAI, replyWithAI,
+    click, type, hover, rightClick, quoteWithAI, replyWithAI, likeWithAPI, bookmarkWithAPI, retweetWithAPI, followWithAPI,
     focus, scroll, toTop, toBottom, read, scrollBack,
     move, up, down, setPathStyle, getPathStyle, startFidgeting, stopFidgeting,
     text, attr, visible, count, exists, currentUrl,

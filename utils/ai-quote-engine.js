@@ -1089,7 +1089,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         // Type quote
-        this.logger.info(`[QuoteMethodA] Typing quote...`);
+        this.logger.info(`[QuoteMethodA] Typing quote (${quoteText.length} chars, ghost cursor)...`);
         await api.type(composer, quoteText, { clearFirst: true });
 
         // Post the quote
@@ -1135,7 +1135,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         this.logger.info(`[QuoteMethodB] Clicking retweet button using selector: ${retweetBtnSelector}`);
 
-        // Click Retweet button
+        this.logger.info(`[QuoteMethodB] Clicking retweet button (ghost cursor)...`);
         const rtClickSuccess = await api.click(retweetBtnSelector, { precision: 'high' });
 
         let menuReady = false;
@@ -1187,7 +1187,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             return await this.quoteMethodA_Keyboard(page, quoteText, human);
         }
 
-        // Click Quote option
+        this.logger.info(`[QuoteMethodB] Clicking Quote option (ghost cursor)...`);
         const quoteClickSuccess = await api.click(quoteOptionSelector, { precision: 'high' });
 
         if (!quoteClickSuccess) {
@@ -1244,7 +1244,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // STEP 5: Type and post
         const composer = api.getPage().locator(verify.selector).first();
 
-        this.logger.info(`[QuoteMethodB] Typing quote...`);
+        this.logger.info(`[QuoteMethodB] Typing quote (${quoteText.length} chars, ghost cursor)...`);
         await api.type(composer, quoteText, { clearFirst: true });
 
         // Post
@@ -1312,7 +1312,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // STEP 3: Type the comment FIRST
         const composer = api.getPage().locator(verify.selector).first();
 
-        this.logger.info(`[QuoteMethodC] Typing comment...`);
+        this.logger.info(`[QuoteMethodC] Typing comment (${quoteText.length} chars, ghost cursor)...`);
         await api.type(composer, quoteText);
 
         // Step 4: Create new line AFTER typing comment
