@@ -35,7 +35,7 @@
       }
     },
     "quote": {
-      "probability": 0.2,
+      "probability": 0.1,
       "methods": {
         "quoteA": {
           "weight": 40,

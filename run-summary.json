@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 558892,
-      "uptimeFormatted": "9m 18s",
-      "timeSinceReset": 558892,
-      "timeSinceResetFormatted": "9m 18s"
+      "uptime": 586290,
+      "uptimeFormatted": "9m 46s",
+      "timeSinceReset": 586290,
+      "timeSinceResetFormatted": "9m 46s"
     },
     "tasks": {
-      "executed": 1,
+      "executed": 3,
       "failed": 0,
-      "succeeded": 1,
+      "succeeded": 3,
       "successRate": 100,
-      "avgDuration": 557189,
-      "totalDuration": 557189,
+      "avgDuration": 208216,
+      "totalDuration": 624648,
       "durationPercentiles": {
-        "p50": 557189,
-        "p95": 557189,
-        "p99": 557189
+        "p50": 105858,
+        "p95": 478530,
+        "p99": 478530
       }
     },
     "browsers": {
@@ -45,13 +45,13 @@
     "twitter": {
       "actions": {
         "likes": 0,
-        "replies": 0,
-        "quotes": 1,
+        "replies": 3,
+        "quotes": 0,
         "retweets": 0,
         "bookmarks": 0,
         "follows": 0,
         "tweets": 0,
-        "total": 1
+        "total": 3
       },
       "performance": {
         "avgDiveDuration": 0,
@@ -61,17 +61,35 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-01T05:55:45.848Z"
+    "runEndTime": "2026-03-01T06:16:40.001Z"
   },
   "tasks": [
     {
-      "taskName": "api-twitteractivity",
-      "duration": 557189,
+      "taskName": "pageview",
+      "duration": 40260,
       "success": true,
       "sessionId": "TEST 1:55339",
       "error": null,
-      "startTime": "2026-03-01T05:46:28.596Z",
-      "timestamp": 1772344545785
+      "startTime": "2026-03-01T06:06:55.392Z",
+      "timestamp": 1772345255652
+    },
+    {
+      "taskName": "pageview",
+      "duration": 105858,
+      "success": true,
+      "sessionId": "TEST 1:55339",
+      "error": null,
+      "startTime": "2026-03-01T06:06:55.399Z",
+      "timestamp": 1772345321257
+    },
+    {
+      "taskName": "api-twitteractivity",
+      "duration": 478530,
+      "success": true,
+      "sessionId": "TEST 1:55339",
+      "error": null,
+      "startTime": "2026-03-01T06:08:41.423Z",
+      "timestamp": 1772345799953
     }
   ]
 }

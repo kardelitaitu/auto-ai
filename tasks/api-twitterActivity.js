@@ -209,11 +209,24 @@ export default async function apiTwitterActivityTask(page, payload) {
                             throwIfAborted();
 
                             // Initialize agent
+                            const probs = taskConfig.engagement.probabilities;
+                            const rawActions = taskConfig.actions || {};
                             agent = new AITwitterAgent(page, profile, logger, {
-                                replyProbability: taskConfig.engagement.probabilities.reply,
-                                quoteProbability: taskConfig.engagement.probabilities.quote,
+                                replyProbability: probs.reply,
+                                quoteProbability: probs.quote,
                                 engagementLimits: taskConfig.engagement.limits,
-                                config: taskConfig
+                                config: {
+                                    ...taskConfig,
+                                    // Inject .actions so ActionRunner.loadConfig() reads the correct
+                                    // probabilities from settings.json instead of its hardcoded defaults
+                                    actions: {
+                                        reply: { probability: probs.reply, enabled: rawActions.reply?.enabled !== false },
+                                        quote: { probability: probs.quote, enabled: rawActions.quote?.enabled !== false },
+                                        like: { probability: probs.like, enabled: rawActions.like?.enabled !== false },
+                                        bookmark: { probability: probs.bookmark, enabled: rawActions.bookmark?.enabled !== false },
+                                        retweet: { probability: probs.retweet, enabled: rawActions.retweet?.enabled !== false },
+                                    }
+                                }
                             });
 
                             // Inject high-level unified API macros

@@ -1,155 +1,157 @@
-{"timestamp":"2026-03-01T05:57:29.092Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772344649080-qbxz906h2] Session initialized with paceMultiplier=1.10"}
-{"timestamp":"2026-03-01T05:57:29.093Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772344649080-qbxz906h2] Fatigue scheduled for T+3.8m"}
-{"timestamp":"2026-03-01T05:57:29.116Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
-{"timestamp":"2026-03-01T05:57:29.117Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
-{"timestamp":"2026-03-01T05:57:29.119Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
-{"timestamp":"2026-03-01T05:57:29.119Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
-{"timestamp":"2026-03-01T05:57:29.119Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
-{"timestamp":"2026-03-01T05:57:29.144Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
-{"timestamp":"2026-03-01T05:57:29.149Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Session database initialized at C:\\Script\\auto-ai\\data\\sessions.db"}
-{"timestamp":"2026-03-01T05:57:29.149Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
-{"timestamp":"2026-03-01T05:57:29.252Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
-{"timestamp":"2026-03-01T05:57:29.253Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
-{"timestamp":"2026-03-01T05:57:29.255Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
-{"timestamp":"2026-03-01T05:57:29.255Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dashboard server started on port 3001"}
-{"timestamp":"2026-03-01T05:57:29.255Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting browser discovery..."}
-{"timestamp":"2026-03-01T05:57:29.256Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
-{"timestamp":"2026-03-01T05:57:29.256Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
-{"timestamp":"2026-03-01T05:57:29.257Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager configured: session=1800000ms, concurrency=50"}
-{"timestamp":"2026-03-01T05:57:29.257Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
-{"timestamp":"2026-03-01T05:57:29.257Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager configured: session=1800000ms, concurrency=50"}
-{"timestamp":"2026-03-01T05:57:29.257Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
-{"timestamp":"2026-03-01T05:57:29.257Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
-{"timestamp":"2026-03-01T05:57:29.259Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-03-01T05:57:29.260Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
-{"timestamp":"2026-03-01T05:57:29.260Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
-{"timestamp":"2026-03-01T05:57:29.260Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
-{"timestamp":"2026-03-01T05:57:29.261Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-03-01T05:57:29.261Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
-{"timestamp":"2026-03-01T05:57:29.262Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
-{"timestamp":"2026-03-01T05:57:29.262Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
-{"timestamp":"2026-03-01T05:57:29.262Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-03-01T05:57:29.263Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
-{"timestamp":"2026-03-01T05:57:29.263Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
-{"timestamp":"2026-03-01T05:57:29.263Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-03-01T05:57:29.263Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
-{"timestamp":"2026-03-01T05:57:29.264Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
-{"timestamp":"2026-03-01T05:57:29.264Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-03-01T05:57:29.264Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
-{"timestamp":"2026-03-01T05:57:29.264Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
-{"timestamp":"2026-03-01T05:57:29.265Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-03-01T05:57:29.265Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
-{"timestamp":"2026-03-01T05:57:29.265Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
-{"timestamp":"2026-03-01T05:57:29.266Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-03-01T05:57:29.266Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
-{"timestamp":"2026-03-01T05:57:29.266Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
-{"timestamp":"2026-03-01T05:57:29.266Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
-{"timestamp":"2026-03-01T05:57:29.267Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
-{"timestamp":"2026-03-01T05:57:29.267Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
-{"timestamp":"2026-03-01T05:57:29.268Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
-{"timestamp":"2026-03-01T05:57:29.268Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
-{"timestamp":"2026-03-01T05:57:29.268Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
-{"timestamp":"2026-03-01T05:57:29.268Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
-{"timestamp":"2026-03-01T05:57:29.269Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
-{"timestamp":"2026-03-01T05:57:29.271Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
-{"timestamp":"2026-03-01T05:57:29.271Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
-{"timestamp":"2026-03-01T05:57:29.278Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
-{"timestamp":"2026-03-01T05:57:29.278Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
-{"timestamp":"2026-03-01T05:57:29.279Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
-{"timestamp":"2026-03-01T05:57:29.279Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
-{"timestamp":"2026-03-01T05:57:29.291Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
-{"timestamp":"2026-03-01T05:57:29.292Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
-{"timestamp":"2026-03-01T05:57:29.293Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
-{"timestamp":"2026-03-01T05:57:29.296Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
-{"timestamp":"2026-03-01T05:57:29.296Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
-{"timestamp":"2026-03-01T05:57:29.296Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: TEST 1 (ws: ws://127.0.0.1:55339/devtools/browser/396429b9-0c1f-498e-b9dc-91e587f53bf5)"}
-{"timestamp":"2026-03-01T05:57:29.296Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
-{"timestamp":"2026-03-01T05:57:30.298Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
-{"timestamp":"2026-03-01T05:57:30.298Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
-{"timestamp":"2026-03-01T05:57:30.298Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
-{"timestamp":"2026-03-01T05:57:30.299Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
-{"timestamp":"2026-03-01T05:57:30.299Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
-{"timestamp":"2026-03-01T05:57:30.299Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
-{"timestamp":"2026-03-01T05:57:30.299Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
-{"timestamp":"2026-03-01T05:57:30.299Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
-{"timestamp":"2026-03-01T05:57:30.299Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
-{"timestamp":"2026-03-01T05:57:30.299Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
-{"timestamp":"2026-03-01T05:57:30.300Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
-{"timestamp":"2026-03-01T05:57:30.300Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
-{"timestamp":"2026-03-01T05:57:30.300Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
-{"timestamp":"2026-03-01T05:57:30.300Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Found 1 browser endpoints. Attempting to connect in parallel..."}
-{"timestamp":"2026-03-01T05:57:30.300Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:55339/devtools/browser/396429b9-0c1f-498e-b9dc-91e587f53bf5"}
-{"timestamp":"2026-03-01T05:57:30.329Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:55339/devtools/browser/396429b9-0c1f-498e-b9dc-91e587f53bf5"}
-{"timestamp":"2026-03-01T05:57:30.330Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Session added: TEST 1:55339 with 50 slots."}
-{"timestamp":"2026-03-01T05:57:30.334Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Successfully connected and added session for TEST 1:55339."}
-{"timestamp":"2026-03-01T05:57:30.334Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Discovery completed. Connected to 1 browsers."}
-{"timestamp":"2026-03-01T05:57:30.334Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
-{"timestamp":"2026-03-01T05:57:30.335Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to 1 browser(s). Ready for automation."}
-{"timestamp":"2026-03-01T05:57:30.335Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Initialized. Processing 1 sequential task groups."}
-{"timestamp":"2026-03-01T05:57:30.335Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 1/1: [\"api-twitteractivity\"]"}
-{"timestamp":"2026-03-01T05:57:30.339Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Task 'api-twitteractivity' added to queue. Queue size: 1"}
-{"timestamp":"2026-03-01T05:57:30.339Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 1 added. Waiting for completion..."}
-{"timestamp":"2026-03-01T05:57:30.339Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
-{"timestamp":"2026-03-01T05:57:30.404Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting concurrent checklist processing for all sessions..."}
-{"timestamp":"2026-03-01T05:57:30.405Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dispatching 1 tasks across sessions."}
-{"timestamp":"2026-03-01T05:57:30.405Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[TEST 1:55339] Starting shared checklist with 1 tasks and up to 50 parallel tabs."}
-{"timestamp":"2026-03-01T05:57:30.464Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[TEST 1:55339][Worker 0] Starting task 'api-twitteractivity'"}
-{"timestamp":"2026-03-01T05:57:30.489Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
-{"timestamp":"2026-03-01T05:57:30.489Z","level":"INFO","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Service initialized (TTL: 300000ms)"}
-{"timestamp":"2026-03-01T05:57:30.490Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
-{"timestamp":"2026-03-01T05:57:30.506Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-01T05:57:30.506Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-01T05:57:30.506Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
-{"timestamp":"2026-03-01T05:57:30.507Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
-{"timestamp":"2026-03-01T05:57:30.510Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-01T05:57:30.511Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-01T05:57:30.512Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Initializing with Unified API..."}
-{"timestamp":"2026-03-01T05:57:30.513Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] ⏳ Startup: Running parallel initialization (Jitter: 3547ms)..."}
-{"timestamp":"2026-03-01T05:57:30.514Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Loading configuration (cache miss: {})"}
-{"timestamp":"2026-03-01T05:57:30.514Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Profile: 27-Balanced-undefined | Input: undefined (undefined%) | Dive: undefined% | Like: undefined% | Follow: undefined%"}
-{"timestamp":"2026-03-01T05:57:30.514Z","level":"INFO","module":"config-service.js","sessionId":null,"message":"[Config] Service initialized"}
-{"timestamp":"2026-03-01T05:57:30.515Z","level":"DEBUG","module":"environment-config.js","sessionId":null,"message":"[EnvironmentConfig] No environment overrides found"}
-{"timestamp":"2026-03-01T05:57:30.515Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Added new entry: {}"}
-{"timestamp":"2026-03-01T05:57:30.515Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Configuration loaded successfully in 2ms"}
-{"timestamp":"2026-03-01T05:57:30.515Z","level":"DEBUG","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Cache stats: 0 hits, 1 loads"}
-{"timestamp":"2026-03-01T05:57:33.797Z","level":"INFO","module":"humanization.js","sessionId":null,"message":"[Humanization] Engine initialized"}
-{"timestamp":"2026-03-01T05:57:33.797Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] Initialized [Type: Balanced | Input: Keys (89%) | Dive: 13.2% | Tweet: 8.0% | T-Dive: 9.8% Like: 0.67%]. Fatigue scheduled for T+4.6m"}
-{"timestamp":"2026-03-01T05:57:33.799Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[AsyncQueue] Initialized (maxConcurrent: 1, maxQueueSize: 30, defaultTimeout: 20000ms)"}
-{"timestamp":"2026-03-01T05:57:33.799Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[DiveQueue] Initialized with engagement limits: {\"replies\":3,\"retweets\":1,\"quotes\":1,\"likes\":5,\"follows\":2,\"bookmarks\":2}"}
-{"timestamp":"2026-03-01T05:57:33.800Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReplyEngine] Initialized (probability: 0.8)"}
-{"timestamp":"2026-03-01T05:57:33.800Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuoteEngine] Initialized (probability: 0.2)"}
-{"timestamp":"2026-03-01T05:57:33.800Z","level":"INFO","module":"ai-twitter-reply.js","sessionId":null,"message":"[AIReplyAction] Initialized (enabled: true, probability: 60%)"}
-{"timestamp":"2026-03-01T05:57:33.800Z","level":"INFO","module":"ai-twitter-quote.js","sessionId":null,"message":"[AIQuoteAction] Initialized (enabled: true, probability: 20%)"}
-{"timestamp":"2026-03-01T05:57:33.800Z","level":"INFO","module":"ai-twitter-like.js","sessionId":null,"message":"[LikeAction] Initialized (enabled: true, probability: 15%)"}
-{"timestamp":"2026-03-01T05:57:33.801Z","level":"INFO","module":"ai-twitter-bookmark.js","sessionId":null,"message":"[BookmarkAction] Initialized (enabled: true, probability: 5%)"}
-{"timestamp":"2026-03-01T05:57:33.801Z","level":"INFO","module":"ai-twitter-retweet.js","sessionId":null,"message":"[RetweetAction] Initialized (enabled: true, probability: 20%)"}
-{"timestamp":"2026-03-01T05:57:33.801Z","level":"INFO","module":"ai-twitter-go-home.js","sessionId":null,"message":"[GoHomeAction] Initialized (enabled: true)"}
-{"timestamp":"2026-03-01T05:57:33.801Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[ActionRunner] Initialized: reply=0.6, quote=0.2, like=0.15, bookmark=0.05, retweet=0.2 (total: 120%)"}
-{"timestamp":"2026-03-01T05:57:33.801Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [AITwitterAgent] Initialized (replyProbability: 0.8)"}
-{"timestamp":"2026-03-01T05:57:33.802Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [AITwitterAgent] Engagement limits: replies: 0/3, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/2, bookmarks: 0/2"}
-{"timestamp":"2026-03-01T05:57:33.802Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [AITwitterAgent] Session phases: warmup(0-10%) → active(10-80%) → cooldown(80-100%)"}
-{"timestamp":"2026-03-01T05:57:33.802Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [DiveLock] State management initialized: HOME (scrolling enabled)"}
-{"timestamp":"2026-03-01T05:57:33.802Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [AITwitterAgent] Action handlers initialized: reply, quote, like, bookmark, retweet, goHome"}
-{"timestamp":"2026-03-01T05:57:33.802Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Persona: casual"}
-{"timestamp":"2026-03-01T05:57:33.803Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Distraction chance: 6%"}
-{"timestamp":"2026-03-01T05:57:33.803Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Enforcing theme: dark"}
-{"timestamp":"2026-03-01T05:57:33.803Z","level":"INFO","module":"cloud-client.js","sessionId":null,"message":"[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization."}
-{"timestamp":"2026-03-01T05:57:33.806Z","level":"DEBUG","module":"ollama-manager.js","sessionId":null,"message":"[OllamaManager] Ollama is already running."}
-{"timestamp":"2026-03-01T05:57:33.806Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Initialized: http://localhost:11434 (Model: llama3.2:3b)"}
-{"timestamp":"2026-03-01T05:57:33.806Z","level":"INFO","module":"local-client.js","sessionId":null,"message":"[Local] Ollama client initialized"}
-{"timestamp":"2026-03-01T05:57:33.807Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Warm-up 2.5s..."}
-{"timestamp":"2026-03-01T05:57:36.679Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] 🎲 Rolled entry point: home → https://x.com/"}
-{"timestamp":"2026-03-01T05:57:41.461Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] X.com loaded (home)"}
-{"timestamp":"2026-03-01T05:57:41.461Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Waiting for network settlement (4000ms)..."}
-{"timestamp":"2026-03-01T05:57:45.469Z","level":"DEBUG","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[AsyncQueue] ⚡ Background task expected timeout: page.waitForLoadState: Timeout 4000ms exceeded."}
-{"timestamp":"2026-03-01T05:57:45.469Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Network idle reached."}
-{"timestamp":"2026-03-01T05:57:45.469Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Checking login state..."}
-{"timestamp":"2026-03-01T05:57:45.523Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] ✅ Logged in (check 1/3)"}
-{"timestamp":"2026-03-01T05:57:45.523Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[api-twitterActivity] Starting session (20 cycles, 360-600s)..."}
-{"timestamp":"2026-03-01T05:57:45.524Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [AITwitterAgent] Starting AI-Enhanced Session with DiveQueue and Lock Management..."}
-{"timestamp":"2026-03-01T05:57:45.524Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] Starting Session on https://x.com/home"}
-{"timestamp":"2026-03-01T05:57:45.524Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] Session Timer Set: 407.2s"}
-{"timestamp":"2026-03-01T05:57:45.524Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] Enforcing theme: dark"}
-{"timestamp":"2026-03-01T05:57:45.525Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [Human] Session starting..."}
-{"timestamp":"2026-03-01T05:57:51.474Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] --- Loop 1  ---"}
-{"timestamp":"2026-03-01T05:57:54.445Z","level":"INFO","module":"api-twitterActivity.js [TEST 1:55339]","sessionId":null,"message":"[Agent:27-Balanced] [Idle] Reading Phase (122.5s)"}
+{"timestamp":"2026-03-01T06:27:32.568Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772346452556-0yvyk2noj] Session initialized with paceMultiplier=0.97"}
+{"timestamp":"2026-03-01T06:27:32.568Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772346452556-0yvyk2noj] Fatigue scheduled for T+4.8m"}
+{"timestamp":"2026-03-01T06:27:32.595Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
+{"timestamp":"2026-03-01T06:27:32.595Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
+{"timestamp":"2026-03-01T06:27:32.597Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
+{"timestamp":"2026-03-01T06:27:32.598Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
+{"timestamp":"2026-03-01T06:27:32.598Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
+{"timestamp":"2026-03-01T06:27:32.625Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
+{"timestamp":"2026-03-01T06:27:32.630Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Session database initialized at C:\\Script\\auto-ai\\data\\sessions.db"}
+{"timestamp":"2026-03-01T06:27:32.631Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
+{"timestamp":"2026-03-01T06:27:32.738Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
+{"timestamp":"2026-03-01T06:27:32.739Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
+{"timestamp":"2026-03-01T06:27:32.741Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
+{"timestamp":"2026-03-01T06:27:32.742Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dashboard server started on port 3001"}
+{"timestamp":"2026-03-01T06:27:32.742Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting browser discovery..."}
+{"timestamp":"2026-03-01T06:27:32.742Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-03-01T06:27:32.743Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-03-01T06:27:32.743Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager configured: session=1800000ms, concurrency=50"}
+{"timestamp":"2026-03-01T06:27:32.743Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-03-01T06:27:32.743Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"SessionManager configured: session=1800000ms, concurrency=50"}
+{"timestamp":"2026-03-01T06:27:32.744Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
+{"timestamp":"2026-03-01T06:27:32.744Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
+{"timestamp":"2026-03-01T06:27:32.746Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-03-01T06:27:32.746Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
+{"timestamp":"2026-03-01T06:27:32.746Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
+{"timestamp":"2026-03-01T06:27:32.746Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
+{"timestamp":"2026-03-01T06:27:32.747Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-03-01T06:27:32.747Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
+{"timestamp":"2026-03-01T06:27:32.747Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
+{"timestamp":"2026-03-01T06:27:32.748Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
+{"timestamp":"2026-03-01T06:27:32.749Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-03-01T06:27:32.749Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
+{"timestamp":"2026-03-01T06:27:32.749Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
+{"timestamp":"2026-03-01T06:27:32.749Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-03-01T06:27:32.750Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
+{"timestamp":"2026-03-01T06:27:32.750Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
+{"timestamp":"2026-03-01T06:27:32.750Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-03-01T06:27:32.750Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
+{"timestamp":"2026-03-01T06:27:32.750Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
+{"timestamp":"2026-03-01T06:27:32.751Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-03-01T06:27:32.751Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
+{"timestamp":"2026-03-01T06:27:32.751Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
+{"timestamp":"2026-03-01T06:27:32.752Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-03-01T06:27:32.752Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
+{"timestamp":"2026-03-01T06:27:32.753Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
+{"timestamp":"2026-03-01T06:27:32.753Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
+{"timestamp":"2026-03-01T06:27:32.754Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized"}
+{"timestamp":"2026-03-01T06:27:32.754Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
+{"timestamp":"2026-03-01T06:27:32.754Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
+{"timestamp":"2026-03-01T06:27:32.754Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
+{"timestamp":"2026-03-01T06:27:32.754Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
+{"timestamp":"2026-03-01T06:27:32.755Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
+{"timestamp":"2026-03-01T06:27:32.755Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
+{"timestamp":"2026-03-01T06:27:32.756Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
+{"timestamp":"2026-03-01T06:27:32.756Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
+{"timestamp":"2026-03-01T06:27:32.763Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
+{"timestamp":"2026-03-01T06:27:32.763Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
+{"timestamp":"2026-03-01T06:27:32.764Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
+{"timestamp":"2026-03-01T06:27:32.764Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
+{"timestamp":"2026-03-01T06:27:32.776Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-03-01T06:27:32.777Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-03-01T06:27:32.777Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
+{"timestamp":"2026-03-01T06:27:32.780Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
+{"timestamp":"2026-03-01T06:27:32.781Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
+{"timestamp":"2026-03-01T06:27:32.781Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: TEST 2 (ws: ws://127.0.0.1:51432/devtools/browser/fab17093-e15c-4844-919e-35fcb2668c57)"}
+{"timestamp":"2026-03-01T06:27:32.781Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
+{"timestamp":"2026-03-01T06:27:33.786Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-03-01T06:27:33.787Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
+{"timestamp":"2026-03-01T06:27:33.787Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-03-01T06:27:33.787Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
+{"timestamp":"2026-03-01T06:27:33.787Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
+{"timestamp":"2026-03-01T06:27:33.787Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
+{"timestamp":"2026-03-01T06:27:33.787Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
+{"timestamp":"2026-03-01T06:27:33.788Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
+{"timestamp":"2026-03-01T06:27:33.788Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
+{"timestamp":"2026-03-01T06:27:33.788Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
+{"timestamp":"2026-03-01T06:27:33.788Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
+{"timestamp":"2026-03-01T06:27:33.788Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
+{"timestamp":"2026-03-01T06:27:33.788Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
+{"timestamp":"2026-03-01T06:27:33.788Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Found 1 browser endpoints. Attempting to connect in parallel..."}
+{"timestamp":"2026-03-01T06:27:33.788Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:51432/devtools/browser/fab17093-e15c-4844-919e-35fcb2668c57"}
+{"timestamp":"2026-03-01T06:27:33.829Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:51432/devtools/browser/fab17093-e15c-4844-919e-35fcb2668c57"}
+{"timestamp":"2026-03-01T06:27:33.830Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"Session added: TEST 2:51432 with 50 slots."}
+{"timestamp":"2026-03-01T06:27:33.839Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Successfully connected and added session for TEST 2:51432."}
+{"timestamp":"2026-03-01T06:27:33.839Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Discovery completed. Connected to 1 browsers."}
+{"timestamp":"2026-03-01T06:27:33.840Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
+{"timestamp":"2026-03-01T06:27:33.840Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to 1 browser(s). Ready for automation."}
+{"timestamp":"2026-03-01T06:27:33.840Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Initialized. Processing 1 sequential task groups."}
+{"timestamp":"2026-03-01T06:27:33.840Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 1/1: [\"pageview\",\"pageview\",\"pageview\",\"cookiebot\"]"}
+{"timestamp":"2026-03-01T06:27:33.845Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Task 'pageview' added to queue. Queue size: 1"}
+{"timestamp":"2026-03-01T06:27:33.846Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Task 'pageview' added to queue. Queue size: 2"}
+{"timestamp":"2026-03-01T06:27:33.847Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Task 'pageview' added to queue. Queue size: 3"}
+{"timestamp":"2026-03-01T06:27:33.848Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Task 'cookiebot' added to queue. Queue size: 4"}
+{"timestamp":"2026-03-01T06:27:33.848Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 1 added. Waiting for completion..."}
+{"timestamp":"2026-03-01T06:27:33.848Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
+{"timestamp":"2026-03-01T06:27:33.910Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Starting concurrent checklist processing for all sessions..."}
+{"timestamp":"2026-03-01T06:27:33.911Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Dispatching 4 tasks across sessions."}
+{"timestamp":"2026-03-01T06:27:33.911Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[TEST 2:51432] Starting shared checklist with 4 tasks and up to 50 parallel tabs."}
+{"timestamp":"2026-03-01T06:27:33.915Z","level":"WARN","module":"orchestrator.js","sessionId":null,"message":"[TEST 2:51432] Unhealthy connection detected during checklist. Attempting recovery..."}
+{"timestamp":"2026-03-01T06:27:33.916Z","level":"WARN","module":"automator.js","sessionId":null,"message":"[Health] Starting connection recovery for ws://127.0.0.1:51432/devtools/browser/fab17093-e15c-4844-919e-35fcb2668c57"}
+{"timestamp":"2026-03-01T06:27:33.916Z","level":"WARN","module":"automator.js","sessionId":null,"message":"[Health] Recovery succeeded for ws://127.0.0.1:51432/devtools/browser/fab17093-e15c-4844-919e-35fcb2668c57"}
+{"timestamp":"2026-03-01T06:27:33.917Z","level":"WARN","module":"orchestrator.js","sessionId":null,"message":"[TEST 2:51432] Unhealthy connection detected during checklist. Attempting recovery..."}
+{"timestamp":"2026-03-01T06:27:33.917Z","level":"WARN","module":"automator.js","sessionId":null,"message":"[Health] Starting connection recovery for ws://127.0.0.1:51432/devtools/browser/fab17093-e15c-4844-919e-35fcb2668c57"}
+{"timestamp":"2026-03-01T06:27:33.917Z","level":"WARN","module":"automator.js","sessionId":null,"message":"[Health] Recovery succeeded for ws://127.0.0.1:51432/devtools/browser/fab17093-e15c-4844-919e-35fcb2668c57"}
+{"timestamp":"2026-03-01T06:27:34.271Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[TEST 2:51432][Worker 0] Starting task 'pageview'"}
+{"timestamp":"2026-03-01T06:27:34.277Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[TEST 2:51432][Worker 1] Starting task 'pageview'"}
+{"timestamp":"2026-03-01T06:27:34.279Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[TEST 2:51432][Worker 3] Starting task 'cookiebot'"}
+{"timestamp":"2026-03-01T06:27:34.281Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[TEST 2:51432][Worker 2] Starting task 'pageview'"}
+{"timestamp":"2026-03-01T06:27:34.284Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-01T06:27:34.284Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-01T06:27:34.284Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-03-01T06:27:34.285Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-03-01T06:27:34.286Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-01T06:27:34.286Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-01T06:27:34.286Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-03-01T06:27:34.286Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-03-01T06:27:34.288Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-01T06:27:34.288Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-01T06:27:34.288Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-03-01T06:27:34.288Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-03-01T06:27:34.289Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-01T06:27:34.289Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-01T06:27:34.289Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-03-01T06:27:34.290Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-03-01T06:27:34.317Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-01T06:27:34.317Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-01T06:27:34.318Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-01T06:27:34.318Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-01T06:27:34.319Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-01T06:27:34.319Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-01T06:27:34.320Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-01T06:27:34.321Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Starting migrated pageview task..."}
+{"timestamp":"2026-03-01T06:27:34.322Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-01T06:27:34.324Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Starting migrated pageview task..."}
+{"timestamp":"2026-03-01T06:27:34.325Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Initialized with profile: 41-DoomScroller (Persona: casual)"}
+{"timestamp":"2026-03-01T06:27:34.325Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Starting migrated pageview task..."}
+{"timestamp":"2026-03-01T06:27:34.326Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Target (Random): https://x.com/haraboji58/with_replies"}
+{"timestamp":"2026-03-01T06:27:34.327Z","level":"INFO","module":"cookiebot-api.js [TEST 2:51432]","sessionId":null,"message":"Ultra-Lite mode enabled: media and styles blocked (analytics preserved)"}
+{"timestamp":"2026-03-01T06:27:34.328Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Initialized with profile: 16-Balanced (Persona: casual)"}
+{"timestamp":"2026-03-01T06:27:34.328Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Initialized with profile: 50-Stalker (Persona: casual)"}
+{"timestamp":"2026-03-01T06:27:34.329Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Referrer: https://www.reddit.com/"}
+{"timestamp":"2026-03-01T06:27:34.329Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Navigating..."}
+{"timestamp":"2026-03-01T06:27:34.330Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Target (Random): https://x.com/ayalasaka/with_replies"}
+{"timestamp":"2026-03-01T06:27:34.331Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Target (Random): https://x.com/kavita_roni/with_replies"}
+{"timestamp":"2026-03-01T06:27:34.332Z","level":"INFO","module":"cookiebot-api.js [TEST 2:51432]","sessionId":null,"message":"Starting random visits loop for 21 times."}
+{"timestamp":"2026-03-01T06:27:34.333Z","level":"DEBUG","module":"cookiebot-api.js [TEST 2:51432]","sessionId":null,"message":"Page is open. Attempting page.close()..."}
+{"timestamp":"2026-03-01T06:27:34.334Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Referrer: https://www.google.com/search?q=ayalasaka%20twitter%20real&sourceid=chrome&ie=UTF-8&ved=2ahUKEwjBhobiqb2RAxVM1DgGHa81D6AQyNoBKAB6BAgZEAA&ei=jaGKAtGmECgr"}
+{"timestamp":"2026-03-01T06:27:34.334Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Navigating..."}
+{"timestamp":"2026-03-01T06:27:34.335Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Referrer: https://www.reddit.com/"}
+{"timestamp":"2026-03-01T06:27:34.335Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Navigating..."}
+{"timestamp":"2026-03-01T06:27:34.342Z","level":"DEBUG","module":"cookiebot-api.js [TEST 2:51432]","sessionId":null,"message":"page.close() command EXECUTED."}
+{"timestamp":"2026-03-01T06:27:34.342Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 63ms"}
+{"timestamp":"2026-03-01T06:27:34.343Z","level":"DEBUG","module":"sessionManager.js","sessionId":null,"message":"Released worker 3 in TEST 2:51432 (425ms)"}
+{"timestamp":"2026-03-01T06:27:41.586Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Simulating reading for ~31.44s (14 cycles)"}
+{"timestamp":"2026-03-01T06:27:41.930Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Simulating reading for ~45.00s (20 cycles)"}
+{"timestamp":"2026-03-01T06:27:42.550Z","level":"INFO","module":"pageview.js [TEST 2:51432]","sessionId":null,"message":"[pageview] Simulating reading for ~45.00s (20 cycles)"}
+{"timestamp":"2026-03-01T06:28:03.860Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Health check recovered for ws://127.0.0.1:51432/devtools/browser/fab17093-e15c-4844-919e-35fcb2668c57"}

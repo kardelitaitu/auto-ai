@@ -1,8 +1,23 @@
 --- ESLINT DEBUG REPORT ---
-Generated: 07:51:36
+Generated: 12:59:11
 ---------------------------
 
-Run Location: C:\My Script\auto-ai
+Run Location: C:\Script\auto-ai
 Command: npx.cmd eslint . --quiet --format=json
 
-Found 0 files with errors.
+Found 3 files with errors.
+
+========================================
+📄 media-debug.js (1 errors)
+========================================
+  ❌ Line 106: [no-undef] 'videoData' is not defined.
+
+========================================
+📄 prompt-test.js (1 errors)
+========================================
+  ❌ Line 522: [no-undef] 'LLM_ENDPOINT' is not defined.
+
+========================================
+📄 video-headers-test.js (1 errors)
+========================================
+  ❌ Line 41: [no-empty] Empty block statement.

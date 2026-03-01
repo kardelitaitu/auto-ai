@@ -6,7 +6,14 @@ Cleaned up `config/settings.json`:
 - These were dead duplicates — `task-config-loader.js` reads reply/quote probabilities from `twitter.reply.probability` and `twitter.quote.probability` respectively, never from `twitter.actions.*`.
 - `twitter.actions.like`, `twitter.actions.bookmark`, and `twitter.actions.retweet` remain as they are the canonical source for those probabilities.
 
-01-03-2026--12-56
+01-03-2026--13-03
+Fixed quote probability and max limit not being respected in `tasks/api-twitterActivity.js`:
+- **Root cause (probability)**: `ActionRunner.loadConfig()` and `AIQuoteAction/AIReplyAction.loadConfig()` read `twitterConfig.actions.quote.probability` but `taskConfig` (passed as `twitterConfig`) had no `.actions` key — always fell back to hardcoded defaults (reply=0.6, quote=0.2) regardless of `settings.json`.
+- **Fix**: Injected a properly structured `.actions` object into the config passed to `AITwitterAgent`, derived from `taskConfig.engagement.probabilities` (which correctly reads `settings.json` values). Now `ActionRunner` and action classes see the live probabilities from `settings.json`.
+- **Root cause (max limit)**: Confirmed from previous fix session — `recordEngagement()` is correctly called in the execute overrides.
+- Verified syntax with `node -c`.
+
+
 Changed `twitter.reply.probability` in `config/settings.json` from `0.6` (60%) to `0.5` (50%).
 
 
