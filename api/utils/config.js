@@ -1,44 +1,25 @@
 /**
- * @fileoverview Minimal Settings Config Loader for api/ module.
- * Internal replacement for utils/configLoader.js getSettings().
- * Reads config/settings.json from the project root. Falls back to {}.
+ * @fileoverview Settings Config Loader Bridge for api/ module.
+ * Bridges to the full api/utils/configLoader.js for consistency.
  * 
  * @module api/utils/config
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { ConfigLoader } from './configLoader.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Project root is api/utils/../../ = 2 levels up
-const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
-const SETTINGS_PATH = path.join(PROJECT_ROOT, 'config', 'settings.json');
-
-let _settingsCache = null;
+const configLoader = new ConfigLoader();
 
 /**
- * Load settings.json from config/. Returns {} if file is not found.
- * Result is cached after first load.
+ * Load settings.json using the full ConfigLoader.
  * @returns {Promise<object>}
  */
 export async function getSettings() {
-    if (_settingsCache !== null) return _settingsCache;
-
-    try {
-        const data = await fs.readFile(SETTINGS_PATH, 'utf8');
-        _settingsCache = JSON.parse(data);
-    } catch {
-        _settingsCache = {};
-    }
-
-    return _settingsCache;
+    return configLoader.getSettings();
 }
 
 /**
- * Clear settings cache (useful for testing).
+ * Clear settings cache.
  */
 export function clearSettingsCache() {
-    _settingsCache = null;
+    configLoader.clearCache();
 }

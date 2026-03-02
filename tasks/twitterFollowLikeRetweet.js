@@ -19,7 +19,7 @@ import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
 import { takeScreenshot } from '../utils/screenshot.js';
 import { applyHumanizationPatch } from '../utils/browserPatch.js';
-// import { humanTiming } from '../utils/human-timing.js';
+// import { humanTiming } from '../api/behaviors/human-timing.js';
 // import { entropy } from '../utils/entropyController.js';
 // import { GhostCursor } from '../utils/ghostCursor.js';
 // import PopupCloser from '../utils/popup-closer.js';
@@ -269,8 +269,8 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                     try {
                         await page.goBack();
                         await page.waitForTimeout(mathUtils.randomInRange(2000, 4000));
-                } catch (e2) {
-                    logger.error(`[followLikeRetweet] Navigation back failed completely: ${e2.message}. Logic may drift.`);
+                    } catch (e2) {
+                        logger.error(`[followLikeRetweet] Navigation back failed completely: ${e2.message}. Logic may drift.`);
                     }
                 }
 

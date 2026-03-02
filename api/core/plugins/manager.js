@@ -6,7 +6,7 @@
  */
 
 import { getAvailableHooks } from '../events.js';
-import { createLogger } from '../../../utils/logger.js';
+import { createLogger } from '../../utils/logger.js';
 import { BasePlugin } from './base.js';
 
 const logger = createLogger('api/plugins/manager.js');

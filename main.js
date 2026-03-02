@@ -6,11 +6,11 @@
 
 
 import 'dotenv/config';
-import { createLogger } from './utils/logger.js';
-import { showBanner } from './utils/banner.js';
-import Orchestrator from './core/orchestrator.js';
-import { ensureDockerLLM } from './utils/dockerLLM.js';
-import { getSettings } from './utils/configLoader.js';
+import { createLogger } from './api/utils/logger.js';
+import { showBanner } from './api/utils/banner.js';
+import Orchestrator from './api/core/orchestrator.js';
+import { ensureDockerLLM } from './api/utils/dockerLLM.js';
+import { getSettings } from './api/utils/configLoader.js';
 
 const logger = createLogger('main.js');
 

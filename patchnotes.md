@@ -1,3 +1,18 @@
+### ✅ version 0.5.3
+(02 March 2026) Humanization Stability & Math Utility Fixes
+- **Fixed `randomInRange` Error**: Resolved the `Cannot read properties of undefined (reading 'randomInRange')` error by correcting the dynamic import logic in `api/behaviors/scroll-helper.js`.
+- **Unified Math Utilities**: Consolidated all `api/behaviors/humanization/` modules to import `mathUtils` from `api/utils/math.js` for centralized management.
+- **Corrected API Signatures**: Updated all `scrollRandom()` calls across the codebase to remove the redundant `page` parameter, ensuring alignment with the unified API.
+- **Final Session Verification**: Confirmed that the `api-twitteractivity` task now runs successfully through full session cycles (navigation, reading, engagement).
+
+### ✅ version 0.5.2
+(01 March 2026) API Module Independence & Consolidation
+- **Consolidated API Structure**: Successfully moved core logic from root `utils/` and `core/` folders into the `api/` directory, making the `@/api` module completely independent.
+- **Import Resolution**: Corrected hundreds of relative import paths across `api/agent`, `api/actions`, `api/behaviors`, `api/utils`, and `tasks/`.
+- **Fixed missing exports**: Restored `quoteWithAI` and `replyWithAI` functional wrappers in `api/index.js` by pointing them to corrected `api/actions/` implementations.
+- **Module Maintenance**: Renamed `api/core/health-circuit-breaker.js` to `api/core/circuit-breaker.js` to resolve `ERR_MODULE_NOT_FOUND` in `AgentConnector`.
+- **Cleanup**: Deleted legacy root `utils/` and `core/` directories after verifying successful initialization with `node main.js`.
+
 ### ✅ version 0.5.1
 (01 March 2026) Proxy Assignment Enhancements & CLI Support
 - **Enhanced Proxy Assignment (`ixbrowser-proxies-pasang-tok.js`)**:

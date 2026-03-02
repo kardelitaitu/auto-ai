@@ -4,7 +4,7 @@
  * @module api/utils/locator
  */
 
-import { getPage } from '../../api/core/context.js';
+import { getPage } from '../core/context.js';
 
 /**
  * Normalizes an input into a Playwright Locator.
@@ -15,11 +15,11 @@ export function getLocator(selectorOrLocator) {
     if (!selectorOrLocator) {
         throw new Error('Selector or Locator is required');
     }
-    
+
     if (typeof selectorOrLocator === 'string') {
         return getPage().locator(selectorOrLocator);
     }
-    
+
     return selectorOrLocator;
 }
 

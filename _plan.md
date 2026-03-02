@@ -1,4 +1,4 @@
-# API Independence Refactoring Plan
+# API Independence Refactoring Plan (Exhaustive)
 
 ## Goal
 Consolidate all essential logic into the `api` module so that root `utils` and `core` folders can be removed. The system must remain fully functional for `main.js` and the primary tasks.
@@ -6,45 +6,52 @@ Consolidate all essential logic into the `api` module so that root `utils` and `
 ## Target Scope
 - **Command**: `node main.js`
 - **Tasks**: `api-twitteractivity`, `pageview`, `cookiebot`
+**CRITICAL**: Any file in `core/` or `utils/` NOT listed below is not used by the target scope and will be DELETED when the folders are removed.
 
-## 1. Directory Structure Prep
-Expand `api/` to include:
-- `api/core/` (Migrated from root `core/`)
-- `api/utils/` (Migrated from root `utils/` utilities)
-- `api/twitter/` (Migrated Twitter logic)
-- `api/agent/` (AI engines)
-- `api/behaviors/` (Humanization and interaction)
-- `api/connectors/` (Browser connectors)
+## 1. File Migrations (The Exhaustive List)
 
-## 2. File Migrations
+Based on a recursive AST import trace, exactly 12 files from `core` and 71 files from `utils` are required.
 
-| Original File | Target Location | Notes |
-|---------------|-----------------|-------|
-| `core/orchestrator.js` | `api/core/orchestrator.js` | |
-| `core/sessionManager.js` | `api/core/sessionManager.js` | |
-| `core/discovery.js` | `api/core/discovery.js` | Update `discoveryDir` path |
-| `core/automator.js` | `api/core/automator.js` | |
-| `core/agent-connector.js` | `api/core/agent-connector.js` | |
-| `core/circuit-breaker.js` | `api/core/health-circuit-breaker.js` | Rename to avoid collision |
-| `utils/logger.js` | `api/utils/logger.js` | Unified system logger |
-| `utils/configLoader.js` | `api/utils/configLoader.js` | |
-| `utils/ai-twitterAgent.js` | `api/twitter/ai-twitterAgent.js` | |
-| `utils/twitterAgent.js` | `api/twitter/twitterAgent.js` | |
-| `utils/profileManager.js` | `api/utils/profileManager.js` | |
-| `utils/humanization/` | `api/behaviors/humanization/` | |
-| `utils/actions/` | `api/actions/` | Merge with existing api actions |
+### Core Migrations (`api/core/`)
+- `core/agent-connector.js`
+- `core/automator.js`
+- `core/circuit-breaker.js` -> `api/core/health-circuit-breaker.js` (Rename)
+- `core/cloud-client.js`
+- `core/discovery.js`
+- `core/local-client.js`
+- `core/ollama-client.js`
+- `core/orchestrator.js`
+- `core/request-queue.js`
+- `core/sessionManager.js`
+- `core/vision-interpreter.js`
+- `core/vllm-client.js`
 
-## 3. Collision Resolution
-- **Logger**: Refactor existing `api/core/logger.js` to use `api/utils/logger.js`.
-- **Config**: Consolidate `api/utils/config.js` with the full `configLoader.js`.
-- **Math**: Merge `utils/mathUtils.js` into `api/utils/math.js`.
+### Utils Migrations (`api/utils/`)
+*General Utilities:*
+`api-key-timeout-tracker.js`, `apiHandler.js`, `async-queue.js`, `banner.js`, `circuit-breaker.js`, `config-cache.js`, `config-service.js`, `config-validator.js`, `configLoader.js` (resolve collision), `dockerLLM.js`, `engagement-limits.js`, `entropyController.js`, `envLoader.js`, `environment-config.js`, `errors.js`, `free-api-router.js`, `free-openrouter-helper.js`, `local-ollama-manager.js`, `logger.js` (resolve collision), `logging-config.js`, `mathUtils.js` (merge), `metrics.js`, `model-perf-tracker.js`, `multi-api.js`, `popup-closer.js`, `profileManager.js`, `proxy-agent.js`, `rate-limit-tracker.js`, `request-dedupe.js`, `retry.js`, `sentiment-analyzers.js`, `sentiment-data.js`, `sentiment-guard.js`, `sentiment-service.js`, `task-config-loader.js`, `urlReferrer.js`, `validator.js`
 
-## 4. Import Updates
-- Update all `../../utils/` and `../../core/` imports within `api/`.
-- Update `main.js` to import Orchestrator from `./api/core/orchestrator.js`.
-- Update tasks to use `api/` internal paths.
+### Agent & Twitter Migrations (`api/agent/` & `api/twitter/`)
+- *Agent Engines*: `ai-context-engine.js`, `ai-quote-engine.js`, `ai-reply-engine.js`, `ai-reply-engine/index.js`
+- *Twitter Logic*: `ai-twitterAgent.js`, `twitterAgent.js`, `twitter-reply-prompt.js`, `session-phases.js`
+- *Twitter Handlers*: `twitter-agent/BaseHandler.js`, `twitter-agent/EngagementHandler.js`, `twitter-agent/NavigationHandler.js`, `twitter-agent/SessionHandler.js`
 
-## 5. Verification
+### Actions (`api/actions/`)
+- Migrate `utils/actions/*` (includes bookmark, follow, go-home, like, quote, reply, retweet, index.js).
+
+### Behaviors (`api/behaviors/`)
+- `human-interaction.js`, `human-timing.js`, `micro-interactions.js`, `motor-control.js`, `ghostCursor.js`, `scroll-helper.js`
+- `humanization/*` (action, content, engine, error, index, multitask, scroll, session, timing)
+
+## 2. Collision Resolution
+- **Logger**: Refactor existing `api/core/logger.js` to wrap `api/utils/logger.js` so it keeps the `AsyncLocalStorage` context.
+- **Config**: Integrate `api/utils/config.js` with the comprehensive `configLoader.js`.
+- **Math**: Merge `utils/mathUtils.js` directly into `api/utils/math.js`.
+
+## 3. Import Updates (The Heavy Lift)
+- Find and replace all `require` and `import` paths in the 83 migrated files to point to their new relative locations within `api/`.
+- Update `main.js` and the 3 tasks to use the new `api/` entry points.
+
+## 4. Verification
 1. `node -c` for syntax checks on every moved file.
 2. `npm test` to run unit and integration tests.
 3. `node main.js` manual observation.

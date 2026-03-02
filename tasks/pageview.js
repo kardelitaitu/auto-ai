@@ -1,7 +1,7 @@
 import { api } from '../api/index.js';
-import { createLogger } from '../utils/logger.js';
-import { profileManager } from '../utils/profileManager.js';
-import { ReferrerEngine } from '../utils/urlReferrer.js';
+import { createLogger } from '../api/utils/logger.js';
+import { profileManager } from '../api/utils/profileManager.js';
+import { ReferrerEngine } from '../api/utils/urlReferrer.js';
 import fs from 'fs/promises';
 
 const URL_FILE = './tasks/pageview.txt';

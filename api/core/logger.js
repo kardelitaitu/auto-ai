@@ -2,13 +2,14 @@
  * @fileoverview Lightweight Internal Logger for the api/ module.
  * Provides `createLogger(name)` and `loggerContext` (AsyncLocalStorage).
  * 
- * This is an api/-internal logger. It delegates output to console.* only.
- * The outer application's utils/logger.js handles file I/O and buffering.
+ * This is an api/-internal wrapper for the robust utils/logger.js.
+ * It manages AsyncLocalStorage context while delegating output to the utility logger.
  * 
  * @module api/core/logger
  */
 
 import { AsyncLocalStorage } from 'node:async_hooks';
+import { createLogger as createUtilLogger } from '../utils/logger.js';
 
 /**
  * AsyncLocalStorage for session/trace context propagation.
@@ -21,66 +22,38 @@ export function runWithContext(context, fn) {
     return loggerContext.run(context, fn);
 }
 
-// Minimal ANSI color codes for console output
-const C = {
-    RESET: '\x1b[0m',
-    DIM: '\x1b[2m',
-    CYAN: '\x1b[36m',
-    GREEN: '\x1b[32m',
-    YELLOW: '\x1b[33m',
-    RED: '\x1b[31m',
-    GRAY: '\x1b[90m',
-    ORANGE: '\x1b[38;5;208m',
-};
-
 class Logger {
     constructor(scriptName) {
         this.scriptName = scriptName;
+        this._logger = createUtilLogger(scriptName);
     }
 
-    _prefix(icon, color) {
-        let sessionPart = '';
+    _getContext() {
         try {
-            const ctx = loggerContext.getStore();
-            if (ctx?.sessionId) {
-                sessionPart = `[${ctx.sessionId}]`;
-            }
+            return loggerContext.getStore() || {};
         } catch (_e) {
-            // Fallback to no session info if ALC fails
+            return {};
         }
-
-        const time = new Date().toLocaleTimeString('en-US', { hour12: false });
-        return `${C.DIM}${time}${C.RESET} ${color}${icon}${C.RESET} ${C.ORANGE}[${this.scriptName}]${C.RESET}${sessionPart}`;
     }
 
     info(message, ...args) {
-        try {
-            console.log(`${this._prefix('🔵', C.CYAN)} ${message}`, ...args);
-        } catch { /* Suppress logs during teardown */ }
+        this._logger.info(message, ...args);
     }
 
     success(message, ...args) {
-        try {
-            console.log(`${this._prefix('🟢', C.GREEN)} ${message}`, ...args);
-        } catch { /* Suppress logs during teardown */ }
+        this._logger.success(message, ...args);
     }
 
     warn(message, ...args) {
-        try {
-            console.warn(`${this._prefix('🟡', C.YELLOW)} ${message}`, ...args);
-        } catch { /* Suppress logs during teardown */ }
+        this._logger.warn(message, ...args);
     }
 
     error(message, ...args) {
-        try {
-            console.error(`${this._prefix('🔴', C.RED)} ${message}`, ...args);
-        } catch { /* Suppress logs during teardown */ }
+        this._logger.error(message, ...args);
     }
 
     debug(message, ...args) {
-        try {
-            console.debug(`${this._prefix('⚪', C.GRAY)} ${message}`, ...args);
-        } catch { /* Suppress logs during teardown */ }
+        this._logger.debug(message, ...args);
     }
 }
 

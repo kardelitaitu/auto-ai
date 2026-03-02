@@ -1,5 +1,23 @@
 # AGENT JOURNAL - 01 March 2026
 
+01-03-2026--23:55
+Refactored @/api to be independent and consolidated core logic:
+- Successfully moved root `core/` and `utils/` into the `api/` directory.
+- Updated import paths in `main.js`, `tasks/api-twitterActivity.js`, `tasks/pageview.js`, `tasks/cookiebot.js`, and `vitest.config.js`.
+- Fixed `ERR_MODULE_NOT_FOUND` and `SyntaxError` issues across 50+ files by correcting relative import paths and missing exports.
+- Restored `quoteWithAI` and `replyWithAI` in `api/index.js` by pointing to corrected `api/actions/` implementations.
+- Renamed `api/core/health-circuit-breaker.js` to `api/core/circuit-breaker.js` for `AgentConnector` compatibility.
+- Fixed `ERR_MODULE_NOT_FOUND` in discovery connectors by restoring the missing `api/connectors/baseDiscover.js` base class.
+- Deleted legacy root `utils/` and `core/` directories.
+- Verified successful initialization and execution of `pageview`, `api-twitteractivity`, and `cookiebot` tasks.
+- Resolved `configLoader.getSettings is not a function` by adding the missing method to the `ConfigLoader` class in `api/utils/configLoader.js`.
+- Fixed `human-timing.js` import paths in `tasks/api-twitterActivity.js`, `tasks/ai-twitterActivity.js`, and `tasks/twitterFollowLikeRetweet.js` to point to `../api/behaviors/human-timing.js`.
+- Fixed `gaussian` export error in `api/twitter/twitterAgent.js` by removing redundant named imports from `../utils/math.js`.
+- Verified all files in `api/behaviors/humanization/` use `mathUtils.gaussian` correctly.
+- Corrected entropyController import paths in humanization behavior files.
+- Fixed `context.js` import path in `api/utils/popup-closer.js` and `api/utils/locator.js`.
+- Fixed `logger` and `mathUtils` import paths in `api/behaviors/humanization/*.js` (8 files).
+
 01-03-2026--22-47
 Removed `goto` fallback from follow pre-navigation for stealth (both `tasks/follow-test.js` by user and `utils/ai-twitterAgent.js`):
 - `tasks/follow-test.js`: user removed goto, kept only `api.click()` with failure log.
@@ -75,7 +93,7 @@ Changed `twitter.reply.probability` in `config/settings.json` from `0.6` (60%) t
 
 Fixed engagement limits not being enforced (quote/reply could fire more than maxQuotes/maxReplies):
 - **Root cause**: `AIQuoteAction.execute()` and `AIReplyAction.execute()` both checked `diveQueue.canEngage()` in `canExecute()` but **never called `diveQueue.recordEngagement()`** on success, so the counter was always 0 and the limit was never hit.
-- Additionally, the `agent.actions.quote.execute` and `agent.actions.reply.execute` overrides in `api-twitterActivity.js` completely bypassed `canExecute()`, so there was no limit check at all.
+- Additionally, the `agent.actions.quote.execute` and `agent.actions.reply.execute` overrides in `tasks/api-twitterActivity.js` completely bypassed `canExecute()`, so there was no limit check at all.
 - **Fix** (3 files):
   - `utils/actions/ai-twitter-quote.js`: Added `this.agent.diveQueue?.recordEngagement('quotes')` after successful post.
   - `utils/actions/ai-twitter-reply.js`: Added `this.agent.diveQueue?.recordEngagement('replies')` after successful post.
@@ -286,6 +304,9 @@ Implemented Stage 2 and 3 architectural enhancements from the API audit:
 - Updated `.ai-playground-prompt` with the official `REPLY_SYSTEM_PROMPT` for playground testing.
 
 28-02-2026--15-00
+- Fixed `gaussian` export error in `api/twitter/twitterAgent.js` by removing redundant named imports from `../utils/math.js`.
+- Verified `api-twitteractivity` task runs without math export errors.
+- Final verification of all humanization module fixes.
 - Resolved `_entropy` export mismatch error in `api-twitteractivity` and `utils/humanization/` scripts by updating module imports to definitively use `entropy`.
 
 28-02-2026--21-10
@@ -354,3 +375,9 @@ Fixed redundant context extraction during `api.replyWithAI()` and `api.quoteWith
 - Maintained existing guards and verification polling logic for reliability.
 - Refactored `AIQuoteEngine` methods (`quoteMethodA`, `quoteMethodB`, `quoteMethodC`) for consistent interaction behavior.
 - Verified syntax for all modified files using `node -c`.
+
+2026-03-02--11:15
+- [FIX] corrected `mathUtils` dynamic import in `api/behaviors/scroll-helper.js` (removed incorrect `.default` access).
+- [FIX] corrected `scrollRandom()` signature mismatched calls in `api/behaviors/humanization/*.js` and `api/twitter/ai-twitterAgent.js` (removed redundant `page` argument).
+- [REFACTOR] unified `mathUtils` imports to `api/utils/math.js` across humanization modules to resolve `undefined` reference errors.
+- [VERIFY] ran `node main.js api-twitteractivity` to confirm resolution of `randomInRange` error.

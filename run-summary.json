@@ -1,0 +1,77 @@
+{
+  "summary": {
+    "system": {
+      "uptime": 520688,
+      "uptimeFormatted": "8m 40s",
+      "timeSinceReset": 520688,
+      "timeSinceResetFormatted": "8m 40s"
+    },
+    "tasks": {
+      "executed": 1,
+      "failed": 0,
+      "succeeded": 1,
+      "successRate": 100,
+      "avgDuration": 518525,
+      "totalDuration": 518525,
+      "durationPercentiles": {
+        "p50": 518525,
+        "p95": 518525,
+        "p99": 518525
+      }
+    },
+    "browsers": {
+      "discovered": 1,
+      "connected": 1,
+      "failed": 0,
+      "connectionRate": "100.00"
+    },
+    "api": {
+      "calls": 0,
+      "failures": 0,
+      "successRate": 0,
+      "avgResponseTime": 0
+    },
+    "sessions": {
+      "created": 1,
+      "active": 1,
+      "closed": 0
+    },
+    "social": {
+      "follows": 0,
+      "likes": 0,
+      "retweets": 0,
+      "tweets": 0
+    },
+    "twitter": {
+      "actions": {
+        "likes": 0,
+        "replies": 3,
+        "quotes": 0,
+        "retweets": 0,
+        "bookmarks": 0,
+        "follows": 0,
+        "tweets": 0,
+        "total": 3
+      },
+      "performance": {
+        "avgDiveDuration": 0,
+        "diveCount": 0,
+        "avgAILatency": 0,
+        "aiRequestCount": 0
+      },
+      "errors": {}
+    },
+    "runEndTime": "2026-03-02T04:19:34.906Z"
+  },
+  "tasks": [
+    {
+      "taskName": "api-twitteractivity",
+      "duration": 518525,
+      "success": true,
+      "sessionId": "0001:8857",
+      "error": null,
+      "startTime": "2026-03-02T04:10:56.279Z",
+      "timestamp": 1772425174804
+    }
+  ]
+}

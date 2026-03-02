@@ -5,17 +5,17 @@
  */
 
 import { api } from '../api/index.js';
-import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
-import { profileManager } from '../utils/profileManager.js';
-import { mathUtils } from '../utils/mathUtils.js';
-import { ReferrerEngine } from '../utils/urlReferrer.js';
-import metricsCollector from '../utils/metrics.js';
-import { getLoggingConfig, formatEngagementSummary } from '../utils/logging-config.js';
-import { createLogger } from '../utils/logger.js';
-import { loadAiTwitterActivityConfig } from '../utils/task-config-loader.js';
-import PopupCloser from '../utils/popup-closer.js';
-import { humanTiming } from '../utils/human-timing.js';
-import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
+import { AITwitterAgent } from '../api/twitter/ai-twitterAgent.js';
+import { profileManager } from '../api/utils/profileManager.js';
+import { mathUtils } from '../api/utils/math.js';
+import { ReferrerEngine } from '../api/utils/urlReferrer.js';
+import metricsCollector from '../api/utils/metrics.js';
+import { getLoggingConfig, formatEngagementSummary } from '../api/utils/logging-config.js';
+import { createLogger } from '../api/utils/logger.js';
+import { loadAiTwitterActivityConfig } from '../api/utils/task-config-loader.js';
+import PopupCloser from '../api/utils/popup-closer.js';
+import { humanTiming } from '../api/behaviors/human-timing.js';
+import { TWITTER_TIMEOUTS } from '../api/constants/twitter-timeouts.js';
 import { likeWithAPI } from '../api/actions/like.js';
 import { bookmarkWithAPI } from '../api/actions/bookmark.js';
 import { retweetWithAPI } from '../api/actions/retweet.js';

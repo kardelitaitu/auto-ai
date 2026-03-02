@@ -6,7 +6,7 @@
  */
 
 import { getPlugins } from '../context.js';
-import { createLogger } from '../../../utils/logger.js';
+import { createLogger } from '../../utils/logger.js';
 import { BasePlugin } from './base.js';
 
 const _logger = createLogger('api/plugins/index.js');

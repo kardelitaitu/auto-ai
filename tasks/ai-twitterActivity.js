@@ -11,7 +11,7 @@ import { mathUtils } from '../utils/mathUtils.js';
 import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
 import { applyHumanizationPatch } from '../utils/browserPatch.js';
-import { humanTiming } from '../utils/human-timing.js';
+import { humanTiming } from '../api/behaviors/human-timing.js';
 import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
 import { createLogger } from '../utils/logger.js';
 import { loadAiTwitterActivityConfig } from '../utils/task-config-loader.js';

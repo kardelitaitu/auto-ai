@@ -4,7 +4,7 @@
  */
 
 import { api } from '../api/index.js';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../api/utils/logger.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
