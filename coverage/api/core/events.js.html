@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/50</span>
+                <span class='fraction'>0/50</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.22% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/18</span>
+                <span class='fraction'>0/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.89% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/47</span>
+                <span class='fraction'>0/47</span>
             </div>
         
             
@@ -284,7 +284,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -327,15 +327,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -349,8 +340,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -400,8 +400,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -424,7 +424,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -496,7 +496,7 @@
 &nbsp;
 import { EventEmitter } from 'events';
 &nbsp;
-const HOOKS = {
+const HOOKS = <span class="cstat-no" title="statement not covered" >{</span>
   // Lifecycle
   'before:init': 'Called before page initialization',
   'after:init': 'Called after page initialization completes',
@@ -546,8 +546,8 @@ const HOOKS = {
  * Get list of available hooks.
  * @returns {string[]} Array of hook names
  */
-export function getAvailableHooks() {
-  return Object.keys(HOOKS);
+export function <span class="fstat-no" title="function not covered" >getAvailableHooks(</span>) {
+<span class="cstat-no" title="statement not covered" >  return Object.keys(HOOKS);</span>
 }
 &nbsp;
 /**
@@ -560,9 +560,9 @@ export function <span class="fstat-no" title="function not covered" >getHookDesc
 }
 &nbsp;
 export class APIEvents extends EventEmitter {
-  constructor() {
-    super();
-    this.setMaxListeners(50);
+<span class="fstat-no" title="function not covered" >  constructor(</span>) {
+<span class="cstat-no" title="statement not covered" >    super();</span>
+<span class="cstat-no" title="statement not covered" >    this.setMaxListeners(50);</span>
   }
 &nbsp;
   /**
@@ -611,9 +611,9 @@ export class APIEvents extends EventEmitter {
    * @param {string} hook - Hook name
    * @param {...any} args - Arguments to pass to handlers
    */
-  emitSafe(hook, ...args) {
-    process.nextTick(() =&gt; {
-      this.emit(hook, ...args);
+<span class="fstat-no" title="function not covered" >  emitSafe(</span>hook, ...args) {
+<span class="cstat-no" title="statement not covered" >    process.nextTick(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      this.emit(hook, ...args);</span>
     });
   }
 &nbsp;
@@ -636,7 +636,7 @@ export class APIEvents extends EventEmitter {
   }
 }
 &nbsp;
-export const apiEvents = new APIEvents();
+export const apiEvents = <span class="cstat-no" title="statement not covered" >new APIEvents();</span>
 &nbsp;
 /**
  * Create a hook wrapper that emits before/after events.
@@ -706,7 +706,7 @@ export default {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-28T03:54:19.070Z
+                at 2026-03-02T12:18:12.307Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

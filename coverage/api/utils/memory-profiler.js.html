@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.96% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/62</span>
+                <span class='fraction'>0/62</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/20</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.96% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/62</span>
+                <span class='fraction'>0/62</span>
             </div>
         
             
@@ -215,25 +215,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -334,9 +334,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -359,25 +359,25 @@
 &nbsp;
 import { createLogger } from '../core/logger.js';
 &nbsp;
-const logger = createLogger('api/utils/memory-profiler.js');
+const logger =<span class="cstat-no" title="statement not covered" > createLogger('api/utils/memory-profiler.js');</span>
 &nbsp;
-const DEFAULT_INTERVAL_MS = 30000;
-const SNAPSHOT_LIMIT = 10;
+const DEFAULT_INTERVAL_MS = <span class="cstat-no" title="statement not covered" >30000;</span>
+const SNAPSHOT_LIMIT = <span class="cstat-no" title="statement not covered" >10;</span>
 &nbsp;
 class MemoryProfiler {
-    #trackingInterval = null;
-    #snapshots = [];
-    #baseline = null;
-    #enabled = false;
-    #intervalMs = DEFAULT_INTERVAL_MS;
+    #trackingInterval = <span class="cstat-no" title="statement not covered" >null;</span>
+    #snapshots = <span class="cstat-no" title="statement not covered" >[];</span>
+    #baseline = <span class="cstat-no" title="statement not covered" >null;</span>
+    #enabled = <span class="cstat-no" title="statement not covered" >false;</span>
+    #intervalMs = <span class="cstat-no" title="statement not covered" >DEFAULT_INTERVAL_MS;</span>
 &nbsp;
-    constructor() {
-        this.#baseline = this.getUsage();
+<span class="fstat-no" title="function not covered" >    constructor(</span>) {
+<span class="cstat-no" title="statement not covered" >        this.#baseline = this.getUsage();</span>
     }
 &nbsp;
-    getUsage() {
-        const usage = process.memoryUsage();
-        return {
+<span class="fstat-no" title="function not covered" >    getUsage(</span>) {
+        const usage = <span class="cstat-no" title="statement not covered" >process.memoryUsage();</span>
+<span class="cstat-no" title="statement not covered" >        return {</span>
             heapUsed: Math.round(usage.heapUsed / 1024 / 1024),
             heapTotal: Math.round(usage.heapTotal / 1024 / 1024),
             external: Math.round(usage.external / 1024 / 1024),
@@ -478,9 +478,9 @@ class MemoryProfiler {
     }
 }
 &nbsp;
-const globalProfiler = new MemoryProfiler();
+const globalProfiler = <span class="cstat-no" title="statement not covered" >new MemoryProfiler();</span>
 &nbsp;
-export const memory = {
+export const memory = <span class="cstat-no" title="statement not covered" >{</span>
     getUsage: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >globalProfiler.getUsage(),</span>
     getSnapshot: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >globalProfiler.getSnapshot(),</span>
     startTracking: <span class="fstat-no" title="function not covered" >(i</span>ntervalMs) =&gt; <span class="cstat-no" title="statement not covered" >globalProfiler.startTracking(intervalMs),</span>
@@ -502,7 +502,7 @@ export { MemoryProfiler };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-28T03:54:19.070Z
+                at 2026-03-02T12:18:12.307Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

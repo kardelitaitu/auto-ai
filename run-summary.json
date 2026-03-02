@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 655098,
-      "uptimeFormatted": "10m 55s",
-      "timeSinceReset": 655098,
-      "timeSinceResetFormatted": "10m 55s"
+      "uptime": 551145,
+      "uptimeFormatted": "9m 11s",
+      "timeSinceReset": 551145,
+      "timeSinceResetFormatted": "9m 11s"
     },
     "tasks": {
       "executed": 5,
-      "failed": 1,
-      "succeeded": 4,
-      "successRate": 80,
-      "avgDuration": 150550,
-      "totalDuration": 752750,
+      "failed": 0,
+      "succeeded": 5,
+      "successRate": 100,
+      "avgDuration": 128281.6,
+      "totalDuration": 641408,
       "durationPercentiles": {
-        "p50": 50097,
-        "p95": 540063,
-        "p99": 540063
+        "p50": 56238,
+        "p95": 440669,
+        "p99": 440669
       }
     },
     "browsers": {
@@ -45,13 +45,13 @@
     "twitter": {
       "actions": {
         "likes": 0,
-        "replies": 1,
-        "quotes": 0,
+        "replies": 3,
+        "quotes": 1,
         "retweets": 0,
-        "bookmarks": 1,
+        "bookmarks": 0,
         "follows": 0,
         "tweets": 0,
-        "total": 2
+        "total": 4
       },
       "performance": {
         "avgDiveDuration": 0,
@@ -61,53 +61,53 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-02T10:22:25.052Z"
+    "runEndTime": "2026-03-02T14:12:58.706Z"
   },
   "tasks": [
     {
-      "taskName": "pageview",
-      "duration": 50085,
+      "taskName": "cookiebot",
+      "duration": 36960,
       "success": true,
-      "sessionId": "0001:8857",
+      "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-02T10:11:32.009Z",
-      "timestamp": 1772446342094
+      "startTime": "2026-03-02T14:03:50.109Z",
+      "timestamp": 1772460267069
     },
     {
       "taskName": "pageview",
-      "duration": 50089,
+      "duration": 50116,
       "success": true,
-      "sessionId": "0001:8857",
+      "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-02T10:11:32.041Z",
-      "timestamp": 1772446342130
-    },
-    {
-      "taskName": "pageview",
-      "duration": 50097,
-      "success": true,
-      "sessionId": "0001:8857",
-      "error": null,
-      "startTime": "2026-03-02T10:12:22.294Z",
-      "timestamp": 1772446392391
+      "startTime": "2026-03-02T14:03:50.081Z",
+      "timestamp": 1772460280197
     },
     {
       "taskName": "cookiebot",
-      "duration": 62416,
+      "duration": 56238,
       "success": true,
-      "sessionId": "0001:8857",
+      "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-02T10:12:22.326Z",
-      "timestamp": 1772446404742
+      "startTime": "2026-03-02T14:04:40.390Z",
+      "timestamp": 1772460336628
+    },
+    {
+      "taskName": "cookiebot",
+      "duration": 57425,
+      "success": true,
+      "sessionId": "roxy:0001",
+      "error": null,
+      "startTime": "2026-03-02T14:04:40.365Z",
+      "timestamp": 1772460337790
     },
     {
       "taskName": "api-twitteractivity",
-      "duration": 540063,
-      "success": false,
-      "sessionId": "0001:8857",
-      "error": "Task 'api-twitteractivity' timed out after 540000ms",
-      "startTime": "2026-03-02T10:13:24.874Z",
-      "timestamp": 1772446944937
+      "duration": 440669,
+      "success": true,
+      "sessionId": "roxy:0001",
+      "error": null,
+      "startTime": "2026-03-02T14:05:37.921Z",
+      "timestamp": 1772460778590
     }
   ]
 }

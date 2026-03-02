@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.31% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/76</span>
+                <span class='fraction'>0/76</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/37</span>
+                <span class='fraction'>0/40</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.38% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/72</span>
+                <span class='fraction'>0/72</span>
             </div>
         
             
@@ -253,7 +253,9 @@
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
 <a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -265,7 +267,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -358,7 +360,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -455,7 +459,7 @@ import { think, delay, randomInRange, gaussian } from './timing.js';
 import { scroll } from '../interactions/scroll.js';
 import { createLogger } from '../core/logger.js';
 &nbsp;
-const logger = createLogger('api/recover.js');
+const logger =<span class="cstat-no" title="statement not covered" > createLogger('api/recover.js');</span>
 &nbsp;
 import { getPreviousUrl } from '../core/context-state.js';
 &nbsp;
@@ -545,6 +549,7 @@ export async function <span class="fstat-no" title="function not covered" >findE
  * @param {boolean} [options.recovery=true] - Enable error recovery
  * @param {number} [options.maxRetries=3] - Max retry attempts
  * @param {boolean} [options.scrollOnFail=true] - Scroll and try again if not found
+ * @param {boolean} [options.expectsNavigation=false] - Disable auto-rollback on expected navigation
  * @returns {Promise&lt;{success: boolean, recovered: boolean, selector: string|null}&gt;}
  */
 export async function <span class="fstat-no" title="function not covered" >smartClick(</span>selectors, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
@@ -552,7 +557,8 @@ export async function <span class="fstat-no" title="function not covered" >smart
     const {
         recovery = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span>
         maxRetries = <span class="branch-0 cbranch-no" title="branch not covered" >3,</span>
-        scrollOnFail = <span class="branch-0 cbranch-no" title="branch not covered" >true</span>
+        scrollOnFail = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span>
+        expectsNavigation = <span class="branch-0 cbranch-no" title="branch not covered" >false</span>
     } = <span class="cstat-no" title="statement not covered" >options;</span>
 &nbsp;
     const selectorList = <span class="cstat-no" title="statement not covered" >Array.isArray(selectors) ? selectors : [selectors];</span>
@@ -587,7 +593,7 @@ export async function <span class="fstat-no" title="function not covered" >smart
                 }
 &nbsp;
                 // Check if URL changed unexpectedly
-<span class="cstat-no" title="statement not covered" >                if (recovery) {</span>
+<span class="cstat-no" title="statement not covered" >                if (recovery &amp;&amp; !expectsNavigation) {</span>
                     const changed = <span class="cstat-no" title="statement not covered" >await urlChanged(previousUrl);</span>
 <span class="cstat-no" title="statement not covered" >                    if (changed) {</span>
 <span class="cstat-no" title="statement not covered" >                        logger.warn(`[SmartClick] Unexpected navigation after click on ${selector}. Recovering...`);</span>
@@ -640,7 +646,7 @@ export async function <span class="fstat-no" title="function not covered" >undo(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-28T03:54:19.070Z
+                at 2026-03-02T12:18:12.307Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

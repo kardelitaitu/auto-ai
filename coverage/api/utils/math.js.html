@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.96% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/27</span>
+                <span class='fraction'>0/27</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.84% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/13</span>
+                <span class='fraction'>0/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/5</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.14% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/21</span>
+                <span class='fraction'>0/21</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -150,7 +150,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -160,27 +160,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -198,8 +189,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -230,7 +230,7 @@
  * @module api/utils/math
  */
 &nbsp;
-export const mathUtils = {
+export const mathUtils = <span class="cstat-no" title="statement not covered" >{</span>
     /**
      * Box-Muller Transform — generates a number normally distributed around a mean.
      * @param {number} mean
@@ -239,18 +239,18 @@ export const mathUtils = {
      * @param {number} [max]
      * @returns {number}
      */
-    gaussian: (mean, dev, min, max) =&gt; {
-        let u = 0, v = 0;
-        while (u === 0) u = Math.random();
-        while (v === 0) v = Math.random();
+    gaussian: <span class="fstat-no" title="function not covered" >(m</span>ean, dev, min, max) =&gt; {
+        let u = <span class="cstat-no" title="statement not covered" >0,</span> v = <span class="cstat-no" title="statement not covered" >0;</span>
+<span class="cstat-no" title="statement not covered" >        while (u === 0) <span class="cstat-no" title="statement not covered" >u = Math.random();</span></span>
+<span class="cstat-no" title="statement not covered" >        while (v === 0) <span class="cstat-no" title="statement not covered" >v = Math.random();</span></span>
 &nbsp;
-        const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-        let result = mean + (z * dev);
+        const z = <span class="cstat-no" title="statement not covered" >Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);</span>
+        let result = <span class="cstat-no" title="statement not covered" >mean + (z * dev);</span>
 &nbsp;
-        if (min !== undefined) result = Math.max(min, result);
-        if (max !== undefined) result = Math.min(max, result);
+<span class="cstat-no" title="statement not covered" >        if (min !== undefined) <span class="cstat-no" title="statement not covered" >result = Math.max(min, result);</span></span>
+<span class="cstat-no" title="statement not covered" >        if (max !== undefined) <span class="cstat-no" title="statement not covered" >result = Math.min(max, result);</span></span>
 &nbsp;
-        return Math.floor(result);
+<span class="cstat-no" title="statement not covered" >        return Math.floor(result);</span>
     },
 &nbsp;
     /**
@@ -259,8 +259,8 @@ export const mathUtils = {
      * @param {number} max
      * @returns {number}
      */
-    randomInRange: (min, max) =&gt; {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+    randomInRange: <span class="fstat-no" title="function not covered" >(m</span>in, max) =&gt; {
+<span class="cstat-no" title="statement not covered" >        return Math.floor(Math.random() * (max - min + 1)) + min;</span>
     },
 &nbsp;
     /**
@@ -277,9 +277,9 @@ export const mathUtils = {
      * @param {Array} array
      * @returns {*}
      */
-    sample: (array) =&gt; {
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (!array || array.length === 0) <span class="cstat-no" title="statement not covered" >return null;</span>
-        return array[Math.floor(Math.random() * array.length)];
+    sample: <span class="fstat-no" title="function not covered" >(a</span>rray) =&gt; {
+<span class="cstat-no" title="statement not covered" >        if (!array || array.length === 0) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+<span class="cstat-no" title="statement not covered" >        return array[Math.floor(Math.random() * array.length)];</span>
     },
 &nbsp;
     /**
@@ -310,7 +310,7 @@ export const mathUtils = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-28T03:54:19.070Z
+                at 2026-03-02T12:18:12.307Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

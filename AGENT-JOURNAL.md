@@ -1,5 +1,47 @@
 # AGENT JOURNAL - 02 March 2026
 
+02-03-2026--21:02
+Replaced vanilla orchestrator with V2:
+- orchestrator.js now re-exports from orchestrator-v2.js
+- sessionManager.js now re-exports from sessionManager-v2.js
+- main.js automatically uses V2 now
+- main-v2.js still available for custom timeout flags
+
+02-03-2026--20:50
+Fixed profile info logging in api-twitterActivity.js and ai-twitterActivity.js:
+- Changed from undefined properties to correct ones
+- inputMethod -> inputMethods[0]
+- probabilities.dive -> probabilities.tweetDive || profileDive
+- probabilities.like -> probabilities.likeTweetafterDive
+- probabilities.follow -> probabilities.followOnProfile
+- Added graceful fallback for missing values
+
+02-03-2026--19:20
+Implemented session ID format change:
+- Local browsers: [brave:8857], [chrome:9123]
+- Antidetect: [roxy:0001], [ix:123], [more:ABC]
+- Added _formatSessionDisplayName() helper to orchestrator.js and orchestrator-v2.js
+- Short names: chrome, brave, edge, vivaldi, roxy, ix, more, und
+
+02-03-2026--18:11
+Created robust orchestrator V2 to fix hanging tasks:
+- Created `api/core/orchestrator-v2.js` with:
+  - Task timeout (default 10 min), group timeout (default 10 min)
+  - AbortSignal propagation to cancel stuck tasks
+  - Force cleanup on timeout - releases worker, moves to next task
+  - Returns completion status: { completed, timedOut, duration }
+- Created `api/core/sessionManager-v2.js` with:
+  - Simplified semaphore with deadlock detection
+  - Worker health monitoring - auto-release stuck workers
+  - forceReleaseWorker(sessionId, workerId) - emergency API
+  - getWorkerHealth() - returns stuck workers list
+- Created `main-v2.js` entry point (opt-in):
+  - Usage: node main-v2.js pageview=cookiebot then api-twitteractivity
+  - Flags: --task-timeout=600000 --group-timeout=600000 --force-shutdown
+- Fixed health check in `api/core/automator.js`:
+  - Changed from spawning new Chromium to lightweight HTTP fetch
+  - Uses google generate_204 endpoint instead of browser launch
+
 02-03-2026--17:35
 Resolved X.com "Privacy Related Extensions" error and improved Lite Mode cleanup:
 - Whitelisted `x.com` and `twitter.com` in `api/utils/browserPatch.js` to skip Canvas Poisoning, which was being detected as anti-fingerprinting extension behavior.

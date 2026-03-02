@@ -4,7 +4,6 @@ node_modules
 *.log
 *.zip
 screenshot
-docs
 examples
 local-agent
 test-dir

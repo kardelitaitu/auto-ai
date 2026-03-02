@@ -143,7 +143,9 @@ export default async function apiTwitterActivityTask(page, payload) {
             : profileManager.getStarter();
         if (resolved) {
             resolved.persona = resolvePersona(resolved);
-            const profileDesc = `${resolved.id}-${resolved.type} | Input: ${resolved.inputMethod} (${resolved.inputMethodPct}%) | Dive: ${resolved.probabilities.dive}% | Like: ${resolved.probabilities.like}% | Follow: ${resolved.probabilities.follow}%`;
+            const p = resolved.probabilities || {};
+            const inputMethod = resolved.inputMethods ? resolved.inputMethods[0] : 'n/a';
+            const profileDesc = `${resolved.id}-${resolved.type} | Input: ${inputMethod} | Dive: ${((p.tweetDive || p.profileDive || 0) * 100).toFixed(0)}% | Like: ${((p.likeTweetafterDive || p.like || 0) * 100).toFixed(0)}% | Follow: ${((p.followOnProfile || p.follow || 0) * 100).toFixed(0)}%`;
             logger.info(`[api-twitterActivity] Profile: ${profileDesc}`);
         }
         return resolved;

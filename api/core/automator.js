@@ -288,30 +288,31 @@ class Automator {
   // =========================================================================
 
   /**
-   * Check network connectivity by trying to reach a known endpoint
+   * Check network connectivity using lightweight HTTP request (no browser spawn)
    * @returns {Promise<object>} Health check result
    */
   async checkNetworkConnectivity() {
     const startTime = Date.now();
 
     try {
-      // Try to fetch a simple known URL to check network
-      const { chromium } = await import('playwright');
-      const testContext = await chromium.launch({ headless: true });
-      const testPage = await testContext.newPage();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      // Use a very short timeout for quick check
-      await testPage.goto('https://x.com', {
-        waitUntil: 'domcontentloaded',
-        timeout: 5000
-      });
+      const response = await fetch('https://www.google.com/generate_204', {
+        method: 'HEAD',
+        signal: controller.signal
+      }).catch(() => fetch('https://clients3.google.com/cast/chromecast/device/basecrx', { 
+        method: 'HEAD', 
+        signal: controller.signal 
+      }));
 
-      await testContext.close();
+      clearTimeout(timeoutId);
 
       const latency = Date.now() - startTime;
+      const healthy = response.ok || response.status === 204;
 
       return {
-        healthy: true,
+        healthy,
         latency,
         checkedAt: Date.now()
       };
