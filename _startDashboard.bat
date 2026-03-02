@@ -7,7 +7,7 @@ echo.
 cd /d "%~dp0"
 
 echo [1/4] Building React dashboard...
-cd ui\electron-dashboard\renderer
+cd api\ui\electron-dashboard\renderer
 call npm install >nul 2>&1
 call npm run build
 if %errorlevel% neq 0 (
@@ -15,7 +15,7 @@ if %errorlevel% neq 0 (
     pause
     exit /b 1
 )
-cd ..\..
+cd ..\..\..\..
 
 echo.
 echo [2/4] Installing Electron...
@@ -35,7 +35,7 @@ echo   - Dashboard server runs on http://localhost:3001
 echo   - Electron app will connect via Socket.io
 echo.
 
-cd ui\electron-dashboard
+cd api\ui\electron-dashboard
 call npx electron .
 
 echo.
@@ -43,7 +43,7 @@ echo Electron closed.
 pause
     exit /b 1
 )
-cd ..\..\..\
+cd ..\..\..\..\
 
 echo.
 echo [3/3] Opening dashboard in browser...

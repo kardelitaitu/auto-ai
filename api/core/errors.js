@@ -140,6 +140,15 @@ export class NavigationError extends ActionError {
     }
 }
 
+export class TaskTimeoutError extends ActionError {
+    constructor(taskName, timeout) {
+        super(`Task '${taskName}' timed out after ${timeout}ms`, 'TASK_TIMEOUT');
+        this.name = 'TaskTimeoutError';
+        this.taskName = taskName;
+        this.timeout = timeout;
+    }
+}
+
 /**
  * Configuration errors
  */
@@ -244,6 +253,7 @@ export default {
     ActionError,
     ActionFailedError,
     NavigationError,
+    TaskTimeoutError,
     ConfigError,
     ConfigNotFoundError,
     LLMError,

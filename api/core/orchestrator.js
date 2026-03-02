@@ -12,6 +12,7 @@ import { createLogger } from '../utils/logger.js';
 import { getSettings, getTimeoutValue } from '../utils/configLoader.js';
 import { validateTaskExecution, validatePayload } from '../utils/validator.js';
 import { isDevelopment } from '../utils/envLoader.js';
+import { TaskTimeoutError } from './errors.js';
 import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('orchestrator.js');
@@ -41,6 +42,8 @@ class Orchestrator extends EventEmitter {
     /** @type {Discovery} */
     this.discovery = new Discovery();
     this.isShuttingDown = false;
+    this.taskMaxDurationMs = 300000; // 5 minute default
+    this.taskSpecificMaxDurationMs = {};
 
     this._loadConfig();
 
@@ -67,6 +70,8 @@ class Orchestrator extends EventEmitter {
       this.reuseSharedContext = orchConfig.reuseSharedContext ?? this.reuseSharedContext;
       this.maxTaskQueueSize = orchConfig.maxTaskQueueSize ?? this.maxTaskQueueSize;
       this.workerWaitTimeoutMs = orchConfig.workerWaitTimeoutMs ?? this.workerWaitTimeoutMs;
+      this.taskMaxDurationMs = orchConfig.taskMaxDurationMs ?? this.taskMaxDurationMs;
+      this.taskSpecificMaxDurationMs = orchConfig.taskSpecificMaxDurationMs ?? this.taskSpecificMaxDurationMs;
       this.defaultColorScheme = settings?.ui?.dashboard?.colorScheme || null;
     } catch (_error) {
       logger.warn(`Failed to load orchestrator config: ${_error.message}`);
@@ -414,7 +419,7 @@ class Orchestrator extends EventEmitter {
       const fs = await import('fs');
       const path = await import('path');
       const { getSettings } = await import('../utils/configLoader.js');
-      const uiPath = path.join(process.cwd(), 'ui', 'electron-dashboard', 'dashboard.js');
+      const uiPath = path.join(process.cwd(), 'api', 'ui', 'electron-dashboard', 'dashboard.js');
 
       const settings = await getSettings();
       const broadcastIntervalMs = settings?.ui?.dashboard?.broadcastIntervalMs || 2000;
@@ -566,7 +571,31 @@ class Orchestrator extends EventEmitter {
           logger: logger,
           colorScheme: augmentedPayload.colorScheme || this.defaultColorScheme || null,
         });
-        await taskModule.default(page, augmentedPayload);
+
+        const baseTaskName = task.taskName.replace('.js', '').split('/').pop();
+        let defaultTimeout = this.taskSpecificMaxDurationMs[baseTaskName] ||
+          this.taskSpecificMaxDurationMs[task.taskName] ||
+          this.taskMaxDurationMs;
+
+        const taskTimeout = augmentedPayload.timeoutMs || defaultTimeout;
+
+        let timeoutId;
+        const timeoutPromise = new Promise((_, reject) => {
+          timeoutId = setTimeout(() => {
+            reject(new TaskTimeoutError(task.taskName, taskTimeout));
+          }, taskTimeout);
+        });
+
+        try {
+          await Promise.race([
+            taskModule.default(page, augmentedPayload),
+            timeoutPromise
+          ]);
+        } finally {
+          clearTimeout(timeoutId);
+          // Cleanup lite mode routing to prevent leakage to other tasks
+          await api.clearLiteMode(page).catch(() => { });
+        }
       });
       success = true;
       this._recordSessionOutcome(session.id, true);

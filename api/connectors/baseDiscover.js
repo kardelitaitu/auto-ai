@@ -3,6 +3,8 @@
  * @module connectors/baseDiscover
  */
 
+import { createLogger } from '../utils/logger.js';
+
 class BaseDiscover {
     constructor() {
         /**
@@ -10,6 +12,9 @@ class BaseDiscover {
          * @description The type of browser this connector discovers (e.g., 'ixbrowser', 'chrome').
          */
         this.browserType = 'base';
+        /** @type {object} */
+        this.logger = createLogger('baseDiscover.js');
+        this.logger.info(`BaseDiscover initialized for type: ${this.browserType}`);
     }
 
     /**
@@ -20,6 +25,7 @@ class BaseDiscover {
      * Each profile should have: id, name, type, ws or http endpoint.
      */
     async discover() {
+        this.logger.info('Discover method called');
         throw new Error('Method "discover()" must be implemented by subclass');
     }
 }

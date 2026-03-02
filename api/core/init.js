@@ -171,6 +171,19 @@ export async function initPage(page, options = {}) {
     });
 }
 
+/**
+ * Clear any lite-mode resource blocking on the page.
+ * @param {import('playwright').Page} [page] - Optional page instance, otherwise uses currently bound page
+ */
+export async function clearLiteMode(page) {
+    const p = page || getPage();
+    try {
+        await p.unroute('**/*');
+    } catch (e) {
+        safeEmitError(e, 'clearLiteMode');
+    }
+}
+
 export async function diagnosePage(page) {
     const p = page || getPage();
 

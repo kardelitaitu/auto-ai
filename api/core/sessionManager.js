@@ -71,6 +71,7 @@ class SessionManager {
     this.cleanupIntervalMs = options.cleanupIntervalMs || 5 * 60 * 1000;
     this.workerLockTimeoutMs = options.workerLockTimeoutMs || 10000;
     this.workerWaitTimeoutMs = options.workerWaitTimeoutMs || 30000;
+    this.workerStuckThresholdMs = options.workerStuckThresholdMs || 600000; // 10 minute default
     this.concurrencyPerBrowser = 50;
 
     // Page Pool Config
@@ -139,6 +140,7 @@ class SessionManager {
       this.pagePoolIdleTimeoutMs = orchConfig.pagePoolIdleTimeoutMs ?? this.pagePoolIdleTimeoutMs;
       this.pagePoolHealthCheckIntervalMs = orchConfig.pagePoolHealthCheckIntervalMs ?? this.pagePoolHealthCheckIntervalMs;
       this.pagePoolHealthCheckTimeoutMs = orchConfig.pagePoolHealthCheckTimeoutMs ?? this.pagePoolHealthCheckTimeoutMs;
+      this.workerStuckThresholdMs = orchConfig.workerStuckThresholdMs ?? this.workerStuckThresholdMs;
 
       this.concurrencyPerBrowser = settings.concurrencyPerBrowser || this.concurrencyPerBrowser;
 
@@ -433,7 +435,30 @@ class SessionManager {
       metricsCollector.recordSessionEvent('closed', this.sessions.length);
     }
     this.cleanupIdlePages();
+    this.checkStuckWorkers();
     return initial - this.sessions.length;
+  }
+
+  /**
+   * Checks for workers that have been busy for longer than the threshold and forcefully releases them.
+   */
+  checkStuckWorkers() {
+    const now = Date.now();
+    for (const [key, { startTime }] of this.workerOccupancy.entries()) {
+      if (now - startTime > this.workerStuckThresholdMs) {
+        const [sessionId, workerIdStr] = key.split(':');
+        const workerId = parseInt(workerIdStr);
+        logger.warn(`[${sessionId}] Worker ${workerId} stuck for ${now - startTime}ms. Forcefully releasing.`);
+
+        const session = this.sessions.find(s => s.id === sessionId);
+        if (session) {
+          // Attempt to find and close any associated pages for this worker (best effort)
+          // Since we don't track worker->page mapping strictly, we just log and release.
+          // The next task will likely create a new page if needed.
+          this.releaseWorker(sessionId, workerId);
+        }
+      }
+    }
   }
 
   async cleanupIdlePages() {

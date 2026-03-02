@@ -56,7 +56,7 @@ export default async function cookieBotRandom(page, payload) {
         lite: true,
         blockNotifications: true,
         blockDialogs: true,
-        autoBanners: true,
+        autoBanners: false,
         muteAudio: true
       });
 
@@ -105,6 +105,8 @@ export default async function cookieBotRandom(page, payload) {
             logger.warn(`Navigation to ${randomUrl} was interrupted/cancelled.`);
           } else if (navError.message.includes('timeout') || navError.message.includes('Timeout')) {
             logger.warn(`Visit to ${randomUrl} timed out. Skipping to next.`);
+          } else if (navError.message.includes('net::ERR_')) {
+            logger.warn(`Network error visiting ${randomUrl}: ${navError.message.split('\n')[0]}`);
           } else {
             logger.error(`Failed to load ${randomUrl}:`, navError);
           }

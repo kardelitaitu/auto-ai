@@ -192,7 +192,7 @@ import {
 } from './agent/index.js';
 
 // ─── Init ───────────────────────────────────────────────────────
-import { initPage, diagnosePage } from './core/init.js';
+import { initPage, diagnosePage, clearLiteMode } from './core/init.js';
 
 // ─── Config ─────────────────────────────────────────────────────
 import { configManager } from './core/config.js';
@@ -257,6 +257,7 @@ export const api = {
     init,
     diagnose,
     emulateMedia,
+    clearLiteMode,
     config: configManager,
 
     // ── Actions (top-level for ergonomics) ───────────────────────
@@ -442,7 +443,7 @@ export {
     gaze, attention, distraction, beforeLeave, focusShift, maybeDistract, setDistractionChance, getDistractionChance,
     idleStart, idleStop, idleIsRunning, wiggle, idleScroll, startHeartbeat,
     patchApply, stripCDPMarkers, patchCheck,
-    initPage, diagnosePage,
+    initPage, diagnosePage, clearLiteMode,
     readline, consumeline,
     see, doAction as do, agentFind as find, agentVision as vision,
     getAvailableHooks, getHookDescription, createHookWrapper, withErrorHook, getEvents, getPlugins,

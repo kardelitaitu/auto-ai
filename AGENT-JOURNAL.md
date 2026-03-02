@@ -1,3 +1,39 @@
+# AGENT JOURNAL - 02 March 2026
+
+02-03-2026--17:35
+Resolved X.com "Privacy Related Extensions" error and improved Lite Mode cleanup:
+- Whitelisted `x.com` and `twitter.com` in `api/utils/browserPatch.js` to skip Canvas Poisoning, which was being detected as anti-fingerprinting extension behavior.
+- Added `clearLiteMode()` to `api/core/init.js` and exported via `api/index.js` to allow unrouting resource blocking.
+- Integrated `api.clearLiteMode(page)` into the `orchestrator.js` `finally` block of `executeTask` to ensure Lite Mode settings don't leak between tasks in the same session.
+- Syntax: `node -c` -> OK.
+
+02-03-2026--17:10
+Improved error handling in `tasks/cookiebot.js`:
+- Added graceful catching of Playwright `net::ERR_*` navigation errors (e.g., `ERR_CONNECTION_CLOSED`, `ERR_NAME_NOT_RESOLVED`).
+- These errors are now logged as warnings instead of dumping full error stack traces, cleaning up the orchestrator logs during random website visits.
+
+02-03-2026--14:20
+Implemented task-specific maximum duration limits in Orchestrator:
+- Added `taskSpecificMaxDurationMs` to `config/timeouts.json` under `orchestration`.
+- Configured a specific 3-minute limit (`180000` ms) for the `cookiebot` task workflow.
+- Updated `api/core/orchestrator.js` to parse and apply custom timeouts based on the incoming `taskName`.
+- This ensures that heavy looping tasks or light scraping tasks can have unique bounds rather than sharing a massive global ceiling.
+
+02-03-2026--13:35
+Improved Orchestrator robustness by adding task execution timeouts and a stuck worker watchdog:
+- Added `TaskTimeoutError` to `api/core/errors.js`.
+- Added `taskMaxDurationMs` (5m) and `workerStuckThresholdMs` (10m) to `config/timeouts.json`.
+- Implemented `Promise.race` timeout in `orchestrator.js` `executeTask` to prevent hanging tasks from blocking workers indefinitely.
+- Implemented `checkStuckWorkers()` in `sessionManager.js` to forcefully release workers that exceed the occupancy threshold.
+- Verified logic via manual verification script (mocked).
+- Syntax: `node -c` -> OK.
+
+02-03-2026--13:20
+Disabled automatic cookie banner clicks in `tasks/cookiebot.js`:
+- Set `autoBanners: false` in `api.init` options.
+- This prevents the task from clicking consent buttons while visiting random URLs.
+- Syntax: `node -c` -> OK.
+
 # AGENT JOURNAL - 01 March 2026
 
 01-03-2026--23:55

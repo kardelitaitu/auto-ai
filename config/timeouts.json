@@ -41,7 +41,12 @@
     "pagePoolIdleTimeoutMs": 300000,
     "pagePoolHealthCheckIntervalMs": 30000,
     "pagePoolHealthCheckTimeoutMs": 5000,
-    "workerWaiterMaxPerSession": 50
+    "workerWaiterMaxPerSession": 50,
+    "taskMaxDurationMs": 540000,
+    "taskSpecificMaxDurationMs": {
+      "cookiebot": 180000
+    },
+    "workerStuckThresholdMs": 600000
   },
   "circuitBreaker": {
     "failureThreshold": 50,

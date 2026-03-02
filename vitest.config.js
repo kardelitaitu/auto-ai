@@ -16,7 +16,7 @@ export default defineConfig({
 
     setupFiles: ['./tests/vitest.setup.js'],
     include: ['**/*.{test,spec}.{js,ts}'],
-    exclude: ['node_modules', 'dist', '.git', 'ui/electron-dashboard/node_modules', 'ui/electron-dashboard/renderer/node_modules'],
+    exclude: ['node_modules', 'dist', '.git', 'api/ui/electron-dashboard/node_modules', 'api/ui/electron-dashboard/renderer/node_modules'],
 
     testTimeout: 10000,
     hookTimeout: 10000,
@@ -44,7 +44,7 @@ export default defineConfig({
         '**/*.test.js',
         '**/*.spec.js',
         'local-agent/',
-        'ui/electron-dashboard/',
+        'api/ui/electron-dashboard/',
       ],
       thresholds: {
         lines: 98.14,
