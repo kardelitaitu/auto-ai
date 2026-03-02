@@ -1,3 +1,40 @@
+### ✅ version 0.6.1
+(02 March 2026) API Documentation
+- **New Documentation**: Created comprehensive markdown documentation in `api/docs/`:
+  - `README.md` - Main index with quick start, core concepts, examples
+  - `core.md` - Context, Config, Errors, Events, Hooks, Middleware, Plugins
+  - `interactions.md` - Actions, Scroll, Cursor, Navigation, Wait, Queries, Banners
+  - `behaviors.md` - Persona, Timing, Attention, Idle, Recovery, Warmup
+  - `agent.md` - Observer, Executor, Finder, Vision, Runner, LLM Client
+  - `utils.md` - File I/O, Memory, Patch, Retry, Config, Math, Timing
+  - `actions.md` - Twitter: Like, Retweet, Follow, Quote, Reply, Bookmark, AI Actions
+
+### ✅ version 0.6.0
+(02 March 2026) Robust Orchestrator V2 (Now Default) & Session ID Formatting
+- **V2 is now the default**: `orchestrator.js` and `sessionManager.js` now re-export from V2 versions
+  - Existing `main.js` now uses V2 automatically
+  - `main-v2.js` kept for explicit CLI timeout flags
+- **Orchestrator V2**: Created new robust orchestrator (`api/core/orchestrator-v2.js`) with:
+  - Task timeout (default 10 min per task)
+  - Group timeout (default 10 min per "then" block)
+  - AbortSignal propagation to cancel stuck tasks
+  - Force cleanup on timeout - releases worker, moves to next task
+  - Returns completion status: { completed, timedOut, duration }
+- **SessionManager V2**: Created new session manager (`api/core/sessionManager-v2.js`) with:
+  - Simplified semaphore with deadlock detection
+  - Worker health monitoring - auto-release stuck workers
+  - forceReleaseWorker(sessionId, workerId) - emergency API
+  - getWorkerHealth() - returns stuck workers list
+- **Main V2 Entry Point**: Created `main-v2.js` (opt-in):
+  - Usage: `node main-v2.js pageview=cookiebot then api-twitteractivity`
+  - Flags: --task-timeout=600000 --group-timeout=600000 --force-shutdown
+- **Fixed Health Check**: Changed network health check in `api/core/automator.js` from spawning new Chromium to lightweight HTTP fetch (no more resource exhaustion)
+- **Session ID Formatting**: Updated session display format in orchestrator.js and orchestrator-v2.js:
+  - Local browsers: [brave:8857], [chrome:9123]
+  - Antidetect: [roxy:0001], [ix:123], [more:ABC]
+  - Short names: chrome, brave, edge, vivaldi, roxy, ix, more, und
+- **Unit Tests**: Created `tests/unit/orchestrator-v2.test.js` with 17 logic tests
+
 ### ✅ version 0.5.3
 (02 March 2026) Humanization Stability & Math Utility Fixes
 - **Fixed `randomInRange` Error**: Resolved the `Cannot read properties of undefined (reading 'randomInRange')` error by correcting the dynamic import logic in `api/behaviors/scroll-helper.js`.
