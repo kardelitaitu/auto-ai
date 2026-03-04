@@ -1,4 +1,28 @@
-# AGENT JOURNAL - 02 March 2026
+# AGENT JOURNAL - 04 March 2026
+
+04-03-2026--11:45
+Implemented explicit video blocking and navigation robustness in `tasks/cookiebot.js`:
+- Added `page.route` with `fallback()` to abort media resources without bypassing global `lite` mode.
+- Blocked video domains (YouTube, TikTok, etc.) via refined regex.
+- Increased `navigationTimeout` (60s), `responsivenessTimeout` (15s), and `taskTimeoutMs` (120s) to handle heavy sites.
+- Improved error logging to capture actual navigation failure messages.
+- Fixed `api.waitFor` to support predicate functions.
+- Added loop termination checks (`page.isClosed()` and `abortSignal`) to prevent error spamming on task timeout.
+
+04-03-2026--12:05
+Implemented Low Bandwidth and System Performance optimizations:
+- Enhanced `api/core/init.js` with aggressive script blocking (Analytics, Ads, Tracking) in `lite` mode.
+- Added `globalActiveTasks` and `maxGlobalConcurrency` (default 20) to `orchestrator-v2.js` to throttle total system load.
+- Implemented `taskStaggerDelayMs` (2s) in `orchestrator-v2.js` to prevent simultaneous network spikes.
+- Lowered default `concurrencyPerBrowser` from 50 to 10 in `sessionManager-v2.js` to reduce RAM/CPU footprint.
+
+04-03-2026--12:07
+Updated `tasks/cookiebot.js`:
+- Added `minReadSecond` and `maxReadSecond` to configuration.
+- Implemented randomized reading duration after page load/scroll in the visit loop.
+- Refined logging to include domain and decimal seconds for both scrolling and reading.
+- Added "init scrolling" log before the scroll action begins to provide instant feedback.
+- Repaired URL regex in `api/utils/logger.js` to correctly match protocols and `www.` prefixes.
 
 02-03-2026--21:02
 Replaced vanilla orchestrator with V2:

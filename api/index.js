@@ -11,14 +11,13 @@
  *       await api.click('.btn');
  *       await api.type('.input', 'hello');
  *       await api.scroll.focus('.element');
+ *       etc ...
+ *       details in api/index.js or api/docs
  *   });
  * 
  *   // File Utilities
  *   const line = await api.file.readline('data.txt'); // Read random line
  *   const consumed = await api.file.consumeline('data.txt'); // Read and remove random line
- * 
- *   // Puter AI
- *   const resp = await api.puter('Hello');
  * 
  * @module api
  */

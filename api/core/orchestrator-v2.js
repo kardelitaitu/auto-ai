@@ -46,6 +46,10 @@ class OrchestratorV2 extends EventEmitter {
     this.activeTasks = new Map();
     this.taskAbortControllers = new Map();
 
+    this.globalActiveTasks = 0;
+    this.maxGlobalConcurrency = 20; // Default global limit
+    this.taskStaggerDelayMs = 2000; // Delay between task starts
+
     this._loadConfig();
 
     this.automator.onReconnect = async (wsEndpoint, newBrowser) => {
@@ -277,6 +281,13 @@ class OrchestratorV2 extends EventEmitter {
           const task = takeTask();
           if (!task) break;
 
+          // Global Concurrency Throttling
+          while (this.globalActiveTasks >= this.maxGlobalConcurrency) {
+            await this._sleep(1000);
+            if (this.isShuttingDown) break;
+          }
+          if (this.isShuttingDown) break;
+
           const allocatedWorker = await this.sessionManager.acquireWorker(session.id, { timeoutMs: this.workerWaitTimeoutMs });
           if (!allocatedWorker) {
             logger.warn(`[V2][${session.id}] No idle workers. Requeuing task '${task.taskName}'`);
@@ -284,6 +295,10 @@ class OrchestratorV2 extends EventEmitter {
             await this._sleep(5000);
             continue;
           }
+
+          this.globalActiveTasks++;
+          // Stagger task starts to prevent network spikes
+          await this._sleep(this.taskStaggerDelayMs);
 
           let page = null;
           try {
@@ -313,6 +328,7 @@ class OrchestratorV2 extends EventEmitter {
               this.emit('taskFailed', { sessionId: session.id, task, error: e });
             }
           } finally {
+            this.globalActiveTasks = Math.max(0, this.globalActiveTasks - 1);
             if (page) await this.sessionManager.releasePage(session.id, page);
             await this.sessionManager.releaseWorker(session.id, allocatedWorker.id);
           }
@@ -451,6 +467,27 @@ class OrchestratorV2 extends EventEmitter {
         return await import(path);
       } catch (_e) { /* ignore */ }
     }
+
+    // Case-insensitive fallback: scan the tasks/ directory for a matching filename
+    try {
+      const { readdir } = await import('fs/promises');
+      const { resolve, join } = await import('path');
+      const { pathToFileURL } = await import('url');
+      const tasksDir = resolve(process.cwd(), 'tasks');
+      const files = await readdir(tasksDir);
+      const lowerBase = baseName.toLowerCase();
+      const match = files.find(f => f.toLowerCase().replace('.js', '') === lowerBase && f.endsWith('.js'));
+      if (match) {
+        const resolvedPath = join(tasksDir, match);
+        const fileUrl = pathToFileURL(resolvedPath).href;
+        logger.info(`[V2] Task '${taskName}' resolved via case-insensitive lookup → ${match}`);
+        return await import(fileUrl);
+      }
+    } catch (_e) {
+      logger.warn(`[V2] Case-insensitive task lookup failed for '${taskName}': ${_e.message}`);
+    }
+
+
     throw new Error(`Task module '${taskName}' not found`);
   }
 

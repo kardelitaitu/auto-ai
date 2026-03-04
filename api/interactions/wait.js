@@ -19,15 +19,31 @@ export async function wait(ms) {
 }
 
 /**
- * Wait for a selector to be attached to the DOM.
- * @param {string|import('playwright').Locator} selector - CSS selector or Locator
+ * Wait for a selector or a predicate function.
+ * @param {string|import('playwright').Locator|Function} selectorOrPredicate - CSS selector, Locator, or Predicate function
  * @param {object} [options]
  * @param {number} [options.timeout=10000] - Max wait time in ms
+ * @param {string} [options.state='attached'] - For selectors: attached, visible, hidden, detached
+ * @param {number} [options.polling=100] - For predicates: interval between checks in ms
  * @returns {Promise<void>}
  */
-export async function waitFor(selector, options = {}) {
-    const { timeout = 10000, state = 'attached' } = options;
-    const locator = getLocator(selector);
+export async function waitFor(selectorOrPredicate, options = {}) {
+    const { timeout = 10000, state = 'attached', polling = 100 } = options;
+
+    if (typeof selectorOrPredicate === 'function') {
+        const startTime = Date.now();
+        while (Date.now() - startTime < timeout) {
+            try {
+                if (await selectorOrPredicate()) return;
+            } catch (e) {
+                // Ignore errors during polling (e.g. page crashes, temporary disconnects)
+            }
+            await new Promise(r => setTimeout(r, polling));
+        }
+        throw new Error(`Timeout waiting for predicate after ${timeout}ms`);
+    }
+
+    const locator = getLocator(selectorOrPredicate);
     await locator.waitFor({ state, timeout });
 }
 

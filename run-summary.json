@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 551145,
-      "uptimeFormatted": "9m 11s",
-      "timeSinceReset": 551145,
-      "timeSinceResetFormatted": "9m 11s"
+      "uptime": 248969,
+      "uptimeFormatted": "4m 8s",
+      "timeSinceReset": 248969,
+      "timeSinceResetFormatted": "4m 8s"
     },
     "tasks": {
-      "executed": 5,
+      "executed": 4,
       "failed": 0,
-      "succeeded": 5,
+      "succeeded": 4,
       "successRate": 100,
-      "avgDuration": 128281.6,
-      "totalDuration": 641408,
+      "avgDuration": 121897.25,
+      "totalDuration": 487589,
       "durationPercentiles": {
-        "p50": 56238,
-        "p95": 440669,
-        "p99": 440669
+        "p50": 122168,
+        "p95": 122858,
+        "p99": 122858
       }
     },
     "browsers": {
@@ -45,13 +45,13 @@
     "twitter": {
       "actions": {
         "likes": 0,
-        "replies": 3,
-        "quotes": 1,
+        "replies": 0,
+        "quotes": 0,
         "retweets": 0,
         "bookmarks": 0,
         "follows": 0,
         "tweets": 0,
-        "total": 4
+        "total": 0
       },
       "performance": {
         "avgDiveDuration": 0,
@@ -61,53 +61,44 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-02T14:12:58.706Z"
+    "runEndTime": "2026-03-04T06:03:33.886Z"
   },
   "tasks": [
     {
       "taskName": "cookiebot",
-      "duration": 36960,
+      "duration": 122168,
       "success": true,
       "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-02T14:03:50.109Z",
-      "timestamp": 1772460267069
-    },
-    {
-      "taskName": "pageview",
-      "duration": 50116,
-      "success": true,
-      "sessionId": "roxy:0001",
-      "error": null,
-      "startTime": "2026-03-02T14:03:50.081Z",
-      "timestamp": 1772460280197
+      "startTime": "2026-03-04T05:59:28.841Z",
+      "timestamp": 1772604091009
     },
     {
       "taskName": "cookiebot",
-      "duration": 56238,
+      "duration": 122525,
       "success": true,
       "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-02T14:04:40.390Z",
-      "timestamp": 1772460336628
+      "startTime": "2026-03-04T05:59:28.849Z",
+      "timestamp": 1772604091374
     },
     {
       "taskName": "cookiebot",
-      "duration": 57425,
+      "duration": 122858,
       "success": true,
       "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-02T14:04:40.365Z",
-      "timestamp": 1772460337790
+      "startTime": "2026-03-04T05:59:28.845Z",
+      "timestamp": 1772604091703
     },
     {
-      "taskName": "api-twitteractivity",
-      "duration": 440669,
+      "taskName": "cookiebot",
+      "duration": 120038,
       "success": true,
       "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-02T14:05:37.921Z",
-      "timestamp": 1772460778590
+      "startTime": "2026-03-04T06:01:33.819Z",
+      "timestamp": 1772604213858
     }
   ]
 }

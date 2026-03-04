@@ -143,21 +143,6 @@
 - **Self-Healing Navigation**: Completed the `recover()` behavior in `api/behaviors/recover.js`, enabling automatic URL reconciliation and `goBack` recovery.
 - **Unified Mocking Strategy**: Standardized all 36+ API test files to use `pool: 'forks'` and consistent `vi.hoisted` mock structures.
 
-### ✅ version 0.3.8
-(26 February 2026) API Test Stability & Context Restoration
-- **100% API Pass Rate**: Stabilized the complete API unit test suite, resolving all `MessagePort`, `ReferenceError`, and `TypeError` issues.
-- **Worker Process Isolation**: Migrated Vitest to `pool: 'forks'` to provide a reliable environment for `AsyncLocalStorage` and driver masking.
-- **Restored Session Tracking**: Re-enabled full `loggerContext` and `contextStore` functionality in test environments after verifying stability with forks.
-- **Fake Timer Compatibility**: Hardened interaction logic to use unified `wait` helpers, preventing hangs during time-skewed simulations.
-- **Safe Global Mocking**: Hardened browser-patch tests to protect the Node.js global namespace from pollution and crashes.
-
-## [2026-02-28] Quote Test Task
-- **New Task**: `tasks/quote-test.js` added to verify quote tweet flows.
-- **Improved Strategies**: Focused testing on `quoteB` (Retweet Menu) interaction.
-- **Context Awareness**: Enhanced quote generation by passing tweet and reply context to `AIQuoteEngine`.
-
-## [2026-02-28] Reply Test Fixes
-### ✅ version 0.3.7
 (26 February 2026) Reply Fixes & Dive Locking
 - **Lock Synchronization**: Overrode base engagement handlers to respect AI-driven dive locks, eliminating race conditions.
 - **Enhanced Dive Control**: Extended lock duration to cover post-dive sequences and hardened reading simulation during active operations.

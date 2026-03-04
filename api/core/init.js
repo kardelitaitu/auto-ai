@@ -81,17 +81,39 @@ export async function initPage(page, options = {}) {
 
             if (lite) {
                 try {
+                    const blocklist = [
+                        'google-analytics.com',
+                        'googletagmanager.com',
+                        'facebook.net',
+                        'doubleclick.net',
+                        'amazon-adsystem.com',
+                        'adnxs.com',
+                        'quantserve.com',
+                        'scorecardresearch.com',
+                        'crashlytics.com',
+                        'hotjar.com'
+                    ];
+
                     await page.route('**/*', (route) => {
-                        const type = route.request().resourceType();
+                        const request = route.request();
+                        const type = request.resourceType();
+                        const url = request.url();
+
                         // Block images, media, fonts, and stylesheets to save max RAM/bandwidth
-                        // preserved: script, xhr, fetch, ping, beacon (natural analytics)
                         if (['image', 'media', 'font', 'stylesheet', 'texttrack', 'manifest'].includes(type)) {
-                            route.abort().catch((e) => safeEmitError(e, 'lite-route-abort'));
-                        } else {
-                            route.continue().catch((e) => safeEmitError(e, 'lite-route-continue'));
+                            return route.abort().catch((e) => safeEmitError(e, 'lite-route-abort'));
                         }
+
+                        // Aggressive script blocking for tracking/ads
+                        if (type === 'script' || type === 'xhr' || type === 'fetch') {
+                            if (blocklist.some(domain => url.includes(domain))) {
+                                return route.abort().catch((e) => safeEmitError(e, 'lite-script-abort'));
+                            }
+                        }
+
+                        route.continue().catch((e) => safeEmitError(e, 'lite-route-continue'));
                     });
-                    if (logger) logger.info('Ultra-Lite mode enabled: media and styles blocked (analytics preserved)');
+                    if (logger) logger.info('Ultra-Lite mode enabled: media, styles, and tracking scripts blocked');
                 } catch (e) {
                     safeEmitError(e, 'lite-mode-route');
                 }

@@ -320,8 +320,8 @@ class Logger {
       return match;
     });
 
-    // Highlight URLs (http, https, ws, wss) in orange
-    coloredInnerMessage = coloredInnerMessage.replace(/((?:https?|wss?):\/\/[^\s\]]+)/gi, (match) => {
+    // Highlight URLs (http, https, ws, wss, ftp, ftps or www.) in orange
+    coloredInnerMessage = coloredInnerMessage.replace(/((?:(?:https?|wss?|ftp|ftps):\/\/|www\.)[^\s\]]+)/gi, (match) => {
       if (match.includes('\x1b')) return match;
       return `${COLORS.FG_ORANGE}${match}${COLORS.RESET}${msgColor}`;
     });

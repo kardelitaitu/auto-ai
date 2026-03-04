@@ -1,823 +1,230 @@
-{"timestamp":"2026-03-02T14:03:47.929Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772460227909-0perh10xt] Session initialized with paceMultiplier=0.97"}
-{"timestamp":"2026-03-02T14:03:47.930Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772460227909-0perh10xt] Fatigue scheduled for T+3.9m"}
-{"timestamp":"2026-03-02T14:03:47.970Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
-{"timestamp":"2026-03-02T14:03:47.971Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
-{"timestamp":"2026-03-02T14:03:47.973Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
-{"timestamp":"2026-03-02T14:03:47.973Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
-{"timestamp":"2026-03-02T14:03:47.974Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
-{"timestamp":"2026-03-02T14:03:48.011Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
-{"timestamp":"2026-03-02T14:03:48.019Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Database initialized at C:\\My Script\\auto-ai\\data\\sessions.db"}
-{"timestamp":"2026-03-02T14:03:48.020Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
-{"timestamp":"2026-03-02T14:03:48.023Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
-{"timestamp":"2026-03-02T14:03:48.023Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Configured: session=1800000ms, concurrency=50"}
-{"timestamp":"2026-03-02T14:03:48.028Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
-{"timestamp":"2026-03-02T14:03:48.210Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
-{"timestamp":"2026-03-02T14:03:48.212Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
-{"timestamp":"2026-03-02T14:03:48.216Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
-{"timestamp":"2026-03-02T14:03:48.216Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Dashboard started on port 3001"}
-{"timestamp":"2026-03-02T14:03:48.217Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Starting browser discovery..."}
-{"timestamp":"2026-03-02T14:03:48.217Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Configured: session=1800000ms, concurrency=50"}
-{"timestamp":"2026-03-02T14:03:48.218Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
-{"timestamp":"2026-03-02T14:03:48.219Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
-{"timestamp":"2026-03-02T14:03:48.224Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-02T14:03:48.224Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
-{"timestamp":"2026-03-02T14:03:48.224Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
-{"timestamp":"2026-03-02T14:03:48.225Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
-{"timestamp":"2026-03-02T14:03:48.227Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-02T14:03:48.227Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
-{"timestamp":"2026-03-02T14:03:48.228Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
-{"timestamp":"2026-03-02T14:03:48.228Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
-{"timestamp":"2026-03-02T14:03:48.230Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-02T14:03:48.230Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
-{"timestamp":"2026-03-02T14:03:48.230Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
-{"timestamp":"2026-03-02T14:03:48.232Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-02T14:03:48.232Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
-{"timestamp":"2026-03-02T14:03:48.233Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
-{"timestamp":"2026-03-02T14:03:48.234Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-02T14:03:48.235Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
-{"timestamp":"2026-03-02T14:03:48.235Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
-{"timestamp":"2026-03-02T14:03:48.236Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-02T14:03:48.237Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
-{"timestamp":"2026-03-02T14:03:48.237Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
-{"timestamp":"2026-03-02T14:03:48.239Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-02T14:03:48.239Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
-{"timestamp":"2026-03-02T14:03:48.240Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
-{"timestamp":"2026-03-02T14:03:48.240Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
-{"timestamp":"2026-03-02T14:03:48.242Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-02T14:03:48.242Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
-{"timestamp":"2026-03-02T14:03:48.242Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
-{"timestamp":"2026-03-02T14:03:48.243Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
-{"timestamp":"2026-03-02T14:03:48.243Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
-{"timestamp":"2026-03-02T14:03:48.244Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
-{"timestamp":"2026-03-02T14:03:48.244Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
-{"timestamp":"2026-03-02T14:03:48.247Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
-{"timestamp":"2026-03-02T14:03:48.247Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
-{"timestamp":"2026-03-02T14:03:48.265Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
-{"timestamp":"2026-03-02T14:03:48.266Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
-{"timestamp":"2026-03-02T14:03:48.267Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
-{"timestamp":"2026-03-02T14:03:48.267Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
-{"timestamp":"2026-03-02T14:03:48.286Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
-{"timestamp":"2026-03-02T14:03:48.287Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
-{"timestamp":"2026-03-02T14:03:48.288Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
-{"timestamp":"2026-03-02T14:03:48.295Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
-{"timestamp":"2026-03-02T14:03:48.295Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
-{"timestamp":"2026-03-02T14:03:48.296Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: 0001 (ws: ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4)"}
-{"timestamp":"2026-03-02T14:03:48.296Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
-{"timestamp":"2026-03-02T14:03:49.292Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
-{"timestamp":"2026-03-02T14:03:49.292Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
-{"timestamp":"2026-03-02T14:03:49.293Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
-{"timestamp":"2026-03-02T14:03:49.294Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
-{"timestamp":"2026-03-02T14:03:49.294Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
-{"timestamp":"2026-03-02T14:03:49.294Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
-{"timestamp":"2026-03-02T14:03:49.295Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
-{"timestamp":"2026-03-02T14:03:49.295Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
-{"timestamp":"2026-03-02T14:03:49.295Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
-{"timestamp":"2026-03-02T14:03:49.296Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
-{"timestamp":"2026-03-02T14:03:49.296Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
-{"timestamp":"2026-03-02T14:03:49.296Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
-{"timestamp":"2026-03-02T14:03:49.297Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
-{"timestamp":"2026-03-02T14:03:49.297Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"Found 1 browser endpoints. Connecting..."}
-{"timestamp":"2026-03-02T14:03:49.298Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4"}
-{"timestamp":"2026-03-02T14:03:49.838Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4"}
-{"timestamp":"2026-03-02T14:03:49.839Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Session added: roxy:0001 (50 workers)"}
-{"timestamp":"2026-03-02T14:03:49.841Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Connected: roxy:0001"}
-{"timestamp":"2026-03-02T14:03:49.841Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Discovery complete. Connected to 1 browsers."}
-{"timestamp":"2026-03-02T14:03:49.842Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
-{"timestamp":"2026-03-02T14:03:49.842Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to 1 browser(s). Ready for automation."}
-{"timestamp":"2026-03-02T14:03:49.843Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Initialized. Processing 3 sequential task groups."}
-{"timestamp":"2026-03-02T14:03:49.843Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 1/3: [\"pageview\",\"cookiebot\"]"}
-{"timestamp":"2026-03-02T14:03:49.852Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'pageview' added (timeout: 600000ms). Queue: 1"}
-{"timestamp":"2026-03-02T14:03:49.853Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'cookiebot' added (timeout: 600000ms). Queue: 2"}
-{"timestamp":"2026-03-02T14:03:49.854Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 1 added. Waiting for completion..."}
-{"timestamp":"2026-03-02T14:03:49.855Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
-{"timestamp":"2026-03-02T14:03:49.917Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Processing 2 tasks..."}
-{"timestamp":"2026-03-02T14:03:49.918Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001] Starting checklist: 2 tasks, 50 workers"}
-{"timestamp":"2026-03-02T14:03:50.081Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 0] Starting 'pageview'"}
-{"timestamp":"2026-03-02T14:03:50.109Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 1] Starting 'cookiebot'"}
-{"timestamp":"2026-03-02T14:03:50.119Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:03:50.119Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:03:50.120Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
-{"timestamp":"2026-03-02T14:03:50.120Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
-{"timestamp":"2026-03-02T14:03:50.123Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:03:50.123Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:03:50.123Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
-{"timestamp":"2026-03-02T14:03:50.124Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
-{"timestamp":"2026-03-02T14:03:50.136Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-02T14:03:50.139Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-02T14:03:50.140Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-02T14:03:50.142Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-02T14:03:50.143Z","level":"INFO","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Starting migrated pageview task..."}
-{"timestamp":"2026-03-02T14:03:50.147Z","level":"INFO","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Initialized with profile: 48-Stalker (Persona: casual)"}
-{"timestamp":"2026-03-02T14:03:50.148Z","level":"INFO","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Target (Random): https://x.com/BerryKarthik/with_replies"}
-{"timestamp":"2026-03-02T14:03:50.150Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Ultra-Lite mode enabled: media and styles blocked (analytics preserved)"}
-{"timestamp":"2026-03-02T14:03:50.152Z","level":"INFO","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Referrer: (Direct)"}
-{"timestamp":"2026-03-02T14:03:50.152Z","level":"INFO","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Navigating..."}
-{"timestamp":"2026-03-02T14:03:50.157Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"URL list size: 1288"}
-{"timestamp":"2026-03-02T14:03:50.157Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Starting random visits loop for 6 times."}
-{"timestamp":"2026-03-02T14:03:50.157Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(1 of 6) Navigating to: https://www.instacart.com"}
-{"timestamp":"2026-03-02T14:03:55.871Z","level":"INFO","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Simulating reading for ~45.00s (20 cycles)"}
-{"timestamp":"2026-03-02T14:03:55.874Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
-{"timestamp":"2026-03-02T14:03:56.692Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.instacart.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:03:56.692Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(2 of 6) Navigating to: https://www.youtube.com/@A4"}
-{"timestamp":"2026-03-02T14:04:02.911Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.youtube.com/@A4 is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:02.912Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(3 of 6) Navigating to: https://www.netflix.com"}
-{"timestamp":"2026-03-02T14:04:08.852Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.netflix.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:08.853Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(4 of 6) Navigating to: https://www.youtube.com/@XXXTENTACION"}
-{"timestamp":"2026-03-02T14:04:14.148Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.youtube.com/@XXXTENTACION is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:14.149Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(5 of 6) Navigating to: https://www.zazzle.com"}
-{"timestamp":"2026-03-02T14:04:19.202Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.zazzle.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:19.203Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(6 of 6) Navigating to: https://www.cnet.com"}
-{"timestamp":"2026-03-02T14:04:26.992Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.cnet.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:27.069Z","level":"DEBUG","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page closed successfully."}
-{"timestamp":"2026-03-02T14:04:27.070Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 36960ms"}
-{"timestamp":"2026-03-02T14:04:27.071Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 1 in roxy:0001 (37151ms)"}
-{"timestamp":"2026-03-02T14:04:40.160Z","level":"WARN","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Task forced to stop: Pageview task exceeded 50s limit"}
-{"timestamp":"2026-03-02T14:04:40.196Z","level":"DEBUG","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Page closed successfully."}
-{"timestamp":"2026-03-02T14:04:40.196Z","level":"INFO","module":"pageview.js [roxy:0001]","sessionId":null,"message":"[pageview] Total task duration: 50.05 seconds"}
-{"timestamp":"2026-03-02T14:04:40.197Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'pageview' recorded: SUCCESS, duration: 50116ms"}
-{"timestamp":"2026-03-02T14:04:40.197Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 0 in roxy:0001 (50278ms)"}
-{"timestamp":"2026-03-02T14:04:40.198Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] All tasks completed"}
-{"timestamp":"2026-03-02T14:04:40.198Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Group 1 completed successfully."}
-{"timestamp":"2026-03-02T14:04:40.198Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 2/3: [\"cookiebot\",\"cookiebot\"]"}
-{"timestamp":"2026-03-02T14:04:40.202Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'cookiebot' added (timeout: 600000ms). Queue: 1"}
-{"timestamp":"2026-03-02T14:04:40.204Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'cookiebot' added (timeout: 600000ms). Queue: 2"}
-{"timestamp":"2026-03-02T14:04:40.205Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 2 added. Waiting for completion..."}
-{"timestamp":"2026-03-02T14:04:40.266Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Processing 2 tasks..."}
-{"timestamp":"2026-03-02T14:04:40.267Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001] Starting checklist: 2 tasks, 50 workers"}
-{"timestamp":"2026-03-02T14:04:40.359Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:04:40.360Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:04:40.360Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
-{"timestamp":"2026-03-02T14:04:40.361Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
-{"timestamp":"2026-03-02T14:04:40.365Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 0] Starting 'cookiebot'"}
-{"timestamp":"2026-03-02T14:04:40.371Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-02T14:04:40.379Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-02T14:04:40.382Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:04:40.383Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:04:40.383Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
-{"timestamp":"2026-03-02T14:04:40.383Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
-{"timestamp":"2026-03-02T14:04:40.385Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-02T14:04:40.388Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-02T14:04:40.390Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 1] Starting 'cookiebot'"}
-{"timestamp":"2026-03-02T14:04:40.395Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Ultra-Lite mode enabled: media and styles blocked (analytics preserved)"}
-{"timestamp":"2026-03-02T14:04:40.396Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-02T14:04:40.399Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"URL list size: 1288"}
-{"timestamp":"2026-03-02T14:04:40.399Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Starting random visits loop for 10 times."}
-{"timestamp":"2026-03-02T14:04:40.399Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(1 of 10) Navigating to: https://www.evernote.com"}
-{"timestamp":"2026-03-02T14:04:40.400Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-02T14:04:40.402Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-02T14:04:40.404Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-02T14:04:40.407Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Ultra-Lite mode enabled: media and styles blocked (analytics preserved)"}
-{"timestamp":"2026-03-02T14:04:40.408Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"URL list size: 1288"}
-{"timestamp":"2026-03-02T14:04:40.409Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Starting random visits loop for 9 times."}
-{"timestamp":"2026-03-02T14:04:40.409Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(1 of 9) Navigating to: https://beincrypto.com"}
-{"timestamp":"2026-03-02T14:04:45.506Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://beincrypto.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:45.506Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(2 of 9) Navigating to: https://www.sourceforge.net"}
-{"timestamp":"2026-03-02T14:04:47.257Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.evernote.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:47.257Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(2 of 10) Navigating to: https://www.bestbuy.com"}
-{"timestamp":"2026-03-02T14:04:51.927Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.bestbuy.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:51.927Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(3 of 10) Navigating to: https://www.nba.com"}
-{"timestamp":"2026-03-02T14:04:53.526Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.sourceforge.net is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:04:53.526Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(3 of 9) Navigating to: https://www.metacritic.com"}
-{"timestamp":"2026-03-02T14:05:00.591Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.nba.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:00.592Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(4 of 10) Navigating to: https://www.twitch.tv/syndicate"}
-{"timestamp":"2026-03-02T14:05:04.122Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.twitch.tv/syndicate is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:04.122Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(5 of 10) Navigating to: https://www.landrover.com"}
-{"timestamp":"2026-03-02T14:05:06.476Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.metacritic.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:06.477Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(4 of 9) Navigating to: https://www.minecraft.net"}
-{"timestamp":"2026-03-02T14:05:10.483Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.landrover.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:10.484Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(6 of 10) Navigating to: https://www.dunkindonuts.com"}
-{"timestamp":"2026-03-02T14:05:11.126Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.minecraft.net is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:11.126Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(5 of 9) Navigating to: https://www.walmart.com"}
-{"timestamp":"2026-03-02T14:05:15.320Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.dunkindonuts.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:15.321Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(7 of 10) Navigating to: https://decrypt.co"}
-{"timestamp":"2026-03-02T14:05:17.436Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.walmart.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:17.436Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(6 of 9) Navigating to: https://www.google.com"}
-{"timestamp":"2026-03-02T14:05:21.335Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://decrypt.co is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:21.335Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(8 of 10) Navigating to: https://www.gap.com"}
-{"timestamp":"2026-03-02T14:05:21.598Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.google.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:21.598Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(7 of 9) Navigating to: https://www.hulu.com"}
-{"timestamp":"2026-03-02T14:05:23.444Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.gap.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:23.445Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(9 of 10) Navigating to: https://www.coinone.co.kr"}
-{"timestamp":"2026-03-02T14:05:25.847Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.hulu.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:25.848Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(8 of 9) Navigating to: https://www.youtube.com/@DaddyYankee"}
-{"timestamp":"2026-03-02T14:05:30.376Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.youtube.com/@DaddyYankee is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:30.376Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(9 of 9) Navigating to: https://www.gwynniebee.com"}
-{"timestamp":"2026-03-02T14:05:32.112Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.coinone.co.kr is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:32.113Z","level":"INFO","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"(10 of 10) Navigating to: https://metamask.io"}
-{"timestamp":"2026-03-02T14:05:36.544Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://www.gwynniebee.com is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:36.628Z","level":"DEBUG","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page closed successfully."}
-{"timestamp":"2026-03-02T14:05:36.629Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 56238ms"}
-{"timestamp":"2026-03-02T14:05:36.629Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 1 in roxy:0001 (56362ms)"}
-{"timestamp":"2026-03-02T14:05:37.711Z","level":"WARN","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page https://metamask.io is unresponsive after load. Skipping."}
-{"timestamp":"2026-03-02T14:05:37.790Z","level":"DEBUG","module":"cookiebot-api.js [roxy:0001]","sessionId":null,"message":"Page closed successfully."}
-{"timestamp":"2026-03-02T14:05:37.791Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 57425ms"}
-{"timestamp":"2026-03-02T14:05:37.791Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 0 in roxy:0001 (57524ms)"}
-{"timestamp":"2026-03-02T14:05:37.792Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] All tasks completed"}
-{"timestamp":"2026-03-02T14:05:37.793Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Group 2 completed successfully."}
-{"timestamp":"2026-03-02T14:05:37.793Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 3/3: [\"api-twitteractivity\"]"}
-{"timestamp":"2026-03-02T14:05:37.800Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'api-twitteractivity' added (timeout: 600000ms). Queue: 1"}
-{"timestamp":"2026-03-02T14:05:37.800Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 3 added. Waiting for completion..."}
-{"timestamp":"2026-03-02T14:05:37.854Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Processing 1 tasks..."}
-{"timestamp":"2026-03-02T14:05:37.855Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001] Starting checklist: 1 tasks, 50 workers"}
-{"timestamp":"2026-03-02T14:05:37.915Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:05:37.916Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
-{"timestamp":"2026-03-02T14:05:37.916Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
-{"timestamp":"2026-03-02T14:05:37.916Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
-{"timestamp":"2026-03-02T14:05:37.921Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 0] Starting 'api-twitteractivity'"}
-{"timestamp":"2026-03-02T14:05:37.963Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-02T14:05:37.985Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
-{"timestamp":"2026-03-02T14:05:37.986Z","level":"INFO","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Service initialized (TTL: 300000ms)"}
-{"timestamp":"2026-03-02T14:05:37.987Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Initialized with TTL: 300000ms, maxSize: 100"}
-{"timestamp":"2026-03-02T14:05:37.988Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-02T14:05:37.998Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
-{"timestamp":"2026-03-02T14:05:38.000Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
-{"timestamp":"2026-03-02T14:05:38.003Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Initializing with Unified API..."}
-{"timestamp":"2026-03-02T14:05:38.004Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] ⏳ Startup: Running parallel initialization (Jitter: 3134ms)..."}
-{"timestamp":"2026-03-02T14:05:38.005Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Loading configuration (cache miss: {})"}
-{"timestamp":"2026-03-02T14:05:38.006Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Profile: 22-Balanced-undefined | Input: undefined | Dive: 12% | Like: 1% | Follow: 0%"}
-{"timestamp":"2026-03-02T14:05:38.006Z","level":"INFO","module":"config-service.js","sessionId":null,"message":"[Config] Service initialized"}
-{"timestamp":"2026-03-02T14:05:38.008Z","level":"DEBUG","module":"environment-config.js","sessionId":null,"message":"[EnvironmentConfig] No environment overrides found"}
-{"timestamp":"2026-03-02T14:05:38.009Z","level":"DEBUG","module":"config-cache.js","sessionId":null,"message":"[ConfigCache] Added new entry: {}"}
-{"timestamp":"2026-03-02T14:05:38.009Z","level":"INFO","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Configuration loaded successfully in 4ms"}
-{"timestamp":"2026-03-02T14:05:38.010Z","level":"DEBUG","module":"task-config-loader.js","sessionId":null,"message":"[ConfigLoader] Cache stats: 0 hits, 1 loads"}
-{"timestamp":"2026-03-02T14:05:41.188Z","level":"INFO","module":"humanization.js","sessionId":null,"message":"[Humanization] Engine initialized"}
-{"timestamp":"2026-03-02T14:05:41.189Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] Initialized [Type: Balanced | Input: Mouse (86%) | Dive: 36.7% | Tweet: 7.8% | T-Dive: 12.3% Like: 1.25%]. Fatigue scheduled for T+7.4m"}
-{"timestamp":"2026-03-02T14:05:41.191Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] Initialized (maxConcurrent: 1, maxQueueSize: 30, defaultTimeout: 20000ms)"}
-{"timestamp":"2026-03-02T14:05:41.191Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Initialized with engagement limits: {\"replies\":3,\"retweets\":1,\"quotes\":1,\"likes\":5,\"follows\":2,\"bookmarks\":2}"}
-{"timestamp":"2026-03-02T14:05:41.193Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReplyEngine] Initialized (probability: 0.8)"}
-{"timestamp":"2026-03-02T14:05:41.193Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuoteEngine] Initialized (probability: 0.1)"}
-{"timestamp":"2026-03-02T14:05:41.194Z","level":"INFO","module":"ai-twitter-reply.js","sessionId":null,"message":"[AIReplyAction] Initialized (enabled: true, probability: 80%)"}
-{"timestamp":"2026-03-02T14:05:41.195Z","level":"INFO","module":"ai-twitter-quote.js","sessionId":null,"message":"[AIQuoteAction] Initialized (enabled: true, probability: 10%)"}
-{"timestamp":"2026-03-02T14:05:41.195Z","level":"INFO","module":"ai-twitter-like.js","sessionId":null,"message":"[LikeAction] Initialized (enabled: true, probability: 15%)"}
-{"timestamp":"2026-03-02T14:05:41.196Z","level":"INFO","module":"ai-twitter-bookmark.js","sessionId":null,"message":"[BookmarkAction] Initialized (enabled: true, probability: 10%)"}
-{"timestamp":"2026-03-02T14:05:41.196Z","level":"INFO","module":"ai-twitter-retweet.js","sessionId":null,"message":"[RetweetAction] Initialized (enabled: true, probability: 20%)"}
-{"timestamp":"2026-03-02T14:05:41.197Z","level":"INFO","module":"ai-twitter-follow.js","sessionId":null,"message":"[FollowAction] Initialized (enabled: true, probability: 10%)"}
-{"timestamp":"2026-03-02T14:05:41.197Z","level":"INFO","module":"ai-twitter-go-home.js","sessionId":null,"message":"[GoHomeAction] Initialized (enabled: true)"}
-{"timestamp":"2026-03-02T14:05:41.198Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Initialized: reply=0.8, quote=0.1, like=0.15, bookmark=0.1, retweet=0.2, follow=0.1 (total: 145%)"}
-{"timestamp":"2026-03-02T14:05:41.199Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AITwitterAgent] Initialized (replyProbability: 0.8)"}
-{"timestamp":"2026-03-02T14:05:41.200Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AITwitterAgent] Engagement limits: replies: 0/3, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/2, bookmarks: 0/2"}
-{"timestamp":"2026-03-02T14:05:41.200Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AITwitterAgent] Session phases: warmup(0-10%) → active(10-80%) → cooldown(80-100%)"}
-{"timestamp":"2026-03-02T14:05:41.201Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] State management initialized: HOME (scrolling enabled)"}
-{"timestamp":"2026-03-02T14:05:41.201Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AITwitterAgent] Action handlers initialized: reply, quote, like, bookmark, retweet, follow, goHome"}
-{"timestamp":"2026-03-02T14:05:41.202Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Persona: casual"}
-{"timestamp":"2026-03-02T14:05:41.202Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Distraction chance: 6%"}
-{"timestamp":"2026-03-02T14:05:41.203Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Enforcing theme: dark"}
-{"timestamp":"2026-03-02T14:05:41.204Z","level":"INFO","module":"cloud-client.js","sessionId":null,"message":"[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization."}
-{"timestamp":"2026-03-02T14:05:41.215Z","level":"DEBUG","module":"ollama-manager.js","sessionId":null,"message":"[OllamaManager] Ollama is already running."}
-{"timestamp":"2026-03-02T14:05:41.217Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Initialized: http://localhost:11434 (Model: llama3.2:3b)"}
-{"timestamp":"2026-03-02T14:05:41.217Z","level":"INFO","module":"local-client.js","sessionId":null,"message":"[Local] Ollama client initialized"}
-{"timestamp":"2026-03-02T14:05:41.218Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Warm-up 1.3s..."}
-{"timestamp":"2026-03-02T14:05:42.601Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] 🎲 Rolled entry point: home → https://x.com/"}
-{"timestamp":"2026-03-02T14:05:47.086Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] X.com loaded (home)"}
-{"timestamp":"2026-03-02T14:05:47.087Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Waiting for network settlement (4000ms)..."}
-{"timestamp":"2026-03-02T14:05:51.092Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] ⚡ Background task expected timeout: page.waitForLoadState: Timeout 4000ms exceeded."}
-{"timestamp":"2026-03-02T14:05:51.093Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Network idle reached."}
-{"timestamp":"2026-03-02T14:05:51.093Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Checking login state..."}
-{"timestamp":"2026-03-02T14:05:51.161Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] ✅ Logged in (check 1/3)"}
-{"timestamp":"2026-03-02T14:05:51.162Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Starting session (20 cycles, 360-600s)..."}
-{"timestamp":"2026-03-02T14:05:51.163Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AITwitterAgent] Starting AI-Enhanced Session with DiveQueue and Lock Management..."}
-{"timestamp":"2026-03-02T14:05:51.163Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] Starting Session on https://x.com/home"}
-{"timestamp":"2026-03-02T14:05:51.164Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] Session Timer Set: 422.8s"}
-{"timestamp":"2026-03-02T14:05:51.164Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] Enforcing theme: dark"}
-{"timestamp":"2026-03-02T14:05:51.167Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Session starting..."}
-{"timestamp":"2026-03-02T14:05:57.386Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] --- Loop 1  ---"}
-{"timestamp":"2026-03-02T14:06:01.908Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Idle] Reading Phase (-27.4s)"}
-{"timestamp":"2026-03-02T14:06:01.908Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Branch] Idle (Staring at screen)"}
-{"timestamp":"2026-03-02T14:06:05.750Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] --- Loop 2  ---"}
-{"timestamp":"2026-03-02T14:06:05.751Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] 🔥 >>> ENTERING BURST MODE! High intensity for 53.2s"}
-{"timestamp":"2026-03-02T14:06:10.812Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Idle] Reading Phase (1.0s)"}
-{"timestamp":"2026-03-02T14:06:13.305Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Branch] Idle (Staring at screen)"}
-{"timestamp":"2026-03-02T14:06:14.853Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] --- Loop 3  ---"}
-{"timestamp":"2026-03-02T14:06:18.125Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Idle] Reading Phase (1.0s)"}
-{"timestamp":"2026-03-02T14:06:20.885Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Phase] Transition: warmup → cooldown (Slowing down - more reading, fewer actions)"}
-{"timestamp":"2026-03-02T14:06:20.886Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveQueue] Enabling quick mode for cooldown phase"}
-{"timestamp":"2026-03-02T14:06:20.886Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Quick mode enabled (timeout: 15000ms)"}
-{"timestamp":"2026-03-02T14:06:20.887Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1772460380887_x87xq"}
-{"timestamp":"2026-03-02T14:06:20.889Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-03-02T14:06:20.893Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Scroll] New session/navigated home, performing forced exploration scroll..."}
-{"timestamp":"2026-03-02T14:06:24.154Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Selected tweet candidate at index 5 (Y: 306)"}
-{"timestamp":"2026-03-02T14:06:24.175Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-03-02T14:06:26.202Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Target: Box=x:827,y:440"}
-{"timestamp":"2026-03-02T14:06:26.202Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-03-02T14:06:26.203Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Tweet Permalink for 300ms..."}
-{"timestamp":"2026-03-02T14:06:28.243Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=835 y=449 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:06:29.798Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=834 y=450 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:06:29.799Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [ai-twitterActivity][GhostClick] Clicked x=834 y=450"}
-{"timestamp":"2026-03-02T14:06:29.800Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Success] Navigated to tweet page."}
-{"timestamp":"2026-03-02T14:06:29.801Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Tweet URL: https://x.com/callistoroll/status/2028371400772497525"}
-{"timestamp":"2026-03-02T14:06:29.801Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Tracking new tweet 2028371400772497525"}
-{"timestamp":"2026-03-02T14:06:29.801Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-03-02T14:06:31.093Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracted tweet text (140 chars)"}
-{"timestamp":"2026-03-02T14:06:31.094Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.551,\"quote\":0.068,\"like\":0.103,\"bookmark\":0.068,\"retweet\":0.137,\"follow\":0.068}"}
-{"timestamp":"2026-03-02T14:06:31.094Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Selected: reply (roll: 34.8%, prob: 55.2%)"}
-{"timestamp":"2026-03-02T14:06:31.095Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] Selected: REPLY"}
-{"timestamp":"2026-03-02T14:06:31.096Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1772460380887_x87xq"}
-{"timestamp":"2026-03-02T14:06:31.096Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1772460380887_x87xq, timeout: 120000ms"}
-{"timestamp":"2026-03-02T14:06:31.096Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1772460380887_x87xq (queue: 0, active: 0/1)"}
-{"timestamp":"2026-03-02T14:06:31.097Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1772460380887_x87xq"}
-{"timestamp":"2026-03-02T14:06:31.098Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Delegating reply to api.replyWithAI/API()..."}
-{"timestamp":"2026-03-02T14:06:31.098Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Starting high-level api.replyWithAI()..."}
-{"timestamp":"2026-03-02T14:06:31.106Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Context: Tweet by @callistoroll (\"> go to Japan\n\n> walk into a r...\")"}
-{"timestamp":"2026-03-02T14:06:31.106Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Loading/Reading context (Elastic Scroll)..."}
-{"timestamp":"2026-03-02T14:06:31.107Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[Elastic] Scrolling down to load infinite content..."}
-{"timestamp":"2026-03-02T14:06:34.877Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[Elastic] Scrolling up while extracting context..."}
-{"timestamp":"2026-03-02T14:06:41.449Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Extracted 39 replies for context"}
-{"timestamp":"2026-03-02T14:06:41.449Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReplyEngine] Initialized (probability: 1)"}
-{"timestamp":"2026-03-02T14:06:41.450Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Processing request: generate_reply"}
-{"timestamp":"2026-03-02T14:06:41.451Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Request payload keys: systemPrompt, userPrompt, vision, context, temperature, maxTokens"}
-{"timestamp":"2026-03-02T14:06:41.451Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Queue status before enqueue: running=0, queued=0"}
-{"timestamp":"2026-03-02T14:06:41.451Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Enqueueing request with timeout 60000ms"}
-{"timestamp":"2026-03-02T14:06:41.452Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Enqueued task req_1772460401451_hsgolpl0i, queue size: 1, running: 0"}
-{"timestamp":"2026-03-02T14:06:41.452Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Dequeueing task req_1772460401451_hsgolpl0i, queue now has 0 items"}
-{"timestamp":"2026-03-02T14:06:41.453Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460401451_hsgolpl0i starting (running: 1/3, queued: 0)"}
-{"timestamp":"2026-03-02T14:06:41.454Z","level":"INFO","module":"cloud-client.js","sessionId":null,"message":"[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization."}
-{"timestamp":"2026-03-02T14:06:41.455Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Routing to local providers (vllm: false, ollama: true)"}
-{"timestamp":"2026-03-02T14:06:41.455Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Using text-only mode (fallback: true)"}
-{"timestamp":"2026-03-02T14:06:41.456Z","level":"DEBUG","module":"local-client.js","sessionId":null,"message":"[Local] Falling back to Ollama..."}
-{"timestamp":"2026-03-02T14:06:41.461Z","level":"DEBUG","module":"ollama-manager.js","sessionId":null,"message":"[OllamaManager] Ollama is already running."}
-{"timestamp":"2026-03-02T14:06:41.462Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Initialized: http://localhost:11434 (Model: llama3.2:3b)"}
-{"timestamp":"2026-03-02T14:06:41.462Z","level":"INFO","module":"local-client.js","sessionId":null,"message":"[Local] Ollama client initialized"}
-{"timestamp":"2026-03-02T14:06:41.462Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] 🔔 REQUEST #1 START: TEXT request to llama3.2:3b"}
-{"timestamp":"2026-03-02T14:06:41.463Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Warming up llama3.2:3b..."}
-{"timestamp":"2026-03-02T14:06:44.401Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Model warmup complete"}
-{"timestamp":"2026-03-02T14:06:44.402Z","level":"DEBUG","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Using generate endpoint for llama3.2:3b..."}
-{"timestamp":"2026-03-02T14:06:44.793Z","level":"SUCCESS","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Generate request completed in 3331ms"}
-{"timestamp":"2026-03-02T14:06:44.794Z","level":"SUCCESS","module":"local-client.js","sessionId":null,"message":"[Local] Ollama response in 3337ms"}
-{"timestamp":"2026-03-02T14:06:44.794Z","level":"SUCCESS","module":"agent-connector.js","sessionId":null,"message":"[null] Text-only reply generated in 3340ms"}
-{"timestamp":"2026-03-02T14:06:44.795Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460401451_hsgolpl0i completed successfully"}
-{"timestamp":"2026-03-02T14:06:44.795Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460401451_hsgolpl0i finished, running: 0"}
-{"timestamp":"2026-03-02T14:06:44.795Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Request dequeued after 3345ms"}
-{"timestamp":"2026-03-02T14:06:44.796Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] processRequest returning: success=true, contentLen=11"}
-{"timestamp":"2026-03-02T14:06:44.796Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"AI Reply: \"bureaucracy\""}
-{"timestamp":"2026-03-02T14:06:44.796Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Focusing back on target tweet..."}
-{"timestamp":"2026-03-02T14:06:46.518Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Executing replyMethodA (Reply Icon)..."}
-{"timestamp":"2026-03-02T14:06:46.519Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Clicking reply icon (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:06:49.270Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=590 y=442"}
-{"timestamp":"2026-03-02T14:06:50.101Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=589 y=441"}
-{"timestamp":"2026-03-02T14:06:51.801Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Typing reply (11 chars, ghost cursor)..."}
-{"timestamp":"2026-03-02T14:06:55.433Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Clicking post button (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:06:57.211Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=1148 y=506"}
-{"timestamp":"2026-03-02T14:06:57.948Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=1147 y=505"}
-{"timestamp":"2026-03-02T14:07:00.604Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"✅ api.replyWithAI successful!"}
-{"timestamp":"2026-03-02T14:07:00.605Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] ✓ Engagement recorded: replies (1/3)"}
-{"timestamp":"2026-03-02T14:07:00.605Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] ✅ reply executed: success"}
-{"timestamp":"2026-03-02T14:07:00.606Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1772460380887_x87xq"}
-{"timestamp":"2026-03-02T14:07:00.606Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1772460380887_x87xq in 29510ms"}
-{"timestamp":"2026-03-02T14:07:00.607Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Action successful, skipping reading phase and returning home..."}
-{"timestamp":"2026-03-02T14:07:01.089Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"Returning to Home Feed..."}
-{"timestamp":"2026-03-02T14:07:01.098Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' (1st click for reload)..."}
-{"timestamp":"2026-03-02T14:07:01.099Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 525ms..."}
-{"timestamp":"2026-03-02T14:07:03.285Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=433 y=89 [Home Icon]"}
-{"timestamp":"2026-03-02T14:07:04.789Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=433 y=89 [Home Icon]"}
-{"timestamp":"2026-03-02T14:07:04.790Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=433 y=89"}
-{"timestamp":"2026-03-02T14:07:04.790Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:07:05.659Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
-{"timestamp":"2026-03-02T14:07:05.659Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 536ms..."}
-{"timestamp":"2026-03-02T14:07:08.078Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=437 y=91 [Home Icon]"}
-{"timestamp":"2026-03-02T14:07:09.079Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=436 y=91 [Home Icon]"}
-{"timestamp":"2026-03-02T14:07:09.079Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=436 y=91"}
-{"timestamp":"2026-03-02T14:07:09.080Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:07:09.615Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Navigate to /home Success."}
-{"timestamp":"2026-03-02T14:07:09.681Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Tab] \"For you\" is already selected."}
-{"timestamp":"2026-03-02T14:07:10.178Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] ✓ Successfully returned to home"}
-{"timestamp":"2026-03-02T14:07:11.389Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
-{"timestamp":"2026-03-02T14:07:11.390Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Branch] Idle (Staring at screen)"}
-{"timestamp":"2026-03-02T14:07:16.884Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] --- Loop 4  ---"}
-{"timestamp":"2026-03-02T14:07:18.592Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] 📉 Burst Mode Ended. Returning to normal pace."}
-{"timestamp":"2026-03-02T14:07:21.688Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Idle] Reading Phase (97.5s)"}
-{"timestamp":"2026-03-02T14:07:37.095Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1772460457094_6ahll"}
-{"timestamp":"2026-03-02T14:07:37.096Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-03-02T14:07:37.099Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Processing feed before selecting target (thinking)..."}
-{"timestamp":"2026-03-02T14:07:37.100Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about scout for 474ms..."}
-{"timestamp":"2026-03-02T14:07:38.297Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Selected tweet candidate at index 5 (Y: 483)"}
-{"timestamp":"2026-03-02T14:07:38.310Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-03-02T14:07:39.879Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Target: Box=x:830,y:440"}
-{"timestamp":"2026-03-02T14:07:39.880Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-03-02T14:07:39.880Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Tweet Permalink for 624ms..."}
-{"timestamp":"2026-03-02T14:07:41.885Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=835 y=448 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:07:43.566Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=836 y=449 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:07:43.567Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [ai-twitterActivity][GhostClick] Clicked x=836 y=449"}
-{"timestamp":"2026-03-02T14:07:43.569Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Success] Navigated to tweet page."}
-{"timestamp":"2026-03-02T14:07:43.569Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Tweet URL: https://x.com/DramaAlert/status/2028432023006609667"}
-{"timestamp":"2026-03-02T14:07:43.570Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Tracking new tweet 2028432023006609667"}
-{"timestamp":"2026-03-02T14:07:43.570Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-03-02T14:07:44.849Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracted tweet text (56 chars)"}
-{"timestamp":"2026-03-02T14:07:44.850Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.551,\"quote\":0.068,\"like\":0.103,\"bookmark\":0.068,\"retweet\":0.137,\"follow\":0.068}"}
-{"timestamp":"2026-03-02T14:07:44.850Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Selected: reply (roll: 48.4%, prob: 55.2%)"}
-{"timestamp":"2026-03-02T14:07:44.851Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] Selected: REPLY"}
-{"timestamp":"2026-03-02T14:07:44.851Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1772460457094_6ahll"}
-{"timestamp":"2026-03-02T14:07:44.851Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1772460457094_6ahll, timeout: 120000ms"}
-{"timestamp":"2026-03-02T14:07:44.852Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1772460457094_6ahll (queue: 0, active: 0/1)"}
-{"timestamp":"2026-03-02T14:07:44.852Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1772460457094_6ahll"}
-{"timestamp":"2026-03-02T14:07:44.853Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Delegating reply to api.replyWithAI/API()..."}
-{"timestamp":"2026-03-02T14:07:44.853Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Starting high-level api.replyWithAI()..."}
-{"timestamp":"2026-03-02T14:07:45.075Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Context: Tweet by @DramaAlert (\"Super Rare blood moon from TOD...\")"}
-{"timestamp":"2026-03-02T14:07:45.075Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Loading/Reading context (Elastic Scroll)..."}
-{"timestamp":"2026-03-02T14:07:45.075Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[Elastic] Scrolling down to load infinite content..."}
-{"timestamp":"2026-03-02T14:07:48.735Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[Elastic] Scrolling up while extracting context..."}
-{"timestamp":"2026-03-02T14:07:55.068Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Extracted 46 replies for context"}
-{"timestamp":"2026-03-02T14:07:55.069Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReplyEngine] Initialized (probability: 1)"}
-{"timestamp":"2026-03-02T14:07:55.070Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Processing request: generate_reply"}
-{"timestamp":"2026-03-02T14:07:55.070Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Request payload keys: systemPrompt, userPrompt, vision, context, temperature, maxTokens"}
-{"timestamp":"2026-03-02T14:07:55.071Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Queue status before enqueue: running=0, queued=0"}
-{"timestamp":"2026-03-02T14:07:55.071Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Enqueueing request with timeout 60000ms"}
-{"timestamp":"2026-03-02T14:07:55.071Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Enqueued task req_1772460475071_ggde74zw7, queue size: 1, running: 0"}
-{"timestamp":"2026-03-02T14:07:55.073Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Dequeueing task req_1772460475071_ggde74zw7, queue now has 0 items"}
-{"timestamp":"2026-03-02T14:07:55.073Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460475071_ggde74zw7 starting (running: 1/3, queued: 0)"}
-{"timestamp":"2026-03-02T14:07:55.074Z","level":"INFO","module":"cloud-client.js","sessionId":null,"message":"[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization."}
-{"timestamp":"2026-03-02T14:07:55.074Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Routing to local providers (vllm: false, ollama: true)"}
-{"timestamp":"2026-03-02T14:07:55.074Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Using text-only mode (fallback: true)"}
-{"timestamp":"2026-03-02T14:07:55.075Z","level":"DEBUG","module":"local-client.js","sessionId":null,"message":"[Local] Falling back to Ollama..."}
-{"timestamp":"2026-03-02T14:07:55.086Z","level":"DEBUG","module":"ollama-manager.js","sessionId":null,"message":"[OllamaManager] Ollama is already running."}
-{"timestamp":"2026-03-02T14:07:55.086Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Initialized: http://localhost:11434 (Model: llama3.2:3b)"}
-{"timestamp":"2026-03-02T14:07:55.087Z","level":"INFO","module":"local-client.js","sessionId":null,"message":"[Local] Ollama client initialized"}
-{"timestamp":"2026-03-02T14:07:55.087Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] 🔔 REQUEST #1 START: TEXT request to llama3.2:3b"}
-{"timestamp":"2026-03-02T14:07:55.087Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Warming up llama3.2:3b..."}
-{"timestamp":"2026-03-02T14:07:55.312Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Model warmup complete"}
-{"timestamp":"2026-03-02T14:07:55.313Z","level":"DEBUG","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Using generate endpoint for llama3.2:3b..."}
-{"timestamp":"2026-03-02T14:07:55.697Z","level":"SUCCESS","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Generate request completed in 609ms"}
-{"timestamp":"2026-03-02T14:07:55.697Z","level":"SUCCESS","module":"local-client.js","sessionId":null,"message":"[Local] Ollama response in 622ms"}
-{"timestamp":"2026-03-02T14:07:55.698Z","level":"SUCCESS","module":"agent-connector.js","sessionId":null,"message":"[null] Text-only reply generated in 624ms"}
-{"timestamp":"2026-03-02T14:07:55.698Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460475071_ggde74zw7 completed successfully"}
-{"timestamp":"2026-03-02T14:07:55.699Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460475071_ggde74zw7 finished, running: 0"}
-{"timestamp":"2026-03-02T14:07:55.699Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Request dequeued after 629ms"}
-{"timestamp":"2026-03-02T14:07:55.699Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] processRequest returning: success=true, contentLen=24"}
-{"timestamp":"2026-03-02T14:07:55.700Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"AI Reply: \"got pics of this morning\""}
-{"timestamp":"2026-03-02T14:07:55.700Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Focusing back on target tweet..."}
-{"timestamp":"2026-03-02T14:07:56.779Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Executing replyMethodA (Reply Icon)..."}
-{"timestamp":"2026-03-02T14:07:56.779Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Clicking reply icon (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:07:59.413Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=598 y=431"}
-{"timestamp":"2026-03-02T14:08:00.496Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=597 y=430"}
-{"timestamp":"2026-03-02T14:08:02.714Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Typing reply (24 chars, ghost cursor)..."}
-{"timestamp":"2026-03-02T14:08:08.805Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Clicking post button (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:08:10.541Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=1161 y=392"}
-{"timestamp":"2026-03-02T14:08:11.300Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=1162 y=393"}
-{"timestamp":"2026-03-02T14:08:13.422Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"✅ api.replyWithAI successful!"}
-{"timestamp":"2026-03-02T14:08:13.422Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] ✓ Engagement recorded: replies (2/3)"}
-{"timestamp":"2026-03-02T14:08:13.423Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] ✅ reply executed: success"}
-{"timestamp":"2026-03-02T14:08:13.423Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1772460457094_6ahll"}
-{"timestamp":"2026-03-02T14:08:13.423Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1772460457094_6ahll in 28572ms"}
-{"timestamp":"2026-03-02T14:08:13.424Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Action successful, skipping reading phase and returning home..."}
-{"timestamp":"2026-03-02T14:08:14.000Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"Returning to Home Feed..."}
-{"timestamp":"2026-03-02T14:08:14.011Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' (1st click for reload)..."}
-{"timestamp":"2026-03-02T14:08:14.012Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 417ms..."}
-{"timestamp":"2026-03-02T14:08:15.953Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=427 y=89 [Home Icon]"}
-{"timestamp":"2026-03-02T14:08:17.439Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=428 y=90 [Home Icon]"}
-{"timestamp":"2026-03-02T14:08:17.440Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=428 y=90"}
-{"timestamp":"2026-03-02T14:08:17.440Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:08:18.614Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
-{"timestamp":"2026-03-02T14:08:18.614Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 422ms..."}
-{"timestamp":"2026-03-02T14:08:20.593Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=322 y=96 [Home Icon]"}
-{"timestamp":"2026-03-02T14:08:21.649Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=323 y=97 [Home Icon]"}
-{"timestamp":"2026-03-02T14:08:21.650Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=323 y=97"}
-{"timestamp":"2026-03-02T14:08:21.650Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:08:22.337Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Navigate to /home Success."}
-{"timestamp":"2026-03-02T14:08:22.361Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Tab] \"For you\" is already selected."}
-{"timestamp":"2026-03-02T14:08:22.821Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] ✓ Successfully returned to home"}
-{"timestamp":"2026-03-02T14:08:24.091Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
-{"timestamp":"2026-03-02T14:08:31.433Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Fidget] Random right-click at (212, 84)"}
-{"timestamp":"2026-03-02T14:08:39.435Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1772460519434_mglg6"}
-{"timestamp":"2026-03-02T14:08:39.435Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-03-02T14:08:39.534Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Selected tweet candidate at index 5 (Y: 584)"}
-{"timestamp":"2026-03-02T14:08:39.546Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-03-02T14:08:40.603Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Target: Box=x:809,y:1033"}
-{"timestamp":"2026-03-02T14:08:40.604Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-03-02T14:08:40.604Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Tweet Permalink for 575ms..."}
-{"timestamp":"2026-03-02T14:08:43.048Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=749 y=892 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:08:44.782Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=748 y=891 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:08:44.783Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [ai-twitterActivity][GhostClick] Clicked x=748 y=891"}
-{"timestamp":"2026-03-02T14:08:44.784Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Success] Navigated to tweet page."}
-{"timestamp":"2026-03-02T14:08:44.784Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Tweet URL: https://x.com/shivlestat/status/2028284869978288622"}
-{"timestamp":"2026-03-02T14:08:44.785Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Tracking new tweet 2028284869978288622"}
-{"timestamp":"2026-03-02T14:08:44.785Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-03-02T14:08:45.703Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracted tweet text (57 chars)"}
-{"timestamp":"2026-03-02T14:08:45.704Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.551,\"quote\":0.068,\"like\":0.103,\"bookmark\":0.068,\"retweet\":0.137,\"follow\":0.068}"}
-{"timestamp":"2026-03-02T14:08:45.704Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Selected: quote (roll: 58.5%, prob: 6.9%)"}
-{"timestamp":"2026-03-02T14:08:45.704Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] Selected: QUOTE"}
-{"timestamp":"2026-03-02T14:08:45.705Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1772460519434_mglg6"}
-{"timestamp":"2026-03-02T14:08:45.705Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1772460519434_mglg6, timeout: 120000ms"}
-{"timestamp":"2026-03-02T14:08:45.705Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1772460519434_mglg6 (queue: 0, active: 0/1)"}
-{"timestamp":"2026-03-02T14:08:45.706Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1772460519434_mglg6"}
-{"timestamp":"2026-03-02T14:08:45.706Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Delegating quote to api.quoteWithAI/API()..."}
-{"timestamp":"2026-03-02T14:08:45.707Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"Starting high-level api.quoteWithAI()..."}
-{"timestamp":"2026-03-02T14:08:45.714Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"Context: Tweet by @shivlestat (\"from “mate” to “my mj” to now ...\")"}
-{"timestamp":"2026-03-02T14:08:45.714Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"Loading/Reading context (Elastic Scroll)..."}
-{"timestamp":"2026-03-02T14:08:45.715Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"[Elastic] Scrolling down to load infinite content..."}
-{"timestamp":"2026-03-02T14:08:49.619Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"[Elastic] Scrolling up while extracting context..."}
-{"timestamp":"2026-03-02T14:08:55.022Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"Extracted 23 replies for context"}
-{"timestamp":"2026-03-02T14:08:55.023Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuoteEngine] Initialized (probability: 1)"}
-{"timestamp":"2026-03-02T14:08:55.028Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote] Sentiment Analysis:"}
-{"timestamp":"2026-03-02T14:08:55.029Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)"}
-{"timestamp":"2026-03-02T14:08:55.029Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Valence: 0.00"}
-{"timestamp":"2026-03-02T14:08:55.030Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Arousal: 0.21"}
-{"timestamp":"2026-03-02T14:08:55.030Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Dominance: 0.50"}
-{"timestamp":"2026-03-02T14:08:55.030Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Sarcasm: 0.00"}
-{"timestamp":"2026-03-02T14:08:55.031Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Toxicity: 0.00"}
-{"timestamp":"2026-03-02T14:08:55.031Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Risk Level: low"}
-{"timestamp":"2026-03-02T14:08:55.031Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Engagement Style: neutral"}
-{"timestamp":"2026-03-02T14:08:55.032Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote]   - Conversation Type: general"}
-{"timestamp":"2026-03-02T14:08:55.042Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote] Reply selection strategy: longest (pos: 8, neg: 1, sarcastic: 0)"}
-{"timestamp":"2026-03-02T14:08:55.043Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote] Selected 23 replies for LLM context (filtered from 23)"}
-{"timestamp":"2026-03-02T14:08:55.046Z","level":"DEBUG","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuote] Detected language: English"}
-{"timestamp":"2026-03-02T14:08:55.046Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] ============================================"}
-{"timestamp":"2026-03-02T14:08:55.047Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] TWEET TO QUOTE:"}
-{"timestamp":"2026-03-02T14:08:55.047Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] Author: @shivlestat"}
-{"timestamp":"2026-03-02T14:08:55.047Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] URL: https://x.com/shivlestat/status/2028284869978288622"}
-{"timestamp":"2026-03-02T14:08:55.048Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] Tweet Text: \"from “mate” to “my mj” to now “my wife” we’ve come so far\""}
-{"timestamp":"2026-03-02T14:08:55.048Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] Tweet Length: 57 chars"}
-{"timestamp":"2026-03-02T14:08:55.048Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] Sentiment: neutral, Tone: general"}
-{"timestamp":"2026-03-02T14:08:55.049Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] ----------------------------------------------"}
-{"timestamp":"2026-03-02T14:08:55.049Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] REPLIES CONTEXT (23 selected from 23):"}
-{"timestamp":"2026-03-02T14:08:55.049Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [1] Reply1: \"@User: Bro just broke the internet with some unverified news, and I’m laughing at how e...\""}
-{"timestamp":"2026-03-02T14:08:55.050Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [2] Reply2: \"@User: From “mate” to “my wife” in one Law Roach interview  Zendaya & Tom Holland quiet...\""}
-{"timestamp":"2026-03-02T14:08:55.050Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [3] Reply3: \"@User: From \"I'll have a drink for you\" to stop drinking alcohol, produce a non-alcohol...\""}
-{"timestamp":"2026-03-02T14:08:55.051Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [4] Reply4: \"@User: The evolution is beautiful to see, but we all know the ultimate \"marriage\" is wh...\""}
-{"timestamp":"2026-03-02T14:08:55.051Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [5] Reply5: \"@User: From 'happy 21st birthday mate' to 'my wife' in under 10 years…\nTomdaya pulled o...\""}
-{"timestamp":"2026-03-02T14:08:55.052Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [6] Reply6: \"@User: congrats to them to think it was just the other day we were making fun of Z for ...\""}
-{"timestamp":"2026-03-02T14:08:55.052Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [7] Reply7: \"@User: The mobile app threat landscape is constantly changing, with sophisticated attac...\""}
-{"timestamp":"2026-03-02T14:08:55.052Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [8] Reply8: \"@User: From casually gaslighting the public about their relationship status to getting ...\""}
-{"timestamp":"2026-03-02T14:08:55.053Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [9] Reply9: \"@User: Moral :  Marry your best friend. \n\nI  pray they have a long lasting marriage wit...\""}
-{"timestamp":"2026-03-02T14:08:55.053Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [10] Reply10: \"@User: What a beautiful journey. Nothing beats marrying your best friend.”\""}
-{"timestamp":"2026-03-02T14:08:55.054Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [11] Reply11: \"@User: We can conclude marrying ur best friend is the best thing u can do\""}
-{"timestamp":"2026-03-02T14:08:55.054Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [12] Reply12: \"@User: @grok\n pick someone for me in the comments let’s do our version\""}
-{"timestamp":"2026-03-02T14:08:55.054Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [13] Reply13: \"@User: I knew it something is off when I first saw them in a movie…\""}
-{"timestamp":"2026-03-02T14:08:55.055Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [14] Reply14: \"@User: from “mate” to “my mj” to now “my wife” we’ve come so far\""}
-{"timestamp":"2026-03-02T14:08:55.055Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [15] Reply15: \"@User: In this first pic they look like nickelodeon kids lol\""}
-{"timestamp":"2026-03-02T14:08:55.056Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [16] Reply16: \"@User: Couples in movie to married in real life\""}
-{"timestamp":"2026-03-02T14:08:55.056Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [17] Reply17: \"@User: Love it for her. Marry your best friend!\""}
-{"timestamp":"2026-03-02T14:08:55.056Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [18] Reply18: \"@User: @grok\n what is this post referring to?\""}
-{"timestamp":"2026-03-02T14:08:55.056Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [19] Reply19: \"@User: It's a healthy progression\""}
-{"timestamp":"2026-03-02T14:08:55.057Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [20] Reply20: \"@User: Things we loved to see\""}
-{"timestamp":"2026-03-02T14:08:55.057Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [21] Reply21: \"@User: Beautiful couple\""}
-{"timestamp":"2026-03-02T14:08:55.057Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [22] Reply22: \"@User: Brick by Brick\""}
-{"timestamp":"2026-03-02T14:08:55.058Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] [23] Reply23: \"@User: Tom :\""}
-{"timestamp":"2026-03-02T14:08:55.058Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] ----------------------------------------------"}
-{"timestamp":"2026-03-02T14:08:55.059Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] FULL PROMPT SENT TO LLM:"}
-{"timestamp":"2026-03-02T14:08:55.059Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] Language: English"}
-{"timestamp":"2026-03-02T14:08:55.059Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] System Prompt Length: 2030 chars"}
-{"timestamp":"2026-03-02T14:08:55.060Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] User Prompt Length: 2574 chars"}
-{"timestamp":"2026-03-02T14:08:55.060Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] ============================================"}
-{"timestamp":"2026-03-02T14:08:55.060Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AI-Quote] Generating English quote tweet (attempt 1/1)..."}
-{"timestamp":"2026-03-02T14:08:55.061Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] Processing request: generate_reply"}
-{"timestamp":"2026-03-02T14:08:55.061Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] Request payload keys: systemPrompt, userPrompt, tweetText, authorUsername, engagementType, maxTokens, context"}
-{"timestamp":"2026-03-02T14:08:55.061Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] Queue status before enqueue: running=0, queued=0"}
-{"timestamp":"2026-03-02T14:08:55.062Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] Enqueueing request with timeout 60000ms"}
-{"timestamp":"2026-03-02T14:08:55.062Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Enqueued task req_1772460535062_cw22tykry, queue size: 1, running: 0"}
-{"timestamp":"2026-03-02T14:08:55.062Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Dequeueing task req_1772460535062_cw22tykry, queue now has 0 items"}
-{"timestamp":"2026-03-02T14:08:55.063Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460535062_cw22tykry starting (running: 1/3, queued: 0)"}
-{"timestamp":"2026-03-02T14:08:55.063Z","level":"INFO","module":"cloud-client.js","sessionId":null,"message":"[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization."}
-{"timestamp":"2026-03-02T14:08:55.064Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] Routing to local providers (vllm: false, ollama: true)"}
-{"timestamp":"2026-03-02T14:08:55.064Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] Using text-only mode (fallback: true)"}
-{"timestamp":"2026-03-02T14:08:55.064Z","level":"DEBUG","module":"local-client.js","sessionId":null,"message":"[Local] Falling back to Ollama..."}
-{"timestamp":"2026-03-02T14:08:55.069Z","level":"DEBUG","module":"ollama-manager.js","sessionId":null,"message":"[OllamaManager] Ollama is already running."}
-{"timestamp":"2026-03-02T14:08:55.070Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Initialized: http://localhost:11434 (Model: llama3.2:3b)"}
-{"timestamp":"2026-03-02T14:08:55.070Z","level":"INFO","module":"local-client.js","sessionId":null,"message":"[Local] Ollama client initialized"}
-{"timestamp":"2026-03-02T14:08:55.071Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] 🔔 REQUEST #1 START: TEXT request to llama3.2:3b"}
-{"timestamp":"2026-03-02T14:08:55.071Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Warming up llama3.2:3b..."}
-{"timestamp":"2026-03-02T14:08:55.267Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Model warmup complete"}
-{"timestamp":"2026-03-02T14:08:55.268Z","level":"DEBUG","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Using generate endpoint for llama3.2:3b..."}
-{"timestamp":"2026-03-02T14:08:55.891Z","level":"DEBUG","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Cleaned response: Who needs marriage proposals when you can just get engaged?"}
-{"timestamp":"2026-03-02T14:08:55.891Z","level":"SUCCESS","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Generate request completed in 817ms"}
-{"timestamp":"2026-03-02T14:08:55.892Z","level":"SUCCESS","module":"local-client.js","sessionId":null,"message":"[Local] Ollama response in 827ms"}
-{"timestamp":"2026-03-02T14:08:55.892Z","level":"SUCCESS","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] Text-only reply generated in 829ms"}
-{"timestamp":"2026-03-02T14:08:55.893Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460535062_cw22tykry completed successfully"}
-{"timestamp":"2026-03-02T14:08:55.893Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460535062_cw22tykry finished, running: 0"}
-{"timestamp":"2026-03-02T14:08:55.894Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] Request dequeued after 833ms"}
-{"timestamp":"2026-03-02T14:08:55.894Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[quote-engine] processRequest returning: success=true, contentLen=59"}
-{"timestamp":"2026-03-02T14:08:55.895Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] ----------------------------------------------"}
-{"timestamp":"2026-03-02T14:08:55.895Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] LLM RAW RESPONSE (attempt 1):"}
-{"timestamp":"2026-03-02T14:08:55.895Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] {\"success\":true,\"content\":\"Who needs marriage proposals when you can just get engaged?\",\"metadata\":{\"routedTo\":\"ollama\",\"duration\":829,\"visionEnabled\":false,\"replyCount\":23}}"}
-{"timestamp":"2026-03-02T14:08:55.896Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] ----------------------------------------------"}
-{"timestamp":"2026-03-02T14:08:55.896Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] Extracted content: \"Who needs marriage proposals when you can just get engaged?...\" (length: 59)"}
-{"timestamp":"2026-03-02T14:08:55.896Z","level":"DEBUG","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] Raw content length: 59 chars"}
-{"timestamp":"2026-03-02T14:08:55.897Z","level":"DEBUG","module":"ai-quote-engine.js","sessionId":null,"message":"[extractReplyFromResponse] Processing content: \"Who needs marriage proposals when you can just get engaged?...\" (length: 59)"}
-{"timestamp":"2026-03-02T14:08:55.898Z","level":"DEBUG","module":"ai-quote-engine.js","sessionId":null,"message":"[extractReplyFromResponse] ✓ Direct content used"}
-{"timestamp":"2026-03-02T14:08:55.899Z","level":"DEBUG","module":"ai-quote-engine.js","sessionId":null,"message":"[DEBUG] Extracted reply: \"Who needs marriage proposals when you can just get engaged?...\""}
-{"timestamp":"2026-03-02T14:08:55.900Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[AIQuoteEngine] ✨ Cleaned quote: \"Who needs marriage proposals when you can just get engaged?\" (59 chars)"}
-{"timestamp":"2026-03-02T14:08:55.901Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"AI Quote: \"Who needs marriage proposals when you can just get engaged?\""}
-{"timestamp":"2026-03-02T14:08:55.901Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"Focusing back on target tweet..."}
-{"timestamp":"2026-03-02T14:08:57.188Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"Executing quoteMethodB (Retweet Menu)..."}
-{"timestamp":"2026-03-02T14:08:57.189Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[QuoteMethodB] Starting retweet menu method"}
-{"timestamp":"2026-03-02T14:08:58.405Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[QuoteMethodB] Clicking retweet button using selector: [data-testid=\"retweet\"]"}
-{"timestamp":"2026-03-02T14:08:58.405Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[QuoteMethodB] Clicking retweet button (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:09:00.011Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=732 y=570"}
-{"timestamp":"2026-03-02T14:09:00.730Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=731 y=570"}
-{"timestamp":"2026-03-02T14:09:01.107Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[QuoteMethodB] Clicking Quote option (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:09:03.317Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=717 y=619"}
-{"timestamp":"2026-03-02T14:09:03.953Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=718 y=620"}
-{"timestamp":"2026-03-02T14:09:06.429Z","level":"INFO","module":"ai-quote-engine.js","sessionId":null,"message":"[QuoteMethodB] Typing quote (59 chars, ghost cursor)..."}
-{"timestamp":"2026-03-02T14:09:20.306Z","level":"INFO","module":"api/quote.js","sessionId":null,"message":"✅ api.quoteWithAI successful!"}
-{"timestamp":"2026-03-02T14:09:20.306Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] ✓ Engagement recorded: quotes (1/1)"}
-{"timestamp":"2026-03-02T14:09:20.307Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] ✅ quote executed: success"}
-{"timestamp":"2026-03-02T14:09:20.307Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1772460519434_mglg6"}
-{"timestamp":"2026-03-02T14:09:20.307Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1772460519434_mglg6 in 34602ms"}
-{"timestamp":"2026-03-02T14:09:20.308Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Action successful, skipping reading phase and returning home..."}
-{"timestamp":"2026-03-02T14:09:20.897Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"Returning to Home Feed..."}
-{"timestamp":"2026-03-02T14:09:20.905Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' (1st click for reload)..."}
-{"timestamp":"2026-03-02T14:09:20.906Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 446ms..."}
-{"timestamp":"2026-03-02T14:09:23.134Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=409 y=102 [Home Icon]"}
-{"timestamp":"2026-03-02T14:09:24.879Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=408 y=101 [Home Icon]"}
-{"timestamp":"2026-03-02T14:09:24.880Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=408 y=101"}
-{"timestamp":"2026-03-02T14:09:24.880Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:09:25.896Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
-{"timestamp":"2026-03-02T14:09:25.897Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 583ms..."}
-{"timestamp":"2026-03-02T14:09:27.949Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=348 y=81 [Home Icon]"}
-{"timestamp":"2026-03-02T14:09:28.994Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=349 y=82 [Home Icon]"}
-{"timestamp":"2026-03-02T14:09:28.995Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=349 y=82"}
-{"timestamp":"2026-03-02T14:09:28.995Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:09:29.648Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Navigate to /home Success."}
-{"timestamp":"2026-03-02T14:09:29.669Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Tab] \"For you\" is already selected."}
-{"timestamp":"2026-03-02T14:09:30.135Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] ✓ Successfully returned to home"}
-{"timestamp":"2026-03-02T14:09:31.629Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
-{"timestamp":"2026-03-02T14:09:31.630Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Branch] Idle (Staring at screen)"}
-{"timestamp":"2026-03-02T14:09:33.444Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] --- Loop 5  ---"}
-{"timestamp":"2026-03-02T14:09:38.428Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Idle] Reading Phase (116.5s)"}
-{"timestamp":"2026-03-02T14:09:45.304Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1772460585303_xz9t1"}
-{"timestamp":"2026-03-02T14:09:45.304Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-03-02T14:09:45.308Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Processing feed before selecting target (thinking)..."}
-{"timestamp":"2026-03-02T14:09:45.309Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about scout for 416ms..."}
-{"timestamp":"2026-03-02T14:09:46.516Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Selected tweet candidate at index 5 (Y: 391)"}
-{"timestamp":"2026-03-02T14:09:46.529Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-03-02T14:09:48.496Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Target: Box=x:1061,y:440"}
-{"timestamp":"2026-03-02T14:09:48.497Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-03-02T14:09:48.497Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Tweet Permalink for 338ms..."}
-{"timestamp":"2026-03-02T14:09:50.795Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=1071 y=449 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:09:52.110Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=1071 y=448 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:09:52.110Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [ai-twitterActivity][GhostClick] Clicked x=1071 y=448"}
-{"timestamp":"2026-03-02T14:10:07.122Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Fail] Ghost Click did not navigate. Retrying with NATIVE click..."}
-{"timestamp":"2026-03-02T14:10:07.417Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Success] Native Click navigated to tweet."}
-{"timestamp":"2026-03-02T14:10:07.418Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Tracking new tweet 2028385572654604337"}
-{"timestamp":"2026-03-02T14:10:07.419Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-03-02T14:10:08.486Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracted tweet text (119 chars)"}
-{"timestamp":"2026-03-02T14:10:08.487Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] quote at limit (quotes)"}
-{"timestamp":"2026-03-02T14:10:08.488Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"reply\":0.592,\"like\":0.111,\"bookmark\":0.074,\"retweet\":0.148,\"follow\":0.074}"}
-{"timestamp":"2026-03-02T14:10:08.488Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Selected: reply (roll: 37.5%, prob: 59.3%)"}
-{"timestamp":"2026-03-02T14:10:08.489Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] Selected: REPLY"}
-{"timestamp":"2026-03-02T14:10:08.489Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1772460585303_xz9t1"}
-{"timestamp":"2026-03-02T14:10:08.490Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1772460585303_xz9t1, timeout: 120000ms"}
-{"timestamp":"2026-03-02T14:10:08.490Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1772460585303_xz9t1 (queue: 0, active: 0/1)"}
-{"timestamp":"2026-03-02T14:10:08.491Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1772460585303_xz9t1"}
-{"timestamp":"2026-03-02T14:10:08.491Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Delegating reply to api.replyWithAI/API()..."}
-{"timestamp":"2026-03-02T14:10:08.492Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Starting high-level api.replyWithAI()..."}
-{"timestamp":"2026-03-02T14:10:08.499Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Context: Tweet by @ninnikinene (\"”胸鎖乳突筋を鍛えた海外のインフルエンサーの顔の違い”とのこ...\")"}
-{"timestamp":"2026-03-02T14:10:08.500Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Loading/Reading context (Elastic Scroll)..."}
-{"timestamp":"2026-03-02T14:10:08.500Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[Elastic] Scrolling down to load infinite content..."}
-{"timestamp":"2026-03-02T14:10:12.062Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[Elastic] Scrolling up while extracting context..."}
-{"timestamp":"2026-03-02T14:10:18.047Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Extracted 35 replies for context"}
-{"timestamp":"2026-03-02T14:10:18.048Z","level":"INFO","module":"ai-reply-engine.js","sessionId":null,"message":"[AIReplyEngine] Initialized (probability: 1)"}
-{"timestamp":"2026-03-02T14:10:18.048Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Processing request: generate_reply"}
-{"timestamp":"2026-03-02T14:10:18.049Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Request payload keys: systemPrompt, userPrompt, vision, context, temperature, maxTokens"}
-{"timestamp":"2026-03-02T14:10:18.049Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Queue status before enqueue: running=0, queued=0"}
-{"timestamp":"2026-03-02T14:10:18.049Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Enqueueing request with timeout 60000ms"}
-{"timestamp":"2026-03-02T14:10:18.050Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Enqueued task req_1772460618049_ad92ewbxb, queue size: 1, running: 0"}
-{"timestamp":"2026-03-02T14:10:18.050Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Dequeueing task req_1772460618049_ad92ewbxb, queue now has 0 items"}
-{"timestamp":"2026-03-02T14:10:18.050Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460618049_ad92ewbxb starting (running: 1/3, queued: 0)"}
-{"timestamp":"2026-03-02T14:10:18.051Z","level":"INFO","module":"cloud-client.js","sessionId":null,"message":"[Cloud] Both Cloud and FreeRouter are disabled, skipping initialization."}
-{"timestamp":"2026-03-02T14:10:18.051Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Routing to local providers (vllm: false, ollama: true)"}
-{"timestamp":"2026-03-02T14:10:18.052Z","level":"INFO","module":"agent-connector.js","sessionId":null,"message":"[null] Using text-only mode (fallback: true)"}
-{"timestamp":"2026-03-02T14:10:18.052Z","level":"DEBUG","module":"local-client.js","sessionId":null,"message":"[Local] Falling back to Ollama..."}
-{"timestamp":"2026-03-02T14:10:18.057Z","level":"DEBUG","module":"ollama-manager.js","sessionId":null,"message":"[OllamaManager] Ollama is already running."}
-{"timestamp":"2026-03-02T14:10:18.058Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Initialized: http://localhost:11434 (Model: llama3.2:3b)"}
-{"timestamp":"2026-03-02T14:10:18.058Z","level":"INFO","module":"local-client.js","sessionId":null,"message":"[Local] Ollama client initialized"}
-{"timestamp":"2026-03-02T14:10:18.059Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] 🔔 REQUEST #1 START: TEXT request to llama3.2:3b"}
-{"timestamp":"2026-03-02T14:10:18.059Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Warming up llama3.2:3b..."}
-{"timestamp":"2026-03-02T14:10:18.251Z","level":"INFO","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Model warmup complete"}
-{"timestamp":"2026-03-02T14:10:18.251Z","level":"DEBUG","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Using generate endpoint for llama3.2:3b..."}
-{"timestamp":"2026-03-02T14:10:19.237Z","level":"SUCCESS","module":"ollama-client.js","sessionId":null,"message":"[Ollama] Generate request completed in 1178ms"}
-{"timestamp":"2026-03-02T14:10:19.237Z","level":"SUCCESS","module":"local-client.js","sessionId":null,"message":"[Local] Ollama response in 1185ms"}
-{"timestamp":"2026-03-02T14:10:19.238Z","level":"SUCCESS","module":"agent-connector.js","sessionId":null,"message":"[null] Text-only reply generated in 1186ms"}
-{"timestamp":"2026-03-02T14:10:19.238Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460618049_ad92ewbxb completed successfully"}
-{"timestamp":"2026-03-02T14:10:19.239Z","level":"DEBUG","module":"request-queue.js","sessionId":null,"message":"[RequestQueue] Task req_1772460618049_ad92ewbxb finished, running: 0"}
-{"timestamp":"2026-03-02T14:10:19.239Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] Request dequeued after 1191ms"}
-{"timestamp":"2026-03-02T14:10:19.240Z","level":"DEBUG","module":"agent-connector.js","sessionId":null,"message":"[null] processRequest returning: success=true, contentLen=192"}
-{"timestamp":"2026-03-02T14:10:19.240Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"AI Reply: \"lmaooo this guy is all in bro literally saying that doing planks and pushups can give you a totally different face what's next telling us our outfits are changing when we put on matching socks\""}
-{"timestamp":"2026-03-02T14:10:19.241Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Focusing back on target tweet..."}
-{"timestamp":"2026-03-02T14:10:20.963Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"Executing replyMethodA (Reply Icon)..."}
-{"timestamp":"2026-03-02T14:10:20.964Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Clicking reply icon (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:10:26.243Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=589 y=424"}
-{"timestamp":"2026-03-02T14:10:27.358Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=594 y=419"}
-{"timestamp":"2026-03-02T14:10:29.609Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Typing reply (192 chars, ghost cursor)..."}
-{"timestamp":"2026-03-02T14:10:31.281Z","level":"WARN","module":"api/middleware.js","sessionId":null,"message":"[Recovery] Element obscured during type. Retrying with force..."}
-{"timestamp":"2026-03-02T14:11:08.127Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"[replyWithAI] Clicking post button (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:11:10.658Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=1168 y=819"}
-{"timestamp":"2026-03-02T14:11:11.353Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=1168 y=818"}
-{"timestamp":"2026-03-02T14:11:13.949Z","level":"INFO","module":"api/reply.js","sessionId":null,"message":"✅ api.replyWithAI successful!"}
-{"timestamp":"2026-03-02T14:11:13.949Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] ✓ Engagement recorded: replies (3/3)"}
-{"timestamp":"2026-03-02T14:11:13.950Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] ✅ reply executed: success"}
-{"timestamp":"2026-03-02T14:11:13.950Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1772460585303_xz9t1"}
-{"timestamp":"2026-03-02T14:11:13.951Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1772460585303_xz9t1 in 65460ms"}
-{"timestamp":"2026-03-02T14:11:13.951Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Action successful, skipping reading phase and returning home..."}
-{"timestamp":"2026-03-02T14:11:14.521Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"Returning to Home Feed..."}
-{"timestamp":"2026-03-02T14:11:14.527Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' (1st click for reload)..."}
-{"timestamp":"2026-03-02T14:11:14.528Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 315ms..."}
-{"timestamp":"2026-03-02T14:11:16.912Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=415 y=87 [Home Icon]"}
-{"timestamp":"2026-03-02T14:11:18.609Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=414 y=87 [Home Icon]"}
-{"timestamp":"2026-03-02T14:11:18.609Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=414 y=87"}
-{"timestamp":"2026-03-02T14:11:18.610Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:11:19.415Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
-{"timestamp":"2026-03-02T14:11:19.416Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 484ms..."}
-{"timestamp":"2026-03-02T14:11:21.353Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=402 y=79 [Home Icon]"}
-{"timestamp":"2026-03-02T14:11:22.488Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=402 y=79 [Home Icon]"}
-{"timestamp":"2026-03-02T14:11:22.488Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=402 y=79"}
-{"timestamp":"2026-03-02T14:11:22.489Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:11:23.007Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Navigate to /home Success."}
-{"timestamp":"2026-03-02T14:11:23.273Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Tab] \"For you\" is already selected."}
-{"timestamp":"2026-03-02T14:11:23.735Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] ✓ Successfully returned to home"}
-{"timestamp":"2026-03-02T14:11:25.045Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
-{"timestamp":"2026-03-02T14:11:36.673Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1772460696672_3aog6"}
-{"timestamp":"2026-03-02T14:11:36.673Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)"}
-{"timestamp":"2026-03-02T14:11:36.678Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Processing feed before selecting target (thinking)..."}
-{"timestamp":"2026-03-02T14:11:36.678Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about scout for 811ms..."}
-{"timestamp":"2026-03-02T14:11:37.743Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Selected tweet candidate at index 5 (Y: 243)"}
-{"timestamp":"2026-03-02T14:11:37.756Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Targeting tweet permalink link (Primary)."}
-{"timestamp":"2026-03-02T14:11:39.340Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Target: Box=x:885,y:440"}
-{"timestamp":"2026-03-02T14:11:39.340Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Attempt] Ghost Click on Permalink..."}
-{"timestamp":"2026-03-02T14:11:39.340Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Tweet Permalink for 436ms..."}
-{"timestamp":"2026-03-02T14:11:41.613Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=897 y=450 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:11:42.892Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=898 y=450 [Tweet Permalink]"}
-{"timestamp":"2026-03-02T14:11:42.892Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [ai-twitterActivity][GhostClick] Clicked x=898 y=450"}
-{"timestamp":"2026-03-02T14:11:42.894Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Success] Navigated to tweet page."}
-{"timestamp":"2026-03-02T14:11:42.894Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Debug] Tweet URL: https://x.com/Fatamorgan10753/status/2028215076642226420"}
-{"timestamp":"2026-03-02T14:11:42.895Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Tracking new tweet 2028215076642226420"}
-{"timestamp":"2026-03-02T14:11:42.895Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracting tweet content from full page..."}
-{"timestamp":"2026-03-02T14:11:43.978Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Extracted tweet text (0 chars)"}
-{"timestamp":"2026-03-02T14:11:43.979Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Tweet text too short, trying alternative selectors..."}
-{"timestamp":"2026-03-02T14:11:43.992Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI] Found better text (16 chars) with article [role=\"group\"]"}
-{"timestamp":"2026-03-02T14:11:43.995Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] reply at limit (replies)"}
-{"timestamp":"2026-03-02T14:11:43.996Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] quote at limit (quotes)"}
-{"timestamp":"2026-03-02T14:11:43.996Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Smart probabilities (total redistributed: 100.0%): {\"like\":0.272,\"bookmark\":0.181,\"retweet\":0.363,\"follow\":0.181}"}
-{"timestamp":"2026-03-02T14:11:43.997Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ActionRunner] Selected: retweet (roll: 74.4%, prob: 36.4%)"}
-{"timestamp":"2026-03-02T14:11:43.997Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] Selected: RETWEET"}
-{"timestamp":"2026-03-02T14:11:43.997Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1772460696672_3aog6"}
-{"timestamp":"2026-03-02T14:11:43.998Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] addDive called: dive_1772460696672_3aog6, timeout: 120000ms"}
-{"timestamp":"2026-03-02T14:11:43.998Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] Starting task: dive_1772460696672_3aog6 (queue: 0, active: 0/1)"}
-{"timestamp":"2026-03-02T14:11:43.998Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Starting dive function: dive_1772460696672_3aog6"}
-{"timestamp":"2026-03-02T14:11:43.999Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Delegating retweet to api.retweetWithAI/API()..."}
-{"timestamp":"2026-03-02T14:11:43.999Z","level":"INFO","module":"api/retweet.js","sessionId":null,"message":"Starting api.retweetWithAPI()..."}
-{"timestamp":"2026-03-02T14:11:44.579Z","level":"INFO","module":"api/retweet.js","sessionId":null,"message":"[retweetWithAPI] Clicking retweet button (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:11:47.800Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=725 y=426"}
-{"timestamp":"2026-03-02T14:11:48.673Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=726 y=426"}
-{"timestamp":"2026-03-02T14:11:50.157Z","level":"INFO","module":"api/retweet.js","sessionId":null,"message":"[retweetWithAPI] Clicking confirm retweet (ghost cursor)..."}
-{"timestamp":"2026-03-02T14:11:52.089Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor moving to x=712 y=408"}
-{"timestamp":"2026-03-02T14:11:52.644Z","level":"INFO","module":"ghostCursor.js","sessionId":null,"message":"ghostCursor clicked x=713 y=407"}
-{"timestamp":"2026-03-02T14:11:53.990Z","level":"INFO","module":"api/retweet.js","sessionId":null,"message":"✅ api.retweetWithAPI successful!"}
-{"timestamp":"2026-03-02T14:11:53.990Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] ✓ Engagement recorded: retweets (1/1)"}
-{"timestamp":"2026-03-02T14:11:53.991Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [AI-Engage] ✅ retweet executed: success"}
-{"timestamp":"2026-03-02T14:11:53.991Z","level":"DEBUG","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[DiveQueue] Dive function completed: dive_1772460696672_3aog6"}
-{"timestamp":"2026-03-02T14:11:53.992Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[AsyncQueue] ✓ Completed task: dive_1772460696672_3aog6 in 9993ms"}
-{"timestamp":"2026-03-02T14:11:53.992Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Dive] Action successful, skipping reading phase and returning home..."}
-{"timestamp":"2026-03-02T14:11:54.506Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"Returning to Home Feed..."}
-{"timestamp":"2026-03-02T14:11:54.514Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' (1st click for reload)..."}
-{"timestamp":"2026-03-02T14:11:54.515Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 447ms..."}
-{"timestamp":"2026-03-02T14:11:56.796Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=416 y=80 [Home Icon]"}
-{"timestamp":"2026-03-02T14:11:58.246Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=417 y=81 [Home Icon]"}
-{"timestamp":"2026-03-02T14:11:58.246Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=417 y=81"}
-{"timestamp":"2026-03-02T14:11:58.247Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:11:59.233Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Clicking 'Home Icon' again (2nd click to reload)..."}
-{"timestamp":"2026-03-02T14:11:59.233Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Thinking about Home Icon for 418ms..."}
-{"timestamp":"2026-03-02T14:12:01.680Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor moving to x=503 y=88 [Home Icon]"}
-{"timestamp":"2026-03-02T14:12:02.926Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"ghostCursor clicked x=502 y=88 [Home Icon]"}
-{"timestamp":"2026-03-02T14:12:02.927Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[ai-twitterActivity][GhostClick] Clicked x=502 y=88"}
-{"timestamp":"2026-03-02T14:12:02.927Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Interaction] [Home Icon] Success on attempt 1/3"}
-{"timestamp":"2026-03-02T14:12:03.942Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Navigation] Navigate to /home Success."}
-{"timestamp":"2026-03-02T14:12:03.965Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Tab] \"For you\" is already selected."}
-{"timestamp":"2026-03-02T14:12:04.421Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] ✓ Successfully returned to home"}
-{"timestamp":"2026-03-02T14:12:05.695Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)"}
-{"timestamp":"2026-03-02T14:12:05.696Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Branch] Idle (Staring at screen)"}
-{"timestamp":"2026-03-02T14:12:14.936Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] --- Loop 6  ---"}
-{"timestamp":"2026-03-02T14:12:19.545Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Idle] Reading Phase (147.0s)"}
-{"timestamp":"2026-03-02T14:12:40.451Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Fidget] Whitespace click at (371, 54)"}
-{"timestamp":"2026-03-02T14:12:56.173Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Session ending..."}
-{"timestamp":"2026-03-02T14:12:58.582Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Human] Session ended"}
-{"timestamp":"2026-03-02T14:12:58.583Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Logger] Flushing buffered logs..."}
-{"timestamp":"2026-03-02T14:12:58.583Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] [Logger] All buffered logs flushed"}
-{"timestamp":"2026-03-02T14:12:58.584Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] Session Complete."}
-{"timestamp":"2026-03-02T14:12:58.584Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Session completed successfully"}
-{"timestamp":"2026-03-02T14:12:58.584Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Session completed"}
-{"timestamp":"2026-03-02T14:12:58.585Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"[recordTwitterEngagement] Recorded 3 reply(s)"}
-{"timestamp":"2026-03-02T14:12:58.586Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"[recordTwitterEngagement] Recorded 1 quote(s)"}
-{"timestamp":"2026-03-02T14:12:58.588Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Final AI Stats: {\"attempts\":0,\"replies\":0,\"skips\":0,\"safetyBlocks\":0,\"errors\":0,\"successRate\":\"0%\",\"actions\":{\"reply\":{\"attempts\":3,\"successes\":3,\"failures\":0,\"skipped\":0,\"successRate\":\"100.0%\",\"engagementType\":\"replies\"},\"quote\":{\"attempts\":1,\"successes\":1,\"failures\":0,\"skipped\":0,\"successRate\":\"100.0%\",\"engagementType\":\"quotes\"},\"like\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"skipped\":0,\"successRate\":\"0.0%\",\"engagementType\":\"likes\"},\"bookmark\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"skipped\":0,\"successRate\":\"0.0%\",\"engagementType\":\"bookmarks\"},\"retweet\":{\"attempts\":1,\"successes\":1,\"failures\":0,\"skipped\":0,\"successRate\":\"100.0%\",\"engagementType\":\"retweets\"},\"follow\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"skipped\":0,\"successRate\":\"0.0%\",\"engagementType\":\"follows\"},\"goHome\":{\"attempts\":0,\"successes\":0,\"failures\":0,\"successRate\":\"0.0%\"}}}"}
-{"timestamp":"2026-03-02T14:12:58.588Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Task Finished. Duration: 7.3m"}
-{"timestamp":"2026-03-02T14:12:58.589Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[Agent:22-Balanced] Agent shutting down..."}
-{"timestamp":"2026-03-02T14:12:58.590Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Done in 440.59s"}
-{"timestamp":"2026-03-02T14:12:58.590Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'api-twitteractivity' recorded: SUCCESS, duration: 440669ms"}
-{"timestamp":"2026-03-02T14:12:58.595Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 0 in roxy:0001 (440739ms)"}
-{"timestamp":"2026-03-02T14:12:58.596Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] All tasks completed"}
-{"timestamp":"2026-03-02T14:12:58.596Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Group 3 completed successfully."}
-{"timestamp":"2026-03-02T14:12:58.596Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Shutting down..."}
-{"timestamp":"2026-03-02T14:12:58.597Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Queue empty, resolving immediately"}
-{"timestamp":"2026-03-02T14:12:58.597Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] SessionManager shutting down..."}
-{"timestamp":"2026-03-02T14:12:58.644Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] DiveQueue: queue=0, active=0, utilization=undefined%"}
-{"timestamp":"2026-03-02T14:12:58.645Z","level":"INFO","module":"api-twitterActivity.js [roxy:0001]","sessionId":null,"message":"[api-twitterActivity] Engagement Progress: [replies: 3/3 (100%)] [retweets: 1/1 (100%)] [quotes: 1/1 (100%)] [likes: 0/5 (0%)] [follows: 0/2 (0%)] [bookmarks: 0/2 (0%)]"}
-{"timestamp":"2026-03-02T14:12:58.696Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] SessionManager shutdown complete"}
-{"timestamp":"2026-03-02T14:12:58.697Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Socket.io closed"}
-{"timestamp":"2026-03-02T14:12:58.699Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server stopped"}
-{"timestamp":"2026-03-02T14:12:58.699Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutting down..."}
-{"timestamp":"2026-03-02T14:12:58.700Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Closing 1 browser connections"}
-{"timestamp":"2026-03-02T14:12:58.700Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Stopped health check monitoring"}
-{"timestamp":"2026-03-02T14:12:58.701Z","level":"DEBUG","module":"automator.js","sessionId":null,"message":"Closed connection to ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4"}
-{"timestamp":"2026-03-02T14:12:58.702Z","level":"INFO","module":"automator.js","sessionId":null,"message":"All connections closed"}
-{"timestamp":"2026-03-02T14:12:58.702Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutdown complete"}
-{"timestamp":"2026-03-02T14:12:58.706Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Generating JSON summary report..."}
-{"timestamp":"2026-03-02T14:12:58.709Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Successfully generated JSON report at C:\\My Script\\auto-ai\\run-summary.json"}
-{"timestamp":"2026-03-02T14:12:58.710Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Orchestrator shutdown complete"}
+{"timestamp":"2026-03-04T05:59:25.256Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772603965236-9kqgi3v1e] Session initialized with paceMultiplier=0.92"}
+{"timestamp":"2026-03-04T05:59:25.257Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772603965236-9kqgi3v1e] Fatigue scheduled for T+3.7m"}
+{"timestamp":"2026-03-04T05:59:25.298Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
+{"timestamp":"2026-03-04T05:59:25.298Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
+{"timestamp":"2026-03-04T05:59:25.300Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
+{"timestamp":"2026-03-04T05:59:25.301Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
+{"timestamp":"2026-03-04T05:59:25.301Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
+{"timestamp":"2026-03-04T05:59:25.337Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
+{"timestamp":"2026-03-04T05:59:25.351Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Database initialized at C:\\My Script\\auto-ai\\data\\sessions.db"}
+{"timestamp":"2026-03-04T05:59:25.352Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
+{"timestamp":"2026-03-04T05:59:25.355Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-03-04T05:59:25.355Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Configured: session=1800000ms, concurrency=50"}
+{"timestamp":"2026-03-04T05:59:25.360Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-03-04T05:59:25.519Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
+{"timestamp":"2026-03-04T05:59:25.521Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
+{"timestamp":"2026-03-04T05:59:25.523Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
+{"timestamp":"2026-03-04T05:59:25.524Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Dashboard started on port 3001"}
+{"timestamp":"2026-03-04T05:59:25.524Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Starting browser discovery..."}
+{"timestamp":"2026-03-04T05:59:25.524Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Configured: session=1800000ms, concurrency=50"}
+{"timestamp":"2026-03-04T05:59:25.525Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
+{"timestamp":"2026-03-04T05:59:25.526Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
+{"timestamp":"2026-03-04T05:59:25.530Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-04T05:59:25.530Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
+{"timestamp":"2026-03-04T05:59:25.530Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
+{"timestamp":"2026-03-04T05:59:25.531Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
+{"timestamp":"2026-03-04T05:59:25.532Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-04T05:59:25.533Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
+{"timestamp":"2026-03-04T05:59:25.533Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
+{"timestamp":"2026-03-04T05:59:25.533Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
+{"timestamp":"2026-03-04T05:59:25.534Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-04T05:59:25.535Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
+{"timestamp":"2026-03-04T05:59:25.535Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
+{"timestamp":"2026-03-04T05:59:25.537Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-04T05:59:25.537Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
+{"timestamp":"2026-03-04T05:59:25.537Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
+{"timestamp":"2026-03-04T05:59:25.539Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-04T05:59:25.539Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
+{"timestamp":"2026-03-04T05:59:25.539Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
+{"timestamp":"2026-03-04T05:59:25.540Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-04T05:59:25.541Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
+{"timestamp":"2026-03-04T05:59:25.541Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
+{"timestamp":"2026-03-04T05:59:25.543Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-04T05:59:25.543Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
+{"timestamp":"2026-03-04T05:59:25.544Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
+{"timestamp":"2026-03-04T05:59:25.544Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
+{"timestamp":"2026-03-04T05:59:25.546Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-04T05:59:25.546Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
+{"timestamp":"2026-03-04T05:59:25.546Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
+{"timestamp":"2026-03-04T05:59:25.546Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
+{"timestamp":"2026-03-04T05:59:25.547Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
+{"timestamp":"2026-03-04T05:59:25.547Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
+{"timestamp":"2026-03-04T05:59:25.548Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
+{"timestamp":"2026-03-04T05:59:25.550Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
+{"timestamp":"2026-03-04T05:59:25.551Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
+{"timestamp":"2026-03-04T05:59:25.567Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
+{"timestamp":"2026-03-04T05:59:25.567Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
+{"timestamp":"2026-03-04T05:59:25.568Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
+{"timestamp":"2026-03-04T05:59:25.568Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
+{"timestamp":"2026-03-04T05:59:25.586Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
+{"timestamp":"2026-03-04T05:59:25.587Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-03-04T05:59:25.587Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-03-04T05:59:25.594Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
+{"timestamp":"2026-03-04T05:59:25.594Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
+{"timestamp":"2026-03-04T05:59:25.595Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: 0001 (ws: ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8)"}
+{"timestamp":"2026-03-04T05:59:25.595Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
+{"timestamp":"2026-03-04T05:59:26.601Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-03-04T05:59:26.602Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
+{"timestamp":"2026-03-04T05:59:26.602Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-03-04T05:59:26.603Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
+{"timestamp":"2026-03-04T05:59:26.603Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
+{"timestamp":"2026-03-04T05:59:26.603Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
+{"timestamp":"2026-03-04T05:59:26.603Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
+{"timestamp":"2026-03-04T05:59:26.603Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
+{"timestamp":"2026-03-04T05:59:26.604Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
+{"timestamp":"2026-03-04T05:59:26.604Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
+{"timestamp":"2026-03-04T05:59:26.604Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
+{"timestamp":"2026-03-04T05:59:26.604Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
+{"timestamp":"2026-03-04T05:59:26.604Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
+{"timestamp":"2026-03-04T05:59:26.605Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"Found 1 browser endpoints. Connecting..."}
+{"timestamp":"2026-03-04T05:59:26.605Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
+{"timestamp":"2026-03-04T05:59:26.643Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
+{"timestamp":"2026-03-04T05:59:26.643Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Session added: roxy:0001 (50 workers)"}
+{"timestamp":"2026-03-04T05:59:26.645Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Connected: roxy:0001"}
+{"timestamp":"2026-03-04T05:59:26.645Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Discovery complete. Connected to 1 browsers."}
+{"timestamp":"2026-03-04T05:59:26.645Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
+{"timestamp":"2026-03-04T05:59:26.646Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to 1 browser(s). Ready for automation."}
+{"timestamp":"2026-03-04T05:59:26.646Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Initialized. Processing 2 sequential task groups."}
+{"timestamp":"2026-03-04T05:59:26.646Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 1/2: [\"cookiebot\",\"cookiebot\",\"cookiebot\"]"}
+{"timestamp":"2026-03-04T05:59:26.653Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'cookiebot' added (timeout: 600000ms). Queue: 1"}
+{"timestamp":"2026-03-04T05:59:26.654Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'cookiebot' added (timeout: 600000ms). Queue: 2"}
+{"timestamp":"2026-03-04T05:59:26.655Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'cookiebot' added (timeout: 600000ms). Queue: 3"}
+{"timestamp":"2026-03-04T05:59:26.656Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 1 added. Waiting for completion..."}
+{"timestamp":"2026-03-04T05:59:26.656Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
+{"timestamp":"2026-03-04T05:59:26.708Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Processing 3 tasks..."}
+{"timestamp":"2026-03-04T05:59:26.708Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001] Starting checklist: 3 tasks, 50 workers"}
+{"timestamp":"2026-03-04T05:59:28.840Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 0] Starting 'cookiebot'"}
+{"timestamp":"2026-03-04T05:59:28.845Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 2] Starting 'cookiebot'"}
+{"timestamp":"2026-03-04T05:59:28.849Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 1] Starting 'cookiebot'"}
+{"timestamp":"2026-03-04T05:59:28.857Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-04T05:59:28.857Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-04T05:59:28.857Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-03-04T05:59:28.858Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-03-04T05:59:28.860Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-04T05:59:28.860Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-04T05:59:28.860Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-03-04T05:59:28.860Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-03-04T05:59:28.862Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-04T05:59:28.862Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-04T05:59:28.863Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-03-04T05:59:28.863Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-03-04T05:59:29.356Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-04T05:59:30.981Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-04T05:59:30.982Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-04T05:59:30.983Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-04T05:59:30.986Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-04T05:59:30.987Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-04T05:59:30.988Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Ultra-Lite mode enabled: media, styles, and tracking scripts blocked"}
+{"timestamp":"2026-03-04T05:59:30.993Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"URL list size: 1288"}
+{"timestamp":"2026-03-04T05:59:30.993Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Starting random visits loop for 9 times."}
+{"timestamp":"2026-03-04T05:59:30.994Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(1 of 9) Navigating to: https://www.wellsfargo.com"}
+{"timestamp":"2026-03-04T05:59:30.995Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Ultra-Lite mode enabled: media, styles, and tracking scripts blocked"}
+{"timestamp":"2026-03-04T05:59:30.997Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Ultra-Lite mode enabled: media, styles, and tracking scripts blocked"}
+{"timestamp":"2026-03-04T05:59:30.999Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"URL list size: 1288"}
+{"timestamp":"2026-03-04T05:59:31.000Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Starting random visits loop for 9 times."}
+{"timestamp":"2026-03-04T05:59:31.000Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(1 of 9) Navigating to: https://www.hm.com"}
+{"timestamp":"2026-03-04T05:59:31.003Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"URL list size: 1288"}
+{"timestamp":"2026-03-04T05:59:31.003Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Starting random visits loop for 10 times."}
+{"timestamp":"2026-03-04T05:59:31.003Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(1 of 10) Navigating to: https://www.ulta.com"}
+{"timestamp":"2026-03-04T05:59:37.207Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.hm.com init scrolling"}
+{"timestamp":"2026-03-04T05:59:37.209Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
+{"timestamp":"2026-03-04T05:59:38.898Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.ulta.com init scrolling"}
+{"timestamp":"2026-03-04T05:59:40.744Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.wellsfargo.com init scrolling"}
+{"timestamp":"2026-03-04T06:00:06.001Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.hm.com scrolled for 28.8s"}
+{"timestamp":"2026-03-04T06:00:06.924Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.hm.com init simulate reading for 3.4 s"}
+{"timestamp":"2026-03-04T06:00:10.404Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(2 of 9) Navigating to: https://www.coinbase.com"}
+{"timestamp":"2026-03-04T06:00:15.353Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.wellsfargo.com scrolled for 34.6s"}
+{"timestamp":"2026-03-04T06:00:16.327Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.wellsfargo.com init simulate reading for 3.3 s"}
+{"timestamp":"2026-03-04T06:00:17.179Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.coinbase.com init scrolling"}
+{"timestamp":"2026-03-04T06:00:19.435Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(2 of 9) Navigating to: https://www.metacritic.com"}
+{"timestamp":"2026-03-04T06:00:25.047Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.ulta.com scrolled for 46.1s"}
+{"timestamp":"2026-03-04T06:00:26.131Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.ulta.com init simulate reading for 4.8 s"}
+{"timestamp":"2026-03-04T06:00:30.339Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(2 of 10) Navigating to: https://www.twitch.tv/ludwig"}
+{"timestamp":"2026-03-04T06:00:33.591Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.metacritic.com init scrolling"}
+{"timestamp":"2026-03-04T06:00:40.187Z","level":"WARN","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Network error visiting https://www.twitch.tv/ludwig: page.goto: net::ERR_FAILED at https://www.twitch.tv/ludwig"}
+{"timestamp":"2026-03-04T06:00:40.188Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(3 of 10) Navigating to: https://localbitcoins.com"}
+{"timestamp":"2026-03-04T06:00:48.265Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"localbitcoins.com init scrolling"}
+{"timestamp":"2026-03-04T06:00:58.301Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.coinbase.com scrolled for 41.1s"}
+{"timestamp":"2026-03-04T06:00:59.301Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.coinbase.com init simulate reading for 5.1 s"}
+{"timestamp":"2026-03-04T06:01:02.516Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.metacritic.com scrolled for 28.9s"}
+{"timestamp":"2026-03-04T06:01:03.410Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.metacritic.com init simulate reading for 5.2 s"}
+{"timestamp":"2026-03-04T06:01:04.559Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(3 of 9) Navigating to: https://www.apartmenttherapy.com"}
+{"timestamp":"2026-03-04T06:01:08.475Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(3 of 9) Navigating to: https://www.thredup.com"}
+{"timestamp":"2026-03-04T06:01:11.368Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.apartmenttherapy.com init scrolling"}
+{"timestamp":"2026-03-04T06:01:13.108Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"localbitcoins.com scrolled for 24.8s"}
+{"timestamp":"2026-03-04T06:01:14.083Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"localbitcoins.com init simulate reading for 3.2 s"}
+{"timestamp":"2026-03-04T06:01:16.411Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.thredup.com init scrolling"}
+{"timestamp":"2026-03-04T06:01:17.659Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(4 of 10) Navigating to: https://www.theverge.com"}
+{"timestamp":"2026-03-04T06:01:30.991Z","level":"WARN","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"[cookiebot] Task forced to stop: Cookiebot task exceeded 120000ms limit"}
+{"timestamp":"2026-03-04T06:01:30.992Z","level":"WARN","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"[cookiebot] Task forced to stop: Cookiebot task exceeded 120000ms limit"}
+{"timestamp":"2026-03-04T06:01:30.993Z","level":"WARN","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"[cookiebot] Task forced to stop: Cookiebot task exceeded 120000ms limit"}
+{"timestamp":"2026-03-04T06:01:31.009Z","level":"DEBUG","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Page closed successfully."}
+{"timestamp":"2026-03-04T06:01:31.009Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"[cookiebot] Total task duration: 120.02 seconds"}
+{"timestamp":"2026-03-04T06:01:31.010Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 122168ms"}
+{"timestamp":"2026-03-04T06:01:31.011Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 0 in roxy:0001 (124301ms)"}
+{"timestamp":"2026-03-04T06:01:31.374Z","level":"DEBUG","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Page closed successfully."}
+{"timestamp":"2026-03-04T06:01:31.374Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"[cookiebot] Total task duration: 120.38 seconds"}
+{"timestamp":"2026-03-04T06:01:31.374Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 122525ms"}
+{"timestamp":"2026-03-04T06:01:31.375Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 1 in roxy:0001 (124665ms)"}
+{"timestamp":"2026-03-04T06:01:31.702Z","level":"DEBUG","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Page closed successfully."}
+{"timestamp":"2026-03-04T06:01:31.703Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"[cookiebot] Total task duration: 120.71 seconds"}
+{"timestamp":"2026-03-04T06:01:31.703Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 122858ms"}
+{"timestamp":"2026-03-04T06:01:31.704Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 2 in roxy:0001 (124994ms)"}
+{"timestamp":"2026-03-04T06:01:31.704Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] All tasks completed"}
+{"timestamp":"2026-03-04T06:01:31.705Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Group 1 completed successfully."}
+{"timestamp":"2026-03-04T06:01:31.705Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Processing Task Group 2/2: [\"cookiebot\"]"}
+{"timestamp":"2026-03-04T06:01:31.711Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Task 'cookiebot' added (timeout: 600000ms). Queue: 1"}
+{"timestamp":"2026-03-04T06:01:31.711Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Tasks for Group 2 added. Waiting for completion..."}
+{"timestamp":"2026-03-04T06:01:31.713Z","level":"ERROR","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Failed to load https://www.apartmenttherapy.com:"}
+{"timestamp":"2026-03-04T06:01:31.771Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Processing 1 tasks..."}
+{"timestamp":"2026-03-04T06:01:31.771Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001] Starting checklist: 1 tasks, 50 workers"}
+{"timestamp":"2026-03-04T06:01:33.042Z","level":"ERROR","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Failed to load https://www.thredup.com:"}
+{"timestamp":"2026-03-04T06:01:33.813Z","level":"DEBUG","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Initialized: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-04T06:01:33.814Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_coverage_dummy"}
+{"timestamp":"2026-03-04T06:01:33.814Z","level":"WARN","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Init failed for \"__builtin_fail\":"}
+{"timestamp":"2026-03-04T06:01:33.815Z","level":"INFO","module":"api/plugins/manager.js","sessionId":null,"message":"[Plugin] Registered: __builtin_fail"}
+{"timestamp":"2026-03-04T06:01:33.819Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2][roxy:0001][Worker 0] Starting 'cookiebot'"}
+{"timestamp":"2026-03-04T06:01:33.825Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-04T06:01:33.827Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-04T06:01:33.828Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Injecting consistency and entropy scripts..."}
+{"timestamp":"2026-03-04T06:01:33.830Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[HumanizationPatch] Scripts injected."}
+{"timestamp":"2026-03-04T06:01:33.832Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Ultra-Lite mode enabled: media, styles, and tracking scripts blocked"}
+{"timestamp":"2026-03-04T06:01:33.834Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"URL list size: 1288"}
+{"timestamp":"2026-03-04T06:01:33.835Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Starting random visits loop for 9 times."}
+{"timestamp":"2026-03-04T06:01:33.835Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(1 of 9) Navigating to: https://www.usps.com"}
+{"timestamp":"2026-03-04T06:01:47.411Z","level":"WARN","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Page https://www.theverge.com is unresponsive after load. Skipping."}
+{"timestamp":"2026-03-04T06:01:49.611Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.usps.com init scrolling"}
+{"timestamp":"2026-03-04T06:02:19.703Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.usps.com scrolled for 30.1s"}
+{"timestamp":"2026-03-04T06:02:20.612Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.usps.com init simulate reading for 5.1 s"}
+{"timestamp":"2026-03-04T06:02:25.103Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(2 of 9) Navigating to: https://www.experian.com"}
+{"timestamp":"2026-03-04T06:02:31.769Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.experian.com init scrolling"}
+{"timestamp":"2026-03-04T06:02:44.559Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.experian.com scrolled for 12.8s"}
+{"timestamp":"2026-03-04T06:02:45.620Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.experian.com init simulate reading for 3.6 s"}
+{"timestamp":"2026-03-04T06:02:49.371Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(3 of 9) Navigating to: https://www.youtube.com/@zeemusiccompany"}
+{"timestamp":"2026-03-04T06:02:56.132Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.youtube.com init scrolling"}
+{"timestamp":"2026-03-04T06:03:10.030Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.youtube.com scrolled for 13.9s"}
+{"timestamp":"2026-03-04T06:03:11.091Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.youtube.com init simulate reading for 5.2 s"}
+{"timestamp":"2026-03-04T06:03:16.041Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"(4 of 9) Navigating to: https://www.boeing.com"}
+{"timestamp":"2026-03-04T06:03:22.149Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"www.boeing.com init scrolling"}
+{"timestamp":"2026-03-04T06:03:33.834Z","level":"WARN","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"[cookiebot] Task forced to stop: Cookiebot task exceeded 120000ms limit"}
+{"timestamp":"2026-03-04T06:03:33.857Z","level":"DEBUG","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"Page closed successfully."}
+{"timestamp":"2026-03-04T06:03:33.857Z","level":"INFO","module":"[cookiebot][roxy:0001]","sessionId":null,"message":"[cookiebot] Total task duration: 120.02 seconds"}
+{"timestamp":"2026-03-04T06:03:33.858Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 120038ms"}
+{"timestamp":"2026-03-04T06:03:33.859Z","level":"DEBUG","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] Released worker 0 in roxy:0001 (122087ms)"}
+{"timestamp":"2026-03-04T06:03:33.859Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] All tasks completed"}
+{"timestamp":"2026-03-04T06:03:33.859Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Group 2 completed successfully."}
+{"timestamp":"2026-03-04T06:03:33.860Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Shutting down..."}
+{"timestamp":"2026-03-04T06:03:33.860Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Queue empty, resolving immediately"}
+{"timestamp":"2026-03-04T06:03:33.861Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] SessionManager shutting down..."}
+{"timestamp":"2026-03-04T06:03:33.877Z","level":"INFO","module":"sessionManager-v2.js","sessionId":null,"message":"[V2] SessionManager shutdown complete"}
+{"timestamp":"2026-03-04T06:03:33.878Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Socket.io closed"}
+{"timestamp":"2026-03-04T06:03:33.880Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server stopped"}
+{"timestamp":"2026-03-04T06:03:33.880Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutting down..."}
+{"timestamp":"2026-03-04T06:03:33.881Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Closing 1 browser connections"}
+{"timestamp":"2026-03-04T06:03:33.881Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Stopped health check monitoring"}
+{"timestamp":"2026-03-04T06:03:33.882Z","level":"DEBUG","module":"automator.js","sessionId":null,"message":"Closed connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
+{"timestamp":"2026-03-04T06:03:33.883Z","level":"INFO","module":"automator.js","sessionId":null,"message":"All connections closed"}
+{"timestamp":"2026-03-04T06:03:33.883Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutdown complete"}
+{"timestamp":"2026-03-04T06:03:33.885Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Generating JSON summary report..."}
+{"timestamp":"2026-03-04T06:03:33.888Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Successfully generated JSON report at C:\\My Script\\auto-ai\\run-summary.json"}
+{"timestamp":"2026-03-04T06:03:33.888Z","level":"INFO","module":"orchestrator-v2.js","sessionId":null,"message":"[V2] Orchestrator shutdown complete"}
