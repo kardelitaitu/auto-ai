@@ -7,7 +7,8 @@
 
 import { createLogger } from './logger.js';
 import { getEvents } from './context.js';
-import { isErrorCode } from './errors.js';
+import { isErrorCode, ActionError } from './errors.js';
+import { getStateSection, updateStateSection } from './context-state.js';
 
 const logger = createLogger('api/middleware.js');
 
@@ -155,6 +156,11 @@ export function retryMiddleware(options = {}) {
   return async (context, next) => {
     let lastError;
 
+    const budget = getStateSection('retryBudget');
+    if (budget.used >= budget.max) {
+      throw new ActionError('Session retry budget exhausted', 'RETRY_BUDGET_EXCEEDED');
+    }
+
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         return await next();
@@ -171,6 +177,7 @@ export function retryMiddleware(options = {}) {
       }
     }
 
+    updateStateSection('retryBudget', { used: budget.used + 1 });
     throw lastError;
   };
 }
@@ -253,29 +260,29 @@ export function metricsMiddleware(options = {}) {
  * Rate limiting middleware.
  * @param {object} [options]
  * @param {number} [options.maxPerSecond=10] - Max actions per second
+ * @param {object} [options.state] - Optional shared state object { actionCount, windowStart }
  * @returns {Function}
  */
 export function rateLimitMiddleware(options = {}) {
-  const { maxPerSecond = 10 } = options;
+  const { maxPerSecond = 10, state = null } = options;
 
-  let actionCount = 0;
-  let windowStart = Date.now();
+  const _state = state || { actionCount: 0, windowStart: Date.now() };
 
   return async (context, next) => {
     const now = Date.now();
 
-    if (now - windowStart >= 1000) {
-      actionCount = 0;
-      windowStart = now;
+    if (now - _state.windowStart >= 1000) {
+      _state.actionCount = 0;
+      _state.windowStart = now;
     }
 
-    if (actionCount >= maxPerSecond) {
-      const waitTime = 1000 - (now - windowStart);
+    if (_state.actionCount >= maxPerSecond) {
+      const waitTime = 1000 - (now - _state.windowStart);
       logger.debug(`[RateLimit] Throttling, waiting ${waitTime}ms`);
       await new Promise(r => setTimeout(r, waitTime));
     }
 
-    actionCount++;
+    _state.actionCount++;
     return await next();
   };
 }

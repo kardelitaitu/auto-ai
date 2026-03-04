@@ -38,6 +38,10 @@ const DEFAULT_STATE = {
   audio: {
     mute: false,
   },
+  retryBudget: {
+    used: 0,
+    max: 50,
+  },
 };
 
 const MAX_ATTENTION_MEMORY = 3;

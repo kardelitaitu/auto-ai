@@ -18,6 +18,7 @@ import { mathUtils } from '../utils/math.js';
 import { createLogger } from '../core/logger.js';
 import { getSettings } from '../utils/config.js';
 import { getLocator } from '../utils/locator.js';
+import { ValidationError } from '../core/errors.js';
 
 const logger = createLogger('api/scroll.js');
 
@@ -42,6 +43,9 @@ async function _getScrollMultiplier() {
  * @returns {Promise<void>}
  */
 export async function read(target, options = {}) {
+    if (options.pauses !== undefined && (typeof options.pauses !== 'number' || Number.isNaN(options.pauses) || options.pauses < 0)) {
+        throw new ValidationError(`read() options.pauses must be a non-negative number, got: ${options.pauses}`);
+    }
     const page = getPage();
     const persona = getPersona();
 
@@ -280,8 +284,12 @@ export async function focus(selector, options = {}) {
  * Blind vertical scroll by raw pixels.
  * @param {number} distance - Pixels to scroll (positive = down, negative = up)
  * @returns {Promise<void>}
+ * @throws {ValidationError} If distance is not a finite number
  */
 export async function scroll(distance) {
+    if (typeof distance !== 'number' || !Number.isFinite(distance)) {
+        throw new ValidationError(`scroll() requires a finite number, got: ${distance}`);
+    }
     const page = getPage();
     const persona = getPersona();
     const scrollSpeed = persona.scrollSpeed || 1.0;

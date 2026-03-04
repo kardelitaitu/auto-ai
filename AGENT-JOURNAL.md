@@ -1,5 +1,14 @@
 # AGENT JOURNAL - 04 March 2026
 
+04-03-2026--16:00
+Phase 2 hardening completed:
+- Added validation guards to wait(), scroll(), delay(), think() in api/interactions/wait.js, scroll.js, behaviors/timing.js
+- Fixed rateLimitMiddleware with optional shared state parameter in api/core/middleware.js
+- Added api.version from package.json in api/index.js
+- Implemented retry budget in context state (api/core/context-state.js) and middleware
+- Created api/index.d.ts type definitions for IDE autocomplete
+- Replaced generic Error with ElementTimeoutError in waitFor()
+
 04-03-2026--14:30
 Phase 1 cleanup completed:
 - Consolidated CircuitBreaker: utils/ now re-exports from core/

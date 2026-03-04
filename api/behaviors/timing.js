@@ -10,6 +10,7 @@ import { mathUtils } from '../utils/math.js';
 import { getPersona } from './persona.js';
 import { getPage } from '../core/context.js';
 import { createLogger } from '../core/logger.js';
+import { ValidationError } from '../core/errors.js';
 
 const _logger = createLogger('api/timing.js');
 
@@ -19,8 +20,12 @@ const _logger = createLogger('api/timing.js');
  * duration scales with page performance (impatience).
  * @param {number} [ms] - Optional center duration in ms
  * @returns {Promise<void>}
+ * @throws {ValidationError} If ms is provided but not a positive number
  */
 export async function think(ms) {
+    if (ms !== undefined && (typeof ms !== 'number' || Number.isNaN(ms) || ms <= 0)) {
+        throw new ValidationError(`think() requires a positive number, got: ${ms}`);
+    }
     const page = getPage();
     const persona = getPersona();
     const base = ms || mathUtils.randomInRange(1000, 5000);
@@ -67,8 +72,12 @@ export async function think(ms) {
  * Humanized delay with Gaussian jitter.
  * @param {number} ms - Base delay in milliseconds
  * @returns {Promise<void>}
+ * @throws {ValidationError} If ms is not a positive number
  */
 export async function delay(ms) {
+    if (typeof ms !== 'number' || Number.isNaN(ms) || ms <= 0) {
+        throw new ValidationError(`delay() requires a positive number, got: ${ms}`);
+    }
     const jittered = humanTiming.humanDelay(ms);
     await new Promise(r => setTimeout(r, jittered));
 }
