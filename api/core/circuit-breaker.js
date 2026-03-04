@@ -21,6 +21,12 @@ class CircuitOpenError extends Error {
     }
 }
 
+export { CircuitOpenError };
+
+function getKey(model, apiKey) {
+    return `${model}::${apiKey || 'default'}`;
+}
+
 /**
  * @class CircuitBreaker
  * @description Prevents cascading failures by monitoring model health and tripping when failure threshold reached
@@ -38,6 +44,125 @@ class CircuitBreaker {
         // Then async load to override with config values
         this._configLoaded = false;
         this._loadConfig(options);
+    }
+
+    check(model, apiKey = null) {
+        const key = getKey(model, apiKey);
+        const breaker = this.getBreaker(key);
+
+        const now = Date.now();
+
+        switch (breaker.state) {
+            case STATE_OPEN: {
+                if (breaker.nextAttempt && now >= breaker.nextAttempt) {
+                    breaker.state = STATE_HALF_OPEN;
+                    logger.info(`[${key}] Circuit breaker transitioning to half-open`);
+                    return { allowed: true, state: 'half-open' };
+                }
+                const retryAfter = breaker.nextAttempt ? breaker.nextAttempt - now : this.halfOpenTime;
+                return { allowed: false, state: 'open', retryAfter };
+            }
+            case STATE_HALF_OPEN:
+                return { allowed: true, state: 'half-open' };
+            case STATE_CLOSED:
+            default:
+                return { allowed: true, state: 'closed' };
+        }
+    }
+
+    recordSuccess(model, apiKey = null) {
+        const key = getKey(model, apiKey);
+        const breaker = this.getBreaker(key);
+
+        if (breaker.state === STATE_HALF_OPEN) {
+            breaker.successes++;
+
+            if (breaker.successes >= this.successThreshold) {
+                breaker.state = STATE_CLOSED;
+                breaker.failures = 0;
+                breaker.successes = 0;
+                logger.info(`[${key}] Circuit breaker closed (recovered)`);
+            }
+        }
+    }
+
+    recordFailure(model, apiKey = null) {
+        const key = getKey(model, apiKey);
+        const breaker = this.getBreaker(key);
+
+        breaker.failures++;
+        breaker.lastFailure = Date.now();
+
+        const failureRate = this._calculateFailureRate(breaker);
+
+        if (breaker.state === STATE_HALF_OPEN) {
+            breaker.state = STATE_OPEN;
+            breaker.nextAttempt = Date.now() + this.halfOpenTime;
+            breaker.successes = 0;
+            logger.warn(`[${key}] Circuit breaker reopened after failure in half-open state`);
+        } else if (breaker.state === STATE_CLOSED && failureRate >= this.failureThreshold) {
+            breaker.state = STATE_OPEN;
+            breaker.nextAttempt = Date.now() + this.halfOpenTime;
+            logger.warn(`[${key}] Circuit breaker opened after ${breaker.failures} failures (rate: ${failureRate}%)`);
+        }
+    }
+
+    getState(model, apiKey = null) {
+        const key = getKey(model, apiKey);
+        const breaker = this.breakers.get(key);
+        if (!breaker) return null;
+        return {
+            state: breaker.state,
+            failures: breaker.failures,
+            successes: breaker.successes,
+            lastFailure: breaker.lastFailure,
+            lastSuccess: breaker.lastSuccess
+        };
+    }
+
+    getAllStates() {
+        const states = {};
+        for (const [key, breaker] of this.breakers) {
+            states[key] = {
+                state: breaker.state,
+                failures: breaker.failures,
+                successes: breaker.successes,
+                lastFailure: breaker.lastFailure
+            };
+        }
+        return states;
+    }
+
+    reset(model = null, apiKey = null) {
+        if (model) {
+            const key = getKey(model, apiKey);
+            if (this.breakers.has(key)) {
+                this.breakers.set(key, this._createBreaker());
+                logger.info(`[${key}] Circuit breaker reset`);
+            }
+        } else {
+            this.breakers.clear();
+            logger.info('All circuit breakers reset');
+        }
+    }
+
+    getStats() {
+        let open = 0;
+        let halfOpen = 0;
+        let closed = 0;
+
+        for (const breaker of this.breakers.values()) {
+            if (breaker.state === STATE_OPEN) open++;
+            else if (breaker.state === STATE_HALF_OPEN) halfOpen++;
+            else closed++;
+        }
+
+        return {
+            total: this.breakers.size,
+            open,
+            halfOpen,
+            closed
+        };
     }
 
     async _loadConfig(_options = {}) {
@@ -242,17 +367,6 @@ class CircuitBreaker {
         }
 
         return status;
-    }
-
-    /**
-     * Reset a specific breaker
-     * @param {string} modelId - Model identifier
-     */
-    reset(modelId) {
-        if (this.breakers.has(modelId)) {
-            this.breakers.set(modelId, this._createBreaker());
-            logger.info(`[${modelId}] Circuit breaker reset`);
-        }
     }
 
     /**

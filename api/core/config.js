@@ -10,6 +10,31 @@ import { createLogger } from './logger.js';
 
 const logger = createLogger('api/core/config.js');
 
+const DEFAULTS = {
+    agent: {
+        llm: {
+            baseUrl: 'http://localhost:11434',
+            model: 'qwen2.5:7b',
+            temperature: 0.7,
+            maxTokens: 2048,
+            contextLength: 4096,
+            timeoutMs: 120000,
+            useVision: true,
+            serverType: 'ollama',
+            bypassHealthCheck: false,
+        },
+        runner: {
+            maxSteps: 20,
+            stepDelay: 2000,
+            adaptiveDelay: true,
+        }
+    },
+    timeouts: {
+        navigation: 30000,
+        element: 10000,
+    }
+};
+
 class ConfigurationManager {
     constructor() {
         this._config = null;
@@ -29,34 +54,23 @@ class ConfigurationManager {
             this._config = {
                 agent: {
                     llm: {
-                        baseUrl: 'http://localhost:11434',
-                        model: 'qwen2.5:7b',
-                        temperature: 0.7,
-                        maxTokens: 2048,
-                        contextLength: 4096,
-                        timeoutMs: 120000,
-                        useVision: true,
-                        serverType: 'ollama',
-                        bypassHealthCheck: false,
+                        ...DEFAULTS.agent.llm,
                         ...(raw.agent?.llm || {})
                     },
                     runner: {
-                        maxSteps: 20,
-                        stepDelay: 2000,
-                        adaptiveDelay: true, // Use network idle instead of static delay
+                        ...DEFAULTS.agent.runner,
                         ...(raw.agent?.runner || {})
                     }
                 },
                 timeouts: {
-                    navigation: 30000,
-                    element: 10000,
+                    ...DEFAULTS.timeouts,
                     ...raw.timeouts
                 },
                 ...raw
             };
         } catch (_e) {
             logger.warn('Failed to load raw settings, using defaults');
-            this._config = this._getDefaults();
+            this._config = DEFAULTS;
         }
 
         return this._config;
@@ -111,34 +125,11 @@ class ConfigurationManager {
      * Get full materialized config
      */
     getFullConfig() {
-        return this._config || this._getDefaults();
+        return this._config || DEFAULTS;
     }
 
     _getDefaults() {
-        return {
-            agent: {
-                llm: {
-                    baseUrl: 'http://localhost:11434',
-                    model: 'qwen2.5:7b',
-                    temperature: 0.7,
-                    maxTokens: 2048,
-                    contextLength: 4096,
-                    timeoutMs: 120000,
-                    useVision: true,
-                    serverType: 'ollama',
-                    bypassHealthCheck: false
-                },
-                runner: {
-                    maxSteps: 20,
-                    stepDelay: 2000,
-                    adaptiveDelay: true
-                }
-            },
-            timeouts: {
-                navigation: 30000,
-                element: 10000
-            }
-        };
+        return DEFAULTS;
     }
 }
 

@@ -8,7 +8,7 @@
 import 'dotenv/config';
 import { createLogger } from './api/utils/logger.js';
 import { showBanner } from './api/utils/banner.js';
-import OrchestratorV2 from './api/core/orchestrator-v2.js';
+import Orchestrator from './api/core/orchestrator.js';
 import { ensureDockerLLM } from './api/utils/dockerLLM.js';
 import { getSettings } from './api/utils/configLoader.js';
 
@@ -54,7 +54,7 @@ const MAX_PROCESS_TIMEOUT = 1800000; // 30 min max for entire process
       logger.warn("[V2] Docker LLM not ready, will fallback to cloud");
     }
 
-    orchestrator = new OrchestratorV2({
+    orchestrator = new Orchestrator({
       taskTimeoutMs,
       groupTimeoutMs,
       workerWaitTimeoutMs: 30000

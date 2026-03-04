@@ -7,7 +7,7 @@
 import { createLogger } from '../utils/logger.js';
 import { mathUtils } from '../utils/math.js';
 import { entropy as _entropy } from '../utils/entropyController.js';
-import { GhostCursor } from './ghostCursor.js';
+import { GhostCursor } from '../utils/ghostCursor.js';
 import { api } from '../index.js';
 
 const logger = createLogger('human-interaction.js');

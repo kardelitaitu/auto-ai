@@ -32,13 +32,17 @@ export async function followWithAPI(options = {}) {
 
     try {
         // Already following guard
+        logger.info(`[followWithAPI] Checking if already following @${username}...`);
         if (await visible(unfollowSel)) {
             logger.info(`Already following @${username}.`);
             return { success: true, reason: 'already_following', method: 'followAPI' };
         }
 
+        logger.info(`[followWithAPI] Finding follow button...`);
         const followBtn = page.locator(followSel).first();
+        logger.info(`[followWithAPI] Getting button text...`);
         const btnText = (await followBtn.textContent().catch(() => '')).toLowerCase();
+        logger.info(`[followWithAPI] Button text: "${btnText}"`);
         if (btnText.includes('following') || btnText.includes('pending')) {
             logger.info(`Already following @${username} (state: ${btnText}).`);
             return { success: true, reason: 'already_following', method: 'followAPI' };

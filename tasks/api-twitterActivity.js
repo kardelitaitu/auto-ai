@@ -231,6 +231,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                         like: { probability: probs.like, enabled: rawActions.like?.enabled !== false },
                                         bookmark: { probability: probs.bookmark, enabled: rawActions.bookmark?.enabled !== false },
                                         retweet: { probability: probs.retweet, enabled: rawActions.retweet?.enabled !== false },
+                                        follow: { probability: probs.follow, enabled: rawActions.follow?.enabled !== false },
                                     }
                                 }
                             });

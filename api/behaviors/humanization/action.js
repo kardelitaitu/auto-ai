@@ -13,7 +13,7 @@ import { api } from '../../index.js';
 
 import { mathUtils } from '../../utils/math.js';
 import { scrollRandom } from '../scroll-helper.js';
-import { GhostCursor } from '../ghostCursor.js';
+import { GhostCursor } from '../../utils/ghostCursor.js';
 
 export class ActionPredictor {
     constructor(logger) {

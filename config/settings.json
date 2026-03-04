@@ -9,12 +9,12 @@
       "maxReplies": 3,
       "maxRetweets": 1,
       "maxQuotes": 1,
-      "maxLikes": 5,
-      "maxFollows": 2,
+      "maxLikes": 4,
+      "maxFollows": 1,
       "maxBookmarks": 2
     },
     "reply": {
-      "probability": 0.8,
+      "probability": 0.6,
       "minChars": 10,
       "maxChars": 200,
       "emojiChance": 0.3,
@@ -82,7 +82,7 @@
         "enabled": true
       },
       "follow": {
-        "probability": 0.5,
+        "probability": 0.2,
         "enabled": true
       }
     },

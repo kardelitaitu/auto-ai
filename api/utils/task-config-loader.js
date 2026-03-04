@@ -146,7 +146,7 @@ export class TaskConfigLoader {
           payload.taskTimeoutMs ??
           (activityConfig.defaultMinDuration +
             activityConfig.defaultMaxDuration) *
-            1000,
+          1000,
       },
 
       // Engagement configuration
@@ -158,6 +158,7 @@ export class TaskConfigLoader {
           like: settings.twitter?.actions?.like?.probability ?? 0.15,
           bookmark: settings.twitter?.actions?.bookmark?.probability ?? 0.05,
           retweet: settings.twitter?.actions?.retweet?.probability ?? 0.2,
+          follow: settings.twitter?.actions?.follow?.probability ?? 0.1,
         },
       },
 
@@ -285,9 +286,9 @@ export class TaskConfigLoader {
         hitRate:
           this.loadCount > 0
             ? (
-                (this.hitCount / (this.hitCount + this.loadCount)) *
-                100
-              ).toFixed(2) + "%"
+              (this.hitCount / (this.hitCount + this.loadCount)) *
+              100
+            ).toFixed(2) + "%"
             : "0%",
       },
       cacheSize: stats.size,

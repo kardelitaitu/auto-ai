@@ -1,5 +1,22 @@
 # AGENT JOURNAL - 04 March 2026
 
+04-03-2026--14:30
+Phase 1 cleanup completed:
+- Consolidated CircuitBreaker: utils/ now re-exports from core/
+- Consolidated GhostCursor: deleted behaviors/ghostCursor.js, added twitterClick() to utils/
+- Created api/constants/engagement.js with TWITTER_CLICK_PROFILES
+- Consolidated math: utils/mathUtils.js now re-exports from utils/math.js
+- Merged V2 modules: orchestrator.js and sessionManager.js now contain V2 logic (removed -v2 suffix)
+- Deleted decision.js.backup
+- Extracted DEFAULTS constant in config.js to fix duplication
+- Deleted api/_test-command-line scratch file
+- Updated main-v2.js to import from merged orchestrator.js
+
+04-03-2026--14:35
+Post-cleanup fixes:
+- Fixed import paths in behaviors/human-interaction.js and behaviors/humanization/action.js (now import from utils/ghostCursor.js)
+- Added missing export for CircuitOpenError in core/circuit-breaker.js
+
 04-03-2026--11:45
 Implemented explicit video blocking and navigation robustness in `tasks/cookiebot.js`:
 - Added `page.route` with `fallback()` to abort media resources without bypassing global `lite` mode.
@@ -483,3 +500,9 @@ Fixed redundant context extraction during `api.replyWithAI()` and `api.quoteWith
 - [FIX] corrected `scrollRandom()` signature mismatched calls in `api/behaviors/humanization/*.js` and `api/twitter/ai-twitterAgent.js` (removed redundant `page` argument).
 - [REFACTOR] unified `mathUtils` imports to `api/utils/math.js` across humanization modules to resolve `undefined` reference errors.
 - [VERIFY] ran `node main.js api-twitteractivity` to confirm resolution of `randomInRange` error.
+
+04-03-2026--17:05
+- [FIX] `api/utils/task-config-loader.js` > added missing `follow` probability to `engagement.probabilities` (was never loaded from `settings.json`, fell back to hardcoded 0.1).
+- [FIX] `tasks/api-twitterActivity.js` > added missing `follow` action to injected `config.actions` passed to `AITwitterAgent` (follow probability 0.9 from settings.json was being silently dropped).
+- [FIX] `api/twitter/ai-twitterAgent.js` > replaced single 15s ghost click timeout with retry loop: 3 attempts × 3s each, then native click fallback with 3s timeout.
+- [REFACTOR] `api/twitter/ai-twitterAgent.js` > replaced manual humanClick retry loop with `api.click()` for tweet permalink navigation (includes scroll-to-golden-view, stability check, obstruction guard, ghost cursor, built-in 3x retry). Native click fallback retained with 3s timeout.

@@ -1,6 +1,6 @@
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import { api } from '../api/index.js';
-import { mathUtils } from '../utils/mathUtils.js';
+import { mathUtils } from '../api/utils/mathUtils.js';
 
 /**
  * Follow Test Task
@@ -17,7 +17,7 @@ export default async function followTestTask(page, payload) {
     const logger = createLogger('follow-test.js');
 
     // Default to a known tweet — override with payload.url or env var
-    const tweetUrl = payload?.url || process.env.TARGET_URL || 'https://x.com/GraceGym_/status/2027845948345323934';
+    const tweetUrl = payload?.url || process.env.TARGET_URL || 'https://x.com/JTomCorVi/status/2028699457823342755';
 
     // Derive profile URL: strip /status/{id} from tweet URL
     const profileUrl = tweetUrl.replace(/\/status\/\d+.*/, '');

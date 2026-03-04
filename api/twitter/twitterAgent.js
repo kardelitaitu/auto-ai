@@ -7,7 +7,7 @@
 import { mathUtils } from '../utils/math.js';
 import { entropy } from '../utils/entropyController.js';
 import { profileManager } from '../utils/profileManager.js';
-import { GhostCursor } from '../behaviors/ghostCursor.js';
+import { GhostCursor } from '../utils/ghostCursor.js';
 import { HumanizationEngine } from '../behaviors/humanization/index.js';
 import { scrollDown, scrollRandom } from '../behaviors/scroll-helper.js';
 

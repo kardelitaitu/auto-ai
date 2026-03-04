@@ -1,3 +1,20 @@
+### ✅ version 0.7.0
+(04 March 2026) Phase 1 Cleanup & Consolidation
+- **CircuitBreaker Consolidation**: `utils/circuit-breaker.js` now re-exports from `core/circuit-breaker.js`
+  - Added check(), recordSuccess(), recordFailure(), getState(), getAllStates(), getStats() methods to core version
+- **GhostCursor Consolidation**: Deleted `behaviors/ghostCursor.js`
+  - Created `api/constants/engagement.js` with TWITTER_CLICK_PROFILES constant
+  - Added twitterClick() convenience method to `utils/ghostCursor.js`
+  - Updated `api/twitter/twitterAgent.js` to import from `utils/ghostCursor.js`
+- **Math Consolidation**: `utils/mathUtils.js` now re-exports from `utils/math.js`
+- **V2 Module Merge**: Removed -v2 suffix from orchestrator and sessionManager
+  - `orchestrator-v2.js` content merged into `orchestrator.js`
+  - `sessionManager-v2.js` content merged into `sessionManager.js`
+  - Updated `main-v2.js` to import from merged modules
+  - Deleted `orchestrator-v2.js` and `sessionManager-v2.js`
+- **Config Defaults Fix**: Extracted DEFAULTS constant in `core/config.js` to eliminate duplication
+- **Cleanup**: Deleted `agent/ai-reply-engine-dir/decision.js.backup` and `api/_test-command-line`
+
 ### ✅ version 0.6.1
 (02 March 2026) API Documentation
 - **New Documentation**: Created comprehensive markdown documentation in `api/docs/`:

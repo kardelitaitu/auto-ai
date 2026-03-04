@@ -1116,50 +1116,44 @@ export class AITwitterAgent extends TwitterAgent {
         this.log("[Debug] Targeting entire tweet card (Last Resort).");
       }
 
+      // Use api.click() — includes scroll-to-golden-view, stability check,
+      // obstruction guard, ghost cursor, and built-in 3x retry with recovery.
+      const CLICK_NAV_TIMEOUT = 3000;
+
       if (clickTarget) {
-        await clickTarget.evaluate((el) =>
-          el.scrollIntoView({ block: "center", inline: "center" }),
-        );
-        await this.wait(entropy.scrollSettleTime());
-
-        const dbgBox = await clickTarget.boundingBox();
-        this.log(
-          `[Debug] Target: Box=${dbgBox ? `x:${Math.round(dbgBox.x)},y:${Math.round(dbgBox.y)}` : "null"}`,
-        );
-
-        this.log("[Attempt] Ghost Click on Permalink...");
-        await this.humanClick(clickTarget, "Tweet Permalink", { precision: 'high' });
+        this.log("[Attempt] api.click on Permalink...");
+        try {
+          await api.click(clickTarget, { precision: 'high' });
+        } catch (clickErr) {
+          this.log(`[Fail] api.click threw: ${clickErr.message}`);
+        }
       }
 
-      // Wait for navigation to tweet page
       let tweetUrl = "";
       let expanded = false;
+
       try {
-        // Wait for URL to contain /status/
         await this.pageOps.waitForURL("**/status/**", {
-          timeout: TWITTER_TIMEOUTS.NAVIGATION,
+          timeout: CLICK_NAV_TIMEOUT,
         });
         tweetUrl = await api.getCurrentUrl();
         this.log("[Success] Navigated to tweet page.");
         this.log(`[Debug] Tweet URL: ${tweetUrl}`);
         expanded = true;
       } catch (_error) {
-        this.log(
-          "[Fail] Ghost Click did not navigate. Retrying with NATIVE click...",
-        );
+        this.log("[Fail] api.click did not navigate. Retrying with NATIVE click...");
         if (clickTarget) {
           await clickTarget.click({ force: true });
         }
         try {
           await this.pageOps.waitForURL("**/status/**", {
-            timeout: TWITTER_TIMEOUTS.NAVIGATION,
+            timeout: CLICK_NAV_TIMEOUT,
           });
           tweetUrl = await api.getCurrentUrl();
           this.log("[Success] Native Click navigated to tweet.");
           expanded = true;
         } catch (_error2) {
           this.log("[Fail] Failed to expand tweet. Aborting dive.");
-          // Release lock before returning
           await this.endDive(false, true);
           return;
         }

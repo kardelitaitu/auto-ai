@@ -12,6 +12,7 @@
 import { mathUtils } from './math.js';
 import { createLogger } from '../core/logger.js';
 import { visible } from '../interactions/queries.js';
+import { TWITTER_CLICK_PROFILES } from '../constants/engagement.js';
 
 export class GhostCursor {
     constructor(page, logger = null) {
@@ -192,6 +193,18 @@ export class GhostCursor {
         } catch (fallbackError) {
             console.warn(`[GhostCursor] Native fallback also failed: ${fallbackError.message}`);
         }
+    }
+
+    /**
+     * Twitter-specific reply click with hover-hold and hesitation.
+     * Convenience wrapper around profiledClick using TWITTER_CLICK_PROFILES.
+     * @param {object} locator - Playwright locator
+     * @param {string} actionType - Click profile to use ('reply', 'like', 'retweet', etc.)
+     * @param {number} [maxRetries=3]
+     */
+    async twitterClick(locator, actionType = 'reply', maxRetries = 3) {
+        const profile = TWITTER_CLICK_PROFILES[actionType] || TWITTER_CLICK_PROFILES.nav;
+        return this.profiledClick(locator, profile, maxRetries);
     }
 
     /**
