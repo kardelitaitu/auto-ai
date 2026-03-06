@@ -1,6 +1,5 @@
 /**
  * @fileoverview Math utilities for stochastic calculations.
- * Internal copy for api/ module independence from utils/mathUtils.js.
  * 
  * @module api/utils/math
  */

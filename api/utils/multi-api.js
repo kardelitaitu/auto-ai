@@ -3,7 +3,7 @@
  * Tries multiple API keys in sequence if one fails
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('multi-api.js');
 

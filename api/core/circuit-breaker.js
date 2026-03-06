@@ -3,7 +3,7 @@
  * @module core/circuit-breaker
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { getTimeoutValue } from '../utils/configLoader.js';
 
 const logger = createLogger('circuit-breaker.js');
@@ -135,10 +135,9 @@ class CircuitBreaker {
 
     reset(model = null, apiKey = null) {
         if (model) {
-            const key = getKey(model, apiKey);
-            if (this.breakers.has(key)) {
-                this.breakers.set(key, this._createBreaker());
-                logger.info(`[${key}] Circuit breaker reset`);
+            if (this.breakers.has(model)) {
+                this.breakers.set(model, this._createBreaker());
+                logger.info(`[${model}] Circuit breaker reset`);
             }
         } else {
             this.breakers.clear();

@@ -11,10 +11,10 @@ const TARGET_TWEET_URL = 'https://x.com/_nadiku/status/1998218314703852013';
 // Set to '' to disable. When set, has 20% chance to be used instead of dynamic engine.
 const MANUAL_REFERRER = ''; // Example: 'https://www.reddit.com/r/technology/'
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
-import { mathUtils } from '../utils/mathUtils.js';
+import { mathUtils } from '../utils/math.js';
 import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
 import { takeScreenshot } from '../utils/screenshot.js';

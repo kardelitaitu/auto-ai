@@ -3,7 +3,7 @@
  * @module utils/banner
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 const _logger = createLogger('banner');
 
 const BANNER = `

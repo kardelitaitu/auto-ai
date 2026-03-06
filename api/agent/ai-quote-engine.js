@@ -6,7 +6,7 @@
 
 import { createLogger } from '../core/logger.js';
 import { api } from '../index.js';
-import { mathUtils } from '../utils/mathUtils.js';
+import { mathUtils } from '../utils/math.js';
 import { sentimentService } from '../utils/sentiment-service.js';
 import { HumanInteraction } from '../behaviors/human-interaction.js';
 import { getStrategyInstruction } from '../twitter/twitter-reply-prompt.js';

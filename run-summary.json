@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 602204,
-      "uptimeFormatted": "10m 2s",
-      "timeSinceReset": 602204,
-      "timeSinceResetFormatted": "10m 2s"
+      "uptime": 132142,
+      "uptimeFormatted": "2m 12s",
+      "timeSinceReset": 132142,
+      "timeSinceResetFormatted": "2m 12s"
     },
     "tasks": {
       "executed": 1,
-      "failed": 1,
-      "succeeded": 0,
-      "successRate": 0,
-      "avgDuration": 596114,
-      "totalDuration": 596114,
+      "failed": 0,
+      "succeeded": 1,
+      "successRate": 100,
+      "avgDuration": 120156,
+      "totalDuration": 120156,
       "durationPercentiles": {
-        "p50": 596114,
-        "p95": 596114,
-        "p99": 596114
+        "p50": 120156,
+        "p95": 120156,
+        "p99": 120156
       }
     },
     "browsers": {
@@ -61,17 +61,17 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-04T10:28:18.903Z"
+    "runEndTime": "2026-03-06T06:14:57.844Z"
   },
   "tasks": [
     {
-      "taskName": "api-twitteractivity",
-      "duration": 596114,
-      "success": false,
+      "taskName": "cookiebot",
+      "duration": 120156,
+      "success": true,
       "sessionId": "roxy:0001",
-      "error": "Task cancelled",
-      "startTime": "2026-03-04T10:18:22.699Z",
-      "timestamp": 1772620098813
+      "error": null,
+      "startTime": "2026-03-06T06:12:57.662Z",
+      "timestamp": 1772777697818
     }
   ]
 }

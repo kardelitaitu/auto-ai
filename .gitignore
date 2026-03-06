@@ -8,10 +8,11 @@ examples
 local-agent
 test-dir
 nul
-coverage/.tmp
+coverage
 .env
 config/settings.json
 logs.txt
 script/proxies.txt
 .llm-context
 backup
+api/coverage

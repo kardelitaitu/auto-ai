@@ -6,7 +6,7 @@ import { api } from '../index.js';
  */
 
 import { createLogger } from '../core/logger.js';
-import { mathUtils } from '../utils/mathUtils.js';
+import { mathUtils } from '../utils/math.js';
 
 /**
  * RetweetAction - Handles retweet operations

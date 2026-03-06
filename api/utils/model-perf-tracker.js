@@ -4,7 +4,7 @@
  * @module utils/model-perf-tracker
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('model-perf-tracker.js');
 

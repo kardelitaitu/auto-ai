@@ -1,5 +1,5 @@
 import Orchestrator from './api/core/orchestrator.js';
-import { createLogger } from './api/utils/logger.js';
+import { createLogger } from './api/core/logger.js';
 import { getSettings } from './api/utils/configLoader.js';
 
 const logger = createLogger('verify-timeout.js');

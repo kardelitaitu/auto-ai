@@ -4,7 +4,7 @@
  * @module core/ollama-client
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { getSettings } from '../utils/configLoader.js';
 import { ensureOllama } from '../utils/local-ollama-manager.js';
 import { exec } from 'child_process';

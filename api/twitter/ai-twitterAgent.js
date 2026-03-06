@@ -28,7 +28,7 @@ import { FollowAction } from "../actions/ai-twitter-follow.js";
 import { ActionRunner } from "../actions/advanced-index.js";
 import { TWITTER_TIMEOUTS } from "../constants/twitter-timeouts.js";
 import { HumanInteraction } from "../behaviors/human-interaction.js";
-import { createBufferedLogger } from "../utils/logger.js";
+import { createBufferedLogger } from "../core/logger.js";
 import { api } from "../index.js";
 
 /**

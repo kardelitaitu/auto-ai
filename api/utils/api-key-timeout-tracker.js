@@ -4,7 +4,7 @@
  * @module utils/api-key-timeout-tracker
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('api-key-timeout-tracker.js');
 

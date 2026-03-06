@@ -5,7 +5,7 @@
  * @module utils/sentiment-service
  */
 
-// import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 import { sentimentGuard } from './sentiment-guard.js';
 import {
   ValenceAnalyzer,
@@ -15,10 +15,6 @@ import {
   UrgencyAnalyzer,
   ToxicityAnalyzer
 } from './sentiment-analyzers.js';
-
-// const logger = createLogger('sentiment-service.js');
-// const logger = { info: () => {}, error: () => {}, warn: () => {}, debug: () => {} }; // Mock logger if needed or just remove usage
-
 
 /**
  * Unified Sentiment Service
@@ -385,13 +381,13 @@ export class SentimentService {
 
   addToCache(text, result) {
     const key = text.toLowerCase().trim().substring(0, 200);
-    
+
     // Simple LRU: clear if too big
     if (this.cache.size >= this.cacheMaxSize) {
       const firstKey = this.cache.keys().next().value;
       this.cache.delete(firstKey);
     }
-    
+
     this.cache.set(key, result);
   }
 

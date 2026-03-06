@@ -4,7 +4,7 @@
  */
 
 import { api } from '../api/index.js';
-import { createLogger } from '../api/utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -67,7 +67,7 @@ try {
 export default async function cookieBotRandom(page, payload) {
   const startTime = process.hrtime.bigint();
   const browserInfo = payload.browserInfo || "unknown_profile";
-  const logger = createLogger(`[cookiebot][${browserInfo}]`);
+  const logger = createLogger('cookiebot.js');
 
   try {
     // Use a Promise.race to enforce a global timeout for the "work" phase
@@ -157,19 +157,19 @@ export default async function cookieBotRandom(page, payload) {
             } else if (navError.message.includes('timeout') || navError.message.includes('Timeout')) {
               logger.warn(`Visit to ${randomUrl} timed out. Skipping to next.`);
             } else if (navError.message.includes('net::ERR_')) {
-              logger.warn(`Network error visiting ${randomUrl}: ${navError.message.split('\n')[0]}`);
+              logger.warn(`Network error visiting ${randomUrl}`);
             } else {
               logger.error(`Failed to load ${randomUrl}:`, navError.message.split('\n')[0]);
               if (page.isClosed()) break;
             }
           }
         }
-      }),
+      }, { taskName: 'cookiebot', sessionId: browserInfo }),
       new Promise((_, reject) => setTimeout(() => reject(new Error(`Cookiebot task exceeded ${CONFIG.taskTimeoutMs}ms limit`)), CONFIG.taskTimeoutMs))
     ]);
   } catch (error) {
     if (error.message.includes('exceeded') && error.message.includes('limit')) {
-      logger.warn(`[cookiebot] Task forced to stop: ${error.message}`);
+      logger.warn(`Task forced to stop: ${error.message}`);
     } else if (error.message.includes('Target page, context or browser has been closed')) {
       logger.warn(`Task interrupted: Browser/Page closed.`);
     } else {
@@ -186,6 +186,6 @@ export default async function cookieBotRandom(page, payload) {
     }
     const endTime = process.hrtime.bigint();
     const durationInSeconds = (Number(endTime - startTime) / 1_000_000_000).toFixed(2);
-    logger.info(`[cookiebot] Total task duration: ${durationInSeconds} seconds`);
+    logger.info(`Total task duration: ${durationInSeconds} seconds`);
   }
 }

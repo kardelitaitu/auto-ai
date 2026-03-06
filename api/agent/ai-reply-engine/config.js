@@ -4,7 +4,7 @@
  * @module utils/ai-reply-engine/config
  */
 
-import { createLogger } from "../../utils/logger.js";
+import { createLogger } from "../../core/logger.js";
 
 // logger - unused in this module
 

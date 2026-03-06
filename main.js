@@ -6,7 +6,7 @@
 
 
 import 'dotenv/config';
-import { createLogger } from './api/utils/logger.js';
+import { createLogger } from './api/core/logger.js';
 import { showBanner } from './api/utils/banner.js';
 import Orchestrator from './api/core/orchestrator.js';
 import { ensureDockerLLM } from './api/utils/dockerLLM.js';
@@ -125,9 +125,7 @@ const logger = createLogger('main.js');
             let value = arg.substring(firstEqualIndex + 1);
             if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
 
-            // Shorthand detection: taskName=URL
-            // If the key matches the current task, or we don't have a current task,
-            // assume it's a new task starting.
+            // Shorthand detection: taskName=VALUE
             const isNewTaskShorthand = currentTask && (key === currentTask);
 
             if (!currentTask || isNewTaskShorthand) {
@@ -136,12 +134,20 @@ const logger = createLogger('main.js');
               }
               currentTask = key.endsWith('.js') ? key.slice(0, -3) : key;
 
-              // Auto-prepend protocol for shorthand URL values
-              let urlValue = value;
-              if (urlValue && !urlValue.includes('://') && (urlValue.includes('.') || urlValue === 'localhost')) {
-                urlValue = 'https://' + urlValue;
+              // If the value is purely numeric, it's a parameter (e.g. followback=5)
+              // Otherwise, it's treated as a URL for navigation tasks
+              const isNumeric = /^\d+$/.test(value);
+
+              if (isNumeric) {
+                currentPayload = { value: parseInt(value) };
+              } else {
+                // Auto-prepend protocol for shorthand URL values
+                let urlValue = value;
+                if (urlValue && !urlValue.includes('://') && (urlValue.includes('.') || urlValue === 'localhost')) {
+                  urlValue = 'https://' + urlValue;
+                }
+                currentPayload = { url: urlValue };
               }
-              currentPayload = { url: urlValue };
             } else {
               // It's a parameter for the current task
               let paramValue = value;

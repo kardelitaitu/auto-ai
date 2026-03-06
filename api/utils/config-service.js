@@ -14,7 +14,7 @@
  */
 
 import { getSettings } from './configLoader.js';
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('config-service.js');
 

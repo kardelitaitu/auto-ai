@@ -10,8 +10,8 @@ import { api } from '../../index.js';
  *   await human.contentSkim();      // Skim content
  */
 
-import { createLogger } from '../../utils/logger.js';
-import { mathUtils } from '../../utils/mathUtils.js';
+import { createLogger } from '../../core/logger.js';
+import { mathUtils } from '../../utils/math.js';
 import { entropy as _entropy } from '../../utils/entropyController.js';
 import { HumanScroll } from './scroll.js';
 import { HumanTiming } from './timing.js';

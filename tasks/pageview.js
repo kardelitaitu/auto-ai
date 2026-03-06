@@ -1,5 +1,5 @@
 import { api } from '../api/index.js';
-import { createLogger } from '../api/utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import { profileManager } from '../api/utils/profileManager.js';
 import { ReferrerEngine } from '../api/utils/urlReferrer.js';
 import fs from 'fs/promises';
@@ -49,9 +49,9 @@ function ensureProtocol(url) {
 export default async function pageview(page, payload) {
     const startTime = process.hrtime.bigint();
     const browserInfo = payload.browserInfo || 'unknown_profile';
-    const logger = createLogger(`pageview.js [${browserInfo}]`);
+    const logger = createLogger('pageview.js');
 
-    logger.info('[pageview] Starting migrated pageview task...');
+    logger.info('Starting migrated pageview task...');
 
     return await api.withPage(page, async () => {
         try {
@@ -65,9 +65,9 @@ export default async function pageview(page, payload) {
                     persona: personaName,
                     colorScheme: profile.theme || 'dark'
                 });
-                logger.info(`[pageview] Initialized with profile: ${profile.id} (Persona: ${personaName})`);
+                logger.info(`Initialized with profile: ${profile.id} (Persona: ${personaName})`);
             } catch (e) {
-                logger.warn(`[pageview] Profile load failed: ${e.message}, using defaults`);
+                logger.warn(`Profile load failed: ${e.message}, using defaults`);
                 await api.init(page, { logger, colorScheme: 'dark' });
             }
 
@@ -75,20 +75,20 @@ export default async function pageview(page, payload) {
             let targetUrl;
             if (payload.url) {
                 targetUrl = ensureProtocol(payload.url);
-                logger.info(`[pageview] Target (Arg): ${targetUrl}`);
+                logger.info(`Target (Arg): ${targetUrl}`);
             } else {
                 targetUrl = await getRandomUrl();
-                logger.info(`[pageview] Target (Random): ${targetUrl}`);
+                logger.info(`Target (Random): ${targetUrl}`);
             }
 
             // 3. Referrer & Headers
             const engine = new ReferrerEngine({ addUTM: false });
             const ctx = engine.generateContext(targetUrl);
             await api.setExtraHTTPHeaders(ctx.headers);
-            logger.info(`[pageview] Referrer: ${ctx.referrer || '(Direct)'}`);
+            logger.info(`Referrer: ${ctx.referrer || '(Direct)'}`);
 
-            // 4. Navigate using Unified API (handles warmup jitter & mouse movement internally)
-            logger.info(`[pageview] Navigating...`);
+            // 4. Navigation using Unified API (handles warmup jitter & mouse movement internally)
+            logger.info(`Navigating...`);
 
             // Use a Promise.race to enforce a global 50s timeout for the "work" phase
             const taskTimeoutMs = 50000;
@@ -105,7 +105,7 @@ export default async function pageview(page, payload) {
                                 warmupPause: true
                             });
                         } catch (navError) {
-                            logger.error(`[pageview] Navigation failed: ${navError.message}`);
+                            logger.error(`Navigation failed: ${navError.message}`);
                             return;
                         }
 
@@ -121,7 +121,7 @@ export default async function pageview(page, payload) {
 
                         const estimatedPauses = Math.max(1, Math.floor(readingDurationS / 2.2));
 
-                        logger.info(`[pageview] Simulating reading for ~${readingDurationS.toFixed(2)}s (${estimatedPauses} cycles)`);
+                        logger.info(`Simulating reading for ~${readingDurationS.toFixed(2)}s (${estimatedPauses} cycles)`);
 
                         await api.scroll.read(null, {
                             pauses: estimatedPauses,
@@ -137,7 +137,7 @@ export default async function pageview(page, payload) {
                 ]);
             } catch (error) {
                 if (error.message.includes('exceeded 50s limit')) {
-                    logger.warn(`[pageview] Task forced to stop: ${error.message}`);
+                    logger.warn(`Task forced to stop: ${error.message}`);
                 } else {
                     throw error;
                 }
@@ -146,16 +146,16 @@ export default async function pageview(page, payload) {
             try {
                 if (page && !page.isClosed()) {
                     await page.close();
-                    logger.debug(`[pageview] Page closed successfully.`);
+                    logger.debug(`Page closed successfully.`);
                 }
             } catch (closeError) {
-                logger.warn(`[pageview] Error closing page: ${closeError.message}`);
+                logger.warn(`Error closing page: ${closeError.message}`);
             }
             // Cleanup (finally block in main orchestrator or task wrapper handles close)
             const endTime = process.hrtime.bigint();
             const durationInSeconds = (Number(endTime - startTime) / 1_000_000_000).toFixed(2);
-            logger.info(`[pageview] Total task duration: ${durationInSeconds} seconds`);
+            logger.info(`Total task duration: ${durationInSeconds} seconds`);
         }
-    });
+    }, { taskName: 'pageview', sessionId: browserInfo });
 }
 

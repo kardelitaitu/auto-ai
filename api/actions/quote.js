@@ -1,6 +1,6 @@
 import { getPage, evalPage as eval_ } from '../core/context.js';
 import { createLogger } from '../core/logger.js';
-import { mathUtils } from '../utils/mathUtils.js';
+import { mathUtils } from '../utils/math.js';
 import AgentConnector from '../core/agent-connector.js';
 import AIQuoteEngine from '../agent/ai-quote-engine.js';
 import { HumanInteraction } from '../behaviors/human-interaction.js';

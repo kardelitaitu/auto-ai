@@ -1,517 +1,228 @@
-# AGENT JOURNAL - 04 March 2026
-
-04-03-2026--16:00
-Phase 2 hardening completed:
-- Added validation guards to wait(), scroll(), delay(), think() in api/interactions/wait.js, scroll.js, behaviors/timing.js
-- Fixed rateLimitMiddleware with optional shared state parameter in api/core/middleware.js
-- Added api.version from package.json in api/index.js
-- Implemented retry budget in context state (api/core/context-state.js) and middleware
-- Created api/index.d.ts type definitions for IDE autocomplete
-- Replaced generic Error with ElementTimeoutError in waitFor()
-
-04-03-2026--14:30
-Phase 1 cleanup completed:
-- Consolidated CircuitBreaker: utils/ now re-exports from core/
-- Consolidated GhostCursor: deleted behaviors/ghostCursor.js, added twitterClick() to utils/
-- Created api/constants/engagement.js with TWITTER_CLICK_PROFILES
-- Consolidated math: utils/mathUtils.js now re-exports from utils/math.js
-- Merged V2 modules: orchestrator.js and sessionManager.js now contain V2 logic (removed -v2 suffix)
-- Deleted decision.js.backup
-- Extracted DEFAULTS constant in config.js to fix duplication
-- Deleted api/_test-command-line scratch file
-- Updated main-v2.js to import from merged orchestrator.js
-
-04-03-2026--14:35
-Post-cleanup fixes:
-- Fixed import paths in behaviors/human-interaction.js and behaviors/humanization/action.js (now import from utils/ghostCursor.js)
-- Added missing export for CircuitOpenError in core/circuit-breaker.js
-
-04-03-2026--11:45
-Implemented explicit video blocking and navigation robustness in `tasks/cookiebot.js`:
-- Added `page.route` with `fallback()` to abort media resources without bypassing global `lite` mode.
-- Blocked video domains (YouTube, TikTok, etc.) via refined regex.
-- Increased `navigationTimeout` (60s), `responsivenessTimeout` (15s), and `taskTimeoutMs` (120s) to handle heavy sites.
-- Improved error logging to capture actual navigation failure messages.
-- Fixed `api.waitFor` to support predicate functions.
-- Added loop termination checks (`page.isClosed()` and `abortSignal`) to prevent error spamming on task timeout.
-
-04-03-2026--12:05
-Implemented Low Bandwidth and System Performance optimizations:
-- Enhanced `api/core/init.js` with aggressive script blocking (Analytics, Ads, Tracking) in `lite` mode.
-- Added `globalActiveTasks` and `maxGlobalConcurrency` (default 20) to `orchestrator-v2.js` to throttle total system load.
-- Implemented `taskStaggerDelayMs` (2s) in `orchestrator-v2.js` to prevent simultaneous network spikes.
-- Lowered default `concurrencyPerBrowser` from 50 to 10 in `sessionManager-v2.js` to reduce RAM/CPU footprint.
-
-04-03-2026--12:07
-Updated `tasks/cookiebot.js`:
-- Added `minReadSecond` and `maxReadSecond` to configuration.
-- Implemented randomized reading duration after page load/scroll in the visit loop.
-- Refined logging to include domain and decimal seconds for both scrolling and reading.
-- Added "init scrolling" log before the scroll action begins to provide instant feedback.
-- Repaired URL regex in `api/utils/logger.js` to correctly match protocols and `www.` prefixes.
-
-02-03-2026--21:02
-Replaced vanilla orchestrator with V2:
-- orchestrator.js now re-exports from orchestrator-v2.js
-- sessionManager.js now re-exports from sessionManager-v2.js
-- main.js automatically uses V2 now
-- main-v2.js still available for custom timeout flags
-
-02-03-2026--20:50
-Fixed profile info logging in api-twitterActivity.js and ai-twitterActivity.js:
-- Changed from undefined properties to correct ones
-- inputMethod -> inputMethods[0]
-- probabilities.dive -> probabilities.tweetDive || profileDive
-- probabilities.like -> probabilities.likeTweetafterDive
-- probabilities.follow -> probabilities.followOnProfile
-- Added graceful fallback for missing values
-
-02-03-2026--19:20
-Implemented session ID format change:
-- Local browsers: [brave:8857], [chrome:9123]
-- Antidetect: [roxy:0001], [ix:123], [more:ABC]
-- Added _formatSessionDisplayName() helper to orchestrator.js and orchestrator-v2.js
-- Short names: chrome, brave, edge, vivaldi, roxy, ix, more, und
-
-02-03-2026--18:11
-Created robust orchestrator V2 to fix hanging tasks:
-- Created `api/core/orchestrator-v2.js` with:
-  - Task timeout (default 10 min), group timeout (default 10 min)
-  - AbortSignal propagation to cancel stuck tasks
-  - Force cleanup on timeout - releases worker, moves to next task
-  - Returns completion status: { completed, timedOut, duration }
-- Created `api/core/sessionManager-v2.js` with:
-  - Simplified semaphore with deadlock detection
-  - Worker health monitoring - auto-release stuck workers
-  - forceReleaseWorker(sessionId, workerId) - emergency API
-  - getWorkerHealth() - returns stuck workers list
-- Created `main-v2.js` entry point (opt-in):
-  - Usage: node main-v2.js pageview=cookiebot then api-twitteractivity
-  - Flags: --task-timeout=600000 --group-timeout=600000 --force-shutdown
-- Fixed health check in `api/core/automator.js`:
-  - Changed from spawning new Chromium to lightweight HTTP fetch
-  - Uses google generate_204 endpoint instead of browser launch
-
-02-03-2026--17:35
-Resolved X.com "Privacy Related Extensions" error and improved Lite Mode cleanup:
-- Whitelisted `x.com` and `twitter.com` in `api/utils/browserPatch.js` to skip Canvas Poisoning, which was being detected as anti-fingerprinting extension behavior.
-- Added `clearLiteMode()` to `api/core/init.js` and exported via `api/index.js` to allow unrouting resource blocking.
-- Integrated `api.clearLiteMode(page)` into the `orchestrator.js` `finally` block of `executeTask` to ensure Lite Mode settings don't leak between tasks in the same session.
-- Syntax: `node -c` -> OK.
-
-02-03-2026--17:10
-Improved error handling in `tasks/cookiebot.js`:
-- Added graceful catching of Playwright `net::ERR_*` navigation errors (e.g., `ERR_CONNECTION_CLOSED`, `ERR_NAME_NOT_RESOLVED`).
-- These errors are now logged as warnings instead of dumping full error stack traces, cleaning up the orchestrator logs during random website visits.
-
-02-03-2026--14:20
-Implemented task-specific maximum duration limits in Orchestrator:
-- Added `taskSpecificMaxDurationMs` to `config/timeouts.json` under `orchestration`.
-- Configured a specific 3-minute limit (`180000` ms) for the `cookiebot` task workflow.
-- Updated `api/core/orchestrator.js` to parse and apply custom timeouts based on the incoming `taskName`.
-- This ensures that heavy looping tasks or light scraping tasks can have unique bounds rather than sharing a massive global ceiling.
-
-02-03-2026--13:35
-Improved Orchestrator robustness by adding task execution timeouts and a stuck worker watchdog:
-- Added `TaskTimeoutError` to `api/core/errors.js`.
-- Added `taskMaxDurationMs` (5m) and `workerStuckThresholdMs` (10m) to `config/timeouts.json`.
-- Implemented `Promise.race` timeout in `orchestrator.js` `executeTask` to prevent hanging tasks from blocking workers indefinitely.
-- Implemented `checkStuckWorkers()` in `sessionManager.js` to forcefully release workers that exceed the occupancy threshold.
-- Verified logic via manual verification script (mocked).
-- Syntax: `node -c` -> OK.
-
-02-03-2026--13:20
-Disabled automatic cookie banner clicks in `tasks/cookiebot.js`:
-- Set `autoBanners: false` in `api.init` options.
-- This prevents the task from clicking consent buttons while visiting random URLs.
-- Syntax: `node -c` -> OK.
-
-# AGENT JOURNAL - 01 March 2026
-
-01-03-2026--23:55
-Refactored @/api to be independent and consolidated core logic:
-- Successfully moved root `core/` and `utils/` into the `api/` directory.
-- Updated import paths in `main.js`, `tasks/api-twitterActivity.js`, `tasks/pageview.js`, `tasks/cookiebot.js`, and `vitest.config.js`.
-- Fixed `ERR_MODULE_NOT_FOUND` and `SyntaxError` issues across 50+ files by correcting relative import paths and missing exports.
-- Restored `quoteWithAI` and `replyWithAI` in `api/index.js` by pointing to corrected `api/actions/` implementations.
-- Renamed `api/core/health-circuit-breaker.js` to `api/core/circuit-breaker.js` for `AgentConnector` compatibility.
-- Fixed `ERR_MODULE_NOT_FOUND` in discovery connectors by restoring the missing `api/connectors/baseDiscover.js` base class.
-- Deleted legacy root `utils/` and `core/` directories.
-- Verified successful initialization and execution of `pageview`, `api-twitteractivity`, and `cookiebot` tasks.
-- Resolved `configLoader.getSettings is not a function` by adding the missing method to the `ConfigLoader` class in `api/utils/configLoader.js`.
-- Fixed `human-timing.js` import paths in `tasks/api-twitterActivity.js`, `tasks/ai-twitterActivity.js`, and `tasks/twitterFollowLikeRetweet.js` to point to `../api/behaviors/human-timing.js`.
-- Fixed `gaussian` export error in `api/twitter/twitterAgent.js` by removing redundant named imports from `../utils/math.js`.
-- Verified all files in `api/behaviors/humanization/` use `mathUtils.gaussian` correctly.
-- Corrected entropyController import paths in humanization behavior files.
-- Fixed `context.js` import path in `api/utils/popup-closer.js` and `api/utils/locator.js`.
-- Fixed `logger` and `mathUtils` import paths in `api/behaviors/humanization/*.js` (8 files).
-
-01-03-2026--22-47
-Removed `goto` fallback from follow pre-navigation for stealth (both `tasks/follow-test.js` by user and `utils/ai-twitterAgent.js`):
-- `tasks/follow-test.js`: user removed goto, kept only `api.click()` with failure log.
-- `utils/ai-twitterAgent.js`: removed `count()` pre-check and `goto` fallback; now calls `humanClick(authorLink)` directly. On click failure → `selectedAction = null` (skip follow, no direct URL navigation).
-- Selector tightened: `a[href*="/${username}"]` → exact `a[href="/${username}"]` matching confirmed DOM structure.
-- Syntax: `node -c` → OK.
-
-01-03-2026--22-35
-Created `tasks/follow-test.js` — live tester for the follow flow, mirroring `tasks/reply-test.js`:
-- Navigates to a tweet URL (default: GraceGym_ tweet), extracts profile URL via regex.
-- Clicks `[data-testid="User-Name"] a[href*="/{username}"]` to navigate to profile (goto fallback).
-- Calls `api.followWithAPI({ username })` and logs pass/fail with reason.
-- Usage: `node main.js follow-test` or `node main.js follow-test --url https://x.com/SomeUser/status/123`.
-- Syntax: `node -c` → OK.
-
-01-03-2026--22-33
-Implemented follow profile pre-navigation in `utils/ai-twitterAgent.js`:
-- **Where**: Added `else if (selectedAction === 'follow')` block after the reply/quote context pre-fetch (line ~1288).
-- **Logic**: Extract `profileUrl` from `tweetUrl` via `tweetUrl.replace(/\/status\/\d+.*/, '')`. E.g. `https://x.com/GraceGym_/status/xxx` → `https://x.com/GraceGym_`.
-- **Navigation**: Clicks `[data-testid="User-Name"] a[href*="/{username}"]` (human-like). Falls back to `pageOps.goto(profileUrl)` if link not found. Skips follow entirely if navigation fails or username is unknown.
-- **Context**: `profileUrl` now passed into the `context` object for `followWithAPI`.
-- **Metrics**: Already wired — `makeApiExecutor` calls `diveQueue.recordEngagement('follows')` and `stats.successes++` on success.
-- Syntax: `node -c` → OK.
-
-01-03-2026--21-53
-Wired `follow` action slot into `AITwitterAgent` so `followWithAPI` can fire:
-- **Root cause**: `agent.actions.follow` was `undefined`; the `makeApiExecutor` loop in `api-twitterActivity.js` silently skipped it.
-- **New file**: `utils/actions/ai-twitter-follow.js` — `FollowAction` class mirroring `LikeAction` structure. `execute()` is a stub overridden at runtime by `makeApiExecutor`.
-- **Updated** `utils/actions/index.js`: exported `FollowAction`; added `follow` to `ActionRunner.loadConfig()`, `getEngagementType()` map, and `calculateSmartProbabilities()` `baseActions` array.
-- **Updated** `utils/ai-twitterAgent.js`: imported `FollowAction`, added `follow: new FollowAction(this)` to `actionInstances`.
-- **Updated** `config/settings.json`: added `twitter.actions.follow` with `probability: 0.1, enabled: true`.
-- Verified syntax: `node -c` on all 3 modified/new JS files — ALL OK.
-
-01-03-2026--21-40
-Unified Twitter action helpers in `tasks/api-twitterActivity.js`:
-- **Root cause**: The task manually monkey-patched only `reply` and `quote` action executors (~80 lines of boilerplate per action), while `like`, `bookmark`, `retweet` used a different class-based system through `AITwitterAgent`. `follow` had no api/ wrapper at all.
-- **New files** (all syntax-verified with `node -c`):
-  - `api/actions/like.js` → `likeWithAPI()` — like button with already-liked guard + toast verification
-  - `api/actions/bookmark.js` → `bookmarkWithAPI()` — bookmark with state guard + toast verification
-  - `api/actions/retweet.js` → `retweetWithAPI()` — retweet menu flow with already-retweeted guard
-  - `api/actions/follow.js` → `followWithAPI()` — follow with polling verification + retry
-- **Updated** `api/index.js`: imported and exported all 4 new functions on the `api` object.
-- **Refactored** `tasks/api-twitterActivity.js`:
-  - Removed the ~80-line manual duplicate override block.
-  - Added `makeApiExecutor` factory (~20 lines) encapsulating stats, `canEngage()` guard, `api.withPage()` wrap, and uniform return shape.
-  - Added `ACTION_API_MAP` data-driven loop covering all 6 actions: reply, quote, retweet, like, bookmark, follow.
-  - Net: **−40 lines**, all 6 actions now handled identically through the same codepath.
-- Verified syntax: `node -c` on all modified/new files — ALL OK.
-
-01-03-2026--12-42
-Cleaned up `config/settings.json`:
-- Removed unused `twitter.actions.reply` and `twitter.actions.quote` entries.
-- These were dead duplicates — `task-config-loader.js` reads reply/quote probabilities from `twitter.reply.probability` and `twitter.quote.probability` respectively, never from `twitter.actions.*`.
-- `twitter.actions.like`, `twitter.actions.bookmark`, and `twitter.actions.retweet` remain as they are the canonical source for those probabilities.
-
-01-03-2026--13-33
-Fixed `cookiebot` and `pageview` to prevent session corruption and ensure tab closure:
-- **Major Fix**: Re-added `page.close()` to both `tasks/cookiebot.js` and `tasks/pageview.js` after user feedback that tabs were not closing. Although previously removed to prevent "session corruption", it was determined that the `SessionManager`'s page pooling was keeping tabs open indefinitely.
-- **Root Cause Re-eval**: The actual cause of the "corrupted context" was likely the undefined `api.withErrorHandling` in `cookiebot.js`, which has now been fixed. Re-adding `page.close()` is now safe as `orchestrator.js` correctly re-acquires a new page if the old one is closed.
-- **Optimization**: Reduced `loopCount` in `cookiebot.js` from `20-30` to `5-10`.
-- Verified syntax with `node -c` on both files.
-
-
-Fixed quote probability and max limit not being respected in `tasks/api-twitterActivity.js`:
-- **Root cause (probability)**: `ActionRunner.loadConfig()` and `AIQuoteAction/AIReplyAction.loadConfig()` read `twitterConfig.actions.quote.probability` but `taskConfig` (passed as `twitterConfig`) had no `.actions` key — always fell back to hardcoded defaults (reply=0.6, quote=0.2) regardless of `settings.json`.
-- **Fix**: Injected a properly structured `.actions` object into the config passed to `AITwitterAgent`, derived from `taskConfig.engagement.probabilities` (which correctly reads `settings.json` values). Now `ActionRunner` and action classes see the live probabilities from `settings.json`.
-- **Root cause (max limit)**: Confirmed from previous fix session — `recordEngagement()` is correctly called in the execute overrides.
-- Verified syntax with `node -c`.
-
-
-Changed `twitter.reply.probability` in `config/settings.json` from `0.6` (60%) to `0.5` (50%).
-
-
-Fixed engagement limits not being enforced (quote/reply could fire more than maxQuotes/maxReplies):
-- **Root cause**: `AIQuoteAction.execute()` and `AIReplyAction.execute()` both checked `diveQueue.canEngage()` in `canExecute()` but **never called `diveQueue.recordEngagement()`** on success, so the counter was always 0 and the limit was never hit.
-- Additionally, the `agent.actions.quote.execute` and `agent.actions.reply.execute` overrides in `tasks/api-twitterActivity.js` completely bypassed `canExecute()`, so there was no limit check at all.
-- **Fix** (3 files):
-  - `utils/actions/ai-twitter-quote.js`: Added `this.agent.diveQueue?.recordEngagement('quotes')` after successful post.
-  - `utils/actions/ai-twitter-reply.js`: Added `this.agent.diveQueue?.recordEngagement('replies')` after successful post.
-  - `tasks/api-twitterActivity.js`: Added `canEngage()` guard at start of each execute override + `recordEngagement()` on success.
-- Verified syntax with `node -c` on all 3 files.
-
-
-Fixed engagement limits not being read from `config/settings.json` in `utils/config-service.js`:
-- **Root cause**: `getEngagementLimits()` was reading `twitter.activity.engagementLimits` — a path that does not exist in `settings.json`. It always fell back to hardcoded defaults (replies:3, retweets:1, etc.) regardless of what `settings.json` said.
-- **Where limits actually live**: `settings.json` → `twitter.engagement.maxReplies`, `maxRetweets`, `maxQuotes`, `maxLikes`, `maxFollows`, `maxBookmarks`.
-- **Fix**: Rewrote `getEngagementLimits()` to read `this._settings.twitter.engagement` directly and remap `maxX` → `x` keys to match the internal format expected by `DiveQueue` and `AITwitterAgent`.
-- Full chain: `settings.json` → `config-service.getEngagementLimits()` → `task-config-loader.buildConfig()` → `taskConfig.engagement.limits` → `AITwitterAgent` constructor → `DiveQueue` — all now live.
-- Verified syntax with `node -c utils/config-service.js`.
-
-
-Fixed `api.replyWithAI()` and `api.quoteWithAI()` silently failing in `tasks/api-twitterActivity.js`:
-- **Root cause**: Both `agent.actions.reply.execute` and `agent.actions.quote.execute` overrides called `api.replyWithAI()` / `api.quoteWithAI()` from an async branch with no `AsyncLocalStorage` context. The API uses `getPage()` → `checkSession()` → `contextStore.getStore()` which returns `null` if the call isn't running inside an `api.withPage()` callback, causing a `ContextNotInitializedError`.
-- **Why `reply-test.js` works**: It wraps everything in `api.withPage(page, ...)` before calling `api.replyWithAI()`, binding the page to the execution context.
-- **Fix**: Wrapped both calls with `api.withPage(page, () => api.replyWithAI())` and `api.withPage(page, () => api.quoteWithAI())` inside the execute overrides in `tasks/api-twitterActivity.js` (lines ~224 and ~254).
-- Verified syntax with `node -c tasks/api-twitterActivity.js`.
-
-
-
-01-03-2026--12-20
-Updated Roxybrowser API key:
-- Changed `ROXYBROWSER_API_KEY` to `c6ae203adfe0327a63ccc9174c178dec` in `config/browserAPI.json`.
-- Updated hardcoded default in `connectors/discovery/roxybrowser.js`.
-- Added `ROXYBROWSER_API_KEY` to `.env` file.
-- Verified syntax with `node -c`.
-
-# AGENT JOURNAL - 28 February 2026
-
-28-02-2026--20-40
-Fixed "media could not be played" errors on X.com in `api/utils/browserPatch.js`:
-- Removed H.264 (MP4) codec spoofing from `HTMLMediaElement.prototype.canPlayType` and `MediaSource.isTypeSupported` that was accidentally left behind after previous removal in `utils/browserPatch.js`.
-- This allows X.com's video player to correctly fallback to serving natively supported formats instead of failing to decode spoofed MP4s.
-
-## Integrated `api.replyWithAI()` (Engagement Macro)
-- **Goal**: Create a high-level API to automate AI-driven replies with a single call.
-- **Workflow**:
-    - Created [reply.js](file:///c:/My%20Script/auto-ai/api/actions/reply.js) with integrated extraction, generation, and execution logic.
-    - Exported from core API in [index.js](file:///c:/My%20Script/auto-ai/api/index.js).
-    - Refactored [reply-test.js](file:///c:/My%20Script/auto-ai/tasks/reply-test.js) to consume the new `api.replyWithAI()` function.
-- **Verification**: Ran `node main.js reply-test` - confirmed successful context collection, AI reply generation, and post success via toast verification.
-
-## Integrated `api.quoteWithAI()` (Engagement Macro)
-pi/actions/quote.js` containing the high-level logic for context extraction, AI generation, and execution.
-- Optimized scrolling and extraction: merged into a single downward pass, eliminating jarring upward jumps.
-- Exported from `api/index.js` as `quoteWithAI`, making it available throughout the codebase.
-- Refactored `tasks/quote-test.js` to use the new high-level API, reducing task code by 60%.
-- Verified via `main.js quote-test`.
-
-## [2026-02-28] Implementing Quote Test Task
-- Created `tasks/quote-test.js` to test quote tweet functionality.
-- Implemented `quoteB` strategy (Retweet Menu) using `AIQuoteEngine`.
-- Integrated context extraction (tweet text + replies) for AI quote generation.
-- Verified task completion via `main.js` orchestrator.
-
-## [2026-02-28] Fix Reply Test Strict Mode Violations in `reply-test.js` and `api` layer:
-- Updated `api/interactions/wait.js` to use `.first()` on locators in `waitVisible` and `waitHidden`, preventing crashes when multiple elements (like tweets) are found.
-- Hardened `tasks/reply-test.js` by explicitly using `page.locator(tweetSelector).first()` for the main tweet target and scroll focus.
-- Verified syntax with `node -c`.
-
-28-02-2026--17-45
-Hardened `AIQuoteEngine.quoteMethodB_Retweet` to fix "double click" and quote failures:
-- Increased retweet menu wait time from 2s to 4s (8x500ms) to accommodate slow DOM transitions.
-- Improved `retweetBtnSelectors` by adding `:not([aria-label*="metrics"])` and `:not([aria-label*="stats"])` to avoid accidental clicks on metric labels (e.g., Like button labels).
-- Added logic to log the exact selector found by `findElement` for better traceability.
-- Refined retry logic to check if the menu is already visible before re-clicking, preventing redundant clicks.
-- Enhanced `quotePreviewSelectors` and added a robust wait mechanism (1s fast check + 6s `waitVisible`) to handle lazy-loading of the composer preview.
-- Verified syntax with `node -c utils/ai-quote-engine.js`.
-
-28-02-2026--17-27
-Fixed scroll directions in `utils/twitterAgent.js`:
-- Removed invalid `this.page` arguments from `scrollDown` and `scrollRandom` calls to conform to the new `scroll-helper.js` API.
-- Replaced positive values with negative values for `scrollRandom` when simulating `WHEEL_UP`, return from replies, and `OVERSHOOT` corrections to ensure upward scrolling works correctly.
-
-28-02-2026--16-40
-Repaired `prompt-test.js` non-thinking model crash and CPU-bound issues:
-- Fixed an endpoint mapping issue where `think: true` was hardcoded causing 400 errors for non-reasoning models like `hermes3:8b`. The parameter is now conditionally bound based on model name detection.
-- Discovered `local-ollama-manager.js` was automatically spawning a headless `ollama serve` backend if it couldn't detect the system tray app, which in Windows runs entirely over the CPU instead of the GPU. Killed the headless process.
-- Added explicit `/api/generate` preload commands directly into `prompt-test.js` to force Ollama to instantly load the model into VRAM immediately at test startup.
-
-28-02-2026--17-05
-Upgraded `prompt-test.js`:
-- Added 3 new test thread variants (Gaming, Crypto, Fitness).
-- Added logic to randomize the selected test so it parses one thread per run.
-
-28-02-2026--16-35
-Hardened `REPLY_SYSTEM_PROMPT` for small models:
-- Updated `utils/twitter-reply-prompt.js` to enforce a strictly opinionated internet persona.
-- Applied explicit negative constraints (`NEVER write "Okay" or "Yes"`) directly to the system prompt and all strategy injects.
-- Fixed terminal text mangling in `prompt-test.js` by aggressively stripping `\r` carriage returns.
-- Validated output against `deepseek-r1:1.5b` ensuring diverse, rule-abiding responses.
-
-## 2026-02-28 16:30 - Repaired prompt-test.js for DeepSeek-R1 (Thinking Models)
-- **Problem:** User reported `prompt-test.js` hung or outputted strange text when running against "thinking" models (e.g. `deepseek-r1` or `lfm2.5-thinking:1.2b`), and asked to pass `stream: false` and `think: true`.
-- **Solution:** 
-  - Adjusted internal `ollamaFetch()` to dynamically detect whether the request was to the OpenAI-compatible `/v1/chat/completions` endpoint and, if so, map the payload to Ollama's native `/api/chat` format (passing `"think": true` and capturing `options: { num_predict, temperature }`).
-  - Implemented programmatic extraction of `<think>...</think>` tags using RegExp in case the reasoning was embedded within standard `message.content` (e.g., from OpenRouter API responses vs Ollama).
-  - Sanitized `\r\n` carriage returns dynamically inside `console.log()` statements to prevent cursor-wrapping glitches from polluting the local CLI window outputs.
-- **Outcome:** Script now cleanly runs local Ollama API tests with `deepseek-r1`, natively isolating reasoning into `🤔 REASONING:` block and printing cleanly formatted terminal logs.
-
-28-02-2026--16-20
-Refactored `prompt-test.js` to fully support thinking models:
-- Increased `max_tokens` from 256 to 2048 to prevent early truncation during the reasoning phase.
-- Added extraction and raw console logging for `reasoning` / `reasoning_content` to accurately map local Ollama and DeepSeek model thought structures.
-- Verified successful completion utilizing `lfm2.5-thinking:1.2b`.
-
-28-02-2026--16-15
-Repaired `prompt-test.js`:
-- Replaced non-existent `ollama-manager.js` import with `local-ollama-manager.js`.
-- Implemented internal `ollamaFetch` utility to handle API requests.
-- Integrated `ensureOllama()` to automatically manage local service status.
-
-28-02-2026--16- [x] Analyze `prompt-test.js` and `local-ollama-manager.js`
-- [x] Create implementation plan
-- [x] Modify `prompt-test.js` to use `local-ollama-manager.js`
-- [/] Validate syntax with `node -c prompt-test.js`
-- [ ] Update `AGENT-JOURNAL.md`
-- [ ] Update `patchnotes.md` (if applicable)
-
-28-02-2026--16-08
-Switched `prompt-test.js` back to Local Ollama:
-- Enabled `llm.local` in `config/settings.json`.
-- Created `utils/ollama-manager.js` for lightweight `ollamaFetch` utility.
-- Reverted `prompt-test.js` to use `ollamaFetch` with chat completions format.
-- Verified successful execution: received "same dun, but ai code aight be a game changer for shipping quick af" response.
-
-28-02-2026--15-45
-Updated `prompt-test.js` to use ApiFreeLLM:
-- Switched provider from OpenRouter to ApiFreeLLM.
-- Updated `callLLM` to concatenate system and user prompts into a single `message` field.
-- Verified successful execution: received "bro this is wild" response from the new endpoint.
-
-28-02-2026--15-42
-Integrated ApiFreeLLM Provider:
-- Added configuration to `config/settings.json`.
-- Created `utils/apifreellm-manager.js` with `apifreellmFetch` utility.
-- Created `apifreellm-test.js` and verified successful communication with the endpoint.
-- Confirmed "unlimited" features and tier.
-
-28-02-2026--15-35
-Integrated DeepSeek LLM Provider:
-- Added DeepSeek configuration (apiKey, endpoint, model) to `config/settings.json`.
-- Created `utils/deepseek-manager.js` providing a `deepseekFetch` utility consistent with the existing `fetch`-based architecture.
-- Created `deepseek-test.js` for verification.
-- Verified connectivity: API responded with `402 Payment Required`, confirming the key is active but currently has zero balance.
-
-28-02-2026--15-08
-Implemented Reasoning Token Exclusion for OpenRouter:
-- Added `"reasoning": { "exclude": true }` configuration to `config/settings.json`.
-- Updated `utils/openrouter-key-manager.js` to automatically pick up and inject these reasoning settings into the API request body.
-- This prevents the "thinking" process of models like StepFun or Llama Thinking from being returned in the response content, though they still count towards the `max_tokens` budget.
-
-28-02-2026--14-55
-Added raw JSON response debugging to `prompt-test.js`. 
-- Modified `callLLM` to return the complete response `data` as `raw`.
-- If the parsed `content` comes back empty or incorrectly parsed, the script will now print `⚠️ RAW JSON RESPONSE:` followed by the raw JSON for easier debugging of blank replies.
-
-28-02-2026--14-49
-Fixed `utils/openrouter-key-manager.js` prematurely crashing on 401 errors:
-- Added `401 Unauthorized`, `402 Payment Required`, and `5xx Server Error` statuses to the retry block (previously it only caught `429 Rate Limit`).
-- Invalid or empty keys (401/402) will now be marked with a 24-hour cooldown so the script skips them and keeps rotating through the remaining healthy keys in the pool without crashing the process.
-
-28-02-2026--14-46
-Fixed duplicate reading duration capping in `tasks/pageview.js`:
-- Narrowed the Gaussian deviation bound and reduced max ceiling from 50000 → 45000.
-- With the previous boundaries (`50000` cap but deviation `15000 / 2`), multiple threads were frequently hitting the high end of the right tail which was pushed past 45s, and then aggressively truncated back down to exactly `45` by `Math.min(..., 45)`, resulting in identical 45.00s cycle counts.
-
-28-02-2026--14-45
-Fixed "media could not be played" errors on X.com in `utils/browserPatch.js`:
-- Removed H.264 (MP4) codec spoofing from `HTMLMediaElement.prototype.canPlayType` and `MediaSource.isTypeSupported`.
-- This allows X.com's video player to correctly fallback to serving natively supported WebM (VP9) video streams instead of failing to decode spoofed MP4s.
-
-28-02-2026--14-40
-Repaired reading simulation logic in `tasks/pageview.js`:
-- Switched from linear `Math.random` to `api.gaussian` for more natural reading durations.
-- Corrected 15-45s range math (30s mean ± 15s).
-- Adjusted cycle estimation from 1.5s → 2.2s to better align with `api.scroll.read` behavior, ensuring final durations match targets.
-
-28-02-2026--14- [x] [PLANNING] Research and design the fix for reading simulation logic <!-- id: 0 -->
-    - [x] Analyze `tasks/pageview.js` logic vs humanization utilities <!-- id: 1 -->
-    - [x] Create implementation plan <!-- id: 2 -->
-- [x] [EXECUTION] Implement the fix <!-- id: 3 -->
-    - [x] Update `tasks/pageview.js` with corrected math and utilities <!-- id: 4 -->
-    - [x] Update `AGENT-JOURNAL.md` <!-- id: 5 -->
-
-28-02-2026--11-35
-Implemented 4 API fixes from the audit report:
-- Extracted domain-specific click profiles out of ghostCursor to `api/profiles/click-profiles.js`.
-- Fixed swallowed exceptions in `api/utils/patch.js`, `api/core/init.js`, and `api/interactions/actions.js` by emitting console warnings and safeEmitErrors.
-- Implemented robust semantic hashing in `api/agent/runner.js` to prevent flawed loop detection.
-- Added `expectsNavigation` flag to `smartClick` in `api/behaviors/recover.js` to prevent auto-recovery on deliberate navigation.
-
-28-02-2026--14-30
-Fixed all ESLint errors and warnings (2 errors, 65 warnings)
-
-28-02-2026--14-45
-Implemented Stage 2 and 3 architectural enhancements from the API audit:
-- Added `ConfigurationManager` to `api/core/config.js` and exported it via `api/index.js`.
-- Implemented `matches(url)` on `BasePlugin` and `evaluateUrl(url)` on `PluginManager` to enable dynamic URL-based plugin activation, hooked into `api/interactions/navigation.js`.
-- Standardized kinetic actions (`click`, `type`, `hover`) in `api/interactions/actions.js` to use `middleware.js` pipelines instead of custom `executeWithRecovery`.
-- Added strict `ElementObscuredError` throwing to `actions.js` visual guard logic to enforce rigorous positional semantics.
-- Enhanced the `Agent Runner` (`api/agent/runner.js`) with generic adaptive delays, tying back to `api.config`, and added `_dumpDiagnostics` logic capturing LLM histories when fatal thresholds are breached.
-- Fixed residual syntax and ESLint warnings in touched files.
-- Corrected `_entropy` export mismatch in `utils/humanization/` and `utils/human-interaction.js`.
-- Updated `.ai-playground-prompt` with the official `REPLY_SYSTEM_PROMPT` for playground testing.
-
-28-02-2026--15-00
-- Fixed `gaussian` export error in `api/twitter/twitterAgent.js` by removing redundant named imports from `../utils/math.js`.
-- Verified `api-twitteractivity` task runs without math export errors.
-- Final verification of all humanization module fixes.
-- Resolved `_entropy` export mismatch error in `api-twitteractivity` and `utils/humanization/` scripts by updating module imports to definitively use `entropy`.
-
-28-02-2026--21-10
-Fixed reply post button click in `utils/human-interaction.js`:
-- Root cause: ghost cursor moves the mouse from the textarea to the Post button, triggering a `blur` on the textarea. Twitter's React state sees the composer as unfocused and ignores the click.
-- Fix: Try `el.click()` via `evaluate()` first — fires a click event without moving the mouse, so the textarea stays focused and React processes the submit. Ghost click and force click are now fallbacks only.
-
-28-02-2026--21-03
-Fixed 44s idle in `utils/ai-twitterAgent.js` after successful dive: the tweetDive branch was calling `simulateReading()` a second time after `diveTweet()` completed (line 1881). The dive already navigates home and the main loop's own `simulateReading()` at the start of the next iteration handles scrolling — the extra call was redundant and caused a full reading phase delay before `--- Loop N ---` was logged. Removed it.
-
-28-02-2026--21-00
-Fixed `tasks/pageview.js` reading duration bug: `Math.min(..., 20)` was clamping all randomised values to exactly 20.0s because `profileReadingMs` (mean=30s ±7.5s) always exceeded the 20s cap. Changed ceiling from 20 → 45 to match the intended 10–45s range.
-
-28-02-2026--20-51
-Updated `utils/openrouter-key-manager.js` to read from `config/settings.json`:
-- Keys sourced from `open_router_free_api.api_keys` (11 keys already configured).
-- Primary model sourced from `open_router_free_api.models.primary`.
-- Env vars `OR_API_KEYS` / `OR_API_KEY` / `OR_MODEL` still work as override.
-- Updated `prompt-test.js` to import `loadPrimaryModel` and use whatever model is set in settings.
-- No changes to settings.json — all keys were already there.
-
-28-02-2026--20-49
-Created `utils/openrouter-key-manager.js` — OpenRouter multi-key rotation manager:
-- Round-robin across all keys on every request.
-- On 429: marks key on cooldown (respects `retry-after` header, defaults to 60s), retries immediately with next key.
-- Logs key slot + last 4 chars on each request (e.g. `[KeyManager] Using key ...7f2a (slot 1/3)`).
-- Config: `OR_API_KEYS=key1,key2,key3` (comma-separated), falls back to `OR_API_KEY`.
-- Updated `prompt-test.js` to import `openrouterFetch` from the new manager (removed manual fetch + hardcoded key).
-
-28-02-2026--20-43
-Increased reply cap from 3 → 20 in `utils/twitter-reply-prompt.js` (`buildReplyPrompt`, `buildEnhancedPrompt`) and `utils/ai-reply-engine/index.js`. Each reply still capped at 80 chars; 20 replies × 80 chars ≈ 400 tokens, total still under 1000.
-
-28-02-2026--20-41
-Removed emoji-producing strategies from `utils/twitter-reply-prompt.js`:
-- Removed `TEXT_EMOJI` and `EMOJI_ONLY` from `STRATEGY_POOL` (now 20 strategies).
-- Removed their boost entries from `CONTEXT_BOOSTS` (humorous, entertainment, viral).
-- Repurposed both strategy definitions as text-only variants: `TEXT_EMOJI` → punchy short sentence, `EMOJI_ONLY` → very short 1-2 word reaction (no emoji).
-
-28-02-2026--20-34
-Strategy engine randomization in `utils/twitter-reply-prompt.js`:
-- Expanded strategies from 11 → 22 (added: HYPEMAN, LOWKEY, CALLOUT, AGREE_HARD, HOT_TAKE, REACTION, DOUBT, RELATE_STORY, HYPE_REPLY, DRY_WIT, CLOUT).
-- Replaced biased if-chain waterfall with a weighted random picker (`STRATEGY_POOL` + `CONTEXT_BOOSTS` maps). All 22 strategies can fire in any context; relevant ones get 2–3× weight boost. Verified via 2200-sample simulation — flat ~100/ea in default, proper thematic skew in each context type.
-
-28-02-2026--20-09
-Reply engine token optimization — reduced total tokens per LLM call from ~1200 to ~465:
-- `utils/twitter-reply-prompt.js`: Slimmed `REPLY_SYSTEM_PROMPT` from ~600 tokens to ~220 tokens (removed thread-type sections, approach examples, example conversations, length table). Restored `strategies` object with correct backtick template literals. Rewrote `buildReplyPrompt` with hard limits: tweet ≤500 chars, each reply ≤80 chars, max 3 replies. Rewrote `buildEnhancedPrompt` to lean user-prompt-only version (no system prompt prepend, same limits).
-- `utils/ai-reply-engine/index.js`: Rewrote `buildEnhancedPrompt` method to remove double system-prompt send (it was prepending `REPLY_SYSTEM_PROMPT` into the user prompt while `generateReply` already sends it as `systemPrompt`). New version sends only: strategy instruction + tweet (≤500 chars) + up to 3 replies (≤80 chars each) + `Reply:` footer.
-
-28-02-2026--21-12
-Fixed media playback issues permanently and created v0.4.8:
-- Diagnosed 403 Forbidden issues on X.com video streams via custom header interception scripts.
-- Discovered video requests were actually hitting 200 OK, but decoding was failing silently in `ixbrowser` custom binaries.
-- Removed explicit MP4/H.264 capability denial in `api/utils/browserPatch.js` and `utils/browserPatch.js` which was breaking X.com's internal player negotiations.
-- Restoring native negotiation allows the video player to automatically fallback appropriately and play videos correctly in WebM/HLS as needed.
-
-28-02-2026--21-25
-Fixed redundant context extraction during `api.replyWithAI()` and `api.quoteWithAI()`:
-- **Issue**: The agent was scrolling for context twice. Once sequentially in `AITwitterAgent` (legacy preparation), and again inside the new `api.replyWithAI()` macro.
-- **Fix**: Added `needsContext = false` flag to `agent.actions.reply` and `agent.actions.quote` within `tasks/api-twitterActivity.js`. Updated `ai-twitterAgent.js` line ~1272 to respect `needsContext` if present, skipping the heavy pre-fetch entirely when API macros are used.
-2026-03-01: Updated ixbrowser-proxies-pasang-tok.js - Added CLI support for profile IDs/ranges, implemented 3x retry mechanism, and 200ms stability delay.
-
-### Twitter Actions Unification Pass (2026-03-01)
-- Refactored all 6 core actions (`like.js`, `bookmark.js`, `retweet.js`, `follow.js`, `reply.js`, `quote.js`) to use the unified `api.click()` and `api.type()` helpers.
-- Ensured **Ghost Cursor Visibility** is enabled for all browser interactions.
-- Standardized logging format with `[actionWithAPI] Clicking ... (ghost cursor)...` prefix.
-- Maintained existing guards and verification polling logic for reliability.
-- Refactored `AIQuoteEngine` methods (`quoteMethodA`, `quoteMethodB`, `quoteMethodC`) for consistent interaction behavior.
-- Verified syntax for all modified files using `node -c`.
-
-2026-03-02--11:15
-- [FIX] corrected `mathUtils` dynamic import in `api/behaviors/scroll-helper.js` (removed incorrect `.default` access).
-- [FIX] corrected `scrollRandom()` signature mismatched calls in `api/behaviors/humanization/*.js` and `api/twitter/ai-twitterAgent.js` (removed redundant `page` argument).
-- [REFACTOR] unified `mathUtils` imports to `api/utils/math.js` across humanization modules to resolve `undefined` reference errors.
-- [VERIFY] ran `node main.js api-twitteractivity` to confirm resolution of `randomInRange` error.
-
-04-03-2026--17:05
-- [FIX] `api/utils/task-config-loader.js` > added missing `follow` probability to `engagement.probabilities` (was never loaded from `settings.json`, fell back to hardcoded 0.1).
-- [FIX] `tasks/api-twitterActivity.js` > added missing `follow` action to injected `config.actions` passed to `AITwitterAgent` (follow probability 0.9 from settings.json was being silently dropped).
-- [FIX] `api/twitter/ai-twitterAgent.js` > replaced single 15s ghost click timeout with retry loop: 3 attempts × 3s each, then native click fallback with 3s timeout.
-- [REFACTOR] `api/twitter/ai-twitterAgent.js` > replaced manual humanClick retry loop with `api.click()` for tweet permalink navigation (includes scroll-to-golden-view, stability check, obstruction guard, ghost cursor, built-in 3x retry). Native click fallback retained with 3s timeout.
+
+# AGENT-JOURNAL.md
+
+## Gemini CLI Agent Session: 2026-03-05
+
+### Objective:
+Repair a list of failing tests in the project.
+
+### Summary of Changes:
+
+This session focused on fixing a series of cascading test failures primarily caused by incorrect module mock paths after a project refactoring. The agent systematically diagnosed and corrected these paths, addressed incorrect test assertions, and handled a deleted module.
+
+### Detailed Changes by File:
+
+1.  **`api/tests/integration/unified-api.test.js`**:
+    *   **Issue**: `Element is obscured` error.
+    *   **Fix**: Improved the `locator.evaluate` mock to correctly handle the `isObscured` check by specifically looking for `elementFromPoint` in the evaluated function's source and returning `false`.
+
+2.  **`api/tests/integration/api/basic_flow.test.js`**:
+    *   **Issue**: `Element is obscured` error, same as above.
+    *   **Fix**: Applied the same `locator.evaluate` mock improvement as in `unified-api.test.js`.
+
+3.  **`api/tests/unit/ai-reply-engine.test.js`**:
+    *   **Issue 1**: Incorrect mock path for `twitter-reply-prompt.js`.
+    *   **Fix 1**: Corrected the `vi.mock` path from `../../utils/twitter-reply-prompt.js` to `../../twitter/twitter-reply-prompt.js`.
+    *   **Issue 2**: Flawed assertion expecting a `system` prompt in the `buildEnhancedPrompt` output.
+    *   **Fix 2**: Changed the assertion to check for `'strategy'` which is correctly part of the returned prompt.
+    *   **Issue 3**: Incorrect test data causing a filter to fail.
+    *   **Fix 3**: Modified test data to ensure a reply was long enough to pass the `length > 5` filter.
+    *   **Issue 4**: Test expected wrong method on fallback.
+    *   **Fix 4**: Corrected assertion to expect the fallback method `'tab_navigation'`.
+    *   **Issue 5**: Test expected `'Recent replies to this tweet:'` but implementation used `'Replies:'`.
+    *   **Fix 5**: Updated the test assertion to expect `'Replies:'`.
+
+4.  **`api/tests/unit/ai-twitterAgent-comprehensive.test.js`**:
+    *   **Issue**: Multiple incorrect mock paths (`ai-reply-engine`, `ai-quote-engine`, `session-phases`, etc.) causing "not a spy" errors.
+    *   **Fix**: Corrected all incorrect `vi.mock` paths to point to their new locations (e.g., from `@api/utils/...` to `@api/agent/...` or `@api/behaviors/...`).
+    *   **Issue**: Incorrect assertion for `scrollDown` value.
+    *   **Fix**: Corrected the expected `scrollDown` value in the test from 360 to 300 to match the mock.
+
+5.  **`api/tests/unit/ai-twitterAgent-coverage.test.js`**:
+    *   **Issue**: `expected 'undefined' to be 'object'` error due to incorrect mock path for `micro-interactions.js`.
+    *   **Fix**: Corrected the mock path from `@api/utils/micro-interactions.js` to `@api/behaviors/micro-interactions.js`.
+
+6.  **`api/tests/unit/ai-twitterAgent-enhanced.test.js`**:
+    *   **Issue**: `expected 0.48 to be 0.8` error due to multiple incorrect mock paths.
+    *   **Fix**: Corrected all incorrect mock paths, similar to the `comprehensive` test file.
+
+7.  **`api/tests/unit/ai-twitterAgent-real.test.js`**:
+    *   **Issue**: `expected undefined to be defined` and timeout errors due to numerous incorrect mock paths and a faulty dynamic import.
+    *   **Fix**: Corrected all incorrect mock paths. Removed a dynamic `import` of `mathUtils` that was bypassing the mock. Removed an unused mock for `config-service.js`. Fixed an incomplete `locator` mock that was missing the `.first()` method.
+
+8.  **`api/tests/unit/ai-twitterAgent.test.js`**:
+    *   **Issue**: "not a spy" error due to numerous incorrect mock paths.
+    *   **Fix**: Corrected all incorrect `vi.mock` paths.
+
+9.  **`api/utils/configLoader.js` & `api/tests/unit/api-config.test.js`**:
+    *   **Issue**: `expected {} to deeply equal null`. The `loadConfig` function incorrectly handled `null` values from JSON files.
+    *   **Fix**: Modified `loadConfig` to explicitly check for and handle `null` parsed data. Updated the corresponding test to assert that `fs.readFile` is called only once, reflecting the correct caching behavior.
+
+10. **`api/tests/unit/audit-verifier.test.js`**:
+    *   **Issue**: `Cannot find package` error because the file under test (`audit-verifier.js`) was deleted.
+    *   **Fix**: After user confirmation, deleted the orphaned test file `audit-verifier.test.js`.
+
+11. **`api/tests/unit/browserPatch.test.js`**:
+    *   **Issue**: `window is not defined` error.
+    *   **Fix**: Added a `global.window` mock to the test's `beforeEach` hook to simulate a browser environment.
+
+## Gemini CLI Agent Session: 2026-03-05 (Part 2)
+
+### Objective:
+Repair 3 more failing test files.
+
+### Summary of Changes:
+Updated test files to match current implementation logic and fixed minor bugs in the agent implementation to ensure consistent use of unified API methods.
+
+### Detailed Changes by File:
+
+1.  **`api/tests/unit/twitter-reply-prompt.test.js`**:
+    *   **Issue**: Widespread assertion failures because the test was outdated relative to the implementation.
+    *   **Fix**: Completely updated the test file to match the current logic in `twitter-reply-prompt.js`, including updated system prompt contents, strategy instruction weights, and reply truncation rules (80 chars instead of 200).
+
+2.  **`api/tests/unit/ai-quote-engine.test.js`**:
+    *   **Issue**: Fallback test was failing because it didn't guarantee the initial method selected was different from the fallback method.
+    *   **Fix**: Modified the test to explicitly mock the method selection to ensure it triggers the fallback path correctly.
+
+3.  **`api/twitter/twitterAgent.js`**:
+    *   **Issue**: Inconsistent use of `this.page.goto` and `this.page.waitForTimeout` which bypassed the unified `api` mocks and humanization logic.
+    *   **Fix**: Updated `navigateHome` and `postTweet` to consistently use `api.goto` and `api.wait`.
+
+4.  **`api/tests/unit/twitterAgent.test.js`**:
+    *   **Issue**: `navigateHome` test was failing due to initial URL state and random roll. `postTweet` test was failing because `api.wait` wasn't being called.
+    *   **Fix**: Updated the test to correctly set up the initial state and rolls. Verified that `postTweet` now calls `api.wait` after the implementation fix in `twitterAgent.js`.
+
+## Gemini CLI Agent Session: 2026-03-05 (Part 3)
+
+### Objective:
+Repair another 3 failing test files (ended up fixing 5).
+
+### Summary of Changes:
+Restored missing utility modules, fixed broken relative imports in task files, and resolved timeout issues in execution tests.
+
+### Detailed Changes by File:
+
+1.  **`api/utils/screenshot.js` (Restored)**:
+    *   **Issue**: File was missing, causing multiple tasks and tests to fail.
+    *   **Fix**: Re-implemented the `takeScreenshot` utility using the new project structure and standard Playwright APIs.
+
+2.  **`api/utils/randomScrolling.js` (Restored)**:
+    *   **Issue**: File was missing, causing `twitterscroll` task and tests to fail.
+    *   **Fix**: Re-implemented `createRandomScroller` as a wrapper around the unified `api.scroll.read` method.
+
+3.  **`tasks/twitterFollow.js`, `tasks/twitterTweet.js`, `tasks/twitterscroll.js`**:
+    *   **Issue**: Broken relative imports pointing to non-existent `../utils/` directory.
+    *   **Fix**: Updated all relative imports to correctly point to `../api/utils/`, `../api/twitter/`, or `../api/core/`.
+
+4.  **`api/tests/unit/tasks-twitter-follow.test.js`, `api/tests/unit/tasks-twitter-tweet.test.js`, `api/tests/unit/twitterscroll.test.js`**:
+    *   **Issue**: Outdated import paths and incomplete mocks.
+    *   **Fix**: Updated imports to use the correct `@tasks` and `@api` aliases. Improved mocks for `api` and `TwitterAgent`. Fixed a bug in the `api.visible` mock that caused keyboard shortcut fallbacks to be skipped.
+
+5.  **`api/tests/unit/ai-reply-engine-execution.test.js`**:
+    *   **Issue**: Test timing out because it was using real `api.wait` (which uses real `setTimeout`).
+    *   **Fix**: Added a mock for `@api/index.js` to provide non-blocking `wait` and `think` methods.
+
+6.  **`api/twitter/twitterAgent.js`**:
+    *   **Issue**: Continued use of `this.page.waitForTimeout` which bypassed humanization logic and caused test failures.
+    *   **Fix**: Performed a global replacement of `this.page.waitForTimeout` with `api.wait`.
+
+
+05-03-2026--05-56 > circuit-breaker.test.js > Fixed describe.skip to describe, changed mock path to @api/core/logger.js, and fixed reset() method key mismatch in circuit-breaker.js (was using getKey which produced 'm1::default' vs 'm1' used by other methods)
+
+05-03-2026--06-14 > humanization-session.test.js > Fixed mock path from @api/utils/mathUtils.js to ../../utils/math.js to match actual import in session.js (12 tests failing with "expected X to be Y" due to unmocked gaussian function)
+
+05-03-2026--11-18 > history-compactor.js > Implemented full HistoryCompactor module with compactHistory(), _performCompaction(), generateNarrativeSummary(), and getStats() methods. All 13 tests passing with 97.4% line coverage.
+
+05-03-2026--11-28 > api/tests/unit/api/agent/tokenCounter.test.js > Created test file for tokenCounter.js with 16 test cases covering estimateTokens, estimateMessageTokens, and estimateConversationTokens functions
+
+05-03-2026--11-36 > api/tests/unit/api/agent/llmClient.test.js > Created unit tests for LLMClient class (6 tests passing)
+140: 
+141: 05-03-2026--12:15 > Test Coverage Expansion > Improved coverage for 4 key modules:
+142: - `api/interactions/scroll.js`: 42.51% -> 58.70% (Added tests for read, back, focus, validation)
+143: - `api/core/sessionManager.js`: 38.24% -> 48.59% (Added tests for SimpleSemaphore, DB recovery, worker health)
+144: - `api/connectors/discovery/localBrave.js`: 44.18% -> 95.35% (Created full unit test suite)
+145: - `api/behaviors/humanization/content.js`: 25.39% -> 90.48% (Created full unit test suite for ContentSkimmer)
+## 2026-03-05
+- Refactored `tasks/followback.js` with improved navigation flow:
+  - Updated profile link selector to `a[data-testid="AppTabBar_Profile_Link"]`.
+  - Added specific followers link and tab selectors.
+  - Improved follow-back logic using `data-testid$="-follow"` and skipping "Following"/"Pending" states.
+  - Replaced `page.waitForTimeout` with `api.wait` for better jitter.
+  - Enhanced scrolling simulation with `api.scroll.toBottom`.
+- Parameterized `tasks/followback.js` to accept `maxFollows` via `payload.maxFollows` or `payload.url` (shorthand `followback=N`), defaulting to 1.
+- Refined `tasks/followback.js` button detection to prioritize "Follow back" text and `aria-label` attributes, ensuring more accurate identification of mutual follow opportunities.
+- Added username extraction from `aria-label` to log exactly which user was followed during the task.
+- Refined scrolling simulation in `tasks/followback.js` to use `api.scroll.read`, implementing a human-like "stop-and-read" pattern with micro-drifts and variable speeds.
+- Improved `tasks/followback.js` robustness by using a more generic button selector `[data-testid$="-follow"]` and preventing accidental tab switching when already on the "Verified Followers" list.
+- Refactored `api/core/logger.js` to output human-readable text to `logs.txt` and structured JSON to `logs.json`.
+- Restored system logging in `tasks/followback.js` by replacing direct `console` calls with `createLogger`.
+- Fixed shorthand validation error (e.g., `followback=1`) by updating `main.js` to assign numeric shorthand values to a `value` field instead of `url`.
+- Updated `tasks/followback.js` to parse `maxFollows` from the new `payload.value` field.
+- Improved `tasks/followback.js` follow verification: after clicking a follow button, the script now polls the button text for up to 5s to confirm it changed to "Following" before counting as success. Unverified clicks are logged as warnings and not counted.
+- Fixed `tasks/followback.js` off-screen click bug: added `scrollIntoView({ block: 'center', behavior: 'smooth' })` before clicking follow buttons — previously ghost cursor was clicking at y=-655 because buttons were scrolled out of view.
+- Fixed `tasks/followback.js` follow verification: Playwright locators are live, so after clicking a `-follow` button (which changes to `-unfollow`), `nth(i)` silently shifted to the wrong button. Now captures the exact `data-testid` before clicking and verifies by checking for the `-unfollow` variant.
+- Replaced `tasks/followback.js` single-pass follow loop with scroll-and-click while-loop: re-scans buttons each round, scrolls down when no eligible buttons remain, tracks clicked buttons via `clickedTestIds` Set, and stops after reaching `maxFollows` or 3 consecutive empty scrolls.
+- Added follow count to system metrics: imported `metricsCollector` and calls `recordSocialAction('follow', followBackCount)` so follows appear in the `f=` field of the Twitter metrics summary.
+- Code review fixes for `tasks/followback.js`: fixed `scroll.read()` first-arg (pass `null` as target), fixed wrong fallback URL (`/settings/profile` → `/me`), used `isAlreadyOnFollowers` to skip redundant tab click, fixed lying comment (3→10), wrapped `api.scroll.focus` in try/catch with `scrollIntoViewIfNeeded` fallback, always track `clickedTestIds` + skip empty testIds, removed `page.close()` from finally (orchestrator owns page lifecycle).
+
+05-03-2026--15-20 > ai-quote-engine.test.js, logger.test.js > Fixed 2 failing tests: removed unreliable selectMethodImpl mock from fallback test, replaced fs.appendFile mockImplementationOnce with vi.spyOn in flushLogBuffer error test
+
+## Gemini CLI Agent Session: 2026-03-05 (Part 4)
+
+### Objective:
+Refine log output format and improve context propagation.
+
+### Summary of Changes:
+Implemented a consistent logging format `[sessionId][taskName][scriptName] Message` and ensured that session/task context is correctly propagated even in nested calls or existing page contexts. Cleaned up redundant log prefixes in `followback.js`.
+
+### Detailed Changes by File:
+
+1.  **`api/core/context.js`**:
+    *   **Fix**: Refactored `withPage` to ensure `loggerContext` is always updated with the provided `sessionId` and `taskName`, even if a page context already exists. This ensures that manually provided session IDs (like `roxy:0001`) take precedence over generated ones.
+
+2.  **`api/core/logger.js`**:
+    *   **Fix**: Verified and refined the `_log` method to assemble tags in the correct order: `[sessionId][taskName][scriptName]`. Added logic to clean `.js` suffixes and avoid redundant tags if they match.
+
+3.  **`tasks/followback.js`**:
+    *   **Cleanup**: Removed all hardcoded `[followback]` prefixes from log messages (info, warn, error) as they are now dynamically added by the logger.
+    *   **Fix**: Ensured `api.withPage` correctly passes `taskName: 'followback'` and `sessionId: browserInfo`.
+
+4.  **`api/index.js`**:
+    *   **Verification**: Confirmed `withPage` is correctly exported for use in tasks.
+05-03-2026--17-12 > added api.screenshot() method to api/index.js
+05-03-2026--17-12 > added tests for memory-profiler, sensors, roi-detector, screenshot
+05-03-2026--17-25 > fixed logger.test.js failing tests (7 tests)
+05-03-2026--17-25 > added tests for patch.js (5 tests)
+05-03-2026--18-20 > random-scrolling.test.js > Created new test file for randomScrolling.js with 5 tests covering createRandomScroller function, api.scroll.read calls, api.wait calls, and scroll options (now 100% coverage)
+05-03-2026--18-22 > added tests for popup-closer.js (9 tests)
+05-03-2026--18-22 > added tests for free-openrouter-helper.js (5 tests)
+05-03-2026--19-05 > Improved screenshot.test.js (9 tests, now 100% coverage) and sensors.test.js (9 tests, improved coverage)
+
+## Gemini CLI Agent Session: 2026-03-05 (Part 5)
+
+### Objective:
+Refine log output format across all remaining tasks.
+
+### Summary of Changes:
+Ensured consistent context propagation and formatting for all task modules. Corrected argument order for `api.withPage` in multiple files.
+
+### Detailed Changes by File:
+
+1.  **`tasks/pageview.js`**:
+    *   **Fix**: Corrected `api.withPage` argument order to `(page, asyncFn, options)`.
+
+2.  **`tasks/cookiebot.js`**:
+    *   **Fix**: Corrected `api.withPage` argument order and updated logger name.
+
+3.  **`tasks/api-twitterActivity.js`**:
+    *   **Fix**: Corrected `api.withPage` argument order and fixed syntax error at the end of the file.
+
+4.  **`tasks/followback.js`**:
+    *   **Cleanup**: Updated logger name to `followback.js` for consistency.
+05-03-2026--19-05 > test improvements summary: 202 test files, 4567 tests passing, improved coverage on memory-profiler, patch, roi-detector, screenshot modules
+05-03-2026--19-58 > created quote.test.js (7 tests) and reply.test.js (8 tests), improved coverage: quote.js 1.4% → 82.35%, reply.js 0.96% → 85.71%
+05-03-2026--20-23 > created actionEngine.test.js (14 tests), runner.test.js (9 tests), click-profiles.test.js (9 tests); improved coverage: actionEngine.js 1.9% → 50.47%
+06-03-2026--19-52 > Various test files > Expanded runner.test.js, created vision.test.js, persona.test.js, and humanization-error.test.js with improved coverage
+06-03-2026--19-55 > Test expansion > Expanded actionEngine.test.js with error handling tests, added new vision.test.js, persona.test.js, and humanization-error.test.js
+06-03-2026--19-57 > Test expansion > Added banners.test.js with 7 tests (100% coverage), verified comprehensive test coverage across api module
+06-03-2026--19-59 > Test expansion > Expanded actionEngine.test.js with getLocator tests, improved coverage from 59% to 77%

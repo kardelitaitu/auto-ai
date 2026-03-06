@@ -77,6 +77,7 @@ async function getActiveLLM() {
         return {
             name: 'Ollama',
             model: model,
+            endpoint,
             fetch: async (path, body) => ollamaFetch(path, body, endpoint)
         };
     }
@@ -110,6 +111,7 @@ async function getActiveLLM() {
 const activeLLM = await getActiveLLM();
 const LLM_MODEL = activeLLM.model;
 const LLM_PROVIDER = activeLLM.name;
+const LLM_ENDPOINT = activeLLM.endpoint || 'http://localhost:11434';
 
 // ─── Test Tweets ───────────────────────────────────────────────────────────
 const TESTS = [
@@ -516,10 +518,10 @@ async function runTest({ label, author, tweet, replies }) {
     }
 }
 
-console.log(`\nPrompt Test — Provider: ${LLM_PROVIDER}\n`);
+console.log(`\nPrompt Test — Provider: ${LLM_PROVIDER || 'unknown'}\n`);
 
 if (LLM_PROVIDER === 'local') {
-    const baseUrl = LLM_ENDPOINT.replace(/\/api\/.*$/, '').replace(/\/$/, '');
+    const baseUrl = (LLM_ENDPOINT || 'http://localhost:11434').replace(/\/api\/.*$/, '').replace(/\/$/, '');
     console.log(`⏳ Preloading model '${LLM_MODEL}' into VRAM...`);
     try {
         await fetch(`${baseUrl}/api/generate`, {

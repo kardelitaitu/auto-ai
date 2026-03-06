@@ -6,7 +6,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('discovery.js');
 

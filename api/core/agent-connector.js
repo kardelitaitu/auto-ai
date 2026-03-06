@@ -4,7 +4,7 @@
  * @module core/agent-connector
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import LocalClient from './local-client.js';
 import CloudClient from './cloud-client.js';
 import VisionInterpreter from './vision-interpreter.js';

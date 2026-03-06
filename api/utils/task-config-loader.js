@@ -9,7 +9,7 @@ import { getSettings } from "./configLoader.js";
 import { ConfigValidator } from "./config-validator.js";
 import { ConfigCache } from "./config-cache.js";
 import { EnvironmentConfig } from "./environment-config.js";
-import { createLogger } from "./logger.js";
+import { createLogger } from "../core/logger.js";
 
 const logger = createLogger("task-config-loader.js");
 

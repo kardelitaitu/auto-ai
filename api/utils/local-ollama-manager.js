@@ -5,7 +5,7 @@
  */
 
 import { exec, execSync } from 'child_process';
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 import { getSettings } from './configLoader.js';
 
 const logger = createLogger('ollama-manager.js');

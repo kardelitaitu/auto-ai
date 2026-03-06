@@ -116,33 +116,32 @@ export function getStore() {
  * 
  * @param {import('playwright').Page} page - Playwright page instance
  * @param {Function} asyncFn - Async function to execute with this page bound
+ * @param {object} [options] - Context options
+ * @param {string} [options.taskName] - Task name for logging context
+ * @param {string} [options.sessionId] - Session ID for logging context
  * @returns {Promise<any>}
  */
-export async function withPage(page, asyncFn) {
+export async function withPage(page, asyncFn, options = {}) {
     if (!page) throw new Error('withPage requires a valid Playwright page instance.');
 
-    // If we are already in a context for THIS page, just continue
+    // Logging context integration
+    const existingLoggerContext = loggerContext.getStore();
+    const sessionId = options.sessionId || existingLoggerContext?.sessionId || `session-${randomUUID().slice(0, 8)}`;
+    const traceId = existingLoggerContext?.traceId || randomUUID();
+    const taskName = options.taskName || existingLoggerContext?.taskName;
+
+    const runWithLogger = (fn) => loggerContext.run({ sessionId, traceId, taskName }, fn);
+
+    // If we are already in a context for THIS page, just continue but with potentially updated logger context
     const existingStore = getStore();
     if (existingStore && existingStore.page === page) {
-        return await asyncFn();
+        return await runWithLogger(asyncFn);
     }
 
-    // Logging context integration
-    const existingContext = loggerContext.getStore();
-    const sessionId = existingContext?.sessionId || `session-${randomUUID().slice(0, 8)}`;
-    const traceId = existingContext?.traceId || randomUUID();
-
     const store = createStore(page);
-
-    return loggerContext.run({ sessionId, traceId }, async () => {
-        return contextStore.run(store, asyncFn);
-    });
+    return runWithLogger(() => contextStore.run(store, asyncFn));
 }
 
-/**
- * Checks if the current page and browser are active.
- * @returns {boolean}
- */
 export function isSessionActive() {
     const store = contextStore.getStore();
     if (!store || !store.page) return false;

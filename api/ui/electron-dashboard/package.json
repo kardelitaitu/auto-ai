@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Monitoring dashboard for Auto-AI browser automation",
   "main": "main.cjs",
+  "type": "module",
   "scripts": {
     "start": "electron .",
     "dev": "electron ."

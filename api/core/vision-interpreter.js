@@ -4,7 +4,7 @@
  * @module core/vision-interpreter
  */
 
-// import { createLogger } from '../utils/logger.js';
+// import { createLogger } from '../core/logger.js';
 
 // const logger = createLogger('vision-interpreter.js');
 

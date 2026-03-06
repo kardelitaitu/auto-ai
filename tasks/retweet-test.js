@@ -1,5 +1,5 @@
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
 

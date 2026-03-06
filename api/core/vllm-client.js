@@ -4,7 +4,7 @@
  * @module core/vllm-client
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { getSettings } from '../utils/configLoader.js';
 
 const logger = createLogger('vllm-client.js');

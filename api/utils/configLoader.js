@@ -6,7 +6,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('configLoader.js');
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -38,7 +38,14 @@ export class ConfigLoader {
     try {
       const configPath = path.join(this.configDir, `${filename}.json`);
       const data = await fs.readFile(configPath, 'utf8');
-      const config = { ...defaults, ...JSON.parse(data) };
+      const parsedData = JSON.parse(data);
+
+      if (parsedData === null) {
+          this.cache.set(cacheKey, null);
+          return null;
+      }
+      
+      const config = { ...defaults, ...parsedData };
 
       this.cache.set(cacheKey, config);
       logger.debug(`Loaded configuration from ${filename}.json`);

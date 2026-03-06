@@ -5,7 +5,7 @@
  */
 
 import { createLogger } from '../core/logger.js';
-import { mathUtils } from '../utils/mathUtils.js';
+import { mathUtils } from '../utils/math.js';
 import { api } from '../index.js';
 
 /**

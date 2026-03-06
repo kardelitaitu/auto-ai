@@ -1,4 +1,4 @@
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import { api } from '../api/index.js';
 
 /**

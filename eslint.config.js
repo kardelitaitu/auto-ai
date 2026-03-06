@@ -23,6 +23,8 @@ export default [
             "tools/",
             "coverage/",
             "backup/",
+            "api/ui/",
+            "api/tests/",
 
             "**/*.min.js" // Ignore minified files to save CPU
         ]

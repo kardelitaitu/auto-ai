@@ -9,7 +9,7 @@ import SessionManager from './sessionManager.js';
 import Discovery from './discovery.js';
 import Automator from './automator.js';
 import { api } from '../index.js';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { getSettings, getTimeoutValue } from '../utils/configLoader.js';
 import { validateTaskExecution, validatePayload } from '../utils/validator.js';
 import { TaskTimeoutError } from './errors.js';

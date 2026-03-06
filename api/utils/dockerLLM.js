@@ -4,7 +4,7 @@
  * @module utils/dockerLLM
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 import { getSettings } from './configLoader.js';
 import { exec } from 'child_process';
 // import { promisify } from 'util';

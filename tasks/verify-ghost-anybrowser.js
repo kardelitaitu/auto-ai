@@ -1,4 +1,4 @@
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import { verifyGhostOnPage } from '../verify-ghost-anybrowser.js';
 
 export default async function verifyGhostAnyBrowserTask(page, payload = {}) {

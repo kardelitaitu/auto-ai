@@ -18,7 +18,7 @@ const TARGET_TWEET_URL = 'https://x.com/_nadiku/status/1998218314703852013';
 const MANUAL_REFERRER = ''; // e.g. 'https://www.reddit.com/r/technology/'
 
 import { api } from '../api/index.js';
-import { createLogger } from '../api/utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import { profileManager } from '../api/utils/profileManager.js';
 import { mathUtils } from '../api/utils/math.js';
 import { ReferrerEngine } from '../api/utils/urlReferrer.js';
@@ -29,7 +29,9 @@ function extractUsername(tweetUrl) {
     try {
         const parts = new URL(tweetUrl).pathname.split('/').filter(Boolean);
         if (parts.length >= 1) return parts[0];
-    } catch (_e) { }
+    } catch (_e) {
+        // Ignore URL parsing errors
+    }
     return null;
 }
 
@@ -175,8 +177,8 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                     try {
                         await api.waitVisible('article[data-testid="tweet"]', { timeout: 60000 });
                         logger.info(`[api-twitterFollowLikeRetweet] Tweet loaded.`);
-                    } catch (_e) {
-                        throw new Error('Tweet did not load in time.');
+                    } catch (err) {
+                        throw new Error('Tweet did not load in time.', { cause: err });
                     }
 
                     // Brief read before acting
@@ -188,7 +190,9 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
 
                     try {
                         await api.scroll.focus('article[data-testid="tweet"]');
-                    } catch (_e) { }
+                    } catch (_e) {
+                        // Ignore scroll focus errors
+                    }
 
                     const retweetResult = await api.retweetWithAPI({ tweetElement: tweetArticle });
 
@@ -250,10 +254,9 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                             waitUntil: 'domcontentloaded',
                             warmup: false
                         });
-                        navigatedToProfile = true;
+                    } else {
+                        await api.think(3000);
                     }
-
-                    await api.waitForLoadState('domcontentloaded');
                     logger.info(`[api-twitterFollowLikeRetweet] On profile: ${page.url()}`);
 
                     // ── STEP 4: Read profile ~10-15s ─────────────────────────
@@ -336,6 +339,8 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
     } finally {
         try {
             if (page && !page.isClosed()) await page.close();
-        } catch (_e) { }
+        } catch (_e) {
+            // Ignore page close errors
+        }
     }
 }

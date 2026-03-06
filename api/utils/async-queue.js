@@ -4,7 +4,7 @@
  * @module utils/async-queue
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
 
 export class AsyncQueue {

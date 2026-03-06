@@ -138,19 +138,32 @@ export function validationMiddleware() {
   };
 }
 
+const NON_RETRYABLE_ERRORS = [
+  'Target closed',
+  'Context closed',
+  'Browser has been closed',
+  'SessionDisconnectedError',
+  'SESSION_DISCONNECTED',
+  'PAGE_CLOSED'
+];
+
+export function isNonRetryableError(error) {
+  if (!error) return false;
+  const msg = (error.message || '').toLowerCase();
+  const code = error.code || '';
+  return NON_RETRYABLE_ERRORS.some(err =>
+    msg.includes(err.toLowerCase()) || code === err
+  );
+}
+
 /**
  * Retry middleware - auto-retry on failure.
- * @param {object} [options]
- * @param {number} [options.maxRetries=3] - Max retry attempts
- * @param {number} [options.backoffMultiplier=2] - Exponential backoff
- * @param {Function} [options.shouldRetry] - Custom retry condition
- * @returns {Function}
  */
 export function retryMiddleware(options = {}) {
   const {
     maxRetries = 3,
     backoffMultiplier = 2,
-    shouldRetry = () => true
+    shouldRetry = (e) => !isNonRetryableError(e)
   } = options;
 
   return async (context, next) => {
@@ -167,8 +180,8 @@ export function retryMiddleware(options = {}) {
       } catch (e) {
         lastError = e;
 
-        if (!shouldRetry(e) || attempt >= maxRetries) {
-          throw e;
+        if (!shouldRetry(lastError) || attempt >= maxRetries) {
+          throw lastError;
         }
 
         const delay = Math.pow(backoffMultiplier, attempt) * 100;

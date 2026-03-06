@@ -4,7 +4,7 @@
  * @module utils/ai-reply-engine/context
  */
 
-import { mathUtils } from "../../utils/mathUtils.js";
+import { mathUtils } from "../../utils/math.js";
 import { api } from "../../index.js";
 
 export async function captureContext(engine, page, tweetUrl = "") {

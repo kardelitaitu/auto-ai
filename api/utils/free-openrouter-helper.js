@@ -4,7 +4,7 @@
   * @module utils/free-openrouter-helper
   */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 import { createProxyAgent } from './proxy-agent.js';
 
 const logger = createLogger('free-openrouter-helper.js');

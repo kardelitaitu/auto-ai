@@ -4,8 +4,8 @@
  * @module utils/ai-reply-engine
  */
 
-import { createLogger } from "../../utils/logger.js";
-import { mathUtils } from "../../utils/mathUtils.js";
+import { createLogger } from "../../core/logger.js";
+import { mathUtils } from "../../utils/math.js";
 import { sentimentService } from "../../utils/sentiment-service.js";
 import { REPLY_SYSTEM_PROMPT, getStrategyInstruction } from "../../twitter/twitter-reply-prompt.js";
 import { HumanInteraction } from "../../behaviors/human-interaction.js";

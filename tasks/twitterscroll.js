@@ -3,7 +3,8 @@
  * @module tasks/twitterscroll
  */
 
-import { createRandomScroller, createLogger } from '../utils/utils.js';
+import { createRandomScroller } from '../api/utils/randomScrolling.js';
+import { createLogger } from '../api/core/logger.js';
 
 /**
  * An automation task that navigates to Twitter/X and scrolls.
@@ -19,7 +20,7 @@ export default async function twitterscroll(page, payload) {
     logger.info(`Starting task...`);
 
     // Apply visibility spoofing
-    const { applyHumanizationPatch } = await import('../utils/browserPatch.js');
+    const { applyHumanizationPatch } = await import('../api/utils/browserPatch.js');
     await applyHumanizationPatch(page, logger);
 
     const randomScrolling = createRandomScroller(page);

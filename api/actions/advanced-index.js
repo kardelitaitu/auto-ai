@@ -4,7 +4,7 @@
  * @module utils/actions
  */
 
-import { createLogger } from "../utils/logger.js";
+import { createLogger } from "../core/logger.js";
 
 export { AIReplyAction } from "./ai-twitter-reply.js";
 export { AIQuoteAction } from "./ai-twitter-quote.js";

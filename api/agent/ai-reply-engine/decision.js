@@ -4,7 +4,7 @@
  * @module utils/ai-reply-engine/decision
  */
 
-import { mathUtils } from "../../utils/mathUtils.js";
+import { mathUtils } from "../../utils/math.js";
 import { sentimentService } from "../../utils/sentiment-service.js";
 import { getStrategyInstruction, getReplyLengthGuidance, getSentimentGuidance, REPLY_SYSTEM_PROMPT } from "../../twitter/twitter-reply-prompt.js";
 

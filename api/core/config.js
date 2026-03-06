@@ -35,7 +35,7 @@ const DEFAULTS = {
     }
 };
 
-class ConfigurationManager {
+export class ConfigurationManager {
     constructor() {
         this._config = null;
         this._overrides = {};
@@ -52,6 +52,7 @@ class ConfigurationManager {
 
             // Merge defaults with raw settings
             this._config = {
+                ...raw,
                 agent: {
                     llm: {
                         ...DEFAULTS.agent.llm,
@@ -65,8 +66,7 @@ class ConfigurationManager {
                 timeouts: {
                     ...DEFAULTS.timeouts,
                     ...raw.timeouts
-                },
-                ...raw
+                }
             };
         } catch (_e) {
             logger.warn('Failed to load raw settings, using defaults');

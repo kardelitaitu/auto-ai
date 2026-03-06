@@ -6,7 +6,7 @@
  */
 
 import 'dotenv/config';
-import { createLogger } from './api/utils/logger.js';
+import { createLogger } from './api/core/logger.js';
 import { showBanner } from './api/utils/banner.js';
 import Orchestrator from './api/core/orchestrator.js';
 import { ensureDockerLLM } from './api/utils/dockerLLM.js';

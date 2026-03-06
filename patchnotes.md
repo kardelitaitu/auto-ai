@@ -1,3 +1,60 @@
+### ✅ version 0.7.5
+(05 March 2026) Logging Context & Format Refinement
+- **Consistent Log Tags**: Implemented `[sessionId][taskName][scriptName]` format across the entire API.
+- **Improved Context Propagation**: Refactored `withPage` to correctly prioritize provided session IDs and task names, ensuring accurate logging even in nested automation calls (e.g., `api.click`).
+- **Cleaned Task Logs**: Removed redundant hardcoded prefixes from `followback.js`, leveraging the new contextual logging system for cleaner and more professional output.
+- **Session ID Prioritization**: Guaranteed that `browserInfo` derived IDs (like `roxy:0001`) are used as the primary `sessionId` in logs.
+
+### ✅ version 0.7.4
+(05 March 2026) Targeted Test Coverage Expansion (Phase 2)
+- **Refined Follow-Back Task**:
+  - Improved `tasks/followback.js` with more robust profile and follower detection.
+  - Standardized timeouts to `api.wait` for consistent humanization.
+  - Added logic to explicitly skip "Following" or "Pending" states to prevent accidental unfollows.
+  - Added `maxFollows` parameter support (default 1) via command-line shorthand (e.g., `followback=5`).
+  - Refined button detection to prioritize "Follow back" text and `aria-label` for better accuracy.
+  - Added username logging for follow-back actions.
+  - Improved `tasks/followback.js` selector to be more inclusive and smarter about tab navigation.
+  - Refactored `api/core/logger.js` to provide human-readable text in `logs.txt` and structured JSON in `logs.json`.
+  - Restored system logging in `tasks/followback.js` by replacing direct `console` calls with `createLogger`.
+  - Fixed shorthand validation error (e.g., `followback=1`) by updating `main.js` to handle numeric shorthand values via a generic `value` field.
+- **Significant Coverage Gains**:
+  - `api/behaviors/humanization/content.js`: **90.48%** (from 25.39%)
+  - `api/connectors/discovery/localBrave.js`: **95.35%** (from 44.18%)
+  - `api/interactions/scroll.js`: **58.70%** (from 42.51%)
+  - `api/core/sessionManager.js`: **48.59%** (from 38.24%)
+- **New Test Files**:
+  - `api/tests/unit/content-skimmer.test.js` (8 tests)
+  - `api/tests/unit/localBrave.test.js` (5 tests)
+- **Enhanced Test Files**:
+  - `api/tests/unit/api/scroll.test.js` (Expanded to 23 tests)
+  - `api/tests/unit/sessionManager.test.js` (Expanded to 9 tests, including DB recovery)
+- **Refactored for Testability**: Exported `SimpleSemaphore` from `sessionManager.js`.
+
+### ✅ version 0.7.3
+(05 March 2026) Test Coverage Expansion & Config Merging Fix
+- **100% Line Coverage**: Achieved perfect line coverage for three critical modules:
+  - `api/behaviors/scroll-helper.js` (Created `scroll-helper.test.js`)
+  - `api/core/config.js` (Created `core-config.test.js`)
+  - `api/core/errors.js` (Created `core-errors.test.js`)
+- **Fixed Config Merging Bug**: Corrected the `ConfigurationManager.init()` method to properly merge nested `agent` and `timeouts` properties. Previously, raw input would overwrite the entire nested object instead of merging with defaults.
+- **Exported ConfigurationManager**: Surface the class in `api/core/config.js` to enable deep unit testing of initialization logic.
+
+### ✅ version 0.7.2
+(05 March 2026) Core API Test Suite Stabilization
+- **Fixed Core API Tests**: Achieved 100% pass rate (180 tests) for the 8 primary API core modules.
+- **Alias Migration**: Finished standardizing all static and dynamic imports in test files to the `@api` absolute alias.
+- **Pipeline Retry Fix**: Corrected a bug in `actions.js` where the `recovery` option was ignored by the middleware pipeline, causing extra retry attempts in `actions.test.js`.
+- **Dynamic Import Resolution**: Fixed "Module Not Found" errors in `cursor` and `attention` tests by updating dynamic imports to use the correct alias logic.
+
+### ✅ version 0.7.1
+(04 March 2026) API Import Path Repairs
+- **REPAIRED API IMPORTS**: Fixed broken relative import paths in 7 unit test files:
+  - `plugins.test.js`, `queries.test.js`, `recover_behavior.test.js`, `recover.test.js`, `scroll.test.js`, `sensors.test.js`, `timing.test.js`
+  - Migrated paths from brittle `../../../api/` structures to robust `@api` aliases
+  - Fixed mock paths to ensure consistent module resolution in Vitest
+- **Verified Stability**: All 106 tests across the affected files are confirmed passing.
+
 ### ✅ version 0.7.0
 (04 March 2026) Phase 1 Cleanup & Consolidation
 - **CircuitBreaker Consolidation**: `utils/circuit-breaker.js` now re-exports from `core/circuit-breaker.js`

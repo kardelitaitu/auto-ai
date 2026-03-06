@@ -37,7 +37,8 @@ export async function applyHumanizationPatch(page, logger) {
             const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
             HTMLCanvasElement.prototype.toDataURL = function (...args) {
                 // Skip poisoning on X.com/Twitter to avoid "privacy extension" detection
-                if (window.location.hostname.includes('x.com') || window.location.hostname.includes('twitter.com')) {
+                if (typeof window !== 'undefined' && window.location && 
+                    (window.location.hostname.includes('x.com') || window.location.hostname.includes('twitter.com'))) {
                     return originalToDataURL.apply(this, args);
                 }
 

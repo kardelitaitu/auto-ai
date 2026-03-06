@@ -4,7 +4,7 @@
  * @module utils/config-cache
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('config-cache.js');
 
@@ -21,10 +21,10 @@ export class ConfigCache {
         this.hitCount = 0;
         this.missCount = 0;
         this.evictionCount = 0;
-        
+
         logger.debug(`[ConfigCache] Initialized with TTL: ${this.ttl}ms, maxSize: ${this.maxSize}`);
     }
-    
+
     /**
      * Get value from cache
      * @param {string} key - Cache key
@@ -32,14 +32,14 @@ export class ConfigCache {
      */
     get(key) {
         const entry = this.cache.get(key);
-        
+
         if (!entry) {
             this.missCount++;
             return null;
         }
-        
+
         const now = Date.now();
-        
+
         // Check TTL
         if (now - entry.timestamp > this.ttl) {
             this.cache.delete(key);
@@ -49,15 +49,15 @@ export class ConfigCache {
             logger.debug(`[ConfigCache] Entry expired: ${key}`);
             return null;
         }
-        
+
         // Update LRU order
         this.accessOrder.set(key, now);
         this.hitCount++;
-        
+
         logger.debug(`[ConfigCache] Cache hit: ${key}`);
         return entry.value;
     }
-    
+
     /**
      * Set value in cache
      * @param {string} key - Cache key
@@ -65,7 +65,7 @@ export class ConfigCache {
      */
     set(key, value) {
         const now = Date.now();
-        
+
         // Check if key already exists
         if (this.cache.has(key)) {
             this.cache.set(key, { value, timestamp: now });
@@ -73,36 +73,36 @@ export class ConfigCache {
             logger.debug(`[ConfigCache] Updated existing entry: ${key}`);
             return;
         }
-        
+
         // Check if cache is full and evict LRU entry
         if (this.cache.size >= this.maxSize) {
             this.evictLRU();
         }
-        
+
         // Add new entry
         this.cache.set(key, { value, timestamp: now });
         this.accessOrder.set(key, now);
-        
+
         logger.debug(`[ConfigCache] Added new entry: ${key}`);
     }
-    
+
     /**
      * Evict least recently used entry
      * @private
      */
     evictLRU() {
         if (this.cache.size === 0) return;
-        
+
         let oldestKey = null;
         let oldestTime = Infinity;
-        
+
         for (const [key, timestamp] of this.accessOrder.entries()) {
             if (timestamp < oldestTime) {
                 oldestTime = timestamp;
                 oldestKey = key;
             }
         }
-        
+
         if (oldestKey) {
             this.cache.delete(oldestKey);
             this.accessOrder.delete(oldestKey);
@@ -110,7 +110,7 @@ export class ConfigCache {
             logger.debug(`[ConfigCache] Evicted LRU entry: ${oldestKey}`);
         }
     }
-    
+
     /**
      * Delete entry from cache
      * @param {string} key - Cache key
@@ -124,7 +124,7 @@ export class ConfigCache {
         }
         return deleted;
     }
-    
+
     /**
      * Clear all entries from cache
      */
@@ -134,7 +134,7 @@ export class ConfigCache {
         this.accessOrder.clear();
         logger.info(`[ConfigCache] Cleared ${size} entries`);
     }
-    
+
     /**
      * Check if key exists in cache
      * @param {string} key - Cache key
@@ -143,7 +143,7 @@ export class ConfigCache {
     has(key) {
         return this.get(key) !== null;
     }
-    
+
     /**
      * Get cache statistics
      * @returns {object} Cache statistics
@@ -151,7 +151,7 @@ export class ConfigCache {
     getStats() {
         const totalRequests = this.hitCount + this.missCount;
         const hitRate = totalRequests > 0 ? (this.hitCount / totalRequests * 100).toFixed(2) : '0.00';
-        
+
         return {
             size: this.cache.size,
             maxSize: this.maxSize,
@@ -163,7 +163,7 @@ export class ConfigCache {
             totalRequests
         };
     }
-    
+
     /**
      * Get cache entries (for debugging)
      * @returns {Array} Array of cache entries with metadata
@@ -171,7 +171,7 @@ export class ConfigCache {
     getEntries() {
         const now = Date.now();
         const entries = [];
-        
+
         for (const [key, entry] of this.cache.entries()) {
             entries.push({
                 key,
@@ -180,10 +180,10 @@ export class ConfigCache {
                 expires: entry.timestamp + this.ttl
             });
         }
-        
+
         return entries.sort((a, b) => b.age - a.age);
     }
-    
+
     /**
      * Clean expired entries
      * @returns {number} Number of entries cleaned
@@ -191,7 +191,7 @@ export class ConfigCache {
     cleanExpired() {
         const now = Date.now();
         let cleaned = 0;
-        
+
         for (const [key, entry] of this.cache.entries()) {
             if (now - entry.timestamp > this.ttl) {
                 this.cache.delete(key);
@@ -199,14 +199,14 @@ export class ConfigCache {
                 cleaned++;
             }
         }
-        
+
         if (cleaned > 0) {
             logger.info(`[ConfigCache] Cleaned ${cleaned} expired entries`);
         }
-        
+
         return cleaned;
     }
-    
+
     /**
      * Update cache TTL
      * @param {number} newTTL - New TTL in milliseconds
@@ -215,35 +215,35 @@ export class ConfigCache {
         this.ttl = newTTL;
         logger.info(`[ConfigCache] Updated TTL to ${newTTL}ms`);
     }
-    
+
     /**
      * Update cache max size
      * @param {number} newMaxSize - New maximum cache size
      */
     updateMaxSize(newMaxSize) {
         this.maxSize = newMaxSize;
-        
+
         // Evict excess entries if needed
         while (this.cache.size > this.maxSize) {
             this.evictLRU();
         }
-        
+
         logger.info(`[ConfigCache] Updated max size to ${newMaxSize}`);
     }
-    
+
     /**
      * Get memory usage estimate
      * @returns {object} Memory usage statistics
      */
     getMemoryUsage() {
         let estimatedSize = 0;
-        
+
         for (const [key, entry] of this.cache.entries()) {
             // Estimate size of key and value
             estimatedSize += key.length * 2; // UTF-16 characters
             estimatedSize += JSON.stringify(entry.value).length * 2; // Rough estimate
         }
-        
+
         return {
             entries: this.cache.size,
             estimatedBytes: estimatedSize,

@@ -1,23 +1,161 @@
 --- ESLINT DEBUG REPORT ---
-Generated: 12:59:11
+Generated: 18:51:20
 ---------------------------
 
-Run Location: C:\Script\auto-ai
+Run Location: C:\My Script\auto-ai
 Command: npx.cmd eslint . --quiet --format=json
 
-Found 3 files with errors.
+Found 10 files with errors.
 
 ========================================
-📄 media-debug.js (1 errors)
+📄 api\ui\electron-dashboard\renderer\dist\assets\index-BZF1QQ-u.js (100 errors)
 ========================================
-  ❌ Line 106: [no-undef] 'videoData' is not defined.
+  ❌ Line 9: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 9: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 17: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 33: [no-misleading-character-class] Unexpected combined character in character class.
+  ❌ Line 33: [no-useless-escape] Unnecessary escape character: \-.
+  ❌ Line 33: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 37: [no-empty] Empty block statement.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-undef] 'MSApp' is not defined.
+  ❌ Line 37: [no-undef] 'MSApp' is not defined.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 37: [getter-return] Expected to return a value in method 'get'.
+  ❌ Line 37: [no-empty] Empty block statement.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [valid-typeof] Invalid typeof comparison value.
+  ❌ Line 37: [valid-typeof] Invalid typeof comparison value.
+  ❌ Line 37: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 37: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 37: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 37: [no-fallthrough] Expected a 'break' statement before 'case'.
+  ❌ Line 37: [no-fallthrough] Expected a 'break' statement before 'case'.
+  ❌ Line 37: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 37: [no-fallthrough] Expected a 'break' statement before 'case'.
+  ❌ Line 37: [no-control-regex] Unexpected control character(s) in regular expression: \x00.
+  ❌ Line 38: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 38: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 38: [no-useless-assignment] This assigned value is not used in subsequent statements.
+  ❌ Line 38: [no-useless-assignment] This assigned value is not used in subsequent statements.
+  ❌ Line 38: [no-fallthrough] Expected a 'break' statement before 'case'.
+  ❌ Line 38: [no-constant-condition] Unexpected constant condition.
+  ❌ Line 38: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 38: [no-empty] Empty block statement.
+  ❌ Line 38: [no-empty] Empty block statement.
+  ❌ Line 38: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 38: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 40: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 40: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-fallthrough] Expected a 'break' statement before 'case'.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-constant-condition] Unexpected constant condition.
+  ❌ Line 40: [no-useless-assignment] This assigned value is not used in subsequent statements.
+  ❌ Line 40: [no-constant-condition] Unexpected constant condition.
+  ❌ Line 40: [no-constant-condition] Unexpected constant condition.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-cond-assign] Expected a conditional expression and instead saw an assignment.
+  ❌ Line 40: [no-func-assign] 'sa' is a function.
+  ❌ Line 40: [no-func-assign] 'ua' is a function.
+  ❌ Line 40: [no-undef] '__REACT_DEVTOOLS_GLOBAL_HOOK__' is not defined.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-undef] '__REACT_DEVTOOLS_GLOBAL_HOOK__' is not defined.
+  ❌ Line 40: [no-undef] '__REACT_DEVTOOLS_GLOBAL_HOOK__' is not defined.
+  ❌ Line 40: [no-redeclare] 'r' is already defined.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-useless-assignment] This assigned value is not used in subsequent statements.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-undef] 'attachEvent' is not defined.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-empty] Empty block statement.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-useless-escape] Unnecessary escape character: \/.
+  ❌ Line 40: [no-case-declarations] Unexpected lexical declaration in case block.
+  ❌ Line 40: [no-prototype-builtins] Do not access Object.prototype method 'hasOwnProperty' from target object.
+  ❌ Line 40: [no-case-declarations] Unexpected lexical declaration in case block.
+
+========================================
+📄 tasks\api-twitterFollowLikeRetweet.js (5 errors)
+========================================
+  ❌ Line 32: [no-empty] Empty block statement.
+  ❌ Line 179: [preserve-caught-error] There is no `cause` attached to the symptom error being thrown.
+  ❌ Line 191: [no-empty] Empty block statement.
+  ❌ Line 253: [no-useless-assignment] This assigned value is not used in subsequent statements.
+  ❌ Line 339: [no-empty] Empty block statement.
+
+========================================
+📄 api\tests\integration\api\basic_flow.test.js (1 errors)
+========================================
+  ❌ Line 90: [no-dupe-keys] Duplicate key 'viewportSize'.
+
+========================================
+📄 api\tests\unit\ai-twitterAgent-enhanced.test.js (1 errors)
+========================================
+  ❌ Line 294: [no-undef] 'AITwitterAgent' is not defined.
+
+========================================
+📄 api\tests\unit\api\scroll.test.js (1 errors)
+========================================
+  ❌ Line 207: [no-useless-catch] Unnecessary try/catch wrapper.
+
+========================================
+📄 api\tests\unit\logger.test.js (1 errors)
+========================================
+  ❌ Line 263: [no-control-regex] Unexpected control character(s) in regular expression: \x1b.
+
+========================================
+📄 api\tests\unit\orchestrator-v2-integration.test.js (1 errors)
+========================================
+  ❌ Line 38: [no-useless-assignment] This assigned value is not used in subsequent statements.
+
+========================================
+📄 api\tests\unit\utils\fingerprintManager.test.js (1 errors)
+========================================
+  ❌ Line 11: [None] Parsing error: Identifier 'mathUtils' has already been declared
+
+========================================
+📄 api\ui\electron-dashboard\renderer\script.js (1 errors)
+========================================
+  ❌ Line 179: [None] Parsing error: Invalid number
 
 ========================================
 📄 prompt-test.js (1 errors)
 ========================================
   ❌ Line 522: [no-undef] 'LLM_ENDPOINT' is not defined.
-
-========================================
-📄 video-headers-test.js (1 errors)
-========================================
-  ❌ Line 41: [no-empty] Empty block statement.

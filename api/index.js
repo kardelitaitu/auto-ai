@@ -242,6 +242,18 @@ async function diagnose(page) {
     return diagnosePage(page);
 }
 
+async function screenshot(options = {}) {
+    const page = getPage();
+    const {
+        path: outputPath,
+        fullPage = false,
+        type = 'jpeg',
+        quality = 80
+    } = options;
+    
+    return page.screenshot({ path: outputPath, fullPage, type, quality });
+}
+
 async function emulateMedia(options = {}) {
     const page = getPage();
     return page.emulateMedia(options);
@@ -266,6 +278,7 @@ export const api = {
     eval: evalPage,
     init,
     diagnose,
+    screenshot,
     emulateMedia,
     clearLiteMode,
     config: configManager,
@@ -453,7 +466,7 @@ export {
     gaze, attention, distraction, beforeLeave, focusShift, maybeDistract, setDistractionChance, getDistractionChance,
     idleStart, idleStop, idleIsRunning, wiggle, idleScroll, startHeartbeat,
     patchApply, stripCDPMarkers, patchCheck,
-    initPage, diagnosePage, clearLiteMode,
+    initPage, diagnosePage, clearLiteMode, screenshot,
     readline, consumeline,
     see, doAction as do, agentFind as find, agentVision as vision,
     getAvailableHooks, getHookDescription, createHookWrapper, withErrorHook, getEvents, getPlugins,

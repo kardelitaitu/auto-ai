@@ -45,7 +45,10 @@ async function waitForStableBox(locator, options = {}) {
         if (!isSessionActive()) {
             throw new Error('SessionDisconnectedError: Browser closed during stability check.');
         }
-        const box = await locator.boundingBox().catch(() => null);
+        const box = await locator.boundingBox().catch(e => {
+            if (e.message?.includes('SessionDisconnectedError')) throw e;
+            return null;
+        });
         if (!box) {
             await wait(intervalMs);
             continue;
@@ -99,6 +102,10 @@ async function isObscured(locator) {
  * @returns {Promise<{success: boolean, usedFallback: boolean}>}
  */
 export async function click(selector, options = {}) {
+    if (!isSessionActive()) {
+        throw new Error('SessionDisconnectedError: Browser closed before click.');
+    }
+
     const page = getPage();
     setPreviousUrl(page.url());
 
@@ -113,8 +120,8 @@ export async function click(selector, options = {}) {
 
     try {
         const pipeline = createPipeline(
-            retryMiddleware({ maxRetries: recovery ? maxRetries : 0 }),
-            recoveryMiddleware()
+            retryMiddleware({ maxRetries: (options.maxRetries !== undefined) ? maxRetries : (recovery ? maxRetries : 0) }),
+            recoveryMiddleware({ scrollOnDetached: recovery, retryOnObscured: recovery })
         );
 
         return await pipeline(async () => {
@@ -129,7 +136,10 @@ export async function click(selector, options = {}) {
             // STEP 2: Pre-click stability & Visibility
             const locator = getLocator(selector).first();
             if (ensureStable) {
-                await waitForStableBox(locator, { timeoutMs: 2000 }).catch(() => null);
+                await waitForStableBox(locator, { timeoutMs: 2000 }).catch(e => {
+                    if (e.message?.includes('SessionDisconnectedError')) throw e;
+                    return null;
+                });
             }
 
             // Ghost 3.0: Visual-Semantic Guard (Obstruction check)
@@ -195,6 +205,9 @@ export async function click(selector, options = {}) {
  * @returns {Promise<void>}
  */
 export async function type(selector, text, options = {}) {
+    if (!isSessionActive()) {
+        throw new Error('SessionDisconnectedError: Browser closed before type.');
+    }
     const { recovery = true } = options;
 
     const pipeline = createPipeline(
@@ -287,6 +300,9 @@ export async function type(selector, text, options = {}) {
  * @returns {Promise<void>}
  */
 export async function hover(selector, options = {}) {
+    if (!isSessionActive()) {
+        throw new Error('SessionDisconnectedError: Browser closed before hover.');
+    }
     const { recovery = true } = options;
 
     const pipeline = createPipeline(

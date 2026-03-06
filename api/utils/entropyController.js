@@ -5,7 +5,7 @@
  * @module utils/entropyController
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 import { calculateBackoffDelay } from './retry.js';
 
 /**

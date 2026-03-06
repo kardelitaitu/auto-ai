@@ -17,7 +17,7 @@ import { TWITTER_CLICK_PROFILES } from '../constants/engagement.js';
 export class GhostCursor {
     constructor(page, logger = null) {
         this.page = page;
-        this.logger = logger || createLogger('ghostCursor.js');
+        this.logger = logger || createLogger('api.click');
         this.previousPos = { x: 0, y: 0 };
         this.init();
     }
@@ -322,16 +322,6 @@ export class GhostCursor {
         } = options;
         const labelSuffix = label ? ` [${label}]` : '';
 
-        // Visibility check — uses direct import instead of api.visible to avoid circular dep
-        try {
-            if (selector.isVisible && !(await visible(selector).catch(() => false))) {
-                if (allowNativeFallback && selector.click) await selector.click({ force: true, button }).catch(() => { });
-                return { success: false, usedFallback: true };
-            }
-        } catch (_e) {
-            // Ignore visibility check error
-        }
-
         let bbox = await this.waitForStableElement(selector, maxStabilityWaitMs);
         if (!bbox) {
             if (allowNativeFallback && selector.click) await selector.click({ force: true, button }).catch(() => { });
@@ -352,7 +342,7 @@ export class GhostCursor {
             const targetX = mathUtils.gaussian(bbox.x + bbox.width / 2, bbox.width / sigmaDivisor, bbox.x + marginX, bbox.x + bbox.width - marginX);
             const targetY = mathUtils.gaussian(bbox.y + bbox.height / 2, bbox.height / sigmaDivisor, bbox.y + marginY, bbox.y + bbox.height - marginY);
 
-            this.logger.info(`ghostCursor moving to x=${Math.round(targetX)} y=${Math.round(targetY)}${labelSuffix}`);
+            const targetStr = `[${Math.round(targetX)}, ${Math.round(targetY)}]`;
             await this.moveWithHesitation(targetX, targetY);
             await new Promise(r => setTimeout(r, mathUtils.randomInRange(100, 400)));
 
@@ -376,7 +366,7 @@ export class GhostCursor {
                     await this.page.mouse.down({ button });
                     await new Promise(r => setTimeout(r, holdTime));
                     await this.page.mouse.up({ button });
-                    this.logger.info(`ghostCursor clicked x=${Math.round(finalX)} y=${Math.round(finalY)}${labelSuffix}`);
+                    this.logger.info(`Mouse Cursor moved to ${targetStr}, clicked [${Math.round(finalX)}, ${Math.round(finalY)}]${labelSuffix}`);
                     return { success: true, usedFallback: false, x: finalX, y: finalY };
                 } catch {
                     break;

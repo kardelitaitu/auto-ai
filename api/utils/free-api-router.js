@@ -5,7 +5,7 @@
  * @module utils/free-api-router
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 import { createProxyAgent } from './proxy-agent.js';
 import { CircuitBreaker } from './circuit-breaker.js';
 import { RateLimitTracker } from './rate-limit-tracker.js';

@@ -4,7 +4,7 @@
  * @module core/local-client
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { getSettings } from '../utils/configLoader.js';
 import VLLMClient from './vllm-client.js';
 import OllamaClient from './ollama-client.js';

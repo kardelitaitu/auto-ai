@@ -3,10 +3,13 @@
  * @module connectors/baseDiscover
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 
 class BaseDiscover {
     constructor() {
+        if (new.target === BaseDiscover) {
+            throw new TypeError('Cannot construct BaseDiscover instances directly');
+        }
         /**
          * @type {string}
          * @description The type of browser this connector discovers (e.g., 'ixbrowser', 'chrome').

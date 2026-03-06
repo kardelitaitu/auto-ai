@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Database from 'better-sqlite3';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { getTimeoutValue, getSettings } from '../utils/configLoader.js';
 import metricsCollector from '../utils/metrics.js';
 
@@ -15,7 +15,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SESSION_DB_FILE = path.join(__dirname, '../../data/sessions.db');
 const logger = createLogger('sessionManager.js');
 
-class SimpleSemaphore {
+export class SimpleSemaphore {
   constructor(permits) {
     this.permits = permits;
     this.maxPermits = permits;
@@ -30,7 +30,7 @@ class SimpleSemaphore {
 
     return new Promise((resolve) => {
       const entry = { resolve, timer: null, addedAt: Date.now() };
-      
+
       if (timeoutMs) {
         entry.timer = setTimeout(() => {
           const idx = this.queue.indexOf(entry);
@@ -41,7 +41,7 @@ class SimpleSemaphore {
           }
         }, timeoutMs);
       }
-      
+
       this.queue.push(entry);
     });
   }
@@ -128,7 +128,7 @@ class SessionManager {
 
   _startWorkerHealthChecks() {
     if (this.workerHealthCheckInterval) return;
-    
+
     this.workerHealthCheckInterval = setInterval(async () => {
       await this._checkStuckWorkers();
     }, 30000);
@@ -383,7 +383,7 @@ class SessionManager {
     worker.occupiedAt = Date.now();
     worker.acquiredBy = `session-${Date.now()}`;
     this.workerOccupancy.set(`${sessionId}:${worker.id}`, { startTime: worker.occupiedAt });
-    
+
     return worker;
   }
 
@@ -492,6 +492,29 @@ class SessionManager {
     if (session?.browser) {
       try { await session.browser.close(); } catch (_e) { /* ignore close error */ }
     }
+  }
+
+  /**
+   * Stop the cleanup timer (for test cleanup)
+   */
+  stopCleanupTimer() {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
+  }
+
+  /**
+   * Clean up timed out sessions
+   * @returns {Promise<number>} Number of sessions removed
+   */
+  async cleanupTimedOutSessions() {
+    const now = Date.now();
+    const initialCount = this.sessions.length;
+    this.sessions = this.sessions.filter(s =>
+      now - s.lastActivity < this.sessionTimeoutMs
+    );
+    return initialCount - this.sessions.length;
   }
 
   async shutdown() {

@@ -4,7 +4,7 @@
  * Usage: node main.js agent --goal="Your goal here"
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../api/core/logger.js';
 import AgentCortex from '../core/agent-cortex.js';
 import VisionPackager from '../core/vision-packager.js';
 import HumanizerEngine from '../core/humanizer-engine.js';

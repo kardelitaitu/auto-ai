@@ -4,7 +4,7 @@
  * @module utils/human-interaction
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { mathUtils } from '../utils/math.js';
 import { entropy as _entropy } from '../utils/entropyController.js';
 import { GhostCursor } from '../utils/ghostCursor.js';

@@ -1,4 +1,4 @@
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 import { setSessionInterval, clearSessionInterval } from '../core/context.js';
 
 class PopupCloser {

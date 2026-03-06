@@ -4,7 +4,7 @@
  * @module utils/config-validator
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('config-validator.js');
 
@@ -16,7 +16,7 @@ export class ConfigValidator {
     constructor() {
         this.schemas = this.initializeSchemas();
     }
-    
+
     /**
      * Initialize validation schemas
      * @private
@@ -164,7 +164,7 @@ export class ConfigValidator {
             }
         };
     }
-    
+
     /**
      * Validate configuration object against schemas
      * @param {object} config - Configuration to validate
@@ -172,36 +172,36 @@ export class ConfigValidator {
      */
     validateConfig(config) {
         const errors = [];
-        
+
         for (const [section, schema] of Object.entries(this.schemas)) {
             if (config[section] !== undefined) {
                 const sectionErrors = this.validateSection(config[section], schema, section);
                 errors.push(...sectionErrors);
             }
         }
-        
+
         const result = {
             valid: errors.length === 0,
             errors
         };
-        
+
         if (!result.valid) {
             logger.warn(`[ConfigValidator] Validation failed with ${errors.length} errors:`, errors);
         }
-        
+
         return result;
     }
-    
+
     /**
      * Validate a specific configuration section
      * @private
      */
     validateSection(data, schema, sectionName) {
         const errors = [];
-        
+
         // Handle schemas that are plain objects with field definitions (no type property)
         // This is the case for session, timing, humanization, etc. schemas
-        if (schema.cycles !== undefined || schema.enabled !== undefined || 
+        if (schema.cycles !== undefined || schema.enabled !== undefined ||
             schema.limits !== undefined || schema.warmup !== undefined ||
             schema.mouse !== undefined || schema.theme !== undefined ||
             schema.queueMonitor !== undefined || schema.debugMode !== undefined) {
@@ -229,28 +229,28 @@ export class ConfigValidator {
             const fieldErrors = this.validateField(data, schema, sectionName);
             errors.push(...fieldErrors);
         }
-        
+
         return errors;
     }
-    
+
     /**
      * Validate a single field against its rules
      * @private
      */
     validateField(value, rules, fieldName) {
         const errors = [];
-        
+
         // Check type
         if (rules.type && !this.checkType(value, rules.type)) {
             errors.push(`${fieldName} must be of type ${rules.type}, got ${typeof value}`);
             return errors;
         }
-        
+
         // Check enum values
         if (rules.enum && !rules.enum.includes(value)) {
             errors.push(`${fieldName} must be one of [${rules.enum.join(', ')}], got "${value}"`);
         }
-        
+
         // Check numeric constraints
         if (rules.type === 'number') {
             if (rules.min !== undefined && value < rules.min) {
@@ -260,7 +260,7 @@ export class ConfigValidator {
                 errors.push(`${fieldName} must be <= ${rules.max}, got ${value}`);
             }
         }
-        
+
         // Check array constraints
         if (rules.type === 'array' && Array.isArray(value)) {
             if (rules.minItems !== undefined && value.length < rules.minItems) {
@@ -270,10 +270,10 @@ export class ConfigValidator {
                 errors.push(`${fieldName} must have at most ${rules.maxItems} items, got ${value.length}`);
             }
         }
-        
+
         return errors;
     }
-    
+
     /**
      * Check if value matches expected type
      * @private
@@ -294,7 +294,7 @@ export class ConfigValidator {
                 return typeof value === expectedType;
         }
     }
-    
+
     /**
      * Validate specific configuration section
      * @param {object} data - Data to validate
@@ -308,14 +308,14 @@ export class ConfigValidator {
                 errors: [`Unknown section: ${section}`]
             };
         }
-        
+
         const errors = this.validateSection(data, this.schemas[section], section);
         return {
             valid: errors.length === 0,
             errors
         };
     }
-    
+
     /**
      * Get validation schema for a specific section
      * @param {string} section - Section name
@@ -324,7 +324,7 @@ export class ConfigValidator {
     getSchema(section) {
         return this.schemas[section] || null;
     }
-    
+
     /**
      * Validate configuration with detailed reporting
      * @param {object} config - Configuration to validate
@@ -334,7 +334,7 @@ export class ConfigValidator {
         const startTime = Date.now();
         const result = this.validateConfig(config);
         const duration = Date.now() - startTime;
-        
+
         const report = {
             valid: result.valid,
             errors: result.errors,
@@ -342,19 +342,19 @@ export class ConfigValidator {
             duration,
             sections: this.getSectionValidationReport(config)
         };
-        
+
         logger.debug(`[ConfigValidator] Validation completed in ${duration}ms, ${result.errors.length} errors`);
-        
+
         return report;
     }
-    
+
     /**
      * Get validation report for each section
      * @private
      */
     getSectionValidationReport(config) {
         const report = {};
-        
+
         for (const [section, schema] of Object.entries(this.schemas)) {
             if (config[section] !== undefined) {
                 const sectionErrors = this.validateSection(config[section], schema, section);
@@ -372,7 +372,7 @@ export class ConfigValidator {
                 };
             }
         }
-        
+
         return report;
     }
 }

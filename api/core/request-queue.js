@@ -3,7 +3,7 @@
  * @module core/request-queue
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { calculateBackoffDelay } from '../utils/retry.js';
 import { getTimeoutValue } from '../utils/configLoader.js';
 

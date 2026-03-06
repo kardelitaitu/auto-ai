@@ -8,11 +8,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { api } from '../api/index.js';
-import { profileManager } from '../utils/profileManager.js';
-import { mathUtils } from '../utils/mathUtils.js';
-import metricsCollector from '../utils/metrics.js';
-import { createLogger } from '../utils/logger.js';
-import { takeScreenshot } from '../utils/screenshot.js';
+import { profileManager } from '../api/utils/profileManager.js';
+import { mathUtils } from '../api/utils/math.js';
+import metricsCollector from '../api/utils/metrics.js';
+import { createLogger } from '../api/core/logger.js';
+import { takeScreenshot } from '../api/utils/screenshot.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -4,7 +4,7 @@
  */
 
 import BaseDiscover from '../baseDiscover.js';
-import { createLogger } from '../../utils/logger.js';
+import { createLogger } from '../../core/logger.js';
 import { getEnv } from '../../utils/envLoader.js';
 import apiHandler from '../../utils/apiHandler.js';
 

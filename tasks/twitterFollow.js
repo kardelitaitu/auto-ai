@@ -2,14 +2,14 @@
  * @fileoverview Twitter Follow Task
  * @module tasks/twitterFollow.js
  */
-import { createLogger } from '../utils/utils.js';
-import { TwitterAgent } from '../utils/twitterAgent.js';
-import { profileManager } from '../utils/profileManager.js';
-import { mathUtils } from '../utils/mathUtils.js';
-import { ReferrerEngine } from '../utils/urlReferrer.js';
-import metricsCollector from '../utils/metrics.js';
+import { createLogger } from '../api/core/logger.js';
+import { TwitterAgent } from '../api/twitter/twitterAgent.js';
+import { profileManager } from '../api/utils/profileManager.js';
+import { mathUtils } from '../api/utils/math.js';
+import { ReferrerEngine } from '../api/utils/urlReferrer.js';
+import metricsCollector from '../api/utils/metrics.js';
 import { api } from '../api/index.js';
-import { takeScreenshot } from '../utils/screenshot.js';
+import { takeScreenshot } from '../api/utils/screenshot.js';
 
 // Helper: Extract username from tweet URL
 function extractUsername(tweetUrl) {

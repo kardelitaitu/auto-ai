@@ -1,0 +1,226 @@
+agent-connector-health.test.js                | Files: 1 passed (1)    | Tests: 14 passed (14)  | Time: 676ms
+agent-connector.test.js                       | Files: 1 passed (1)    | Tests: 44 passed (44)  | Time: 1.26s
+agent-vision.test.js                          | Files: 1 passed (1)    | Tests: 10 passed (10)  | Time: 876ms
+circuit-breaker.test.js                       | Files: 1 passed (1)    | Tests: 6 passed (6)    | Time: 567ms
+cloud-client.test.js                          | Files: 1 passed (1)    | Tests: 39 passed (39)  | Time: 823ms
+orchestrator-dispatch.test.js                 | Files: 1 passed (1)    | Tests: 2 passed (2)    | Time: 2.81s
+plugin-system.test.js                         | Files: 1 passed (1)    | Tests: 3 passed (3)    | Time: 813ms
+profile-manager.test.js                       | Files: 1 passed (1)    | Tests: 27 passed (27)  | Time: 514ms
+request-queue.test.js                         | Files: 1 passed (1)    | Tests: 3 passed (3)    | Time: 793ms
+task-config-loader.test.js                    | Files: 1 passed (1)    | Tests: 28 passed (28)  | Time: 866ms
+unified-api.test.js                           | Files: 1 passed (1)    | Tests: 1 passed (1)    | Time: 2.70s
+basic_flow.test.js                            | Files: 1 passed (1)    | Tests: 1 passed (1)    | Time: 9.29s
+action-orchestrator.test.js                   | Files: 1 passed (1)    | Tests: 8 passed (8)    | Time: 432ms
+actions-bookmark.test.js                      | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 559ms
+actions-go-home.test.js                       | Files: 1 passed (1)    | Tests: 10 passed (10)  | Time: 2.66s
+actions-like.test.js                          | Files: 1 passed (1)    | Tests: 10 passed (10)  | Time: 645ms
+actions-quote.test.js                         | Files: 1 passed (1)    | Tests: 20 passed (20)  | Time: 620ms
+actions-reply.test.js                         | Files: 1 passed (1)    | Tests: 19 passed (19)  | Time: 524ms
+actions-retweet.test.js                       | Files: 1 passed (1)    | Tests: 31 passed (31)  | Time: 647ms
+actions-runner.test.js                        | Files: 1 passed (1)    | Tests: 18 passed (18)  | Time: 2.94s
+agent-connector-coverage.test.js              | Files: 1 passed (1)    | Tests: 21 passed (21)  | Time: 751ms
+agent-connector.test.js                       | Files: 1 passed (1)    | Tests: 34 passed (34)  | Time: 962ms
+agent-cortex.test.js                          | Files: 1 passed (1)    | Tests: 3 passed (3)    | Time: 381ms
+ai-context-engine.test.js                     | Files: 1 passed (1)    | Tests: 29 passed (29)  | Time: 621ms
+ai-quote-engine-execution.test.js             | Files: 1 passed (1)    | Tests: 12 passed (12)  | Time: 889ms
+ai-quote-engine-logic.test.js                 | Files: 1 passed (1)    | Tests: 12 passed (12)  | Time: 1.09s
+ai-quote-engine.test.js                       | Files: 1 passed (1)    | Tests: 61 passed | 5 skipped (66) | Time: 1.52s
+ai-reply-engine-config.test.js                | Files: 1 passed (1)    | Tests: 17 passed (17)  | Time: 466ms
+ai-reply-engine-context.test.js               | Files: 1 passed (1)    | Tests: 22 passed (22)  | Time: 555ms
+ai-reply-engine-decision.test.js              | Files: 1 passed (1)    | Tests: 14 passed (14)  | Time: 2.64s
+ai-reply-engine-execution.test.js             | Files: 1 passed (1)    | Tests: 4 passed (4)    | Time: 1.12s
+ai-reply-engine.test.js                       | Files: 1 passed (1)    | Tests: 59 passed (59)  | Time: 2.90s
+ai-tools.test.js                              | Files: 1 passed (1)    | Tests: 22 passed (22)  | Time: 620ms
+ai-twitter-activity.test.js                   | Files: 1 passed (1)    | Tests: 85 passed (85)  | Time: 497ms
+ai-twitterAgent-comprehensive.test.js         | Files: 1 passed (1)    | Tests: 47 passed | 3 skipped (50) | Time: 2.26s
+ai-twitterAgent-coverage.test.js              | Files: 1 passed (1)    | Tests: 95 passed | 62 skipped (157) | Time: 3.18s
+ai-twitterAgent-enhanced.test.js              | Files: 1 passed (1)    | Tests: 30 passed | 9 skipped (39) | Time: 2.12s
+ai-twitterAgent-real.test.js                  | Files: 1 passed (1)    | Tests: 60 passed (60)  | Time: 16.66s
+ai-twitterAgent.gap.test.js                   | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 3.68s
+ai-twitterAgent.real.test.js                  | Files: 1 passed (1)    | Tests: 6 passed | 2 skipped (8) | Time: 3.21s
+ai-twitterAgent.test.js                       | Files: 1 passed (1)    | Tests: 89 passed | 9 skipped (98) | Time: 2.24s
+api-config.test.js                            | Files: 1 passed (1)    | Tests: 14 passed (14)  | Time: 631ms
+api-events.test.js                            | Files: 1 passed (1)    | Tests: 37 passed (37)  | Time: 635ms
+api-hooks.test.js                             | Files: 1 passed (1)    | Tests: 21 passed (21)  | Time: 529ms
+api-key-timeout-tracker.test.js               | Files: 1 passed (1)    | Tests: 45 passed (45)  | Time: 560ms
+api-math.test.js                              | Files: 1 passed (1)    | Tests: 22 passed (22)  | Time: 474ms
+apiHandler.test.js                            | Files: 1 passed (1)    | Tests: 29 passed (29)  | Time: 556ms
+async-queue.test.js                           | Files: 1 passed (1)    | Tests: 55 passed (55)  | Time: 1.46s
+automator.test.js                             | Files: 1 passed (1)    | Tests: 45 passed (45)  | Time: 834ms
+banner.test.js                                | Files: 1 passed (1)    | Tests: 1 passed (1)    | Time: 493ms
+browserPatch.test.js                          | Files: 1 passed (1)    | Tests: 22 passed (22)  | Time: 432ms
+circuit-breaker.test.js                       | Files: 1 passed (1)    | Tests: 57 passed (57)  | Time: 764ms
+cloud-client.test.js                          | Files: 1 passed (1)    | Tests: 76 passed | 1 skipped (77) | Time: 1.53s
+config-cache.test.js                          | Files: 1 passed (1)    | Tests: 23 passed (23)  | Time: 848ms
+config-loader.test.js                         | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 548ms
+config-service.test.js                        | Files: 1 passed (1)    | Tests: 56 passed (56)  | Time: 505ms
+configService.test.js                         | Files: 1 passed (1)    | Tests: 7 passed (7)    | Time: 588ms
+content-depth.test.js                         | Files: 1 passed (1)    | Tests: 15 passed (15)  | Time: 367ms
+content-skimmer.test.js                       | Files: 1 passed (1)    | Tests: 10 passed (10)  | Time: 690ms
+core-config.test.js                           | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 608ms
+core-errors.test.js                           | Files: 1 passed (1)    | Tests: 14 passed (14)  | Time: 410ms
+coverage_valid_task.test.js                   | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 433ms
+discovery.test.js                             | Files: 1 passed (1)    | Tests: 25 passed (25)  | Time: 669ms
+dockerLLM.test.js                             | Files: 1 passed (1)    | Tests: 4 passed (4)    | Time: 478ms
+engagement-limits.test.js                     | Files: 1 passed (1)    | Tests: 57 passed (57)  | Time: 531ms
+entropyController.test.js                     | Files: 1 passed (1)    | Tests: 57 passed (57)  | Time: 910ms
+environment-config.test.js                    | Files: 1 passed (1)    | Tests: 25 passed (25)  | Time: 844ms
+envLoader.test.js                             | Files: 1 passed (1)    | Tests: 14 passed (14)  | Time: 460ms
+errors.test.js                                | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 581ms
+free-api-router.test.js                       | Files: 1 passed (1)    | Tests: 170 passed (170) | Time: 2.07s
+free-openrouter-helper.test.js                | Files: 1 passed (1)    | Tests: 111 passed (111) | Time: 2.06s
+generateDebugProfile.test.js                  | Files: 1 passed (1)    | Tests: 3 passed (3)    | Time: 496ms
+generateProfiles.test.js                      | Files: 1 passed (1)    | Tests: 3 passed (3)    | Time: 456ms
+ghostCursor.test.js                           | Files: 1 passed (1)    | Tests: 21 passed (21)  | Time: 915ms
+global-scroll-controller.test.js              | Files: FAIL            | Tests: Check Imports/Context | Time: 607ms
+history-compactor.test.js                     | Files: 1 passed (1)    | Tests: 13 passed (13)  | Time: 483ms
+human-interaction.test.js                     | Files: 1 passed (1)    | Tests: 80 passed (80)  | Time: 1.20s
+humanization-action.test.js                   | Files: 1 passed (1)    | Tests: 28 passed (28)  | Time: 684ms
+humanization-content.test.js                  | Files: 1 passed (1)    | Tests: 3 passed (3)    | Time: 751ms
+humanization-error.test.js                    | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 845ms
+humanization-multitask.test.js                | Files: 1 passed (1)    | Tests: 19 passed (19)  | Time: 679ms
+humanization-scroll.test.js                   | Files: 1 passed (1)    | Tests: 16 passed | 1 skipped (17) | Time: 686ms
+humanization-session.test.js                  | Files: 1 passed (1)    | Tests: 25 passed (25)  | Time: 692ms
+humanization-timing.test.js                   | Files: 1 passed (1)    | Tests: 26 passed (26)  | Time: 701ms
+humanization-utils.test.js                    | Files: 1 passed (1)    | Tests: 21 passed | 3 skipped (24) | Time: 1.11s
+humanizer-engine.test.js                      | Files: 1 passed (1)    | Tests: 13 passed (13)  | Time: 634ms
+humanTiming.test.js                           | Files: 1 passed (1)    | Tests: 12 passed (12)  | Time: 500ms
+idle-ghosting.test.js                         | Files: 1 passed (1)    | Tests: 10 passed (10)  | Time: 543ms
+image-storage.test.js                         | Files: 1 passed (1)    | Tests: 6 passed (6)    | Time: 493ms
+intent-classifier.test.js                     | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 436ms
+ixbrowser.test.js                             | Files: 1 passed (1)    | Tests: 6 passed (6)    | Time: 604ms
+local-client.test.js                          | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 787ms
+local-ollama-manager.test.js                  | Files: 1 passed (1)    | Tests: 15 passed (15)  | Time: 2.60s
+localBrave.test.js                            | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 561ms
+log-capture.test.js                           | Files: 1 passed (1)    | Tests: 6 passed (6)    | Time: 391ms
+logger.test.js                                | Files: 1 passed (1)    | Tests: 43 passed (43)  | Time: in
+logging-config.test.js                        | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 501ms
+mathUtils.test.js                             | Files: 1 passed (1)    | Tests: 19 passed (19)  | Time: 421ms
+metrics.test.js                               | Files: 1 passed (1)    | Tests: 36 passed (36)  | Time: :
+micro-interactions.test.js                    | Files: 1 passed (1)    | Tests: 25 passed (25)  | Time: 668ms
+mistake-engine.test.js                        | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 485ms
+model-perf-tracker.test.js                    | Files: 1 passed (1)    | Tests: 34 passed (34)  | Time: 655ms
+motor-control.test.js                         | Files: 1 passed (1)    | Tests: 61 passed (61)  | Time: 1.55s
+multi-api.test.js                             | Files: 1 passed (1)    | Tests: 18 passed (18)  | Time: 684ms
+navigation-diversity.test.js                  | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 392ms
+ollama-client.test.js                         | Files: 1 passed (1)    | Tests: 44 passed (44)  | Time: 802ms
+orchestrator-coverage.test.js                 | Files: 1 passed (1)    | Tests: 18 passed (18)  | Time: 8.84s
+orchestrator-v2-integration.test.js           | Files: 1 passed (1)    | Tests: 8 passed (8)    | Time: 612ms
+orchestrator-v2.test.js                       | Files: 1 passed (1)    | Tests: 17 passed (17)  | Time: 401ms
+orchestrator.test.js                          | Files: 1 passed (1)    | Tests: 16 passed (16)  | Time: 3.17s
+popup-closer.test.js                          | Files: 1 passed (1)    | Tests: 20 passed (20)  | Time: 672ms
+profile-manager.test.js                       | Files: 1 passed (1)    | Tests: 22 passed (22)  | Time: 600ms
+proxy-agent.test.js                           | Files: 1 passed (1)    | Tests: 15 passed (15)  | Time: 580ms
+random-scrolling.test.js                      | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 974ms
+rate-limit-tracker.test.js                    | Files: 1 passed (1)    | Tests: 55 passed (55)  | Time: 677ms
+request-dedupe.test.js                        | Files: 1 passed (1)    | Tests: 24 passed (24)  | Time: 642ms
+request-queue.test.js                         | Files: 1 passed (1)    | Tests: 18 passed (18)  | Time: 694ms
+retry.test.js                                 | Files: 1 passed (1)    | Tests: 17 passed (17)  | Time: 941ms
+roi-detector.test.js                          | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 466ms
+roxybrowser.test.js                           | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 531ms
+scroll-helper.test.js                         | Files: 1 passed (1)    | Tests: 10 passed (10)  | Time: 2.86s
+sentiment-analyzers.test.js                   | Files: 1 passed (1)    | Tests: 25 passed (25)  | Time: 498ms
+sentiment-data.test.js                        | Files: 1 passed (1)    | Tests: 100 passed (100) | Time: 587ms
+sentiment-guard.test.js                       | Files: 1 passed (1)    | Tests: 30 passed (30)  | Time: 493ms
+sentiment-service.test.js                     | Files: 1 passed (1)    | Tests: 38 passed (38)  | Time: 667ms
+sessionManager.test.js                        | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 1.26s
+sessionPhases.test.js                         | Files: 1 passed (1)    | Tests: 14 passed (14)  | Time: 484ms
+task-config-loader.test.js                    | Files: 1 passed (1)    | Tests: 4 passed (4)    | Time: 445ms
+tasks-cookieBotRandom.test.js                 | Files: 1 passed (1)    | Tests: 6 passed | 1 skipped (7) | Time: 497ms
+tasks-twitter-follow.test.js                  | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 1.78s
+twitter-reply-prompt.test.js                  | Files: 1 passed (1)    | Tests: 28 passed (28)  | Time: 446ms
+twitterAgent.test.js                          | Files: 1 passed (1)    | Tests: 4 passed (4)    | Time: 1.44s
+urlReferrer.extra.test.js                     | Files: 1 passed (1)    | Tests: 13 passed | 2 skipped (15) | Time: 667ms
+urlReferrer.init.test.js                      | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 3.23s
+urlReferrer.test.js                           | Files: 1 passed (1)    | Tests: 86 passed | 4 skipped (90) | Time: 1.21s
+utils-config-service.test.js                  | Files: 1 passed (1)    | Tests: 40 passed (40)  | Time: 770ms
+utils-config-validator.test.js                | Files: 1 passed (1)    | Tests: 50 passed (50)  | Time: 756ms
+validator.test.js                             | Files: 1 passed (1)    | Tests: 61 passed (61)  | Time: 842ms
+vision-interpreter.test.js                    | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 545ms
+vllm-client.test.js                           | Files: 1 passed (1)    | Tests: 24 passed (24)  | Time: 667ms
+actions.test.js                               | Files: 1 passed (1)    | Tests: 32 passed | 2 skipped (34) | Time: 2.05s
+agent.test.js                                 | Files: 1 passed (1)    | Tests: 61 passed (61)  | Time: 908ms
+attention.test.js                             | Files: 1 passed (1)    | Tests: 30 passed (30)  | Time: 619ms
+banners.test.js                               | Files: 1 passed (1)    | Tests: 7 passed (7)    | Time: 600ms
+bookmark.test.js                              | Files: 1 passed (1)    | Tests: 4 passed (4)    | Time: 715ms
+context-state.test.js                         | Files: 1 passed (1)    | Tests: 20 passed (20)  | Time: 621ms
+context.test.js                               | Files: 1 passed (1)    | Tests: 21 passed (21)  | Time: 861ms
+cursor.test.js                                | Files: 1 passed (1)    | Tests: 25 passed (25)  | Time: 769ms
+events.test.js                                | Files: 1 passed (1)    | Tests: 18 passed (18)  | Time: 503ms
+follow.test.js                                | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 575ms
+hooks.test.js                                 | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 437ms
+idle.test.js                                  | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 579ms
+index.test.js                                 | Files: 1 passed (1)    | Tests: 7 passed (7)    | Time: 2.82s
+init.test.js                                  | Files: 1 passed (1)    | Tests: 31 passed (31)  | Time: 1.01s
+like.test.js                                  | Files: 1 passed (1)    | Tests: 4 passed (4)    | Time: 697ms
+middleware.test.js                            | Files: 1 passed (1)    | Tests: 22 passed (22)  | Time: 2.72s
+navigation.test.js                            | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 847ms
+patch.test.js                                 | Files: 1 passed (1)    | Tests: 18 passed (18)  | Time: 651ms
+persona.test.js                               | Files: 1 passed (1)    | Tests: 5 passed | 4 skipped (9) | Time: 536ms
+plugins-base.test.js                          | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 514ms
+plugins-enhanced.test.js                      | Files: 1 passed (1)    | Tests: 38 passed (38)  | Time: 635ms
+plugins-index.test.js                         | Files: 1 passed (1)    | Tests: 1 passed (1)    | Time: 579ms
+plugins.test.js                               | Files: 1 passed (1)    | Tests: 39 passed (39)  | Time: 827ms
+queries.test.js                               | Files: 1 passed (1)    | Tests: 22 passed (22)  | Time: 572ms
+quote.test.js                                 | Files: 1 passed (1)    | Tests: 7 passed (7)    | Time: 867ms
+recover_behavior.test.js                      | Files: 1 passed (1)    | Tests: 6 passed (6)    | Time: 5.02s
+recover.test.js                               | Files: 1 passed (1)    | Tests: 15 passed (15)  | Time: 637ms
+reply.test.js                                 | Files: 1 passed (1)    | Tests: 8 passed (8)    | Time: 853ms
+retweet.test.js                               | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 684ms
+screenshot.test.js                            | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 474ms
+scroll.test.js                                | Files: 1 passed (1)    | Tests: 23 passed (23)  | Time: 8.58s
+sensors.test.js                               | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 807ms
+timing.test.js                                | Files: 1 passed (1)    | Tests: 6 passed (6)    | Time: 817ms
+utils-browserPatch.test.js                    | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 518ms
+utils-config.test.js                          | Files: 1 passed (1)    | Tests: 8 passed (8)    | Time: 551ms
+utils-file-consumeline.test.js                | Files: 1 passed (1)    | Tests: 12 passed (12)  | Time: 559ms
+utils-file-readline.test.js                   | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 393ms
+utils-fingerprint.test.js                     | Files: 1 passed (1)    | Tests: 12 passed (12)  | Time: 392ms
+utils-free-openrouter-helper.test.js          | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 508ms
+utils-ghostCursor.test.js                     | Files: 1 passed (1)    | Tests: 28 passed (28)  | Time: 616ms
+utils-locator.test.js                         | Files: 1 passed (1)    | Tests: 10 passed (10)  | Time: 524ms
+utils-math.test.js                            | Files: 1 passed (1)    | Tests: 22 passed (22)  | Time: 410ms
+utils-memory-profiler.test.js                 | Files: 1 passed (1)    | Tests: 19 passed (19)  | Time: 544ms
+utils-patch.test.js                           | Files: 1 passed (1)    | Tests: 11 passed (11)  | Time: 515ms
+utils-popup-closer.test.js                    | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 522ms
+utils-roi-detector.test.js                    | Files: 1 passed (1)    | Tests: 5 passed (5)    | Time: 542ms
+utils-sensors.test.js                         | Files: 1 passed (1)    | Tests: 2 passed (2)    | Time: 442ms
+utils-timing.test.js                          | Files: 1 passed (1)    | Tests: 43 passed (43)  | Time: 487ms
+wait.test.js                                  | Files: 1 passed (1)    | Tests: 20 passed (20)  | Time: 547ms
+warmup.test.js                                | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 613ms
+actionEngine.test.js                          | Files: 1 passed (1)    | Tests: 28 passed (28)  | Time: 588ms
+ai-reply-engine.test.js                       | Files: 1 passed (1)    | Tests: 50 passed (50)  | Time: 816ms
+llmClient.test.js                             | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 604ms
+runner.test.js                                | Files: 1 passed (1)    | Tests: 26 passed (26)  | Time: 655ms
+tokenCounter.test.js                          | Files: 1 passed (1)    | Tests: 16 passed (16)  | Time: 653ms
+vision.test.js                                | Files: 1 passed (1)    | Tests: 23 passed (23)  | Time: 734ms
+humanization-error.test.js                    | Files: 1 passed (1)    | Tests: 24 passed (24)  | Time: 607ms
+persona.test.js                               | Files: 1 passed (1)    | Tests: 15 passed (15)  | Time: 630ms
+click-profiles.test.js                        | Files: 1 passed (1)    | Tests: 9 passed (9)    | Time: 465ms
+baseDiscover.test.js                          | Files: 1 passed (1)    | Tests: 6 passed (6)    | Time: 607ms
+ixbrowser.test.js                             | Files: 1 passed (1)    | Tests: 12 passed (12)  | Time: 676ms
+local-browsers.test.js                        | Files: 1 passed (1)    | Tests: 8 passed (8)    | Time: 584ms
+morelogin.test.js                             | Files: 1 passed (1)    | Tests: 2 passed (2)    | Time: 516ms
+roxybrowser.test.js                           | Files: 1 passed (1)    | Tests: 16 passed (16)  | Time: 568ms
+undetectable.test.js                          | Files: 1 passed (1)    | Tests: 14 passed (14)  | Time: 677ms
+errors.test.js                                | Files: 1 passed (1)    | Tests: 35 passed (35)  | Time: 482ms
+queries.test.js                               | Files: 1 passed (1)    | Tests: 20 passed (20)  | Time: 522ms
+wait.test.js                                  | Files: 1 passed (1)    | Tests: 25 passed | 1 skipped (26) | Time: 540ms
+retry.test.js                                 | Files: 1 passed (1)    | Tests: 8 passed (8)    | Time: 482ms
+validator.test.js                             | Files: 1 passed (1)    | Tests: 37 passed (37)  | Time: 670ms
+EngagementHandler.test.js                     | Files: 1 passed (1)    | Tests: 2 passed (2)    | Time: 729ms
+NavigationHandler.test.js                     | Files: 1 passed (1)    | Tests: 11 passed | 10 skipped (21) | Time: 586ms
+index.test.js                                 | Files: FAIL            | Tests: Check Imports/Context | Time: ??s
+SessionHandler.test.js                        | Files: 1 passed (1)    | Tests: 22 passed | 14 skipped (36) | Time: 745ms
+InteractionHandler.test.js                    | Files: 1 passed (1)    | Tests: 10 passed | 2 skipped (12) | Time: 3.97s
+
+
+--- FAILED TESTS SUMMARY ---
+global-scroll-controller.test.js              | Files: FAIL            | Tests: Check Imports/Context | Time: 607ms
+index.test.js                                 | Files: FAIL            | Tests: Check Imports/Context | Time: ??s
+
+--- PERFORMANCE SUMMARY ---
+Total Files Processed : 215
+Total Execution Time   : 01:40.55
+Average Time per File  : 0.47 seconds
+Parallel Factor Used   : 16

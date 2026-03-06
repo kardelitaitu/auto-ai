@@ -4,7 +4,7 @@
  */
 
 import { chromium } from 'playwright';
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { getTimeoutValue } from '../utils/configLoader.js';
 import { withRetry } from '../utils/retry.js';
 

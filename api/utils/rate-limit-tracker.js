@@ -4,7 +4,7 @@
  * @module utils/rate-limit-tracker
  */
 
-import { createLogger } from './logger.js';
+import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('rate-limit-tracker.js');
 

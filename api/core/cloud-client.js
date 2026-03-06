@@ -4,7 +4,7 @@
  * @module core/cloud-client
  */
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../core/logger.js';
 import { getSettings } from '../utils/configLoader.js';
 import { MultiOpenRouterClient } from '../utils/multi-api.js';
 import { FreeApiRouter } from '../utils/free-api-router.js';
