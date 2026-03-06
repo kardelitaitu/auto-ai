@@ -235,3 +235,19 @@ Ensured consistent context propagation and formatting for all task modules. Corr
     06-03-2026--19-59 > Test expansion > Expanded actionEngine.test.js with getLocator tests, improved coverage from 59% to 77%
 
 06-03-2026--13-35 > Configuration Centralization > Moved `eslint.config.js`, `.prettierrc`, and `vitest.config.js` to `config/` directory. Updated relative paths in configs and `package.json` scripts. Fixed broken test paths in `package.json` from `tests/` to `api/tests/`. Verified functionality via lint, format, and unit tests.
+
+## Gemini CLI Agent Session: 2026-03-06
+
+### Objective:
+
+Configure Vitest coverage and per-file debugging in VS Code.
+
+### Summary of Changes:
+
+Added "Vitest Coverage" and "Vitest (Current File)" configurations to `.vscode/launch.json` to improve the developer experience for testing and coverage analysis.
+
+### Detailed Changes by File:
+
+1.  **`.vscode/launch.json`**:
+    - **New Configuration**: `Vitest Coverage` - Runs vitest with coverage reporting using the centralized config.
+    - **New Configuration**: `Vitest (Current File)` - Runs vitest on the currently active file in the editor.

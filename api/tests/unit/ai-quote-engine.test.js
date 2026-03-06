@@ -94,7 +94,7 @@ vi.mock('../../utils/scroll-helper.js', () => ({
 }));
 let selectMethodImpl;
 
-vi.mock('../../utils/human-interaction.js', () => ({
+vi.mock('../../behaviors/human-interaction.js', () => ({
     HumanInteraction: class {
         constructor() {
             this.debugMode = false;
@@ -102,7 +102,7 @@ vi.mock('../../utils/human-interaction.js', () => ({
         selectMethod(methods) {
             return selectMethodImpl ? selectMethodImpl(methods) : methods[0];
         }
-        logStep() {}
+        logStep() { }
         verifyComposerOpen() {
             return { open: true, selector: '[data-testid="tweetTextarea_0"]' };
         }

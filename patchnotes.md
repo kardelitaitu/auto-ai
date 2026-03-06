@@ -1,3 +1,18 @@
+### ✅ version 0.7.7
+
+(06 March 2026) VS Code Testing Enhancements
+
+- **Vitest Coverage Debugging**: Added "Vitest Coverage" configuration to `.vscode/launch.json` for integrated coverage analysis.
+- **Per-File Diagnostic Testing**: Added "Vitest (Current File)" configuration to allow developers to run and debug the currently active test file instantly.
+
+### ✅ version 0.7.6
+
+(06 March 2026) Configuration Centralization & Test Repair
+
+- **Centralized Configuration**: Moved `eslint.config.js`, `.prettierrc`, and `vitest.config.js` to `config/` directory. Updated relative paths in configs and `package.json` scripts to maintain system functionality.
+- **Fixed AI Quote Engine Test**: Resolved a non-deterministic `AssertionError` in `ai-quote-engine.test.js` by correcting an incorrect mock path for `HumanInteraction` (`../../utils/human-interaction.js` → `../../behaviors/human-interaction.js`).
+- **Verified Stability**: Confirmed that all 61 tests in `ai-quote-engine.test.js` now pass deterministically.
+
 ### ✅ version 0.7.5
 
 (05 March 2026) Logging Context & Format Refinement

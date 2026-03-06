@@ -10,6 +10,7 @@ import {
     rateLimitMiddleware,
 } from '@api/core/middleware.js';
 import * as context from '@api/core/context.js';
+import * as contextState from '@api/core/context-state.js';
 
 vi.mock('../../core/logger.js', () => ({
     createLogger: () => ({
@@ -29,6 +30,8 @@ describe('api/core/middleware.js', () => {
             emitSafe: vi.fn(),
         };
         vi.spyOn(context, 'getEvents').mockReturnValue(mockEvents);
+        vi.spyOn(contextState, 'getStateSection').mockReturnValue({ used: 0, max: 10 });
+        vi.spyOn(contextState, 'updateStateSection').mockReturnValue();
     });
 
     describe('createPipeline', () => {
@@ -183,6 +186,14 @@ describe('api/core/middleware.js', () => {
 
             await expect(m({}, next)).rejects.toThrow('dont retry');
             expect(next).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throw when retry budget exceeded', async () => {
+            vi.spyOn(contextState, 'getStateSection').mockReturnValue({ used: 10, max: 10 });
+            const m = retryMiddleware({ maxRetries: 3 });
+            const next = vi.fn().mockResolvedValue('ok');
+
+            await expect(m({}, next)).rejects.toThrow('Session retry budget exhausted');
         });
     });
 
