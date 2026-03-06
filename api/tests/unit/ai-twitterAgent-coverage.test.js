@@ -72,12 +72,10 @@ vi.mock('@api/utils/engagement-limits.js', () => ({
             canPerform: vi.fn().mockReturnValue(true),
             record: vi.fn().mockReturnValue(true),
             getProgress: vi.fn().mockReturnValue('0/5'),
-            getStatus: vi
-                .fn()
-                .mockReturnValue({
-                    replies: { current: 0, limit: 3 },
-                    likes: { current: 0, limit: 5 },
-                }),
+            getStatus: vi.fn().mockReturnValue({
+                replies: { current: 0, limit: 3 },
+                likes: { current: 0, limit: 5 },
+            }),
             getSummary: vi.fn().mockReturnValue('replies: 0/3, likes: 0/5'),
             getUsageRate: vi.fn().mockReturnValue('25%'),
         }),

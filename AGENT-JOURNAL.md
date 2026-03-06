@@ -233,3 +233,5 @@ Ensured consistent context propagation and formatting for all task modules. Corr
     06-03-2026--19-55 > Test expansion > Expanded actionEngine.test.js with error handling tests, added new vision.test.js, persona.test.js, and humanization-error.test.js
     06-03-2026--19-57 > Test expansion > Added banners.test.js with 7 tests (100% coverage), verified comprehensive test coverage across api module
     06-03-2026--19-59 > Test expansion > Expanded actionEngine.test.js with getLocator tests, improved coverage from 59% to 77%
+
+06-03-2026--13-35 > Configuration Centralization > Moved `eslint.config.js`, `.prettierrc`, and `vitest.config.js` to `config/` directory. Updated relative paths in configs and `package.json` scripts. Fixed broken test paths in `package.json` from `tests/` to `api/tests/`. Verified functionality via lint, format, and unit tests.

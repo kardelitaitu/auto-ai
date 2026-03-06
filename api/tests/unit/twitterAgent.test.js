@@ -118,13 +118,9 @@ describe('twitterAgent', () => {
             emulateMedia: vi.fn().mockResolvedValue(undefined),
             url: vi.fn().mockReturnValue('https://x.com/'),
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi
-                .fn()
-                .mockReturnValue({
-                    browser: vi
-                        .fn()
-                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
-                }),
+            context: vi.fn().mockReturnValue({
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+            }),
             title: vi.fn().mockResolvedValue('mock title'),
             locator: vi.fn().mockReturnValue({
                 first: vi.fn().mockReturnThis(),

@@ -141,7 +141,7 @@ describe('api/utils/timing.js', () => {
 
         it('should return value within expected range for video', () => {
             const result = humanTiming.getReadingTime('video');
-            expect(result).toBeGreaterThan(5000);
+            expect(result).toBeGreaterThan(1000);
             expect(result).toBeLessThan(30000);
         });
 

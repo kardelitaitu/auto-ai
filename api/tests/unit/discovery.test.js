@@ -230,14 +230,12 @@ describe('core/discovery', () => {
                 name: 'test-connector-1',
                 instance: {
                     browserType: 'test',
-                    discover: vi
-                        .fn()
-                        .mockResolvedValue([
-                            {
-                                ws: 'ws://localhost:9222/devtools/browser/1',
-                                http: 'http://localhost:9222',
-                            },
-                        ]),
+                    discover: vi.fn().mockResolvedValue([
+                        {
+                            ws: 'ws://localhost:9222/devtools/browser/1',
+                            http: 'http://localhost:9222',
+                        },
+                    ]),
                 },
             };
 
@@ -245,14 +243,12 @@ describe('core/discovery', () => {
                 name: 'test-connector-2',
                 instance: {
                     browserType: 'test2',
-                    discover: vi
-                        .fn()
-                        .mockResolvedValue([
-                            {
-                                ws: 'ws://localhost:9223/devtools/browser/2',
-                                http: 'http://localhost:9223',
-                            },
-                        ]),
+                    discover: vi.fn().mockResolvedValue([
+                        {
+                            ws: 'ws://localhost:9223/devtools/browser/2',
+                            http: 'http://localhost:9223',
+                        },
+                    ]),
                 },
             };
 
@@ -323,14 +319,12 @@ describe('core/discovery', () => {
                 name: 'success-connector',
                 instance: {
                     browserType: 'test',
-                    discover: vi
-                        .fn()
-                        .mockResolvedValue([
-                            {
-                                ws: 'ws://localhost:9222/devtools/browser/1',
-                                http: 'http://localhost:9222',
-                            },
-                        ]),
+                    discover: vi.fn().mockResolvedValue([
+                        {
+                            ws: 'ws://localhost:9222/devtools/browser/1',
+                            http: 'http://localhost:9222',
+                        },
+                    ]),
                 },
             };
 
@@ -374,14 +368,12 @@ describe('core/discovery', () => {
                 name: 'connector2',
                 instance: {
                     browserType: 'test2',
-                    discover: vi
-                        .fn()
-                        .mockResolvedValue([
-                            {
-                                ws: 'ws://localhost:9223/devtools/browser/3',
-                                http: 'http://localhost:9223',
-                            },
-                        ]),
+                    discover: vi.fn().mockResolvedValue([
+                        {
+                            ws: 'ws://localhost:9223/devtools/browser/3',
+                            http: 'http://localhost:9223',
+                        },
+                    ]),
                 },
             };
 

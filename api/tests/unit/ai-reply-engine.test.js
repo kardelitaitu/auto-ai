@@ -408,11 +408,9 @@ describe('ai-reply-engine', () => {
             { textContent: vi.fn().mockResolvedValue('@user2 nice take') },
         ];
         const article = {
-            $: vi
-                .fn()
-                .mockResolvedValue({
-                    textContent: vi.fn().mockResolvedValue('@user3 article reply'),
-                }),
+            $: vi.fn().mockResolvedValue({
+                textContent: vi.fn().mockResolvedValue('@user3 article reply'),
+            }),
         };
         const textNode = { textContent: '@nodeuser insight' };
         const walker = {
@@ -987,11 +985,9 @@ describe('ai-reply-engine', () => {
         global.Node = { TEXT_NODE: 3 };
         const replyElements = [{ textContent: vi.fn().mockResolvedValue('@user1 hello there') }];
         const article = {
-            $: vi
-                .fn()
-                .mockResolvedValue({
-                    textContent: vi.fn().mockResolvedValue('@user3 article reply'),
-                }),
+            $: vi.fn().mockResolvedValue({
+                textContent: vi.fn().mockResolvedValue('@user3 article reply'),
+            }),
         };
         const textNode = { textContent: '@nodeuser insight' };
         const walker = {

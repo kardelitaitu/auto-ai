@@ -45,13 +45,9 @@ describe('HumanInteraction', () => {
                 click: vi.fn().mockResolvedValue(undefined),
             },
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi
-                .fn()
-                .mockReturnValue({
-                    browser: vi
-                        .fn()
-                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
-                }),
+            context: vi.fn().mockReturnValue({
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+            }),
             url: vi.fn().mockReturnValue('https://x.com/home'),
         };
         api.getPage.mockReturnValue(mockPage);

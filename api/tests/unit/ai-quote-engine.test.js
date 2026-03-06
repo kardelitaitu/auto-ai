@@ -272,13 +272,9 @@ describe('ai-quote-engine', () => {
             waitForSelector: vi.fn().mockResolvedValue(),
             waitForTimeout: vi.fn().mockResolvedValue(),
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi
-                .fn()
-                .mockReturnValue({
-                    browser: vi
-                        .fn()
-                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
-                }),
+            context: vi.fn().mockReturnValue({
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+            }),
             viewportSize: vi.fn().mockReturnValue({ width: 1280, height: 720 }),
             url: vi.fn().mockReturnValue('https://x.com/status/1'),
         };
@@ -475,12 +471,10 @@ describe('ai-quote-engine', () => {
             analyzed: [],
         });
         const agent = {
-            processRequest: vi
-                .fn()
-                .mockResolvedValue({
-                    success: true,
-                    content: 'Fallback content that is long enough.',
-                }),
+            processRequest: vi.fn().mockResolvedValue({
+                success: true,
+                content: 'Fallback content that is long enough.',
+            }),
             sessionId: 'test',
         };
         engine = new AIQuoteEngine(agent, { quoteProbability: 1, maxRetries: 1 });
@@ -548,16 +542,14 @@ describe('ai-quote-engine', () => {
             fixation: vi.fn(),
             microMove: vi.fn(),
             hesitation: vi.fn(),
-            findElement: vi
-                .fn()
-                .mockResolvedValue({
-                    element: {
-                        boundingBox: () => Promise.resolve({ y: 100 }),
-                        scrollIntoViewIfNeeded: () => Promise.resolve(),
-                        click: () => Promise.resolve(),
-                    },
-                    selector: '[data-testid="retweet"]',
-                }),
+            findElement: vi.fn().mockResolvedValue({
+                element: {
+                    boundingBox: () => Promise.resolve({ y: 100 }),
+                    scrollIntoViewIfNeeded: () => Promise.resolve(),
+                    click: () => Promise.resolve(),
+                },
+                selector: '[data-testid="retweet"]',
+            }),
         });
         expect(direct.success).toBe(true);
         const retweet = await engine.quoteMethodB_Retweet(page, 'Test quote', {
@@ -569,16 +561,14 @@ describe('ai-quote-engine', () => {
             fixation: vi.fn(),
             microMove: vi.fn(),
             hesitation: vi.fn(),
-            findElement: vi
-                .fn()
-                .mockResolvedValue({
-                    element: {
-                        boundingBox: () => Promise.resolve({ y: 100 }),
-                        scrollIntoViewIfNeeded: () => Promise.resolve(),
-                        click: () => Promise.resolve(),
-                    },
-                    selector: '[data-testid="retweet"]',
-                }),
+            findElement: vi.fn().mockResolvedValue({
+                element: {
+                    boundingBox: () => Promise.resolve({ y: 100 }),
+                    scrollIntoViewIfNeeded: () => Promise.resolve(),
+                    click: () => Promise.resolve(),
+                },
+                selector: '[data-testid="retweet"]',
+            }),
         });
         expect(retweet.success).toBe(true);
         const url = await engine.quoteMethodC_Url(page, 'Test quote', {
@@ -591,16 +581,14 @@ describe('ai-quote-engine', () => {
             microMove: vi.fn(),
             hesitation: vi.fn(),
             ensureFocus: vi.fn().mockResolvedValue(true),
-            findElement: vi
-                .fn()
-                .mockResolvedValue({
-                    element: {
-                        boundingBox: () => Promise.resolve({ y: 100 }),
-                        scrollIntoViewIfNeeded: () => Promise.resolve(),
-                        click: () => Promise.resolve(),
-                    },
-                    selector: '[data-testid="retweet"]',
-                }),
+            findElement: vi.fn().mockResolvedValue({
+                element: {
+                    boundingBox: () => Promise.resolve({ y: 100 }),
+                    scrollIntoViewIfNeeded: () => Promise.resolve(),
+                    click: () => Promise.resolve(),
+                },
+                selector: '[data-testid="retweet"]',
+            }),
         });
         expect(url.success).toBe(true);
         selectMethodImpl = () => ({ name: 'broken', fn: () => Promise.reject(new Error('fail')) });
@@ -853,16 +841,14 @@ describe('ai-quote-engine', () => {
             microMove: vi.fn(),
             hesitation: vi.fn(),
             ensureFocus: vi.fn().mockResolvedValue(true),
-            findElement: vi
-                .fn()
-                .mockResolvedValue({
-                    element: {
-                        boundingBox: () => Promise.resolve({ y: 100 }),
-                        scrollIntoViewIfNeeded: () => Promise.resolve(),
-                        click: () => Promise.resolve(),
-                    },
-                    selector: '[data-testid="retweet"]',
-                }),
+            findElement: vi.fn().mockResolvedValue({
+                element: {
+                    boundingBox: () => Promise.resolve({ y: 100 }),
+                    scrollIntoViewIfNeeded: () => Promise.resolve(),
+                    click: () => Promise.resolve(),
+                },
+                selector: '[data-testid="retweet"]',
+            }),
         };
 
         const result = await engine.quoteMethodC_Url(page, 'Test quote', human);

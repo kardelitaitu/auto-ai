@@ -50,13 +50,9 @@ describe('microInteractions', () => {
             click: vi.fn(),
             viewportSize: vi.fn().mockReturnValue({ width: 1280, height: 720 }),
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi
-                .fn()
-                .mockReturnValue({
-                    browser: vi
-                        .fn()
-                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
-                }),
+            context: vi.fn().mockReturnValue({
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+            }),
         };
         api.getPage.mockReturnValue(mockPage);
 

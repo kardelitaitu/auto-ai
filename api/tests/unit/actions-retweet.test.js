@@ -37,13 +37,9 @@ describe('RetweetAction', () => {
             locator: vi.fn(),
             keyboard: { press: vi.fn().mockResolvedValue(undefined) },
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi
-                .fn()
-                .mockReturnValue({
-                    browser: vi
-                        .fn()
-                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
-                }),
+            context: vi.fn().mockReturnValue({
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+            }),
         };
         api.getPage.mockReturnValue(mockPage);
         mockAgent = {
@@ -125,12 +121,10 @@ describe('RetweetAction', () => {
     describe('handleRetweet - already retweeted', () => {
         it('should return success if unretweet button visible', async () => {
             const mockLocator = {
-                first: vi
-                    .fn()
-                    .mockReturnValue({
-                        isVisible: vi.fn().mockResolvedValue(true),
-                        count: vi.fn().mockResolvedValue(1),
-                    }),
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(true),
+                    count: vi.fn().mockResolvedValue(1),
+                }),
             };
             mockTweetElement.locator.mockImplementation((selector) => {
                 if (selector.includes('unretweet')) return mockLocator;
@@ -143,12 +137,10 @@ describe('RetweetAction', () => {
 
         it('should return success if aria-label Reposted', async () => {
             const mockUnretweet = {
-                first: vi
-                    .fn()
-                    .mockReturnValue({
-                        isVisible: vi.fn().mockResolvedValue(false),
-                        count: vi.fn().mockResolvedValue(0),
-                    }),
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false),
+                    count: vi.fn().mockResolvedValue(0),
+                }),
             };
             const mockAria = {
                 first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }),
@@ -166,12 +158,10 @@ describe('RetweetAction', () => {
         it('should call scrollToGoldenZone when present', async () => {
             mockAgent.scrollToGoldenZone = vi.fn().mockResolvedValue(undefined);
             const mockLocator = {
-                first: vi
-                    .fn()
-                    .mockReturnValue({
-                        isVisible: vi.fn().mockResolvedValue(false),
-                        count: vi.fn().mockResolvedValue(1),
-                    }),
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false),
+                    count: vi.fn().mockResolvedValue(1),
+                }),
             };
             mockTweetElement.locator.mockImplementation((selector) => {
                 if (selector.includes('unretweet')) return mockLocator;
@@ -200,12 +190,10 @@ describe('RetweetAction', () => {
     describe('handleRetweet - button not found', () => {
         it('should return failure if button not found', async () => {
             const mockUnretweet = {
-                first: vi
-                    .fn()
-                    .mockReturnValue({
-                        isVisible: vi.fn().mockResolvedValue(false),
-                        count: vi.fn().mockResolvedValue(0),
-                    }),
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(false),
+                    count: vi.fn().mockResolvedValue(0),
+                }),
             };
             const mockRetweet = {
                 first: vi.fn().mockReturnValue({ count: vi.fn().mockResolvedValue(0) }),

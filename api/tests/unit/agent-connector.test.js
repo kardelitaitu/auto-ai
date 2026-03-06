@@ -24,20 +24,16 @@ vi.mock('../../core/local-client.js', () => {
     return {
         default: vi.fn(function () {
             return {
-                processRequest: vi
-                    .fn()
-                    .mockResolvedValue({
-                        success: true,
-                        content: 'local response',
-                        metadata: { routedTo: 'local' },
-                    }),
-                sendRequest: vi
-                    .fn()
-                    .mockResolvedValue({
-                        success: true,
-                        content: 'local response',
-                        metadata: { routedTo: 'local' },
-                    }),
+                processRequest: vi.fn().mockResolvedValue({
+                    success: true,
+                    content: 'local response',
+                    metadata: { routedTo: 'local' },
+                }),
+                sendRequest: vi.fn().mockResolvedValue({
+                    success: true,
+                    content: 'local response',
+                    metadata: { routedTo: 'local' },
+                }),
                 getStats: vi.fn().mockReturnValue({}),
             };
         }),
@@ -48,20 +44,16 @@ vi.mock('../../core/cloud-client.js', () => {
     return {
         default: vi.fn(function () {
             return {
-                processRequest: vi
-                    .fn()
-                    .mockResolvedValue({
-                        success: true,
-                        content: 'cloud response',
-                        metadata: { routedTo: 'cloud' },
-                    }),
-                sendRequest: vi
-                    .fn()
-                    .mockResolvedValue({
-                        success: true,
-                        content: 'cloud response',
-                        metadata: { routedTo: 'cloud' },
-                    }),
+                processRequest: vi.fn().mockResolvedValue({
+                    success: true,
+                    content: 'cloud response',
+                    metadata: { routedTo: 'cloud' },
+                }),
+                sendRequest: vi.fn().mockResolvedValue({
+                    success: true,
+                    content: 'cloud response',
+                    metadata: { routedTo: 'cloud' },
+                }),
                 getStats: vi.fn().mockReturnValue({}),
                 isReady: vi.fn().mockReturnValue(true),
             };
@@ -73,13 +65,11 @@ vi.mock('../../core/vision-interpreter.js', () => {
     return {
         default: vi.fn(function () {
             return {
-                analyze: vi
-                    .fn()
-                    .mockResolvedValue({
-                        success: true,
-                        content: 'vision response',
-                        metadata: { routedTo: 'vision' },
-                    }),
+                analyze: vi.fn().mockResolvedValue({
+                    success: true,
+                    content: 'vision response',
+                    metadata: { routedTo: 'vision' },
+                }),
                 buildPrompt: vi.fn().mockReturnValue('vision prompt'),
                 parseResponse: vi.fn().mockReturnValue({ success: true, data: {} }),
                 getStats: vi.fn().mockReturnValue({}),

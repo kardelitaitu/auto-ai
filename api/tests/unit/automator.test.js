@@ -344,13 +344,11 @@ describe('Automator', () => {
         it('should return healthy for responsive page', async () => {
             const mockPage = {
                 isClosed: vi.fn().mockReturnValue(false),
-                evaluate: vi
-                    .fn()
-                    .mockResolvedValue({
-                        documentReady: 'complete',
-                        title: 'Test',
-                        bodyExists: true,
-                    }),
+                evaluate: vi.fn().mockResolvedValue({
+                    documentReady: 'complete',
+                    title: 'Test',
+                    bodyExists: true,
+                }),
             };
 
             const result = await automator.checkPageResponsive(mockPage);
@@ -418,13 +416,11 @@ describe('Automator', () => {
             const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
             const mockPage = {
                 isClosed: vi.fn().mockReturnValue(false),
-                evaluate: vi
-                    .fn()
-                    .mockResolvedValue({
-                        documentReady: 'complete',
-                        title: 'Test',
-                        bodyExists: true,
-                    }),
+                evaluate: vi.fn().mockResolvedValue({
+                    documentReady: 'complete',
+                    title: 'Test',
+                    bodyExists: true,
+                }),
             };
             const wsEndpoint = 'ws://localhost:1234';
             automator.connections.set(wsEndpoint, {

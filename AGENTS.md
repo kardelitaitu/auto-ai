@@ -67,7 +67,7 @@ You have access to a specific set of tools. You must use the most appropriate to
     - `context7_resolve-library-id` : Resolve a package/library name to Context7-compatible library ID (e.g., "react", "express")
     - `context7_query-docs` : Query documentation and code examples from Context7
 - **code-index (Use when you are exploring the codebase and don't know where files are located. (e.g., "Where is the authentication logic?").)**:
-    - `code-index_find_files` : Find files matching glob patterns (e.g., _.js, test\__.ts)
+    - `code-index_find_files` : Find files matching glob patterns (e.g., \_.js, test\_\_.ts)
     - `code-index_search_code_advanced` : Search code patterns using regex with fuzzy matching, case sensitivity, file filtering
     - `code-index_get_file_summary` : Get file summary including line count, function/class definitions, imports, complexity metrics
 - **filesystem (Use when you need to read full file contents or write changes to the disk.)**:

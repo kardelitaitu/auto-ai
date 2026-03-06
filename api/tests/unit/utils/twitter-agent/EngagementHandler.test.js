@@ -75,13 +75,9 @@ describe('EngagementHandler', () => {
             }),
             url: vi.fn().mockReturnValue('https://x.com/home'),
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi
-                .fn()
-                .mockReturnValue({
-                    browser: vi
-                        .fn()
-                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
-                }),
+            context: vi.fn().mockReturnValue({
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+            }),
             evaluate: vi.fn().mockResolvedValue(undefined),
             goBack: vi.fn().mockResolvedValue(undefined),
         };

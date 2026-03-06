@@ -83,13 +83,9 @@ describe('HumanizationEngine', () => {
                 wheel: vi.fn(),
             },
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi
-                .fn()
-                .mockReturnValue({
-                    browser: vi
-                        .fn()
-                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
-                }),
+            context: vi.fn().mockReturnValue({
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+            }),
         };
         api.getPage.mockReturnValue(mockPage);
         mockAgent = {

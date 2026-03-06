@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { cpus } from 'os';
 
 // 1. Path Resolution: Use absolute paths to prevent root fallback
-const rootDir = resolve(__dirname);
+const rootDir = resolve(__dirname, '..');
 const coverageRoot = resolve(rootDir, 'api/coverage');
 
 // 2. Ensure directory exists before Vitest starts
