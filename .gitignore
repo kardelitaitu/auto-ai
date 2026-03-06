@@ -12,6 +12,11 @@ coverage
 .env
 config/settings.json
 logs.txt
+logs.json
+run-summary.json
+data/sessions.db
+data/sessions.db-shm
+data/sessions.db-wal
 script/proxies.txt
 .llm-context
 backup

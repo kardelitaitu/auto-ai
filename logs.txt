@@ -113,3 +113,28 @@
 [13:18:41] [WARN] [cookiebot.js] Network error visiting https://www.twitch.tv/nickmercs
 [13:18:41] [INFO] [cookiebot.js] (4 of 8) Navigating to: https://www.gazzetta.it
 [13:18:49] [INFO] [cookiebot.js] www.gazzetta.it init scrolling
+[13:19:19] [INFO] [cookiebot.js] www.gazzetta.it scrolled for 30.7s
+[13:19:21] [INFO] [cookiebot.js] www.gazzetta.it init simulate reading for 5.2 s
+[13:19:26] [INFO] [cookiebot.js] (5 of 8) Navigating to: https://www.coingecko.com
+[13:19:33] [WARN] [cookiebot.js] Task forced to stop: Cookiebot task exceeded 120000ms limit
+[13:19:33] [DEBUG] [cookiebot.js] Page closed successfully.
+[13:19:33] [INFO] [cookiebot.js] Total task duration: 120.05 seconds
+[13:19:33] [DEBUG] [metrics.js] Task 'cookiebot' recorded: SUCCESS, duration: 120071ms
+[13:19:33] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0001 (122140ms)
+[13:19:33] [INFO] [orchestrator.js] [Orchestrator] All tasks completed
+[13:19:33] [INFO] [main.js] [Queue] Group 1 completed successfully.
+[13:19:33] [INFO] [main.js] MultiBrowseAutomation - Shutting down...
+[13:19:33] [INFO] [orchestrator.js] [Orchestrator] Queue empty, resolving immediately
+[13:19:33] [INFO] [sessionManager.js] [SessionManager] SessionManager shutting down...
+[13:19:33] [INFO] [sessionManager.js] [SessionManager] SessionManager shutdown complete
+[13:19:33] [INFO] [dashboard.js] Socket.io closed
+[13:19:33] [INFO] [dashboard.js] Dashboard server stopped
+[13:19:33] [INFO] [automator.js] Automator shutting down...
+[13:19:33] [INFO] [automator.js] Closing 1 browser connections
+[13:19:33] [INFO] [automator.js] Stopped health check monitoring
+[13:19:33] [DEBUG] [automator.js] Closed connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8
+[13:19:33] [INFO] [automator.js] All connections closed
+[13:19:33] [INFO] [automator.js] Automator shutdown complete
+[13:19:33] [INFO] [metrics.js] Generating JSON summary report...
+[13:19:33] [INFO] [metrics.js] Successfully generated JSON report at C:\My Script\auto-ai\run-summary.json
+[13:19:33] [INFO] [orchestrator.js] [Orchestrator] Orchestrator shutdown complete

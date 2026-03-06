@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 132142,
-      "uptimeFormatted": "2m 12s",
-      "timeSinceReset": 132142,
-      "timeSinceResetFormatted": "2m 12s"
+      "uptime": 124058,
+      "uptimeFormatted": "2m 4s",
+      "timeSinceReset": 124058,
+      "timeSinceResetFormatted": "2m 4s"
     },
     "tasks": {
       "executed": 1,
       "failed": 0,
       "succeeded": 1,
       "successRate": 100,
-      "avgDuration": 120156,
-      "totalDuration": 120156,
+      "avgDuration": 120071,
+      "totalDuration": 120071,
       "durationPercentiles": {
-        "p50": 120156,
-        "p95": 120156,
-        "p99": 120156
+        "p50": 120071,
+        "p95": 120071,
+        "p99": 120071
       }
     },
     "browsers": {
@@ -61,17 +61,17 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-06T06:14:57.844Z"
+    "runEndTime": "2026-03-06T06:19:33.276Z"
   },
   "tasks": [
     {
       "taskName": "cookiebot",
-      "duration": 120156,
+      "duration": 120071,
       "success": true,
       "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-06T06:12:57.662Z",
-      "timestamp": 1772777697818
+      "startTime": "2026-03-06T06:17:33.180Z",
+      "timestamp": 1772777973251
     }
   ]
 }

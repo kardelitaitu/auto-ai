@@ -113,3 +113,28 @@
 {"timestamp":"2026-03-06T06:18:41.508Z","level":"WARN","module":"cookiebot.js","sessionId":"roxy:0001","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"Network error visiting https://www.twitch.tv/nickmercs"}
 {"timestamp":"2026-03-06T06:18:41.508Z","level":"INFO","module":"cookiebot.js","sessionId":"roxy:0001","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"(4 of 8) Navigating to: https://www.gazzetta.it"}
 {"timestamp":"2026-03-06T06:18:49.189Z","level":"INFO","module":"cookiebot.js","sessionId":"roxy:0001","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"www.gazzetta.it init scrolling"}
+{"timestamp":"2026-03-06T06:19:19.904Z","level":"INFO","module":"cookiebot.js","sessionId":"roxy:0001","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"www.gazzetta.it scrolled for 30.7s"}
+{"timestamp":"2026-03-06T06:19:21.016Z","level":"INFO","module":"cookiebot.js","sessionId":"roxy:0001","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"www.gazzetta.it init simulate reading for 5.2 s"}
+{"timestamp":"2026-03-06T06:19:26.881Z","level":"INFO","module":"cookiebot.js","sessionId":"roxy:0001","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"(5 of 8) Navigating to: https://www.coingecko.com"}
+{"timestamp":"2026-03-06T06:19:33.216Z","level":"WARN","module":"cookiebot.js","sessionId":"session-3fbc9317","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"Task forced to stop: Cookiebot task exceeded 120000ms limit"}
+{"timestamp":"2026-03-06T06:19:33.251Z","level":"DEBUG","module":"cookiebot.js","sessionId":"session-3fbc9317","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"Page closed successfully."}
+{"timestamp":"2026-03-06T06:19:33.251Z","level":"INFO","module":"cookiebot.js","sessionId":"session-3fbc9317","traceId":"c5020327-c83d-4639-a43a-e16e052905f5","message":"Total task duration: 120.05 seconds"}
+{"timestamp":"2026-03-06T06:19:33.252Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Task 'cookiebot' recorded: SUCCESS, duration: 120071ms"}
+{"timestamp":"2026-03-06T06:19:33.252Z","level":"DEBUG","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Released worker 0 in roxy:0001 (122140ms)"}
+{"timestamp":"2026-03-06T06:19:33.253Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] All tasks completed"}
+{"timestamp":"2026-03-06T06:19:33.253Z","level":"INFO","module":"main.js","sessionId":null,"message":"[Queue] Group 1 completed successfully."}
+{"timestamp":"2026-03-06T06:19:33.253Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Shutting down..."}
+{"timestamp":"2026-03-06T06:19:33.254Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Queue empty, resolving immediately"}
+{"timestamp":"2026-03-06T06:19:33.254Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] SessionManager shutting down..."}
+{"timestamp":"2026-03-06T06:19:33.268Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] SessionManager shutdown complete"}
+{"timestamp":"2026-03-06T06:19:33.269Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Socket.io closed"}
+{"timestamp":"2026-03-06T06:19:33.270Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server stopped"}
+{"timestamp":"2026-03-06T06:19:33.271Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutting down..."}
+{"timestamp":"2026-03-06T06:19:33.271Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Closing 1 browser connections"}
+{"timestamp":"2026-03-06T06:19:33.272Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Stopped health check monitoring"}
+{"timestamp":"2026-03-06T06:19:33.273Z","level":"DEBUG","module":"automator.js","sessionId":null,"message":"Closed connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
+{"timestamp":"2026-03-06T06:19:33.273Z","level":"INFO","module":"automator.js","sessionId":null,"message":"All connections closed"}
+{"timestamp":"2026-03-06T06:19:33.273Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutdown complete"}
+{"timestamp":"2026-03-06T06:19:33.276Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Generating JSON summary report..."}
+{"timestamp":"2026-03-06T06:19:33.278Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Successfully generated JSON report at C:\\My Script\\auto-ai\\run-summary.json"}
+{"timestamp":"2026-03-06T06:19:33.278Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Orchestrator shutdown complete"}
