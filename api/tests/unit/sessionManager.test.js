@@ -9,18 +9,18 @@ const mockSqlite = {
     prepare: vi.fn().mockReturnValue({
         run: vi.fn(),
         all: vi.fn().mockReturnValue([]),
-        get: vi.fn()
+        get: vi.fn(),
     }),
-    transaction: vi.fn(fn => fn)
+    transaction: vi.fn((fn) => fn),
 };
 
 vi.mock('better-sqlite3', () => ({
-    default: vi.fn(() => mockSqlite)
+    default: vi.fn(() => mockSqlite),
 }));
 
 vi.mock('../../utils/configLoader.js', () => ({
     getTimeoutValue: vi.fn().mockResolvedValue({}),
-    getSettings: vi.fn().mockResolvedValue({ concurrencyPerBrowser: 1 })
+    getSettings: vi.fn().mockResolvedValue({ concurrencyPerBrowser: 1 }),
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -28,8 +28,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 vi.mock('../../utils/metrics.js', () => ({
@@ -38,8 +38,8 @@ vi.mock('../../utils/metrics.js', () => ({
         decrement: vi.fn(),
         gauge: vi.fn(),
         timing: vi.fn(),
-        recordSessionEvent: vi.fn()
-    }
+        recordSessionEvent: vi.fn(),
+    },
 }));
 
 import { getTimeoutValue } from '@api/utils/configLoader.js';
@@ -51,7 +51,7 @@ describe('SessionManager', () => {
         vi.clearAllMocks();
         getTimeoutValue.mockResolvedValue({});
         manager = new SessionManager();
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
     });
 
     afterEach(async () => {
@@ -84,8 +84,8 @@ describe('SessionManager', () => {
             close: vi.fn(),
             contexts: () => [],
             newContext: vi.fn().mockResolvedValue({
-                newPage: vi.fn().mockResolvedValue({ on: vi.fn(), close: vi.fn() })
-            })
+                newPage: vi.fn().mockResolvedValue({ on: vi.fn(), close: vi.fn() }),
+            }),
         };
         const id = manager.addSession(browser, 'test-profile');
         const worker = await manager.acquireWorker(id);
@@ -116,12 +116,14 @@ describe('SessionManager', () => {
             expect(p1).toBe(true);
 
             let p2Acquired = false;
-            sem.acquire().then(() => { p2Acquired = true; });
+            sem.acquire().then(() => {
+                p2Acquired = true;
+            });
 
             expect(p2Acquired).toBe(false);
             sem.release();
 
-            await new Promise(r => setTimeout(r, 10));
+            await new Promise((r) => setTimeout(r, 10));
             expect(p2Acquired).toBe(true);
         });
 
@@ -145,14 +147,24 @@ describe('SessionManager', () => {
         });
 
         it('should recover sessions from database', async () => {
-            const mockAll = vi.fn()
-                .mockReturnValueOnce([{ id: 'db-session', browserInfo: '{}', wsEndpoint: 'ws://', workers: '[]', createdAt: Date.now(), lastActivity: Date.now() }])
+            const mockAll = vi
+                .fn()
+                .mockReturnValueOnce([
+                    {
+                        id: 'db-session',
+                        browserInfo: '{}',
+                        wsEndpoint: 'ws://',
+                        workers: '[]',
+                        createdAt: Date.now(),
+                        lastActivity: Date.now(),
+                    },
+                ])
                 .mockReturnValueOnce([{ key: 'nextSessionId', value: '5' }]);
 
             manager.db = {
                 prepare: vi.fn().mockReturnValue({
-                    all: mockAll
-                })
+                    all: mockAll,
+                }),
             };
 
             const state = await manager.loadSessionState();

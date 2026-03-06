@@ -12,8 +12,8 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('core/circuit-breaker', () => {
@@ -27,7 +27,7 @@ describe('core/circuit-breaker', () => {
             successThreshold: 2,
             halfOpenTime: 1000,
             monitoringWindow: 5000,
-            minSamples: 3
+            minSamples: 3,
         });
     });
 
@@ -75,8 +75,9 @@ describe('core/circuit-breaker', () => {
             breaker.forceOpen('m1');
 
             // Should be OPEN
-            await expect(breaker.execute('m1', async () => 'ok'))
-                .rejects.toThrow(/Circuit breaker OPEN/);
+            await expect(breaker.execute('m1', async () => 'ok')).rejects.toThrow(
+                /Circuit breaker OPEN/
+            );
 
             // Advance time past halfOpenTime
             const b = breaker.getBreaker('m1');
@@ -109,7 +110,11 @@ describe('core/circuit-breaker', () => {
             b.nextAttempt = Date.now() - 100;
 
             const error = new Error('half-fail');
-            await expect(breaker.execute('m1', async () => { throw error; })).rejects.toThrow('half-fail');
+            await expect(
+                breaker.execute('m1', async () => {
+                    throw error;
+                })
+            ).rejects.toThrow('half-fail');
 
             expect(breaker.getHealth('m1').status).toBe('OPEN');
         });
@@ -230,7 +235,7 @@ describe('core/circuit-breaker', () => {
                 { time: Date.now(), type: 'success' },
                 { time: Date.now(), type: 'success' },
                 { time: Date.now(), type: 'failure' },
-                { time: Date.now(), type: 'failure' }
+                { time: Date.now(), type: 'failure' },
             ];
 
             const rate = breaker._calculateFailureRate(b);
@@ -249,7 +254,7 @@ describe('core/circuit-breaker', () => {
             const b = breaker.getBreaker('m1');
             b.history = [
                 { time: Date.now(), type: 'failure' },
-                { time: Date.now(), type: 'failure' }
+                { time: Date.now(), type: 'failure' },
             ];
 
             // minSamples is 3, so should return 0
@@ -260,7 +265,7 @@ describe('core/circuit-breaker', () => {
         it('should calculate failure rate only for recent history', () => {
             const b = breaker.getBreaker('m1');
             const now = Date.now();
-            
+
             // 3 recent failures (meets minSamples=3)
             // 3 old successes (should be ignored)
             b.history = [
@@ -269,7 +274,7 @@ describe('core/circuit-breaker', () => {
                 { time: now, type: 'failure' },
                 { time: now - 600000, type: 'success' },
                 { time: now - 600000, type: 'success' },
-                { time: now - 600000, type: 'success' }
+                { time: now - 600000, type: 'success' },
             ];
 
             const rate = breaker._calculateFailureRate(b);
@@ -281,7 +286,7 @@ describe('core/circuit-breaker', () => {
         it('should have correct error code and properties', async () => {
             // Test through actual execution
             breaker.forceOpen('testModel');
-            
+
             try {
                 await breaker.execute('testModel', async () => 'ok');
             } catch (error) {
@@ -305,7 +310,7 @@ describe('core/circuit-breaker', () => {
             const b = breaker.getBreaker('m1');
             b.history = [
                 { time: Date.now(), type: 'failure' },
-                { time: Date.now(), type: 'failure' }
+                { time: Date.now(), type: 'failure' },
             ];
             const rate = breaker._calculateFailureRate(b);
             expect(rate).toBe(0);
@@ -317,7 +322,7 @@ describe('core/circuit-breaker', () => {
                 { time: Date.now(), type: 'success' },
                 { time: Date.now(), type: 'failure' },
                 { time: Date.now(), type: 'failure' },
-                { time: Date.now(), type: 'failure' }
+                { time: Date.now(), type: 'failure' },
             ];
             const rate = breaker._calculateFailureRate(b);
             expect(rate).toBe(75);
@@ -331,7 +336,7 @@ describe('core/circuit-breaker', () => {
                 { time: now, type: 'failure' },
                 { time: now, type: 'failure' },
                 { time: now - 100000, type: 'success' },
-                { time: now - 100000, type: 'success' }
+                { time: now - 100000, type: 'success' },
             ];
             const rate = breaker._calculateFailureRate(b);
             expect(rate).toBe(100);
@@ -340,9 +345,13 @@ describe('core/circuit-breaker', () => {
         it('should transition from CLOSED to OPEN when failure threshold met', async () => {
             const error = new Error('fail');
             const fn = vi.fn().mockRejectedValue(error);
-            
+
             for (let i = 0; i < 2; i++) {
-                try { await breaker.execute('test', fn); } catch { /* intentional no-op */ }
+                try {
+                    await breaker.execute('test', fn);
+                } catch {
+                    /* intentional no-op */
+                }
             }
             expect(breaker.getHealth('test').status).toBe('CLOSED');
 
@@ -354,7 +363,7 @@ describe('core/circuit-breaker', () => {
             breaker.forceOpen('m1');
             const b = breaker.getBreaker('m1');
             b.nextAttempt = Date.now() - 1;
-            
+
             await breaker.execute('m1', async () => 'success');
             expect(breaker.getHealth('m1').status).toBe('HALF_OPEN');
         });
@@ -363,9 +372,10 @@ describe('core/circuit-breaker', () => {
             breaker.forceOpen('m1');
             const b = breaker.getBreaker('m1');
             b.nextAttempt = Date.now() + 60000;
-            
-            await expect(breaker.execute('m1', async () => 'ok'))
-                .rejects.toThrow('Circuit breaker OPEN');
+
+            await expect(breaker.execute('m1', async () => 'ok')).rejects.toThrow(
+                'Circuit breaker OPEN'
+            );
             expect(breaker.getHealth('m1').status).toBe('OPEN');
         });
 
@@ -373,11 +383,11 @@ describe('core/circuit-breaker', () => {
             const b = breaker.getBreaker('m1');
             b.state = 'HALF_OPEN';
             b.successes = 0;
-            
+
             await breaker.execute('m1', async () => 'ok');
             expect(b.state).toBe('HALF_OPEN');
             expect(b.successes).toBe(1);
-            
+
             await breaker.execute('m1', async () => 'ok');
             expect(b.state).toBe('CLOSED');
         });
@@ -385,11 +395,15 @@ describe('core/circuit-breaker', () => {
         it('should transition from HALF_OPEN back to OPEN on failure', async () => {
             const b = breaker.getBreaker('m1');
             b.state = 'HALF_OPEN';
-            
+
             try {
-                await breaker.execute('m1', async () => { throw new Error('fail'); });
-            } catch { /* intentional no-op */ }
-            
+                await breaker.execute('m1', async () => {
+                    throw new Error('fail');
+                });
+            } catch {
+                /* intentional no-op */
+            }
+
             expect(b.state).toBe('OPEN');
             expect(b.nextAttempt).toBeGreaterThan(Date.now());
         });
@@ -399,11 +413,11 @@ describe('core/circuit-breaker', () => {
             b.state = 'HALF_OPEN';
             b.failures = 10;
             b.successes = 0;
-            
+
             await breaker.execute('m1', async () => 'ok');
             expect(b.state).toBe('HALF_OPEN');
             expect(b.successes).toBe(1);
-            
+
             await breaker.execute('m1', async () => 'ok');
             expect(b.state).toBe('CLOSED');
             expect(b.failures).toBe(0);
@@ -413,7 +427,7 @@ describe('core/circuit-breaker', () => {
         it('should update lastSuccess on successful execution', async () => {
             vi.setSystemTime(1000);
             await breaker.execute('m1', async () => 'ok');
-            
+
             const health = breaker.getHealth('m1');
             expect(health.lastSuccess).toBe(1000);
         });
@@ -421,9 +435,13 @@ describe('core/circuit-breaker', () => {
         it('should update lastFailure on failed execution', async () => {
             vi.setSystemTime(2000);
             try {
-                await breaker.execute('m1', async () => { throw new Error('fail'); });
-            } catch { /* intentional no-op */ }
-            
+                await breaker.execute('m1', async () => {
+                    throw new Error('fail');
+                });
+            } catch {
+                /* intentional no-op */
+            }
+
             const health = breaker.getHealth('m1');
             expect(health.lastFailure).toBe(2000);
         });
@@ -432,9 +450,9 @@ describe('core/circuit-breaker', () => {
             const b = breaker.getBreaker('m1');
             b.history = [
                 { time: Date.now() - 10000, type: 'failure' },
-                { time: Date.now() - 10000, type: 'success' }
+                { time: Date.now() - 10000, type: 'success' },
             ];
-            
+
             await breaker.execute('m1', async () => 'ok');
             expect(b.history.length).toBeLessThanOrEqual(3);
         });
@@ -444,7 +462,7 @@ describe('core/circuit-breaker', () => {
             for (let i = 0; i < 120; i++) {
                 b.history.push({ time: Date.now(), type: 'success' });
             }
-            
+
             await breaker.execute('m1', async () => 'ok');
             expect(b.history.length).toBe(100);
         });
@@ -472,10 +490,28 @@ describe('core/circuit-breaker', () => {
         });
 
         it('should getAllStatus returns failureRate as string with percent', async () => {
-            try { await breaker.execute('m1', async () => { throw new Error('fail'); }); } catch { /* intentional no-op */ }
-            try { await breaker.execute('m1', async () => { throw new Error('fail'); }); } catch { /* intentional no-op */ }
-            try { await breaker.execute('m1', async () => { throw new Error('fail'); }); } catch { /* intentional no-op */ }
-            
+            try {
+                await breaker.execute('m1', async () => {
+                    throw new Error('fail');
+                });
+            } catch {
+                /* intentional no-op */
+            }
+            try {
+                await breaker.execute('m1', async () => {
+                    throw new Error('fail');
+                });
+            } catch {
+                /* intentional no-op */
+            }
+            try {
+                await breaker.execute('m1', async () => {
+                    throw new Error('fail');
+                });
+            } catch {
+                /* intentional no-op */
+            }
+
             const status = breaker.getAllStatus();
             expect(status.m1.failureRate).toContain('%');
         });
@@ -501,7 +537,7 @@ describe('core/circuit-breaker', () => {
         it('should execute re-throws error after recording', async () => {
             const error = new Error('test error');
             const fn = vi.fn().mockRejectedValue(error);
-            
+
             await expect(breaker.execute('m1', fn)).rejects.toThrow('test error');
             expect(fn).toHaveBeenCalledTimes(1);
         });
@@ -517,9 +553,9 @@ describe('core/circuit-breaker', () => {
             const b = breaker.getBreaker('m1');
             b.failures = 100;
             b.successes = 50;
-            
+
             breaker.forceClose('m1');
-            
+
             expect(b.failures).toBe(0);
             expect(b.successes).toBe(0);
             expect(b.state).toBe('CLOSED');
@@ -547,9 +583,9 @@ describe('core/circuit-breaker', () => {
             const b = breaker.getBreaker('m1');
             b.history = [
                 { time: Date.now() - 100000, type: 'success' },
-                { time: Date.now(), type: 'failure' }
+                { time: Date.now(), type: 'failure' },
             ];
-            
+
             breaker._cleanupHistory(b);
             expect(b.history.length).toBe(1);
             expect(b.history[0].type).toBe('failure');
@@ -559,10 +595,16 @@ describe('core/circuit-breaker', () => {
             for (let i = 0; i < 10; i++) {
                 try {
                     await breaker.execute('m1', async () => 'ok');
-                } catch { /* intentional no-op */ }
+                } catch {
+                    /* intentional no-op */
+                }
                 try {
-                    await breaker.execute('m1', async () => { throw new Error('fail'); });
-                } catch { /* intentional no-op */ }
+                    await breaker.execute('m1', async () => {
+                        throw new Error('fail');
+                    });
+                } catch {
+                    /* intentional no-op */
+                }
             }
             const health = breaker.getHealth('m1');
             expect(health.recentOperations).toBeLessThanOrEqual(20);
@@ -577,20 +619,20 @@ describe('core/circuit-breaker', () => {
         });
 
         it('should handle concurrent execute calls for same model', async () => {
-            const promises = Array(5).fill(null).map(() => 
-                breaker.execute('m1', async () => 'ok')
-            );
+            const promises = Array(5)
+                .fill(null)
+                .map(() => breaker.execute('m1', async () => 'ok'));
             const results = await Promise.allSettled(promises);
-            const fulfilled = results.filter(r => r.status === 'fulfilled');
+            const fulfilled = results.filter((r) => r.status === 'fulfilled');
             expect(fulfilled.length).toBe(5);
         });
 
         it('should record success history entry', async () => {
             const b = breaker.getBreaker('m1');
             const before = b.history.length;
-            
+
             await breaker.execute('m1', async () => 'ok');
-            
+
             expect(b.history.length).toBe(before + 1);
             expect(b.history[b.history.length - 1].type).toBe('success');
         });
@@ -598,11 +640,15 @@ describe('core/circuit-breaker', () => {
         it('should record failure history entry', async () => {
             const b = breaker.getBreaker('m1');
             const before = b.history.length;
-            
+
             try {
-                await breaker.execute('m1', async () => { throw new Error('fail'); });
-            } catch { /* intentional no-op */ }
-            
+                await breaker.execute('m1', async () => {
+                    throw new Error('fail');
+                });
+            } catch {
+                /* intentional no-op */
+            }
+
             expect(b.history.length).toBe(before + 1);
             expect(b.history[b.history.length - 1].type).toBe('failure');
         });

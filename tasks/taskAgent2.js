@@ -13,12 +13,10 @@ import { run as runAgent } from './runAgent.js';
  * @returns {Promise<void>} Resolves when the task completes
  */
 export async function run(page, args, config = {}) {
-    console.log("Starting taskAgent2 - Weather Search...");
+    console.log('Starting taskAgent2 - Weather Search...');
 
-    console.log("Goal: Search for weather in Jakarta");
-    await runAgent(page, [
-        "Go to Google and search for 'weather in jakarta'"
-    ], config);
+    console.log('Goal: Search for weather in Jakarta');
+    await runAgent(page, ["Go to Google and search for 'weather in jakarta'"], config);
 
-    console.log("taskAgent2 complete.");
+    console.log('taskAgent2 complete.');
 }

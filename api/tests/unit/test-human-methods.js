@@ -48,7 +48,7 @@ async function main() {
         { name: 'A', weight: 40, fn: () => 'A' },
         { name: 'B', weight: 35, fn: () => 'B' },
         { name: 'C', weight: 15, fn: () => 'C' },
-        { name: 'D', weight: 10, fn: () => 'D' }
+        { name: 'D', weight: 10, fn: () => 'D' },
     ];
 
     const results = { A: 0, B: 0, C: 0, D: 0 };
@@ -69,7 +69,7 @@ async function main() {
     const asyncQueue = new AsyncQueue({
         maxConcurrent: 3,
         maxQueueSize: 10,
-        defaultTimeout: 2000
+        defaultTimeout: 2000,
     });
     console.log('  AsyncQueue created with:');
     console.log('    - maxConcurrent: 3');
@@ -87,7 +87,7 @@ async function main() {
         quotes: 1,
         likes: 5,
         follows: 2,
-        bookmarks: 2
+        bookmarks: 2,
     });
     console.log('  DiveQueue created with:');
     console.log('    - maxConcurrent: 1 (sequential processing)');
@@ -100,7 +100,7 @@ async function main() {
         quotes: 1,
         likes: 5,
         follows: 2,
-        bookmarks: 2
+        bookmarks: 2,
     });
 
     console.log('\n[Test 4.3] AsyncQueue Concurrent Processing (3 tasks, maxConcurrent: 3):');
@@ -108,19 +108,19 @@ async function main() {
     let concurrentCompleted = 0;
 
     const task1 = async () => {
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 500));
         concurrentCompleted++;
         return `Task1_completed_${concurrentCompleted}`;
     };
 
     const task2 = async () => {
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 500));
         concurrentCompleted++;
         return `Task2_completed_${concurrentCompleted}`;
     };
 
     const task3 = async () => {
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 500));
         concurrentCompleted++;
         return `Task3_completed_${concurrentCompleted}`;
     };
@@ -128,7 +128,7 @@ async function main() {
     await Promise.all([
         asyncQueue.add(task1, { name: 'concurrent_task_1', timeout: 3000 }),
         asyncQueue.add(task2, { name: 'concurrent_task_2', timeout: 3000 }),
-        asyncQueue.add(task3, { name: 'concurrent_task_3', timeout: 3000 })
+        asyncQueue.add(task3, { name: 'concurrent_task_3', timeout: 3000 }),
     ]);
 
     const concurrentDuration = Date.now() - concurrentStart;
@@ -141,19 +141,19 @@ async function main() {
     let seqCompleted = 0;
 
     const seqTask1 = async () => {
-        await new Promise(r => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 200));
         seqCompleted++;
         return `SeqTask1_${seqCompleted}`;
     };
 
     const seqTask2 = async () => {
-        await new Promise(r => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 200));
         seqCompleted++;
         return `SeqTask2_${seqCompleted}`;
     };
 
     const seqTask3 = async () => {
-        await new Promise(r => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 200));
         seqCompleted++;
         return `SeqTask3_${seqCompleted}`;
     };
@@ -161,7 +161,7 @@ async function main() {
     await Promise.all([
         seqQueue.add(seqTask1, { name: 'seq_task_1', timeout: 3000 }),
         seqQueue.add(seqTask2, { name: 'seq_task_2', timeout: 3000 }),
-        seqQueue.add(seqTask3, { name: 'seq_task_3', timeout: 3000 })
+        seqQueue.add(seqTask3, { name: 'seq_task_3', timeout: 3000 }),
     ]);
 
     const seqDuration = Date.now() - seqStart;
@@ -179,13 +179,13 @@ async function main() {
         quotes: 1,
         likes: 5,
         follows: 2,
-        bookmarks: 2
+        bookmarks: 2,
     });
     let timeoutTaskCalled = false;
     let fallbackCalled = false;
 
     const slowTask = async () => {
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 500));
         timeoutTaskCalled = true;
         return 'slow_task_result';
     };
@@ -198,7 +198,7 @@ async function main() {
     const timeoutResult = await timeoutDiveQueue.addDive(slowTask, fastFallback, {
         taskName: 'timeout_test',
         timeout: 200,
-        priority: 0
+        priority: 0,
     });
 
     console.log(`  Task executed: ${timeoutTaskCalled}`);
@@ -211,7 +211,9 @@ async function main() {
     const initialProgress = diveQueue.getEngagementProgress();
     console.log(`    Replies: ${initialProgress.replies.current}/${initialProgress.replies.limit}`);
     console.log(`    Likes: ${initialProgress.likes.current}/${initialProgress.likes.limit}`);
-    console.log(`    Bookmarks: ${initialProgress.bookmarks.current}/${initialProgress.bookmarks.limit}`);
+    console.log(
+        `    Bookmarks: ${initialProgress.bookmarks.current}/${initialProgress.bookmarks.limit}`
+    );
 
     console.log('\n  Recording engagements:');
     diveQueue.recordEngagement('likes');
@@ -222,11 +224,17 @@ async function main() {
     const updatedProgress = diveQueue.getEngagementProgress();
     console.log(`    Replies: ${updatedProgress.replies.current}/${updatedProgress.replies.limit}`);
     console.log(`    Likes: ${updatedProgress.likes.current}/${updatedProgress.likes.limit}`);
-    console.log(`    Bookmarks: ${updatedProgress.bookmarks.current}/${updatedProgress.bookmarks.limit}`);
+    console.log(
+        `    Bookmarks: ${updatedProgress.bookmarks.current}/${updatedProgress.bookmarks.limit}`
+    );
 
     console.log('\n  Checking canEngage:');
-    console.log(`    Can engage likes: ${diveQueue.canEngage('likes')} (${updatedProgress.likes.current}/${updatedProgress.likes.limit})`);
-    console.log(`    Can engage replies: ${diveQueue.canEngage('replies')} (${updatedProgress.replies.current}/${updatedProgress.replies.limit})`);
+    console.log(
+        `    Can engage likes: ${diveQueue.canEngage('likes')} (${updatedProgress.likes.current}/${updatedProgress.likes.limit})`
+    );
+    console.log(
+        `    Can engage replies: ${diveQueue.canEngage('replies')} (${updatedProgress.replies.current}/${updatedProgress.replies.limit})`
+    );
 
     console.log('\n[Test 4.7] Queue Status and Health:');
     const queueStatus = diveQueue.getFullStatus();
@@ -242,11 +250,13 @@ async function main() {
     await smallQueue.add(async () => 'task2', { name: 'reject_test_2' });
     const rejectResult = await smallQueue.add(async () => 'task3', { name: 'reject_test_3' });
     console.log('  Queue at capacity (2/2)');
-    console.log(`  Task 3 added: ${rejectResult.success === false ? 'REJECTED (correct)' : 'Added (unexpected)'}`);
+    console.log(
+        `  Task 3 added: ${rejectResult.success === false ? 'REJECTED (correct)' : 'Added (unexpected)'}`
+    );
     console.log('  ✓ Queue size limit working correctly');
 
     // Reset for next test
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 100));
 
     // Test reply engine
     console.log('\n' + '-'.repeat(70));
@@ -255,7 +265,7 @@ async function main() {
 
     const replyEngine = new AIReplyEngine(null, {
         replyProbability: 1.0,
-        maxRetries: 1
+        maxRetries: 1,
     });
 
     console.log('\n[Test 5] Reply Engine Methods:');
@@ -275,7 +285,7 @@ async function main() {
     let replyFallbackUsed = false;
 
     const simulateAIReply = async () => {
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise((r) => setTimeout(r, 100));
         replyProcessed = true;
         return { success: true, method: 'ai_reply' };
     };
@@ -285,15 +295,11 @@ async function main() {
         return { engagementType: 'like', success: true };
     };
 
-    const replyDiveResult = await diveQueue.addDive(
-        simulateAIReply,
-        simulateReplyFallback,
-        {
-            taskName: 'test_ai_reply',
-            timeout: diveQueue.quickModeEnabled ? 3000 : 5000,
-            priority: 0
-        }
-    );
+    const replyDiveResult = await diveQueue.addDive(simulateAIReply, simulateReplyFallback, {
+        taskName: 'test_ai_reply',
+        timeout: diveQueue.quickModeEnabled ? 3000 : 5000,
+        priority: 0,
+    });
 
     console.log('  DiveQueue result:', JSON.stringify(replyDiveResult, null, 2));
     console.log('  Reply processed:', replyProcessed);
@@ -304,7 +310,7 @@ async function main() {
     const replyProgress = diveQueue.getEngagementProgress();
     console.log('  Current progress:', {
         replies: `${replyProgress.replies.current}/${replyProgress.replies.limit}`,
-        likes: `${replyProgress.likes.current}/${replyProgress.likes.limit}`
+        likes: `${replyProgress.likes.current}/${replyProgress.likes.limit}`,
     });
 
     // Test quote engine
@@ -314,7 +320,7 @@ async function main() {
 
     const quoteEngine = new AIQuoteEngine(null, {
         quoteProbability: 1.0,
-        maxRetries: 1
+        maxRetries: 1,
     });
 
     console.log('\n[Test 7] Quote Engine Methods:');
@@ -335,7 +341,7 @@ async function main() {
     let quoteFallbackUsed = false;
 
     const simulateAIQuote = async () => {
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise((r) => setTimeout(r, 100));
         quoteProcessed = true;
         return { success: true, method: 'ai_quote' };
     };
@@ -345,15 +351,11 @@ async function main() {
         return { engagementType: 'bookmark', success: true };
     };
 
-    const quoteDiveResult = await diveQueue.addDive(
-        simulateAIQuote,
-        simulateQuoteFallback,
-        {
-            taskName: 'test_ai_quote',
-            timeout: diveQueue.quickModeEnabled ? 3000 : 5000,
-            priority: 0
-        }
-    );
+    const quoteDiveResult = await diveQueue.addDive(simulateAIQuote, simulateQuoteFallback, {
+        taskName: 'test_ai_quote',
+        timeout: diveQueue.quickModeEnabled ? 3000 : 5000,
+        priority: 0,
+    });
 
     console.log('  DiveQueue result:', JSON.stringify(quoteDiveResult, null, 2));
     console.log('  Quote processed:', quoteProcessed);
@@ -364,7 +366,7 @@ async function main() {
     const quoteProgress = diveQueue.getEngagementProgress();
     console.log('  Current progress:', {
         quotes: `${quoteProgress.quotes.current}/${quoteProgress.quotes.limit}`,
-        bookmarks: `${quoteProgress.bookmarks.current}/${quoteProgress.bookmarks.limit}`
+        bookmarks: `${quoteProgress.bookmarks.current}/${quoteProgress.bookmarks.limit}`,
     });
 
     // Test composer verification
@@ -432,8 +434,12 @@ async function main() {
     console.log('TEST COMPLETE');
     console.log('='.repeat(70));
     console.log('\nTo test in browser:');
-    console.log('  node main.js testHumanMethods targetUrl=https://x.com/user/status/123 method=replyA mode=safe');
-    console.log('  node main.js testHumanMethods targetUrl=https://x.com/user/status/123 method=quoteA mode=safe\n');
+    console.log(
+        '  node main.js testHumanMethods targetUrl=https://x.com/user/status/123 method=replyA mode=safe'
+    );
+    console.log(
+        '  node main.js testHumanMethods targetUrl=https://x.com/user/status/123 method=quoteA mode=safe\n'
+    );
 }
 
 main().catch(console.error);

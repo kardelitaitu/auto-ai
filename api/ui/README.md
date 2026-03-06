@@ -21,19 +21,21 @@ An optional, non-intrusive Electron-based dashboard for monitoring Auto-AI brows
 ### Installation
 
 1. Navigate to the dashboard folder:
-   ```bash
-   cd ui/electron-dashboard
-   ```
+
+    ```bash
+    cd ui/electron-dashboard
+    ```
 
 2. Install dependencies:
-   ```bash
-   npm install
-   ```
+
+    ```bash
+    npm install
+    ```
 
 3. Start the dashboard:
-   ```bash
-   npm start
-   ```
+    ```bash
+    npm start
+    ```
 
 ### Configuration
 
@@ -41,32 +43,34 @@ Enable dashboard in your Auto-AI `config/settings.json`:
 
 ```json
 {
-  "ui": {
-    "dashboard": {
-      "enabled": true,
-      "port": 3001
+    "ui": {
+        "dashboard": {
+            "enabled": true,
+            "port": 3001
+        }
     }
-  }
 }
 ```
 
 ## Usage
 
 1. Start your Auto-AI automation:
-   ```bash
-   npm run start
-   ```
+
+    ```bash
+    npm run start
+    ```
 
 2. Start the dashboard:
-   ```bash
-   cd ui/electron-dashboard && npm start
-   ```
+
+    ```bash
+    cd ui/electron-dashboard && npm start
+    ```
 
 3. The dashboard will connect automatically and display:
-   - Online/offline status of each browser session
-   - Worker utilization
-   - Current tasks and progress
-   - Real-time updates every 2 seconds
+    - Online/offline status of each browser session
+    - Worker utilization
+    - Current tasks and progress
+    - Real-time updates every 2 seconds
 
 ## Architecture
 
@@ -161,6 +165,7 @@ MIT License - see LICENSE file for details.
 ## Support
 
 For issues and questions:
+
 - Check the troubleshooting section
 - Review the logs in Auto-AI
 - Open an issue on the repository

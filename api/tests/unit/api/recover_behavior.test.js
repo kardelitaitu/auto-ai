@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { recover, goBack, urlChanged } from '@api/behaviors/recover.js';
 import * as context from '@api/core/context.js';
@@ -7,8 +6,8 @@ import * as contextState from '@api/core/context-state.js';
 vi.mock('@api/core/logger.js', () => ({
     createLogger: () => ({
         warn: vi.fn(),
-        debug: vi.fn()
-    })
+        debug: vi.fn(),
+    }),
 }));
 
 describe('api/behaviors/recover.js', () => {
@@ -18,7 +17,7 @@ describe('api/behaviors/recover.js', () => {
         vi.clearAllMocks();
         mockPage = {
             url: vi.fn().mockReturnValue('https://example.com/now'),
-            goBack: vi.fn().mockResolvedValue(true)
+            goBack: vi.fn().mockResolvedValue(true),
         };
         vi.spyOn(context, 'getPage').mockReturnValue(mockPage);
     });
@@ -58,7 +57,9 @@ describe('api/behaviors/recover.js', () => {
         });
 
         it('should go back if URL differs from previous', async () => {
-            vi.spyOn(contextState, 'getPreviousUrl').mockReturnValue('https://example.com/previous');
+            vi.spyOn(contextState, 'getPreviousUrl').mockReturnValue(
+                'https://example.com/previous'
+            );
             const result = await recover();
             expect(result).toBe(true);
             expect(mockPage.goBack).toHaveBeenCalled();

@@ -3,15 +3,15 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('@api/core/logger.js', () => ({
     loggerContext: {
         run: vi.fn((ctx, fn) => fn()),
-        getStore: vi.fn()
+        getStore: vi.fn(),
     },
     createLogger: vi.fn(() => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
         debug: vi.fn(),
-        success: vi.fn()
-    }))
+        success: vi.fn(),
+    })),
 }));
 
 vi.mock('@api/utils/math.js', () => ({
@@ -28,8 +28,8 @@ vi.mock('@api/utils/math.js', () => ({
         pidStep: (state, target) => {
             state.pos = target;
             return state.pos;
-        }
-    }
+        },
+    },
 }));
 
 vi.mock('@api/behaviors/timing.js', () => ({
@@ -41,7 +41,7 @@ vi.mock('@api/behaviors/timing.js', () => ({
         if (max !== undefined) value = Math.min(max, value);
         return Math.floor(value);
     },
-    randomInRange: (_min, _max) => 0
+    randomInRange: (_min, _max) => 0,
 }));
 
 vi.mock('@api/interactions/wait.js', () => ({
@@ -50,7 +50,7 @@ vi.mock('@api/interactions/wait.js', () => ({
     waitVisible: vi.fn().mockResolvedValue(undefined),
     waitHidden: vi.fn().mockResolvedValue(undefined),
     waitForLoadState: vi.fn().mockResolvedValue(undefined),
-    waitForURL: vi.fn().mockResolvedValue(undefined)
+    waitForURL: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@api/utils/ghostCursor.js', () => ({
@@ -71,7 +71,7 @@ vi.mock('@api/utils/ghostCursor.js', () => ({
         async hoverWithDrift() {
             return undefined;
         }
-    }
+    },
 }));
 
 import { api } from '@api/index.js';
@@ -96,7 +96,8 @@ describe('Unified API Integration', () => {
             boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 120, width: 80, height: 20 }),
             evaluate: vi.fn().mockImplementation(async (fn) => {
                 const source = fn?.toString?.() || '';
-                if (source.includes('elementFromPoint')) { // for isObscured
+                if (source.includes('elementFromPoint')) {
+                    // for isObscured
                     return false; // not obscured
                 }
                 if (source.includes('getBoundingClientRect')) {
@@ -104,7 +105,7 @@ describe('Unified API Integration', () => {
                 }
                 return false;
             }),
-            waitFor: vi.fn().mockResolvedValue(undefined)
+            waitFor: vi.fn().mockResolvedValue(undefined),
         };
 
         mockPage = {
@@ -119,16 +120,16 @@ describe('Unified API Integration', () => {
             waitForURL: vi.fn().mockResolvedValue(undefined),
             isClosed: vi.fn().mockReturnValue(false),
             context: vi.fn().mockReturnValue({
-                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) })
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
             }),
             mouse: {
                 wheel: vi.fn().mockImplementation(async (_x, y) => {
                     scrollY += y;
-                })
+                }),
             },
             keyboard: {
                 press: vi.fn().mockResolvedValue(undefined),
-                type: vi.fn().mockResolvedValue(undefined)
+                type: vi.fn().mockResolvedValue(undefined),
             },
             locator: vi.fn().mockImplementation(() => locator),
             viewportSize: vi.fn().mockReturnValue({ width: 1280, height: 720 }),
@@ -145,7 +146,7 @@ describe('Unified API Integration', () => {
                     return undefined;
                 }
                 return undefined;
-            })
+            }),
         };
     });
 

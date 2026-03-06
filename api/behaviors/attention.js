@@ -2,7 +2,7 @@
  * @fileoverview Attention Modeling
  * Simulates human attention and focus patterns - gaze, distractions, exit intent.
  * Uses context-aware state for session isolation.
- * 
+ *
  * @module api/attention
  */
 
@@ -14,7 +14,7 @@ import {
     getStateDistractionChance,
     setStateDistractionChance,
     getStateAttentionMemory,
-    recordStateAttentionMemory
+    recordStateAttentionMemory,
 } from '../core/context-state.js';
 
 /**
@@ -73,7 +73,6 @@ export async function gaze(selector, options = {}) {
     const adjustedDuration = duration / persona.speed;
     await think(adjustedDuration);
 }
-
 
 /**
  * Attention - gaze at element, then optionally perform action.
@@ -207,9 +206,11 @@ export async function getVisualWeight() {
     return await page.evaluate(() => {
         const interactives = document.querySelectorAll('button, a, input, select, [role="button"]');
         const stickies = document.querySelectorAll('[style*="fixed"], [style*="sticky"]');
-        const animations = document.querySelectorAll('video, canvas, [class*="anim"], [class*="spin"]');
+        const animations = document.querySelectorAll(
+            'video, canvas, [class*="anim"], [class*="spin"]'
+        );
 
-        return interactives.length + (stickies.length * 2) + (animations.length * 3);
+        return interactives.length + stickies.length * 2 + animations.length * 3;
     });
 }
 
@@ -222,7 +223,7 @@ export async function getVisualWeight() {
  * @returns {number} - Weighted complexity score
  */
 export function calculateVisualWeight(interactivesCount, stickiesCount, animationsCount) {
-    return interactivesCount + (stickiesCount * 2) + (animationsCount * 3);
+    return interactivesCount + stickiesCount * 2 + animationsCount * 3;
 }
 
 /**
@@ -239,7 +240,7 @@ export async function maybeDistract(selectors = []) {
 
     // Scale chance by visual weight (more noise = more likely to look away)
     // weight 0-50 = 1x, 50-200 = 1.5x, 200+ = 2x
-    const weightMultiplier = Math.min(2, 1 + (weight / 200));
+    const weightMultiplier = Math.min(2, 1 + weight / 200);
     const chance = (distractionChance + (persona.idleChance || 0)) * weightMultiplier;
 
     if (Math.random() < chance) {

@@ -27,7 +27,8 @@ export async function followWithAPI(options = {}) {
     logger.info(`Starting api.followWithAPI() for @${username}...`);
 
     // X.com selectors: follow button uses data-testid ending in "-follow"
-    const followSel = 'div[data-testid="placementTracking"] [data-testid$="-follow"], div[role="button"][data-testid$="-follow"]';
+    const followSel =
+        'div[data-testid="placementTracking"] [data-testid$="-follow"], div[role="button"][data-testid$="-follow"]';
     const unfollowSel = '[data-testid$="-unfollow"]';
 
     try {
@@ -50,7 +51,9 @@ export async function followWithAPI(options = {}) {
 
         // Attempt clicks
         for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-            logger.info(`[followWithAPI] Click attempt ${attempt}/${maxAttempts} (ghost cursor)...`);
+            logger.info(
+                `[followWithAPI] Click attempt ${attempt}/${maxAttempts} (ghost cursor)...`
+            );
 
             await click(followSel);
 
@@ -58,9 +61,15 @@ export async function followWithAPI(options = {}) {
             let verified = false;
             for (let poll = 0; poll < 5; poll++) {
                 await wait(1500);
-                if (await visible(unfollowSel)) { verified = true; break; }
+                if (await visible(unfollowSel)) {
+                    verified = true;
+                    break;
+                }
                 const txt = (await followBtn.textContent().catch(() => '')).toLowerCase();
-                if (txt.includes('following') || txt.includes('pending')) { verified = true; break; }
+                if (txt.includes('following') || txt.includes('pending')) {
+                    verified = true;
+                    break;
+                }
             }
 
             if (verified) {
@@ -76,7 +85,6 @@ export async function followWithAPI(options = {}) {
 
         logger.error(`❌ api.followWithAPI: failed after ${maxAttempts} attempts`);
         return { success: false, reason: 'verification_failed', method: 'followAPI' };
-
     } catch (error) {
         logger.error(`api.followWithAPI error: ${error.message}`);
         return { success: false, reason: error.message, method: 'followAPI' };

@@ -5,10 +5,10 @@ import { BasePlugin } from '@api/core/plugins/base.js';
 describe('Plugin System Integration', () => {
     // Mock page factory
     const createMockPage = () => ({
-        on: () => { },
+        on: () => {},
         context: () => ({ browser: () => ({ isConnected: () => true }) }),
         isClosed: () => false,
-        evaluate: async () => { }
+        evaluate: async () => {},
     });
 
     class AuditPlugin extends BasePlugin {
@@ -24,7 +24,7 @@ describe('Plugin System Integration', () => {
                 },
                 'after:click': async (selector) => {
                     this.logs.push(`Clicked ${selector}`);
-                }
+                },
             };
         }
     }
@@ -38,7 +38,7 @@ describe('Plugin System Integration', () => {
             return {
                 'before:click': async () => {
                     throw new Error('Action Blocked by Plugin');
-                }
+                },
             };
         }
     }
@@ -58,10 +58,7 @@ describe('Plugin System Integration', () => {
             await events.emitAsync('before:click', '#btn');
             await events.emitAsync('after:click', '#btn');
 
-            expect(auditPlugin.logs).toEqual([
-                'Clicking #btn',
-                'Clicked #btn'
-            ]);
+            expect(auditPlugin.logs).toEqual(['Clicking #btn', 'Clicked #btn']);
         });
     });
 

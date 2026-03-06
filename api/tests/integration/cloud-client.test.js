@@ -17,30 +17,30 @@ const mocks = vi.hoisted(() => ({
         url: vi.fn().mockReturnValue('https://example.com'),
         goto: vi.fn().mockResolvedValue(undefined),
         goBack: vi.fn().mockResolvedValue({}),
-        evaluate: vi.fn().mockResolvedValue(undefined)
-    }
+        evaluate: vi.fn().mockResolvedValue(undefined),
+    },
 }));
 
 vi.mock('../../utils/configLoader.js', () => ({
-    getSettings: mocks.getSettings
+    getSettings: mocks.getSettings,
 }));
 
 vi.mock('../../utils/multi-api.js', () => ({
-    MultiOpenRouterClient: vi.fn()
+    MultiOpenRouterClient: vi.fn(),
 }));
 
 vi.mock('../api/core/context.js', () => ({
     getPage: vi.fn(() => ({
         url: vi.fn().mockReturnValue('https://example.com'),
-        isClosed: vi.fn().mockReturnValue(false)
+        isClosed: vi.fn().mockReturnValue(false),
     })),
     isSessionActive: vi.fn().mockReturnValue(true),
-    getEvents: vi.fn(() => ({ emitSafe: vi.fn() }))
+    getEvents: vi.fn(() => ({ emitSafe: vi.fn() })),
 }));
 
 vi.mock('../../utils/free-api-router.js', () => ({
     FreeApiRouter: vi.fn(),
-    setSharedHelper: vi.fn()
+    setSharedHelper: vi.fn(),
 }));
 
 vi.mock('../../utils/free-openrouter-helper.js', () => ({
@@ -51,9 +51,9 @@ vi.mock('../../utils/free-openrouter-helper.js', () => ({
             getResults: vi.fn(() => ({ working: [], failed: [] })),
             updateConfig: vi.fn(),
             isCacheValid: vi.fn(() => true),
-            isTesting: vi.fn(() => false)
-        }))
-    }
+            isTesting: vi.fn(() => false),
+        })),
+    },
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -61,8 +61,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('CloudClient Integration', () => {
@@ -79,12 +79,12 @@ describe('CloudClient Integration', () => {
                     timeout: 60000,
                     defaultModel: 'anthropic/claude-3.5-sonnet',
                     endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-                    providers: []
-                }
+                    providers: [],
+                },
             },
             open_router_free_api: {
-                enabled: false
-            }
+                enabled: false,
+            },
         });
     });
 
@@ -110,9 +110,9 @@ describe('CloudClient Integration', () => {
                         timeout: 120000,
                         defaultModel: 'anthropic/claude-3-opus',
                         endpoint: 'https://custom.api.com/v1/chat',
-                        providers: []
-                    }
-                }
+                        providers: [],
+                    },
+                },
             });
 
             const client = new CloudClient();
@@ -129,10 +129,10 @@ describe('CloudClient Integration', () => {
                     cloud: {
                         enabled: true,
                         providers: [
-                            { apiKey: 'test-key-123', model: 'anthropic/claude-3.5-sonnet' }
-                        ]
-                    }
-                }
+                            { apiKey: 'test-key-123', model: 'anthropic/claude-3.5-sonnet' },
+                        ],
+                    },
+                },
             });
 
             const client = new CloudClient();
@@ -151,10 +151,10 @@ describe('CloudClient Integration', () => {
                         providers: [
                             { apiKey: 'key-1', model: 'anthropic/claude-3.5-sonnet' },
                             { apiKey: 'key-2', model: 'anthropic/claude-3-haiku' },
-                            { apiKey: 'key-3', model: 'openai/gpt-4o' }
-                        ]
-                    }
-                }
+                            { apiKey: 'key-3', model: 'openai/gpt-4o' },
+                        ],
+                    },
+                },
             };
             mocks.getSettings.mockResolvedValue(settings);
             mockPage = {
@@ -170,11 +170,15 @@ describe('CloudClient Integration', () => {
 
             expect(MultiOpenRouterClient).toHaveBeenCalledWith({
                 apiKeys: ['key-1', 'key-2', 'key-3'],
-                models: ['anthropic/claude-3.5-sonnet', 'anthropic/claude-3-haiku', 'openai/gpt-4o'],
+                models: [
+                    'anthropic/claude-3.5-sonnet',
+                    'anthropic/claude-3-haiku',
+                    'openai/gpt-4o',
+                ],
                 endpoint: 'https://openrouter.ai/api/v1/chat/completions',
                 timeout: 60000,
                 defaultModel: 'anthropic/claude-3.5-sonnet',
-                retryDelay: 2000
+                retryDelay: 2000,
             });
             expect(client.multiClient).toBeDefined();
         });
@@ -182,7 +186,7 @@ describe('CloudClient Integration', () => {
         it('should handle no providers configured', async () => {
             mocks.getSettings.mockResolvedValue({
                 llm: { cloud: { providers: [] } },
-                open_router_free_api: { enabled: false }
+                open_router_free_api: { enabled: false },
             });
 
             const client = new CloudClient();
@@ -201,12 +205,12 @@ describe('CloudClient Integration', () => {
                     api_keys: ['free-key-1', 'free-key-2'],
                     models: {
                         primary: 'anthropic/claude-3.5-sonnet',
-                        fallbacks: ['openai/gpt-4o']
+                        fallbacks: ['openai/gpt-4o'],
                     },
                     proxy: {
-                        enabled: false
-                    }
-                }
+                        enabled: false,
+                    },
+                },
             });
 
             const client = new CloudClient();
@@ -226,8 +230,8 @@ describe('CloudClient Integration', () => {
             const request = {
                 payload: {
                     systemPrompt: 'You are a helpful assistant.',
-                    userPrompt: 'What is 2+2?'
-                }
+                    userPrompt: 'What is 2+2?',
+                },
             };
 
             const prompt = cloudClient._buildPrompt(request);
@@ -236,7 +240,7 @@ describe('CloudClient Integration', () => {
 
         it('should build prompt with single prompt property', () => {
             const request = {
-                payload: { prompt: 'Simple prompt' }
+                payload: { prompt: 'Simple prompt' },
             };
 
             const prompt = cloudClient._buildPrompt(request);
@@ -245,7 +249,7 @@ describe('CloudClient Integration', () => {
 
         it('should build prompt with direct prompt property', () => {
             const request = {
-                prompt: 'Direct prompt'
+                prompt: 'Direct prompt',
             };
 
             const prompt = cloudClient._buildPrompt(request);
@@ -256,8 +260,8 @@ describe('CloudClient Integration', () => {
             const request = {
                 prompt: 'Original prompt',
                 context: {
-                    breadcrumbs: 'Navigated to Twitter, scrolled timeline'
-                }
+                    breadcrumbs: 'Navigated to Twitter, scrolled timeline',
+                },
             };
 
             const prompt = cloudClient._buildPrompt(request);
@@ -270,8 +274,8 @@ describe('CloudClient Integration', () => {
             const request = {
                 prompt: 'Original prompt',
                 context: {
-                    state: { page: 'home', tweets: 15 }
-                }
+                    state: { page: 'home', tweets: 15 },
+                },
             };
 
             const prompt = cloudClient._buildPrompt(request);
@@ -284,12 +288,12 @@ describe('CloudClient Integration', () => {
             const request = {
                 payload: {
                     systemPrompt: 'System prompt',
-                    userPrompt: 'User prompt'
+                    userPrompt: 'User prompt',
                 },
                 context: {
                     breadcrumbs: 'Action 1, Action 2',
-                    state: { mode: 'interactive' }
-                }
+                    state: { mode: 'interactive' },
+                },
             };
 
             const prompt = cloudClient._buildPrompt(request);
@@ -389,8 +393,8 @@ describe('CloudClient Integration', () => {
                 llm: { cloud: { providers: [] } },
                 open_router_free_api: {
                     enabled: true,
-                    models: { primary: null, fallbacks: [] }
-                }
+                    models: { primary: null, fallbacks: [] },
+                },
             });
 
             const client = new CloudClient();
@@ -409,9 +413,9 @@ describe('CloudClient Integration', () => {
                     api_keys: ['key-1'],
                     models: {
                         primary: 'anthropic/claude-3.5-sonnet',
-                        fallbacks: []
-                    }
-                }
+                        fallbacks: [],
+                    },
+                },
             });
 
             const client = new CloudClient();
@@ -431,14 +435,14 @@ describe('CloudClient Integration', () => {
         it('should handle missing API key gracefully', async () => {
             mocks.getSettings.mockResolvedValue({
                 llm: { cloud: { providers: [] } },
-                open_router_free_api: { enabled: false }
+                open_router_free_api: { enabled: false },
             });
 
             const client = new CloudClient();
             await client.initPromise;
 
             const result = await client.sendRequest({
-                prompt: 'Test prompt'
+                prompt: 'Test prompt',
             });
 
             expect(result.success).toBe(false);
@@ -564,7 +568,7 @@ describe('CloudClient Integration', () => {
             mocks.getSettings.mockRejectedValue(new Error('Config load failed'));
 
             const client = new CloudClient();
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await new Promise((resolve) => setTimeout(resolve, 50));
 
             expect(client.config).toBeNull();
         });
@@ -582,9 +586,9 @@ describe('CloudClient Request Queue Integration', () => {
                 cloud: {
                     enabled: true,
                     timeout: 60000,
-                    defaultModel: 'openrouter/free'
-                }
-            }
+                    defaultModel: 'openrouter/free',
+                },
+            },
         });
 
         cloudClient = new CloudClient();

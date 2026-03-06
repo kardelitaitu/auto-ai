@@ -67,7 +67,7 @@ class AgentRunner {
                 lastAction: this.lastAction,
                 lastState: this.lastState,
                 llmConfig: configManager.get('agent.llm'),
-                stats: this.getUsageStats()
+                stats: this.getUsageStats(),
             };
 
             const logsDir = path.resolve(process.cwd(), 'logs');
@@ -122,7 +122,9 @@ class AgentRunner {
 
             try {
                 await page.bringToFront();
-            } catch (_e) { /* ignore */ }
+            } catch (_e) {
+                /* ignore */
+            }
 
             const state = await this._captureState(page);
 
@@ -160,11 +162,14 @@ class AgentRunner {
                 this.consecutiveActionCount = 1;
             }
 
-            this.stateVisitCounts[stateSignature] = (this.stateVisitCounts[stateSignature] || 0) + 1;
+            this.stateVisitCounts[stateSignature] =
+                (this.stateVisitCounts[stateSignature] || 0) + 1;
 
-            if ((this.lastState === stateSignature && this.consecutiveActionCount >= 2) ||
+            if (
+                (this.lastState === stateSignature && this.consecutiveActionCount >= 2) ||
                 this.consecutiveActionCount >= 3 ||
-                this.stateVisitCounts[stateSignature] >= 5) {
+                this.stateVisitCounts[stateSignature] >= 5
+            ) {
                 logger.warn('Loop detected. Stopping.');
                 await this._dumpDiagnostics('loop_detected');
                 break;
@@ -173,13 +178,17 @@ class AgentRunner {
             this.lastAction = actionSignature;
             this.lastState = stateSignature;
 
-            const result = await actionEngine.execute(page, llmResponse, config.sessionId || 'unknown');
+            const result = await actionEngine.execute(
+                page,
+                llmResponse,
+                config.sessionId || 'unknown'
+            );
             lastResult = result;
 
             this.history.push({ role: 'assistant', content: JSON.stringify(llmResponse) });
             this.history.push({
                 role: 'user',
-                content: result.success ? 'Action succeeded.' : `Action failed: ${result.error}`
+                content: result.success ? 'Action succeeded.' : `Action failed: ${result.error}`,
             });
 
             if (result.done) {
@@ -210,7 +219,7 @@ class AgentRunner {
             done: false,
             steps: stepCount,
             result: lastResult,
-            reason: stepCount >= this.maxSteps ? 'max_steps' : 'stopped'
+            reason: stepCount >= this.maxSteps ? 'max_steps' : 'stopped',
         };
     }
 
@@ -272,7 +281,7 @@ class AgentRunner {
                 scale: 'css',
                 timeout: 10000,
                 animations: 'disabled',
-                caret: 'hide'
+                caret: 'hide',
             });
             return screenshot.toString('base64');
         } catch (e) {
@@ -302,14 +311,14 @@ class AgentRunner {
     _buildPrompt(goal, screenshot, axTree, currentUrl) {
         const systemMessage = {
             role: 'system',
-            content: DEFAULT_SYSTEM_PROMPT
+            content: DEFAULT_SYSTEM_PROMPT,
         };
 
-        const recentHistory = this.history.slice(-4).map(msg => {
+        const recentHistory = this.history.slice(-4).map((msg) => {
             if (Array.isArray(msg.content)) {
                 const textOnly = msg.content
-                    .filter(c => c.type === 'text')
-                    .map(c => c.text)
+                    .filter((c) => c.type === 'text')
+                    .map((c) => c.text)
                     .join('\n');
                 return { role: msg.role, content: textOnly };
             }
@@ -319,18 +328,24 @@ class AgentRunner {
         const contentParts = [
             { type: 'text', text: `Goal: ${goal}` },
             { type: 'text', text: `Current URL: ${currentUrl}` },
-            { type: 'text', text: `Current Page State (Accessibility Tree):\n${axTree}` }
+            { type: 'text', text: `Current Page State (Accessibility Tree):\n${axTree}` },
         ];
 
         const config = llmClient.config;
         if (config?.useVision !== false) {
-            contentParts.push({ type: 'text', text: 'Look at the screenshot to understand the visual layout.' });
+            contentParts.push({
+                type: 'text',
+                text: 'Look at the screenshot to understand the visual layout.',
+            });
             contentParts.push({
                 type: 'image_url',
-                image_url: { url: `data:image/jpeg;base64,${screenshot}` }
+                image_url: { url: `data:image/jpeg;base64,${screenshot}` },
             });
         } else {
-            contentParts.push({ type: 'text', text: 'Use the accessibility tree to identify elements.' });
+            contentParts.push({
+                type: 'text',
+                text: 'Use the accessibility tree to identify elements.',
+            });
         }
 
         const userMessage = { role: 'user', content: contentParts };
@@ -350,7 +365,7 @@ class AgentRunner {
             maxSteps: this.maxSteps,
             estimatedTokens: estimateConversationTokens(this.history),
             historySize: this.history.length,
-            llmStats: llmClient.getUsageStats()
+            llmStats: llmClient.getUsageStats(),
         };
     }
 }

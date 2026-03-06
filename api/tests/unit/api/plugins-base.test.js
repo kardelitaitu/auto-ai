@@ -64,7 +64,7 @@ describe('api/core/plugins/base.js', () => {
                 getHooks() {
                     return {
                         'before:click': () => {},
-                        'after:click': () => {}
+                        'after:click': () => {},
                     };
                 }
             }

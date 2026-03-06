@@ -1,4 +1,5 @@
 # Phase 1: Roadmap Checklist
+
 - [ ] Consolidate `CircuitBreaker` (keep `core/`, re-export from `utils/`)
 - [ ] Consolidate `GhostCursor` (merge extras into `utils/`, delete `behaviors/`)
 - [ ] Consolidate `math`/`mathUtils` (keep `math.js`, re-export from `mathUtils.js`)
@@ -12,7 +13,6 @@
 
 # Phase 1: Cleanup & Consolidation
 
-
 > **Priority**: High | **Effort**: Low | **Risk**: Low
 > **Goal**: Eliminate dead code, duplicate modules, and maintenance hazards without changing any behavior.
 
@@ -21,7 +21,9 @@
 ## 1.1 Consolidate Duplicate Modules
 
 ### `CircuitBreaker` (Engine Merge)
+
 **Current Issue**: `core/circuit-breaker.js` is an execution wrapper; `utils/circuit-breaker.js` is a manual state gate.
+
 - **Goal**: Use `core/` as the single engine while preserving the `utils` API for legacy callers.
 - **Action**:
     1.  Add `check()`, `recordSuccess()`, and `recordFailure()` methods to `core/circuit-breaker.js` class.
@@ -37,7 +39,9 @@
         ```
 
 ### `GhostCursor` (Logic Extraction)
+
 **Current Issue**: `behaviors/` version has Twitter engagement logic; `utils/` version is the physics engine and breaks circular deps.
+
 - **Goal**: Merge all physics and domain logic into `utils/ghostCursor.js`.
 - **Action**:
     1.  **Extract Constants**: Create `api/constants/engagement.js` and move `TWITTER_CLICK_PROFILES` there.
@@ -46,6 +50,7 @@
     4.  **Crucial**: Ensure `utils/ghostCursor.js` does **not** import from `api/index.js` (use direct imports for `visible`, `logger`, etc.) to prevent circular dependency loops.
 
 ### `math` / `mathUtils` (Direct Re-export)
+
 - **Keep**: `utils/math.js`.
 - **Action**: Replace `utils/mathUtils.js` with:
     ```js
@@ -58,12 +63,13 @@
 
 Instead of keeping the `-v2` suffix and deleting shims, we will move the modern implementation into the original filenames to keep the API clean.
 
-| File | Action |
-|---|---|
-| `core/orchestrator-v2.js` | **Merge into** `orchestrator.js`. Update all internal imports of `-v2` to the clean name, then delete `-v2`. |
+| File                        | Action                                                                                                         |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `core/orchestrator-v2.js`   | **Merge into** `orchestrator.js`. Update all internal imports of `-v2` to the clean name, then delete `-v2`.   |
 | `core/sessionManager-v2.js` | **Merge into** `sessionManager.js`. Update all internal imports of `-v2` to the clean name, then delete `-v2`. |
 
 > **Process**:
+>
 > 1. Copy content of `-v2.js` to the non-v2 file.
 > 2. Search & Replace `orchestrator-v2` → `orchestrator` and `sessionManager-v2` → `sessionManager` across the entire codebase.
 > 3. Delete the `-v2.js` files.

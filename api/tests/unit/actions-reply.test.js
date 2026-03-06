@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AIReplyAction } from '@api/actions/ai-twitter-reply.js';
 
@@ -8,8 +7,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('AIReplyAction', () => {
@@ -24,22 +23,22 @@ describe('AIReplyAction', () => {
                 actions: {
                     reply: {
                         enabled: true,
-                        probability: 0.5
-                    }
-                }
+                        probability: 0.5,
+                    },
+                },
             },
             contextEngine: {
-                extractEnhancedContext: vi.fn().mockResolvedValue({ replies: [], sentiment: {} })
+                extractEnhancedContext: vi.fn().mockResolvedValue({ replies: [], sentiment: {} }),
             },
             replyEngine: {
-                generateReply: vi.fn().mockResolvedValue({ success: true, reply: 'Nice reply!' })
+                generateReply: vi.fn().mockResolvedValue({ success: true, reply: 'Nice reply!' }),
             },
             executeAIReply: vi.fn().mockResolvedValue(true),
             diveQueue: {
                 canEngage: vi.fn().mockReturnValue(true),
-                recordEngagement: vi.fn()
+                recordEngagement: vi.fn(),
             },
-            page: {}
+            page: {},
         };
 
         replyAction = new AIReplyAction(mockAgent);
@@ -133,7 +132,7 @@ describe('AIReplyAction', () => {
                 tweetText: 'text',
                 username: 'user',
                 tweetUrl: 'url',
-                enhancedContext: { replies: [{ id: 1 }], sentiment: { overall: 'positive' } }
+                enhancedContext: { replies: [{ id: 1 }], sentiment: { overall: 'positive' } },
             };
 
             const result = await replyAction.execute(contextWithContext);
@@ -143,7 +142,10 @@ describe('AIReplyAction', () => {
         });
 
         it('should handle AI generation failure', async () => {
-            mockAgent.replyEngine.generateReply.mockResolvedValue({ success: false, reason: 'Too controversial' });
+            mockAgent.replyEngine.generateReply.mockResolvedValue({
+                success: false,
+                reason: 'Too controversial',
+            });
 
             const result = await replyAction.execute(context);
 
@@ -153,7 +155,9 @@ describe('AIReplyAction', () => {
         });
 
         it('should handle exception', async () => {
-            mockAgent.contextEngine.extractEnhancedContext.mockRejectedValue(new Error('Context failed'));
+            mockAgent.contextEngine.extractEnhancedContext.mockRejectedValue(
+                new Error('Context failed')
+            );
 
             const result = await replyAction.execute(context);
 

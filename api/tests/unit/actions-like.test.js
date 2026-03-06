@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LikeAction } from '@api/actions/ai-twitter-like.js';
 
@@ -8,8 +7,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('LikeAction', () => {
@@ -24,14 +23,14 @@ describe('LikeAction', () => {
                 actions: {
                     like: {
                         enabled: true,
-                        probability: 0.5
-                    }
-                }
+                        probability: 0.5,
+                    },
+                },
             },
             handleLike: vi.fn().mockResolvedValue(undefined),
             diveQueue: {
-                canEngage: vi.fn().mockReturnValue(true)
-            }
+                canEngage: vi.fn().mockReturnValue(true),
+            },
         };
 
         likeAction = new LikeAction(mockAgent);
@@ -69,16 +68,16 @@ describe('LikeAction', () => {
         it('should execute like successfully', async () => {
             const context = { tweetElement: {}, tweetUrl: 'url' };
             const result = await likeAction.execute(context);
-            
+
             expect(mockAgent.handleLike).toHaveBeenCalled();
             expect(result.success).toBe(true);
         });
 
         it('should handle exception', async () => {
             mockAgent.handleLike.mockRejectedValue(new Error('Like failed'));
-            
+
             const result = await likeAction.execute({});
-            
+
             expect(result.success).toBe(false);
             expect(result.reason).toBe('exception');
         });
@@ -102,7 +101,7 @@ describe('LikeAction', () => {
     describe('stats', () => {
         it('should track stats correctly', async () => {
             await likeAction.execute({});
-            
+
             const stats = likeAction.getStats();
             expect(stats.attempts).toBe(1);
             expect(stats.successes).toBe(1);
@@ -112,7 +111,7 @@ describe('LikeAction', () => {
         it('should reset stats', async () => {
             await likeAction.execute({});
             likeAction.resetStats();
-            
+
             const stats = likeAction.getStats();
             expect(stats.attempts).toBe(0);
             expect(stats.successes).toBe(0);

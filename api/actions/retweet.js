@@ -31,7 +31,11 @@ export async function retweetWithAPI(options = {}) {
     try {
         // Already retweeted guard
         const alreadyRetweeted = tweetElement
-            ? await tweetElement.locator(unretweetSel).first().isVisible().catch(() => false)
+            ? await tweetElement
+                  .locator(unretweetSel)
+                  .first()
+                  .isVisible()
+                  .catch(() => false)
             : await visible(unretweetSel);
 
         if (alreadyRetweeted) {
@@ -41,7 +45,7 @@ export async function retweetWithAPI(options = {}) {
 
         // Scroll into view
         if (tweetElement) {
-            await tweetElement.scrollIntoViewIfNeeded().catch(() => { });
+            await tweetElement.scrollIntoViewIfNeeded().catch(() => {});
         }
         await wait(mathUtils.randomInRange(300, 700));
 
@@ -57,7 +61,7 @@ export async function retweetWithAPI(options = {}) {
         const confirmVisible = await visible(confirmSel);
         if (!confirmVisible) {
             logger.warn(`Retweet confirm menu not found`);
-            await page.keyboard.press('Escape').catch(() => { });
+            await page.keyboard.press('Escape').catch(() => {});
             return { success: false, reason: 'confirm_menu_not_found', method: 'retweetAPI' };
         }
 
@@ -68,7 +72,11 @@ export async function retweetWithAPI(options = {}) {
 
         // Verify
         const nowUnretweetable = tweetElement
-            ? await tweetElement.locator(unretweetSel).first().isVisible().catch(() => false)
+            ? await tweetElement
+                  .locator(unretweetSel)
+                  .first()
+                  .isVisible()
+                  .catch(() => false)
             : await visible(unretweetSel);
 
         if (nowUnretweetable) {
@@ -78,7 +86,6 @@ export async function retweetWithAPI(options = {}) {
 
         logger.warn(`❌ api.retweetWithAPI: no confirmation signal`);
         return { success: false, reason: 'verification_failed', method: 'retweetAPI' };
-
     } catch (error) {
         logger.error(`api.retweetWithAPI error: ${error.message}`);
         return { success: false, reason: error.message, method: 'retweetAPI' };

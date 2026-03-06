@@ -85,11 +85,37 @@ export class AIQuoteEngine {
                 minTweetLength: 10,
                 maxTweetLength: 280,
                 excludedKeywords: [
-                    'politics', 'political', 'vote', 'election', 'trump', 'biden', 'obama',
-                    'republican', 'democrat', 'congress', 'senate', 'president', 'policy',
-                    'nsfw', 'nude', 'naked', 'explicit', '18+', 'adult', 'xxx', 'porn',
-                    'follow back', 'fb', 'make money', 'drop link', 'free crypto',
-                    'dm me', 'send dm', 'join now', 'limited offer', 'act now'
+                    'politics',
+                    'political',
+                    'vote',
+                    'election',
+                    'trump',
+                    'biden',
+                    'obama',
+                    'republican',
+                    'democrat',
+                    'congress',
+                    'senate',
+                    'president',
+                    'policy',
+                    'nsfw',
+                    'nude',
+                    'naked',
+                    'explicit',
+                    '18+',
+                    'adult',
+                    'xxx',
+                    'porn',
+                    'follow back',
+                    'fb',
+                    'make money',
+                    'drop link',
+                    'free crypto',
+                    'dm me',
+                    'send dm',
+                    'join now',
+                    'limited offer',
+                    'act now',
                 ],
                 genericResponses: [
                     'interesting',
@@ -101,7 +127,7 @@ export class AIQuoteEngine {
                     'relatable',
                     'this 👏',
                     'preach',
-                    'couldn\'t agree more',
+                    "couldn't agree more",
                     'absolutely',
                     'can confirm',
                     'same energy',
@@ -118,7 +144,7 @@ export class AIQuoteEngine {
                     'go off',
                     'queen behavior',
                     'king behavior',
-                    'didn\'t ask',
+                    "didn't ask",
                     'nobody asked',
                     'who asked',
                     '🤷',
@@ -128,9 +154,9 @@ export class AIQuoteEngine {
                     '👏',
                     '🤝',
                     '✨',
-                    '🙏'
-                ]
-            }
+                    '🙏',
+                ],
+            },
         };
 
         this.stats = {
@@ -144,10 +170,12 @@ export class AIQuoteEngine {
             extractFailed: 0,
             validationFailed: 0,
             retriesUsed: 0,
-            fallbackUsed: 0
+            fallbackUsed: 0,
         };
 
-        this.logger.info(`[AIQuoteEngine] Initialized (probability: ${this.config.QUOTE_PROBABILITY})`);
+        this.logger.info(
+            `[AIQuoteEngine] Initialized (probability: ${this.config.QUOTE_PROBABILITY})`
+        );
     }
 
     /**
@@ -181,7 +209,7 @@ export class AIQuoteEngine {
             id: /\b(ini|itu|adalah|adalah|tersebut|dengan|untuk|dan|di|dari|yang|apa|siapa|apa|ketika|di mana|mengapa|bagai)\b/i,
             ja: /\b(これ|それ|あれ|この|その|あの|です|だ|ある|いる|ます|か|の|に|を|と|が|は|だれの|何|いつ|どこ|なぜ|怎样)\b/i,
             ko: /\b(이|그|저|이다|있다|하다|것|을|를|에|에서|과|와|는|은|다|吗|什么|何时|哪里|为什么)\b/i,
-            zh: /\b(这|那|是|的|在|有|和|与|对|就|都|而|及|与|着|或|什么|谁|何时|何地|为何|如何)\b/i
+            zh: /\b(这|那|是|的|在|有|和|与|对|就|都|而|及|与|着|或|什么|谁|何时|何地|为何|如何)\b/i,
         };
 
         const scores = {};
@@ -217,7 +245,7 @@ export class AIQuoteEngine {
             id: 'Indonesian',
             ja: 'Japanese',
             ko: 'Korean',
-            zh: 'Chinese'
+            zh: 'Chinese',
         };
 
         return langNames[detectedLang] || 'English';
@@ -232,7 +260,7 @@ export class AIQuoteEngine {
         // Sample up to 5 replies for language detection
         const sampleText = replies
             .slice(0, 5)
-            .map(r => (r.text || r.content || '').substring(0, 500))
+            .map((r) => (r.text || r.content || '').substring(0, 500))
             .join(' ');
 
         return this.detectLanguage(sampleText);
@@ -241,7 +269,15 @@ export class AIQuoteEngine {
     /**
      * Build enhanced prompt with context (tweet, replies, screenshot)
      */
-    buildEnhancedPrompt(tweetText, authorUsername, replies = [], url = '', sentimentContext = {}, hasImage = false, engagementLevel = 'unknown') {
+    buildEnhancedPrompt(
+        tweetText,
+        authorUsername,
+        replies = [],
+        url = '',
+        sentimentContext = {},
+        hasImage = false,
+        engagementLevel = 'unknown'
+    ) {
         // Detect language from replies
         const detectedLanguage = this.detectReplyLanguage(replies);
         this.logger.debug(`[AIQuote] Detected language: ${detectedLanguage}`);
@@ -258,9 +294,9 @@ export class AIQuoteEngine {
         // === STRATEGY SELECTION ===
         // Use the improved strategy selector from twitter-reply-prompt.js
         const strategyInstruction = getStrategyInstruction({
-            sentiment: valence < -0.3 ? 'negative' : (valence > 0.3 ? 'positive' : 'neutral'),
+            sentiment: valence < -0.3 ? 'negative' : valence > 0.3 ? 'positive' : 'neutral',
             type: conversationType,
-            engagement: engagementLevel
+            engagement: engagementLevel,
         });
 
         let prompt = `Tweet from @${authorUsername}:
@@ -273,7 +309,7 @@ Tweet URL: ${url}
         if (replies.length > 0) {
             // Sort by length (longest first) and take top 30 for richer context
             const sortedReplies = replies
-                .filter(r => r.text && r.text.length > 5)
+                .filter((r) => r.text && r.text.length > 5)
                 .sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))
                 .slice(0, 30);
 
@@ -315,8 +351,8 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                 engagementStyle: sentiment,
                 conversationType: conversationType,
                 valence,
-                sarcasmScore
-            }
+                sarcasmScore,
+            },
         };
     }
 
@@ -331,21 +367,23 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         this.stats.attempts++;
 
         const rolled = Math.random();
-        this.logger.debug(`[AI-Quote] Probability check: ${(this.config.QUOTE_PROBABILITY * 100).toFixed(1)}% threshold, rolled ${(rolled * 100).toFixed(1)}%`);
+        this.logger.debug(
+            `[AI-Quote] Probability check: ${(this.config.QUOTE_PROBABILITY * 100).toFixed(1)}% threshold, rolled ${(rolled * 100).toFixed(1)}%`
+        );
 
         if (!mathUtils.roll(this.config.QUOTE_PROBABILITY)) {
             this.stats.skips++;
             return {
                 decision: 'skip',
                 reason: 'probability',
-                quote: null
+                quote: null,
             };
         }
 
         return {
             decision: 'proceed',
             reason: 'eligible',
-            quote: null
+            quote: null,
         };
     }
 
@@ -366,21 +404,41 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // Log comprehensive sentiment analysis
         this.logger.info(`[AIQuote] Sentiment Analysis:`);
-        this.logger.info(`[AIQuote]   - Overall: ${tweetSentiment.isNegative ? 'NEGATIVE' : 'NEUTRAL/POSITIVE'} (score: ${tweetSentiment.score.toFixed(2)})`);
-        this.logger.info(`[AIQuote]   - Valence: ${tweetSentiment.dimensions?.valence?.valence?.toFixed(2) || 'N/A'}`);
-        this.logger.info(`[AIQuote]   - Arousal: ${tweetSentiment.dimensions?.arousal?.arousal?.toFixed(2) || 'N/A'}`);
-        this.logger.info(`[AIQuote]   - Dominance: ${tweetSentiment.dimensions?.dominance?.dominance?.toFixed(2) || 'N/A'}`);
-        this.logger.info(`[AIQuote]   - Sarcasm: ${tweetSentiment.dimensions?.sarcasm?.sarcasm?.toFixed(2) || 'N/A'}`);
-        this.logger.info(`[AIQuote]   - Toxicity: ${tweetSentiment.dimensions?.toxicity?.toxicity?.toFixed(2) || 'N/A'}`);
-        this.logger.info(`[AIQuote]   - Risk Level: ${tweetSentiment.composite?.riskLevel || 'N/A'}`);
-        this.logger.info(`[AIQuote]   - Engagement Style: ${tweetSentiment.composite?.engagementStyle || 'N/A'}`);
-        this.logger.info(`[AIQuote]   - Conversation Type: ${tweetSentiment.composite?.conversationType || 'N/A'}`);
+        this.logger.info(
+            `[AIQuote]   - Overall: ${tweetSentiment.isNegative ? 'NEGATIVE' : 'NEUTRAL/POSITIVE'} (score: ${tweetSentiment.score.toFixed(2)})`
+        );
+        this.logger.info(
+            `[AIQuote]   - Valence: ${tweetSentiment.dimensions?.valence?.valence?.toFixed(2) || 'N/A'}`
+        );
+        this.logger.info(
+            `[AIQuote]   - Arousal: ${tweetSentiment.dimensions?.arousal?.arousal?.toFixed(2) || 'N/A'}`
+        );
+        this.logger.info(
+            `[AIQuote]   - Dominance: ${tweetSentiment.dimensions?.dominance?.dominance?.toFixed(2) || 'N/A'}`
+        );
+        this.logger.info(
+            `[AIQuote]   - Sarcasm: ${tweetSentiment.dimensions?.sarcasm?.sarcasm?.toFixed(2) || 'N/A'}`
+        );
+        this.logger.info(
+            `[AIQuote]   - Toxicity: ${tweetSentiment.dimensions?.toxicity?.toxicity?.toFixed(2) || 'N/A'}`
+        );
+        this.logger.info(
+            `[AIQuote]   - Risk Level: ${tweetSentiment.composite?.riskLevel || 'N/A'}`
+        );
+        this.logger.info(
+            `[AIQuote]   - Engagement Style: ${tweetSentiment.composite?.engagementStyle || 'N/A'}`
+        );
+        this.logger.info(
+            `[AIQuote]   - Conversation Type: ${tweetSentiment.composite?.conversationType || 'N/A'}`
+        );
 
         // ================================================================
         // SKIP HIGH-RISK CONVERSATIONS
         // ================================================================
         if (tweetSentiment.isNegative && tweetSentiment.score > 0.3) {
-            this.logger.warn(`[AIQuote] Skipping negative content (score: ${tweetSentiment.score.toFixed(2)})`);
+            this.logger.warn(
+                `[AIQuote] Skipping negative content (score: ${tweetSentiment.score.toFixed(2)})`
+            );
             return { quote: null, success: false, reason: 'negative_content' };
         }
 
@@ -401,24 +459,28 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         let selectedReplies = replies;
         if (replies && replies.length > 0) {
             const sentimentAnalysis = sentimentService.analyzeForReplySelection(replies);
-            this.logger.info(`[AIQuote] Reply selection strategy: ${sentimentAnalysis.strategy} ` +
-                `(pos: ${sentimentAnalysis.distribution.positive}, ` +
-                `neg: ${sentimentAnalysis.distribution.negative}, ` +
-                `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`);
+            this.logger.info(
+                `[AIQuote] Reply selection strategy: ${sentimentAnalysis.strategy} ` +
+                    `(pos: ${sentimentAnalysis.distribution.positive}, ` +
+                    `neg: ${sentimentAnalysis.distribution.negative}, ` +
+                    `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`
+            );
 
             const recs = sentimentAnalysis.recommendations;
             if (recs.manualSelection) {
                 selectedReplies = recs.manualSelection;
             } else {
                 selectedReplies = sentimentAnalysis.analyzed
-                    .filter(r => recs.filter(r))
+                    .filter((r) => recs.filter(r))
                     .sort(recs.sort)
                     .slice(0, recs.max)
-                    .map(r => ({ author: r.author, text: r.text }));
+                    .map((r) => ({ author: r.author, text: r.text }));
             }
 
-            this.logger.info(`[AIQuote] Selected ${selectedReplies.length} replies for LLM context ` +
-                `(filtered from ${replies.length})`);
+            this.logger.info(
+                `[AIQuote] Selected ${selectedReplies.length} replies for LLM context ` +
+                    `(filtered from ${replies.length})`
+            );
         }
 
         // Build enhanced prompt with language detection
@@ -426,11 +488,19 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             engagementStyle: sentiment,
             conversationType: conversationType,
             valence,
-            sarcasm: sarcasmScore
+            sarcasm: sarcasmScore,
         };
         const hasImage = !!context.screenshot;
         const engagementLevel = context.engagementLevel || 'unknown';
-        const promptData = this.buildEnhancedPrompt(tweetText, authorUsername, selectedReplies, url, sentimentContext, hasImage, engagementLevel);
+        const promptData = this.buildEnhancedPrompt(
+            tweetText,
+            authorUsername,
+            selectedReplies,
+            url,
+            sentimentContext,
+            hasImage,
+            engagementLevel
+        );
 
         const systemPrompt = QUOTE_SYSTEM_PROMPT;
 
@@ -443,12 +513,16 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         this.logger.info(`[DEBUG] Tweet Length: ${tweetText.length} chars`);
         this.logger.info(`[DEBUG] Sentiment: ${sentiment}, Tone: ${conversationType}`);
         this.logger.info(`[DEBUG] ----------------------------------------------`);
-        this.logger.info(`[DEBUG] REPLIES CONTEXT (${selectedReplies.length} selected from ${replies.length}):`);
+        this.logger.info(
+            `[DEBUG] REPLIES CONTEXT (${selectedReplies.length} selected from ${replies.length}):`
+        );
         selectedReplies.forEach((reply, idx) => {
             const author = reply.author && reply.author !== 'unknown' ? reply.author : 'User';
             const text = (reply.text || '').substring(0, 80);
             const ellipsis = (reply.text || '').length > 80 ? '...' : '';
-            this.logger.info(`[DEBUG] [${idx + 1}] Reply${idx + 1}: "@${author}: ${text}${ellipsis}"`);
+            this.logger.info(
+                `[DEBUG] [${idx + 1}] Reply${idx + 1}: "@${author}: ${text}${ellipsis}"`
+            );
         });
         this.logger.info(`[DEBUG] ----------------------------------------------`);
         this.logger.info(`[DEBUG] FULL PROMPT SENT TO LLM:`);
@@ -462,7 +536,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             const maxRetries = this.config.MAX_RETRIES;
 
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                this.logger.info(`[AI-Quote] Generating ${promptData.language} quote tweet (attempt ${attempt}/${maxRetries})...`);
+                this.logger.info(
+                    `[AI-Quote] Generating ${promptData.language} quote tweet (attempt ${attempt}/${maxRetries})...`
+                );
 
                 try {
                     const result = await this.agent.processRequest({
@@ -478,36 +554,46 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                             context: {
                                 hasScreenshot: hasImage,
                                 replyCount: replies.length,
-                                detectedLanguage: promptData.language
-                            }
-                        }
+                                detectedLanguage: promptData.language,
+                            },
+                        },
                     });
 
                     // DEBUG: Log raw LLM response
                     this.logger.info(`[DEBUG] ----------------------------------------------`);
                     this.logger.info(`[DEBUG] LLM RAW RESPONSE (attempt ${attempt}):`);
-                    this.logger.info(`[DEBUG] ${result ? JSON.stringify(result).substring(0, 1000) : 'result is null/undefined'}`);
+                    this.logger.info(
+                        `[DEBUG] ${result ? JSON.stringify(result).substring(0, 1000) : 'result is null/undefined'}`
+                    );
                     this.logger.info(`[DEBUG] ----------------------------------------------`);
 
                     // Detailed failure analysis
                     if (!result) {
-                        this.logger.error(`[AIQuoteEngine] ❌ LLM result is null/undefined (attempt ${attempt})`);
+                        this.logger.error(
+                            `[AIQuoteEngine] ❌ LLM result is null/undefined (attempt ${attempt})`
+                        );
                         lastError = 'llm_result_null';
                         continue;
                     }
 
                     if (!result.success) {
-                        this.logger.error(`[AIQuoteEngine] ❌ LLM request failed: ${result.error || 'unknown error'} (attempt ${attempt})`);
+                        this.logger.error(
+                            `[AIQuoteEngine] ❌ LLM request failed: ${result.error || 'unknown error'} (attempt ${attempt})`
+                        );
                         lastError = `llm_failed: ${result.error || 'unknown'}`;
                         continue;
                     }
 
                     // Extract content from nested response structure (result.data.content) or direct result.content
                     const rawContent = result.data?.content || result.content || '';
-                    this.logger.info(`[DEBUG] Extracted content: "${rawContent.substring(0, 100)}..." (length: ${rawContent.length})`);
+                    this.logger.info(
+                        `[DEBUG] Extracted content: "${rawContent.substring(0, 100)}..." (length: ${rawContent.length})`
+                    );
 
                     if (!rawContent || rawContent.trim().length === 0) {
-                        this.logger.error(`[AIQuoteEngine] ❌ LLM returned empty content (attempt ${attempt}/${maxRetries})`);
+                        this.logger.error(
+                            `[AIQuoteEngine] ❌ LLM returned empty content (attempt ${attempt}/${maxRetries})`
+                        );
                         this.stats.emptyContent++;
                         lastError = 'llm_empty_content';
                         if (attempt < maxRetries) {
@@ -524,17 +610,21 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                     this.logger.debug(`[DEBUG] Extracted reply: "${reply?.substring(0, 100)}..."`);
 
                     if (!reply) {
-                        this.logger.warn(`[AIQuoteEngine] ⚠️ Could not extract reply from LLM response patterns (attempt ${attempt})`);
+                        this.logger.warn(
+                            `[AIQuoteEngine] ⚠️ Could not extract reply from LLM response patterns (attempt ${attempt})`
+                        );
                         this.logger.warn(`[DEBUG] Full raw content:\n${rawContent}`);
                         // Fallback: use raw content directly if it's a valid quote
                         const fallbackReply = rawContent.trim();
                         if (fallbackReply.length >= this.config.MIN_QUOTE_LENGTH) {
-                            this.logger.info(`[AIQuoteEngine] 🔄 Using raw content as fallback: "${fallbackReply.substring(0, 50)}..."`);
+                            this.logger.info(
+                                `[AIQuoteEngine] 🔄 Using raw content as fallback: "${fallbackReply.substring(0, 50)}..."`
+                            );
                             this.stats.fallbackUsed++;
                             return {
                                 quote: fallbackReply,
                                 success: true,
-                                note: 'fallback_content_used'
+                                note: 'fallback_content_used',
                             };
                         }
                         this.stats.extractFailed++;
@@ -548,10 +638,14 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                     }
 
                     const cleaned = this.cleanQuote(reply);
-                    this.logger.info(`[AIQuoteEngine] ✨ Cleaned quote: "${cleaned}" (${cleaned.length} chars)`);
+                    this.logger.info(
+                        `[AIQuoteEngine] ✨ Cleaned quote: "${cleaned}" (${cleaned.length} chars)`
+                    );
 
                     if (cleaned.length < this.config.MIN_QUOTE_LENGTH) {
-                        this.logger.error(`[AIQuoteEngine] ❌ Quote too short: ${cleaned.length} chars (min: ${this.config.MIN_QUOTE_LENGTH}) (attempt ${attempt})`);
+                        this.logger.error(
+                            `[AIQuoteEngine] ❌ Quote too short: ${cleaned.length} chars (min: ${this.config.MIN_QUOTE_LENGTH}) (attempt ${attempt})`
+                        );
                         lastError = 'quote_too_short';
                         if (attempt < maxRetries) {
                             this.logger.info(`[AIQuoteEngine] Retrying...`);
@@ -567,10 +661,12 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                         return {
                             quote: cleaned,
                             success: true,
-                            language: promptData.language
+                            language: promptData.language,
                         };
                     } else {
-                        this.logger.warn(`[AIQuoteEngine] ❌ Quote validation failed (${validation.reason}): "${cleaned}" (attempt ${attempt})`);
+                        this.logger.warn(
+                            `[AIQuoteEngine] ❌ Quote validation failed (${validation.reason}): "${cleaned}" (attempt ${attempt})`
+                        );
                         this.stats.validationFailed++;
                         lastError = `validation_failed: ${validation.reason}`;
                         if (attempt < maxRetries) {
@@ -578,11 +674,16 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                             this.stats.retriesUsed++;
                             continue;
                         }
-                        return { quote: null, success: false, reason: `validation_failed: ${validation.reason}` };
+                        return {
+                            quote: null,
+                            success: false,
+                            reason: `validation_failed: ${validation.reason}`,
+                        };
                     }
-
                 } catch (error) {
-                    this.logger.error(`[AIQuoteEngine] ❌ Generation error (attempt ${attempt}): ${error.message}`);
+                    this.logger.error(
+                        `[AIQuoteEngine] ❌ Generation error (attempt ${attempt}): ${error.message}`
+                    );
                     this.stats.errors++;
                     lastError = error.message;
                     if (attempt < maxRetries) {
@@ -595,10 +696,11 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             }
 
             // All retries exhausted
-            this.logger.error(`[AIQuoteEngine] ❌ All ${maxRetries} attempts failed. Last error: ${lastError}`);
+            this.logger.error(
+                `[AIQuoteEngine] ❌ All ${maxRetries} attempts failed. Last error: ${lastError}`
+            );
             this.stats.failures++;
             return { quote: null, success: false, reason: `all_attempts_failed: ${lastError}` };
-
         } catch (error) {
             this.logger.error(`[AIQuoteEngine] Generation failed: ${error.message}`);
             this.stats.errors++;
@@ -613,14 +715,17 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         const trimmed = content.trim();
-        this.logger.debug(`[extractReplyFromResponse] Processing content: "${trimmed.substring(0, 100)}..." (length: ${trimmed.length})`);
+        this.logger.debug(
+            `[extractReplyFromResponse] Processing content: "${trimmed.substring(0, 100)}..." (length: ${trimmed.length})`
+        );
 
         // ================================================================
         // PATTERN 0: Direct content (already clean, most common case)
         // ================================================================
         if (trimmed.length >= 10 && trimmed.length < 300) {
             // Check if it looks like a real tweet (not JSON, not thinking)
-            const isCleanResponse = !trimmed.startsWith('{') &&
+            const isCleanResponse =
+                !trimmed.startsWith('{') &&
                 !trimmed.startsWith('[') &&
                 !trimmed.startsWith('```') &&
                 !trimmed.toLowerCase().includes('thinking') &&
@@ -629,7 +734,8 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
             if (isCleanResponse) {
                 // Check for reasoning patterns
-                const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(trimmed) ||
+                const isReasoning =
+                    /I (?:need to|should|want to|will|must|can|have) /i.test(trimmed) ||
                     /Let me|I'll|First|Then|So I|Now I/i.test(trimmed) ||
                     /This is my|My draft|Here's my|I think this/i.test(trimmed) ||
                     /It needs to be|My draft fits/i.test(trimmed) ||
@@ -659,7 +765,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         if (singleQuotedMatch) {
             const quoted = singleQuotedMatch[1].trim();
             if (!/I (?:need to|should|want to|will|must) /i.test(quoted)) {
-                this.logger.debug(`[extractReplyFromResponse] ✓ Single-quoted text pattern matched`);
+                this.logger.debug(
+                    `[extractReplyFromResponse] ✓ Single-quoted text pattern matched`
+                );
                 return quoted;
             }
         }
@@ -672,7 +780,8 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         if (lastLine.length > 10 && lastLine.length < 300) {
             // Check if it looks like a real response (not internal reasoning)
-            const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(lastLine) ||
+            const isReasoning =
+                /I (?:need to|should|want to|will|must|can|have) /i.test(lastLine) ||
                 /Let me|I'll|First|Then|So I|Now I/i.test(lastLine) ||
                 /This is my|My draft|Here's my/i.test(lastLine) ||
                 /It needs to be|My draft fits|I think this/i.test(lastLine) ||
@@ -692,7 +801,8 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         for (let i = paragraphs.length - 1; i >= 0; i--) {
             const para = paragraphs[i].trim();
             if (para.length > 10 && para.length < 300) {
-                const isReasoning = /I (?:need to|should|want to|will|must|can|have) /i.test(para) ||
+                const isReasoning =
+                    /I (?:need to|should|want to|will|must|can|have) /i.test(para) ||
                     /Let me|I'll|First|Then|So I|Now I/i.test(para) ||
                     /This is my|My draft|Here's my/i.test(para) ||
                     /It needs to be|My draft fits|I think this/i.test(para);
@@ -709,7 +819,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         const labelPatterns = [
             /^(?:Answer|Response|Quote|Tweet|My response|Here's my):?\s*/i,
             /^(?:The|Ma) quote:?\s*/i,
-            /^(?:I'd|I would|No) (?:say|think|respond):?\s*/i
+            /^(?:I'd|I would|No) (?:say|think|respond):?\s*/i,
         ];
 
         for (const pattern of labelPatterns) {
@@ -745,9 +855,18 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         cleaned = cleaned.replace(/<\/?THINKING>/gi, '');
         cleaned = cleaned.replace(/\[\/?THINKING\]/gi, '');
         cleaned = cleaned.replace(/\[[\s]*REASONING[\s]*\][\s\S]*?$/gim, '');
-        cleaned = cleaned.replace(/^(?:First,?\s*)?I\s+(?:need to|should|want to|must|will|have to|can)\s+[\s\S]*?(?=\n\n|[.!?]\s*[A-Z][a-z]+)/gim, '');
-        cleaned = cleaned.replace(/(?:Let me|I'll|I will)\s+(?:think|reason|analyze)[\s\S]*?(?=\.\s*[A-Z]|\n\n)/gi, '');
-        cleaned = cleaned.replace(/^(?:My|Here's|The)\s+(?:draft|response|answer|output|suggestion):?\s*/gi, '');
+        cleaned = cleaned.replace(
+            /^(?:First,?\s*)?I\s+(?:need to|should|want to|must|will|have to|can)\s+[\s\S]*?(?=\n\n|[.!?]\s*[A-Z][a-z]+)/gim,
+            ''
+        );
+        cleaned = cleaned.replace(
+            /(?:Let me|I'll|I will)\s+(?:think|reason|analyze)[\s\S]*?(?=\.\s*[A-Z]|\n\n)/gi,
+            ''
+        );
+        cleaned = cleaned.replace(
+            /^(?:My|Here's|The)\s+(?:draft|response|answer|output|suggestion):?\s*/gi,
+            ''
+        );
         cleaned = cleaned.replace(/^(?:Okay,?\s*)?I (?:need to|should|want to|will) [^\n]*/i, '');
 
         if (cleaned.startsWith('{') || cleaned.startsWith('[')) {
@@ -760,7 +879,11 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
                 if (parsed.output) return parsed.output;
                 // Try to find any string field
                 for (const key of Object.keys(parsed)) {
-                    if (typeof parsed[key] === 'string' && parsed[key].length >= 10 && parsed[key].length < 300) {
+                    if (
+                        typeof parsed[key] === 'string' &&
+                        parsed[key].length >= 10 &&
+                        parsed[key].length < 300
+                    ) {
                         return parsed[key];
                     }
                 }
@@ -796,9 +919,21 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         const human = new HumanInteraction(page);
 
         const methods = [
-            { name: 'keyboard_compose', weight: 30, fn: () => this.quoteMethodA_Keyboard(page, quoteText, human) },
-            { name: 'retweet_menu', weight: 60, fn: () => this.quoteMethodB_Retweet(page, quoteText, human) },
-            { name: 'new_post', weight: 10, fn: () => this.quoteMethodC_Url(page, quoteText, human) }
+            {
+                name: 'keyboard_compose',
+                weight: 30,
+                fn: () => this.quoteMethodA_Keyboard(page, quoteText, human),
+            },
+            {
+                name: 'retweet_menu',
+                weight: 60,
+                fn: () => this.quoteMethodB_Retweet(page, quoteText, human),
+            },
+            {
+                name: 'new_post',
+                weight: 10,
+                fn: () => this.quoteMethodC_Url(page, quoteText, human),
+            },
         ];
 
         const selected = human.selectMethod(methods);
@@ -832,8 +967,6 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
     }
 
-
-
     getToneGuidance(tone) {
         const tones = {
             humorous: 'Be witty, add a clever observation, or a lighthearted take.',
@@ -841,7 +974,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             emotional: 'Express genuine emotion - why does this resonate with you?',
             supportive: 'Show enthusiasm and encourage the author.',
             critical: 'Offer a thoughtful counterpoint or question.',
-            neutral: 'Ask a specific question or add a relevant observation.'
+            neutral: 'Ask a specific question or add a relevant observation.',
         };
         return tones[tone] || tones.neutral;
     }
@@ -850,7 +983,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         const engagements = {
             low: 'Maximum 1 short sentence.',
             medium: 'Maximum 1 short sentence.',
-            high: 'Maximum 1-2 short sentences.'
+            high: 'Maximum 1-2 short sentences.',
         };
         return engagements[engagement] || engagements.low;
     }
@@ -869,11 +1002,11 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             .replace(/^["']+|["']+$/g, '') // Remove surrounding quotes
             .substring(0, this.config.MAX_QUOTE_LENGTH);
 
-        if (Math.random() < 0.30) {
+        if (Math.random() < 0.3) {
             cleaned = cleaned.toLowerCase();
         }
 
-        if (Math.random() < 0.80 && cleaned.endsWith('.')) {
+        if (Math.random() < 0.8 && cleaned.endsWith('.')) {
             cleaned = cleaned.slice(0, -1);
         }
 
@@ -894,13 +1027,17 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         for (const pattern of this.config.SAFETY_FILTERS.genericResponses) {
-            if (lower === pattern || lower.startsWith(pattern + ' ') || lower.startsWith(pattern + '.')) {
+            if (
+                lower === pattern ||
+                lower.startsWith(pattern + ' ') ||
+                lower.startsWith(pattern + '.')
+            ) {
                 return { valid: false, reason: `generic_response:${pattern}` };
             }
 
             const patternIndex = lower.indexOf(' ' + pattern + ' ');
             if (patternIndex !== -1) {
-                if (text.length < 40 || (pattern.length / text.length) > 0.4) {
+                if (text.length < 40 || pattern.length / text.length > 0.4) {
                     return { valid: false, reason: `generic_response:${pattern}` };
                 }
             }
@@ -921,9 +1058,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     getStats() {
         return {
             ...this.stats,
-            successRate: this.stats.attempts > 0
-                ? ((this.stats.successes / this.stats.attempts) * 100).toFixed(1) + '%'
-                : '0%'
+            successRate:
+                this.stats.attempts > 0
+                    ? ((this.stats.successes / this.stats.attempts) * 100).toFixed(1) + '%'
+                    : '0%',
         };
     }
 
@@ -958,13 +1096,13 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         const lengthGuides = {
             'heated-debate': 'CRITICAL: Maximum 1 short sentence.',
             'casual-chat': 'Maximum 1 short sentence.',
-            'announcement': 'Maximum 1 sentence.',
-            'question': 'One short question or 1 sentence.',
-            'humor': 'Maximum 1 punchy sentence.',
-            'news': 'Maximum 1 short sentence.',
-            'personal': 'Maximum 1-2 short sentences.',
-            'controversial': 'CRITICAL: Maximum 1 short sentence.',
-            'general': 'Maximum 1 short sentence.',
+            announcement: 'Maximum 1 sentence.',
+            question: 'One short question or 1 sentence.',
+            humor: 'Maximum 1 punchy sentence.',
+            news: 'Maximum 1 short sentence.',
+            personal: 'Maximum 1-2 short sentences.',
+            controversial: 'CRITICAL: Maximum 1 short sentence.',
+            general: 'Maximum 1 short sentence.',
         };
 
         const baseGuidance = lengthGuides[conversationType] || lengthGuides.general;
@@ -987,11 +1125,10 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             critical: 'Style: Sharp, questioning.',
             neutral: 'Style: Conversational, casual.',
             sarcastic: 'Style: Dry wit, playful irony.',
-            ironic: 'Style: Subtle humor, unexpected twist.'
+            ironic: 'Style: Subtle humor, unexpected twist.',
         };
         return styles[sentiment] || styles.neutral;
     }
-
 
     /**
      * Method A: Keyboard Compose + Quote (30%)
@@ -1052,7 +1189,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             '[data-testid="attachment-preview"]',
             'div[aria-label="Quoted Tweet"]',
             '[data-testid="card.wrapper"]',
-            '.public-DraftEditorPlaceholder-inner:has-text("Add a comment")' // User suggested
+            '.public-DraftEditorPlaceholder-inner:has-text("Add a comment")', // User suggested
         ];
 
         // Wait for any of these to appear
@@ -1065,7 +1202,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         if (!hasQuotePreview) {
-            this.logger.warn(`[QuoteMethodA] Quote preview not detected, falling back to retweet menu`);
+            this.logger.warn(
+                `[QuoteMethodA] Quote preview not detected, falling back to retweet menu`
+            );
             await api.getPage().keyboard.press('Escape');
             await api.wait(500);
             return await this.quoteMethodB_Retweet(page, quoteText, human);
@@ -1078,18 +1217,25 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         const composer = api.getPage().locator(verify.selector).first();
 
         // Verify quote preview is still present
-        const quotePreviewCheck = api.getPage().locator('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]').first();
+        const quotePreviewCheck = api
+            .getPage()
+            .locator('[data-testid="quotedTweet"], [data-testid="quotedTweetPlaceholder"]')
+            .first();
         if (await api.exists(quotePreviewCheck)) {
             await api.click(quotePreviewCheck, { precision: 'high' });
             this.logger.info(`[QuoteMethodA] Quote preview confirmed`);
         } else {
-            this.logger.warn(`[QuoteMethodA] Quote preview vanished - aborting to prevent regular tweet`);
+            this.logger.warn(
+                `[QuoteMethodA] Quote preview vanished - aborting to prevent regular tweet`
+            );
             await api.getPage().keyboard.press('Escape');
             return { success: false, reason: 'quote_preview_vanished', method: 'keyboard_compose' };
         }
 
         // Type quote
-        this.logger.info(`[QuoteMethodA] Typing quote (${quoteText.length} chars, ghost cursor)...`);
+        this.logger.info(
+            `[QuoteMethodA] Typing quote (${quoteText.length} chars, ghost cursor)...`
+        );
         await api.type(composer, quoteText, { clearFirst: true });
 
         // Post the quote
@@ -1099,7 +1245,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             success: postResult.success,
             reason: postResult.reason || 'posted',
             method: 'keyboard_compose',
-            quotePreview: hasQuotePreview
+            quotePreview: hasQuotePreview,
         };
     }
 
@@ -1123,7 +1269,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             'button[aria-label*="repost"]:not([aria-label*="metrics"]):not([aria-label*="stats"])',
             'button[aria-label*="retweet"]:not([aria-label*="metrics"]):not([aria-label*="stats"])',
             '[aria-label*="Repost"]:not([aria-label*="metrics"])',
-            '[aria-label*="Retweet"]:not([aria-label*="metrics"])'
+            '[aria-label*="Retweet"]:not([aria-label*="metrics"])',
         ];
 
         let retweetBtnSelector = await api.findElement(retweetBtnSelectors);
@@ -1133,7 +1279,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             return { success: false, reason: 'retweet_button_not_found', method: 'retweet_menu' };
         }
 
-        this.logger.info(`[QuoteMethodB] Clicking retweet button using selector: ${retweetBtnSelector}`);
+        this.logger.info(
+            `[QuoteMethodB] Clicking retweet button using selector: ${retweetBtnSelector}`
+        );
 
         this.logger.info(`[QuoteMethodB] Clicking retweet button (ghost cursor)...`);
         const rtClickSuccess = await api.click(retweetBtnSelector, { precision: 'high' });
@@ -1151,7 +1299,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         }
 
         if (!menuReady) {
-            this.logger.warn(`[QuoteMethodB] Retweet menu did not open, checking if already open or if click failed...`);
+            this.logger.warn(
+                `[QuoteMethodB] Retweet menu did not open, checking if already open or if click failed...`
+            );
 
             // Final check before retry
             if (await api.visible('[role="menu"]')) {
@@ -1175,7 +1325,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             'a[role="menuitem"]:has-text("Quote")',
             '[role="menuitem"]:has-text("Quote")',
             'a:has-text("Quote"):not([href])',
-            'text=Quote'
+            'text=Quote',
         ];
 
         let quoteOptionSelector = await api.findElement(quoteOptionSelectors, { timeout: 2500 });
@@ -1206,7 +1356,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             'div[aria-label="Quoted Tweet"]',
             '[data-testid="card.wrapper"]',
             '.public-DraftEditorPlaceholder-inner:has-text("Add a comment")',
-            '.public-DraftEditor-content:has-text("Add a comment")'
+            '.public-DraftEditor-content:has-text("Add a comment")',
         ];
 
         // Wait for any of these to appear
@@ -1235,7 +1385,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
         // STEP 4: Enhanced quote detection
         if (!hasQuotePreview) {
-            this.logger.warn(`[QuoteMethodB] Quote preview not detected - aborting to prevent regular tweet`);
+            this.logger.warn(
+                `[QuoteMethodB] Quote preview not detected - aborting to prevent regular tweet`
+            );
             await api.getPage().keyboard.press('Escape');
             await api.wait(500);
             return { success: false, reason: 'quote_preview_missing', method: 'retweet_menu' };
@@ -1244,7 +1396,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // STEP 5: Type and post
         const composer = api.getPage().locator(verify.selector).first();
 
-        this.logger.info(`[QuoteMethodB] Typing quote (${quoteText.length} chars, ghost cursor)...`);
+        this.logger.info(
+            `[QuoteMethodB] Typing quote (${quoteText.length} chars, ghost cursor)...`
+        );
         await api.type(composer, quoteText, { clearFirst: true });
 
         // Post
@@ -1254,7 +1408,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             success: postResult.success,
             reason: postResult.reason || 'posted',
             method: 'retweet_menu',
-            quotePreview: hasQuotePreview
+            quotePreview: hasQuotePreview,
         };
     }
 
@@ -1284,7 +1438,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             '[aria-label="New post"]',
             '[aria-label="Post your reply"]',
             'button:has-text("Post")',
-            'button:has-text("New post")'
+            'button:has-text("New post")',
         ];
 
         let composeBtnSelector = await api.findElement(composeBtnSelectors);
@@ -1299,7 +1453,8 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         await api.wait(1500);
 
         // Wait for composer to be fully loaded
-        await api.waitVisible('[data-testid="tweetTextarea_0"]', { timeout: 5000 })
+        await api
+            .waitVisible('[data-testid="tweetTextarea_0"]', { timeout: 5000 })
             .catch(() => this.logger.warn(`[QuoteMethodC] Composer visibility timeout`));
 
         // STEP 2: Verify composer is open
@@ -1312,7 +1467,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         // STEP 3: Type the comment FIRST
         const composer = api.getPage().locator(verify.selector).first();
 
-        this.logger.info(`[QuoteMethodC] Typing comment (${quoteText.length} chars, ghost cursor)...`);
+        this.logger.info(
+            `[QuoteMethodC] Typing comment (${quoteText.length} chars, ghost cursor)...`
+        );
         await api.type(composer, quoteText);
 
         // Step 4: Create new line AFTER typing comment
@@ -1373,7 +1530,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             success: postResult.success,
             reason: postResult.reason || 'posted',
             method: 'new_post',
-            url: currentUrl
+            url: currentUrl,
         };
     }
 }

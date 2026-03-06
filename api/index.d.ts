@@ -1,7 +1,7 @@
 /**
  * @fileoverview TypeScript Type Definitions for Auto-AI API
  * Provides IDE autocomplete for consumers without full TypeScript migration.
- * 
+ *
  * @module api/index.d.ts
  */
 
@@ -19,13 +19,16 @@ export declare const api: {
     eval: (fn: (...args: any[]) => any, ...args: any[]) => Promise<any>;
     init: (page: Page, options?: ApiOptions) => Promise<void>;
     diagnose: (page: Page) => Promise<object>;
-    emulateMedia: (options?: { type?: string; colorScheme?: 'light' | 'dark' | 'no-preference'; }) => Promise<void>;
+    emulateMedia: (options?: {
+        type?: string;
+        colorScheme?: 'light' | 'dark' | 'no-preference';
+    }) => Promise<void>;
     clearLiteMode: () => Promise<void>;
     config: ConfigurationManager;
 
     click: (selector: string, options?: ClickOptions) => Promise<void>;
     type: (selector: string, text: string, options?: TypeOptions) => Promise<void>;
-    hover: (selector: string, options?: { timeout?: number; }) => Promise<void>;
+    hover: (selector: string, options?: { timeout?: number }) => Promise<void>;
     rightClick: (selector: string, options?: ClickOptions) => Promise<void>;
 
     scroll: {
@@ -43,11 +46,17 @@ export declare const api: {
     };
 
     wait: (ms: number) => Promise<void>;
-    waitFor: (selectorOrPredicate: string | Locator | (() => Promise<boolean>), options?: WaitOptions) => Promise<void>;
+    waitFor: (
+        selectorOrPredicate: string | Locator | (() => Promise<boolean>),
+        options?: WaitOptions
+    ) => Promise<void>;
     waitVisible: (selector: string, options?: WaitOptions) => Promise<void>;
     waitHidden: (selector: string, options?: WaitOptions) => Promise<void>;
     waitForLoadState: (state?: string, options?: WaitOptions) => Promise<void>;
-    waitForURL: (urlOrPredicate: string | RegExp | ((url: string) => boolean), options?: WaitOptions) => Promise<void>;
+    waitForURL: (
+        urlOrPredicate: string | RegExp | ((url: string) => boolean),
+        options?: WaitOptions
+    ) => Promise<void>;
 
     goto: (url: string, options?: NavigationOptions) => Promise<NavigationResult>;
     reload: (options?: NavigationOptions) => Promise<void>;
@@ -65,7 +74,7 @@ export declare const api: {
     listPersonas: () => string[];
 
     recover: (error: Error) => Promise<void>;
-    findElement: (selector: string, options?: { timeout?: number; }) => Promise<Locator | null>;
+    findElement: (selector: string, options?: { timeout?: number }) => Promise<Locator | null>;
     smartClick: (selector: string, options?: ClickOptions) => Promise<void>;
 
     getContextState: () => object;

@@ -24,22 +24,22 @@ describe('profileManager Integration', () => {
         it('should have all required methods', () => {
             expect(profileManager.getStarter).toBeDefined();
             expect(typeof profileManager.getStarter).toBe('function');
-            
+
             expect(profileManager.getStarterAsync).toBeDefined();
             expect(typeof profileManager.getStarterAsync).toBe('function');
-            
+
             expect(profileManager.getById).toBeDefined();
             expect(typeof profileManager.getById).toBe('function');
-            
+
             expect(profileManager.getByIdAsync).toBeDefined();
             expect(typeof profileManager.getByIdAsync).toBe('function');
-            
+
             expect(profileManager.getFatiguedVariant).toBeDefined();
             expect(typeof profileManager.getFatiguedVariant).toBe('function');
-            
+
             expect(profileManager.reload).toBeDefined();
             expect(typeof profileManager.reload).toBe('function');
-            
+
             expect(profileManager.getCount).toBeDefined();
             expect(typeof profileManager.getCount).toBe('function');
         });
@@ -67,7 +67,7 @@ describe('profileManager Integration', () => {
     describe('getStarter', () => {
         it('should return a valid profile', () => {
             const profile = profileManager.getStarter();
-            
+
             expect(profile).toBeDefined();
             expect(profile).toHaveProperty('id');
             // Note: 'type' may not be present in actual data - validation shows this
@@ -77,7 +77,7 @@ describe('profileManager Integration', () => {
 
         it('should return profile with required fields', () => {
             const profile = profileManager.getStarter();
-            
+
             expect(typeof profile.id).toBe('string');
             expect(profile.id.length).toBeGreaterThan(0);
             // type is optional - data may not have it
@@ -87,7 +87,7 @@ describe('profileManager Integration', () => {
 
         it('should prefer fast profiles', () => {
             const profile = profileManager.getStarter();
-            
+
             // Fast profiles have scrollPause.mean < 2500
             if (profile.timings?.scrollPause?.mean) {
                 expect(profile.timings.scrollPause.mean).toBeLessThan(4000);
@@ -98,7 +98,7 @@ describe('profileManager Integration', () => {
     describe('getStarterAsync', () => {
         it('should return a valid profile asynchronously', async () => {
             const profile = await profileManager.getStarterAsync();
-            
+
             expect(profile).toBeDefined();
             expect(profile).toHaveProperty('id');
             // type may not exist in data
@@ -108,7 +108,7 @@ describe('profileManager Integration', () => {
 
         it('should return profile with valid timings', async () => {
             const profile = await profileManager.getStarterAsync();
-            
+
             expect(profile.timings).toBeDefined();
             expect(profile.timings.scrollPause).toBeDefined();
             expect(typeof profile.timings.scrollPause.mean).toBe('number');
@@ -116,7 +116,7 @@ describe('profileManager Integration', () => {
 
         it('should return profile with valid probabilities', async () => {
             const profile = await profileManager.getStarterAsync();
-            
+
             expect(profile.probabilities).toBeDefined();
             // Probabilities should be numbers between 0-100
             const probKeys = ['dive', 'like', 'follow', 'retweet', 'quote'];
@@ -135,10 +135,10 @@ describe('profileManager Integration', () => {
             // First get a valid profile ID
             const starter = profileManager.getStarter();
             const validId = starter.id;
-            
+
             // Now try to get it by ID
             const profile = profileManager.getById(validId);
-            
+
             expect(profile).toBeDefined();
             expect(profile.id).toBe(validId);
         });
@@ -162,9 +162,9 @@ describe('profileManager Integration', () => {
         it('should get profile by valid ID asynchronously', async () => {
             const starter = profileManager.getStarter();
             const validId = starter.id;
-            
+
             const profile = await profileManager.getByIdAsync(validId);
-            
+
             expect(profile).toBeDefined();
             expect(profile.id).toBe(validId);
         });
@@ -187,7 +187,7 @@ describe('profileManager Integration', () => {
         it('should return profile with higher mean than current', () => {
             const currentMean = 2000;
             const variant = profileManager.getFatiguedVariant(currentMean);
-            
+
             if (variant) {
                 expect(variant.timings.scrollPause.mean).toBeGreaterThan(currentMean * 1.4);
             }
@@ -204,7 +204,7 @@ describe('profileManager Integration', () => {
     describe('Profile Validation', () => {
         it('should have profiles with valid timings', () => {
             const profile = profileManager.getStarter();
-            
+
             expect(profile.timings).toBeDefined();
             expect(profile.timings.scrollPause).toBeDefined();
             expect(typeof profile.timings.scrollPause.mean).toBe('number');
@@ -213,13 +213,13 @@ describe('profileManager Integration', () => {
 
         it('should have profiles with valid probabilities', () => {
             const profile = profileManager.getStarter();
-            
+
             expect(profile.probabilities).toBeDefined();
-            
+
             // All probability values should be 0-100 or undefined
             const prob = profile.probabilities;
             const fields = ['dive', 'like', 'follow', 'retweet', 'quote'];
-            
+
             for (const field of fields) {
                 if (prob[field] !== undefined) {
                     expect(typeof prob[field]).toBe('number');
@@ -231,7 +231,7 @@ describe('profileManager Integration', () => {
 
         it('should have valid profile id', () => {
             const profile = profileManager.getStarter();
-            
+
             expect(profile.id).toBeDefined();
             expect(typeof profile.id).toBe('string');
             expect(profile.id.length).toBeGreaterThan(0);
@@ -247,10 +247,10 @@ describe('profileManager Integration', () => {
         it('should provide valid profile count after operations', () => {
             const count = profileManager.getCount();
             expect(count).toBeGreaterThan(0);
-            
+
             const starter = profileManager.getStarter();
             expect(starter).toBeDefined();
-            
+
             const newCount = profileManager.getCount();
             expect(newCount).toBe(count); // Should not change
         });
@@ -261,13 +261,13 @@ describe('profileManager Integration', () => {
             // Use a fixed ID to ensure consistency
             const profile1 = profileManager.getById(profileManager.getStarter().id);
             const profile2 = profileManager.getById(profile1.id);
-            
+
             expect(profile1.id).toBe(profile2.id);
         });
 
         it('should have all profiles with unique IDs', () => {
             const count = profileManager.getCount();
-            
+
             if (count > 1) {
                 const ids = new Set();
                 // Sample a few profiles to check uniqueness
@@ -283,7 +283,7 @@ describe('profileManager Integration', () => {
         it('should maintain profile structure across multiple calls', () => {
             const profile = profileManager.getStarter();
             const keys = Object.keys(profile).sort();
-            
+
             expect(keys).toContain('id');
             // type may not exist in actual data
             expect(keys).toContain('timings');

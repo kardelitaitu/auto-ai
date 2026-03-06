@@ -53,7 +53,7 @@ class ImageStorage {
             }
             return {
                 count: files.length,
-                size: totalSize
+                size: totalSize,
             };
         } catch (error) {
             return { count: 0, size: 0, error: error.message };

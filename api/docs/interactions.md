@@ -20,12 +20,12 @@ Kinetic actions that follow a 3-step pipeline: **Focus (Scroll) → Move Cursor 
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `click(selector, options)` | Human-mimetic click with coordinate noise |
-| `type(selector, text, options)` | Character-by-character typing |
-| `hover(selector)` | Moves cursor to element with drift |
-| `rightClick(selector)` | Context menu interaction |
+| Function                        | Description                               |
+| ------------------------------- | ----------------------------------------- |
+| `click(selector, options)`      | Human-mimetic click with coordinate noise |
+| `type(selector, text, options)` | Character-by-character typing             |
+| `hover(selector)`               | Moves cursor to element with drift        |
+| `rightClick(selector)`          | Context menu interaction                  |
 
 ### Click Options
 
@@ -55,15 +55,15 @@ Kinetic actions that follow a 3-step pipeline: **Focus (Scroll) → Move Cursor 
 
 ```javascript
 // Click with recovery
-await api.click('.login-button', { 
-    recovery: true, 
-    maxRetries: 3 
+await api.click('.login-button', {
+    recovery: true,
+    maxRetries: 3,
 });
 
 // Type with humanization
-await api.type('#username', 'myuser', { 
+await api.type('#username', 'myuser', {
     humanize: true,
-    clearFirst: true 
+    clearFirst: true,
 });
 
 // Hover
@@ -81,14 +81,14 @@ Implements the **Golden View** principle: centering elements vertically with ran
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `scroll(pixels, options)` | Smooth vertical scroll |
-| `scroll.focus(selector)` | Centers an element in the viewport |
-| `scroll.toTop()` | Smoothly scroll to top |
-| `scroll.toBottom()` | Smoothly scroll to bottom |
-| `scroll.read(target)` | Simulates reading by scrolling in bursts |
-| `scroll.back()` | Scroll back to previous position |
+| Function                  | Description                              |
+| ------------------------- | ---------------------------------------- |
+| `scroll(pixels, options)` | Smooth vertical scroll                   |
+| `scroll.focus(selector)`  | Centers an element in the viewport       |
+| `scroll.toTop()`          | Smoothly scroll to top                   |
+| `scroll.toBottom()`       | Smoothly scroll to bottom                |
+| `scroll.read(target)`     | Simulates reading by scrolling in bursts |
+| `scroll.back()`           | Scroll back to previous position         |
 
 ### Scroll Options
 
@@ -115,7 +115,7 @@ await api.scroll.read({
     distance: 1000,
     pauses: 5,
     minPause: 500,
-    maxPause: 1500
+    maxPause: 1500,
 });
 
 // Go to top/bottom
@@ -131,26 +131,26 @@ Controls the low-level "Ghost Cursor" trajectories for realistic mouse movement.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `cursor(selector)` | Shortcut for move |
-| `cursor.move(selector)` | Move cursor to element using sophisticated paths |
-| `cursor.up(pixels)` | Move cursor up |
-| `cursor.down(pixels)` | Move cursor down |
-| `cursor.setPathStyle(style)` | Set path style |
-| `cursor.getPathStyle()` | Get current path style |
-| `cursor.startFidgeting()` | Enable background micro-tremors |
-| `cursor.stopFidgeting()` | Stop fidgeting |
+| Function                     | Description                                      |
+| ---------------------------- | ------------------------------------------------ |
+| `cursor(selector)`           | Shortcut for move                                |
+| `cursor.move(selector)`      | Move cursor to element using sophisticated paths |
+| `cursor.up(pixels)`          | Move cursor up                                   |
+| `cursor.down(pixels)`        | Move cursor down                                 |
+| `cursor.setPathStyle(style)` | Set path style                                   |
+| `cursor.getPathStyle()`      | Get current path style                           |
+| `cursor.startFidgeting()`    | Enable background micro-tremors                  |
+| `cursor.stopFidgeting()`     | Stop fidgeting                                   |
 
 ### Path Styles
 
-| Style | Description |
-|-------|-------------|
-| `muscle` | PID-driven movement (default) |
-| `bezier` | Bezier curve paths |
-| `arc` | Arc movement |
-| `zigzag` | Zigzag pattern |
-| `overshoot` | Overshoot and correct |
+| Style       | Description                   |
+| ----------- | ----------------------------- |
+| `muscle`    | PID-driven movement (default) |
+| `bezier`    | Bezier curve paths            |
+| `arc`       | Arc movement                  |
+| `zigzag`    | Zigzag pattern                |
+| `overshoot` | Overshoot and correct         |
 
 ### Usage
 
@@ -180,17 +180,17 @@ Navigation functions with warmup and human-like behavior.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `goto(url, options)` | Navigate to URL with warmup |
-| `reload(options)` | Reload current page |
-| `back()` | Go back in history |
-| `forward()` | Go forward in history |
-| `beforeNavigate()` | Execute warmup before navigation |
-| `randomMouse()` | Random mouse movement |
-| `fakeRead()` | Simulate reading behavior |
-| `warmupPause()` | Warmup pause |
-| `setExtraHTTPHeaders(headers)` | Set extra HTTP headers |
+| Function                       | Description                      |
+| ------------------------------ | -------------------------------- |
+| `goto(url, options)`           | Navigate to URL with warmup      |
+| `reload(options)`              | Reload current page              |
+| `back()`                       | Go back in history               |
+| `forward()`                    | Go forward in history            |
+| `beforeNavigate()`             | Execute warmup before navigation |
+| `randomMouse()`                | Random mouse movement            |
+| `fakeRead()`                   | Simulate reading behavior        |
+| `warmupPause()`                | Warmup pause                     |
+| `setExtraHTTPHeaders(headers)` | Set extra HTTP headers           |
 
 ### Navigation Options
 
@@ -208,7 +208,7 @@ Navigation functions with warmup and human-like behavior.
 // Navigate with warmup
 await api.goto('https://twitter.com', {
     timeout: 30000,
-    waitUntil: 'networkidle'
+    waitUntil: 'networkidle',
 });
 
 // Go back/forward
@@ -232,14 +232,14 @@ Synchronization and waiting functions.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `wait(ms)` | Wait for specified milliseconds |
-| `waitFor(condition, options)` | Wait for condition |
-| `waitVisible(selector, options)` | Wait for element to be visible |
-| `waitHidden(selector, options)` | Wait for element to be hidden |
-| `waitForLoadState(state)` | Wait for load state |
-| `waitForURL(pattern)` | Wait for URL pattern |
+| Function                         | Description                     |
+| -------------------------------- | ------------------------------- |
+| `wait(ms)`                       | Wait for specified milliseconds |
+| `waitFor(condition, options)`    | Wait for condition              |
+| `waitVisible(selector, options)` | Wait for element to be visible  |
+| `waitHidden(selector, options)`  | Wait for element to be hidden   |
+| `waitForLoadState(state)`        | Wait for load state             |
+| `waitForURL(pattern)`            | Wait for URL pattern            |
 
 ### Wait Options
 
@@ -276,14 +276,14 @@ Read-only DOM queries.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `text(selector)` | Get text content of element |
-| `attr(selector, name)` | Get attribute value |
-| `visible(selector)` | Check if element is visible |
-| `count(selector)` | Count elements |
-| `exists(selector)` | Check if element exists |
-| `currentUrl()` | Get current URL |
+| Function               | Description                 |
+| ---------------------- | --------------------------- |
+| `text(selector)`       | Get text content of element |
+| `attr(selector, name)` | Get attribute value         |
+| `visible(selector)`    | Check if element is visible |
+| `count(selector)`      | Count elements              |
+| `exists(selector)`     | Check if element exists     |
+| `currentUrl()`         | Get current URL             |
 
 ### Usage
 
@@ -315,8 +315,8 @@ Handle and dismiss banners/modals.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
+| Function                 | Description                      |
+| ------------------------ | -------------------------------- |
 | `handleBanners(options)` | Handle common banners and modals |
 
 ### Usage
@@ -324,8 +324,8 @@ Handle and dismiss banners/modals.
 ```javascript
 // Handle banners
 await api.handleBanners({
-    acceptCookies: true,    // Accept cookie banners
-    closePopups: true,      // Close popup ads
-    dismissNotifications: true  // Dismiss notification prompts
+    acceptCookies: true, // Accept cookie banners
+    closePopups: true, // Close popup ads
+    dismissNotifications: true, // Dismiss notification prompts
 });
 ```

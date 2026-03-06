@@ -9,18 +9,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('../../utils/config.js', () => ({
     getSettings: vi.fn().mockResolvedValue({
         agent: {
-            llm: { model: 'test-model' }
+            llm: { model: 'test-model' },
         },
-        timeouts: { navigation: 5000 }
-    })
+        timeouts: { navigation: 5000 },
+    }),
 }));
 
 vi.mock('../../core/logger.js', () => ({
     createLogger: vi.fn(() => ({
         warn: vi.fn(),
         info: vi.fn(),
-        error: vi.fn()
-    }))
+        error: vi.fn(),
+    })),
 }));
 
 import { ConfigurationManager } from '../../core/config.js';

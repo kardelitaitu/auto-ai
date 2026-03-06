@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-import { 
-    PERSONAS, 
-    setPersona, 
-    getPersona, 
-    getPersonaParam, 
-    getPersonaName, 
+import {
+    PERSONAS,
+    setPersona,
+    getPersona,
+    getPersonaParam,
+    getPersonaName,
     listPersonas,
-    getSessionDuration 
+    getSessionDuration,
 } from '@api/behaviors/persona.js';
 
 describe('api/behaviors/persona.js', () => {
@@ -41,11 +41,29 @@ describe('api/behaviors/persona.js', () => {
         });
 
         it('should have all required properties for each persona', () => {
-            const requiredProps = ['speed', 'hoverMin', 'hoverMax', 'typoRate', 'correctionRate', 'hesitation', 'hesitationDelay', 'scrollSpeed', 'clickHold', 'pathStyle', 'microMoveChance', 'idleChance', 'muscleModel'];
-            
+            const requiredProps = [
+                'speed',
+                'hoverMin',
+                'hoverMax',
+                'typoRate',
+                'correctionRate',
+                'hesitation',
+                'hesitationDelay',
+                'scrollSpeed',
+                'clickHold',
+                'pathStyle',
+                'microMoveChance',
+                'idleChance',
+                'muscleModel',
+            ];
+
             for (const [name, persona] of Object.entries(PERSONAS)) {
                 for (const prop of requiredProps) {
-                    expect(persona).toHaveProperty(prop, expect.anything(), `Persona ${name} should have ${prop}`);
+                    expect(persona).toHaveProperty(
+                        prop,
+                        expect.anything(),
+                        `Persona ${name} should have ${prop}`
+                    );
                 }
             }
         });
@@ -62,7 +80,7 @@ describe('api/behaviors/persona.js', () => {
     describe('setPersona', () => {
         it('should set persona by name', () => {
             setPersona('power');
-            
+
             expect(getPersonaName()).toBe('power');
         });
 
@@ -72,7 +90,7 @@ describe('api/behaviors/persona.js', () => {
 
         it('should allow custom persona', () => {
             setPersona('custom', { speed: 2.5, hoverMin: 50 });
-            
+
             const persona = getPersona();
             expect(persona.speed).toBe(2.5);
             expect(persona.hoverMin).toBe(50);
@@ -80,16 +98,16 @@ describe('api/behaviors/persona.js', () => {
 
         it('should apply overrides', () => {
             setPersona('casual', { speed: 3.0 });
-            
+
             const persona = getPersona();
             expect(persona.speed).toBe(3.0);
         });
 
         it('should apply muscleModel drift', () => {
             const originalKp = getPersona().muscleModel.Kp;
-            
+
             setPersona('casual');
-            
+
             const newPersona = getPersona();
             expect(newPersona.muscleModel.Kp).toBeDefined();
         });
@@ -98,9 +116,9 @@ describe('api/behaviors/persona.js', () => {
     describe('getPersona', () => {
         it('should return current persona', () => {
             setPersona('efficient');
-            
+
             const persona = getPersona();
-            
+
             expect(persona).toHaveProperty('speed');
             expect(persona.speed).toBe(PERSONAS.efficient.speed);
         });
@@ -109,7 +127,7 @@ describe('api/behaviors/persona.js', () => {
     describe('getPersonaParam', () => {
         it('should return specific parameter', () => {
             setPersona('power');
-            
+
             const speed = getPersonaParam('speed');
             expect(speed).toBe(PERSONAS.power.speed);
         });
@@ -123,7 +141,7 @@ describe('api/behaviors/persona.js', () => {
     describe('getPersonaName', () => {
         it('should return current persona name', () => {
             setPersona('researcher');
-            
+
             expect(getPersonaName()).toBe('researcher');
         });
     });
@@ -131,7 +149,7 @@ describe('api/behaviors/persona.js', () => {
     describe('listPersonas', () => {
         it('should return all persona names', () => {
             const names = listPersonas();
-            
+
             expect(Array.isArray(names)).toBe(true);
             expect(names).toContain('casual');
             expect(names).toContain('power');
@@ -143,16 +161,16 @@ describe('api/behaviors/persona.js', () => {
     describe('getSessionDuration', () => {
         it('should return positive number', () => {
             const duration = getSessionDuration();
-            
+
             expect(typeof duration).toBe('number');
             expect(duration).toBeGreaterThanOrEqual(0);
         });
 
         it('should increase over time', async () => {
             const start = getSessionDuration();
-            await new Promise(r => setTimeout(r, 10));
+            await new Promise((r) => setTimeout(r, 10));
             const end = getSessionDuration();
-            
+
             expect(end).toBeGreaterThan(start);
         });
     });

@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import HistoryCompactor from '@api/core/history-compactor.js';
 
@@ -8,8 +7,8 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         debug: vi.fn(),
         warn: vi.fn(),
-        error: vi.fn()
-    })
+        error: vi.fn(),
+    }),
 }));
 
 describe('HistoryCompactor', () => {
@@ -23,7 +22,7 @@ describe('HistoryCompactor', () => {
         it('should not compact if history is below threshold', () => {
             const actions = [
                 { action: 'navigate', target: 'google.com', success: true, timestamp: Date.now() },
-                { action: 'click', target: '#search', success: true, timestamp: Date.now() }
+                { action: 'click', target: '#search', success: true, timestamp: Date.now() },
             ];
 
             const result = compactor.compactHistory(actions);
@@ -43,7 +42,7 @@ describe('HistoryCompactor', () => {
                     action: 'scroll',
                     target: 'page',
                     success: true,
-                    timestamp: Date.now() + i
+                    timestamp: Date.now() + i,
                 });
             }
 
@@ -56,9 +55,7 @@ describe('HistoryCompactor', () => {
         });
 
         it('should generate a simple summary with failures', () => {
-            const actions = [
-                { action: 'click', target: 'A', success: false, timestamp: 1 }
-            ];
+            const actions = [{ action: 'click', target: 'A', success: false, timestamp: 1 }];
             const result = compactor.compactHistory(actions);
             expect(result.summary).toContain('✗ click → A');
         });
@@ -76,7 +73,7 @@ describe('HistoryCompactor', () => {
                 { action: 'click', target: 'A', success: true, timestamp: 1 },
                 { action: 'click', target: 'B', success: true, timestamp: 2 },
                 { action: 'click', target: 'C', success: false, timestamp: 3 },
-                { action: 'navigate', target: 'D', success: true, timestamp: 4 }
+                { action: 'navigate', target: 'D', success: true, timestamp: 4 },
             ];
 
             const compacted = compactor._performCompaction(actions);
@@ -98,7 +95,7 @@ describe('HistoryCompactor', () => {
             const actions = [
                 { action: 'type', target: '1', success: true, timestamp: 1 },
                 { action: 'click', target: '2', success: true, timestamp: 2 },
-                { action: 'scroll', target: '3', success: true, timestamp: 3 }
+                { action: 'scroll', target: '3', success: true, timestamp: 3 },
             ];
 
             const compacted = compactor._performCompaction(actions);
@@ -115,7 +112,7 @@ describe('HistoryCompactor', () => {
                 { action: 'navigate', target: 'site.com', success: true },
                 { action: 'click', target: 'button', success: true },
                 { action: 'type', target: 'input', success: true },
-                { action: 'click', target: 'submit', success: false, error: 'Timeout' }
+                { action: 'click', target: 'submit', success: false, error: 'Timeout' },
             ];
 
             const narrative = compactor.generateNarrativeSummary(actions);
@@ -135,9 +132,7 @@ describe('HistoryCompactor', () => {
         });
 
         it('should handle failures without error messages', () => {
-            const actions = [
-                { action: 'click', target: 'A', success: false }
-            ];
+            const actions = [{ action: 'click', target: 'A', success: false }];
             const narrative = compactor.generateNarrativeSummary(actions);
             expect(narrative).toContain('Encountered 1 failure(s).');
             expect(narrative).not.toContain('Errors:');

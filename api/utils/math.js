@@ -1,6 +1,6 @@
 /**
  * @fileoverview Math utilities for stochastic calculations.
- * 
+ *
  * @module api/utils/math
  */
 
@@ -14,12 +14,13 @@ export const mathUtils = {
      * @returns {number}
      */
     gaussian: (mean, dev, min, max) => {
-        let u = 0, v = 0;
+        let u = 0,
+            v = 0;
         while (u === 0) u = Math.random();
         while (v === 0) v = Math.random();
 
         const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-        let result = mean + (z * dev);
+        let result = mean + z * dev;
 
         if (min !== undefined) result = Math.max(min, result);
         if (max !== undefined) result = Math.min(max, result);
@@ -66,14 +67,14 @@ export const mathUtils = {
      */
     pidStep: (state, target, model, dt = 0.1) => {
         const error = target - state.pos;
-        state.integral = (state.integral || 0) + (error * dt);
+        state.integral = (state.integral || 0) + error * dt;
         state.integral = Math.max(-10, Math.min(10, state.integral));
         const derivative = (error - (state.prevError || 0)) / dt;
 
-        const output = (model.Kp * error) + (model.Ki * state.integral) + (model.Kd * derivative);
+        const output = model.Kp * error + model.Ki * state.integral + model.Kd * derivative;
 
         state.prevError = error;
         state.pos += output;
         return state.pos;
-    }
+    },
 };

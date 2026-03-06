@@ -1,7 +1,7 @@
 /**
  * @fileoverview Error Recovery Behavior
  * Human-like error handling and recovery for automation actions.
- * 
+ *
  * @module api/recover
  */
 
@@ -74,7 +74,11 @@ export async function findElement(selectors, options = {}) {
             // Check if element exists
             const count = await page.locator(selector).count();
             if (count > 0) {
-                const isVisible = await page.locator(selector).first().isVisible().catch(() => false);
+                const isVisible = await page
+                    .locator(selector)
+                    .first()
+                    .isVisible()
+                    .catch(() => false);
                 if (isVisible) {
                     return selector;
                 }
@@ -109,7 +113,7 @@ export async function smartClick(selectors, options = {}) {
         recovery = true,
         maxRetries = 3,
         scrollOnFail = true,
-        expectsNavigation = false
+        expectsNavigation = false,
     } = options;
 
     const selectorList = Array.isArray(selectors) ? selectors : [selectors];
@@ -130,16 +134,30 @@ export async function smartClick(selectors, options = {}) {
                 try {
                     const box = await locator.boundingBox();
                     if (box) {
-                        const x = gaussian(box.x + box.width / 2, box.width / 6, box.x, box.x + box.width);
-                        const y = gaussian(box.y + box.height / 2, box.height / 6, box.y, box.y + box.height);
+                        const x = gaussian(
+                            box.x + box.width / 2,
+                            box.width / 6,
+                            box.x,
+                            box.x + box.width
+                        );
+                        const y = gaussian(
+                            box.y + box.height / 2,
+                            box.height / 6,
+                            box.y,
+                            box.y + box.height
+                        );
 
-                        logger.debug(`[SmartClick] Clicking at (${x}, ${y}) for ${selector} (Attempt ${attempt + 1})`);
+                        logger.debug(
+                            `[SmartClick] Clicking at (${x}, ${y}) for ${selector} (Attempt ${attempt + 1})`
+                        );
                         await page.mouse.click(x, y);
                     } else {
                         await locator.click({ timeout: 2000 });
                     }
                 } catch (clickError) {
-                    logger.warn(`[SmartClick] Coordinate click failed, falling back to standard click: ${clickError.message}`);
+                    logger.warn(
+                        `[SmartClick] Coordinate click failed, falling back to standard click: ${clickError.message}`
+                    );
                     await locator.click({ timeout: 2000 });
                 }
 
@@ -147,7 +165,9 @@ export async function smartClick(selectors, options = {}) {
                 if (recovery && !expectsNavigation) {
                     const changed = await urlChanged(previousUrl);
                     if (changed) {
-                        logger.warn(`[SmartClick] Unexpected navigation after click on ${selector}. Recovering...`);
+                        logger.warn(
+                            `[SmartClick] Unexpected navigation after click on ${selector}. Recovering...`
+                        );
                         await think(randomInRange(500, 1500));
                         await goBack();
                         return { success: false, recovered: true, selector };
@@ -155,9 +175,10 @@ export async function smartClick(selectors, options = {}) {
                 }
 
                 return { success: true, recovered: false, selector };
-
             } catch (error) {
-                logger.warn(`[SmartClick] Attempt ${attempt + 1} failed for ${selector}: ${error.message}`);
+                logger.warn(
+                    `[SmartClick] Attempt ${attempt + 1} failed for ${selector}: ${error.message}`
+                );
             }
         }
 
@@ -176,7 +197,6 @@ export async function smartClick(selectors, options = {}) {
 
     return { success: false, recovered: false, selector: null };
 }
-
 
 /**
  * Undo last action if possible.

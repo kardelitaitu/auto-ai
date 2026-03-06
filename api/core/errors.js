@@ -1,7 +1,7 @@
 /**
  * @fileoverview Centralized Error Definitions
  * Provides custom error classes with codes for the automation framework.
- * 
+ *
  * @module api/core/errors
  */
 
@@ -192,7 +192,10 @@ export class LLMRateLimitError extends LLMError {
 
 export class LLMCircuitOpenError extends LLMError {
     constructor(modelId, retryAfter) {
-        super(`Circuit breaker OPEN for ${modelId}. Retry after ${Math.ceil(retryAfter / 1000)}s`, 'LLM_CIRCUIT_OPEN');
+        super(
+            `Circuit breaker OPEN for ${modelId}. Retry after ${Math.ceil(retryAfter / 1000)}s`,
+            'LLM_CIRCUIT_OPEN'
+        );
         this.name = 'LLMCircuitOpenError';
         this.modelId = modelId;
         this.retryAfter = retryAfter;

@@ -2,7 +2,7 @@
  * @fileoverview Fingerprint Manager for api/ module.
  * Internal copy for api/ independence from utils/fingerprintManager.js.
  * Loads fingerprint profiles from data/fingerprints.json.
- * 
+ *
  * @module api/utils/fingerprint
  */
 
@@ -28,7 +28,9 @@ export const fingerprintManager = {
     getAll: () => fingerprints,
 
     getByPlatform: (platform) => {
-        return fingerprints.filter(fp => fp.platform.toLowerCase().includes(platform.toLowerCase()));
+        return fingerprints.filter((fp) =>
+            fp.platform.toLowerCase().includes(platform.toLowerCase())
+        );
     },
 
     getRandom: () => {
@@ -43,15 +45,19 @@ export const fingerprintManager = {
         if (!userAgent) return mathUtils.sample(fingerprints);
 
         const ua = userAgent.toLowerCase();
-        const platform = ua.includes('windows') ? 'Win' :
-            ua.includes('macintosh') ? 'Mac' :
-                ua.includes('linux') ? 'Linux' : null;
+        const platform = ua.includes('windows')
+            ? 'Win'
+            : ua.includes('macintosh')
+              ? 'Mac'
+              : ua.includes('linux')
+                ? 'Linux'
+                : null;
 
         if (platform) {
-            const matches = fingerprints.filter(fp => fp.platform.includes(platform));
+            const matches = fingerprints.filter((fp) => fp.platform.includes(platform));
             if (matches.length > 0) return mathUtils.sample(matches);
         }
 
         return mathUtils.sample(fingerprints);
-    }
+    },
 };

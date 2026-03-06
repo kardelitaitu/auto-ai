@@ -6,10 +6,10 @@ vi.mock('@api/core/logger.js', () => {
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
+        debug: vi.fn(),
     };
     return {
-        createLogger: vi.fn(() => mockLogger)
+        createLogger: vi.fn(() => mockLogger),
     };
 });
 
@@ -17,7 +17,7 @@ import {
     validatePayload,
     validateApiResponse,
     validateBrowserConnection,
-    validateTaskExecution
+    validateTaskExecution,
 } from '@api/utils/validator.js';
 import { createLogger } from '@api/core/logger.js';
 
@@ -75,7 +75,7 @@ describe('api/utils/validator.js', () => {
             const result = validatePayload({
                 browserInfo: 'chrome-123',
                 url: 'https://example.com',
-                duration: 100
+                duration: 100,
             });
             expect(result.isValid).toBe(true);
         });
@@ -88,7 +88,7 @@ describe('api/utils/validator.js', () => {
 
         it('should merge custom schema with default', () => {
             const customSchema = {
-                customField: { type: 'string', required: true }
+                customField: { type: 'string', required: true },
             };
             const result = validatePayload({ customField: 'value' }, customSchema);
             expect(result.isValid).toBe(true);
@@ -96,7 +96,7 @@ describe('api/utils/validator.js', () => {
 
         it('should reject when required custom field missing', () => {
             const customSchema = {
-                customField: { type: 'string', required: true }
+                customField: { type: 'string', required: true },
             };
             const result = validatePayload({}, customSchema);
             expect(result.isValid).toBe(false);
@@ -119,12 +119,14 @@ describe('api/utils/validator.js', () => {
             const response = {
                 code: 200,
                 msg: 'Success',
-                data: [{
-                    ws: 'ws://localhost:9222',
-                    http: 'http://localhost:9222',
-                    windowName: 'window1',
-                    sortNum: 1
-                }]
+                data: [
+                    {
+                        ws: 'ws://localhost:9222',
+                        http: 'http://localhost:9222',
+                        windowName: 'window1',
+                        sortNum: 1,
+                    },
+                ],
             };
 
             const result = validateApiResponse(response, 'roxybrowser');
@@ -171,7 +173,7 @@ describe('api/utils/validator.js', () => {
         it('should reject roxybrowser response with invalid data array', () => {
             const response = {
                 code: 200,
-                data: 'not-an-array'
+                data: 'not-an-array',
             };
             const result = validateApiResponse(response, 'roxybrowser');
             expect(result.isValid).toBe(false);
@@ -215,14 +217,16 @@ describe('api/utils/validator.js', () => {
         it('should log warning on validation failure', () => {
             validateBrowserConnection('invalid');
             expect(mockLogger.warn).toHaveBeenCalled();
-            expect(mockLogger.warn.mock.calls[0][0]).toContain('Browser connection validation failed');
+            expect(mockLogger.warn.mock.calls[0][0]).toContain(
+                'Browser connection validation failed'
+            );
         });
     });
 
     describe('validateTaskExecution', () => {
         it('should validate with valid browser instance', () => {
-            const mockBrowser = { 
-                newContext: vi.fn()
+            const mockBrowser = {
+                newContext: vi.fn(),
             };
             const payload = { url: 'https://example.com' };
 
@@ -231,8 +235,8 @@ describe('api/utils/validator.js', () => {
         });
 
         it('should validate with valid context instance', () => {
-            const mockContext = { 
-                newPage: vi.fn()
+            const mockContext = {
+                newPage: vi.fn(),
             };
             const payload = {};
 
@@ -241,8 +245,8 @@ describe('api/utils/validator.js', () => {
         });
 
         it('should validate with valid page instance', () => {
-            const mockPage = { 
-                goto: vi.fn()
+            const mockPage = {
+                goto: vi.fn(),
             };
             const payload = {};
 
@@ -275,7 +279,7 @@ describe('api/utils/validator.js', () => {
             const mockBrowser = { newContext: vi.fn() };
             const payload = { customField: 'value' };
             const customSchema = {
-                customField: { type: 'string', required: true }
+                customField: { type: 'string', required: true },
             };
 
             const result = validateTaskExecution(mockBrowser, payload, customSchema);
@@ -285,7 +289,7 @@ describe('api/utils/validator.js', () => {
         it('should reject when custom required field missing', () => {
             const mockBrowser = { newContext: vi.fn() };
             const customSchema = {
-                customField: { type: 'string', required: true }
+                customField: { type: 'string', required: true },
             };
 
             const result = validateTaskExecution(mockBrowser, {}, customSchema);

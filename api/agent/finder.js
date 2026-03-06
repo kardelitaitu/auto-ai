@@ -8,7 +8,7 @@ import { getStateAgentElementMap } from '../core/context-state.js';
 
 /**
  * Find - Locates an element based on a fuzzy description.
- * 
+ *
  * @param {string} description - Descriptive text or label
  * @returns {Promise<object|null>} Element object or null
  * @example
@@ -21,15 +21,15 @@ export async function find(description) {
     const search = description.toLowerCase();
 
     // 1. Exact match
-    let match = elementMap.find(el => el.label.toLowerCase() === search);
+    let match = elementMap.find((el) => el.label.toLowerCase() === search);
     if (match) return match;
 
     // 2. Inclusion match
-    match = elementMap.find(el => el.label.toLowerCase().includes(search));
+    match = elementMap.find((el) => el.label.toLowerCase().includes(search));
     if (match) return match;
 
     // 3. Role + Label match (e.g. "button post")
-    match = elementMap.find(el => `${el.role} ${el.label}`.toLowerCase().includes(search));
+    match = elementMap.find((el) => `${el.role} ${el.label}`.toLowerCase().includes(search));
     if (match) return match;
 
     return null;

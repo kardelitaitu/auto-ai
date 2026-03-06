@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock dependencies
@@ -8,74 +7,74 @@ const mocks = vi.hoisted(() => ({
         warn: vi.fn(),
         error: vi.fn(),
         debug: vi.fn(),
-        success: vi.fn()
+        success: vi.fn(),
     },
     config: {
         getSettings: vi.fn().mockResolvedValue({
-            llm: { local: { enabled: true }, cloud: { enabled: true } }
+            llm: { local: { enabled: true }, cloud: { enabled: true } },
         }),
         getTimeouts: vi.fn().mockResolvedValue({
-            api: { retryDelayMs: 1000, maxRetries: 2 }
-        })
-    }
+            api: { retryDelayMs: 1000, maxRetries: 2 },
+        }),
+    },
 }));
 
 vi.mock('../../core/logger.js', () => ({
-    createLogger: () => mocks.logger
+    createLogger: () => mocks.logger,
 }));
 
 vi.mock('../../utils/configLoader.js', () => mocks.config);
 
 vi.mock('../../core/local-client.js', () => ({
-    default: vi.fn(function() {
-        return {
-            sendRequest: vi.fn().mockResolvedValue({ success: true }),
-            getStats: vi.fn().mockReturnValue({})
-        };
-    })
-}));
-
-vi.mock('../../core/cloud-client.js', () => ({
-    default: vi.fn(function() {
+    default: vi.fn(function () {
         return {
             sendRequest: vi.fn().mockResolvedValue({ success: true }),
             getStats: vi.fn().mockReturnValue({}),
-            isReady: vi.fn().mockReturnValue(true)
         };
-    })
+    }),
+}));
+
+vi.mock('../../core/cloud-client.js', () => ({
+    default: vi.fn(function () {
+        return {
+            sendRequest: vi.fn().mockResolvedValue({ success: true }),
+            getStats: vi.fn().mockReturnValue({}),
+            isReady: vi.fn().mockReturnValue(true),
+        };
+    }),
 }));
 
 vi.mock('../../core/vision-interpreter.js', () => ({
-    default: vi.fn(function() {
+    default: vi.fn(function () {
         return {
             buildPrompt: vi.fn(),
             parseResponse: vi.fn(),
-            getStats: vi.fn().mockReturnValue({})
+            getStats: vi.fn().mockReturnValue({}),
         };
-    })
+    }),
 }));
 
 vi.mock('../../core/request-queue.js', () => ({
-    default: vi.fn(function() {
+    default: vi.fn(function () {
         return {
             enqueue: vi.fn(async (fn) => ({ success: true, data: await fn() })),
             getStats: vi.fn().mockReturnValue({ running: 0, queued: 0 }),
             retryDelay: 1000,
-            maxRetries: 3
+            maxRetries: 3,
         };
-    })
+    }),
 }));
 
 vi.mock('../../core/circuit-breaker.js', () => ({
-    default: vi.fn(function() {
+    default: vi.fn(function () {
         return {
             execute: vi.fn(async (id, fn) => await fn()),
             getAllStatus: vi.fn().mockReturnValue({}),
             getStats: vi.fn().mockReturnValue({}),
             forceOpen: vi.fn(),
-            forceClose: vi.fn()
+            forceClose: vi.fn(),
         };
-    })
+    }),
 }));
 
 describe('AgentConnector Coverage Extensions', () => {
@@ -85,7 +84,7 @@ describe('AgentConnector Coverage Extensions', () => {
         vi.clearAllMocks();
         const AgentConnector = (await import('../../core/agent-connector.js')).default;
         connector = new AgentConnector();
-        
+
         // Spy on client methods after construction
         vi.spyOn(connector.localClient, 'sendRequest').mockResolvedValue({ success: true });
         vi.spyOn(connector.cloudClient, 'isReady').mockReturnValue(true);
@@ -98,18 +97,18 @@ describe('AgentConnector Coverage Extensions', () => {
                 requests: { total: 100, successRate: 100, avgDuration: 100 },
                 queue: { running: 0, queued: 0 },
                 circuitBreaker: { 'model-1': { state: 'CLOSED' } },
-                uptime: 1000
+                uptime: 1000,
             };
             // Mock internal method if needed, but we can test public getHealth
             // We need to mock getStats return value if we can't set stats directly
             // AgentConnector uses this.stats and this.requestQueue.getStats() etc.
-            
+
             // Override getStats to control inputs to _calculateHealthScore
             vi.spyOn(connector, 'getStats').mockReturnValue({
                 requests: { total: 100, successRate: 100, avgDuration: 100 },
                 queue: { running: 0, queued: 0 },
                 circuitBreaker: { 'model-1': { state: 'CLOSED' } },
-                uptime: 1000
+                uptime: 1000,
             });
 
             const health = connector.getHealth();
@@ -122,7 +121,7 @@ describe('AgentConnector Coverage Extensions', () => {
                 requests: { total: 100, successRate: 50, avgDuration: 100 },
                 queue: { running: 0, queued: 0 },
                 circuitBreaker: { 'model-1': { state: 'CLOSED' } },
-                uptime: 1000
+                uptime: 1000,
             });
 
             const health = connector.getHealth();
@@ -136,7 +135,7 @@ describe('AgentConnector Coverage Extensions', () => {
                 requests: { total: 100, successRate: 100, avgDuration: 100 },
                 queue: { running: 3, queued: 0 }, // 3/3 = 100% utilization
                 circuitBreaker: { 'model-1': { state: 'CLOSED' } },
-                uptime: 1000
+                uptime: 1000,
             });
 
             const health = connector.getHealth();
@@ -145,11 +144,11 @@ describe('AgentConnector Coverage Extensions', () => {
         });
 
         it('should penalize score for medium queue utilization', () => {
-             vi.spyOn(connector, 'getStats').mockReturnValue({
+            vi.spyOn(connector, 'getStats').mockReturnValue({
                 requests: { total: 100, successRate: 100, avgDuration: 100 },
                 queue: { running: 2, queued: 0 }, // 2/3 = 66% utilization (> 0.6)
                 circuitBreaker: { 'model-1': { state: 'CLOSED' } },
-                uptime: 1000
+                uptime: 1000,
             });
 
             const health = connector.getHealth();
@@ -162,7 +161,7 @@ describe('AgentConnector Coverage Extensions', () => {
                 requests: { total: 100, successRate: 100, avgDuration: 100 },
                 queue: { running: 0, queued: 0 },
                 circuitBreaker: { 'model-1': { state: 'OPEN' } },
-                uptime: 1000
+                uptime: 1000,
             });
 
             const health = connector.getHealth();
@@ -176,7 +175,7 @@ describe('AgentConnector Coverage Extensions', () => {
                 requests: { total: 100, successRate: 100, avgDuration: 100 },
                 queue: { running: 0, queued: 0 },
                 circuitBreaker: { 'model-1': { state: 'HALF_OPEN' } },
-                uptime: 1000
+                uptime: 1000,
             });
 
             const health = connector.getHealth();
@@ -184,12 +183,12 @@ describe('AgentConnector Coverage Extensions', () => {
             expect(health.healthScore).toBe(85);
             expect(health.checks.circuitBreaker.status).toBe('recovering');
         });
-    it('should report unhealthy status for very low score', () => {
+        it('should report unhealthy status for very low score', () => {
             vi.spyOn(connector, 'getStats').mockReturnValue({
                 requests: { total: 100, successRate: 0, avgDuration: 100 }, // -50 penalty
                 queue: { running: 3, queued: 0 }, // -20 penalty
                 circuitBreaker: { 'model-1': { state: 'OPEN' } }, // -30 penalty
-                uptime: 1000
+                uptime: 1000,
             });
 
             const health = connector.getHealth();
@@ -209,8 +208,8 @@ describe('AgentConnector Coverage Extensions', () => {
                 checks: {
                     requests: { successRate: 100 },
                     queue: { running: 0, queued: 0 },
-                    circuitBreaker: { status: 'healthy' }
-                }
+                    circuitBreaker: { status: 'healthy' },
+                },
             });
 
             connector.logHealth();
@@ -222,22 +221,24 @@ describe('AgentConnector Coverage Extensions', () => {
     describe('_sendToCloud Exception Handling', () => {
         it('should catch and return error on cloud exception', async () => {
             // Force _callCloudWithBreaker to throw
-            vi.spyOn(connector, '_callCloudWithBreaker').mockRejectedValue(new Error('Cloud Fatal Error'));
-            
+            vi.spyOn(connector, '_callCloudWithBreaker').mockRejectedValue(
+                new Error('Cloud Fatal Error')
+            );
+
             const request = {
                 action: 'generate_reply',
                 payload: {},
-                sessionId: 'test-session'
+                sessionId: 'test-session',
             };
 
             const result = await connector._sendToCloud(request, Date.now());
-            
+
             expect(result.success).toBe(false);
             expect(result.error).toBe('Cloud Fatal Error');
             expect(result.metadata.providersTried).toContain('cloud');
         });
     });
-    
+
     it('should handle non-Error object exception in vision request', async () => {
         // Mock visionInterpreter.buildPrompt to throw a string
         vi.spyOn(connector.visionInterpreter, 'buildPrompt').mockImplementation(() => {
@@ -247,7 +248,7 @@ describe('AgentConnector Coverage Extensions', () => {
         const request = {
             action: 'analyze_page_with_vision',
             payload: { goal: 'test', semanticTree: {}, vision: 'base64' },
-            sessionId: 'test-session'
+            sessionId: 'test-session',
         };
 
         const result = await connector.handleVisionRequest(request);
@@ -258,26 +259,29 @@ describe('AgentConnector Coverage Extensions', () => {
 
     describe('Vision Fallback Placeholder', () => {
         it('should handle local vision failure when fallback is not implemented', async () => {
-         // Setup vision interpreter mock
-         if (vi.isMockFunction(connector.visionInterpreter.buildPrompt)) {
-              connector.visionInterpreter.buildPrompt.mockReturnValue('prompt');
-         } else {
-              // Fallback if somehow not a mock (shouldn't happen)
-              connector.visionInterpreter.buildPrompt = vi.fn().mockReturnValue('prompt');
-         }
-            
+            // Setup vision interpreter mock
+            if (vi.isMockFunction(connector.visionInterpreter.buildPrompt)) {
+                connector.visionInterpreter.buildPrompt.mockReturnValue('prompt');
+            } else {
+                // Fallback if somehow not a mock (shouldn't happen)
+                connector.visionInterpreter.buildPrompt = vi.fn().mockReturnValue('prompt');
+            }
+
             // Local client failure
-            connector.localClient.sendRequest.mockResolvedValue({ success: false, error: 'Vision failed' });
-            
+            connector.localClient.sendRequest.mockResolvedValue({
+                success: false,
+                error: 'Vision failed',
+            });
+
             const request = {
                 action: 'analyze_page_with_vision',
                 payload: { goal: 'test', vision: 'base64' },
-                sessionId: 'test-session'
+                sessionId: 'test-session',
             };
-            
+
             // Bypass routeRequest and call handleVisionRequest directly
             const result = await connector.handleVisionRequest(request);
-            
+
             expect(result.success).toBe(false);
             expect(result.error).toBe('Vision failed');
         });
@@ -293,9 +297,9 @@ describe('AgentConnector Coverage Extensions', () => {
                 payload: {
                     goal: 'test',
                     semanticTree: {},
-                    vision: 'base64'
+                    vision: 'base64',
                 },
-                sessionId: 'test-session'
+                sessionId: 'test-session',
             };
 
             const result = await connector.handleVisionRequest(request);
@@ -311,26 +315,26 @@ describe('AgentConnector Coverage Extensions', () => {
             // However, since it is not awaited in constructor, we might need to wait for it.
             // But checking the code: this._loadTimeoutConfig() is called in constructor without await.
             // So we need to wait a bit or call it manually to be sure for test.
-            
+
             await connector._loadTimeoutConfig();
-            
+
             // Check if values from mock are applied
             // Note: The actual values depend on the mock setup in request-queue mock
             expect(connector.requestQueue.retryDelay).toBe(1000);
             // maxRetries will be whatever the mock returns (3 based on mock setup)
             expect(connector.requestQueue.maxRetries).toBeDefined();
         });
-        
+
         it('should handle error when loading timeout config', async () => {
             // Mock getTimeouts to throw an error
             const originalGetTimeouts = mocks.config.getTimeouts;
             mocks.config.getTimeouts = vi.fn().mockRejectedValueOnce(new Error('Config Error'));
-            
+
             await connector._loadTimeoutConfig();
-            
+
             // Restore original mock
             mocks.config.getTimeouts = originalGetTimeouts;
-            
+
             // Test passes if no error is thrown
             expect(true).toBe(true);
         });
@@ -363,32 +367,32 @@ describe('AgentConnector Coverage Extensions', () => {
         });
 
         it('should fallback to cloud when all local providers disabled', async () => {
-             const configLoader = await import('../../utils/configLoader.js');
-             configLoader.getSettings.mockResolvedValueOnce({
-                 llm: {
-                     local: { enabled: false },
-                     vllm: { enabled: false },
-                     cloud: { enabled: true }
-                 }
-             });
+            const configLoader = await import('../../utils/configLoader.js');
+            configLoader.getSettings.mockResolvedValueOnce({
+                llm: {
+                    local: { enabled: false },
+                    vllm: { enabled: false },
+                    cloud: { enabled: true },
+                },
+            });
 
-             const AgentConnector = (await import('../../core/agent-connector.js')).default;
-             const localConnector = new AgentConnector();
-             vi.spyOn(localConnector, '_sendToCloud').mockResolvedValue({ 
-                 success: true, 
-                 metadata: { routedTo: 'cloud' } 
-             });
+            const AgentConnector = (await import('../../core/agent-connector.js')).default;
+            const localConnector = new AgentConnector();
+            vi.spyOn(localConnector, '_sendToCloud').mockResolvedValue({
+                success: true,
+                metadata: { routedTo: 'cloud' },
+            });
 
-             const request = {
-                 action: 'generate_reply',
-                 payload: {},
-                 sessionId: 'cloud-fallback'
-             };
+            const request = {
+                action: 'generate_reply',
+                payload: {},
+                sessionId: 'cloud-fallback',
+            };
 
-             const result = await localConnector.handleGenerateReply(request);
-             
-             expect(result.success).toBe(true);
-             expect(localConnector._sendToCloud).toHaveBeenCalled();
+            const result = await localConnector.handleGenerateReply(request);
+
+            expect(result.success).toBe(true);
+            expect(localConnector._sendToCloud).toHaveBeenCalled();
         });
     });
 
@@ -396,17 +400,17 @@ describe('AgentConnector Coverage Extensions', () => {
         it('should route to local fallback when cloud is not ready', async () => {
             // Mock cloud not ready
             connector.cloudClient.isReady.mockReturnValue(false);
-            
+
             // Mock handleGenerateReply to return properly
-            vi.spyOn(connector, 'handleGenerateReply').mockResolvedValue({ 
-                success: true, 
-                metadata: { routedTo: 'local-fallback' } 
+            vi.spyOn(connector, 'handleGenerateReply').mockResolvedValue({
+                success: true,
+                metadata: { routedTo: 'local-fallback' },
             });
-            
+
             const request = {
                 action: 'analyze_complex_page',
                 payload: {},
-                sessionId: 'test-session'
+                sessionId: 'test-session',
             };
 
             const result = await connector.processRequest(request);
@@ -418,7 +422,7 @@ describe('AgentConnector Coverage Extensions', () => {
             const request = {
                 action: 'analyze_page',
                 payload: { vision: 'base64-data' },
-                sessionId: 'vision-session'
+                sessionId: 'vision-session',
             };
 
             // Mock routeRequest to succeed

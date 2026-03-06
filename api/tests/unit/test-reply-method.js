@@ -31,7 +31,7 @@ async function main() {
         { name: 'keyboard_shortcut', weight: 40, fn: () => {} },
         { name: 'button_click', weight: 35, fn: () => {} },
         { name: 'tab_navigation', weight: 15, fn: () => {} },
-        { name: 'right_click', weight: 10, fn: () => {} }
+        { name: 'right_click', weight: 10, fn: () => {} },
     ];
 
     const selected = human.selectMethod(methods);

@@ -3,14 +3,14 @@ import PopupCloser from '@api/utils/popup-closer.js';
 
 vi.mock('@api/core/context.js', () => ({
     setSessionInterval: vi.fn(),
-    clearSessionInterval: vi.fn()
+    clearSessionInterval: vi.fn(),
 }));
 
 vi.mock('@api/core/logger.js', () => ({
     createLogger: vi.fn().mockReturnValue({
         info: vi.fn(),
-        debug: vi.fn()
-    })
+        debug: vi.fn(),
+    }),
 }));
 
 describe('api/utils/popup-closer.js', () => {
@@ -20,15 +20,15 @@ describe('api/utils/popup-closer.js', () => {
 
     beforeEach(() => {
         mockPage = {
-            isClosed: vi.fn().mockReturnValue(false)
+            isClosed: vi.fn().mockReturnValue(false),
         };
         mockLogger = {
             info: vi.fn(),
-            debug: vi.fn()
+            debug: vi.fn(),
         };
         mockApi = {
             exists: vi.fn().mockResolvedValue(false),
-            click: vi.fn().mockResolvedValue(true)
+            click: vi.fn().mockResolvedValue(true),
         };
     });
 

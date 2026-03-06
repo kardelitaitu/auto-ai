@@ -8,7 +8,7 @@ vi.mock('@api/index.js', () => ({
         think: vi.fn().mockResolvedValue(undefined),
         goto: vi.fn().mockResolvedValue(undefined),
         getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
-    }
+    },
 }));
 import { api } from '@api/index.js';
 import { ActionPredictor } from '@api/behaviors/humanization/action.js';
@@ -19,12 +19,12 @@ vi.mock('@api/utils/math.js', () => ({
     mathUtils: {
         randomInRange: vi.fn(),
         gaussian: vi.fn(),
-        roll: vi.fn()
-    }
+        roll: vi.fn(),
+    },
 }));
 
 vi.mock('@api/behaviors/scroll-helper.js', () => ({
-    scrollRandom: vi.fn().mockResolvedValue(undefined)
+    scrollRandom: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@api/utils/ghostCursor.js', () => ({
@@ -37,7 +37,7 @@ vi.mock('@api/utils/ghostCursor.js', () => ({
         }
         async move() {}
         async moveTo() {}
-    }
+    },
 }));
 
 describe('ActionPredictor', () => {
@@ -55,11 +55,17 @@ describe('ActionPredictor', () => {
             $$: vi.fn().mockResolvedValue([]),
             $: vi.fn().mockResolvedValue(null),
             mouse: {
-                move: vi.fn().mockResolvedValue(undefined)
+                move: vi.fn().mockResolvedValue(undefined),
             },
             evaluate: vi.fn().mockResolvedValue(undefined),
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
+            context: vi
+                .fn()
+                .mockReturnValue({
+                    browser: vi
+                        .fn()
+                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+                }),
         };
         api.getPage.mockReturnValue(mockPage);
 
@@ -69,7 +75,7 @@ describe('ActionPredictor', () => {
 
         mockLogger = {
             log: vi.fn(),
-            debug: vi.fn()
+            debug: vi.fn(),
         };
 
         actionPredictor = new ActionPredictor(mockLogger);
@@ -78,7 +84,7 @@ describe('ActionPredictor', () => {
     describe('predict', () => {
         it('should return a valid prediction object', () => {
             const prediction = actionPredictor.predict(0);
-            
+
             expect(prediction).toHaveProperty('type');
             expect(prediction).toHaveProperty('confidence');
             expect(prediction).toHaveProperty('probabilities');
@@ -175,7 +181,7 @@ describe('ActionPredictor', () => {
     describe('_actionScroll', () => {
         it('should perform human scroll', async () => {
             await actionPredictor._actionScroll(mockPage);
-            
+
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
             expect(api.wait).toHaveBeenCalled();
         });
@@ -185,9 +191,9 @@ describe('ActionPredictor', () => {
                 .mockReturnValueOnce(0.2)
                 .mockReturnValueOnce(0.8)
                 .mockReturnValue(0.6);
-            
+
             await actionPredictor._actionScroll(mockPage);
-            
+
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
         });
     });
@@ -197,12 +203,12 @@ describe('ActionPredictor', () => {
             const scrollIntoView = vi.fn();
             const mockTweet = {
                 evaluate: vi.fn((fn) => fn({ scrollIntoView })),
-                $: vi.fn().mockResolvedValue({ click: vi.fn() })
+                $: vi.fn().mockResolvedValue({ click: vi.fn() }),
             };
             mockPage.$$.mockResolvedValue([mockTweet]);
-            
+
             await actionPredictor._actionClick(mockPage);
-            
+
             expect(mockTweet.evaluate).toHaveBeenCalled();
             expect(scrollIntoView).toHaveBeenCalled();
             expect(mockTweet.$).toHaveBeenCalled();
@@ -210,7 +216,7 @@ describe('ActionPredictor', () => {
 
         it('should do nothing if no tweets found', async () => {
             mockPage.$$.mockResolvedValue([]);
-            
+
             await actionPredictor._actionClick(mockPage);
         });
     });
@@ -218,16 +224,16 @@ describe('ActionPredictor', () => {
     describe('_actionBack', () => {
         it('should go back and wait', async () => {
             await actionPredictor._actionBack(mockPage);
-            
+
             expect(mockPage.goBack).toHaveBeenCalled();
             expect(api.wait).toHaveBeenCalled();
         });
 
         it('should tolerate goBack rejection', async () => {
             mockPage.goBack.mockRejectedValue(new Error('fail'));
-            
+
             await actionPredictor._actionBack(mockPage);
-            
+
             expect(api.wait).toHaveBeenCalled();
         });
     });
@@ -235,7 +241,7 @@ describe('ActionPredictor', () => {
     describe('_actionExplore', () => {
         it('should navigate to explore and wait', async () => {
             await actionPredictor._actionExplore(mockPage);
-            
+
             expect(api.goto).toHaveBeenCalledWith('https://x.com/explore', expect.any(Object));
             expect(api.wait).toHaveBeenCalled();
         });
@@ -245,9 +251,9 @@ describe('ActionPredictor', () => {
         it('should click profile link if found', async () => {
             const mockLink = { click: vi.fn().mockResolvedValue(undefined) };
             mockPage.$$.mockResolvedValue([mockLink]);
-            
+
             await actionPredictor._actionProfile(mockPage);
-            
+
             expect(mockLink.click).toHaveBeenCalled();
             expect(api.wait).toHaveBeenCalled();
         });
@@ -255,9 +261,9 @@ describe('ActionPredictor', () => {
         it('should tolerate profile click rejection', async () => {
             const mockLink = { click: vi.fn().mockRejectedValue(new Error('fail')) };
             mockPage.$$.mockResolvedValue([mockLink]);
-            
+
             await actionPredictor._actionProfile(mockPage);
-            
+
             expect(api.wait).toHaveBeenCalled();
         });
     });
@@ -265,9 +271,9 @@ describe('ActionPredictor', () => {
     describe('_actionIdle', () => {
         it('should wait and potentially move mouse', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.6);
-            
+
             await actionPredictor._actionIdle(mockPage);
-            
+
             expect(api.wait).toHaveBeenCalled();
             expect(mockPage.mouse.move).toHaveBeenCalled();
         });
@@ -276,9 +282,9 @@ describe('ActionPredictor', () => {
     describe('_humanScroll', () => {
         it('should handle unknown intensity and up direction', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.8);
-            
+
             await actionPredictor._humanScroll(mockPage, 'up', 'unknown');
-            
+
             expect(scrollHelper.scrollRandom).toHaveBeenCalled();
         });
     });
@@ -287,7 +293,7 @@ describe('ActionPredictor', () => {
         it('should fall back to first item on invalid weights', () => {
             const result = actionPredictor._weightedRandom({
                 first: { weight: Number.NaN },
-                second: { weight: Number.NaN }
+                second: { weight: Number.NaN },
             });
             expect(result).toBe('first');
         });

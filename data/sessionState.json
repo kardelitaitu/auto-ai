@@ -1,44 +1,44 @@
 {
-  "sessions": [
-    {
-      "id": "Brave-9002:9002",
-      "browserInfo": "Brave-9002:9002",
-      "wsEndpoint": "ws://127.0.0.1:9002/devtools/browser/9077bbf9-fb43-4b7b-acdd-0465297af493",
-      "workers": [
+    "sessions": [
         {
-          "id": 0,
-          "status": "idle",
-          "occupiedAt": null,
-          "occupiedBy": null
+            "id": "Brave-9002:9002",
+            "browserInfo": "Brave-9002:9002",
+            "wsEndpoint": "ws://127.0.0.1:9002/devtools/browser/9077bbf9-fb43-4b7b-acdd-0465297af493",
+            "workers": [
+                {
+                    "id": 0,
+                    "status": "idle",
+                    "occupiedAt": null,
+                    "occupiedBy": null
+                },
+                {
+                    "id": 1,
+                    "status": "idle"
+                }
+            ],
+            "createdAt": 1772168256896,
+            "lastActivity": 1772168324645
         },
         {
-          "id": 1,
-          "status": "idle"
+            "id": "0001:8857",
+            "browserInfo": "0001:8857",
+            "wsEndpoint": "ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4",
+            "workers": [
+                {
+                    "id": 0,
+                    "status": "idle",
+                    "occupiedAt": null,
+                    "occupiedBy": null
+                },
+                {
+                    "id": 1,
+                    "status": "idle"
+                }
+            ],
+            "createdAt": 1772168256897,
+            "lastActivity": 1772168323577
         }
-      ],
-      "createdAt": 1772168256896,
-      "lastActivity": 1772168324645
-    },
-    {
-      "id": "0001:8857",
-      "browserInfo": "0001:8857",
-      "wsEndpoint": "ws://127.0.0.1:8857/devtools/browser/a032f017-010c-4a1e-8c05-62b4c89833e4",
-      "workers": [
-        {
-          "id": 0,
-          "status": "idle",
-          "occupiedAt": null,
-          "occupiedBy": null
-        },
-        {
-          "id": 1,
-          "status": "idle"
-        }
-      ],
-      "createdAt": 1772168256897,
-      "lastActivity": 1772168323577
-    }
-  ],
-  "nextSessionId": 1,
-  "savedAt": 1772168324660
+    ],
+    "nextSessionId": 1,
+    "savedAt": 1772168324660
 }

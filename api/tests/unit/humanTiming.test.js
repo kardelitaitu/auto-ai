@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi } from 'vitest';
 import { humanTiming } from '@api/behaviors/human-timing.js';
 
@@ -8,15 +7,15 @@ describe('humanTiming', () => {
             const mean = 100;
             const stdev = 10;
             const values = [];
-            for(let i=0; i<100; i++) values.push(humanTiming.gaussianRandom(mean, stdev));
-            
-            const avg = values.reduce((a,b) => a+b, 0) / values.length;
+            for (let i = 0; i < 100; i++) values.push(humanTiming.gaussianRandom(mean, stdev));
+
+            const avg = values.reduce((a, b) => a + b, 0) / values.length;
             expect(avg).toBeGreaterThan(90);
             expect(avg).toBeLessThan(110);
         });
 
         it('should generate random in range', () => {
-            for(let i=0; i<100; i++) {
+            for (let i = 0; i < 100; i++) {
                 const val = humanTiming.randomInRange(10, 20);
                 expect(val).toBeGreaterThanOrEqual(10);
                 expect(val).toBeLessThanOrEqual(20);
@@ -24,7 +23,7 @@ describe('humanTiming', () => {
         });
 
         it('should generate gaussian in range', () => {
-            for(let i=0; i<100; i++) {
+            for (let i = 0; i < 100; i++) {
                 const val = humanTiming.gaussianInRange(100, 10, 90, 110);
                 expect(val).toBeGreaterThanOrEqual(90);
                 expect(val).toBeLessThanOrEqual(110);
@@ -47,14 +46,14 @@ describe('humanTiming', () => {
             // 1. gaussianRandom u1
             // 2. gaussianRandom u2
             // 3. pauseChance check
-            
+
             const randomSpy = vi.spyOn(Math, 'random');
             randomSpy
                 .mockReturnValueOnce(0.5) // gaussian u1
                 .mockReturnValueOnce(0.5) // gaussian u2
                 .mockReturnValueOnce(0.01) // pause check (assumed < 0.08 default)
                 .mockReturnValueOnce(0.99); // burst check (fail)
-                
+
             const delay = humanTiming.humanDelay(100, { pauseChance: 0.1, burstChance: 0 });
             // Gaussian with 0.5, 0.5 gives mean roughly.
             // Pause multiplies by 3.
@@ -62,16 +61,20 @@ describe('humanTiming', () => {
         });
 
         it('should apply burst logic', () => {
-             const randomSpy = vi.spyOn(Math, 'random');
+            const randomSpy = vi.spyOn(Math, 'random');
             randomSpy
                 .mockReturnValueOnce(0.5) // gaussian u1
                 .mockReturnValueOnce(0.5) // gaussian u2
                 .mockReturnValueOnce(0.99) // pause check (fail)
                 .mockReturnValueOnce(0.01); // burst check (pass)
-                
-            const delay = humanTiming.humanDelay(100, { pauseChance: 0, burstChance: 0.1, minDelay: 10 });
+
+            const delay = humanTiming.humanDelay(100, {
+                pauseChance: 0,
+                burstChance: 0.1,
+                minDelay: 10,
+            });
             // Burst multiplies by 0.3 -> 30ms
-            expect(delay).toBeLessThan(50); 
+            expect(delay).toBeLessThan(50);
         });
     });
 

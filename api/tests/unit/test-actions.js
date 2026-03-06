@@ -3,7 +3,13 @@
  * Verifies actions are correctly exported and initialized
  */
 
-import { AIReplyAction, AIQuoteAction, LikeAction, BookmarkAction, GoHomeAction } from './utils/actions/index.js';
+import {
+    AIReplyAction,
+    AIQuoteAction,
+    LikeAction,
+    BookmarkAction,
+    GoHomeAction,
+} from './utils/actions/index.js';
 
 console.log('=== Twitter Actions Test ===\n');
 
@@ -14,22 +20,22 @@ const mockAgent = {
             reply: 0.6,
             quote: 0.2,
             like: 0.5,
-            bookmark: 0.3
-        }
+            bookmark: 0.3,
+        },
     },
     replyEngine: {
-        generateReply: async () => ({ success: true, reply: 'Test reply' })
+        generateReply: async () => ({ success: true, reply: 'Test reply' }),
     },
     quoteEngine: {
-        generateQuote: async () => ({ success: true, quote: 'Test quote' })
+        generateQuote: async () => ({ success: true, quote: 'Test quote' }),
     },
     diveQueue: {
         canEngage: (_type) => true,
-        recordEngagement: () => {}
+        recordEngagement: () => {},
     },
     page: {
-        url: () => 'https://x.com/home'
-    }
+        url: () => 'https://x.com/home',
+    },
 };
 
 async function testActions() {

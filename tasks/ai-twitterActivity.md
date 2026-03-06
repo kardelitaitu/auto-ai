@@ -234,21 +234,21 @@
 
 ```json
 {
-  "twitter": {
-    "reply": {
-      "probability": 0.10    // 10% chance to reply
+    "twitter": {
+        "reply": {
+            "probability": 0.1 // 10% chance to reply
+        },
+        "quote": {
+            "probability": 0.03 // 3% chance to quote (if reply skipped)
+        }
     },
-    "quote": {
-      "probability": 0.03   // 3% chance to quote (if reply skipped)
+    "engagement": {
+        "maxReplies": 3, // Max replies per session
+        "maxQuotes": 1, // Max quotes per session
+        "maxLikes": 5, // Max likes per session
+        "maxFollows": 2, // Max follows per session
+        "maxRetweets": 1 // Max retweets per session
     }
-  },
-  "engagement": {
-    "maxReplies": 3,        // Max replies per session
-    "maxQuotes": 1,         // Max quotes per session
-    "maxLikes": 5,          // Max likes per session
-    "maxFollows": 2,        // Max follows per session
-    "maxRetweets": 1        // Max retweets per session
-  }
 }
 ```
 
@@ -408,16 +408,16 @@ SESSION PROGRESS (0% ───────────────────�
 
 ## Key Files
 
-| File | Purpose |
-|------|---------|
-| `tasks/ai-twitterActivity.js` | Main task entry point |
-| `utils/ai-twitterAgent.js` | Agent with AI capabilities |
-| `utils/ai-reply-engine.js` | AI reply generation |
-| `utils/ai-quote-engine.js` | AI quote generation |
-| `utils/ai-context-engine.js` | Extract tweet context |
-| `utils/sentiment-guard.js` | Skip negative content |
-| `utils/engagement-limits.js` | Track per-session limits |
-| `core/agent-connector.js` | Route LLM requests |
-| `core/vllm-client.js` | vLLM provider |
-| `core/ollama-client.js` | Ollama provider |
-| `core/cloud-client.js` | OpenRouter provider |
+| File                          | Purpose                    |
+| ----------------------------- | -------------------------- |
+| `tasks/ai-twitterActivity.js` | Main task entry point      |
+| `utils/ai-twitterAgent.js`    | Agent with AI capabilities |
+| `utils/ai-reply-engine.js`    | AI reply generation        |
+| `utils/ai-quote-engine.js`    | AI quote generation        |
+| `utils/ai-context-engine.js`  | Extract tweet context      |
+| `utils/sentiment-guard.js`    | Skip negative content      |
+| `utils/engagement-limits.js`  | Track per-session limits   |
+| `core/agent-connector.js`     | Route LLM requests         |
+| `core/vllm-client.js`         | vLLM provider              |
+| `core/ollama-client.js`       | Ollama provider            |
+| `core/cloud-client.js`        | OpenRouter provider        |

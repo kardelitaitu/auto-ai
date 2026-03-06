@@ -1,4 +1,3 @@
-
 import { createLogger } from '../api/core/logger.js';
 import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
@@ -32,10 +31,10 @@ export default async function retweetTestTask(page, payload) {
             config: {
                 actions: {
                     retweet: {
-                        strategy: 'keyboard'
-                    }
-                }
-            }
+                        strategy: 'keyboard',
+                    },
+                },
+            },
         };
 
         const agent = new AITwitterAgent(page, profile, logger, options);
@@ -63,7 +62,9 @@ export default async function retweetTestTask(page, payload) {
             if (result.success) {
                 logger.info(`✅ Retweet Test PASSED. Result: ${result.reason}`);
                 if (result.reason !== 'retweet_keyboard_success') {
-                    logger.warn(`⚠️ Warning: Expected 'retweet_keyboard_success' but got '${result.reason}'. Check strategy selection logic.`);
+                    logger.warn(
+                        `⚠️ Warning: Expected 'retweet_keyboard_success' but got '${result.reason}'. Check strategy selection logic.`
+                    );
                 }
             } else {
                 logger.error(`❌ Retweet Test FAILED. Reason: ${result.reason}`);
@@ -72,7 +73,7 @@ export default async function retweetTestTask(page, payload) {
             logger.error(`Failed to locate or interact with tweet: ${elemError.message}`);
             // Check if we are on login page
             const loginSelector = '[data-testid="login"]';
-            if (await page.locator(loginSelector).count() > 0) {
+            if ((await page.locator(loginSelector).count()) > 0) {
                 logger.error('It seems we are on the login page. Please log in first.');
             }
             throw elemError;
@@ -81,7 +82,6 @@ export default async function retweetTestTask(page, payload) {
         // Keep page open for a moment to observe
         logger.info('Waiting 5 seconds before finishing...');
         await page.waitForTimeout(5000);
-
     } catch (error) {
         logger.error(`Error during retweet test: ${error.message}`);
         // Do not throw here if we want to ensure logs are written, but Orchestrator expects throw for failure.

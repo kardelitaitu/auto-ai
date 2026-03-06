@@ -9,68 +9,69 @@ import { createLogger } from '../core/logger.js';
 const logger = createLogger('proxy-agent.js');
 
 export function createProxyAgent(proxyUrl) {
-  return new ProxyAgent(proxyUrl);
+    return new ProxyAgent(proxyUrl);
 }
 
 export class ProxyAgent {
-  constructor(proxyUrl) {
-    this.proxyUrl = proxyUrl;
-    this.agent = null;
-    this._parseProxyUrl();
-  }
-
-  _parseProxyUrl() {
-    if (!this.proxyUrl) {
-      return;
+    constructor(proxyUrl) {
+        this.proxyUrl = proxyUrl;
+        this.agent = null;
+        this._parseProxyUrl();
     }
 
-    const url = new URL(this.proxyUrl);
-    this.host = url.hostname;
-    this.port = url.port;
-    this.username = url.username ? decodeURIComponent(url.username) : null;
-    this.password = url.password ? decodeURIComponent(url.password) : null;
+    _parseProxyUrl() {
+        if (!this.proxyUrl) {
+            return;
+        }
 
-    // logger.debug(`[ProxyAgent] Parsed proxy: ${this.host}:${this.port}`);
-  }
+        const url = new URL(this.proxyUrl);
+        this.host = url.hostname;
+        this.port = url.port;
+        this.username = url.username ? decodeURIComponent(url.username) : null;
+        this.password = url.password ? decodeURIComponent(url.password) : null;
 
-  async getAgent() {
-    if (this.agent) {
-      return this.agent;
+        // logger.debug(`[ProxyAgent] Parsed proxy: ${this.host}:${this.port}`);
     }
 
-    try {
-      const { HttpsProxyAgent } = await import('https-proxy-agent');
-      const auth = this.username && this.password
-        ? `${this.username}:${this.password}@${this.host}:${this.port}`
-        : `${this.host}:${this.port}`;
+    async getAgent() {
+        if (this.agent) {
+            return this.agent;
+        }
 
-      this.agent = new HttpsProxyAgent(`http://${auth}`);
-      // logger.debug(`[ProxyAgent] Created HTTPS proxy agent`);
-      return this.agent;
-    } catch (error) {
-      logger.warn(`[ProxyAgent] Failed to create proxy agent: ${error.message}`);
-      return null;
-    }
-  }
+        try {
+            const { HttpsProxyAgent } = await import('https-proxy-agent');
+            const auth =
+                this.username && this.password
+                    ? `${this.username}:${this.password}@${this.host}:${this.port}`
+                    : `${this.host}:${this.port}`;
 
-  static async fetchWithProxy(url, options, proxyUrl) {
-    if (!proxyUrl) {
-      return fetch(url, options);
-    }
-
-    const agent = createProxyAgent(proxyUrl);
-    const httpAgent = await agent.getAgent();
-
-    if (!httpAgent) {
-      logger.warn(`[ProxyAgent] Falling back to direct connection`);
-      return fetch(url, options);
+            this.agent = new HttpsProxyAgent(`http://${auth}`);
+            // logger.debug(`[ProxyAgent] Created HTTPS proxy agent`);
+            return this.agent;
+        } catch (error) {
+            logger.warn(`[ProxyAgent] Failed to create proxy agent: ${error.message}`);
+            return null;
+        }
     }
 
-    return fetch(url, {
-      ...options,
-      agent: httpAgent
-    });
-  }
+    static async fetchWithProxy(url, options, proxyUrl) {
+        if (!proxyUrl) {
+            return fetch(url, options);
+        }
+
+        const agent = createProxyAgent(proxyUrl);
+        const httpAgent = await agent.getAgent();
+
+        if (!httpAgent) {
+            logger.warn(`[ProxyAgent] Falling back to direct connection`);
+            return fetch(url, options);
+        }
+
+        return fetch(url, {
+            ...options,
+            agent: httpAgent,
+        });
+    }
 }
 
 export default ProxyAgent;

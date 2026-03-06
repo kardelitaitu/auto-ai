@@ -5,8 +5,8 @@ vi.mock('fs/promises', () => ({
     default: {
         writeFile: vi.fn(),
         readFile: vi.fn(),
-        unlink: vi.fn()
-    }
+        unlink: vi.fn(),
+    },
 }));
 
 import fs from 'fs/promises';
@@ -38,7 +38,9 @@ describe('api/utils/file.consumeline.js', () => {
 
             await consumeline('test.txt');
 
-            expect(fs.writeFile).toHaveBeenCalledWith('test.txt.lock', expect.any(String), { flag: 'wx' });
+            expect(fs.writeFile).toHaveBeenCalledWith('test.txt.lock', expect.any(String), {
+                flag: 'wx',
+            });
         });
 
         it('should return null if file is empty', async () => {
@@ -69,7 +71,11 @@ describe('api/utils/file.consumeline.js', () => {
 
             await consumeline('test.txt');
 
-            expect(fs.writeFile).toHaveBeenCalledWith(expect.stringContaining('lock'), expect.any(String), { flag: 'wx' });
+            expect(fs.writeFile).toHaveBeenCalledWith(
+                expect.stringContaining('lock'),
+                expect.any(String),
+                { flag: 'wx' }
+            );
         });
 
         it('should return null on read error', async () => {

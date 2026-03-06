@@ -9,19 +9,19 @@ vi.mock('@api/utils/math.js', () => ({
         randomInRange: vi.fn(),
         gaussian: vi.fn(),
         roll: vi.fn(),
-        sample: vi.fn()
-    }
+        sample: vi.fn(),
+    },
 }));
 
 vi.mock('@api/utils/entropyController.js', () => ({
     entropy: {
-        reactionTime: vi.fn()
+        reactionTime: vi.fn(),
     },
     EntropyController: function () {
         return {
-            reactionTime: vi.fn()
+            reactionTime: vi.fn(),
         };
-    }
+    },
 }));
 
 vi.mock('@api/behaviors/scroll-helper.js', () => ({
@@ -33,8 +33,8 @@ vi.mock('@api/behaviors/scroll-helper.js', () => ({
     getScrollMultiplier: vi.fn().mockReturnValue(1.0),
     globalScroll: {
         scrollBy: vi.fn().mockResolvedValue(undefined),
-        scrollRandom: vi.fn().mockResolvedValue(undefined)
-    }
+        scrollRandom: vi.fn().mockResolvedValue(undefined),
+    },
 }));
 
 vi.mock('@api/index.js', () => ({
@@ -47,12 +47,12 @@ vi.mock('@api/index.js', () => ({
         scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
-            read: vi.fn().mockResolvedValue(undefined)
+            read: vi.fn().mockResolvedValue(undefined),
         }),
         visible: vi.fn().mockResolvedValue(true),
         exists: vi.fn().mockResolvedValue(true),
-        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
-    }
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home'),
+    },
 }));
 import { api } from '@api/index.js';
 
@@ -68,7 +68,10 @@ describe('HumanScroll', () => {
     let mockLogger;
 
     beforeEach(() => {
-        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        const mockPageForApi = {
+            isClosed: () => false,
+            context: () => ({ browser: () => ({ isConnected: () => true }) }),
+        };
         if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         vi.clearAllMocks();
 
@@ -76,14 +79,14 @@ describe('HumanScroll', () => {
             evaluate: vi.fn(),
             waitForTimeout: vi.fn().mockResolvedValue(undefined),
             mouse: {
-                wheel: vi.fn().mockResolvedValue(undefined)
-            }
+                wheel: vi.fn().mockResolvedValue(undefined),
+            },
         };
 
         mockLogger = {
             log: vi.fn(),
             debug: vi.fn(),
-            error: vi.fn()
+            error: vi.fn(),
         };
 
         mathUtils.randomInRange.mockImplementation((min, _max) => min);
@@ -167,14 +170,18 @@ describe('HumanScroll', () => {
         let mockBox;
 
         beforeEach(() => {
-            const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
-            if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
+            const mockPageForApi = {
+                isClosed: () => false,
+                context: () => ({ browser: () => ({ isConnected: () => true }) }),
+            };
+            if (typeof api !== 'undefined' && api.getPage)
+                api.getPage.mockReturnValue(mockPageForApi);
             mockBox = { x: 0, y: 1000, width: 100, height: 100 };
             mockElement = {
-                boundingBox: vi.fn().mockResolvedValue(mockBox)
+                boundingBox: vi.fn().mockResolvedValue(mockBox),
             };
             mockLocator = {
-                first: vi.fn().mockResolvedValue(mockElement)
+                first: vi.fn().mockResolvedValue(mockElement),
             };
 
             mockPage.evaluate.mockResolvedValue(800);

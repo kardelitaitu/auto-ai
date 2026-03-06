@@ -22,19 +22,23 @@ function loadProfiles() {
             const loaded = JSON.parse(data);
 
             if (Array.isArray(loaded)) {
-                const validProfiles = loaded.filter(p => {
+                const validProfiles = loaded.filter((p) => {
                     if (!p) {
                         console.warn('[WARN] Profile validation issues: Empty profile entry');
                         return false;
                     }
                     if (!p.id || !p.timings || !p.probabilities) {
-                        console.warn(`[WARN] Profile validation issues: Missing required fields for ${p?.id || 'unknown'}`);
+                        console.warn(
+                            `[WARN] Profile validation issues: Missing required fields for ${p?.id || 'unknown'}`
+                        );
                         return false;
                     }
 
                     // Validate scrollPause mean exists as it's critical for selection
                     if (!p.timings.scrollPause || typeof p.timings.scrollPause.mean !== 'number') {
-                        console.warn(`[WARN] Profile validation issues: Invalid scrollPause timings for ${p.id}`);
+                        console.warn(
+                            `[WARN] Profile validation issues: Invalid scrollPause timings for ${p.id}`
+                        );
                         return false;
                     }
 
@@ -42,7 +46,9 @@ function loadProfiles() {
                 });
 
                 if (validProfiles.length < loaded.length) {
-                    console.warn(`[WARN] ${loaded.length - validProfiles.length} invalid profiles were skipped.`);
+                    console.warn(
+                        `[WARN] ${loaded.length - validProfiles.length} invalid profiles were skipped.`
+                    );
                 }
 
                 PROFILES = validProfiles;
@@ -54,7 +60,7 @@ function loadProfiles() {
         PROFILES = [];
         return false;
     } catch (e) {
-        console.error("[ERROR] Failed to load profiles", e);
+        console.error('[ERROR] Failed to load profiles', e);
         PROFILES = [];
         return false;
     }
@@ -70,7 +76,7 @@ function generateProfiles() {
         // Run generateProfiles.js synchronously
         execSync(`node "${generatorPath}"`, {
             cwd: path.join(__dirname, '..'),
-            stdio: 'inherit' // Show output
+            stdio: 'inherit', // Show output
         });
         console.log('[ProfileManager] Profile generation complete.');
         return true;
@@ -102,16 +108,18 @@ function ensureProfilesLoaded() {
 // Initial load attempt
 loadProfiles();
 if (PROFILES.length === 0) {
-    console.warn("[WARN] Profiles not found. Will auto-generate on first use.");
+    console.warn('[WARN] Profiles not found. Will auto-generate on first use.');
 }
 
 export const profileManager = {
     getStarter: () => {
         if (!ensureProfilesLoaded()) {
-            throw new Error("No profiles loaded and auto-generation failed. Please run utils/generateProfiles.js manually.");
+            throw new Error(
+                'No profiles loaded and auto-generation failed. Please run utils/generateProfiles.js manually.'
+            );
         }
 
-        const fast = PROFILES.filter(p => p.timings.scrollPause.mean < 2500);
+        const fast = PROFILES.filter((p) => p.timings.scrollPause.mean < 2500);
         const pool = fast.length > 0 ? fast : PROFILES;
 
         return pool[Math.floor(Math.random() * pool.length)];
@@ -122,20 +130,22 @@ export const profileManager = {
             return null; // Graceful degradation for fatigue variant
         }
 
-        const candidates = PROFILES.filter(p => p.timings.scrollPause.mean > (currentMean * 1.4));
+        const candidates = PROFILES.filter((p) => p.timings.scrollPause.mean > currentMean * 1.4);
         if (candidates.length === 0) return null;
         return candidates[Math.floor(Math.random() * candidates.length)];
     },
 
     getById: (profileId) => {
         if (!ensureProfilesLoaded()) {
-            throw new Error("No profiles loaded and auto-generation failed. Please run utils/generateProfiles.js manually.");
+            throw new Error(
+                'No profiles loaded and auto-generation failed. Please run utils/generateProfiles.js manually.'
+            );
         }
 
-        const profile = PROFILES.find(p => p.id === profileId);
+        const profile = PROFILES.find((p) => p.id === profileId);
 
         if (!profile) {
-            const availableIds = PROFILES.map(p => p.id).join(', ');
+            const availableIds = PROFILES.map((p) => p.id).join(', ');
             throw new Error(
                 `Profile "${profileId}" not found. Available profiles: ${availableIds}`
             );
@@ -190,5 +200,5 @@ export const profileManager = {
      */
     reset: () => {
         PROFILES = [];
-    }
+    },
 };

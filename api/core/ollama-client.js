@@ -19,7 +19,7 @@ class OllamaClient {
     constructor() {
         this.baseUrl = 'http://localhost:11434';
         this.model = 'llava:latest'; // Default fallback
-        this.timeout = 180000;  // Increased to 3 minutes for vision
+        this.timeout = 180000; // Increased to 3 minutes for vision
         this.config = null;
         this._warmedUp = false;
         this._recentOllamaListAt = 0;
@@ -33,11 +33,11 @@ class OllamaClient {
         if (this._initializing) {
             return await this._initializing;
         }
-        
+
         if (this.config) {
             return;
         }
-        
+
         this._initializing = (async () => {
             try {
                 const settings = await getSettings();
@@ -46,12 +46,16 @@ class OllamaClient {
                 // Allow override of endpoint and model
                 this.baseUrl = localConfig.endpoint || 'http://localhost:11434';
                 // Clean up endpoint if it has /api/generate
-                this.baseUrl = this.baseUrl.replace(/\/api\/generate$/, '').replace(/\/api\/chat$/, '');
+                this.baseUrl = this.baseUrl
+                    .replace(/\/api\/generate$/, '')
+                    .replace(/\/api\/chat$/, '');
 
                 this.model = localConfig.model || 'llama3.2-vision';
                 const desiredTimeout = localConfig.timeout || 60000;
                 if (desiredTimeout < 60000) {
-                    logger.warn(`[Ollama] Timeout ${desiredTimeout}ms is low for model load; using 60000ms minimum.`);
+                    logger.warn(
+                        `[Ollama] Timeout ${desiredTimeout}ms is low for model load; using 60000ms minimum.`
+                    );
                 }
                 this.timeout = Math.max(desiredTimeout, 60000);
 
@@ -66,15 +70,15 @@ class OllamaClient {
                 this._initializing = null;
             }
         })();
-        
+
         return await this._initializing;
     }
 
     /**
-      * Send a generation request to Ollama
-      * @param {object} request - Request parameters
-      * @returns {Promise<object>} - Response data
-      */
+     * Send a generation request to Ollama
+     * @param {object} request - Request parameters
+     * @returns {Promise<object>} - Response data
+     */
     async generate(request) {
         await this.initialize();
 
@@ -82,10 +86,12 @@ class OllamaClient {
         this._requestCount = (this._requestCount || 0) + 1;
         const requestNum = this._requestCount;
         const startTime = Date.now();
-        
+
         // Log EVERY request for debugging
-        const requestType = (request.vision || request.images) ? 'VISION' : 'TEXT';
-        logger.info(`[Ollama] 🔔 REQUEST #${requestNum} START: ${requestType} request to ${this.model}`);
+        const requestType = request.vision || request.images ? 'VISION' : 'TEXT';
+        logger.info(
+            `[Ollama] 🔔 REQUEST #${requestNum} START: ${requestType} request to ${this.model}`
+        );
 
         // Pre-flight check: verify Ollama is reachable before making request (using cache)
         const { isOllamaRunning } = await import('../utils/local-ollama-manager.js');
@@ -101,7 +107,9 @@ class OllamaClient {
 
         // Respect config setting - disable vision if explicitly set to false
         if (this.config && this.config.vision === false && isVision) {
-            logger.debug(`[Ollama] Vision disabled in config for model ${this.model}, ignoring image data`);
+            logger.debug(
+                `[Ollama] Vision disabled in config for model ${this.model}, ignoring image data`
+            );
             isVision = false;
         }
 
@@ -132,24 +140,28 @@ class OllamaClient {
     }
 
     /**
-      * Warmup the model by making a simple request
-      */
+     * Warmup the model by making a simple request
+     */
     async _warmupModel() {
-        const isVisionModel = this.model.toLowerCase().includes('llava') || this.model.toLowerCase().includes('vision');
-        const endpoint = isVisionModel ? `${this.baseUrl}/api/chat` : `${this.baseUrl}/api/generate`;
+        const isVisionModel =
+            this.model.toLowerCase().includes('llava') ||
+            this.model.toLowerCase().includes('vision');
+        const endpoint = isVisionModel
+            ? `${this.baseUrl}/api/chat`
+            : `${this.baseUrl}/api/generate`;
         const payload = isVisionModel
             ? {
-                model: this.model,
-                messages: [{ role: 'user', content: 'hi' }],
-                stream: false,
-                options: { temperature: 0.1, num_predict: 1 }
-            }
+                  model: this.model,
+                  messages: [{ role: 'user', content: 'hi' }],
+                  stream: false,
+                  options: { temperature: 0.1, num_predict: 1 },
+              }
             : {
-                model: this.model,
-                prompt: 'hi',
-                stream: false,
-                options: { temperature: 0.1, num_predict: 1 }
-            };
+                  model: this.model,
+                  prompt: 'hi',
+                  stream: false,
+                  options: { temperature: 0.1, num_predict: 1 },
+              };
 
         const controller = new AbortController();
         const warmupTimeoutMs = Math.min(this.timeout, 30000);
@@ -160,7 +172,7 @@ class OllamaClient {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
-                signal: controller.signal
+                signal: controller.signal,
             });
             clearTimeout(timeoutId);
 
@@ -174,8 +186,8 @@ class OllamaClient {
     }
 
     /**
-      * Use /api/chat endpoint (required for LLaVA vision models)
-      */
+     * Use /api/chat endpoint (required for LLaVA vision models)
+     */
     async _chatRequest(request, startTime, requestNum = '?') {
         const endpoint = `${this.baseUrl}/api/chat`;
 
@@ -199,7 +211,7 @@ class OllamaClient {
         if (systemPrompt) {
             messages.push({
                 role: 'system',
-                content: systemPrompt
+                content: systemPrompt,
             });
         }
 
@@ -216,7 +228,7 @@ class OllamaClient {
 
         const userMessage = {
             role: 'user',
-            content: promptText
+            content: promptText,
         };
 
         // Add images to the message for Ollama /api/chat endpoint
@@ -233,8 +245,8 @@ class OllamaClient {
             stream: false,
             options: {
                 temperature: request.temperature || 0.7,
-                num_predict: request.maxTokens || 2048
-            }
+                num_predict: request.maxTokens || 2048,
+            },
         };
 
         logger.debug(`[Ollama] Using chat endpoint for ${this.model}...`);
@@ -247,7 +259,7 @@ class OllamaClient {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
-                signal: controller.signal
+                signal: controller.signal,
             });
 
             clearTimeout(timeoutId);
@@ -263,25 +275,39 @@ class OllamaClient {
             let content = data.message?.content || data.response || '';
 
             // Post-processing to ensure no mentions or hashtags for Twitter tasks
-            if (content && (request.prompt?.includes('Tweet from') || request.systemPrompt?.includes('Twitter'))) {
+            if (
+                content &&
+                (request.prompt?.includes('Tweet from') ||
+                    request.systemPrompt?.includes('Twitter'))
+            ) {
                 // Remove mentions, hashtags, quotes
-                let cleaned = content.replace(/@\w+/g, '')
+                let cleaned = content
+                    .replace(/@\w+/g, '')
                     .replace(/#\w+/g, '')
                     .replace(/["']/g, '');
 
                 // Only remove emojis if NOT explicitly allowed by prompt instructions
                 // Strategies in twitter-reply-prompt.js use "EMOJI" keyword when allowing them
-                const allowEmojis = (request.prompt && request.prompt.includes('EMOJI')) ||
+                const allowEmojis =
+                    (request.prompt && request.prompt.includes('EMOJI')) ||
                     (request.systemPrompt && request.systemPrompt.includes('EMOJI'));
 
                 if (!allowEmojis) {
-                    cleaned = cleaned.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}]/gu, '');
+                    cleaned = cleaned.replace(
+                        /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}]/gu,
+                        ''
+                    );
                 }
 
                 content = cleaned.trim();
 
                 // Hard length limit: Take only the first sentence or first 100 chars
-                if (content.length > 100 || content.includes('.') || content.includes('!') || content.includes('?')) {
+                if (
+                    content.length > 100 ||
+                    content.includes('.') ||
+                    content.includes('!') ||
+                    content.includes('?')
+                ) {
                     const sentences = content.split(/[.!?]+/);
                     if (sentences.length > 0 && sentences[0].trim().length > 0) {
                         let punctuation = '';
@@ -318,15 +344,16 @@ class OllamaClient {
                 duration: data.total_duration,
                 metadata: {
                     eval_count: data.eval_count,
-                    eval_duration: data.eval_duration
-                }
+                    eval_duration: data.eval_duration,
+                },
             };
-
         } catch (error) {
             const duration = Date.now() - startTime;
 
             if (error.name === 'AbortError') {
-                logger.error(`[Ollama] 🔔 REQUEST #${requestNum} TIMED OUT after ${this.timeout}ms`);
+                logger.error(
+                    `[Ollama] 🔔 REQUEST #${requestNum} TIMED OUT after ${this.timeout}ms`
+                );
                 return { success: false, error: 'Request timeout', duration };
             }
 
@@ -338,7 +365,7 @@ class OllamaClient {
 
     /**
      * Apply human-like imperfections to text
-     * @param {string} text 
+     * @param {string} text
      * @returns {string}
      */
     applyHumanization(text) {
@@ -348,22 +375,22 @@ class OllamaClient {
         // Only applies if the text is relatively short (casual context)
         const abbreviations = {
             // Common Conversational
-            'because': 'bc',
-            'probably': 'prolly',
+            because: 'bc',
+            probably: 'prolly',
             'right now': 'rn',
             'to be honest': 'tbh',
-            'i don\'t know': 'idk',
-            'though': 'tho',
-            'people': 'ppl',
-            'please': 'pls',
-            'thanks': 'thx',
+            "i don't know": 'idk',
+            though: 'tho',
+            people: 'ppl',
+            please: 'pls',
+            thanks: 'thx',
             'thank you': 'ty',
-            'you': 'u',
-            'are': 'r',
-            'really': 'rly',
-            'without': 'w/o',
-            'favorite': 'fav',
-            'seriously': 'srsly',
+            you: 'u',
+            are: 'r',
+            really: 'rly',
+            without: 'w/o',
+            favorite: 'fav',
+            seriously: 'srsly',
             'just kidding': 'jk',
             'by the way': 'btw',
             'in my opinion': 'imo',
@@ -385,38 +412,38 @@ class OllamaClient {
             'sort of': 'sorta',
             'let me': 'lemme',
             'give me': 'gimme',
-            'something': 'sth',
-            'everyone': 'every1',
-            'anyone': 'any1',
-            'someone': 'some1',
-            'before': 'b4',
-            'great': 'gr8',
-            'later': 'l8r',
-            'mate': 'm8',
-            'wait': 'w8',
-            'okay': 'ok',
-            'easy': 'ez',
-            'definitely': 'def',
-            'obviously': 'obv',
-            'actually': 'ack',
-            'message': 'msg',
-            'pic': 'pic',
-            'picture': 'pic',
-            'pictures': 'pics',
-            'about': 'abt',
-            'with': 'w/',
-            'tomorrow': 'tmrw',
-            'tonight': 'tn',
-            'yesterday': 'yday',
-            'morning': 'mornin',
+            something: 'sth',
+            everyone: 'every1',
+            anyone: 'any1',
+            someone: 'some1',
+            before: 'b4',
+            great: 'gr8',
+            later: 'l8r',
+            mate: 'm8',
+            wait: 'w8',
+            okay: 'ok',
+            easy: 'ez',
+            definitely: 'def',
+            obviously: 'obv',
+            actually: 'ack',
+            message: 'msg',
+            pic: 'pic',
+            picture: 'pic',
+            pictures: 'pics',
+            about: 'abt',
+            with: 'w/',
+            tomorrow: 'tmrw',
+            tonight: 'tn',
+            yesterday: 'yday',
+            morning: 'mornin',
             'good night': 'gn',
-            'good morning': 'gm'
+            'good morning': 'gm',
         };
 
         // Pre-compile regexes once for performance (was creating 64 regex objects per call)
         if (!this._abbrRegexes) {
-            this._abbrRegexes = Object.entries(abbreviations).map(([full]) =>
-                new RegExp(`\\b${full}\\b`, 'gi')
+            this._abbrRegexes = Object.entries(abbreviations).map(
+                ([full]) => new RegExp(`\\b${full}\\b`, 'gi')
             );
         }
 
@@ -455,7 +482,7 @@ class OllamaClient {
 
     /**
      * Introduces realistic QWERTY keyboard typos
-     * @param {string} text 
+     * @param {string} text
      * @returns {string}
      */
     applyTypos(text) {
@@ -463,9 +490,32 @@ class OllamaClient {
 
         // QWERTY adjacency map (keys near each other)
         const adjacency = {
-            'q': 'wsa', 'w': 'qeasd', 'e': 'wrsdf', 'r': 'etdfg', 't': 'ryfgh', 'y': 'tughj', 'u': 'yihjk', 'i': 'uojkl', 'o': 'ipkl', 'p': 'ol',
-            'a': 'qwsz', 's': 'qweadzx', 'd': 'ersfcx', 'f': 'rtgvcd', 'g': 'tyhbvf', 'h': 'yujnbg', 'j': 'uikmnh', 'k': 'iolmj', 'l': 'opk',
-            'z': 'asx', 'x': 'zsdc', 'c': 'xdfv', 'v': 'cfgb', 'b': 'vghn', 'n': 'bhjm', 'm': 'njk'
+            q: 'wsa',
+            w: 'qeasd',
+            e: 'wrsdf',
+            r: 'etdfg',
+            t: 'ryfgh',
+            y: 'tughj',
+            u: 'yihjk',
+            i: 'uojkl',
+            o: 'ipkl',
+            p: 'ol',
+            a: 'qwsz',
+            s: 'qweadzx',
+            d: 'ersfcx',
+            f: 'rtgvcd',
+            g: 'tyhbvf',
+            h: 'yujnbg',
+            j: 'uikmnh',
+            k: 'iolmj',
+            l: 'opk',
+            z: 'asx',
+            x: 'zsdc',
+            c: 'xdfv',
+            v: 'cfgb',
+            b: 'vghn',
+            n: 'bhjm',
+            m: 'njk',
         };
 
         let chars = text.split('');
@@ -480,7 +530,7 @@ class OllamaClient {
                 const typo = adjacentKeys[Math.floor(Math.random() * adjacentKeys.length)];
 
                 // Preserve original case
-                chars[i] = (chars[i] === char.toUpperCase()) ? typo.toUpperCase() : typo;
+                chars[i] = chars[i] === char.toUpperCase() ? typo.toUpperCase() : typo;
 
                 // Don't make multiple typos in a single short reply
                 break;
@@ -491,8 +541,8 @@ class OllamaClient {
     }
 
     /**
-      * Use /api/generate endpoint (for text-only models)
-      */
+     * Use /api/generate endpoint (for text-only models)
+     */
     async _generateRequest(request, startTime, _requestNum = '?') {
         const endpoint = `${this.baseUrl}/api/generate`;
 
@@ -516,8 +566,8 @@ class OllamaClient {
             stream: false,
             options: {
                 temperature: request.temperature || 0.7,
-                num_predict: request.maxTokens || 2048
-            }
+                num_predict: request.maxTokens || 2048,
+            },
         };
 
         // Add system parameter if provided (Ollama native support)
@@ -536,7 +586,7 @@ class OllamaClient {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
-                signal: controller.signal
+                signal: controller.signal,
             });
 
             clearTimeout(timeoutId);
@@ -552,25 +602,39 @@ class OllamaClient {
             let content = data.response || '';
 
             // Post-processing to ensure no mentions or hashtags for Twitter tasks
-            if (content && (request.prompt?.includes('Tweet from') || request.systemPrompt?.includes('Twitter'))) {
+            if (
+                content &&
+                (request.prompt?.includes('Tweet from') ||
+                    request.systemPrompt?.includes('Twitter'))
+            ) {
                 // Remove mentions, hashtags, quotes
-                let cleaned = content.replace(/@\w+/g, '')
+                let cleaned = content
+                    .replace(/@\w+/g, '')
                     .replace(/#\w+/g, '')
                     .replace(/["']/g, '');
 
                 // Only remove emojis if NOT explicitly allowed by prompt instructions
                 // Strategies in twitter-reply-prompt.js use "EMOJI" keyword when allowing them
-                const allowEmojis = (request.prompt && request.prompt.includes('EMOJI')) ||
+                const allowEmojis =
+                    (request.prompt && request.prompt.includes('EMOJI')) ||
                     (request.systemPrompt && request.systemPrompt.includes('EMOJI'));
 
                 if (!allowEmojis) {
-                    cleaned = cleaned.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}]/gu, '');
+                    cleaned = cleaned.replace(
+                        /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}]/gu,
+                        ''
+                    );
                 }
 
                 content = cleaned.trim();
 
                 // Hard length limit: Take only the first sentence or first 100 chars
-                if (content.length > 100 || content.includes('.') || content.includes('!') || content.includes('?')) {
+                if (
+                    content.length > 100 ||
+                    content.includes('.') ||
+                    content.includes('!') ||
+                    content.includes('?')
+                ) {
                     const sentences = content.split(/[.!?]+/);
                     if (sentences.length > 0 && sentences[0].trim().length > 0) {
                         let punctuation = '';
@@ -607,10 +671,9 @@ class OllamaClient {
                 duration: data.total_duration,
                 metadata: {
                     eval_count: data.eval_count,
-                    eval_duration: data.eval_duration
-                }
+                    eval_duration: data.eval_duration,
+                },
             };
-
         } catch (error) {
             const duration = Date.now() - startTime;
 
@@ -634,7 +697,7 @@ class OllamaClient {
         try {
             // fast check tags endpoint
             const res = await fetch(`${this.baseUrl}/api/tags`, {
-                signal: AbortSignal.timeout(2000)
+                signal: AbortSignal.timeout(2000),
             });
             return res.ok;
         } catch (_e) {
@@ -679,7 +742,13 @@ class OllamaClient {
     _shouldTriggerOllamaList(errorMessage) {
         if (!errorMessage) return false;
         const msg = String(errorMessage).toLowerCase();
-        return msg.includes('model') && (msg.includes('not found') || msg.includes('not loaded') || msg.includes('unknown') || msg.includes('pull'));
+        return (
+            msg.includes('model') &&
+            (msg.includes('not found') ||
+                msg.includes('not loaded') ||
+                msg.includes('unknown') ||
+                msg.includes('pull'))
+        );
     }
 
     async wakeLocal() {
@@ -696,7 +765,9 @@ class OllamaClient {
         await this.initialize();
         const start = Date.now();
         try {
-            const isVisionModel = this.model.toLowerCase().includes('llava') || this.model.toLowerCase().includes('vision');
+            const isVisionModel =
+                this.model.toLowerCase().includes('llava') ||
+                this.model.toLowerCase().includes('vision');
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), Math.min(this.timeout, 60000));
             if (isVisionModel) {
@@ -705,18 +776,22 @@ class OllamaClient {
                     model: this.model,
                     messages: [{ role: 'user', content: testPrompt }],
                     stream: false,
-                    options: { temperature: 0.1, num_predict: numPredict }
+                    options: { temperature: 0.1, num_predict: numPredict },
                 };
                 const res = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
-                    signal: controller.signal
+                    signal: controller.signal,
                 });
                 clearTimeout(timeoutId);
                 if (!res.ok) {
                     const t = await res.text();
-                    return { success: false, error: `HTTP ${res.status}: ${t}`, duration: Date.now() - start };
+                    return {
+                        success: false,
+                        error: `HTTP ${res.status}: ${t}`,
+                        duration: Date.now() - start,
+                    };
                 }
                 const data = await res.json();
                 this._warmedUp = true;
@@ -728,18 +803,22 @@ class OllamaClient {
                     model: this.model,
                     prompt: testPrompt,
                     stream: false,
-                    options: { temperature: 0.1, num_predict: numPredict }
+                    options: { temperature: 0.1, num_predict: numPredict },
                 };
                 const res = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
-                    signal: controller.signal
+                    signal: controller.signal,
                 });
                 clearTimeout(timeoutId);
                 if (!res.ok) {
                     const t = await res.text();
-                    return { success: false, error: `HTTP ${res.status}: ${t}`, duration: Date.now() - start };
+                    return {
+                        success: false,
+                        error: `HTTP ${res.status}: ${t}`,
+                        duration: Date.now() - start,
+                    };
                 }
                 const data = await res.json();
                 this._warmedUp = true;

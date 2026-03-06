@@ -12,7 +12,7 @@ const logger = createLogger('api/agent/executor.js');
 
 /**
  * Do - Performs a semantic action on an element.
- * 
+ *
  * @param {string} action - Action to perform: 'click', 'type', 'hover', 'fill'
  * @param {string|number} target - Element ID (from see()) or Label
  * @param {string} [value] - Value for 'type' or 'fill' actions
@@ -26,16 +26,19 @@ export async function doAction(action, target, value) {
     let element;
 
     if (typeof target === 'number') {
-        element = elementMap.find(el => el.id === target);
+        element = elementMap.find((el) => el.id === target);
     } else {
         // Fuzzy search by label
         const search = target.toLowerCase();
-        element = elementMap.find(el => el.label.toLowerCase() === search) ||
-                  elementMap.find(el => el.label.toLowerCase().includes(search));
+        element =
+            elementMap.find((el) => el.label.toLowerCase() === search) ||
+            elementMap.find((el) => el.label.toLowerCase().includes(search));
     }
 
     if (!element) {
-        throw new Error(`Target element "${target}" not found in current view. Call api.agent.see() first.`);
+        throw new Error(
+            `Target element "${target}" not found in current view. Call api.agent.see() first.`
+        );
     }
 
     logger.info(`Agent action: ${action} on "${element.label}" (${element.id})`);

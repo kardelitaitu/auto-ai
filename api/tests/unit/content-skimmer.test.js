@@ -10,13 +10,13 @@ vi.mock('@api/index.js', () => ({
         scroll: Object.assign(vi.fn().mockResolvedValue(true), {
             toTop: vi.fn().mockResolvedValue(true),
             toBottom: vi.fn().mockResolvedValue(true),
-            focus: vi.fn().mockResolvedValue(true)
-        })
-    }
+            focus: vi.fn().mockResolvedValue(true),
+        }),
+    },
 }));
 
 vi.mock('@api/behaviors/scroll-helper.js', () => ({
-    scrollRandom: vi.fn().mockResolvedValue(true)
+    scrollRandom: vi.fn().mockResolvedValue(true),
 }));
 
 describe('ContentSkimmer', () => {
@@ -28,12 +28,12 @@ describe('ContentSkimmer', () => {
         vi.clearAllMocks();
         mockPage = {
             mouse: {
-                move: vi.fn().mockResolvedValue(true)
-            }
+                move: vi.fn().mockResolvedValue(true),
+            },
         };
         mockLogger = {
             info: vi.fn(),
-            debug: vi.fn()
+            debug: vi.fn(),
         };
         skimmer = new ContentSkimmer(mockPage, mockLogger);
     });

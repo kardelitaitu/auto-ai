@@ -15,12 +15,12 @@ vi.mock('../../../api/index.js', () => ({
         scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
-            read: vi.fn().mockResolvedValue(undefined)
+            read: vi.fn().mockResolvedValue(undefined),
         }),
         visible: vi.fn().mockResolvedValue(true),
         exists: vi.fn().mockResolvedValue(true),
-        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
-    }
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home'),
+    },
 }));
 import { api } from '@api/index.js';
 
@@ -28,25 +28,28 @@ vi.mock('@api/core/logger.js', () => ({
     createLogger: vi.fn().mockReturnValue({
         info: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    })
+        debug: vi.fn(),
+    }),
 }));
 
 vi.mock('@api/utils/configLoader.js', () => ({
     getSettings: vi.fn().mockResolvedValue({
         twitter: {
             timing: {
-                globalScrollMultiplier: 2.0
-            }
-        }
-    })
+                globalScrollMultiplier: 2.0,
+            },
+        },
+    }),
 }));
 
 describe.skip('utils/global-scroll-controller', () => {
     let gsc;
 
     beforeEach(async () => {
-        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        const mockPageForApi = {
+            isClosed: () => false,
+            context: () => ({ browser: () => ({ isConnected: () => true }) }),
+        };
         if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         vi.clearAllMocks();
         vi.clearAllMocks();
@@ -71,11 +74,11 @@ describe.skip('utils/global-scroll-controller', () => {
     it('scrollDown should call page.mouse.wheel with adjusted amount', async () => {
         const mockPage = {
             mouse: { wheel: vi.fn().mockResolvedValue() },
-            waitForTimeout: vi.fn().mockResolvedValue()
+            waitForTimeout: vi.fn().mockResolvedValue(),
         };
-        
+
         await gsc.scrollDown(mockPage, 100, { delay: 100 });
-        
+
         expect(api.wait).toHaveBeenCalledWith(100);
         expect(mockPage.mouse.wheel).toHaveBeenCalledWith(0, 200);
     });
@@ -83,11 +86,11 @@ describe.skip('utils/global-scroll-controller', () => {
     it('scrollUp should call page.mouse.wheel with negative adjusted amount and handle delay', async () => {
         const mockPage = {
             mouse: { wheel: vi.fn().mockResolvedValue() },
-            waitForTimeout: vi.fn().mockResolvedValue()
+            waitForTimeout: vi.fn().mockResolvedValue(),
         };
-        
+
         await gsc.scrollUp(mockPage, 100, { delay: 50 });
-        
+
         expect(api.wait).toHaveBeenCalledWith(50);
         expect(mockPage.mouse.wheel).toHaveBeenCalledWith(0, -200);
     });
@@ -95,9 +98,9 @@ describe.skip('utils/global-scroll-controller', () => {
     it('scrollRandom should call page.mouse.wheel in either direction and handle delay', async () => {
         const mockPage = {
             mouse: { wheel: vi.fn().mockResolvedValue() },
-            waitForTimeout: vi.fn().mockResolvedValue()
+            waitForTimeout: vi.fn().mockResolvedValue(),
         };
-        
+
         vi.spyOn(Math, 'random').mockReturnValue(0.6); // > 0.5 means direction = 1
         await gsc.scrollRandom(mockPage, 100, 100, { delay: 30 });
         expect(api.wait).toHaveBeenCalledWith(30);
@@ -106,17 +109,25 @@ describe.skip('utils/global-scroll-controller', () => {
 
     it('scrollToElement should call page.evaluate with correct arguments', async () => {
         const mockPage = {
-            evaluate: vi.fn().mockResolvedValue()
+            evaluate: vi.fn().mockResolvedValue(),
         };
-        
-        await gsc.globalScroll.scrollToElement(mockPage, '#test-selector', { behavior: 'smooth', block: 'end' });
-        
-        expect(mockPage.evaluate).toHaveBeenCalledWith(expect.any(Function), '#test-selector', 'smooth', 'end');
+
+        await gsc.globalScroll.scrollToElement(mockPage, '#test-selector', {
+            behavior: 'smooth',
+            block: 'end',
+        });
+
+        expect(mockPage.evaluate).toHaveBeenCalledWith(
+            expect.any(Function),
+            '#test-selector',
+            'smooth',
+            'end'
+        );
     });
 
     it('scrollToTop should call page.evaluate via export', async () => {
         const mockPage = {
-            evaluate: vi.fn().mockResolvedValue()
+            evaluate: vi.fn().mockResolvedValue(),
         };
         await gsc.scrollToTop(mockPage);
         expect(mockPage.evaluate).toHaveBeenCalled();
@@ -124,7 +135,7 @@ describe.skip('utils/global-scroll-controller', () => {
 
     it('scrollToBottom should call page.evaluate via export', async () => {
         const mockPage = {
-            evaluate: vi.fn().mockResolvedValue()
+            evaluate: vi.fn().mockResolvedValue(),
         };
         await gsc.scrollToBottom(mockPage);
         expect(mockPage.evaluate).toHaveBeenCalled();
@@ -133,7 +144,7 @@ describe.skip('utils/global-scroll-controller', () => {
     it('scrollBy should call page.mouse.wheel via export', async () => {
         const mockPage = {
             mouse: { wheel: vi.fn().mockResolvedValue() },
-            waitForTimeout: vi.fn().mockResolvedValue()
+            waitForTimeout: vi.fn().mockResolvedValue(),
         };
         await gsc.scrollBy(mockPage, 200, { delay: 10 });
         expect(api.wait).toHaveBeenCalledWith(10);
@@ -143,7 +154,7 @@ describe.skip('utils/global-scroll-controller', () => {
     it('smoothScroll should call page.mouse.wheel multiple times via export', async () => {
         const mockPage = {
             mouse: { wheel: vi.fn().mockResolvedValue() },
-            waitForTimeout: vi.fn().mockResolvedValue()
+            waitForTimeout: vi.fn().mockResolvedValue(),
         };
         await gsc.smoothScroll(mockPage, 300, { steps: 3 });
         expect(mockPage.mouse.wheel).toHaveBeenCalledTimes(3);
@@ -153,7 +164,7 @@ describe.skip('utils/global-scroll-controller', () => {
     it('scrollReplies should perform multiple iterations via export', async () => {
         const mockPage = {
             mouse: { wheel: vi.fn().mockResolvedValue() },
-            waitForTimeout: vi.fn().mockResolvedValue()
+            waitForTimeout: vi.fn().mockResolvedValue(),
         };
         await gsc.scrollReplies(mockPage, 5, { minScroll: 100, maxScroll: 100 });
         expect(mockPage.mouse.wheel).toHaveBeenCalledTimes(5);

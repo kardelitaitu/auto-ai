@@ -28,17 +28,20 @@ class VisionInterpreter {
     buildPrompt(context) {
         const { goal, semanticTree } = context;
 
-        let elementsCallback = "";
+        let elementsCallback = '';
         // Add top 30 elements (limited context)
         const elements = (semanticTree || []).slice(0, 30);
 
         if (elements.length === 0) {
-            elementsCallback = "No interactive elements detected (Blind Mode). Rely purely on visual inspection.";
+            elementsCallback =
+                'No interactive elements detected (Blind Mode). Rely purely on visual inspection.';
         } else {
             elements.forEach((el, index) => {
                 const name = el.name || el.text || el.accessibilityId || 'Unknown';
                 const role = el.role || 'element';
-                const coords = el.coordinates ? `(${el.coordinates.x},${el.coordinates.y})` : '(0,0)';
+                const coords = el.coordinates
+                    ? `(${el.coordinates.x},${el.coordinates.y})`
+                    : '(0,0)';
                 elementsCallback += `${index}. [${role}] "${name}" @ ${coords}\n`;
             });
         }
@@ -100,7 +103,7 @@ Now, generate the JSON plan for the User Goal: "${goal}"`;
      */
     parseResponse(rawText) {
         if (!rawText) {
-            return { success: false, error: "Empty response" };
+            return { success: false, error: 'Empty response' };
         }
 
         let jsonString = null;
@@ -123,8 +126,8 @@ Now, generate the JSON plan for the User Goal: "${goal}"`;
             // For now, return failure to parse.
             return {
                 success: false,
-                error: "No JSON found in response",
-                raw: rawText
+                error: 'No JSON found in response',
+                raw: rawText,
             };
         }
 
@@ -133,12 +136,17 @@ Now, generate the JSON plan for the User Goal: "${goal}"`;
 
             // Validate structure
             if (!data.actions || !Array.isArray(data.actions)) {
-                return { success: false, error: "Invalid JSON structure: missing 'actions' array", data, raw: rawText };
+                return {
+                    success: false,
+                    error: "Invalid JSON structure: missing 'actions' array",
+                    data,
+                    raw: rawText,
+                };
             }
 
             return { success: true, data };
         } catch (e) {
-            return { success: false, error: "JSON parse error: " + e.message, raw: rawText };
+            return { success: false, error: 'JSON parse error: ' + e.message, raw: rawText };
         }
     }
 }

@@ -7,12 +7,12 @@ Welcome to the Unified Browser Tool API documentation. This API provides a high-
 - [Quick Start](#quick-start)
 - [Core Concepts](#core-concepts)
 - [Module Reference](#module-reference)
-  - [Core](#core)
-  - [Interactions](#interactions)
-  - [Behaviors](#behaviors)
-  - [Agent](#agent)
-  - [Utils](#utils)
-  - [Actions](#actions)
+    - [Core](#core)
+    - [Interactions](#interactions)
+    - [Behaviors](#behaviors)
+    - [Agent](#agent)
+    - [Utils](#utils)
+    - [Actions](#actions)
 - [Examples](#examples)
 
 ---
@@ -109,13 +109,13 @@ await api.withPage(page, async () => {
 await api.withPage(page, async () => {
     await api.init(page, { persona: 'researcher' });
     await api.goto('https://example.com');
-    
+
     // Get semantic map of the page
     const view = await api.agent.see();
-    
+
     // Click by label
     await api.agent.do('click', 'Login');
-    
+
     // Type by label
     await api.agent.do('type', 'Username', 'myuser');
 });
@@ -135,9 +135,9 @@ const assigned = await api.file.consumeline('accounts.txt');
 
 ```javascript
 // Smart click with auto-recovery
-await api.smartClick('.dynamic-button', { 
-    recovery: true, 
-    maxRetries: 3 
+await api.smartClick('.dynamic-button', {
+    recovery: true,
+    maxRetries: 3,
 });
 
 // Find element by scrolling if not visible
@@ -191,8 +191,8 @@ api.plugins.register({
     hooks: {
         'before:click': async (selector) => {
             console.log('Clicking:', selector);
-        }
-    }
+        },
+    },
 });
 ```
 

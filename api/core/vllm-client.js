@@ -25,7 +25,7 @@ class VLLMClient {
             totalRequests: 0,
             successfulRequests: 0,
             failedRequests: 0,
-            totalDuration: 0
+            totalDuration: 0,
         };
 
         this._loadConfig();
@@ -80,10 +80,10 @@ class VLLMClient {
             const response = await fetch(this.endpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
-                signal: controller.signal
+                signal: controller.signal,
             });
 
             clearTimeout(timeoutId);
@@ -109,10 +109,9 @@ class VLLMClient {
                 metadata: {
                     model: this.model,
                     duration,
-                    tokens: data.usage?.total_tokens || 0
-                }
+                    tokens: data.usage?.total_tokens || 0,
+                },
             };
-
         } catch (error) {
             const duration = Date.now() - startTime;
             this.stats.failedRequests++;
@@ -150,7 +149,7 @@ class VLLMClient {
             messages,
             temperature: request.temperature || 0.7,
             max_tokens: request.maxTokens || request.max_tokens || 2048,
-            stream: false
+            stream: false,
         };
     }
 
@@ -170,7 +169,7 @@ class VLLMClient {
             const response = await this.sendRequest({
                 prompt: 'Reply with a single word: "OK"',
                 maxTokens: 5,
-                temperature: 0
+                temperature: 0,
             });
 
             if (response.success) {
@@ -193,12 +192,16 @@ class VLLMClient {
     getStats() {
         return {
             ...this.stats,
-            avgDuration: this.stats.totalRequests > 0
-                ? Math.round(this.stats.totalDuration / this.stats.totalRequests)
-                : 0,
-            successRate: this.stats.totalRequests > 0
-                ? ((this.stats.successfulRequests / this.stats.totalRequests) * 100).toFixed(2) + '%'
-                : '0%'
+            avgDuration:
+                this.stats.totalRequests > 0
+                    ? Math.round(this.stats.totalDuration / this.stats.totalRequests)
+                    : 0,
+            successRate:
+                this.stats.totalRequests > 0
+                    ? ((this.stats.successfulRequests / this.stats.totalRequests) * 100).toFixed(
+                          2
+                      ) + '%'
+                    : '0%',
         };
     }
 
@@ -210,7 +213,7 @@ class VLLMClient {
             totalRequests: 0,
             successfulRequests: 0,
             failedRequests: 0,
-            totalDuration: 0
+            totalDuration: 0,
         };
         logger.info('[VLLM] Statistics reset');
     }

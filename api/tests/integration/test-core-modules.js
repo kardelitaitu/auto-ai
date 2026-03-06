@@ -28,7 +28,7 @@ const logger = createLogger('test-core-modules.js');
         stateManager.addBreadcrumb('test-session', {
             action: 'navigate',
             target: 'https://example.com',
-            success: true
+            success: true,
         });
         const breadcrumbs = stateManager.getBreadcrumbs('test-session');
         logger.success(`[Test] StateManager: ${breadcrumbs.length} breadcrumb(s) recorded`);
@@ -38,9 +38,11 @@ const logger = createLogger('test-core-modules.js');
         const classifier = new IntentClassifier();
         const classification = classifier.classify({
             action: 'click',
-            payload: { target: 'button' }
+            payload: { target: 'button' },
         });
-        logger.success(`[Test] IntentClassifier: Routed to ${classification.destination} (confidence: ${classification.confidenceScore}%)`);
+        logger.success(
+            `[Test] IntentClassifier: Routed to ${classification.destination} (confidence: ${classification.confidenceScore}%)`
+        );
 
         // Test CloudClient (no actual API call)
         logger.info('[Test] CloudClient...');
@@ -52,13 +54,17 @@ const logger = createLogger('test-core-modules.js');
         logger.info('[Test] LocalClient...');
         const localClient = new LocalClient();
         const localStats = localClient.getStats();
-        logger.success(`[Test] LocalClient (stub mode): ${localStats.stubMode ? 'STUB' : 'ACTIVE'}`);
+        logger.success(
+            `[Test] LocalClient (stub mode): ${localStats.stubMode ? 'STUB' : 'ACTIVE'}`
+        );
 
         // Test HumanizerEngine
         logger.info('[Test] HumanizerEngine...');
         const humanizer = new HumanizerEngine();
         const path = humanizer.generateMousePath({ x: 100, y: 100 }, { x: 500, y: 300 });
-        logger.success(`[Test] HumanizerEngine: Generated ${path.points.length}-point path, duration: ${path.duration}ms`);
+        logger.success(
+            `[Test] HumanizerEngine: Generated ${path.points.length}-point path, duration: ${path.duration}ms`
+        );
 
         // Test IdleGhosting
         logger.info('[Test] IdleGhosting...');
@@ -77,7 +83,9 @@ const logger = createLogger('test-core-modules.js');
         const agentConnector = new AgentConnector();
         // Don't make actual request, just verify initialization
         const agentStats = agentConnector.getStats();
-        logger.success(`[Test] AgentConnector: ${agentStats.localAvailable ? 'Local available' : 'Cloud-only mode'}`);
+        logger.success(
+            `[Test] AgentConnector: ${agentStats.localAvailable ? 'Local available' : 'Cloud-only mode'}`
+        );
 
         logger.info('=== All Core Module Tests Passed ===');
 
@@ -93,7 +101,6 @@ const logger = createLogger('test-core-modules.js');
         logger.info(`- AgentConnector: ✓`);
 
         process.exit(0);
-
     } catch (error) {
         logger.error('Module test failed:', error);
         process.exit(1);

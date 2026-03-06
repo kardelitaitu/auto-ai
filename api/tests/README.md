@@ -65,11 +65,13 @@ import { testEdgeCases } from '@tests/edge-cases/utils.js';
 ## Running Tests
 
 ### All Tests
+
 ```bash
 npm test
 ```
 
 ### Unit Tests Only
+
 ```bash
 npm run test:unit
 # or
@@ -77,6 +79,7 @@ npx vitest run tests/unit
 ```
 
 ### Integration Tests Only
+
 ```bash
 npm run test:integration
 # or
@@ -84,11 +87,13 @@ npx vitest run tests/integration
 ```
 
 ### Edge Case Tests Only
+
 ```bash
 npx vitest run tests/edge-cases
 ```
 
 ### Watch Mode
+
 ```bash
 npm run test:watch
 ```
@@ -96,28 +101,31 @@ npm run test:watch
 ## Test Categories
 
 ### Unit Tests
+
 - **Purpose**: Test individual functions/methods in isolation
 - **Speed**: Fast (< 100ms per test)
 - **Characteristics**:
-  - No external dependencies (database, network, etc.)
-  - Mock all external services
-  - Test one specific behavior
+    - No external dependencies (database, network, etc.)
+    - Mock all external services
+    - Test one specific behavior
 
 ### Integration Tests
+
 - **Purpose**: Test component interactions
 - **Speed**: Medium (100ms - 1s per test)
 - **Characteristics**:
-  - May use real configurations
-  - Test how components work together
-  - Verify API contracts
+    - May use real configurations
+    - Test how components work together
+    - Verify API contracts
 
 ### Edge Case Tests
+
 - **Purpose**: Test boundary conditions and error paths
 - **Speed**: Varies
 - **Characteristics**:
-  - Test invalid inputs
-  - Test timeout scenarios
-  - Test recovery mechanisms
+    - Test invalid inputs
+    - Test timeout scenarios
+    - Test recovery mechanisms
 
 ## Best Practices
 
@@ -134,32 +142,33 @@ npm run test:watch
 import { describe, it, expect, vi } from 'vitest';
 
 describe('Module Name', () => {
-  describe('Function/Feature', () => {
-    it('should handle normal case', () => {
-      // Arrange
-      const input = 'valid-input';
-      
-      // Act
-      const result = functionUnderTest(input);
-      
-      // Assert
-      expect(result).toBe('expected-output');
-    });
+    describe('Function/Feature', () => {
+        it('should handle normal case', () => {
+            // Arrange
+            const input = 'valid-input';
 
-    it('should handle edge case', () => {
-      // Arrange
-      const input = null;
-      
-      // Act & Assert
-      expect(() => functionUnderTest(input)).toThrow();
+            // Act
+            const result = functionUnderTest(input);
+
+            // Assert
+            expect(result).toBe('expected-output');
+        });
+
+        it('should handle edge case', () => {
+            // Arrange
+            const input = null;
+
+            // Act & Assert
+            expect(() => functionUnderTest(input)).toThrow();
+        });
     });
-  });
 });
 ```
 
 ## CI/CD Integration
 
 Tests run automatically on:
+
 - Pull requests
 - Commits to main branch
 - Scheduled daily runs

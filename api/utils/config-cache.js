@@ -150,7 +150,8 @@ export class ConfigCache {
      */
     getStats() {
         const totalRequests = this.hitCount + this.missCount;
-        const hitRate = totalRequests > 0 ? (this.hitCount / totalRequests * 100).toFixed(2) : '0.00';
+        const hitRate =
+            totalRequests > 0 ? ((this.hitCount / totalRequests) * 100).toFixed(2) : '0.00';
 
         return {
             size: this.cache.size,
@@ -160,7 +161,7 @@ export class ConfigCache {
             missCount: this.missCount,
             evictionCount: this.evictionCount,
             hitRate: `${hitRate}%`,
-            totalRequests
+            totalRequests,
         };
     }
 
@@ -177,7 +178,7 @@ export class ConfigCache {
                 key,
                 value: entry.value,
                 age: now - entry.timestamp,
-                expires: entry.timestamp + this.ttl
+                expires: entry.timestamp + this.ttl,
             });
         }
 
@@ -248,7 +249,7 @@ export class ConfigCache {
             entries: this.cache.size,
             estimatedBytes: estimatedSize,
             estimatedKB: (estimatedSize / 1024).toFixed(2),
-            estimatedMB: (estimatedSize / (1024 * 1024)).toFixed(4)
+            estimatedMB: (estimatedSize / (1024 * 1024)).toFixed(4),
         };
     }
 }

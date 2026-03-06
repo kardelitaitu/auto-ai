@@ -10,13 +10,13 @@ vi.mock('../../../api/index.js', () => ({
         scrollToTop: vi.fn().mockResolvedValue(undefined),
         getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
         click: vi.fn().mockResolvedValue(undefined),
-    }
+    },
 }));
 
 vi.mock('../../../api/core/context.js', () => ({
     setSessionInterval: vi.fn(),
     clearSessionInterval: vi.fn(),
-    withPage: vi.fn((page, fn) => fn())
+    withPage: vi.fn((page, fn) => fn()),
 }));
 
 import { api } from '@api/index.js';
@@ -32,11 +32,11 @@ describe('microInteractions', () => {
             info: vi.fn(),
             error: vi.fn(),
             warn: vi.fn(),
-            debug: vi.fn()
+            debug: vi.fn(),
         };
 
         handler = microInteractions.createMicroInteractionHandler();
-        
+
         mockPage = {
             $: vi.fn(),
             evaluate: vi.fn(),
@@ -44,16 +44,22 @@ describe('microInteractions', () => {
                 move: vi.fn(),
                 down: vi.fn(),
                 up: vi.fn(),
-                click: vi.fn()
+                click: vi.fn(),
             },
             waitForTimeout: vi.fn(),
             click: vi.fn(),
             viewportSize: vi.fn().mockReturnValue({ width: 1280, height: 720 }),
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
+            context: vi
+                .fn()
+                .mockReturnValue({
+                    browser: vi
+                        .fn()
+                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+                }),
         };
         api.getPage.mockReturnValue(mockPage);
-        
+
         vi.useFakeTimers();
     });
 
@@ -71,7 +77,9 @@ describe('microInteractions', () => {
         });
 
         it('should merge custom config', () => {
-            const customHandler = microInteractions.createMicroInteractionHandler({ highlightChance: 0.5 });
+            const customHandler = microInteractions.createMicroInteractionHandler({
+                highlightChance: 0.5,
+            });
             expect(customHandler.config.highlightChance).toBe(0.5);
         });
     });
@@ -79,7 +87,7 @@ describe('microInteractions', () => {
     describe('textHighlight', () => {
         it('should highlight text if element found', async () => {
             const mockElement = {
-                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 200, height: 20 })
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 200, height: 20 }),
             };
             mockPage.$.mockResolvedValue(mockElement);
 
@@ -101,7 +109,7 @@ describe('microInteractions', () => {
 
         it('should return failure if no bounding box', async () => {
             const mockElement = {
-                boundingBox: vi.fn().mockResolvedValue(null)
+                boundingBox: vi.fn().mockResolvedValue(null),
             };
             mockPage.$.mockResolvedValue(mockElement);
             const result = await handler.textHighlight(mockPage, { logger: mockLogger });
@@ -113,10 +121,14 @@ describe('microInteractions', () => {
     describe('randomRightClick', () => {
         it('should perform right click', async () => {
             const result = await handler.randomRightClick(mockPage, { logger: mockLogger });
-            
+
             expect(result.success).toBe(true);
             expect(result.type).toBe('right_click');
-            expect(mockPage.mouse.click).toHaveBeenCalledWith(expect.any(Number), expect.any(Number), { button: 'right' });
+            expect(mockPage.mouse.click).toHaveBeenCalledWith(
+                expect.any(Number),
+                expect.any(Number),
+                { button: 'right' }
+            );
         });
     });
 
@@ -163,32 +175,34 @@ describe('microInteractions', () => {
 
             // Create a promise that we can manually resolve
             let resolveAction;
-            const actionPromise = new Promise(r => { resolveAction = r; });
-            
+            const actionPromise = new Promise((r) => {
+                resolveAction = r;
+            });
+
             // Mock whitespaceClick to hang
             vi.spyOn(handler, 'whitespaceClick').mockReturnValue(actionPromise);
 
             // Start first fidget - it will wait on whitespaceClick
             const p1 = handler.fidget(mockPage, { logger: mockLogger });
-            
+
             // Start second fidget immediately
             const p2 = await handler.fidget(mockPage, { logger: mockLogger });
-            
+
             expect(p2.success).toBe(false);
             expect(p2.reason).toBe('already_running');
-            
+
             // Resolve the first one
             resolveAction({ success: true, type: 'whitespace_click' });
             const result1 = await p1;
             expect(result1.success).toBe(true);
         });
     });
-    
+
     describe('fidgetLoop', () => {
         it('should start and stop fidget loop', () => {
             handler.startFidgetLoop(mockPage, { logger: mockLogger });
             expect(setSessionInterval).toHaveBeenCalled();
-            
+
             handler.stopFidgetLoop();
             expect(clearSessionInterval).toHaveBeenCalled();
         });

@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import VisionInterpreter from '@api/core/vision-interpreter.js';
 
@@ -8,8 +7,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         debug: vi.fn(),
         warn: vi.fn(),
-        error: vi.fn()
-    })
+        error: vi.fn(),
+    }),
 }));
 
 describe('VisionInterpreter', () => {
@@ -45,8 +44,8 @@ describe('VisionInterpreter', () => {
                     { name: 'Button 1', role: 'button', coordinates: { x: 10, y: 20 } },
                     { text: 'Link 1', coordinates: { x: 30, y: 40 } },
                     { accessibilityId: 'input-1', role: 'textbox' },
-                    {} // Unknown element
-                ]
+                    {}, // Unknown element
+                ],
             };
             const prompt = interpreter.buildPrompt(context);
             expect(prompt).toContain('0. [button] "Button 1" @ (10,20)');
@@ -72,14 +71,14 @@ describe('VisionInterpreter', () => {
         });
 
         it('should parse JSON from markdown blocks', () => {
-            const rawText = "Here is the plan:\n```json\n{\"actions\": [{\"type\": \"click\"}]}\n```";
+            const rawText = 'Here is the plan:\n```json\n{"actions": [{"type": "click"}]}\n```';
             const result = interpreter.parseResponse(rawText);
             expect(result.success).toBe(true);
             expect(result.data.actions[0].type).toBe('click');
         });
 
         it('should parse raw JSON object from text', () => {
-            const rawText = "Just the JSON: {\"actions\": [{\"type\": \"wait\"}]}";
+            const rawText = 'Just the JSON: {"actions": [{"type": "wait"}]}';
             const result = interpreter.parseResponse(rawText);
             expect(result.success).toBe(true);
             expect(result.data.actions[0].type).toBe('wait');
@@ -92,14 +91,14 @@ describe('VisionInterpreter', () => {
         });
 
         it('should validate JSON structure (missing actions)', () => {
-            const rawText = "{\"thought\": \"nothing\"}";
+            const rawText = '{"thought": "nothing"}';
             const result = interpreter.parseResponse(rawText);
             expect(result.success).toBe(false);
             expect(result.error).toContain("missing 'actions' array");
         });
 
         it('should handle JSON parse errors', () => {
-            const rawText = "{\"actions\": [invalid]}";
+            const rawText = '{"actions": [invalid]}';
             const result = interpreter.parseResponse(rawText);
             expect(result.success).toBe(false);
             expect(result.error).toContain('JSON parse error');

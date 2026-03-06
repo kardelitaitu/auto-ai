@@ -4,15 +4,20 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ConfigValidator, configValidator, validateConfig, validateWithReport } from '@api/utils/config-validator.js';
+import {
+    ConfigValidator,
+    configValidator,
+    validateConfig,
+    validateWithReport,
+} from '@api/utils/config-validator.js';
 
 vi.mock('../../core/logger.js', () => ({
     createLogger: vi.fn(() => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('utils/config-validator', () => {
@@ -76,7 +81,7 @@ describe('utils/config-validator', () => {
                 session: {
                     cycles: 5,
                     minDuration: 300,
-                    maxDuration: 600
+                    maxDuration: 600,
                 },
                 engagement: {
                     limits: {
@@ -85,15 +90,15 @@ describe('utils/config-validator', () => {
                         quotes: 2,
                         likes: 10,
                         follows: 5,
-                        bookmarks: 5
+                        bookmarks: 5,
                     },
                     probabilities: {
                         reply: 0.5,
                         quote: 0.2,
                         like: 0.7,
-                        bookmark: 0.3
-                    }
-                }
+                        bookmark: 0.3,
+                    },
+                },
             };
 
             const result = validator.validateConfig(config);
@@ -110,8 +115,8 @@ describe('utils/config-validator', () => {
                     quotes: { type: 'number', min: 0, max: 10 },
                     likes: { type: 'number', min: 0, max: 50 },
                     follows: { type: 'number', min: 0, max: 20 },
-                    bookmarks: { type: 'number', min: 0, max: 20 }
-                }
+                    bookmarks: { type: 'number', min: 0, max: 20 },
+                },
             };
             const data = {
                 replies: 'not a number',
@@ -119,7 +124,7 @@ describe('utils/config-validator', () => {
                 quotes: 2,
                 likes: 10,
                 follows: 5,
-                bookmarks: 5
+                bookmarks: 5,
             };
 
             const errors = validator.validateSection(data, schema, 'limits');
@@ -131,12 +136,12 @@ describe('utils/config-validator', () => {
                 type: 'object',
                 properties: {
                     replies: { type: 'number', min: 0, max: 20 },
-                    retweets: { type: 'number', min: 0, max: 10 }
-                }
+                    retweets: { type: 'number', min: 0, max: 10 },
+                },
             };
             const data = {
                 replies: -1,
-                retweets: 3
+                retweets: 3,
             };
 
             const errors = validator.validateSection(data, schema, 'limits');
@@ -148,12 +153,12 @@ describe('utils/config-validator', () => {
                 type: 'object',
                 properties: {
                     replies: { type: 'number', min: 0, max: 20 },
-                    retweets: { type: 'number', min: 0, max: 10 }
-                }
+                    retweets: { type: 'number', min: 0, max: 10 },
+                },
             };
             const data = {
                 replies: 100,
-                retweets: 3
+                retweets: 3,
             };
 
             const errors = validator.validateSection(data, schema, 'limits');
@@ -165,13 +170,13 @@ describe('utils/config-validator', () => {
                 type: 'object',
                 properties: {
                     replies: { type: 'number', min: 0, max: 20, required: true },
-                    retweets: { type: 'number', min: 0, max: 10, required: true }
-                }
+                    retweets: { type: 'number', min: 0, max: 10, required: true },
+                },
             };
             const data = {};
 
             const errors = validator.validateSection(data, schema, 'limits');
-            expect(errors.some(e => e.includes('required'))).toBe(true);
+            expect(errors.some((e) => e.includes('required'))).toBe(true);
         });
 
         it('should handle empty config', () => {
@@ -186,8 +191,8 @@ describe('utils/config-validator', () => {
                 type: 'object',
                 properties: {
                     name: { type: 'string', required: true },
-                    age: { type: 'number', min: 0 }
-                }
+                    age: { type: 'number', min: 0 },
+                },
             };
 
             const data = { name: 'John', age: 30 };
@@ -199,13 +204,13 @@ describe('utils/config-validator', () => {
             const schema = {
                 type: 'object',
                 properties: {
-                    name: { type: 'string', required: true }
-                }
+                    name: { type: 'string', required: true },
+                },
             };
 
             const data = {};
             const errors = validator.validateSection(data, schema, 'test');
-            expect(errors.some(e => e.includes('required'))).toBe(true);
+            expect(errors.some((e) => e.includes('required'))).toBe(true);
         });
 
         it('should validate nested objects', () => {
@@ -215,11 +220,11 @@ describe('utils/config-validator', () => {
                     nested: {
                         type: 'object',
                         properties: {
-                            value: { type: 'number', required: true }
+                            value: { type: 'number', required: true },
                         },
-                        required: true
-                    }
-                }
+                        required: true,
+                    },
+                },
             };
 
             const data = { nested: { value: 10 } };
@@ -270,12 +275,20 @@ describe('utils/config-validator', () => {
         });
 
         it('should validate enum values', () => {
-            const errors = validator.validateField('light', { type: 'string', enum: ['light', 'dark'] }, 'field');
+            const errors = validator.validateField(
+                'light',
+                { type: 'string', enum: ['light', 'dark'] },
+                'field'
+            );
             expect(errors).toEqual([]);
         });
 
         it('should reject invalid enum values', () => {
-            const errors = validator.validateField('blue', { type: 'string', enum: ['light', 'dark'] }, 'field');
+            const errors = validator.validateField(
+                'blue',
+                { type: 'string', enum: ['light', 'dark'] },
+                'field'
+            );
             expect(errors.length).toBeGreaterThan(0);
         });
 
@@ -295,7 +308,11 @@ describe('utils/config-validator', () => {
         });
 
         it('should validate array maxItems', () => {
-            const errors = validator.validateField([1, 2, 3, 4, 5], { type: 'array', maxItems: 3 }, 'field');
+            const errors = validator.validateField(
+                [1, 2, 3, 4, 5],
+                { type: 'array', maxItems: 3 },
+                'field'
+            );
             expect(errors.length).toBeGreaterThan(0);
         });
     });
@@ -337,7 +354,7 @@ describe('utils/config-validator', () => {
             const data = {
                 cycles: 5,
                 minDuration: 300,
-                maxDuration: 600
+                maxDuration: 600,
             };
 
             const result = validator.validateSectionConfig(data, 'session');
@@ -358,14 +375,14 @@ describe('utils/config-validator', () => {
                     quotes: 2,
                     likes: 10,
                     follows: 5,
-                    bookmarks: 5
+                    bookmarks: 5,
                 },
                 probabilities: {
                     reply: 0.5,
                     quote: 0.2,
                     like: 0.7,
-                    bookmark: 0.3
-                }
+                    bookmark: 0.3,
+                },
             };
 
             const result = validator.validateSectionConfig(data, 'engagement');
@@ -391,8 +408,8 @@ describe('utils/config-validator', () => {
                 session: {
                     cycles: 5,
                     minDuration: 300,
-                    maxDuration: 600
-                }
+                    maxDuration: 600,
+                },
             };
 
             const report = validator.validateWithReport(config);
@@ -407,12 +424,12 @@ describe('utils/config-validator', () => {
                 type: 'object',
                 properties: {
                     replies: { type: 'number', min: 0, max: 20 },
-                    retweets: { type: 'number', min: 0, max: 10 }
-                }
+                    retweets: { type: 'number', min: 0, max: 10 },
+                },
             };
             const data = {
                 replies: -1,
-                retweets: 3
+                retweets: 3,
             };
 
             const errors = validator.validateSection(data, schema, 'limits');
@@ -431,8 +448,8 @@ describe('utils/config-validator', () => {
                 session: {
                     cycles: 5,
                     minDuration: 300,
-                    maxDuration: 600
-                }
+                    maxDuration: 600,
+                },
             };
 
             const report = validator.getSectionValidationReport(config);
@@ -458,7 +475,7 @@ describe('utils/config-validator', () => {
                 session: {
                     cycles: 5,
                     minDuration: 300,
-                    maxDuration: 600
+                    maxDuration: 600,
                 },
                 engagement: {
                     limits: {
@@ -467,20 +484,20 @@ describe('utils/config-validator', () => {
                         quotes: 2,
                         likes: 10,
                         follows: 5,
-                        bookmarks: 5
+                        bookmarks: 5,
                     },
                     probabilities: {
                         reply: 0.5,
                         quote: 0.2,
                         like: 0.7,
-                        bookmark: 0.3
-                    }
+                        bookmark: 0.3,
+                    },
                 },
                 timing: {
                     warmup: { min: 2000, max: 10000 },
                     scroll: { min: 300, max: 700 },
-                    read: { min: 5000, max: 15000 }
-                }
+                    read: { min: 5000, max: 15000 },
+                },
             };
 
             const result = validator.validateConfig(config);
@@ -493,8 +510,8 @@ describe('utils/config-validator', () => {
                     cycles: 5,
                     minDuration: 300,
                     maxDuration: 600,
-                    unknownField: 'ignored'
-                }
+                    unknownField: 'ignored',
+                },
             };
 
             const result = validator.validateConfig(config);

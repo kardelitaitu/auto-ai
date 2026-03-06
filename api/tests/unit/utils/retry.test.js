@@ -15,9 +15,24 @@ describe('api/utils/retry.js', () => {
 
     describe('calculateBackoffDelay', () => {
         it('should calculate exponential backoff', () => {
-            const delay0 = calculateBackoffDelay(0, { baseDelay: 1000, factor: 2, jitterMin: 1, jitterMax: 1 });
-            const delay1 = calculateBackoffDelay(1, { baseDelay: 1000, factor: 2, jitterMin: 1, jitterMax: 1 });
-            const delay2 = calculateBackoffDelay(2, { baseDelay: 1000, factor: 2, jitterMin: 1, jitterMax: 1 });
+            const delay0 = calculateBackoffDelay(0, {
+                baseDelay: 1000,
+                factor: 2,
+                jitterMin: 1,
+                jitterMax: 1,
+            });
+            const delay1 = calculateBackoffDelay(1, {
+                baseDelay: 1000,
+                factor: 2,
+                jitterMin: 1,
+                jitterMax: 1,
+            });
+            const delay2 = calculateBackoffDelay(2, {
+                baseDelay: 1000,
+                factor: 2,
+                jitterMin: 1,
+                jitterMax: 1,
+            });
 
             expect(delay0).toBe(1000);
             expect(delay1).toBe(2000);
@@ -30,7 +45,7 @@ describe('api/utils/retry.js', () => {
                 factor: 2,
                 maxDelay: 5000,
                 jitterMin: 1,
-                jitterMax: 1
+                jitterMax: 1,
             });
 
             expect(delay).toBe(5000);
@@ -48,7 +63,7 @@ describe('api/utils/retry.js', () => {
             const delay = calculateBackoffDelay(0, {
                 baseDelay: 1000,
                 jitterMin: 0.5,
-                jitterMax: 1.5
+                jitterMax: 1.5,
             });
 
             expect(delay).toBe(1000); // 1000 * (0.5 + 0.5 * (1.5 - 0.5)) = 1000
@@ -58,7 +73,7 @@ describe('api/utils/retry.js', () => {
             const delay = calculateBackoffDelay(0, {
                 baseDelay: 1000,
                 jitterMin: 2,
-                jitterMax: 1
+                jitterMax: 1,
             });
 
             expect(delay).toBeGreaterThanOrEqual(1000);
@@ -71,7 +86,7 @@ describe('api/utils/retry.js', () => {
             const delay = calculateBackoffDelay(0, {
                 baseDelay: 1000,
                 jitterMin: 1,
-                jitterMax: 2
+                jitterMax: 2,
             });
 
             expect(delay).toBe(1500); // 1000 * (1 + 0.5 * (2 - 1)) = 1500
@@ -83,7 +98,7 @@ describe('api/utils/retry.js', () => {
             const delay = calculateBackoffDelay(0, {
                 baseDelay: 1000,
                 jitterMin: 1,
-                jitterMax: 1.5
+                jitterMax: 1.5,
             });
 
             expect(delay).toBe(1166); // floor(1000 * 1.1665) = 1166

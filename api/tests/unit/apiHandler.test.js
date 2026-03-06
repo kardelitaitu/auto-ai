@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock the retry module
 vi.mock('../../utils/retry.js', () => ({
-    withRetry: vi.fn((operation, _options) => operation())
+    withRetry: vi.fn((operation, _options) => operation()),
 }));
 
 describe('utils/apiHandler', () => {
@@ -18,11 +18,11 @@ describe('utils/apiHandler', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
-        
+
         // Create mock fetch
         mockFetch = vi.fn();
         vi.stubGlobal('fetch', mockFetch);
-        
+
         const module = await import('../../utils/apiHandler.js');
         ApiHandler = module.ApiHandler;
         apiHandler = module.default;
@@ -35,7 +35,7 @@ describe('utils/apiHandler', () => {
     describe('ApiHandler Class', () => {
         it('should instantiate with default values', () => {
             const handler = new ApiHandler();
-            
+
             expect(handler.baseUrl).toBe('');
             expect(handler.defaultHeaders).toBeDefined();
             expect(handler.defaultHeaders['Content-Type']).toBe('application/json');
@@ -43,20 +43,20 @@ describe('utils/apiHandler', () => {
 
         it('should accept custom baseUrl', () => {
             const handler = new ApiHandler('https://api.example.com');
-            
+
             expect(handler.baseUrl).toBe('https://api.example.com');
         });
 
         it('should accept custom defaultHeaders', () => {
-            const handler = new ApiHandler('', { 'Authorization': 'Bearer token' });
-            
+            const handler = new ApiHandler('', { Authorization: 'Bearer token' });
+
             expect(handler.defaultHeaders['Authorization']).toBe('Bearer token');
             expect(handler.defaultHeaders['Content-Type']).toBe('application/json');
         });
 
         it('should merge custom headers with defaults', () => {
             const handler = new ApiHandler('', { 'X-Custom': 'value' });
-            
+
             expect(handler.defaultHeaders['Content-Type']).toBe('application/json');
             expect(handler.defaultHeaders['X-Custom']).toBe('value');
         });
@@ -68,7 +68,7 @@ describe('utils/apiHandler', () => {
                 ok: true,
                 status: 200,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({ data: 'test' })
+                json: () => Promise.resolve({ data: 'test' }),
             });
 
             const result = await apiHandler.request('/endpoint');
@@ -82,11 +82,11 @@ describe('utils/apiHandler', () => {
 
         it('should prepend baseUrl to relative endpoints', async () => {
             const handler = new ApiHandler('https://api.example.com');
-            
+
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await handler.request('/users');
@@ -99,11 +99,11 @@ describe('utils/apiHandler', () => {
 
         it('should use absolute URL when endpoint starts with http', async () => {
             const handler = new ApiHandler('https://api.example.com');
-            
+
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await handler.request('https://other.com/endpoint');
@@ -118,7 +118,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await apiHandler.request('/endpoint');
@@ -127,8 +127,8 @@ describe('utils/apiHandler', () => {
                 expect.any(String),
                 expect.objectContaining({
                     headers: expect.objectContaining({
-                        'Content-Type': 'application/json'
-                    })
+                        'Content-Type': 'application/json',
+                    }),
                 })
             );
         });
@@ -137,19 +137,19 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await apiHandler.request('/endpoint', {
-                headers: { 'Content-Type': 'application/xml' }
+                headers: { 'Content-Type': 'application/xml' },
             });
 
             expect(mockFetch).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.objectContaining({
                     headers: expect.objectContaining({
-                        'Content-Type': 'application/xml'
-                    })
+                        'Content-Type': 'application/xml',
+                    }),
                 })
             );
         });
@@ -164,13 +164,13 @@ describe('utils/apiHandler', () => {
 
         it('should parse JSON response for application/json content-type', async () => {
             const jsonData = { message: 'success', count: 42 };
-            
+
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 status: 200,
                 headers: { get: () => 'application/json' },
                 json: () => Promise.resolve(jsonData),
-                text: vi.fn() // Should not be called
+                text: vi.fn(), // Should not be called
             });
 
             const result = await apiHandler.request('/json');
@@ -180,12 +180,12 @@ describe('utils/apiHandler', () => {
 
         it('should parse text response for non-JSON content-type', async () => {
             const textData = 'plain text response';
-            
+
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 status: 200,
                 headers: { get: () => 'text/plain' },
-                text: () => Promise.resolve(textData)
+                text: () => Promise.resolve(textData),
             });
 
             const result = await apiHandler.request('/text');
@@ -197,7 +197,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await apiHandler.request('/endpoint', { method: 'PATCH' });
@@ -210,22 +210,22 @@ describe('utils/apiHandler', () => {
 
         it('should support request body', async () => {
             const postData = { name: 'test', value: 123 };
-            
+
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await apiHandler.request('/endpoint', {
                 method: 'POST',
-                body: JSON.stringify(postData)
+                body: JSON.stringify(postData),
             });
 
             expect(mockFetch).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.objectContaining({
-                    body: JSON.stringify(postData)
+                    body: JSON.stringify(postData),
                 })
             );
         });
@@ -240,7 +240,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({ data: 'test' })
+                json: () => Promise.resolve({ data: 'test' }),
             });
 
             const result = await apiHandler.get('/users');
@@ -256,7 +256,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await apiHandler.get('/users', { headers: { 'X-Custom': 'value' } });
@@ -264,7 +264,7 @@ describe('utils/apiHandler', () => {
             expect(mockFetch).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.objectContaining({
-                    headers: expect.objectContaining({ 'X-Custom': 'value' })
+                    headers: expect.objectContaining({ 'X-Custom': 'value' }),
                 })
             );
         });
@@ -275,7 +275,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({ created: true })
+                json: () => Promise.resolve({ created: true }),
             });
 
             const data = { name: 'new item' };
@@ -285,7 +285,7 @@ describe('utils/apiHandler', () => {
                 expect.any(String),
                 expect.objectContaining({
                     method: 'POST',
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(data),
                 })
             );
             expect(result).toEqual({ created: true });
@@ -295,7 +295,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await apiHandler.post('/users', { name: 'test' }, { headers: { 'X-Custom': 'value' } });
@@ -303,7 +303,7 @@ describe('utils/apiHandler', () => {
             expect(mockFetch).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.objectContaining({
-                    headers: expect.objectContaining({ 'X-Custom': 'value' })
+                    headers: expect.objectContaining({ 'X-Custom': 'value' }),
                 })
             );
         });
@@ -314,7 +314,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({ updated: true })
+                json: () => Promise.resolve({ updated: true }),
             });
 
             const data = { name: 'updated item' };
@@ -324,7 +324,7 @@ describe('utils/apiHandler', () => {
                 expect.any(String),
                 expect.objectContaining({
                     method: 'PUT',
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(data),
                 })
             );
             expect(result).toEqual({ updated: true });
@@ -336,7 +336,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({ deleted: true })
+                json: () => Promise.resolve({ deleted: true }),
             });
 
             const result = await apiHandler.delete('/users/1');
@@ -352,7 +352,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await apiHandler.delete('/users/1', { headers: { 'X-Custom': 'value' } });
@@ -361,7 +361,7 @@ describe('utils/apiHandler', () => {
                 expect.any(String),
                 expect.objectContaining({
                     method: 'DELETE',
-                    headers: expect.objectContaining({ 'X-Custom': 'value' })
+                    headers: expect.objectContaining({ 'X-Custom': 'value' }),
                 })
             );
         });
@@ -370,19 +370,16 @@ describe('utils/apiHandler', () => {
     describe('Edge Cases', () => {
         it('should handle empty baseUrl', async () => {
             const handler = new ApiHandler('');
-            
+
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await handler.request('/endpoint');
 
-            expect(mockFetch).toHaveBeenCalledWith(
-                '/endpoint',
-                expect.any(Object)
-            );
+            expect(mockFetch).toHaveBeenCalledWith('/endpoint', expect.any(Object));
         });
 
         it('should handle null response body', async () => {
@@ -391,7 +388,7 @@ describe('utils/apiHandler', () => {
                 status: 204,
                 headers: { get: () => null },
                 json: () => Promise.resolve(null),
-                text: () => Promise.resolve('')
+                text: () => Promise.resolve(''),
             });
 
             const result = await apiHandler.request('/empty');
@@ -404,7 +401,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => null },
-                text: () => Promise.resolve('text response')
+                text: () => Promise.resolve('text response'),
             });
 
             const result = await apiHandler.request('/no-content-type');
@@ -416,7 +413,7 @@ describe('utils/apiHandler', () => {
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 headers: { get: () => 'application/json' },
-                json: () => Promise.resolve({})
+                json: () => Promise.resolve({}),
             });
 
             await apiHandler.get('/search?query=test&limit=10');

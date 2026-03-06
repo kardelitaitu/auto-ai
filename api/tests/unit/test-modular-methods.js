@@ -30,11 +30,11 @@ console.log('\n✅ Test 4: Default configuration');
 const defaultReplyConfig = {
     replyA: { weight: 40, enabled: true },
     replyB: { weight: 35, enabled: true },
-    replyC: { weight: 25, enabled: true }
+    replyC: { weight: 25, enabled: true },
 };
 
 const totalWeight = Object.values(defaultReplyConfig)
-    .filter(c => c.enabled)
+    .filter((c) => c.enabled)
     .reduce((sum, c) => sum + c.weight, 0);
 console.log(`  Total reply weight: ${totalWeight}%`);
 
@@ -46,17 +46,17 @@ function selectWeightedMethod(methodsConfig) {
     const enabledMethods = Object.entries(methodsConfig)
         .filter(([_, config]) => config.enabled !== false)
         .map(([name, config]) => ({ name, weight: config.weight ?? 33 }));
-    
+
     const totalWeight = enabledMethods.reduce((sum, m) => sum + m.weight, 0);
     let random = Math.random() * totalWeight;
-    
+
     for (const method of enabledMethods) {
         random -= method.weight;
         if (random <= 0) {
             return method.name;
         }
     }
-    
+
     return enabledMethods[enabledMethods.length - 1].name;
 }
 

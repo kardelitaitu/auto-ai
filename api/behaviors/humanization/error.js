@@ -1,7 +1,7 @@
 /**
  * Error Recovery Engine
  * Human-like error patterns and recovery
- * 
+ *
  * Human Error Patterns:
  * 1. Mis-click nearby element (40%)
  * 2. Scroll past and come back (30%)
@@ -24,7 +24,7 @@ export class ErrorRecovery {
 
     /**
      * Handle an error with human-like recovery
-     * 
+     *
      * @param {string} errorType - Type of error encountered
      * @param {object} context - Error context
      * @returns {Promise<object>} Recovery result
@@ -37,8 +37,8 @@ export class ErrorRecovery {
                 actions: [
                     () => this._scrollAndRetry(context),
                     () => this._refreshAndRetry(context),
-                    () => this._giveUp()
-                ]
+                    () => this._giveUp(),
+                ],
             },
 
             // Click failed
@@ -47,8 +47,8 @@ export class ErrorRecovery {
                 actions: [
                     () => this._clickNearby(context),
                     () => this._retryWithForce(context),
-                    () => this._giveUp()
-                ]
+                    () => this._giveUp(),
+                ],
             },
 
             // Navigation failed
@@ -57,8 +57,8 @@ export class ErrorRecovery {
                 actions: [
                     () => this._retryNavigation(context),
                     () => this._goBackAndRetry(context),
-                    () => this._giveUp()
-                ]
+                    () => this._giveUp(),
+                ],
             },
 
             // Timeout
@@ -67,28 +67,25 @@ export class ErrorRecovery {
                 actions: [
                     () => this._waitAndRetry(context),
                     () => this._refreshAndRetry(context),
-                    () => this._giveUp()
-                ]
+                    () => this._giveUp(),
+                ],
             },
 
             // Verification failed
             verification_failed: {
-                weight: 0.10,
+                weight: 0.1,
                 actions: [
                     () => this._checkState(context),
                     () => this._retryAction(context),
-                    () => this._giveUp()
-                ]
+                    () => this._giveUp(),
+                ],
             },
 
             // Default
             default: {
                 weight: 1.0,
-                actions: [
-                    () => this._waitAndRetry(context),
-                    () => this._giveUp()
-                ]
-            }
+                actions: [() => this._waitAndRetry(context), () => this._giveUp()],
+            },
         };
 
         const pattern = errorPatterns[errorType] || errorPatterns.default;
@@ -152,19 +149,14 @@ export class ErrorRecovery {
         this._logStrategy('click_nearby');
 
         // Find nearby clickable element
-        const nearbySelectors = [
-            '[role="button"]',
-            'button',
-            'a[href]',
-            '[tabindex="0"]'
-        ];
+        const nearbySelectors = ['[role="button"]', 'button', 'a[href]', '[tabindex="0"]'];
 
         for (const selector of nearbySelectors) {
             try {
                 const elements = await this.page.$$(selector);
                 if (elements.length > 1) {
                     // Click second element (nearby)
-                    await elements[1].click({ timeout: 1000 }).catch(() => { });
+                    await elements[1].click({ timeout: 1000 }).catch(() => {});
                     await this.page.waitForTimeout(entropy.reactionTime());
 
                     return { success: true, strategy: 'nearby_click' };

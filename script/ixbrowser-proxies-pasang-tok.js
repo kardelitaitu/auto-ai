@@ -5,30 +5,33 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const APIProfileUpdate = "http://127.0.0.1:53200/api/v2/profile-update";
-const APIProfileList = "http://127.0.0.1:53200/api/v2/profile-list";
+const APIProfileUpdate = 'http://127.0.0.1:53200/api/v2/profile-update';
+const APIProfileList = 'http://127.0.0.1:53200/api/v2/profile-list';
 const PROXIES_FILE = path.join(__dirname, 'proxies.txt');
 
 // Read and parse proxies from file
 function loadProxies() {
     try {
         const content = fs.readFileSync(PROXIES_FILE, 'utf-8');
-        const lines = content.split('\n')
-            .map(line => line.trim())
-            .filter(line => line && !line.startsWith('#'));
+        const lines = content
+            .split('\n')
+            .map((line) => line.trim())
+            .filter((line) => line && !line.startsWith('#'));
 
-        const proxies = lines.map(line => {
-            const parts = line.split(':');
-            if (parts.length === 4) {
-                return {
-                    host: parts[0],
-                    port: parts[1],
-                    user: parts[2],
-                    pass: parts[3]
-                };
-            }
-            return null;
-        }).filter(p => p !== null);
+        const proxies = lines
+            .map((line) => {
+                const parts = line.split(':');
+                if (parts.length === 4) {
+                    return {
+                        host: parts[0],
+                        port: parts[1],
+                        user: parts[2],
+                        pass: parts[3],
+                    };
+                }
+                return null;
+            })
+            .filter((p) => p !== null);
 
         return proxies;
     } catch (error) {
@@ -46,8 +49,10 @@ async function fetchWithRetry(url, options, retries = 3, backoff = 1000) {
             return await response.json();
         } catch (error) {
             if (i === retries - 1) throw error;
-            console.warn(`[pasang-tok] API Attempt ${i + 1} failed: ${error.message}. Retrying in ${backoff}ms...`);
-            await new Promise(resolve => setTimeout(resolve, backoff));
+            console.warn(
+                `[pasang-tok] API Attempt ${i + 1} failed: ${error.message}. Retrying in ${backoff}ms...`
+            );
+            await new Promise((resolve) => setTimeout(resolve, backoff));
             backoff *= 2; // Exponential backoff
         }
     }
@@ -56,9 +61,9 @@ async function fetchWithRetry(url, options, retries = 3, backoff = 1000) {
 async function getTotalProfiles() {
     try {
         const data = await fetchWithRetry(APIProfileList, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ page: 1, limit: 10000 })
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ page: 1, limit: 10000 }),
         });
 
         if (data.data && typeof data.data.total === 'number') {
@@ -79,54 +84,62 @@ async function getTotalProfiles() {
 // Assign proxy directly using proxy_config
 async function assignProxyToProfile(profileId, proxy) {
     const payload = {
-        "profile_id": parseInt(profileId),
-        "proxy_config": {
-            "proxy_mode": 2,
-            "proxy_check_line": "global_line",
-            "proxy_id": "",
-            "proxy_type": "socks5",
-            "proxy_ip": proxy.host,
-            "proxy_port": proxy.port,
-            "proxy_user": proxy.user,
-            "proxy_password": proxy.pass,
-            "ip_detection": "0",
-            "traffic_package_ip_policy": false,
-            "country": "",
-            "city": "",
-            "gateway": "Default",
-            "proxy_service": "general",
-            "proxy_data_format_type": "txt",
-            "proxy_data_txt_format": "ip:port",
-            "proxy_extraction_method": "invalid",
-            "proxy_url": "",
-            "use_system_proxy": "1",
-            "enable_bypass": "0",
-            "bypass_list": ""
-        }
+        profile_id: parseInt(profileId),
+        proxy_config: {
+            proxy_mode: 2,
+            proxy_check_line: 'global_line',
+            proxy_id: '',
+            proxy_type: 'socks5',
+            proxy_ip: proxy.host,
+            proxy_port: proxy.port,
+            proxy_user: proxy.user,
+            proxy_password: proxy.pass,
+            ip_detection: '0',
+            traffic_package_ip_policy: false,
+            country: '',
+            city: '',
+            gateway: 'Default',
+            proxy_service: 'general',
+            proxy_data_format_type: 'txt',
+            proxy_data_txt_format: 'ip:port',
+            proxy_extraction_method: 'invalid',
+            proxy_url: '',
+            use_system_proxy: '1',
+            enable_bypass: '0',
+            bypass_list: '',
+        },
     };
 
     // DEBUG: Log first 3 requests
     if (profileId <= 3) {
-        console.log(`[pasang-tok] DEBUG - Request for Profile ${profileId}:`, JSON.stringify(payload, null, 2));
+        console.log(
+            `[pasang-tok] DEBUG - Request for Profile ${profileId}:`,
+            JSON.stringify(payload, null, 2)
+        );
     }
 
     try {
         const data = await fetchWithRetry(APIProfileUpdate, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
         });
 
         // DEBUG: Log first 3 responses
         if (profileId <= 3) {
-            console.log(`[pasang-tok] DEBUG - Response for Profile ${profileId}:`, JSON.stringify(data));
+            console.log(
+                `[pasang-tok] DEBUG - Response for Profile ${profileId}:`,
+                JSON.stringify(data)
+            );
         }
 
         if (data.error && data.error.code === 0) {
             console.log(`[pasang-tok] ✓ Profile ${profileId} → ${proxy.host}:${proxy.port}`);
             return true;
         } else {
-            console.warn(`[pasang-tok] ✗ Profile ${profileId}: ${data.error ? data.error.message : 'Unknown'}`);
+            console.warn(
+                `[pasang-tok] ✗ Profile ${profileId}: ${data.error ? data.error.message : 'Unknown'}`
+            );
             return false;
         }
     } catch (error) {
@@ -142,7 +155,7 @@ function parseTargetProfiles(args, totalProfiles) {
     }
 
     const targets = new Set();
-    args.forEach(arg => {
+    args.forEach((arg) => {
         if (arg.includes('-')) {
             const [start, end] = arg.split('-').map(Number);
             if (!isNaN(start) && !isNaN(end)) {
@@ -200,27 +213,31 @@ async function main() {
     let successCount = 0;
     for (let i = 0; i < targetIds.length; i += BATCH_SIZE) {
         const batch = [];
-        for (let j = 0; j < BATCH_SIZE && (i + j) < targetIds.length; j++) {
+        for (let j = 0; j < BATCH_SIZE && i + j < targetIds.length; j++) {
             const profileId = targetIds[i + j];
             // Map Profile ID N to Proxy Line N (0-indexed)
             const proxyIndex = (profileId - 1) % proxies.length;
             const proxy = proxies[proxyIndex];
 
-            batch.push(assignProxyToProfile(profileId, proxy).then(success => {
-                if (success) successCount++;
-            }));
+            batch.push(
+                assignProxyToProfile(profileId, proxy).then((success) => {
+                    if (success) successCount++;
+                })
+            );
         }
 
         await Promise.all(batch);
 
         if (i + BATCH_SIZE < targetIds.length) {
-            await new Promise(resolve => setTimeout(resolve, STABILITY_DELAY));
+            await new Promise((resolve) => setTimeout(resolve, STABILITY_DELAY));
         }
 
         // Progress indicator
         if ((i + BATCH_SIZE) % 50 === 0 || i + BATCH_SIZE >= targetIds.length) {
             const current = Math.min(i + BATCH_SIZE, targetIds.length);
-            console.log(`[pasang-tok] Progress: ${current}/${targetIds.length} (${Math.round(current / targetIds.length * 100)}%)`);
+            console.log(
+                `[pasang-tok] Progress: ${current}/${targetIds.length} (${Math.round((current / targetIds.length) * 100)}%)`
+            );
         }
     }
 

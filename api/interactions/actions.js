@@ -2,7 +2,7 @@
  * @fileoverview High-Level Kinetic Actions
  * Each action auto-invokes scroll.focus() → cursor move → execute.
  * All behaviors are persona-aware.
- * 
+ *
  * @module api/actions
  */
 
@@ -30,12 +30,7 @@ function safeEmitWarning(context, error) {
 }
 
 async function waitForStableBox(locator, options = {}) {
-    const {
-        timeoutMs = 2000,
-        stableChecks = 3,
-        intervalMs = 100,
-        movementThreshold = 2,
-    } = options;
+    const { timeoutMs = 2000, stableChecks = 3, intervalMs = 100, movementThreshold = 2 } = options;
 
     const start = Date.now();
     let prev = null;
@@ -45,7 +40,7 @@ async function waitForStableBox(locator, options = {}) {
         if (!isSessionActive()) {
             throw new Error('SessionDisconnectedError: Browser closed during stability check.');
         }
-        const box = await locator.boundingBox().catch(e => {
+        const box = await locator.boundingBox().catch((e) => {
             if (e.message?.includes('SessionDisconnectedError')) throw e;
             return null;
         });
@@ -73,20 +68,20 @@ async function waitForStableBox(locator, options = {}) {
     return prev;
 }
 
-
-
 /**
  * Checks if an element is obscured by another element.
  */
 async function isObscured(locator) {
-    return await locator.evaluate((el) => {
-        const rect = el.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const elementAtPoint = document.elementFromPoint(cx, cy);
-        if (!elementAtPoint) return false;
-        return !el.contains(elementAtPoint) && !elementAtPoint.contains(el);
-    }).catch(() => false);
+    return await locator
+        .evaluate((el) => {
+            const rect = el.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const elementAtPoint = document.elementFromPoint(cx, cy);
+            if (!elementAtPoint) return false;
+            return !el.contains(elementAtPoint) && !elementAtPoint.contains(el);
+        })
+        .catch(() => false);
 }
 
 /**
@@ -120,75 +115,84 @@ export async function click(selector, options = {}) {
 
     try {
         const pipeline = createPipeline(
-            retryMiddleware({ maxRetries: (options.maxRetries !== undefined) ? maxRetries : (recovery ? maxRetries : 0) }),
+            retryMiddleware({
+                maxRetries:
+                    options.maxRetries !== undefined ? maxRetries : recovery ? maxRetries : 0,
+            }),
             recoveryMiddleware({ scrollOnDetached: recovery, retryOnObscured: recovery })
         );
 
-        return await pipeline(async () => {
-            const _page = getPage();
-            const cursor = getCursor();
-            const persona = getPersona();
+        return await pipeline(
+            async () => {
+                const _page = getPage();
+                const cursor = getCursor();
+                const persona = getPersona();
 
-            // STEP 1: Scroll to Golden View
-            await focus(selector, { timeout: 5000 }).catch((e) => safeEmitWarning('click:focus', e));
-            await wait(randomInRange(200, 800));
+                // STEP 1: Scroll to Golden View
+                await focus(selector, { timeout: 5000 }).catch((e) =>
+                    safeEmitWarning('click:focus', e)
+                );
+                await wait(randomInRange(200, 800));
 
-            // STEP 2: Pre-click stability & Visibility
-            const locator = getLocator(selector).first();
-            if (ensureStable) {
-                await waitForStableBox(locator, { timeoutMs: 2000 }).catch(e => {
-                    if (e.message?.includes('SessionDisconnectedError')) throw e;
-                    return null;
-                });
-            }
-
-            // Ghost 3.0: Visual-Semantic Guard (Obstruction check)
-            if (!options.force && await isObscured(locator)) {
-                throw new ElementObscuredError(`Element "${stringify(selector)}" appears obscured.`);
-            }
-
-            // STEP 3: Move cursor
-            try {
-                if (typeof selector === 'string') {
-                    await cursor.move(selector);
-                } else {
-                    // If it's a locator, we move to its box
-                    const box = await locator.boundingBox();
-                    if (box) {
-                        await cursor.move(box.x + box.width / 2, box.y + box.height / 2);
-                    }
+                // STEP 2: Pre-click stability & Visibility
+                const locator = getLocator(selector).first();
+                if (ensureStable) {
+                    await waitForStableBox(locator, { timeoutMs: 2000 }).catch((e) => {
+                        if (e.message?.includes('SessionDisconnectedError')) throw e;
+                        return null;
+                    });
                 }
-            } catch (e) {
-                safeEmitWarning('click:cursor-move', e);
-            }
-            await wait(mathUtils.randomInRange(100, 400));
 
-            // STEP 4: Kinetic Action
-            const result = await cursor.click(locator, {
-                allowNativeFallback: true,
-                hoverBeforeClick,
-                hoverMinMs: persona.hoverMin,
-                hoverMaxMs: persona.hoverMax,
-                precision,
-                button,
-            });
+                // Ghost 3.0: Visual-Semantic Guard (Obstruction check)
+                if (!options.force && (await isObscured(locator))) {
+                    throw new ElementObscuredError(
+                        `Element "${stringify(selector)}" appears obscured.`
+                    );
+                }
 
-            await wait(mathUtils.randomInRange(200, 600)); // Post-click observation
-            return result;
-        }, { action: 'click', selector, options });
+                // STEP 3: Move cursor
+                try {
+                    if (typeof selector === 'string') {
+                        await cursor.move(selector);
+                    } else {
+                        // If it's a locator, we move to its box
+                        const box = await locator.boundingBox();
+                        if (box) {
+                            await cursor.move(box.x + box.width / 2, box.y + box.height / 2);
+                        }
+                    }
+                } catch (e) {
+                    safeEmitWarning('click:cursor-move', e);
+                }
+                await wait(mathUtils.randomInRange(100, 400));
+
+                // STEP 4: Kinetic Action
+                const result = await cursor.click(locator, {
+                    allowNativeFallback: true,
+                    hoverBeforeClick,
+                    hoverMinMs: persona.hoverMin,
+                    hoverMaxMs: persona.hoverMax,
+                    precision,
+                    button,
+                });
+
+                await wait(mathUtils.randomInRange(200, 600)); // Post-click observation
+                return result;
+            },
+            { action: 'click', selector, options }
+        );
     } catch (e) {
         console.error('CRITICAL ERROR in api.click:', e);
         if (e.message && e.message.includes('SessionDisconnectedError')) {
             console.error('DEBUG INFO:', {
                 isClosed: getPage().isClosed(),
                 isConnected: getPage().context().browser()?.isConnected(),
-                stack: e.stack
+                stack: e.stack,
             });
         }
         throw e;
     }
 }
-
 
 /**
  * Human-like typing into a DOM element.
@@ -215,79 +219,84 @@ export async function type(selector, text, options = {}) {
         recoveryMiddleware()
     );
 
-    return await pipeline(async () => {
-        const page = getPage();
-        const persona = getPersona();
-        const {
-            typoRate = persona.typoRate,
-            correctionRate = persona.correctionRate,
-            clearFirst = false,
-        } = options;
+    return await pipeline(
+        async () => {
+            const page = getPage();
+            const persona = getPersona();
+            const {
+                typoRate = persona.typoRate,
+                correctionRate = persona.correctionRate,
+                clearFirst = false,
+            } = options;
 
-        // Golden View: scroll + cursor to element
-        await focus(selector).catch((e) => safeEmitWarning('type:focus', e));
+            // Golden View: scroll + cursor to element
+            await focus(selector).catch((e) => safeEmitWarning('type:focus', e));
 
-        const locator = getLocator(selector).first();
-        // waitForSelector only works with strings, so we use locator.waitFor
-        await locator.waitFor({ state: 'attached', timeout: 3000 }).catch((e) => safeEmitWarning('type:waitFor', e));
-        await waitForStableBox(locator, { timeoutMs: 2000 }).catch(() => null);
+            const locator = getLocator(selector).first();
+            // waitForSelector only works with strings, so we use locator.waitFor
+            await locator
+                .waitFor({ state: 'attached', timeout: 3000 })
+                .catch((e) => safeEmitWarning('type:waitFor', e));
+            await waitForStableBox(locator, { timeoutMs: 2000 }).catch(() => null);
 
-        // Ghost 3.0: Visual-Semantic Guard
-        if (!options.force && await isObscured(locator)) {
-            throw new ElementObscuredError(`Input "${stringify(selector)}" appears obscured.`);
-        }
+            // Ghost 3.0: Visual-Semantic Guard
+            if (!options.force && (await isObscured(locator))) {
+                throw new ElementObscuredError(`Input "${stringify(selector)}" appears obscured.`);
+            }
 
-        // Focus the element
-        await locator.click({ timeout: 3000 }).catch((e) => safeEmitWarning('type:click', e));
+            // Focus the element
+            await locator.click({ timeout: 3000 }).catch((e) => safeEmitWarning('type:click', e));
 
-        // Clear if requested
-        if (clearFirst) {
-            const isMac = process.platform === 'darwin';
-            const modifier = isMac ? 'Meta' : 'Control';
-            await page.keyboard.press(`${modifier}+A`);
-            await page.keyboard.press('Backspace');
-            await wait(mathUtils.randomInRange(100, 300));
-        }
+            // Clear if requested
+            if (clearFirst) {
+                const isMac = process.platform === 'darwin';
+                const modifier = isMac ? 'Meta' : 'Control';
+                await page.keyboard.press(`${modifier}+A`);
+                await page.keyboard.press('Backspace');
+                await wait(mathUtils.randomInRange(100, 300));
+            }
 
-        // Type character by character with humanization
-        const baseDelay = Math.round(100 / persona.speed); // ms per character
+            // Type character by character with humanization
+            const baseDelay = Math.round(100 / persona.speed); // ms per character
 
-        for (let i = 0; i < text.length; i++) {
-            const char = text[i];
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
 
-            // Typo injection
-            if (mathUtils.roll(typoRate)) {
-                // Type wrong character
-                const wrongChar = _getAdjacentKey(char);
-                await page.keyboard.type(wrongChar, { delay: 0 });
-                await wait(mathUtils.randomInRange(50, 200));
+                // Typo injection
+                if (mathUtils.roll(typoRate)) {
+                    // Type wrong character
+                    const wrongChar = _getAdjacentKey(char);
+                    await page.keyboard.type(wrongChar, { delay: 0 });
+                    await wait(mathUtils.randomInRange(50, 200));
 
-                // Maybe correct the typo
-                if (mathUtils.roll(correctionRate)) {
-                    await page.keyboard.press('Backspace');
-                    await wait(mathUtils.randomInRange(80, 250));
+                    // Maybe correct the typo
+                    if (mathUtils.roll(correctionRate)) {
+                        await page.keyboard.press('Backspace');
+                        await wait(mathUtils.randomInRange(80, 250));
+                        await page.keyboard.type(char, { delay: 0 });
+                    }
+                } else {
                     await page.keyboard.type(char, { delay: 0 });
                 }
-            } else {
-                await page.keyboard.type(char, { delay: 0 });
+
+                // Inter-character delay with Gaussian distribution
+                let charDelay = mathUtils.gaussian(baseDelay, baseDelay * 0.3, 30, baseDelay * 3);
+
+                // Punctuation pause
+                if ('.!?,;:'.includes(char)) {
+                    charDelay += mathUtils.randomInRange(100, 300);
+                }
+
+                // Hesitation (persona-driven)
+                if (mathUtils.roll(persona.hesitation * 0.5)) {
+                    charDelay += mathUtils.randomInRange(200, persona.hesitationDelay);
+                }
+
+                await wait(charDelay);
             }
-
-            // Inter-character delay with Gaussian distribution
-            let charDelay = mathUtils.gaussian(baseDelay, baseDelay * 0.3, 30, baseDelay * 3);
-
-            // Punctuation pause
-            if ('.!?,;:'.includes(char)) {
-                charDelay += mathUtils.randomInRange(100, 300);
-            }
-
-            // Hesitation (persona-driven)
-            if (mathUtils.roll(persona.hesitation * 0.5)) {
-                charDelay += mathUtils.randomInRange(200, persona.hesitationDelay);
-            }
-
-            await wait(charDelay);
-        }
-    }, { action: 'type', selector, options });
+        },
+        { action: 'type', selector, options }
+    );
 }
 
 /**
@@ -310,25 +319,28 @@ export async function hover(selector, options = {}) {
         recoveryMiddleware()
     );
 
-    return await pipeline(async () => {
-        const _page = getPage();
-        const cursor = getCursor();
-        const persona = getPersona();
+    return await pipeline(
+        async () => {
+            const _page = getPage();
+            const cursor = getCursor();
+            const persona = getPersona();
 
-        await focus(selector).catch((e) => safeEmitWarning('hover:focus', e));
+            await focus(selector).catch((e) => safeEmitWarning('hover:focus', e));
 
-        const locator = getLocator(selector).first();
-        const box = await locator.boundingBox();
-        if (!box) throw new Error(`Target not found for hover: ${stringify(selector)}`);
+            const locator = getLocator(selector).first();
+            const box = await locator.boundingBox();
+            if (!box) throw new Error(`Target not found for hover: ${stringify(selector)}`);
 
-        const targetX = mathUtils.gaussian(box.x + box.width / 2, box.width / 6);
-        const targetY = mathUtils.gaussian(box.y + box.height / 2, box.height / 6);
+            const targetX = mathUtils.gaussian(box.x + box.width / 2, box.width / 6);
+            const targetY = mathUtils.gaussian(box.y + box.height / 2, box.height / 6);
 
-        const hoverDuration = options.duration || mathUtils.randomInRange(persona.hoverMin, persona.hoverMax);
-        await cursor.hoverWithDrift(targetX, targetY, hoverDuration, hoverDuration + 200);
-    }, { action: 'hover', selector, options });
+            const hoverDuration =
+                options.duration || mathUtils.randomInRange(persona.hoverMin, persona.hoverMax);
+            await cursor.hoverWithDrift(targetX, targetY, hoverDuration, hoverDuration + 200);
+        },
+        { action: 'hover', selector, options }
+    );
 }
-
 
 /**
  * Right-click on a DOM element.
@@ -344,10 +356,32 @@ export async function rightClick(selector, options = {}) {
 
 /** QWERTY keyboard adjacency map for typo simulation */
 const ADJACENT_KEYS = {
-    a: 'sq', b: 'vn', c: 'xv', d: 'sf', e: 'wr', f: 'dg', g: 'fh',
-    h: 'gj', i: 'uo', j: 'hk', k: 'jl', l: 'k;', m: 'n,', n: 'bm',
-    o: 'ip', p: 'o[', q: 'wa', r: 'et', s: 'ad', t: 'ry', u: 'yi',
-    v: 'cb', w: 'qe', x: 'zc', y: 'tu', z: 'xs',
+    a: 'sq',
+    b: 'vn',
+    c: 'xv',
+    d: 'sf',
+    e: 'wr',
+    f: 'dg',
+    g: 'fh',
+    h: 'gj',
+    i: 'uo',
+    j: 'hk',
+    k: 'jl',
+    l: 'k;',
+    m: 'n,',
+    n: 'bm',
+    o: 'ip',
+    p: 'o[',
+    q: 'wa',
+    r: 'et',
+    s: 'ad',
+    t: 'ry',
+    u: 'yi',
+    v: 'cb',
+    w: 'qe',
+    x: 'zc',
+    y: 'tu',
+    z: 'xs',
 };
 
 /**

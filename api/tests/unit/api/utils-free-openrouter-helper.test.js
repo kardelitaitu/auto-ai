@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@api/utils/proxy-agent.js', () => ({
-    createProxyAgent: vi.fn()
+    createProxyAgent: vi.fn(),
 }));
 
 vi.mock('@api/core/logger.js', () => ({
@@ -9,8 +9,8 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         debug: vi.fn(),
-        error: vi.fn()
-    })
+        error: vi.fn(),
+    }),
 }));
 
 import { FreeOpenRouterHelper } from '@api/utils/free-openrouter-helper.js';
@@ -54,7 +54,7 @@ describe('api/utils/free-openrouter-helper.js', () => {
                 apiKeys: ['key1', 'key2'],
                 models: ['model1', 'model2'],
                 proxy: 'http://proxy:8080',
-                testTimeout: 30000
+                testTimeout: 30000,
             };
             const helper = new FreeOpenRouterHelper(options);
             expect(helper.apiKeys).toEqual(['key1', 'key2']);

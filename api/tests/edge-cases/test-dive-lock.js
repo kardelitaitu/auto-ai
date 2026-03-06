@@ -12,7 +12,7 @@ const PAGE_STATE = {
     HOME: 'HOME',
     DIVING: 'DIVING',
     TWEET_PAGE: 'TWEET_PAGE',
-    RETURNING: 'RETURNING'
+    RETURNING: 'RETURNING',
 };
 
 // Mock dive lock state
@@ -22,7 +22,7 @@ const diveLock = {
     operationLock: false,
     diveLockAcquired: false,
     lastWaitLogTime: 0,
-    waitLogInterval: 10000
+    waitLogInterval: 10000,
 };
 
 // Test functions
@@ -46,15 +46,17 @@ async function testLockMechanism() {
         let firstWait = true;
         while (diveLock.operationLock) {
             const now = Date.now();
-            
+
             // Only log every 10 seconds to prevent log spam
             if (firstWait || now - diveLock.lastWaitLogTime >= diveLock.waitLogInterval) {
-                console.log(`  [DiveLock] ⏳ Waiting for existing operation to complete... (${((now - diveLock.lastWaitLogTime) / 1000).toFixed(0)}s since last check)`);
+                console.log(
+                    `  [DiveLock] ⏳ Waiting for existing operation to complete... (${((now - diveLock.lastWaitLogTime) / 1000).toFixed(0)}s since last check)`
+                );
                 diveLock.lastWaitLogTime = now;
                 firstWait = false;
             }
-            
-            await new Promise(resolve => setTimeout(resolve, 10));
+
+            await new Promise((resolve) => setTimeout(resolve, 10));
         }
 
         // Acquire operation lock
@@ -62,7 +64,7 @@ async function testLockMechanism() {
         diveLock.diveLockAcquired = true;
         diveLock.pageState = 'DIVING';
         diveLock.scrollingEnabled = false;
-        diveLock.lastWaitLogTime = 0;  // Reset wait log timestamp
+        diveLock.lastWaitLogTime = 0; // Reset wait log timestamp
 
         return true;
     }
@@ -103,7 +105,7 @@ async function testLockMechanism() {
             diveLock.scrollingEnabled = false;
 
             // Simulate navigation
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 100));
             diveLock.pageState = PAGE_STATE.HOME;
             diveLock.scrollingEnabled = true;
         } else {
@@ -132,7 +134,7 @@ async function testLockMechanism() {
     const states = [
         { from: 'HOME', to: 'DIVING', action: 'Start Dive' },
         { from: 'DIVING', to: 'RETURNING', action: 'Return Home' },
-        { from: 'RETURNING', to: 'HOME', action: 'Home Reached' }
+        { from: 'RETURNING', to: 'HOME', action: 'Home Reached' },
     ];
 
     for (const transition of states) {
@@ -157,11 +159,13 @@ async function testLockMechanism() {
             while (this.operationLock) {
                 const now = Date.now();
                 if (firstWait || now - this.lastWaitLogTime >= this.waitLogInterval) {
-                    console.log(`  [DiveLock] ⏳ Waiting for existing operation... (${((now - this.lastWaitLogTime) / 1000).toFixed(0)}s)`);
+                    console.log(
+                        `  [DiveLock] ⏳ Waiting for existing operation... (${((now - this.lastWaitLogTime) / 1000).toFixed(0)}s)`
+                    );
                     this.lastWaitLogTime = now;
                     firstWait = false;
                 }
-                await new Promise(resolve => setTimeout(resolve, 10));
+                await new Promise((resolve) => setTimeout(resolve, 10));
             }
             this.operationLock = true;
             this.pageState = PAGE_STATE.DIVING;
@@ -174,7 +178,7 @@ async function testLockMechanism() {
             if (returnHome) {
                 this.pageState = PAGE_STATE.RETURNING;
                 this.scrollingEnabled = false;
-                await new Promise(resolve => setTimeout(resolve, 50));
+                await new Promise((resolve) => setTimeout(resolve, 50));
                 this.pageState = PAGE_STATE.HOME;
                 this.scrollingEnabled = true;
             }
@@ -193,7 +197,7 @@ async function testLockMechanism() {
             return {
                 state: this.pageState,
                 scrollingEnabled: this.scrollingEnabled,
-                operationLock: this.operationLock
+                operationLock: this.operationLock,
             };
         }
     }

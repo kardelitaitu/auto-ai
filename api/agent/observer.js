@@ -15,30 +15,39 @@ import { setStateAgentElementMap } from '../core/context-state.js';
  */
 export function processDomElements(doc = document) {
     const interactiveSelectors = [
-        'a', 'button', 'input', 'select', 'textarea', 
-        '[role="button"]', '[role="link"]', '[role="checkbox"]', 
-        '[role="menuitem"]', '[role="tab"]', '[onclick]'
+        'a',
+        'button',
+        'input',
+        'select',
+        'textarea',
+        '[role="button"]',
+        '[role="link"]',
+        '[role="checkbox"]',
+        '[role="menuitem"]',
+        '[role="tab"]',
+        '[onclick]',
     ];
 
     const allElements = doc.querySelectorAll(interactiveSelectors.join(','));
     const results = [];
     let idCounter = 1;
 
-    allElements.forEach(el => {
+    allElements.forEach((el) => {
         const style = doc.defaultView.getComputedStyle(el);
-        if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return;
-        
+        if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0')
+            return;
+
         const rect = el.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) return;
 
         let label = (
-            el.innerText?.trim() || 
-            el.getAttribute('aria-label') || 
-            el.getAttribute('placeholder') || 
-            el.getAttribute('title') || 
+            el.innerText?.trim() ||
+            el.getAttribute('aria-label') ||
+            el.getAttribute('placeholder') ||
+            el.getAttribute('title') ||
             el.getAttribute('alt') ||
             el.value ||
-            ""
+            ''
         ).trim();
 
         if (label.length > 50) label = label.substring(0, 47) + '...';
@@ -48,18 +57,21 @@ export function processDomElements(doc = document) {
             label = `[${el.getAttribute('data-testid')}]`;
         }
 
-        const role = el.tagName.toLowerCase() === 'a' ? 'link' : 
-                     el.tagName.toLowerCase() === 'input' ? (el.type || 'input') : 
-                     el.tagName.toLowerCase();
+        const role =
+            el.tagName.toLowerCase() === 'a'
+                ? 'link'
+                : el.tagName.toLowerCase() === 'input'
+                  ? el.type || 'input'
+                  : el.tagName.toLowerCase();
 
         const id = idCounter++;
         el.setAttribute('data-agent-id', id.toString());
-        
+
         results.push({
             id,
             role,
             label: label || '[no-label]',
-            selector: `[data-agent-id="${id}"]`
+            selector: `[data-agent-id="${id}"]`,
         });
     });
 
@@ -69,7 +81,7 @@ export function processDomElements(doc = document) {
 /**
  * See - Generates a semantic map of interactive elements on the page.
  * Assigns temporary IDs to elements for easy interaction via api.agent.do().
- * 
+ *
  * @param {object} [options]
  * @param {boolean} [options.compact=true] - If true, returns a concise string for LLM tokens
  * @returns {Promise<string|object[]>} Semantic map of the page
@@ -86,7 +98,7 @@ export async function see(options = {}) {
     setStateAgentElementMap(elements);
 
     if (compact) {
-        return elements.map(el => `[${el.id}] ${el.role}: "${el.label}"`).join('\n');
+        return elements.map((el) => `[${el.id}] ${el.role}: "${el.label}"`).join('\n');
     }
 
     return elements;

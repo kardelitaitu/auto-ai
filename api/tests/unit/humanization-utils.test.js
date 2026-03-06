@@ -12,7 +12,7 @@ vi.mock('@api/index.js', () => ({
         wait: vi.fn().mockResolvedValue(undefined),
         think: vi.fn().mockResolvedValue(undefined),
         getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
-    }
+    },
 }));
 import { api } from '@api/index.js';
 import { HumanizationEngine } from '@api/behaviors/humanization/engine.js';
@@ -31,8 +31,8 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 vi.mock('@api/utils/math.js', () => ({
@@ -40,20 +40,20 @@ vi.mock('@api/utils/math.js', () => ({
         randomInRange: vi.fn(),
         gaussian: vi.fn(),
         roll: vi.fn(),
-        sample: vi.fn()
-    }
+        sample: vi.fn(),
+    },
 }));
 
 vi.mock('@api/utils/entropyController.js', () => ({
     entropy: {
-        getVariation: vi.fn().mockReturnValue(1.0)
-    }
+        getVariation: vi.fn().mockReturnValue(1.0),
+    },
 }));
 
 vi.mock('@api/behaviors/scroll-helper.js', () => ({
     scrollRandom: vi.fn().mockResolvedValue(undefined),
     scrollDown: vi.fn().mockResolvedValue(undefined),
-    scrollUp: vi.fn().mockResolvedValue(undefined)
+    scrollUp: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@api/behaviors/humanization/scroll.js');
@@ -80,14 +80,20 @@ describe('HumanizationEngine', () => {
         mockPage = {
             waitForTimeout: vi.fn(),
             mouse: {
-                wheel: vi.fn()
+                wheel: vi.fn(),
             },
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
+            context: vi
+                .fn()
+                .mockReturnValue({
+                    browser: vi
+                        .fn()
+                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+                }),
         };
         api.getPage.mockReturnValue(mockPage);
         mockAgent = {
-            log: vi.fn()
+            log: vi.fn(),
         };
 
         mathUtils.randomInRange.mockImplementation((min, _max) => min);
@@ -95,50 +101,50 @@ describe('HumanizationEngine', () => {
         mathUtils.roll.mockReturnValue(false);
         mathUtils.sample.mockImplementation((arr) => arr[0]);
 
-        HumanScroll.mockImplementation(function() {
+        HumanScroll.mockImplementation(function () {
             return {
                 setAgent: vi.fn(),
                 execute: vi.fn().mockResolvedValue(),
-                toElement: vi.fn().mockResolvedValue()
+                toElement: vi.fn().mockResolvedValue(),
             };
         });
-        HumanTiming.mockImplementation(function() {
+        HumanTiming.mockImplementation(function () {
             return {
                 getThinkTime: vi.fn().mockReturnValue(1000),
                 sessionRampUp: vi.fn().mockResolvedValue(),
-                getNaturalPause: vi.fn().mockReturnValue(500)
+                getNaturalPause: vi.fn().mockReturnValue(500),
             };
         });
-        ContentSkimmer.mockImplementation(function() {
+        ContentSkimmer.mockImplementation(function () {
             return {
                 setAgent: vi.fn(),
                 skipping: vi.fn().mockResolvedValue(),
-                reading: vi.fn().mockResolvedValue()
+                reading: vi.fn().mockResolvedValue(),
             };
         });
-        ErrorRecovery.mockImplementation(function() {
+        ErrorRecovery.mockImplementation(function () {
             return {
-                handle: vi.fn().mockResolvedValue({ success: true })
+                handle: vi.fn().mockResolvedValue({ success: true }),
             };
         });
-        SessionManager.mockImplementation(function() {
+        SessionManager.mockImplementation(function () {
             return {
                 wrapUp: vi.fn().mockResolvedValue(),
                 getOptimalLength: vi.fn().mockReturnValue({ targetMs: 1000 }),
-                boredomPause: vi.fn().mockResolvedValue()
+                boredomPause: vi.fn().mockResolvedValue(),
             };
         });
-        MultitaskEngine.mockImplementation(function() {
+        MultitaskEngine.mockImplementation(function () {
             return {
                 checkNotifications: vi.fn().mockResolvedValue(),
                 glanceTrending: vi.fn().mockResolvedValue(),
                 shiftPosition: vi.fn().mockResolvedValue(),
-                glanceMentions: vi.fn().mockResolvedValue()
+                glanceMentions: vi.fn().mockResolvedValue(),
             };
         });
-        ActionPredictor.mockImplementation(function() {
+        ActionPredictor.mockImplementation(function () {
             return {
-                predict: vi.fn().mockReturnValue({ type: 'scroll' })
+                predict: vi.fn().mockReturnValue({ type: 'scroll' }),
             };
         });
 
@@ -205,9 +211,9 @@ describe('HumanizationEngine', () => {
 
         it('should start session with warmup and scroll', async () => {
             const scrollSpy = vi.spyOn(engine, 'scroll');
-            
+
             await engine.sessionStart();
-            
+
             expect(engine._timingEngine.sessionRampUp).toHaveBeenCalled();
             expect(api.wait).toHaveBeenCalled();
             expect(scrollSpy).toHaveBeenCalledWith('down', 'light');
@@ -215,7 +221,7 @@ describe('HumanizationEngine', () => {
 
         it('should end session with wrap up', async () => {
             await engine.sessionEnd();
-            
+
             expect(engine._sessionEngine.wrapUp).toHaveBeenCalledWith(mockPage);
             expect(scrollRandom).toHaveBeenCalledWith(-50, 100);
         });

@@ -47,10 +47,10 @@ Like a tweet.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
+| Function                | Description  |
+| ----------------------- | ------------ |
 | `likeWithAPI(selector)` | Like via API |
-| `like(selector)` | Like via UI |
+| `like(selector)`        | Like via UI  |
 
 ### Usage
 
@@ -70,10 +70,10 @@ Retweet a tweet.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
+| Function                   | Description     |
+| -------------------------- | --------------- |
 | `retweetWithAPI(selector)` | Retweet via API |
-| `retweet(selector)` | Retweet via UI |
+| `retweet(selector)`        | Retweet via UI  |
 
 ### Usage
 
@@ -93,10 +93,10 @@ Follow a user.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
+| Function                | Description    |
+| ----------------------- | -------------- |
 | `followWithAPI(userId)` | Follow via API |
-| `follow(selector)` | Follow via UI |
+| `follow(selector)`      | Follow via UI  |
 
 ### Usage
 
@@ -116,9 +116,9 @@ Quote tweet with additional text.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `quote(tweetSelector, text)` | Quote tweet |
+| Function                              | Description                  |
+| ------------------------------------- | ---------------------------- |
+| `quote(tweetSelector, text)`          | Quote tweet                  |
 | `quoteWithAI(tweetSelector, context)` | Quote with AI-generated text |
 
 ### Usage
@@ -130,7 +130,7 @@ await api.quote('[data-testid="tweet"]', 'Great post!');
 // AI-powered quote
 await api.quoteWithAI('[data-testid="tweet"]', {
     topic: 'AI',
-    sentiment: 'positive'
+    sentiment: 'positive',
 });
 ```
 
@@ -142,9 +142,9 @@ Reply to a tweet.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `reply(tweetSelector, text)` | Reply to tweet |
+| Function                              | Description                  |
+| ------------------------------------- | ---------------------------- |
+| `reply(tweetSelector, text)`          | Reply to tweet               |
 | `replyWithAI(tweetSelector, context)` | Reply with AI-generated text |
 
 ### Usage
@@ -156,7 +156,7 @@ await api.reply('[data-testid="reply"]', 'Thanks for sharing!');
 // AI-powered reply
 await api.replyWithAI('[data-testid="reply"]', {
     topic: 'technology',
-    tone: 'professional'
+    tone: 'professional',
 });
 ```
 
@@ -168,10 +168,10 @@ Bookmark a tweet.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
+| Function                   | Description      |
+| -------------------------- | ---------------- |
 | `bookmarkWithAPI(tweetId)` | Bookmark via API |
-| `bookmark(selector)` | Bookmark via UI |
+| `bookmark(selector)`       | Bookmark via UI  |
 
 ### Usage
 
@@ -191,13 +191,13 @@ AI-powered actions that generate contextual content.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `ai-twitter-like.js` | AI-powered liking |
-| `ai-twitter-retweet.js` | AI-powered retweeting |
-| `ai-twitter-follow.js` | AI-powered following |
-| `ai-twitter-quote.js` | AI-powered quoting |
-| `ai-twitter-reply.js` | AI-powered replying |
+| Function                 | Description            |
+| ------------------------ | ---------------------- |
+| `ai-twitter-like.js`     | AI-powered liking      |
+| `ai-twitter-retweet.js`  | AI-powered retweeting  |
+| `ai-twitter-follow.js`   | AI-powered following   |
+| `ai-twitter-quote.js`    | AI-powered quoting     |
+| `ai-twitter-reply.js`    | AI-powered replying    |
 | `ai-twitter-bookmark.js` | AI-powered bookmarking |
 
 ### AI Action Options
@@ -220,14 +220,14 @@ AI-powered actions that generate contextual content.
 await api.replyWithAI('[data-testid="reply"]', {
     topic: 'AI news',
     tone: 'professional',
-    length: 'medium'
+    length: 'medium',
 });
 
 // AI-powered quote
 await api.quoteWithAI('[data-testid="tweet"]', {
     topic: 'tech',
     sentiment: 'positive',
-    includeEmoji: true
+    includeEmoji: true,
 });
 ```
 
@@ -239,12 +239,12 @@ Twitter-specific navigation functions.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `goHome()` | Navigate to home timeline |
-| `goToProfile(username)` | Navigate to profile |
-| `goToNotifications()` | Navigate to notifications |
-| `goToMessages()` | Navigate to messages |
+| Function                | Description               |
+| ----------------------- | ------------------------- |
+| `goHome()`              | Navigate to home timeline |
+| `goToProfile(username)` | Navigate to profile       |
+| `goToNotifications()`   | Navigate to notifications |
+| `goToMessages()`        | Navigate to messages      |
 
 ### Usage
 

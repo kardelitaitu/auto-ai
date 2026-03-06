@@ -49,7 +49,10 @@ export class SessionHandler extends BaseHandler {
     async runSession(cycles = 10, minDurationSec = 0, maxDurationSec = 0) {
         // Set session duration if specified
         if (minDurationSec > 0 && maxDurationSec > 0) {
-            const durationMs = mathUtils.randomInRange(minDurationSec * 1000, maxDurationSec * 1000);
+            const durationMs = mathUtils.randomInRange(
+                minDurationSec * 1000,
+                maxDurationSec * 1000
+            );
             this.sessionEndTime = Date.now() + durationMs;
             this.log(`⏰ Session time limit set: ${Math.round(durationMs / 1000)}s`);
         }
@@ -251,7 +254,8 @@ export class SessionHandler extends BaseHandler {
                     }
 
                     if (visibleIndices.length > 0) {
-                        const randomIndex = visibleIndices[Math.floor(Math.random() * visibleIndices.length)];
+                        const randomIndex =
+                            visibleIndices[Math.floor(Math.random() * visibleIndices.length)];
                         const targetElement = textElements.nth(randomIndex);
 
                         // Simulate text selection
@@ -267,7 +271,6 @@ export class SessionHandler extends BaseHandler {
                         }
                     }
                 }
-
             } else if (fidgetType === 'RANDOM_CLICK') {
                 // Click on random empty space
                 const viewport = this.page.viewportSize();
@@ -277,7 +280,6 @@ export class SessionHandler extends BaseHandler {
                 await this.page.mouse.move(x, y);
                 await api.wait(300);
                 await this.page.mouse.click(x, y);
-
             } else if (fidgetType === 'SCROLL_JITTER') {
                 // Random scroll jitter
                 for (let i = 0; i < 3; i++) {
@@ -287,7 +289,6 @@ export class SessionHandler extends BaseHandler {
             }
 
             await api.wait(mathUtils.randomInRange(500, 1500));
-
         } catch (error) {
             this.log(`[Fidget] Error: ${error.message}`);
         }
@@ -297,7 +298,9 @@ export class SessionHandler extends BaseHandler {
      * Human-like typing simulation
      */
     async humanType(element, text) {
-        this.log(`[Type] Simulating human typing: "${text.substring(0, 20)}${text.length > 20 ? '...' : ''}"`);
+        this.log(
+            `[Type] Simulating human typing: "${text.substring(0, 20)}${text.length > 20 ? '...' : ''}"`
+        );
 
         try {
             await element.click();
@@ -320,7 +323,6 @@ export class SessionHandler extends BaseHandler {
             }
 
             await api.wait(mathUtils.randomInRange(500, 1000));
-
         } catch (error) {
             this.log(`[Type] Error: ${error.message}`);
             throw error;
@@ -331,14 +333,18 @@ export class SessionHandler extends BaseHandler {
      * Post a tweet with human-like behavior
      */
     async postTweet(text) {
-        this.log(`[Tweet] Composing tweet: "${text.substring(0, 30)}${text.length > 30 ? '...' : ''}"`);
+        this.log(
+            `[Tweet] Composing tweet: "${text.substring(0, 30)}${text.length > 30 ? '...' : ''}"`
+        );
 
         try {
             // Open composer
-            const composerButton = this.page.locator('[data-testid="SideNav_NewTweet_Button"], a[href="/compose/tweet"]');
+            const composerButton = this.page.locator(
+                '[data-testid="SideNav_NewTweet_Button"], a[href="/compose/tweet"]'
+            );
             let composerOpened = false;
 
-            if (await api.exists(composerButton) && await api.visible(composerButton)) {
+            if ((await api.exists(composerButton)) && (await api.visible(composerButton))) {
                 await this.safeHumanClick(composerButton, 'Composer Button');
                 composerOpened = true;
             }
@@ -350,15 +356,19 @@ export class SessionHandler extends BaseHandler {
             }
 
             // Wait for composer to appear
-            const composer = this.page.locator('[data-testid="tweetTextarea_0"], [data-testid="tweetTextView"]');
+            const composer = this.page.locator(
+                '[data-testid="tweetTextarea_0"], [data-testid="tweetTextView"]'
+            );
             await composer.waitFor({ state: 'visible', timeout: 5000 });
 
             // Type the tweet
             await this.humanType(composer, text);
 
             // Post the tweet
-            const postButton = this.page.locator('[data-testid="tweetButton"], [data-testid="tweetButtonInline"]');
-            if (await api.exists(postButton) && await api.visible(postButton)) {
+            const postButton = this.page.locator(
+                '[data-testid="tweetButton"], [data-testid="tweetButtonInline"]'
+            );
+            if ((await api.exists(postButton)) && (await api.visible(postButton))) {
                 await this.safeHumanClick(postButton, 'Post Button');
 
                 // Wait for post confirmation
@@ -368,7 +378,6 @@ export class SessionHandler extends BaseHandler {
                 this.log(`✅ Tweet posted successfully! Total tweets: ${this.state.tweets}`);
                 return true;
             }
-
         } catch (error) {
             this.log(`❌ Failed to post tweet: ${error.message}`);
         }
@@ -405,7 +414,7 @@ export class SessionHandler extends BaseHandler {
                 'Account locked',
                 'Help us keep your account safe',
                 'Your account is temporarily limited',
-                'Automated behavior'
+                'Automated behavior',
             ];
 
             for (const text of lockedText) {
@@ -424,7 +433,7 @@ export class SessionHandler extends BaseHandler {
                 'Confirm your email',
                 'suspicious activity',
                 'Enter the verification code',
-                'Authenticate your account'
+                'Authenticate your account',
             ];
 
             for (const text of verifyText) {
@@ -443,7 +452,7 @@ export class SessionHandler extends BaseHandler {
                 'Sign up with Google',
                 'Create account',
                 'Join X today',
-                'Oops, something went wrong'
+                'Oops, something went wrong',
             ];
 
             for (const text of signedOutText) {
@@ -463,7 +472,7 @@ export class SessionHandler extends BaseHandler {
                 'a[href*="/i/flow/login"]',
                 '[data-testid="loginButton"]',
                 '[data-testid="signupButton"]',
-                '[data-testid="google_sign_in_container"]'
+                '[data-testid="google_sign_in_container"]',
             ];
 
             for (const selector of loginSelectors) {
@@ -479,10 +488,12 @@ export class SessionHandler extends BaseHandler {
             // Heuristic: If we are supposedly on Home but can't see the primary column or interacting elements
             if ((await api.getCurrentUrl()).includes('home')) {
                 const mainColumn = this.page.locator('[data-testid="primaryColumn"]');
-                if (await mainColumn.count() === 0 || !(await api.visible(mainColumn))) {
+                if ((await mainColumn.count()) === 0 || !(await api.visible(mainColumn))) {
                     const timeline = this.page.locator('[aria-label="Home timeline"]');
-                    if (await timeline.count() === 0) {
-                        this.log(`[WARN] Suspected not logged in: Primary Timeline not visible on /home.`);
+                    if ((await timeline.count()) === 0) {
+                        this.log(
+                            `[WARN] Suspected not logged in: Primary Timeline not visible on /home.`
+                        );
                         this.state.consecutiveLoginFailures++;
                         return false;
                     }

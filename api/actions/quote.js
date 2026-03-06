@@ -12,12 +12,12 @@ const logger = createLogger('api/quote.js');
 
 /**
  * Automate Quote-Tweeting with AI Context
- * 
+ *
  * Performs:
  * 1. Context extraction (tweet text + nearby replies)
  * 2. AI quote generation
  * 3. Execution via Retweet Menu (Strategy B)
- * 
+ *
  * @param {object} [options]
  * @param {string} [options.fallback] - Fallback quote if AI fails
  * @param {number} [options.contextSteps=5] - How many scrolls to collect context
@@ -26,8 +26,8 @@ const logger = createLogger('api/quote.js');
 export async function quoteWithAI(options = {}) {
     const page = getPage();
     const {
-        fallback = "This is definitely an interesting perspective on things. Worth sharing!",
-        contextSteps = 5
+        fallback = 'This is definitely an interesting perspective on things. Worth sharing!',
+        contextSteps = 5,
     } = options;
 
     logger.info(`Starting high-level api.quoteWithAI()...`);
@@ -92,7 +92,7 @@ async function extractMainTweetText() {
     const selectors = [
         'article[data-testid="tweet"] div[data-testid="tweetText"]',
         'article[data-testid="tweet"] [data-testid="tweetText"]',
-        'article[data-testid="tweet"] [dir="auto"]'
+        'article[data-testid="tweet"] [dir="auto"]',
     ];
 
     for (const selector of selectors) {
@@ -129,7 +129,7 @@ async function extractElasticContext(steps) {
             const selectors = ['[data-testid="tweetText"]', 'article [dir="auto"]'];
             for (const selector of selectors) {
                 const elements = document.querySelectorAll(selector);
-                elements.forEach(el => {
+                elements.forEach((el) => {
                     const txt = el instanceof HTMLElement ? el.innerText.trim() : '';
                     if (txt && txt.length > 3 && txt.length < 300) {
                         found.push(txt.substring(0, 100));

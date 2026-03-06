@@ -4,11 +4,11 @@ import { text, attr, visible, count, exists, currentUrl } from '@api/interaction
 // Mock dependencies
 vi.mock('@api/core/context.js', () => ({
     getPage: vi.fn(),
-    isSessionActive: vi.fn().mockReturnValue(true)
+    isSessionActive: vi.fn().mockReturnValue(true),
 }));
 
 vi.mock('@api/utils/locator.js', () => ({
-    getLocator: vi.fn()
+    getLocator: vi.fn(),
 }));
 
 import { getPage, isSessionActive } from '@api/core/context.js';
@@ -26,11 +26,11 @@ describe('api/interactions/queries.js', () => {
             innerText: vi.fn(),
             getAttribute: vi.fn(),
             isVisible: vi.fn(),
-            count: vi.fn()
+            count: vi.fn(),
         };
 
         mockPage = {
-            url: vi.fn().mockReturnValue('https://x.com/home')
+            url: vi.fn().mockReturnValue('https://x.com/home'),
         };
 
         getLocator.mockReturnValue(mockLocator);
@@ -66,10 +66,10 @@ describe('api/interactions/queries.js', () => {
         });
 
         it('should work with locator input', async () => {
-            const mockLocatorInput = { 
+            const mockLocatorInput = {
                 waitFor: vi.fn(),
                 first: vi.fn().mockReturnThis(),
-                innerText: vi.fn().mockResolvedValue('Locator text')
+                innerText: vi.fn().mockResolvedValue('Locator text'),
             };
             getLocator.mockReturnValue(mockLocatorInput);
 
@@ -209,7 +209,9 @@ describe('api/interactions/queries.js', () => {
         });
 
         it('should return empty string on error', async () => {
-            mockPage.url.mockImplementation(() => { throw new Error('URL error'); });
+            mockPage.url.mockImplementation(() => {
+                throw new Error('URL error');
+            });
 
             const result = await currentUrl();
 

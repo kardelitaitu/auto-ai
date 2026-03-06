@@ -7,5 +7,5 @@
  * @returns {{success: boolean}} A success object
  */
 export default async function coverageValidTask() {
-  return { success: true };
+    return { success: true };
 }

@@ -1,4 +1,3 @@
-
 /**
  * @fileoverview Unit Tests for AITwitterAgent - Real Implementation
  * Tests the actual AITwitterAgent class with mocked dependencies
@@ -26,7 +25,7 @@ vi.mock('../../utils/twitterAgent.js', () => ({
                 quotes: 0,
                 activityMode: 'NORMAL',
                 burstEndTime: 0,
-                lastRefreshAt: 0
+                lastRefreshAt: 0,
             };
             this.engagement = { diveTweet: vi.fn() };
             this.human = {
@@ -35,19 +34,33 @@ vi.mock('../../utils/twitterAgent.js', () => ({
                 cycleComplete: vi.fn(),
                 session: {
                     shouldEndSession: vi.fn().mockReturnValue(false),
-                    boredomPause: vi.fn()
-                }
+                    boredomPause: vi.fn(),
+                },
             };
         }
-        log(msg) { this.logger.info(msg); }
-        isSessionExpired() { return false; }
-        simulateReading() { return Promise.resolve(); }
-        navigateHome() { return Promise.resolve(); }
-        checkLoginState() { return Promise.resolve(true); }
-        normalizeProbabilities(p) { return p; }
-        diveProfile() { return Promise.resolve(); }
-        shutdown() { }
-    }
+        log(msg) {
+            this.logger.info(msg);
+        }
+        isSessionExpired() {
+            return false;
+        }
+        simulateReading() {
+            return Promise.resolve();
+        }
+        navigateHome() {
+            return Promise.resolve();
+        }
+        checkLoginState() {
+            return Promise.resolve(true);
+        }
+        normalizeProbabilities(p) {
+            return p;
+        }
+        diveProfile() {
+            return Promise.resolve();
+        }
+        shutdown() {}
+    },
 }));
 
 // Mock Engines
@@ -57,18 +70,18 @@ vi.mock('../../utils/ai-reply-engine.js', () => ({
             config: { REPLY_PROBABILITY: 0.5 },
             shouldReply: vi.fn().mockResolvedValue({ decision: 'reply', reply: 'Test reply' }),
             generateReply: vi.fn().mockResolvedValue({ success: true, reply: 'Test reply' }),
-            executeReply: vi.fn().mockResolvedValue({ success: true, method: 'test' })
+            executeReply: vi.fn().mockResolvedValue({ success: true, method: 'test' }),
         };
-    })
+    }),
 }));
 
 vi.mock('../../utils/ai-quote-engine.js', () => ({
     AIQuoteEngine: vi.fn(function () {
         return {
             generateQuote: vi.fn().mockResolvedValue({ success: true, quote: 'Test quote' }),
-            executeQuote: vi.fn().mockResolvedValue({ success: true, method: 'test' })
+            executeQuote: vi.fn().mockResolvedValue({ success: true, method: 'test' }),
         };
-    })
+    }),
 }));
 
 vi.mock('../../utils/ai-context-engine.js', () => ({
@@ -78,10 +91,10 @@ vi.mock('../../utils/ai-context-engine.js', () => ({
                 sentiment: { overall: 'positive' },
                 tone: { primary: 'casual' },
                 engagementLevel: 'medium',
-                replies: []
-            })
+                replies: [],
+            }),
         };
-    })
+    }),
 }));
 
 // Mock Utils
@@ -92,21 +105,21 @@ vi.mock('../../utils/micro-interactions.js', () => ({
             executeMicroInteraction: vi.fn().mockResolvedValue({ success: true, type: 'test' }),
             textHighlight: vi.fn().mockResolvedValue({ success: true }),
             startFidgetLoop: vi.fn(),
-            stopFidgetLoop: vi.fn()
-        })
-    }
+            stopFidgetLoop: vi.fn(),
+        }),
+    },
 }));
 
 vi.mock('../../utils/motor-control.js', () => ({
     motorControl: {
         createMotorController: vi.fn().mockReturnValue({
-            smartClick: vi.fn().mockResolvedValue({ success: true, x: 100, y: 100 })
-        })
-    }
+            smartClick: vi.fn().mockResolvedValue({ success: true, x: 100, y: 100 }),
+        }),
+    },
 }));
 
 vi.mock('../../core/agent-connector.js', () => ({
-    default: vi.fn()
+    default: vi.fn(),
 }));
 
 vi.mock('../../utils/math.js', () => ({
@@ -114,15 +127,15 @@ vi.mock('../../utils/math.js', () => ({
         randomInRange: vi.fn((min, max) => min),
         roll: vi.fn(() => true),
         gaussian: vi.fn((mean) => mean),
-        sample: vi.fn((arr) => arr?.[0] || null)
-    }
+        sample: vi.fn((arr) => arr?.[0] || null),
+    },
 }));
 
 vi.mock('../../utils/entropyController.js', () => ({
     entropy: {
         retryDelay: vi.fn(() => 100),
-        scrollSettleTime: vi.fn(() => 100)
-    }
+        scrollSettleTime: vi.fn(() => 100),
+    },
 }));
 
 vi.mock('../../utils/engagement-limits.js', () => ({
@@ -133,17 +146,17 @@ vi.mock('../../utils/engagement-limits.js', () => ({
             getProgress: vi.fn().mockReturnValue('0/10'),
             getStatus: vi.fn().mockReturnValue({}),
             getSummary: vi.fn().mockReturnValue('Summary'),
-            getUsageRate: vi.fn().mockReturnValue(0)
-        })
-    }
+            getUsageRate: vi.fn().mockReturnValue(0),
+        }),
+    },
 }));
 
 vi.mock('../../utils/session-phases.js', () => ({
     sessionPhases: {
         getSessionPhase: vi.fn().mockReturnValue('active'),
         getPhaseStats: vi.fn().mockReturnValue({ description: 'Active phase' }),
-        getPhaseModifier: vi.fn().mockReturnValue(1.0)
-    }
+        getPhaseModifier: vi.fn().mockReturnValue(1.0),
+    },
 }));
 
 vi.mock('../../utils/sentiment-service.js', () => ({
@@ -156,24 +169,28 @@ vi.mock('../../utils/sentiment-service.js', () => ({
                 arousal: { arousal: 0.5 },
                 dominance: { dominance: 0.5 },
                 sarcasm: { sarcasm: 0.1 },
-                toxicity: { toxicity: 0 }
+                toxicity: { toxicity: 0 },
             },
             engagement: { warnings: [], canLike: true },
-            composite: { riskLevel: 'low', conversationType: 'casual', engagementStyle: 'positive' }
-        })
-    }
+            composite: {
+                riskLevel: 'low',
+                conversationType: 'casual',
+                engagementStyle: 'positive',
+            },
+        }),
+    },
 }));
 
 vi.mock('../../utils/scroll-helper.js', () => ({
     scrollDown: vi.fn(),
     scrollUp: vi.fn(),
-    scrollRandom: vi.fn()
+    scrollRandom: vi.fn(),
 }));
 
 vi.mock('../../utils/config-service.js', () => ({
     config: {
-        getEngagementLimits: vi.fn()
-    }
+        getEngagementLimits: vi.fn(),
+    },
 }));
 
 vi.mock('../../utils/async-queue.js', () => ({
@@ -193,43 +210,59 @@ vi.mock('../../utils/async-queue.js', () => ({
                 likes: { current: 0, limit: 10 },
                 replies: { current: 0, limit: 10 },
                 quotes: { current: 0, limit: 10 },
-                bookmarks: { current: 0, limit: 10 }
+                bookmarks: { current: 0, limit: 10 },
             }),
             getFullStatus: vi.fn().mockReturnValue({
-                queueLength: 0, activeCount: 0, utilization: 0, capacity: 30, maxQueueSize: 30
+                queueLength: 0,
+                activeCount: 0,
+                utilization: 0,
+                capacity: 30,
+                maxQueueSize: 30,
             }),
             isHealthy: vi.fn().mockReturnValue(true),
             enableQuickMode: vi.fn(),
             disableQuickMode: vi.fn(),
-            resetEngagement: vi.fn()
+            resetEngagement: vi.fn(),
         };
-    })
+    }),
 }));
 
 // Mock Actions
 vi.mock('../../utils/actions/ai-twitter-reply.js', () => ({
-    AIReplyAction: vi.fn(function () { return { getStats: vi.fn() }; })
+    AIReplyAction: vi.fn(function () {
+        return { getStats: vi.fn() };
+    }),
 }));
 vi.mock('../../utils/actions/ai-twitter-quote.js', () => ({
-    AIQuoteAction: vi.fn(function () { return { getStats: vi.fn() }; })
+    AIQuoteAction: vi.fn(function () {
+        return { getStats: vi.fn() };
+    }),
 }));
 vi.mock('../../utils/actions/ai-twitter-like.js', () => ({
-    LikeAction: vi.fn(function () { return { getStats: vi.fn() }; })
+    LikeAction: vi.fn(function () {
+        return { getStats: vi.fn() };
+    }),
 }));
 vi.mock('../../utils/actions/ai-twitter-bookmark.js', () => ({
-    BookmarkAction: vi.fn(function () { return { getStats: vi.fn() }; })
+    BookmarkAction: vi.fn(function () {
+        return { getStats: vi.fn() };
+    }),
 }));
 vi.mock('../../utils/actions/ai-twitter-go-home.js', () => ({
-    GoHomeAction: vi.fn(function () { return { getStats: vi.fn() }; })
+    GoHomeAction: vi.fn(function () {
+        return { getStats: vi.fn() };
+    }),
 }));
 vi.mock('../../utils/actions/index.js', () => ({
     ActionRunner: vi.fn(function () {
         return {
             selectAction: vi.fn().mockReturnValue('reply'),
-            executeAction: vi.fn().mockResolvedValue({ success: true, executed: true, reason: 'Test' }),
-            getStats: vi.fn()
+            executeAction: vi
+                .fn()
+                .mockResolvedValue({ success: true, executed: true, reason: 'Test' }),
+            getStats: vi.fn(),
         };
-    })
+    }),
 }));
 
 vi.mock('../../utils/human-interaction.js', () => ({
@@ -238,9 +271,9 @@ vi.mock('../../utils/human-interaction.js', () => ({
             findWithFallback: vi.fn(),
             sessionStart: vi.fn(),
             sessionEnd: vi.fn(),
-            cycleComplete: vi.fn()
+            cycleComplete: vi.fn(),
         };
-    })
+    }),
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -248,14 +281,14 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        shutdown: vi.fn()
+        shutdown: vi.fn(),
     }),
     createLogger: vi.fn().mockReturnValue({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    })
+        debug: vi.fn(),
+    }),
 }));
 
 vi.mock('../../../api/index.js', () => ({
@@ -269,8 +302,8 @@ vi.mock('../../../api/index.js', () => ({
         maybeDistract: vi.fn().mockResolvedValue(undefined),
         isSessionActive: vi.fn().mockReturnValue(true),
         emulateMedia: vi.fn().mockResolvedValue(undefined),
-        think: vi.fn().mockResolvedValue(undefined)
-    }
+        think: vi.fn().mockResolvedValue(undefined),
+    },
 }));
 
 describe('AITwitterAgent (Real Implementation)', () => {
@@ -301,37 +334,37 @@ describe('AITwitterAgent (Real Implementation)', () => {
                     boundingBox: vi.fn().mockResolvedValue({ x: 0, y: 0, width: 100, height: 100 }),
                     click: vi.fn().mockResolvedValue(),
                     scrollIntoViewIfNeeded: vi.fn().mockResolvedValue(),
-                    getAttribute: vi.fn().mockResolvedValue('')
+                    getAttribute: vi.fn().mockResolvedValue(''),
                 }),
-                count: vi.fn().mockResolvedValue(1)
+                count: vi.fn().mockResolvedValue(1),
             }),
             context: vi.fn().mockReturnValue({
                 browser: vi.fn().mockReturnValue({
-                    isConnected: vi.fn().mockReturnValue(true)
-                })
+                    isConnected: vi.fn().mockReturnValue(true),
+                }),
             }),
             keyboard: {
-                press: vi.fn().mockResolvedValue()
+                press: vi.fn().mockResolvedValue(),
             },
             mouse: {
-                move: vi.fn().mockResolvedValue()
+                move: vi.fn().mockResolvedValue(),
             },
-            viewportSize: vi.fn().mockReturnValue({ width: 1280, height: 720 })
+            viewportSize: vi.fn().mockReturnValue({ width: 1280, height: 720 }),
         };
 
         mockLogger = {
             info: vi.fn(),
             warn: vi.fn(),
             error: vi.fn(),
-            debug: vi.fn()
+            debug: vi.fn(),
         };
 
         mockProfile = {
-            id: 'test-profile'
+            id: 'test-profile',
         };
 
         agent = new AITwitterAgent(mockPage, mockProfile, mockLogger, {
-            engagementLimits: { likes: 10 }
+            engagementLimits: { likes: 10 },
         });
     });
 
@@ -414,14 +447,22 @@ describe('AITwitterAgent (Real Implementation)', () => {
             sentimentService.analyze.mockReturnValueOnce({
                 isNegative: true,
                 score: -0.8,
-                dimensions: { valence: { valence: -0.8 }, arousal: { arousal: 0.5 }, dominance: { dominance: 0.5 }, sarcasm: { sarcasm: 0 }, toxicity: { toxicity: 0 } },
+                dimensions: {
+                    valence: { valence: -0.8 },
+                    arousal: { arousal: 0.5 },
+                    dominance: { dominance: 0.5 },
+                    sarcasm: { sarcasm: 0 },
+                    toxicity: { toxicity: 0 },
+                },
                 engagement: { warnings: [] },
-                composite: { riskLevel: 'high' }
+                composite: { riskLevel: 'high' },
             });
 
             await agent.handleAIReply('I hate this', 'user');
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Skipped (negative sentiment)'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('Skipped (negative sentiment)')
+            );
         });
 
         // Skipped: test isolation issues (pass individually, fail in full suite)

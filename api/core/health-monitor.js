@@ -17,13 +17,13 @@ export default class HealthMonitor {
 
             return {
                 healthy: true,
-                latency
+                latency,
             };
         } catch (error) {
             return {
                 healthy: false,
                 latency: 0,
-                error: error.message
+                error: error.message,
             };
         } finally {
             if (context) {
@@ -41,24 +41,24 @@ export default class HealthMonitor {
             if (page.isClosed()) {
                 return {
                     healthy: false,
-                    error: 'Page is closed'
+                    error: 'Page is closed',
                 };
             }
 
             const result = await page.evaluate(() => ({
                 documentReady: document.readyState,
                 title: document.title,
-                bodyExists: !!document.body
+                bodyExists: !!document.body,
             }));
 
             return {
                 healthy: true,
-                title: result.title
+                title: result.title,
             };
         } catch (error) {
             return {
                 healthy: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -69,8 +69,8 @@ export default class HealthMonitor {
         const result = {
             healthy: browserConnection,
             checks: {
-                browserConnection
-            }
+                browserConnection,
+            },
         };
 
         if (page) {

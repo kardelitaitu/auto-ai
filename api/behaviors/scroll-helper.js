@@ -1,11 +1,11 @@
 /**
  * @fileoverview Scroll Helper - Now uses Unified API
  * Migrated to use api.scroll() for all scrolling operations
- * 
+ *
  * Usage:
  *   // BEFORE: await scrollWheel(page, 300);
  *   // AFTER:  await scrollWheel(300);
- * 
+ *
  * @module utils/scroll-helper
  */
 

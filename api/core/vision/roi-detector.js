@@ -22,8 +22,8 @@ class RoIDetector {
                     return {
                         x: Math.max(0, box.x - padding),
                         y: Math.max(0, box.y - padding),
-                        width: box.width + (padding * 2),
-                        height: box.height + (padding * 2)
+                        width: box.width + padding * 2,
+                        height: box.height + padding * 2,
                     };
                 }
             }

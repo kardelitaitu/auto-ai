@@ -13,11 +13,11 @@ vi.mock('fs', () => {
     const mockFs = {
         readdirSync: vi.fn(),
         statSync: vi.fn(),
-        existsSync: vi.fn()
+        existsSync: vi.fn(),
     };
     return {
         default: mockFs,
-        ...mockFs
+        ...mockFs,
     };
 });
 
@@ -26,13 +26,13 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 // Mock connectors
 vi.mock('../../connectors/discovery/roxybrowser.js', () => ({
-    default: {} // Not a function, invalid export
+    default: {}, // Not a function, invalid export
 }));
 
 vi.mock('../../connectors/discovery/ixbrowser.js', () => ({
@@ -42,10 +42,14 @@ vi.mock('../../connectors/discovery/ixbrowser.js', () => ({
         }
         async discover() {
             return [
-                { ws: 'ws://localhost:53200/devtools/browser/abc123', http: 'http://localhost:53200', windowName: 'Profile 1' }
+                {
+                    ws: 'ws://localhost:53200/devtools/browser/abc123',
+                    http: 'http://localhost:53200',
+                    windowName: 'Profile 1',
+                },
             ];
         }
-    }
+    },
 }));
 
 vi.mock('../../connectors/discovery/localBrave.js', () => ({
@@ -55,10 +59,14 @@ vi.mock('../../connectors/discovery/localBrave.js', () => ({
         }
         async discover() {
             return [
-                { ws: 'ws://localhost:9222/devtools/browser/xyz789', http: 'http://localhost:9222', windowName: 'Brave Window' }
+                {
+                    ws: 'ws://localhost:9222/devtools/browser/xyz789',
+                    http: 'http://localhost:9222',
+                    windowName: 'Brave Window',
+                },
             ];
         }
-    }
+    },
 }));
 
 vi.mock('../../connectors/discovery/localChrome.js', () => ({
@@ -69,7 +77,7 @@ vi.mock('../../connectors/discovery/localChrome.js', () => ({
         async discover() {
             return [];
         }
-    }
+    },
 }));
 
 // Import after mocking
@@ -77,7 +85,7 @@ import fs from 'fs';
 
 describe('core/discovery', () => {
     let Discovery;
-    
+
     beforeEach(async () => {
         vi.clearAllMocks();
         // Re-import to get fresh instance
@@ -88,7 +96,7 @@ describe('core/discovery', () => {
     describe('Discovery Class', () => {
         it('should instantiate with empty connectors array', () => {
             const discovery = new Discovery();
-            
+
             expect(discovery.connectors).toBeDefined();
             expect(Array.isArray(discovery.connectors)).toBe(true);
             expect(discovery.connectors).toHaveLength(0);
@@ -96,7 +104,7 @@ describe('core/discovery', () => {
 
         it('should have discoveryDir set correctly', () => {
             const discovery = new Discovery();
-            
+
             expect(discovery.discoveryDir).toBeDefined();
             expect(discovery.discoveryDir).toContain('connectors');
             expect(discovery.discoveryDir).toContain('discovery');
@@ -111,7 +119,7 @@ describe('core/discovery', () => {
 
         it('should load connectors from file system', async () => {
             const discovery = new Discovery();
-            
+
             // Mock fs to return our mocked connectors
             fs.readdirSync.mockReturnValue(['ixbrowser.js', 'localBrave.js']);
             fs.statSync.mockReturnValue({ isFile: () => true });
@@ -119,13 +127,13 @@ describe('core/discovery', () => {
             await discovery.loadConnectors();
 
             expect(discovery.connectors.length).toBe(2);
-            expect(discovery.connectors.map(c => c.name)).toContain('ixbrowser');
-            expect(discovery.connectors.map(c => c.name)).toContain('localBrave');
+            expect(discovery.connectors.map((c) => c.name)).toContain('ixbrowser');
+            expect(discovery.connectors.map((c) => c.name)).toContain('localBrave');
         });
 
         it('should filter connectors based on allowed list', async () => {
             const discovery = new Discovery();
-            
+
             fs.readdirSync.mockReturnValue(['ixbrowser.js', 'localBrave.js']);
             fs.statSync.mockReturnValue({ isFile: () => true });
 
@@ -138,7 +146,7 @@ describe('core/discovery', () => {
 
         it('should handle file system errors gracefully', async () => {
             const discovery = new Discovery();
-            
+
             fs.readdirSync.mockImplementation(() => {
                 throw new Error('FS Error');
             });
@@ -148,7 +156,7 @@ describe('core/discovery', () => {
 
         it('should skip non-js files', async () => {
             const discovery = new Discovery();
-            
+
             fs.readdirSync.mockReturnValue(['readme.md', 'ixbrowser.js']);
             fs.statSync.mockReturnValue({ isFile: () => true });
 
@@ -160,7 +168,7 @@ describe('core/discovery', () => {
 
         it('should skip baseDiscover.js', async () => {
             const discovery = new Discovery();
-            
+
             fs.readdirSync.mockReturnValue(['baseDiscover.js', 'ixbrowser.js']);
             fs.statSync.mockReturnValue({ isFile: () => true });
 
@@ -172,7 +180,7 @@ describe('core/discovery', () => {
 
         it('should skip directories', async () => {
             const discovery = new Discovery();
-            
+
             fs.readdirSync.mockReturnValue(['someDir.js']);
             fs.statSync.mockReturnValue({ isFile: () => false });
 
@@ -183,7 +191,7 @@ describe('core/discovery', () => {
 
         it('should handle import errors gracefully', async () => {
             const discovery = new Discovery();
-            
+
             // Mock a file that isn't in our vi.mock list, so import might fail or return default behavior
             // or we can mock fs to return a file that triggers an error in the loop
             fs.readdirSync.mockReturnValue(['nonExistent.js']);
@@ -197,12 +205,12 @@ describe('core/discovery', () => {
 
         it('should warn on invalid connector export', async () => {
             const discovery = new Discovery();
-            
+
             fs.readdirSync.mockReturnValue(['roxybrowser.js']);
             fs.statSync.mockReturnValue({ isFile: () => true });
 
             await discovery.loadConnectors();
-            
+
             // Should verify logger.warn was called (implicitly covered by line execution)
             expect(discovery.connectors.length).toBe(0);
         });
@@ -222,20 +230,30 @@ describe('core/discovery', () => {
                 name: 'test-connector-1',
                 instance: {
                     browserType: 'test',
-                    discover: vi.fn().mockResolvedValue([
-                        { ws: 'ws://localhost:9222/devtools/browser/1', http: 'http://localhost:9222' }
-                    ])
-                }
+                    discover: vi
+                        .fn()
+                        .mockResolvedValue([
+                            {
+                                ws: 'ws://localhost:9222/devtools/browser/1',
+                                http: 'http://localhost:9222',
+                            },
+                        ]),
+                },
             };
 
             const mockConnector2 = {
                 name: 'test-connector-2',
                 instance: {
                     browserType: 'test2',
-                    discover: vi.fn().mockResolvedValue([
-                        { ws: 'ws://localhost:9223/devtools/browser/2', http: 'http://localhost:9223' }
-                    ])
-                }
+                    discover: vi
+                        .fn()
+                        .mockResolvedValue([
+                            {
+                                ws: 'ws://localhost:9223/devtools/browser/2',
+                                http: 'http://localhost:9223',
+                            },
+                        ]),
+                },
             };
 
             const discovery = new Discovery();
@@ -253,8 +271,8 @@ describe('core/discovery', () => {
                 name: 'null-connector',
                 instance: {
                     browserType: 'test',
-                    discover: vi.fn().mockResolvedValue(null)
-                }
+                    discover: vi.fn().mockResolvedValue(null),
+                },
             };
 
             const discovery = new Discovery();
@@ -270,8 +288,8 @@ describe('core/discovery', () => {
                 name: 'undefined-connector',
                 instance: {
                     browserType: 'test',
-                    discover: vi.fn().mockResolvedValue(undefined)
-                }
+                    discover: vi.fn().mockResolvedValue(undefined),
+                },
             };
 
             const discovery = new Discovery();
@@ -287,8 +305,8 @@ describe('core/discovery', () => {
                 name: 'failing-connector',
                 instance: {
                     browserType: 'test',
-                    discover: vi.fn().mockRejectedValue(new Error('Connection failed'))
-                }
+                    discover: vi.fn().mockRejectedValue(new Error('Connection failed')),
+                },
             };
 
             const discovery = new Discovery();
@@ -305,18 +323,23 @@ describe('core/discovery', () => {
                 name: 'success-connector',
                 instance: {
                     browserType: 'test',
-                    discover: vi.fn().mockResolvedValue([
-                        { ws: 'ws://localhost:9222/devtools/browser/1', http: 'http://localhost:9222' }
-                    ])
-                }
+                    discover: vi
+                        .fn()
+                        .mockResolvedValue([
+                            {
+                                ws: 'ws://localhost:9222/devtools/browser/1',
+                                http: 'http://localhost:9222',
+                            },
+                        ]),
+                },
             };
 
             const failConnector = {
                 name: 'fail-connector',
                 instance: {
                     browserType: 'test',
-                    discover: vi.fn().mockRejectedValue(new Error('Failed'))
-                }
+                    discover: vi.fn().mockRejectedValue(new Error('Failed')),
+                },
             };
 
             const discovery = new Discovery();
@@ -335,20 +358,31 @@ describe('core/discovery', () => {
                 instance: {
                     browserType: 'test1',
                     discover: vi.fn().mockResolvedValue([
-                        { ws: 'ws://localhost:9222/devtools/browser/1', http: 'http://localhost:9222' },
-                        { ws: 'ws://localhost:9222/devtools/browser/2', http: 'http://localhost:9222' }
-                    ])
-                }
+                        {
+                            ws: 'ws://localhost:9222/devtools/browser/1',
+                            http: 'http://localhost:9222',
+                        },
+                        {
+                            ws: 'ws://localhost:9222/devtools/browser/2',
+                            http: 'http://localhost:9222',
+                        },
+                    ]),
+                },
             };
 
             const connector2 = {
                 name: 'connector2',
                 instance: {
                     browserType: 'test2',
-                    discover: vi.fn().mockResolvedValue([
-                        { ws: 'ws://localhost:9223/devtools/browser/3', http: 'http://localhost:9223' }
-                    ])
-                }
+                    discover: vi
+                        .fn()
+                        .mockResolvedValue([
+                            {
+                                ws: 'ws://localhost:9223/devtools/browser/3',
+                                http: 'http://localhost:9223',
+                            },
+                        ]),
+                },
             };
 
             const discovery = new Discovery();
@@ -374,15 +408,15 @@ describe('core/discovery', () => {
                 {
                     name: 'ixbrowser',
                     instance: {
-                        browserType: 'ixbrowser'
-                    }
+                        browserType: 'ixbrowser',
+                    },
                 },
                 {
                     name: 'localBrave',
                     instance: {
-                        browserType: 'brave'
-                    }
-                }
+                        browserType: 'brave',
+                    },
+                },
             ];
 
             const info = discovery.getConnectorInfo();
@@ -397,8 +431,8 @@ describe('core/discovery', () => {
             discovery.connectors = [
                 {
                     name: 'unknown-connector',
-                    instance: {}
-                }
+                    instance: {},
+                },
             ];
 
             const info = discovery.getConnectorInfo();
@@ -416,14 +450,14 @@ describe('core/discovery', () => {
 
         it('should handle non-array allowedConnectors', async () => {
             const discovery = new Discovery();
-            
+
             // Just test instantiation works
             expect(discovery.connectors).toBeDefined();
         });
 
         it('should filter case-insensitively', async () => {
             const discovery = new Discovery();
-            
+
             // Just test instantiation works
             expect(discovery.connectors).toBeDefined();
         });
@@ -434,23 +468,23 @@ describe('core/discovery', () => {
                     name: 'success',
                     instance: {
                         browserType: 'test',
-                        discover: vi.fn().mockResolvedValue([{ ws: 'ws://1' }])
-                    }
+                        discover: vi.fn().mockResolvedValue([{ ws: 'ws://1' }]),
+                    },
                 },
                 {
                     name: 'reject',
                     instance: {
                         browserType: 'test',
-                        discover: vi.fn().mockRejectedValue(new Error('fail'))
-                    }
+                        discover: vi.fn().mockRejectedValue(new Error('fail')),
+                    },
                 },
                 {
                     name: 'resolve-empty',
                     instance: {
                         browserType: 'test',
-                        discover: vi.fn().mockResolvedValue([])
-                    }
-                }
+                        discover: vi.fn().mockResolvedValue([]),
+                    },
+                },
             ];
 
             const discovery = new Discovery();

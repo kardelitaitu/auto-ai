@@ -1,7 +1,7 @@
 /**
  * @fileoverview Detection API Patching
  * Strips automation markers and patches runtime detection vectors.
- * 
+ *
  * @module api/patch
  */
 
@@ -29,7 +29,7 @@ export async function apply(fingerprint = null) {
         languages: ['en-US', 'en'],
         deviceMemory: 8,
         hardwareConcurrency: 8,
-        maxTouchPoints: 0
+        maxTouchPoints: 0,
     };
 
     // Add init script to patch detection APIs
@@ -39,10 +39,10 @@ export async function apply(fingerprint = null) {
 
         const stripMarkers = () => {
             const markers = ['cdc_', '__webdriver', '__driver', 'dom-automation-'];
-            [window, document].forEach(target => {
+            [window, document].forEach((target) => {
                 for (const key in target) {
                     try {
-                        if (markers.some(m => key.includes(m))) {
+                        if (markers.some((m) => key.includes(m))) {
                             delete target[key];
                         }
                     } catch (_e) {
@@ -65,12 +65,11 @@ export async function apply(fingerprint = null) {
             Object.defineProperty(navProto, 'webdriver', {
                 get: () => false,
                 configurable: true,
-                enumerable: false
+                enumerable: false,
             });
         } catch (_e) {
             console.warn('[Patch] Failed to redefine webdriver', _e);
         }
-
 
         // 3. Advanced Navigator Patch (Timing Optimized)
         try {
@@ -80,11 +79,15 @@ export async function apply(fingerprint = null) {
                 deviceMemory: data.deviceMemory || 8,
                 hardwareConcurrency: data.hardwareConcurrency || 8,
                 webdriver: false,
-                maxTouchPoints: data.maxTouchPoints || 0
+                maxTouchPoints: data.maxTouchPoints || 0,
             };
 
             const makeNativeGetter = (name, value) => {
-                const getter = { [name]: function () { return value; } }[name];
+                const getter = {
+                    [name]: function () {
+                        return value;
+                    },
+                }[name];
                 getter.__native_source = `function get ${name}() { [native code] }`;
                 Object.defineProperty(getter, 'name', { value: `get ${name}`, configurable: true });
                 return getter;
@@ -95,7 +98,7 @@ export async function apply(fingerprint = null) {
                     Object.defineProperty(navProto, prop, {
                         get: makeNativeGetter(prop, value),
                         configurable: true,
-                        enumerable: prop !== 'webdriver'
+                        enumerable: prop !== 'webdriver',
                     });
                 } catch (e) {
                     console.warn('[Patch] Failed to define getter for', prop, e);
@@ -107,9 +110,13 @@ export async function apply(fingerprint = null) {
                 const chromeMock = {
                     app: {
                         isInstalled: false,
-                        InstallState: { DISABLED: 'disabled', INSTALLED: 'installed', NOT_INSTALLED: 'not_installed' },
+                        InstallState: {
+                            DISABLED: 'disabled',
+                            INSTALLED: 'installed',
+                            NOT_INSTALLED: 'not_installed',
+                        },
                         getIsInstalled: () => false,
-                        getDetails: () => null
+                        getDetails: () => null,
                     },
                     csi: () => ({ startE: Date.now(), onloadT: Date.now(), pageT: 0, tran: 0 }),
                     loadTimes: () => ({
@@ -123,16 +130,48 @@ export async function apply(fingerprint = null) {
                         navigationType: 'Other',
                         wasFetchedFromCache: false,
                         wasAlternateProtocolAvailable: false,
-                        wasContradictoryProxyConfig: false
+                        wasContradictoryProxyConfig: false,
                     }),
                     runtime: {
-                        OnInstalledReason: { INSTALL: 'install', UPDATE: 'update', CHROME_UPDATE: 'chrome_update', SHARED_MODULE_UPDATE: 'shared_module_update' },
-                        OnRestartRequiredReason: { APP_UPDATE: 'app_update', OS_UPDATE: 'os_update', PERIODIC: 'periodic' },
-                        PlatformOs: { MAC: 'mac', WIN: 'win', ANDROID: 'android', CROS: 'cros', LINUX: 'linux', OPENBSD: 'openbsd' },
-                        PlatformArch: { ARM: 'arm', X86_32: 'x86-32', X86_64: 'x86-64', MIPS: 'mips', MIPS64: 'mips64' },
-                        PlatformNaclArch: { ARM: 'arm', X86_32: 'x86-32', X86_64: 'x86-64', MIPS: 'mips', MIPS64: 'mips64' },
-                        RequestUpdateCheckStatus: { THROTTLED: 'throttled', NO_UPDATE: 'no_update', UPDATE_AVAILABLE: 'update_available' }
-                    }
+                        OnInstalledReason: {
+                            INSTALL: 'install',
+                            UPDATE: 'update',
+                            CHROME_UPDATE: 'chrome_update',
+                            SHARED_MODULE_UPDATE: 'shared_module_update',
+                        },
+                        OnRestartRequiredReason: {
+                            APP_UPDATE: 'app_update',
+                            OS_UPDATE: 'os_update',
+                            PERIODIC: 'periodic',
+                        },
+                        PlatformOs: {
+                            MAC: 'mac',
+                            WIN: 'win',
+                            ANDROID: 'android',
+                            CROS: 'cros',
+                            LINUX: 'linux',
+                            OPENBSD: 'openbsd',
+                        },
+                        PlatformArch: {
+                            ARM: 'arm',
+                            X86_32: 'x86-32',
+                            X86_64: 'x86-64',
+                            MIPS: 'mips',
+                            MIPS64: 'mips64',
+                        },
+                        PlatformNaclArch: {
+                            ARM: 'arm',
+                            X86_32: 'x86-32',
+                            X86_64: 'x86-64',
+                            MIPS: 'mips',
+                            MIPS64: 'mips64',
+                        },
+                        RequestUpdateCheckStatus: {
+                            THROTTLED: 'throttled',
+                            NO_UPDATE: 'no_update',
+                            UPDATE_AVAILABLE: 'update_available',
+                        },
+                    },
                 };
                 window.chrome = chromeMock;
             }
@@ -146,28 +185,44 @@ export async function apply(fingerprint = null) {
                     if (prop === Symbol.toStringTag) return 'Navigator';
 
                     // Mask instance properties redirected to our perfect prototype getters
-                    if (Object.prototype.hasOwnProperty.call(staticSpoofs, prop)) return staticSpoofs[prop];
+                    if (Object.prototype.hasOwnProperty.call(staticSpoofs, prop))
+                        return staticSpoofs[prop];
 
                     // Override hasOwnProperty to truly hide masked properties
                     if (prop === 'hasOwnProperty') {
                         return (key) => {
-                            if (Object.prototype.hasOwnProperty.call(staticSpoofs, key)) return false;
+                            if (Object.prototype.hasOwnProperty.call(staticSpoofs, key))
+                                return false;
                             return Object.prototype.hasOwnProperty.call(originalNavigator, key);
                         };
                     }
 
                     // Spoof complex plugins object
                     if (prop === 'plugins') {
-                        const pluginArrayProto = window.PluginArray ? window.PluginArray.prototype : Object.prototype;
-                        const pluginProto = window.Plugin ? window.Plugin.prototype : Object.prototype;
+                        const pluginArrayProto = window.PluginArray
+                            ? window.PluginArray.prototype
+                            : Object.prototype;
+                        const pluginProto = window.Plugin
+                            ? window.Plugin.prototype
+                            : Object.prototype;
 
                         // Create objects that mimic PluginArray and Plugin identity
                         const pluginArray = Object.create(pluginArrayProto, {
                             [Symbol.toStringTag]: { value: 'PluginArray', enumerable: false },
                             length: { value: 3, enumerable: true },
-                            item: { value: function (i) { return this[i]; }, enumerable: true },
-                            namedItem: { value: function () { return this[0]; }, enumerable: true },
-                            refresh: { value: function () { }, enumerable: true }
+                            item: {
+                                value: function (i) {
+                                    return this[i];
+                                },
+                                enumerable: true,
+                            },
+                            namedItem: {
+                                value: function () {
+                                    return this[0];
+                                },
+                                enumerable: true,
+                            },
+                            refresh: { value: function () {}, enumerable: true },
                         });
 
                         const createPlugin = (data) => {
@@ -177,15 +232,37 @@ export async function apply(fingerprint = null) {
                                 filename: { value: data.filename, enumerable: true },
                                 description: { value: data.description, enumerable: true },
                                 length: { value: 0, enumerable: true },
-                                item: { value: function () { return null; }, enumerable: true },
-                                namedItem: { value: function () { return null; }, enumerable: true }
+                                item: {
+                                    value: function () {
+                                        return null;
+                                    },
+                                    enumerable: true,
+                                },
+                                namedItem: {
+                                    value: function () {
+                                        return null;
+                                    },
+                                    enumerable: true,
+                                },
                             });
                             return p;
                         };
 
-                        pluginArray[0] = createPlugin({ name: 'PDF Viewer', filename: 'internal-pdf-viewer', description: 'Portable Document Format' });
-                        pluginArray[1] = createPlugin({ name: 'Chrome PDF Viewer', filename: 'internal-pdf-viewer', description: 'Portable Document Format' });
-                        pluginArray[2] = createPlugin({ name: 'Chromium PDF Viewer', filename: 'internal-pdf-viewer', description: 'Portable Document Format' });
+                        pluginArray[0] = createPlugin({
+                            name: 'PDF Viewer',
+                            filename: 'internal-pdf-viewer',
+                            description: 'Portable Document Format',
+                        });
+                        pluginArray[1] = createPlugin({
+                            name: 'Chrome PDF Viewer',
+                            filename: 'internal-pdf-viewer',
+                            description: 'Portable Document Format',
+                        });
+                        pluginArray[2] = createPlugin({
+                            name: 'Chromium PDF Viewer',
+                            filename: 'internal-pdf-viewer',
+                            description: 'Portable Document Format',
+                        });
 
                         // Ghost 3.0: Make plugins iterable
                         pluginArray[Symbol.iterator] = function* () {
@@ -198,20 +275,21 @@ export async function apply(fingerprint = null) {
 
                     // Ghost 3.0: Submerge Battery spoofing
                     if (prop === 'getBattery') {
-                        return () => Promise.resolve({
-                            level: 0.85 + (Math.random() * 0.1),
-                            charging: true,
-                            chargingTime: 0,
-                            dischargingTime: Infinity,
-                            addEventListener: () => { },
-                            removeEventListener: () => { },
-                            dispatchEvent: () => true,
-                            onchargingchange: null,
-                            onchargingtimechange: null,
-                            ondischargingtimechange: null,
-                            onlevelchange: null,
-                            [Symbol.toStringTag]: 'BatteryManager'
-                        });
+                        return () =>
+                            Promise.resolve({
+                                level: 0.85 + Math.random() * 0.1,
+                                charging: true,
+                                chargingTime: 0,
+                                dischargingTime: Infinity,
+                                addEventListener: () => {},
+                                removeEventListener: () => {},
+                                dispatchEvent: () => true,
+                                onchargingchange: null,
+                                onchargingtimechange: null,
+                                ondischargingtimechange: null,
+                                onlevelchange: null,
+                                [Symbol.toStringTag]: 'BatteryManager',
+                            });
                     }
 
                     const value = originalNavigator[prop];
@@ -223,25 +301,34 @@ export async function apply(fingerprint = null) {
                 ownKeys: (target) => {
                     const keys = Reflect.ownKeys(originalNavigator);
                     // Add mandatory Proxy target keys to satisfy invariants (like platform)
-                    return [...new Set([...keys, ...Reflect.ownKeys(target)])].filter(key => !Object.prototype.hasOwnProperty.call(staticSpoofs, key));
+                    return [...new Set([...keys, ...Reflect.ownKeys(target)])].filter(
+                        (key) => !Object.prototype.hasOwnProperty.call(staticSpoofs, key)
+                    );
                 },
                 getOwnPropertyDescriptor: (target, prop) => {
                     if (Object.prototype.hasOwnProperty.call(staticSpoofs, prop)) return undefined;
-                    return Reflect.getOwnPropertyDescriptor(originalNavigator, prop) || Reflect.getOwnPropertyDescriptor(target, prop);
+                    return (
+                        Reflect.getOwnPropertyDescriptor(originalNavigator, prop) ||
+                        Reflect.getOwnPropertyDescriptor(target, prop)
+                    );
                 },
                 getPrototypeOf: () => {
                     return Object.getPrototypeOf(originalNavigator);
-                }
+                },
             });
 
             // Ghost 3.0: Permissions API hardening
             if (window.navigator.permissions) {
                 const originalQuery = window.navigator.permissions.query;
-                window.navigator.permissions.query = (parameters) => (
-                    parameters.name === 'notifications' ?
-                        Promise.resolve({ state: Notification.permission === 'default' ? 'prompt' : Notification.permission }) :
-                        originalQuery(parameters)
-                );
+                window.navigator.permissions.query = (parameters) =>
+                    parameters.name === 'notifications'
+                        ? Promise.resolve({
+                              state:
+                                  Notification.permission === 'default'
+                                      ? 'prompt'
+                                      : Notification.permission,
+                          })
+                        : originalQuery(parameters);
             }
 
             // Ghost 3.0: Ensure navigator is immutable so driver cannot re-inject properties
@@ -249,7 +336,7 @@ export async function apply(fingerprint = null) {
                 value: navigatorProxy,
                 configurable: false,
                 writable: false,
-                enumerable: true
+                enumerable: true,
             });
         } catch (e) {
             console.warn('[Patch] Failed to apply static spoofs', e);
@@ -266,7 +353,7 @@ export async function apply(fingerprint = null) {
                 const name = this.name || '';
                 const keywords = ['playwright', 'puppeteer', 'selenium', 'automation', 'cdc_'];
 
-                if (keywords.some(k => name.toLowerCase().includes(k))) {
+                if (keywords.some((k) => name.toLowerCase().includes(k))) {
                     return `function ${name}() { [native code] }`;
                 }
 
@@ -278,7 +365,7 @@ export async function apply(fingerprint = null) {
                 value: patchedToString,
                 configurable: true,
                 writable: true,
-                enumerable: false
+                enumerable: false,
             });
         } catch (e) {
             console.warn('[Patch] Failed to patch toString', e);
@@ -318,7 +405,7 @@ export async function check() {
         return {
             webdriver: webdriver === true,
             cdcMarkers: hasCDC,
-            passed: !webdriver && !hasCDC
+            passed: !webdriver && !hasCDC,
         };
     });
 

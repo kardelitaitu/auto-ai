@@ -1,6 +1,6 @@
 /**
  * Unit Tests Index
- * 
+ *
  * This file re-exports all unit tests for aggregated testing.
  * Import paths using @tests alias:
  *   import { describe, it, expect } from 'vitest';
@@ -22,56 +22,56 @@ import modularMethods from './test-modular-methods.js';
 import replyMethod from './test-reply-method.js';
 
 export {
-  aiTwitterActivity,
-  aiTwitterAgent,
-  asyncQueue,
-  configService,
-  engagementLimits,
-  humanInteraction,
-  smartProb,
-  actionConfig,
-  actions,
-  simpleDive,
-  humanMethods,
-  modularMethods,
-  replyMethod
+    aiTwitterActivity,
+    aiTwitterAgent,
+    asyncQueue,
+    configService,
+    engagementLimits,
+    humanInteraction,
+    smartProb,
+    actionConfig,
+    actions,
+    simpleDive,
+    humanMethods,
+    modularMethods,
+    replyMethod,
 };
 
 /**
  * Run all unit tests
  */
 export async function runAllUnitTests() {
-  const results = {
-    passed: 0,
-    failed: 0,
-    tests: []
-  };
+    const results = {
+        passed: 0,
+        failed: 0,
+        tests: [],
+    };
 
-  const testModules = [
-    { name: 'ai-twitter-activity', module: aiTwitterActivity },
-    { name: 'ai-twitter-agent', module: aiTwitterAgent },
-    { name: 'async-queue', module: asyncQueue },
-    { name: 'config-service', module: configService },
-    { name: 'engagement-limits', module: engagementLimits },
-    { name: 'human-interaction', module: humanInteraction },
-    { name: 'smart-prob', module: smartProb },
-    { name: 'action-config', module: actionConfig },
-    { name: 'actions', module: actions },
-    { name: 'simple-dive', module: simpleDive },
-    { name: 'human-methods', module: humanMethods },
-    { name: 'modular-methods', module: modularMethods },
-    { name: 'reply-method', module: replyMethod }
-  ];
+    const testModules = [
+        { name: 'ai-twitter-activity', module: aiTwitterActivity },
+        { name: 'ai-twitter-agent', module: aiTwitterAgent },
+        { name: 'async-queue', module: asyncQueue },
+        { name: 'config-service', module: configService },
+        { name: 'engagement-limits', module: engagementLimits },
+        { name: 'human-interaction', module: humanInteraction },
+        { name: 'smart-prob', module: smartProb },
+        { name: 'action-config', module: actionConfig },
+        { name: 'actions', module: actions },
+        { name: 'simple-dive', module: simpleDive },
+        { name: 'human-methods', module: humanMethods },
+        { name: 'modular-methods', module: modularMethods },
+        { name: 'reply-method', module: replyMethod },
+    ];
 
-  for (const { name, module: _module } of testModules) {
-    try {
-      results.tests.push({ name, status: 'loaded' });
-      results.passed++;
-    } catch (error) {
-      results.tests.push({ name, status: 'failed', error: error.message });
-      results.failed++;
+    for (const { name, module: _module } of testModules) {
+        try {
+            results.tests.push({ name, status: 'loaded' });
+            results.passed++;
+        } catch (error) {
+            results.tests.push({ name, status: 'failed', error: error.message });
+            results.failed++;
+        }
     }
-  }
 
-  return results;
+    return results;
 }

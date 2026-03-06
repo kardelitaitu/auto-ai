@@ -39,12 +39,19 @@ class IxbrowserDiscover extends BaseDiscover {
 
         try {
             // Use the native-client endpoint which provides debugging ports directly
-            const response = await apiHandler.post(`${this.apiBaseUrl}/api/v2/native-client-profile-opened-list`, {});
+            const response = await apiHandler.post(
+                `${this.apiBaseUrl}/api/v2/native-client-profile-opened-list`,
+                {}
+            );
 
-            logger.info(`Received response - error code: ${response.error?.code}, message: ${response.error?.message}`);
+            logger.info(
+                `Received response - error code: ${response.error?.code}, message: ${response.error?.message}`
+            );
 
             if (response.error?.code !== 0) {
-                logger.warn(`API returned error for ${this.browserType}: ${response.error?.message}`);
+                logger.warn(
+                    `API returned error for ${this.browserType}: ${response.error?.message}`
+                );
                 return [];
             }
 
@@ -54,11 +61,15 @@ class IxbrowserDiscover extends BaseDiscover {
                 profilesData = response.data;
             } else if (response.data && typeof response.data === 'object') {
                 // If data is an object, check if it has profile entries
-                profilesData = Object.values(response.data).filter(item => item && item.profile_id);
+                profilesData = Object.values(response.data).filter(
+                    (item) => item && item.profile_id
+                );
             }
 
             if (profilesData.length === 0) {
-                logger.info(`No open profiles found for ${this.browserType}. Make sure profiles are opened via ixbrowser's interface with remote debugging enabled.`);
+                logger.info(
+                    `No open profiles found for ${this.browserType}. Make sure profiles are opened via ixbrowser's interface with remote debugging enabled.`
+                );
                 return [];
             }
 
@@ -66,14 +77,16 @@ class IxbrowserDiscover extends BaseDiscover {
 
             // Map ixbrowser profiles to our standard format
             const discoveredProfiles = profilesData
-                .filter(profile => {
+                .filter((profile) => {
                     if (!profile.ws && !profile.debugging_port) {
-                        logger.warn(`Profile ${profile.profile_id} missing ws and debugging_port fields, skipping`);
+                        logger.warn(
+                            `Profile ${profile.profile_id} missing ws and debugging_port fields, skipping`
+                        );
                         return false;
                     }
                     return true;
                 })
-                .map(profile => ({
+                .map((profile) => ({
                     id: `ixbrowser-${profile.profile_id}`,
                     name: `ixBrowser Profile ${profile.profile_id}`,
                     type: this.browserType,
@@ -83,16 +96,19 @@ class IxbrowserDiscover extends BaseDiscover {
                     sortNum: profile.profile_id,
                     port: profile.debugging_port,
                     pid: profile.pid,
-                    openTime: profile.open_time
+                    openTime: profile.open_time,
                 }));
 
-            discoveredProfiles.forEach(profile => {
-                logger.info(`Found connectable profile: ${profile.name} on port ${profile.port} (ws: ${profile.ws})`);
+            discoveredProfiles.forEach((profile) => {
+                logger.info(
+                    `Found connectable profile: ${profile.name} on port ${profile.port} (ws: ${profile.ws})`
+                );
             });
 
-            logger.info(`Discovery complete. Found ${discoveredProfiles.length} ${this.browserType} profiles.`);
+            logger.info(
+                `Discovery complete. Found ${discoveredProfiles.length} ${this.browserType} profiles.`
+            );
             return discoveredProfiles;
-
         } catch (error) {
             logger.error(`Error during ${this.browserType} discovery: ${error.message}`);
             return [];

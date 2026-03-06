@@ -5,17 +5,17 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 vi.mock('@api/core/context.js', () => ({
     getPage: vi.fn(),
-    getStateAgentElementMap: vi.fn().mockReturnValue([])
+    getStateAgentElementMap: vi.fn().mockReturnValue([]),
 }));
 
 vi.mock('../utils/roi-detector.js', () => ({
-    identifyROI: vi.fn().mockResolvedValue(null)
+    identifyROI: vi.fn().mockResolvedValue(null),
 }));
 
 vi.mock('sharp', () => {
@@ -23,25 +23,25 @@ vi.mock('sharp', () => {
     const mockJpeg = vi.fn().mockReturnThis();
     const mockToBuffer = vi.fn().mockResolvedValue(Buffer.from('compressed'));
     const mockMetadata = vi.fn().mockResolvedValue({ width: 1920, height: 1080 });
-    
+
     return {
         default: vi.fn(() => ({
             resize: mockResize,
             jpeg: mockJpeg,
             toBuffer: mockToBuffer,
-            metadata: mockMetadata
-        }))
+            metadata: mockMetadata,
+        })),
     };
 });
 
 import { getPage, getStateAgentElementMap } from '@api/core/context.js';
-import { 
-    buildPrompt, 
-    parseResponse, 
-    injectAnnotations, 
+import {
+    buildPrompt,
+    parseResponse,
+    injectAnnotations,
     removeAnnotations,
     captureAXTree,
-    captureState
+    captureState,
 } from '@api/agent/vision.js';
 
 describe('api/agent/vision.js', () => {
@@ -49,21 +49,21 @@ describe('api/agent/vision.js', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        
+
         mockPage = {
             accessibility: {
-                snapshot: vi.fn().mockResolvedValue({ 
-                    role: 'root', 
+                snapshot: vi.fn().mockResolvedValue({
+                    role: 'root',
                     name: 'Test Page',
                     children: [
                         { role: 'button', name: 'Click Me' },
-                        { role: 'link', name: 'Go Here' }
-                    ]
-                })
+                        { role: 'link', name: 'Go Here' },
+                    ],
+                }),
             },
             screenshot: vi.fn().mockResolvedValue(Buffer.from('fake-image')),
             evaluate: vi.fn().mockResolvedValue(undefined),
-            url: vi.fn().mockReturnValue('https://example.com')
+            url: vi.fn().mockReturnValue('https://example.com'),
         };
 
         getPage.mockReturnValue(mockPage);
@@ -74,8 +74,8 @@ describe('api/agent/vision.js', () => {
             const context = {
                 goal: 'Click the button',
                 semanticTree: [
-                    { id: '1', role: 'button', name: 'Click Me', coordinates: { x: 100, y: 200 } }
-                ]
+                    { id: '1', role: 'button', name: 'Click Me', coordinates: { x: 100, y: 200 } },
+                ],
             };
 
             const prompt = buildPrompt(context);
@@ -88,7 +88,7 @@ describe('api/agent/vision.js', () => {
         it('should handle empty semantic tree', () => {
             const context = {
                 goal: 'Find something',
-                semanticTree: []
+                semanticTree: [],
             };
 
             const prompt = buildPrompt(context);
@@ -99,7 +99,7 @@ describe('api/agent/vision.js', () => {
         it('should handle null semantic tree', () => {
             const context = {
                 goal: 'Find something',
-                semanticTree: null
+                semanticTree: null,
             };
 
             const prompt = buildPrompt(context);
@@ -108,15 +108,15 @@ describe('api/agent/vision.js', () => {
         });
 
         it('should limit elements to 30', () => {
-            const elements = Array.from({ length: 50 }, (_, i) => ({ 
-                id: String(i), 
-                role: 'button', 
-                name: `Button ${i}` 
+            const elements = Array.from({ length: 50 }, (_, i) => ({
+                id: String(i),
+                role: 'button',
+                name: `Button ${i}`,
             }));
-            
+
             const context = {
                 goal: 'Test',
-                semanticTree: elements
+                semanticTree: elements,
             };
 
             const prompt = buildPrompt(context);
@@ -128,9 +128,7 @@ describe('api/agent/vision.js', () => {
         it('should handle elements without coordinates', () => {
             const context = {
                 goal: 'Test',
-                semanticTree: [
-                    { id: '1', role: 'button', name: 'Button' }
-                ]
+                semanticTree: [{ id: '1', role: 'button', name: 'Button' }],
             };
 
             const prompt = buildPrompt(context);
@@ -141,10 +139,11 @@ describe('api/agent/vision.js', () => {
 
     describe('parseResponse', () => {
         it('should parse valid JSON response', () => {
-            const raw = '{"thought": "I will click", "actions": [{"type": "click", "elementId": 1}]}';
-            
+            const raw =
+                '{"thought": "I will click", "actions": [{"type": "click", "elementId": 1}]}';
+
             const result = parseResponse(raw);
-            
+
             expect(result.success).toBe(true);
             expect(result.data.thought).toBe('I will click');
             expect(result.data.actions).toHaveLength(1);
@@ -152,39 +151,39 @@ describe('api/agent/vision.js', () => {
 
         it('should handle empty response', () => {
             const result = parseResponse('');
-            
+
             expect(result.success).toBe(false);
             expect(result.error).toBe('Empty response');
         });
 
         it('should handle null response', () => {
             const result = parseResponse(null);
-            
+
             expect(result.success).toBe(false);
         });
 
         it('should extract JSON from text with prefix', () => {
             const raw = 'Here is my plan: {"thought": "test", "actions": []}';
-            
+
             const result = parseResponse(raw);
-            
+
             expect(result.success).toBe(true);
         });
 
         it('should handle JSON parse error', () => {
             const raw = '{invalid json}';
-            
+
             const result = parseResponse(raw);
-            
+
             expect(result.success).toBe(false);
             expect(result.error).toContain('JSON parse error');
         });
 
         it('should require actions array', () => {
             const raw = '{"thought": "no actions"}';
-            
+
             const result = parseResponse(raw);
-            
+
             expect(result.success).toBe(false);
             expect(result.error).toContain('actions');
         });
@@ -196,12 +195,12 @@ describe('api/agent/vision.js', () => {
                 createElement: vi.fn((tag) => ({
                     id: tag === 'div' ? 'agent-vision-annotations' : tag,
                     style: {},
-                    appendChild: vi.fn()
+                    appendChild: vi.fn(),
                 })),
                 body: {
-                    appendChild: vi.fn()
+                    appendChild: vi.fn(),
                 },
-                querySelector: vi.fn()
+                querySelector: vi.fn(),
             };
 
             injectAnnotations(mockDoc, []);
@@ -214,7 +213,7 @@ describe('api/agent/vision.js', () => {
             const mockDoc = {
                 createElement: vi.fn(() => ({ style: {}, appendChild: vi.fn() })),
                 body: { appendChild: vi.fn() },
-                querySelector: vi.fn()
+                querySelector: vi.fn(),
             };
 
             injectAnnotations(mockDoc, []);
@@ -227,7 +226,7 @@ describe('api/agent/vision.js', () => {
         it('should remove existing annotations', () => {
             const mockContainer = { remove: vi.fn() };
             const mockDoc = {
-                getElementById: vi.fn().mockReturnValue(mockContainer)
+                getElementById: vi.fn().mockReturnValue(mockContainer),
             };
 
             removeAnnotations(mockDoc);
@@ -238,7 +237,7 @@ describe('api/agent/vision.js', () => {
 
         it('should handle missing container', () => {
             const mockDoc = {
-                getElementById: vi.fn().mockReturnValue(null)
+                getElementById: vi.fn().mockReturnValue(null),
             };
 
             removeAnnotations(mockDoc);

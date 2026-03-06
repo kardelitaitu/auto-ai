@@ -9,7 +9,7 @@ import path from 'path';
 /**
  * Read and remove a random non-empty line from a text file.
  * Implements a simple file-based lock to prevent race conditions.
- * 
+ *
  * @param {string} filePath - Path to the txt file
  * @param {object} [options]
  * @param {number} [options.maxRetries=20] - Max retries for lock acquisition
@@ -34,7 +34,7 @@ export async function consumeline(filePath, options = {}) {
         } catch (e) {
             if (e.code === 'EEXIST') {
                 // Wait and retry
-                await new Promise(r => setTimeout(r, retryDelay));
+                await new Promise((r) => setTimeout(r, retryDelay));
                 continue;
             }
             // If it's another error (like directory missing), just fail
@@ -49,26 +49,30 @@ export async function consumeline(filePath, options = {}) {
 
     try {
         const data = await fs.readFile(fullPath, 'utf8');
-        const lines = data.split(/\r?\n/).filter(line => line.trim() !== '');
-        
+        const lines = data.split(/\r?\n/).filter((line) => line.trim() !== '');
+
         if (lines.length === 0) {
             await fs.unlink(lockFile);
             return null;
         }
-        
+
         const index = Math.floor(Math.random() * lines.length);
         const line = lines[index];
-        
+
         lines.splice(index, 1);
         await fs.writeFile(fullPath, lines.join('\n'), 'utf8');
-        
+
         return line;
     } catch (_error) {
         return null;
     } finally {
         // Always cleanup lock
         if (acquiredLock) {
-            try { await fs.unlink(lockFile); } catch { /* ignore */ }
+            try {
+                await fs.unlink(lockFile);
+            } catch {
+                /* ignore */
+            }
         }
     }
 }

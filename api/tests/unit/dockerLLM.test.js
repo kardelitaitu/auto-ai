@@ -11,7 +11,7 @@ vi.mock('child_process', () => ({
         if (typeof opts === 'function') opts(null, '', '');
         else if (typeof cb === 'function') cb(null, '', '');
         return { unref: () => {} };
-    })
+    }),
 }));
 
 describe('utils/dockerLLM', () => {
@@ -33,8 +33,8 @@ describe('utils/dockerLLM', () => {
                 error: vi.fn(),
                 warn: vi.fn(),
                 debug: vi.fn(),
-                success: vi.fn()
-            })
+                success: vi.fn(),
+            }),
         }));
 
         // Mock configLoader
@@ -44,10 +44,10 @@ describe('utils/dockerLLM', () => {
                     local: {
                         endpoint: 'http://localhost:11434',
                         provider: 'ollama',
-                        model: 'llama3.2-vision'
-                    }
-                }
-            })
+                        model: 'llama3.2-vision',
+                    },
+                },
+            }),
         }));
 
         const module = await import('../../utils/dockerLLM.js');
@@ -62,9 +62,9 @@ describe('utils/dockerLLM', () => {
     describe('ensureDockerLLM', () => {
         it('should return true if LLM is already ready', async () => {
             fetchSpy.mockResolvedValue({ ok: true });
-            
+
             const result = await dockerLLM.ensureDockerLLM();
-            
+
             expect(result).toBe(true);
             expect(fetchSpy).toHaveBeenCalledWith('http://localhost:11434/', expect.anything());
         });
@@ -74,16 +74,19 @@ describe('utils/dockerLLM', () => {
             fetchSpy.mockResolvedValueOnce({ ok: false });
             // Second check (after start) succeeds
             fetchSpy.mockResolvedValueOnce({ ok: true });
-            
+
             const promise = dockerLLM.ensureDockerLLM();
-            
+
             // Fast-forward through timeouts
             await vi.runAllTimersAsync();
-            
+
             const result = await promise;
-            
+
             expect(result).toBe(true);
-            expect(exec).toHaveBeenCalledWith(expect.stringContaining('ollama serve'), expect.anything());
+            expect(exec).toHaveBeenCalledWith(
+                expect.stringContaining('ollama serve'),
+                expect.anything()
+            );
         });
 
         it('should use docker provider if configured', async () => {
@@ -92,31 +95,34 @@ describe('utils/dockerLLM', () => {
                 llm: {
                     local: {
                         provider: 'docker',
-                        model: 'test-model'
-                    }
-                }
+                        model: 'test-model',
+                    },
+                },
             });
-            
+
             fetchSpy.mockResolvedValueOnce({ ok: false });
             fetchSpy.mockResolvedValueOnce({ ok: true });
-            
+
             const promise = dockerLLM.ensureDockerLLM();
             await vi.runAllTimersAsync();
             await promise;
-            
-            expect(exec).toHaveBeenCalledWith(expect.stringContaining('docker model run test-model'), expect.anything());
+
+            expect(exec).toHaveBeenCalledWith(
+                expect.stringContaining('docker model run test-model'),
+                expect.anything()
+            );
         });
 
         it('should return false after max attempts if still not ready', async () => {
             fetchSpy.mockResolvedValue({ ok: false });
-            
+
             const promise = dockerLLM.ensureDockerLLM();
-            
+
             // Start timeout (5000) + 5 attempts * 3000
             await vi.runAllTimersAsync();
-            
+
             const result = await promise;
-            
+
             expect(result).toBe(false);
         });
     });

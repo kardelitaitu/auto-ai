@@ -18,13 +18,30 @@ class AgentCortex {
 }
 
 vi.mock('../../core/logger.js', () => ({
-    createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn(), success: vi.fn() })
+    createLogger: () => ({
+        debug: vi.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        success: vi.fn(),
+    }),
 }));
 
 describe('AgentCortex', () => {
     let cortex;
-    beforeEach(() => { vi.clearAllMocks(); cortex = new AgentCortex('test', 'goal', ['step1']); });
-    it('should initialize', () => { expect(cortex.sessionId).toBe('test'); });
-    it('should plan next step', async () => { const plan = await cortex.planNextStep(); expect(plan.thought).toBe('thinking'); });
-    it('should record result', () => { cortex.recordResult({ type: 'click' }, true); expect(cortex.currentStep).toBe(2); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+        cortex = new AgentCortex('test', 'goal', ['step1']);
+    });
+    it('should initialize', () => {
+        expect(cortex.sessionId).toBe('test');
+    });
+    it('should plan next step', async () => {
+        const plan = await cortex.planNextStep();
+        expect(plan.thought).toBe('thinking');
+    });
+    it('should record result', () => {
+        cortex.recordResult({ type: 'click' }, true);
+        expect(cortex.currentStep).toBe(2);
+    });
 });

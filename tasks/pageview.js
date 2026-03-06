@@ -14,8 +14,8 @@ async function loadUrls() {
         const content = await fs.readFile(URL_FILE, 'utf-8');
         return content
             .split('\n')
-            .map(line => line.trim())
-            .filter(line => line && !line.startsWith('#'));
+            .map((line) => line.trim())
+            .filter((line) => line && !line.startsWith('#'));
     } catch (_error) {
         return [];
     }
@@ -53,109 +53,130 @@ export default async function pageview(page, payload) {
 
     logger.info('Starting migrated pageview task...');
 
-    return await api.withPage(page, async () => {
-        try {
-            // 1. Setup Profile & Persona
-            let profile;
+    return await api.withPage(
+        page,
+        async () => {
             try {
-                profile = profileManager.getStarter();
-                const personaName = profile.persona || 'casual';
-                await api.init(page, {
-                    logger,
-                    persona: personaName,
-                    colorScheme: profile.theme || 'dark'
-                });
-                logger.info(`Initialized with profile: ${profile.id} (Persona: ${personaName})`);
-            } catch (e) {
-                logger.warn(`Profile load failed: ${e.message}, using defaults`);
-                await api.init(page, { logger, colorScheme: 'dark' });
-            }
+                // 1. Setup Profile & Persona
+                let profile;
+                try {
+                    profile = profileManager.getStarter();
+                    const personaName = profile.persona || 'casual';
+                    await api.init(page, {
+                        logger,
+                        persona: personaName,
+                        colorScheme: profile.theme || 'dark',
+                    });
+                    logger.info(
+                        `Initialized with profile: ${profile.id} (Persona: ${personaName})`
+                    );
+                } catch (e) {
+                    logger.warn(`Profile load failed: ${e.message}, using defaults`);
+                    await api.init(page, { logger, colorScheme: 'dark' });
+                }
 
-            // 2. Determine target URL
-            let targetUrl;
-            if (payload.url) {
-                targetUrl = ensureProtocol(payload.url);
-                logger.info(`Target (Arg): ${targetUrl}`);
-            } else {
-                targetUrl = await getRandomUrl();
-                logger.info(`Target (Random): ${targetUrl}`);
-            }
-
-            // 3. Referrer & Headers
-            const engine = new ReferrerEngine({ addUTM: false });
-            const ctx = engine.generateContext(targetUrl);
-            await api.setExtraHTTPHeaders(ctx.headers);
-            logger.info(`Referrer: ${ctx.referrer || '(Direct)'}`);
-
-            // 4. Navigation using Unified API (handles warmup jitter & mouse movement internally)
-            logger.info(`Navigating...`);
-
-            // Use a Promise.race to enforce a global 50s timeout for the "work" phase
-            const taskTimeoutMs = 50000;
-
-            try {
-                await Promise.race([
-                    (async () => {
-                        try {
-                            await api.goto(targetUrl, {
-                                waitUntil: 'domcontentloaded',
-                                timeout: 20000,
-                                warmup: true,
-                                warmupMouse: true,
-                                warmupPause: true
-                            });
-                        } catch (navError) {
-                            logger.error(`Navigation failed: ${navError.message}`);
-                            return;
-                        }
-
-                        // Settle time
-                        await api.wait(api.randomInRange(1000, 2000));
-
-                        // 5. Reading Simulation
-                        const meanDurationMs = profile?.timings?.readingPhase?.mean || 30000;
-                        const devDurationMs = profile?.timings?.readingPhase?.deviation || 10000;
-
-                        const profileReadingMs = api.gaussian(meanDurationMs, devDurationMs, 10000, 45000);
-                        const readingDurationS = Math.min(Math.max(profileReadingMs / 1000, 15), 45);
-
-                        const estimatedPauses = Math.max(1, Math.floor(readingDurationS / 2.2));
-
-                        logger.info(`Simulating reading for ~${readingDurationS.toFixed(2)}s (${estimatedPauses} cycles)`);
-
-                        await api.scroll.read(null, {
-                            pauses: estimatedPauses,
-                            scrollAmount: api.randomInRange(600, 1200),
-                            variableSpeed: true,
-                            backScroll: true
-                        });
-
-                        // Final pause
-                        await api.wait(api.randomInRange(1000, 2000));
-                    })(),
-                    new Promise((_, reject) => setTimeout(() => reject(new Error('Pageview task exceeded 50s limit')), taskTimeoutMs))
-                ]);
-            } catch (error) {
-                if (error.message.includes('exceeded 50s limit')) {
-                    logger.warn(`Task forced to stop: ${error.message}`);
+                // 2. Determine target URL
+                let targetUrl;
+                if (payload.url) {
+                    targetUrl = ensureProtocol(payload.url);
+                    logger.info(`Target (Arg): ${targetUrl}`);
                 } else {
-                    throw error;
+                    targetUrl = await getRandomUrl();
+                    logger.info(`Target (Random): ${targetUrl}`);
                 }
-            }
-        } finally {
-            try {
-                if (page && !page.isClosed()) {
-                    await page.close();
-                    logger.debug(`Page closed successfully.`);
-                }
-            } catch (closeError) {
-                logger.warn(`Error closing page: ${closeError.message}`);
-            }
-            // Cleanup (finally block in main orchestrator or task wrapper handles close)
-            const endTime = process.hrtime.bigint();
-            const durationInSeconds = (Number(endTime - startTime) / 1_000_000_000).toFixed(2);
-            logger.info(`Total task duration: ${durationInSeconds} seconds`);
-        }
-    }, { taskName: 'pageview', sessionId: browserInfo });
-}
 
+                // 3. Referrer & Headers
+                const engine = new ReferrerEngine({ addUTM: false });
+                const ctx = engine.generateContext(targetUrl);
+                await api.setExtraHTTPHeaders(ctx.headers);
+                logger.info(`Referrer: ${ctx.referrer || '(Direct)'}`);
+
+                // 4. Navigation using Unified API (handles warmup jitter & mouse movement internally)
+                logger.info(`Navigating...`);
+
+                // Use a Promise.race to enforce a global 50s timeout for the "work" phase
+                const taskTimeoutMs = 50000;
+
+                try {
+                    await Promise.race([
+                        (async () => {
+                            try {
+                                await api.goto(targetUrl, {
+                                    waitUntil: 'domcontentloaded',
+                                    timeout: 20000,
+                                    warmup: true,
+                                    warmupMouse: true,
+                                    warmupPause: true,
+                                });
+                            } catch (navError) {
+                                logger.error(`Navigation failed: ${navError.message}`);
+                                return;
+                            }
+
+                            // Settle time
+                            await api.wait(api.randomInRange(1000, 2000));
+
+                            // 5. Reading Simulation
+                            const meanDurationMs = profile?.timings?.readingPhase?.mean || 30000;
+                            const devDurationMs =
+                                profile?.timings?.readingPhase?.deviation || 10000;
+
+                            const profileReadingMs = api.gaussian(
+                                meanDurationMs,
+                                devDurationMs,
+                                10000,
+                                45000
+                            );
+                            const readingDurationS = Math.min(
+                                Math.max(profileReadingMs / 1000, 15),
+                                45
+                            );
+
+                            const estimatedPauses = Math.max(1, Math.floor(readingDurationS / 2.2));
+
+                            logger.info(
+                                `Simulating reading for ~${readingDurationS.toFixed(2)}s (${estimatedPauses} cycles)`
+                            );
+
+                            await api.scroll.read(null, {
+                                pauses: estimatedPauses,
+                                scrollAmount: api.randomInRange(600, 1200),
+                                variableSpeed: true,
+                                backScroll: true,
+                            });
+
+                            // Final pause
+                            await api.wait(api.randomInRange(1000, 2000));
+                        })(),
+                        new Promise((_, reject) =>
+                            setTimeout(
+                                () => reject(new Error('Pageview task exceeded 50s limit')),
+                                taskTimeoutMs
+                            )
+                        ),
+                    ]);
+                } catch (error) {
+                    if (error.message.includes('exceeded 50s limit')) {
+                        logger.warn(`Task forced to stop: ${error.message}`);
+                    } else {
+                        throw error;
+                    }
+                }
+            } finally {
+                try {
+                    if (page && !page.isClosed()) {
+                        await page.close();
+                        logger.debug(`Page closed successfully.`);
+                    }
+                } catch (closeError) {
+                    logger.warn(`Error closing page: ${closeError.message}`);
+                }
+                // Cleanup (finally block in main orchestrator or task wrapper handles close)
+                const endTime = process.hrtime.bigint();
+                const durationInSeconds = (Number(endTime - startTime) / 1_000_000_000).toFixed(2);
+                logger.info(`Total task duration: ${durationInSeconds} seconds`);
+            }
+        },
+        { taskName: 'pageview', sessionId: browserInfo }
+    );
+}

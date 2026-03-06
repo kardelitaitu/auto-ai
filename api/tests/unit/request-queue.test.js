@@ -12,8 +12,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('core/request-queue', () => {
@@ -26,7 +26,7 @@ describe('core/request-queue', () => {
             maxConcurrent: 2,
             retryDelay: 100, // Small delay for testing
             maxRetries: 3,
-            maxQueueSize: 5
+            maxQueueSize: 5,
         });
     });
 
@@ -59,21 +59,21 @@ describe('core/request-queue', () => {
         });
 
         it('should respect maxQueueSize', async () => {
-            const task = () => new Promise(r => setTimeout(r, 1000));
+            const task = () => new Promise((r) => setTimeout(r, 1000));
             // Fill concurrency (2)
-            queue.enqueue(task).catch(() => { });
-            queue.enqueue(task).catch(() => { });
+            queue.enqueue(task).catch(() => {});
+            queue.enqueue(task).catch(() => {});
             // Fill queue (5)
-            for (let i = 0; i < 5; i++) queue.enqueue(task).catch(() => { });
+            for (let i = 0; i < 5; i++) queue.enqueue(task).catch(() => {});
 
             // Should throw
             await expect(queue.enqueue(task)).rejects.toThrow(/Queue full/);
         });
 
         it('should handle priority sorting', async () => {
-            const task = () => new Promise(r => setTimeout(r, 1000));
-            queue.enqueue(task).catch(() => { }); // Takes slot 1
-            queue.enqueue(task).catch(() => { }); // Takes slot 2
+            const task = () => new Promise((r) => setTimeout(r, 1000));
+            queue.enqueue(task).catch(() => {}); // Takes slot 1
+            queue.enqueue(task).catch(() => {}); // Takes slot 2
 
             const low = vi.fn().mockResolvedValue('low');
             const high = vi.fn().mockResolvedValue('high');
@@ -93,7 +93,8 @@ describe('core/request-queue', () => {
 
     describe('Retry Logic & Backoff', () => {
         it('should retry retryable errors', async () => {
-            const task = vi.fn()
+            const task = vi
+                .fn()
                 .mockRejectedValueOnce(new Error('timeout'))
                 .mockResolvedValueOnce('ok');
 
@@ -114,14 +115,14 @@ describe('core/request-queue', () => {
             const promise = queue.enqueue(task, { maxRetries: 2 });
             // Attach a no-op catch to prevent unhandled rejection warning during timer advancement
             promise.catch(() => {});
-            
+
             await vi.advanceTimersByTimeAsync(10);
             await vi.advanceTimersByTimeAsync(10);
 
             await expect(promise).rejects.toMatchObject({
                 success: false,
                 error: 'econnreset',
-                attempts: 3
+                attempts: 3,
             });
             expect(task).toHaveBeenCalledTimes(3);
         });
@@ -136,7 +137,7 @@ describe('core/request-queue', () => {
 
             await expect(promise).rejects.toMatchObject({
                 success: false,
-                error: 'Bad Request'
+                error: 'Bad Request',
             });
             expect(task).toHaveBeenCalledTimes(1);
         });
@@ -147,13 +148,13 @@ describe('core/request-queue', () => {
 
             const promise = queue.enqueue(task, { maxRetries: 1 });
             promise.catch(() => {});
-            
+
             await vi.advanceTimersByTimeAsync(10);
 
             await expect(promise).rejects.toMatchObject({
                 success: false,
                 error: 'retryable timeout',
-                attempts: 2
+                attempts: 2,
             });
             expect(task).toHaveBeenCalledTimes(2);
         });
@@ -175,7 +176,9 @@ describe('core/request-queue', () => {
         });
 
         it('should finish in-flight tasks even if paused during execution', async () => {
-            const task = vi.fn().mockImplementation(() => new Promise(r => setTimeout(() => r('ok'), 500)));
+            const task = vi
+                .fn()
+                .mockImplementation(() => new Promise((r) => setTimeout(() => r('ok'), 500)));
             const p = queue.enqueue(task);
 
             queue.pause();
@@ -188,7 +191,7 @@ describe('core/request-queue', () => {
 
     describe('Stats & Cleanup', () => {
         it('should report correct stats', () => {
-            queue.enqueue(() => Promise.resolve()).catch(() => { });
+            queue.enqueue(() => Promise.resolve()).catch(() => {});
             const stats = queue.getStats();
             expect(stats.enqueued).toBe(1);
         });
@@ -196,10 +199,10 @@ describe('core/request-queue', () => {
         it('should clear queue', async () => {
             queue.pause();
             const task = () => Promise.resolve();
-            
+
             const p1 = queue.enqueue(task);
             const p2 = queue.enqueue(task);
-            
+
             expect(queue.queue.length).toBe(2);
 
             queue.clear();
@@ -242,10 +245,10 @@ describe('core/request-queue', () => {
         });
 
         it('should handle resume when not paused', () => {
-             queue.paused = false;
-             const spy = vi.spyOn(queue, '_processQueue');
-             queue.resume();
-             expect(spy).not.toHaveBeenCalled();
+            queue.paused = false;
+            const spy = vi.spyOn(queue, '_processQueue');
+            queue.resume();
+            expect(spy).not.toHaveBeenCalled();
         });
     });
 });

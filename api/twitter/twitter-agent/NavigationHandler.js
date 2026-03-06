@@ -18,7 +18,7 @@ export class NavigationHandler extends BaseHandler {
         this.log('Returning to Home Feed...');
 
         // 10% chance to use direct URL navigation (User Request)
-        if (this.mathUtils.roll(0.10)) {
+        if (this.mathUtils.roll(0.1)) {
             this.log('[Navigation] 🎲 Random 10%: Using direct URL navigation.');
             try {
                 await api.goto('https://x.com/home');
@@ -31,13 +31,17 @@ export class NavigationHandler extends BaseHandler {
 
         try {
             const useHomeIcon = Math.random() < 0.8;
-            let targetSelector = useHomeIcon ? '[data-testid="AppTabBar_Home_Link"]' : '[aria-label="X"]';
+            let targetSelector = useHomeIcon
+                ? '[data-testid="AppTabBar_Home_Link"]'
+                : '[aria-label="X"]';
             let targetName = useHomeIcon ? 'Home Icon' : 'X Logo';
             let target = this.page.locator(targetSelector).first();
 
             if (!(await api.visible(target).catch(() => false))) {
                 this.log(`Preferred nav target (${targetName}) not visible. Switching...`);
-                targetSelector = useHomeIcon ? '[aria-label="X"]' : '[data-testid="AppTabBar_Home_Link"]';
+                targetSelector = useHomeIcon
+                    ? '[aria-label="X"]'
+                    : '[data-testid="AppTabBar_Home_Link"]';
                 targetName = useHomeIcon ? 'X Logo' : 'Home Icon';
                 target = this.page.locator(targetSelector).first();
             }
@@ -89,7 +93,10 @@ export class NavigationHandler extends BaseHandler {
 
             // Wait for tablist to load (ensure page is ready)
             try {
-                await this.page.waitForSelector('div[role="tablist"]', { state: 'visible', timeout: 5000 });
+                await this.page.waitForSelector('div[role="tablist"]', {
+                    state: 'visible',
+                    timeout: 5000,
+                });
             } catch {
                 this.log('[Tab] Tablist not found within timeout.');
                 return;
@@ -166,7 +173,7 @@ export class NavigationHandler extends BaseHandler {
 
             // Multiple selector patterns to catch variations:
             // - "Show 34 posts"
-            // - "Show 5 posts" 
+            // - "Show 5 posts"
             // - "Show X new posts"
             const buttonSelectors = [
                 // Primary: button with role containing span with "Show" and "posts"
@@ -174,7 +181,7 @@ export class NavigationHandler extends BaseHandler {
                 // Alternative: button containing text "Show" and "posts"
                 'button:has-text(/Show\\s+\\d+\\s+posts/i)',
                 // Broader match: any element with role button containing "Show" and number
-                '[role="button"]:has-text("Show"):has-text(/\\d+/)]'
+                '[role="button"]:has-text("Show"):has-text(/\\d+/)]',
             ];
 
             let showPostsBtn = null;
@@ -184,7 +191,7 @@ export class NavigationHandler extends BaseHandler {
             for (const selector of buttonSelectors) {
                 try {
                     const btn = this.page.locator(selector).first();
-                    if (await api.exists(btn) && await api.visible(btn)) {
+                    if ((await api.exists(btn)) && (await api.visible(btn))) {
                         const text = await btn.textContent().catch(() => '');
                         // Validate it matches the pattern
                         if (/show\s+\d+\s+post/i.test(text)) {
@@ -203,7 +210,9 @@ export class NavigationHandler extends BaseHandler {
 
                 // HUMAN-LIKE: Additional pre-click behavior for this specific button
                 // 1. Ensure button is in viewport (scroll if needed)
-                await showPostsBtn.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
+                await showPostsBtn.evaluate((el) =>
+                    el.scrollIntoView({ block: 'center', inline: 'center' })
+                );
                 await api.wait(this.mathUtils.randomInRange(300, 600));
 
                 // 2. Move cursor to vicinity first (not directly on button)
@@ -211,7 +220,11 @@ export class NavigationHandler extends BaseHandler {
                 if (box) {
                     const offsetX = this.mathUtils.randomInRange(-30, 30);
                     const offsetY = this.mathUtils.randomInRange(-20, 20);
-                    await this.ghost.move(box.x + box.width / 2 + offsetX, box.y + box.height / 2 + offsetY, this.mathUtils.randomInRange(15, 25));
+                    await this.ghost.move(
+                        box.x + box.width / 2 + offsetX,
+                        box.y + box.height / 2 + offsetY,
+                        this.mathUtils.randomInRange(15, 25)
+                    );
                     await api.wait(this.mathUtils.randomInRange(400, 800));
                 }
 
@@ -225,7 +238,10 @@ export class NavigationHandler extends BaseHandler {
 
                 // 4. Scroll down slightly to show the new posts (human-like discovery)
                 const scrollVariance = 0.8 + Math.random() * 0.4;
-                await scrollRandom(Math.floor(150 * scrollVariance), Math.floor(250 * scrollVariance));
+                await scrollRandom(
+                    Math.floor(150 * scrollVariance),
+                    Math.floor(250 * scrollVariance)
+                );
                 await api.wait(this.mathUtils.randomInRange(600, 1000));
 
                 this.log('[Posts] New posts loaded successfully.');

@@ -2,16 +2,84 @@
  * Sentiment Guard Module
  * Analyzes tweet content sentiment to avoid inappropriate bot interactions
  * Skips likes/retweets on negative/tragic content
- * 
+ *
  * @module utils/sentiment-guard
  */
 
 const NEGATIVE_KEYWORDS = {
-    death: ['died', 'passed away', 'rip', 'rest in peace', 'gone too soon', 'lost', 'lost his', 'lost her', 'lost their', 'death', 'dead', 'deceased', 'obituary', 'funeral', 'mourn', 'mourning'],
-    tragedy: ['tragedy', 'tragic', 'accident', 'crash', 'shooting', 'attack', 'murder', 'homicide', 'suicide', 'overdose', 'mass shooting', 'terrorist', 'violence', 'victim'],
-    grief: ['grief', 'sad', 'heartbroken', 'devastated', 'tragic', 'unfortunately', 'sadly', 'trouble', 'worst', 'horrible', 'terrible', 'awful', 'pain', 'suffering'],
-    scam: ['scam', 'hacked', 'stolen', 'fraud', 'fake', 'phishing', 'malware', 'virus', 'security breach', 'compromised'],
-    controversy: ['scandal', 'controversy', 'accused', 'allegations', 'lawsuit', 'sued', 'investigation', 'subpoena', 'raid']
+    death: [
+        'died',
+        'passed away',
+        'rip',
+        'rest in peace',
+        'gone too soon',
+        'lost',
+        'lost his',
+        'lost her',
+        'lost their',
+        'death',
+        'dead',
+        'deceased',
+        'obituary',
+        'funeral',
+        'mourn',
+        'mourning',
+    ],
+    tragedy: [
+        'tragedy',
+        'tragic',
+        'accident',
+        'crash',
+        'shooting',
+        'attack',
+        'murder',
+        'homicide',
+        'suicide',
+        'overdose',
+        'mass shooting',
+        'terrorist',
+        'violence',
+        'victim',
+    ],
+    grief: [
+        'grief',
+        'sad',
+        'heartbroken',
+        'devastated',
+        'tragic',
+        'unfortunately',
+        'sadly',
+        'trouble',
+        'worst',
+        'horrible',
+        'terrible',
+        'awful',
+        'pain',
+        'suffering',
+    ],
+    scam: [
+        'scam',
+        'hacked',
+        'stolen',
+        'fraud',
+        'fake',
+        'phishing',
+        'malware',
+        'virus',
+        'security breach',
+        'compromised',
+    ],
+    controversy: [
+        'scandal',
+        'controversy',
+        'accused',
+        'allegations',
+        'lawsuit',
+        'sued',
+        'investigation',
+        'subpoena',
+        'raid',
+    ],
 };
 
 const NEGATIVE_PATTERNS = [
@@ -27,15 +95,15 @@ const NEGATIVE_PATTERNS = [
     /sadly/i,
     /lost (?:his|her|their|the)/i,
     /death of/i,
-    /died (?:at|after|from)/i
+    /died (?:at|after|from)/i,
 ];
 
 const SENTIMENT_THRESHOLDS = {
     skipLike: 0.15,
     skipRetweet: 0.15,
-    skipReply: 0.20,
-    skipQuote: 0.20,
-    allowExpand: true
+    skipReply: 0.2,
+    skipQuote: 0.2,
+    allowExpand: true,
 };
 
 function analyzeSentiment(text) {
@@ -63,7 +131,7 @@ function analyzeSentiment(text) {
     for (const pattern of NEGATIVE_PATTERNS) {
         if (pattern.test(text)) {
             negativeMatches++;
-            if (!categories.some(c => c.name === 'pattern')) {
+            if (!categories.some((c) => c.name === 'pattern')) {
                 categories.push({ name: 'pattern', matches: 1 });
             }
         }
@@ -82,13 +150,13 @@ function analyzeSentiment(text) {
         shouldSkipRetweets: score >= SENTIMENT_THRESHOLDS.skipRetweet,
         shouldSkipReplies: score >= SENTIMENT_THRESHOLDS.skipReply,
         shouldSkipQuotes: score >= SENTIMENT_THRESHOLDS.skipQuote,
-        allowExpand: true
+        allowExpand: true,
     };
 }
 
 function shouldSkipAction(text, action) {
     const analysis = analyzeSentiment(text);
-    
+
     switch (action.toLowerCase()) {
         case 'like':
             return analysis.shouldSkipLikes;
@@ -108,22 +176,22 @@ function shouldSkipAction(text, action) {
 
 function getSkipReason(text, action) {
     const analysis = analyzeSentiment(text);
-    
+
     if (action.toLowerCase() === 'like' && analysis.shouldSkipLikes) {
         return {
             skipped: true,
             reason: 'Negative sentiment detected',
             categories: analysis.categories,
-            score: analysis.score
+            score: analysis.score,
         };
     }
-    
+
     return { skipped: false, reason: null };
 }
 
 function getSafeActions(text) {
     const analysis = analyzeSentiment(text);
-    
+
     return {
         canLike: !analysis.shouldSkipLikes,
         canRetweet: !analysis.shouldSkipRetweets,
@@ -131,30 +199,39 @@ function getSafeActions(text) {
         canQuote: !analysis.shouldSkipQuotes,
         canExpand: analysis.allowExpand,
         sentimentScore: analysis.score,
-        isNegative: analysis.isNegative
+        isNegative: analysis.isNegative,
     };
 }
 
 function formatSentimentReport(text) {
     const analysis = analyzeSentiment(text);
-    
+
     if (analysis.isNegative) {
-        const blockedActions = ['like', 'retweet', 'reply', 'quote'].filter((a, i) => {
-            const methods = ['shouldSkipLikes', 'shouldSkipRetweets', 'shouldSkipReplies', 'shouldSkipQuotes'];
-            return analysis[methods[i]];
-        }).join(', ');
-        return `[SentimentGuard] 🚫 NEGATIVE content detected (score: ${analysis.score.toFixed(2)})\n` +
-               `[SentimentGuard] 🚫 Categories: ${analysis.categories.map(c => c.name).join(', ') || 'unknown'} | Actions blocked: ${blockedActions || 'none'}`;
+        const blockedActions = ['like', 'retweet', 'reply', 'quote']
+            .filter((a, i) => {
+                const methods = [
+                    'shouldSkipLikes',
+                    'shouldSkipRetweets',
+                    'shouldSkipReplies',
+                    'shouldSkipQuotes',
+                ];
+                return analysis[methods[i]];
+            })
+            .join(', ');
+        return (
+            `[SentimentGuard] 🚫 NEGATIVE content detected (score: ${analysis.score.toFixed(2)})\n` +
+            `[SentimentGuard] 🚫 Categories: ${analysis.categories.map((c) => c.name).join(', ') || 'unknown'} | Actions blocked: ${blockedActions || 'none'}`
+        );
     }
-    
+
     return `[SentimentGuard] ✅ Neutral/Positive content (score: ${analysis.score.toFixed(2)})`;
 }
 
 function shouldProcessContent(text, context = {}) {
     const analysis = analyzeSentiment(text);
-    
+
     const { allowNegativeExpand = true } = context;
-    
+
     if (analysis.isNegative) {
         if (allowNegativeExpand) {
             return {
@@ -164,13 +241,13 @@ function shouldProcessContent(text, context = {}) {
                     like: false,
                     retweet: false,
                     reply: false,
-                    quote: false
-                }
+                    quote: false,
+                },
             };
         }
         return { allowed: false, reason: 'Negative content' };
     }
-    
+
     return { allowed: true, restrictions: null };
 }
 
@@ -184,8 +261,8 @@ export const sentimentGuard = {
     defaults: {
         thresholds: SENTIMENT_THRESHOLDS,
         keywords: NEGATIVE_KEYWORDS,
-        patterns: NEGATIVE_PATTERNS
-    }
+        patterns: NEGATIVE_PATTERNS,
+    },
 };
 
 export default sentimentGuard;

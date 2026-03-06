@@ -14,13 +14,7 @@ export { doAction as do } from './executor.js';
 export { find } from './finder.js';
 
 // Vision Layer
-export { 
-    screenshot, 
-    buildPrompt, 
-    parseResponse, 
-    captureAXTree, 
-    captureState 
-} from './vision.js';
+export { screenshot, buildPrompt, parseResponse, captureAXTree, captureState } from './vision.js';
 
 // Action Engine - JSON action execution
 import { actionEngine } from './actionEngine.js';
@@ -37,10 +31,10 @@ const stopAgent = agentRunner.stop.bind(agentRunner);
 export { agentRunner, runAgent, stopAgent };
 
 // Token utilities
-export { 
-    estimateTokens, 
-    estimateMessageTokens, 
-    estimateConversationTokens 
+export {
+    estimateTokens,
+    estimateMessageTokens,
+    estimateConversationTokens,
 } from './tokenCounter.js';
 
 /**

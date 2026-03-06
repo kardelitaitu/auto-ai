@@ -121,13 +121,17 @@ describe('api/core/errors', () => {
 
         it('should rethrow AutomationError if fn fails with it', async () => {
             const automationErr = new AutomationError('msg', 'CODE');
-            const fn = async () => { throw automationErr; };
+            const fn = async () => {
+                throw automationErr;
+            };
             await expect(withErrorHandling(fn)).rejects.toThrow(automationErr);
         });
 
         it('should wrap other errors in ActionError', async () => {
             const rawErr = new Error('raw');
-            const fn = async () => { throw rawErr; };
+            const fn = async () => {
+                throw rawErr;
+            };
             await expect(withErrorHandling(fn, 'test')).rejects.toThrow(/Error during test: raw/);
             await expect(withErrorHandling(fn, 'test')).rejects.toThrow(ActionError);
         });

@@ -14,15 +14,15 @@ class IdleGhosting {
 
     async start(page, options = {}) {
         if (this.isActive) return;
-        
+
         this.wiggle = options.wiggle !== false;
         this.scroll = options.scroll !== false;
         this.frequency = options.frequency || 3000;
         this.magnitude = options.magnitude || 5;
         this.page = page;
-        
+
         this.isActive = true;
-        
+
         if (this.wiggle) {
             this.wiggleInterval = setInterval(() => {
                 if (page?.mouse?.move) {
@@ -30,7 +30,7 @@ class IdleGhosting {
                 }
             }, this.frequency);
         }
-        
+
         if (this.scroll) {
             this.scrollInterval = setInterval(() => {
                 if (page?.mouse?.wheel) {
@@ -59,8 +59,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         debug: vi.fn(),
         warn: vi.fn(),
-        error: vi.fn()
-    })
+        error: vi.fn(),
+    }),
 }));
 
 describe('IdleGhosting', () => {
@@ -74,8 +74,8 @@ describe('IdleGhosting', () => {
             viewportSize: vi.fn().mockReturnValue({ width: 1000, height: 1000 }),
             mouse: {
                 move: vi.fn().mockResolvedValue(undefined),
-                wheel: vi.fn().mockResolvedValue(undefined)
-            }
+                wheel: vi.fn().mockResolvedValue(undefined),
+            },
         };
     });
 
@@ -91,10 +91,10 @@ describe('IdleGhosting', () => {
 
             expect(ghosting.isActive).toBe(true);
             expect(ghosting.wiggleInterval).not.toBeNull();
-            
+
             // Advance timers to trigger the interval callback
             vi.advanceTimersByTime(ghosting.frequency);
-            
+
             expect(mockPage.mouse.move).toHaveBeenCalled();
         });
 
@@ -131,19 +131,19 @@ describe('IdleGhosting', () => {
     describe('mouse movement', () => {
         it('should perform micro movements when active', async () => {
             const moveSpy = vi.spyOn(mockPage.mouse, 'move');
-            
+
             await ghosting.start(mockPage);
-            
+
             vi.advanceTimersByTime(ghosting.frequency);
-            
+
             expect(moveSpy).toHaveBeenCalled();
         });
 
         it('should respect magnitude option', async () => {
             await ghosting.start(mockPage, { magnitude: 10 });
-            
+
             vi.advanceTimersByTime(ghosting.frequency);
-            
+
             expect(mockPage.mouse.move).toHaveBeenCalled();
         });
     });
@@ -151,21 +151,21 @@ describe('IdleGhosting', () => {
     describe('scroll movement', () => {
         it('should perform scroll movements when enabled', async () => {
             const wheelSpy = vi.spyOn(mockPage.mouse, 'wheel');
-            
+
             await ghosting.start(mockPage, { scroll: true });
-            
+
             vi.advanceTimersByTime(ghosting.frequency * 2);
-            
+
             expect(wheelSpy).toHaveBeenCalled();
         });
 
         it('should not scroll when disabled', async () => {
             const wheelSpy = vi.spyOn(mockPage.mouse, 'wheel');
-            
+
             await ghosting.start(mockPage, { scroll: false });
-            
+
             vi.advanceTimersByTime(ghosting.frequency * 2);
-            
+
             expect(wheelSpy).not.toHaveBeenCalled();
         });
     });

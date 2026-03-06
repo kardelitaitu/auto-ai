@@ -1,6 +1,6 @@
 /**
  * @fileoverview Page Navigation (State Transitions)
- * 
+ *
  * @module api/navigation
  */
 
@@ -47,7 +47,7 @@ export async function goto(url, options = {}) {
         warmupMouse = true,
         warmupFakeRead = false,
         warmupPause = true,
-        autoBanners = getAutoBanners()
+        autoBanners = getAutoBanners(),
     } = options;
 
     // Auto-warmup before navigation
@@ -67,7 +67,9 @@ export async function goto(url, options = {}) {
     const navPromise = page.goto(url, gotoOptions);
 
     if (resolveOnSelector) {
-        const selectorPromise = page.waitForSelector(resolveOnSelector, { state: 'visible', timeout }).catch(() => null);
+        const selectorPromise = page
+            .waitForSelector(resolveOnSelector, { state: 'visible', timeout })
+            .catch(() => null);
         // Race the full navigation against the specific selector availability
         await Promise.race([navPromise, selectorPromise]);
         logger.debug(`[Navigation] Quick-resolved via selector: ${resolveOnSelector}`);
@@ -83,25 +85,26 @@ export async function goto(url, options = {}) {
         }
     } catch (_e) {
         // Fallback
-        await page.evaluate(() => window.scrollBy(0, 100)).catch(() => { });
+        await page.evaluate(() => window.scrollBy(0, 100)).catch(() => {});
     }
 
     // Auto-handle cookie banners
     if (autoBanners) {
-        await handleBanners().catch(() => { });
+        await handleBanners().catch(() => {});
     }
 
     // Evaluate dynamic plugins
     try {
         getPluginManager().evaluateUrl(page.url());
-    } catch (_e) { /* ignore */ }
+    } catch (_e) {
+        /* ignore */
+    }
 }
 
 export async function setExtraHTTPHeaders(headers = {}) {
     const page = getPage();
     await page.setExtraHTTPHeaders(headers);
 }
-
 
 /**
  * Reload the current page.

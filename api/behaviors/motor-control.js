@@ -21,12 +21,12 @@ const MOTOR_CONFIG = {
         { dx: -10, dy: 0 },
         { dx: 10, dy: 0 },
         { dx: -8, dy: -8 },
-        { dx: 8, dy: 8 }
+        { dx: 8, dy: 8 },
     ],
     retryDelay: 100,
     maxRetries: 3,
     targetTimeout: 5000,
-    scrollRecoveryAmount: 150
+    scrollRecoveryAmount: 150,
 };
 
 function createMotorController(options = {}) {
@@ -45,11 +45,17 @@ function createMotorController(options = {}) {
                     return {
                         primary: '[data-testid="tweetText"]',
                         fallbacks: [
-                            { selector: 'article [role="group"] a[href*="/status"]', reason: 'permalink_link' },
+                            {
+                                selector: 'article [role="group"] a[href*="/status"]',
+                                reason: 'permalink_link',
+                            },
                             { selector: 'time[datetime]', reason: 'timestamp' },
-                            { selector: 'article a[href*="/status"]', reason: 'article_status_link' },
-                            { selector: '[lang] > div', reason: 'lang_div' }
-                        ]
+                            {
+                                selector: 'article a[href*="/status"]',
+                                reason: 'article_status_link',
+                            },
+                            { selector: '[lang] > div', reason: 'lang_div' },
+                        ],
                     };
                 case 'reply':
                     return {
@@ -57,8 +63,8 @@ function createMotorController(options = {}) {
                         fallbacks: [
                             { selector: '[aria-label="Reply"]', reason: 'aria_reply' },
                             { selector: 'svg[aria-label*="Reply"]', reason: 'svg_reply' },
-                            { selector: 'button:has-text("Reply")', reason: 'text_reply' }
-                        ]
+                            { selector: 'button:has-text("Reply")', reason: 'text_reply' },
+                        ],
                     };
                 case 'retweet':
                     return {
@@ -66,8 +72,8 @@ function createMotorController(options = {}) {
                         fallbacks: [
                             { selector: '[aria-label="Retweet"]', reason: 'aria_retweet' },
                             { selector: 'svg[aria-label*="Retweet"]', reason: 'svg_retweet' },
-                            { selector: 'button:has-text("Repost")', reason: 'text_repost' }
-                        ]
+                            { selector: 'button:has-text("Repost")', reason: 'text_repost' },
+                        ],
                     };
                 case 'like':
                     return {
@@ -75,24 +81,24 @@ function createMotorController(options = {}) {
                         fallbacks: [
                             { selector: '[aria-label="Like"]', reason: 'aria_like' },
                             { selector: 'svg[aria-label*="Like"]', reason: 'svg_like' },
-                            { selector: 'button:has-text("Like")', reason: 'text_like' }
-                        ]
+                            { selector: 'button:has-text("Like")', reason: 'text_like' },
+                        ],
                     };
                 case 'bookmark':
                     return {
                         primary: '[data-testid="bookmark"]',
                         fallbacks: [
                             { selector: '[aria-label="Bookmark"]', reason: 'aria_bookmark' },
-                            { selector: 'svg[aria-label*="Bookmark"]', reason: 'svg_bookmark' }
-                        ]
+                            { selector: 'svg[aria-label*="Bookmark"]', reason: 'svg_bookmark' },
+                        ],
                     };
                 case 'follow':
                     return {
                         primary: '[data-testid="follow"]',
                         fallbacks: [
                             { selector: '[data-testid="followButton"]', reason: 'followButton' },
-                            { selector: 'button:has-text("Follow")', reason: 'text_follow' }
-                        ]
+                            { selector: 'button:has-text("Follow")', reason: 'text_follow' },
+                        ],
                     };
                 case 'home':
                     return {
@@ -100,8 +106,8 @@ function createMotorController(options = {}) {
                         fallbacks: [
                             { selector: '[data-testid="appleLogo"]', reason: 'appleLogo' },
                             { selector: '[data-testid="logo"]', reason: 'logo' },
-                            { selector: 'a[href="/home"]', reason: 'home_link' }
-                        ]
+                            { selector: 'a[href="/home"]', reason: 'home_link' },
+                        ],
                     };
                 default:
                     return { primary: context, fallbacks: [] };
@@ -136,12 +142,14 @@ function createMotorController(options = {}) {
                     if (fallbackEl) {
                         const isVisible = await api.visible(fallbackEl).catch(() => false);
                         if (isVisible) {
-                            logger.info(`[Motor] Using fallback selector [${i + 1}/${fallbacks.length}]: ${fallback.selector}`);
+                            logger.info(
+                                `[Motor] Using fallback selector [${i + 1}/${fallbacks.length}]: ${fallback.selector}`
+                            );
                             return {
                                 selector: fallback.selector,
                                 element: fallbackEl,
                                 usedFallback: true,
-                                reason: fallback.reason || 'primary_not_found'
+                                reason: fallback.reason || 'primary_not_found',
                             };
                         }
                     }
@@ -195,7 +203,6 @@ function createMotorController(options = {}) {
 
                     lastBox = box;
                     await api.wait(1000);
-
                 } catch (_error) {
                     await api.wait(1000);
                 }
@@ -206,9 +213,13 @@ function createMotorController(options = {}) {
 
         async checkOverlap(page, x, y) {
             try {
-                const element = await page.evaluate((x, y) => {
-                    return document.elementFromPoint(x, y);
-                }, x, y);
+                const element = await page.evaluate(
+                    (x, y) => {
+                        return document.elementFromPoint(x, y);
+                    },
+                    x,
+                    y
+                );
 
                 return element;
             } catch (_error) {
@@ -225,7 +236,7 @@ function createMotorController(options = {}) {
                 { dx: -50, dy: 0 },
                 { dx: 50, dy: 0 },
                 { dx: 0, dy: -100 },
-                { dx: 0, dy: 100 }
+                { dx: 0, dy: 100 },
             ];
 
             for (const offset of offsets) {
@@ -235,7 +246,9 @@ function createMotorController(options = {}) {
                 const element = await this.checkOverlap(page, testX, testY);
 
                 if (!element) {
-                    logger.info(`[Motor] Found uncovered area at (${Math.round(testX)}, ${Math.round(testY)})`);
+                    logger.info(
+                        `[Motor] Found uncovered area at (${Math.round(testX)}, ${Math.round(testY)})`
+                    );
                     return { success: true, x: testX, y: testY };
                 }
             }
@@ -251,7 +264,9 @@ function createMotorController(options = {}) {
                 const spiralX = targetX + offset.dx;
                 const spiralY = targetY + offset.dy;
 
-                logger.info(`[Motor] Spiral search attempt ${i + 1}: (${Math.round(spiralX)}, ${Math.round(spiralY)})`);
+                logger.info(
+                    `[Motor] Spiral search attempt ${i + 1}: (${Math.round(spiralX)}, ${Math.round(spiralY)})`
+                );
 
                 const element = await this.checkOverlap(page, spiralX, spiralY);
 
@@ -264,11 +279,7 @@ function createMotorController(options = {}) {
         },
 
         async clickWithRecovery(page, selector, options = {}) {
-            const {
-                logger = console,
-                recovery = 'scroll',
-                timeout = 5000
-            } = options;
+            const { logger = console, recovery = 'scroll', timeout = 5000 } = options;
 
             try {
                 const stable = await this.getStableTarget(page, selector, { timeout });
@@ -280,7 +291,10 @@ function createMotorController(options = {}) {
                         await page.evaluate(() => window.scrollBy(0, 200));
                         await api.wait(1000);
 
-                        return await this.clickWithRecovery(page, selector, { ...options, recovery: 'spiral' });
+                        return await this.clickWithRecovery(page, selector, {
+                            ...options,
+                            recovery: 'spiral',
+                        });
                     }
 
                     return { success: false, reason: 'no_stable_target' };
@@ -294,7 +308,9 @@ function createMotorController(options = {}) {
                 const overlap = await this.checkOverlap(page, targetX, targetY);
 
                 if (overlap) {
-                    logger.warn(`[Motor] Element overlapped at target point, finding alternative...`);
+                    logger.warn(
+                        `[Motor] Element overlapped at target point, finding alternative...`
+                    );
 
                     const uncovered = await this.findUncoveredArea(page, box, { logger });
 
@@ -316,7 +332,6 @@ function createMotorController(options = {}) {
                 await page.mouse.click(targetX, targetY);
 
                 return { success: true, x: targetX, y: targetY, recovered: false };
-
             } catch (error) {
                 logger.error(`[Motor] Click error: ${error.message}`);
                 return { success: false, reason: error.message };
@@ -332,7 +347,9 @@ function createMotorController(options = {}) {
                 await api.wait(1000);
 
                 try {
-                    const verified = await page.waitForSelector(verifySelector, { timeout: verifyTimeout });
+                    const verified = await page.waitForSelector(verifySelector, {
+                        timeout: verifyTimeout,
+                    });
 
                     if (verified) {
                         logger.info(`[Motor] Click verified: ${verifySelector} appeared`);
@@ -365,14 +382,17 @@ function createMotorController(options = {}) {
 
                 const targetY = box.y - offset;
 
-                await page.evaluate((y, smoothScroll) => {
-                    window.scrollTo({ top: y, behavior: smoothScroll ? 'smooth' : 'auto' });
-                }, targetY, smooth);
+                await page.evaluate(
+                    (y, smoothScroll) => {
+                        window.scrollTo({ top: y, behavior: smoothScroll ? 'smooth' : 'auto' });
+                    },
+                    targetY,
+                    smooth
+                );
 
                 await api.wait(1000);
 
                 return { success: true, y: targetY };
-
             } catch (error) {
                 return { success: false, reason: error.message };
             }
@@ -385,7 +405,7 @@ function createMotorController(options = {}) {
                 factor = 2,
                 maxDelay = 30000,
                 jitterMin = 0.9,
-                jitterMax = 1.1
+                jitterMax = 1.1,
             } = options;
 
             let lastError;
@@ -400,7 +420,7 @@ function createMotorController(options = {}) {
                         maxDelay,
                         factor,
                         jitterMin,
-                        jitterMax
+                        jitterMax,
                     });
 
                     if (attempt < maxRetries - 1) {
@@ -418,7 +438,7 @@ function createMotorController(options = {}) {
                 context = null,
                 fallbacks = [],
                 verifySelector = null,
-                verifyTimeout = 500
+                verifyTimeout = 500,
             } = options;
 
             let selectors;
@@ -428,7 +448,7 @@ function createMotorController(options = {}) {
             } else if (selectorConfig) {
                 selectors = {
                     primary: selectorConfig.primary || selectorConfig,
-                    fallbacks: fallbacks
+                    fallbacks: fallbacks,
                 };
             } else {
                 logger.warn(`[Motor] No context or selectorConfig provided`);
@@ -450,7 +470,7 @@ function createMotorController(options = {}) {
 
             const stableResult = await this.getStableTarget(page, smartResult.selector, {
                 timeout: options.timeout || config.targetTimeout,
-                scrollFirst: true
+                scrollFirst: true,
             });
 
             if (!stableResult.success) {
@@ -460,7 +480,7 @@ function createMotorController(options = {}) {
 
                 const retryResult = await this.getStableTarget(page, smartResult.selector, {
                     timeout: 2000,
-                    scrollFirst: false
+                    scrollFirst: false,
                 });
 
                 if (!retryResult.success) {
@@ -486,7 +506,7 @@ function createMotorController(options = {}) {
                         y: uncovered.y,
                         selector: smartResult.selector,
                         recovered: true,
-                        usedFallback: smartResult.usedFallback
+                        usedFallback: smartResult.usedFallback,
                     };
                 }
 
@@ -499,7 +519,7 @@ function createMotorController(options = {}) {
                         y: spiral.y,
                         selector: smartResult.selector,
                         recovered: true,
-                        usedFallback: smartResult.usedFallback
+                        usedFallback: smartResult.usedFallback,
                     };
                 }
 
@@ -520,7 +540,7 @@ function createMotorController(options = {}) {
                         selector: smartResult.selector,
                         recovered: false,
                         usedFallback: smartResult.usedFallback,
-                        verified: true
+                        verified: true,
                     };
                 } catch {
                     logger.warn(`[Motor] Click not verified: ${verifySelector}`);
@@ -531,7 +551,7 @@ function createMotorController(options = {}) {
                         selector: smartResult.selector,
                         recovered: false,
                         usedFallback: smartResult.usedFallback,
-                        verified: false
+                        verified: false,
                     };
                 }
             }
@@ -542,15 +562,15 @@ function createMotorController(options = {}) {
                 y: targetY,
                 selector: smartResult.selector,
                 recovered: false,
-                usedFallback: smartResult.usedFallback
+                usedFallback: smartResult.usedFallback,
             };
-        }
+        },
     };
 }
 
 export const motorControl = {
     createMotorController,
-    defaults: MOTOR_CONFIG
+    defaults: MOTOR_CONFIG,
 };
 
 export default motorControl;

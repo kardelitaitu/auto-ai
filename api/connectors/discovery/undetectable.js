@@ -51,7 +51,9 @@ class UndetectableDiscover extends BaseDiscover {
             const response = await apiHandler.get(`${this.apiBaseUrl}list`);
 
             if (response.code !== 0 || !response.data) {
-                logger.warn(`Undetectable API returned error or empty data. Code: ${response.code}`);
+                logger.warn(
+                    `Undetectable API returned error or empty data. Code: ${response.code}`
+                );
                 return [];
             }
 
@@ -61,18 +63,22 @@ class UndetectableDiscover extends BaseDiscover {
             logger.info(`Retrieved ${profileIds.length} total profiles from Undetectable API.`);
 
             // Filter for profiles that are actually running (have a websocket_link)
-            const runningProfiles = profileIds.filter(id => {
+            const runningProfiles = profileIds.filter((id) => {
                 const profile = profilesMap[id];
                 // Check if websocket_link is present and not empty
                 return profile.websocket_link && profile.websocket_link.trim() !== '';
             });
 
             if (runningProfiles.length === 0) {
-                logger.info(`No running ${this.browserType} profiles found (out of ${profileIds.length} total).`);
+                logger.info(
+                    `No running ${this.browserType} profiles found (out of ${profileIds.length} total).`
+                );
                 return [];
             }
 
-            logger.info(`Found ${runningProfiles.length} running profiles. Mapping to connector format...`);
+            logger.info(
+                `Found ${runningProfiles.length} running profiles. Mapping to connector format...`
+            );
 
             // Map to standard format
             const discoveredProfiles = runningProfiles.map((id, index) => {
@@ -88,7 +94,9 @@ class UndetectableDiscover extends BaseDiscover {
                     httpEndpoint = `http://${url.host}`;
                     port = parseInt(url.port, 10);
                 } catch (_e) {
-                    logger.warn(`Failed to parse WS URL for profile ${profile.name}: ${wsEndpoint}`);
+                    logger.warn(
+                        `Failed to parse WS URL for profile ${profile.name}: ${wsEndpoint}`
+                    );
                 }
 
                 return {
@@ -102,19 +110,20 @@ class UndetectableDiscover extends BaseDiscover {
                     port: port,
                     // Undetectable specific metadata if needed
                     cloud_id: profile.cloud_id,
-                    cloud_group: profile.cloud_group
+                    cloud_group: profile.cloud_group,
                 };
             });
 
-            discoveredProfiles.forEach(profile => {
+            discoveredProfiles.forEach((profile) => {
                 logger.info(`Found connectable profile: ${profile.name} (ws: ${profile.ws})`);
             });
 
             return discoveredProfiles;
-
         } catch (error) {
             if (error.code === 'ECONNREFUSED') {
-                logger.info(`Undetectable API is not reachable at ${this.apiBaseUrl}. Is the application running?`);
+                logger.info(
+                    `Undetectable API is not reachable at ${this.apiBaseUrl}. Is the application running?`
+                );
             } else {
                 logger.error(`Error during ${this.browserType} discovery: ${error.message}`);
             }

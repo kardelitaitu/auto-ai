@@ -21,7 +21,7 @@ describe('generateProfiles', () => {
     it('should generate 50 profiles with required fields', async () => {
         vi.doMock('fs', () => ({
             default: { writeFileSync },
-            writeFileSync
+            writeFileSync,
         }));
 
         await import('../../utils/generateProfiles.js');
@@ -46,7 +46,7 @@ describe('generateProfiles', () => {
     it('should include expected fields and profile types', async () => {
         vi.doMock('fs', () => ({
             default: { writeFileSync },
-            writeFileSync
+            writeFileSync,
         }));
 
         await import('../../utils/generateProfiles.js');
@@ -70,10 +70,12 @@ describe('generateProfiles', () => {
         expect(profile.timings.actionSpecific).toHaveProperty('keys');
         expect(profile.timings.actionSpecific).toHaveProperty('idle');
 
-        const types = new Set(written.map((p) => {
-            const match = p.id.match(/^\d+-(.+)$/);
-            return match ? match[1] : '';
-        }));
+        const types = new Set(
+            written.map((p) => {
+                const match = p.id.match(/^\d+-(.+)$/);
+                return match ? match[1] : '';
+            })
+        );
 
         expect(types.has('Skimmer')).toBe(true);
         expect(types.has('Balanced')).toBe(true);
@@ -91,7 +93,7 @@ describe('generateProfiles', () => {
 
         vi.doMock('fs', () => ({
             default: { writeFileSync },
-            writeFileSync
+            writeFileSync,
         }));
 
         await import('../../utils/generateProfiles.js');

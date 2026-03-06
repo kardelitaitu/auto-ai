@@ -39,7 +39,7 @@ const CONSENT_SELECTORS = [
     '[aria-label*="Accept"]',
     '[aria-label*="OK"]',
     '[aria-label*="Yes]',
-    '[aria-label*="Accept cookies"]'
+    '[aria-label*="Accept cookies"]',
 ];
 
 /**
@@ -64,7 +64,7 @@ export async function handleBanners(options = {}) {
                 // Human-like delay before clicking
                 await delay(randomInRange(500, 1500));
 
-                await loc.click({ force: true }).catch(() => { });
+                await loc.click({ force: true }).catch(() => {});
 
                 if (waitAfter) {
                     await delay(randomInRange(1000, 2000));

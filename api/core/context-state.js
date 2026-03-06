@@ -2,57 +2,57 @@
  * @fileoverview Context-Aware State Management
  * Moves module-level globals into AsyncLocalStorage for session isolation.
  * Enables concurrent multi-session usage without state pollution.
- * 
+ *
  * @module api/context-state
  */
 
 import { PERSONAS } from '../behaviors/persona-defs.js';
 
 const DEFAULT_STATE = {
-  persona: {
-    name: 'casual',
-    config: { ...PERSONAS.casual },
-    sessionStartTime: Date.now(),
-  },
-  pathStyle: {
-    style: 'bezier',
-    options: {},
-  },
-  attention: {
-    distractionChance: 0.2,
-    memory: [],
-  },
-  idle: {
-    fidgetInterval: null,
-    isRunning: false,
-  },
-  session: {
-    previousUrl: null,
-  },
-  agent: {
-    elementMap: [],
-  },
-  automation: {
-    autoBanners: false,
-  },
-  audio: {
-    mute: false,
-  },
-  retryBudget: {
-    used: 0,
-    max: 50,
-  },
+    persona: {
+        name: 'casual',
+        config: { ...PERSONAS.casual },
+        sessionStartTime: Date.now(),
+    },
+    pathStyle: {
+        style: 'bezier',
+        options: {},
+    },
+    attention: {
+        distractionChance: 0.2,
+        memory: [],
+    },
+    idle: {
+        fidgetInterval: null,
+        isRunning: false,
+    },
+    session: {
+        previousUrl: null,
+    },
+    agent: {
+        elementMap: [],
+    },
+    automation: {
+        autoBanners: false,
+    },
+    audio: {
+        mute: false,
+    },
+    retryBudget: {
+        used: 0,
+        max: 50,
+    },
 };
 
 const MAX_ATTENTION_MEMORY = 3;
 let contextStoreRef = null;
 
 export function setContextStore(store) {
-  contextStoreRef = store;
+    contextStoreRef = store;
 }
 
 export function getDefaultState() {
-  return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    return JSON.parse(JSON.stringify(DEFAULT_STATE));
 }
 
 /**
@@ -60,11 +60,11 @@ export function getDefaultState() {
  * @returns {object} Current context state
  */
 export function getContextState() {
-  const store = contextStoreRef?.getStore?.();
-  if (!store || !store.state) {
-    return getDefaultState();
-  }
-  return store.state;
+    const store = contextStoreRef?.getStore?.();
+    if (!store || !store.state) {
+        return getDefaultState();
+    }
+    return store.state;
 }
 
 /**
@@ -72,10 +72,10 @@ export function getContextState() {
  * @param {object} state - State object to set
  */
 export function setContextState(state) {
-  const store = contextStoreRef?.getStore?.();
-  if (store) {
-    store.state = state;
-  }
+    const store = contextStoreRef?.getStore?.();
+    if (store) {
+        store.state = state;
+    }
 }
 
 /**
@@ -84,8 +84,8 @@ export function setContextState(state) {
  * @returns {object} The requested section
  */
 export function getStateSection(section) {
-  const state = getContextState();
-  return state[section] || getDefaultState()[section];
+    const state = getContextState();
+    return state[section] || getDefaultState()[section];
 }
 
 /**
@@ -94,9 +94,9 @@ export function getStateSection(section) {
  * @param {object} values - Values to merge
  */
 export function updateStateSection(section, values) {
-  const state = getContextState();
-  state[section] = { ...state[section], ...values };
-  setContextState(state);
+    const state = getContextState();
+    state[section] = { ...state[section], ...values };
+    setContextState(state);
 }
 
 // ─── Persona Section ─────────────────────────────────────────────────
@@ -106,7 +106,7 @@ export function updateStateSection(section, values) {
  * @returns {object} Persona config object
  */
 export function getStatePersona() {
-  return getStateSection('persona').config;
+    return getStateSection('persona').config;
 }
 
 /**
@@ -114,7 +114,7 @@ export function getStatePersona() {
  * @returns {string} Persona name
  */
 export function getStatePersonaName() {
-  return getStateSection('persona').name;
+    return getStateSection('persona').name;
 }
 
 /**
@@ -123,29 +123,31 @@ export function getStatePersonaName() {
  * @param {object} [overrides] - Optional overrides
  */
 export function setStatePersona(name, overrides = {}) {
-  const base = PERSONAS[name];
-  if (!base && name !== 'custom') {
-    throw new Error(`Unknown persona "${name}". Available: ${Object.keys(PERSONAS).join(', ')}`);
-  }
+    const base = PERSONAS[name];
+    if (!base && name !== 'custom') {
+        throw new Error(
+            `Unknown persona "${name}". Available: ${Object.keys(PERSONAS).join(', ')}`
+        );
+    }
 
-  const baseConfig = base || PERSONAS.casual;
-  let config = { ...baseConfig, ...overrides };
+    const baseConfig = base || PERSONAS.casual;
+    let config = { ...baseConfig, ...overrides };
 
-  // Session-level biometric randomization
-  if (config.muscleModel) {
-    const drift = 0.1;
-    config.muscleModel = {
-      ...config.muscleModel,
-      Kp: config.muscleModel.Kp * (1 + (Math.random() * drift * 2 - drift)),
-      Ki: config.muscleModel.Ki * (1 + (Math.random() * drift * 2 - drift)),
-      Kd: config.muscleModel.Kd * (1 + (Math.random() * drift * 2 - drift)),
-    };
-  }
+    // Session-level biometric randomization
+    if (config.muscleModel) {
+        const drift = 0.1;
+        config.muscleModel = {
+            ...config.muscleModel,
+            Kp: config.muscleModel.Kp * (1 + (Math.random() * drift * 2 - drift)),
+            Ki: config.muscleModel.Ki * (1 + (Math.random() * drift * 2 - drift)),
+            Kd: config.muscleModel.Kd * (1 + (Math.random() * drift * 2 - drift)),
+        };
+    }
 
-  updateStateSection('persona', {
-    name,
-    config,
-  });
+    updateStateSection('persona', {
+        name,
+        config,
+    });
 }
 
 // ─── Path Style Section ───────────────────────────────────────────
@@ -155,7 +157,7 @@ export function setStatePersona(name, overrides = {}) {
  * @returns {string} Path style name
  */
 export function getStatePathStyle() {
-  return getStateSection('pathStyle').style;
+    return getStateSection('pathStyle').style;
 }
 
 /**
@@ -163,7 +165,7 @@ export function getStatePathStyle() {
  * @returns {object} Path options
  */
 export function getStatePathOptions() {
-  return getStateSection('pathStyle').options;
+    return getStateSection('pathStyle').options;
 }
 
 /**
@@ -172,11 +174,11 @@ export function getStatePathOptions() {
  * @param {object} [options] - Style options
  */
 export function setStatePathStyle(style, options = {}) {
-  const validStyles = ['bezier', 'arc', 'zigzag', 'overshoot', 'stopped', 'muscle'];
-  if (!validStyles.includes(style)) {
-    throw new Error(`Invalid path style: ${style}. Valid: ${validStyles.join(', ')}`);
-  }
-  updateStateSection('pathStyle', { style, options });
+    const validStyles = ['bezier', 'arc', 'zigzag', 'overshoot', 'stopped', 'muscle'];
+    if (!validStyles.includes(style)) {
+        throw new Error(`Invalid path style: ${style}. Valid: ${validStyles.join(', ')}`);
+    }
+    updateStateSection('pathStyle', { style, options });
 }
 
 // ─── Attention Section ───────────────────────────────────────────
@@ -186,7 +188,7 @@ export function setStatePathStyle(style, options = {}) {
  * @returns {number} Chance 0-1
  */
 export function getStateDistractionChance() {
-  return getStateSection('attention').distractionChance;
+    return getStateSection('attention').distractionChance;
 }
 
 /**
@@ -194,9 +196,9 @@ export function getStateDistractionChance() {
  * @param {number} chance - 0-1
  */
 export function setStateDistractionChance(chance) {
-  updateStateSection('attention', {
-    distractionChance: Math.max(0, Math.min(1, chance)),
-  });
+    updateStateSection('attention', {
+        distractionChance: Math.max(0, Math.min(1, chance)),
+    });
 }
 
 /**
@@ -204,7 +206,7 @@ export function setStateDistractionChance(chance) {
  * @returns {string[]} Array of selectors
  */
 export function getStateAttentionMemory() {
-  return getStateSection('attention').memory;
+    return getStateSection('attention').memory;
 }
 
 /**
@@ -212,22 +214,22 @@ export function getStateAttentionMemory() {
  * @param {string} selector - CSS selector
  */
 export function recordStateAttentionMemory(selector) {
-  if (!selector) return;
+    if (!selector) return;
 
-  const state = getContextState();
-  const memory = state.attention.memory;
+    const state = getContextState();
+    const memory = state.attention.memory;
 
-  const idx = memory.indexOf(selector);
-  if (idx !== -1) {
-    memory.splice(idx, 1);
-  }
-  memory.unshift(selector);
+    const idx = memory.indexOf(selector);
+    if (idx !== -1) {
+        memory.splice(idx, 1);
+    }
+    memory.unshift(selector);
 
-  if (memory.length > MAX_ATTENTION_MEMORY) {
-    memory.pop();
-  }
+    if (memory.length > MAX_ATTENTION_MEMORY) {
+        memory.pop();
+    }
 
-  updateStateSection('attention', { memory });
+    updateStateSection('attention', { memory });
 }
 
 // ─── Idle Section ─────────────────────────────────────────────────
@@ -237,7 +239,7 @@ export function recordStateAttentionMemory(selector) {
  * @returns {object} Idle state
  */
 export function getStateIdle() {
-  return getStateSection('idle');
+    return getStateSection('idle');
 }
 
 /**
@@ -245,7 +247,7 @@ export function getStateIdle() {
  * @param {object} idleState - Idle state object
  */
 export function setStateIdle(idleState) {
-  updateStateSection('idle', idleState);
+    updateStateSection('idle', idleState);
 }
 
 // ─── Session Section ──────────────────────────────────────────────
@@ -255,7 +257,7 @@ export function setStateIdle(idleState) {
  * @returns {string|null} Previous URL
  */
 export function getPreviousUrl() {
-  return getStateSection('session').previousUrl;
+    return getStateSection('session').previousUrl;
 }
 
 /**
@@ -263,7 +265,7 @@ export function getPreviousUrl() {
  * @param {string} url - URL to store
  */
 export function setPreviousUrl(url) {
-  updateStateSection('session', { previousUrl: url });
+    updateStateSection('session', { previousUrl: url });
 }
 
 // ─── Agent Section ──────────────────────────────────────────────
@@ -273,7 +275,7 @@ export function setPreviousUrl(url) {
  * @returns {object[]} Array of element objects
  */
 export function getStateAgentElementMap() {
-  return getStateSection('agent').elementMap;
+    return getStateSection('agent').elementMap;
 }
 
 /**
@@ -281,7 +283,7 @@ export function getStateAgentElementMap() {
  * @param {object[]} elementMap - Array of element objects
  */
 export function setStateAgentElementMap(elementMap) {
-  updateStateSection('agent', { elementMap });
+    updateStateSection('agent', { elementMap });
 }
 
 // ─── Automation Section ───────────────────────────────────────────
@@ -291,7 +293,7 @@ export function setStateAgentElementMap(elementMap) {
  * @returns {boolean}
  */
 export function getAutoBanners() {
-  return getStateSection('automation').autoBanners;
+    return getStateSection('automation').autoBanners;
 }
 
 /**
@@ -299,7 +301,7 @@ export function getAutoBanners() {
  * @param {boolean} enabled
  */
 export function setAutoBanners(enabled) {
-  updateStateSection('automation', { autoBanners: !!enabled });
+    updateStateSection('automation', { autoBanners: !!enabled });
 }
 
 // ─── Audio Section ────────────────────────────────────────────────
@@ -309,7 +311,7 @@ export function setAutoBanners(enabled) {
  * @returns {boolean}
  */
 export function getMuteAudio() {
-  return getStateSection('audio').mute;
+    return getStateSection('audio').mute;
 }
 
 /**
@@ -317,32 +319,32 @@ export function getMuteAudio() {
  * @param {boolean} mute
  */
 export function setMuteAudio(mute) {
-  updateStateSection('audio', { mute: !!mute });
+    updateStateSection('audio', { mute: !!mute });
 }
 
 export default {
-  getContextState,
-  setContextState,
-  getStateSection,
-  updateStateSection,
-  getStatePersona,
-  getStatePersonaName,
-  setStatePersona,
-  getStatePathStyle,
-  getStatePathOptions,
-  setStatePathStyle,
-  getStateDistractionChance,
-  setStateDistractionChance,
-  getStateAttentionMemory,
-  recordStateAttentionMemory,
-  getStateIdle,
-  setStateIdle,
-  getPreviousUrl,
-  setPreviousUrl,
-  getStateAgentElementMap,
-  setStateAgentElementMap,
-  getAutoBanners,
-  setAutoBanners,
-  getMuteAudio,
-  setMuteAudio,
+    getContextState,
+    setContextState,
+    getStateSection,
+    updateStateSection,
+    getStatePersona,
+    getStatePersonaName,
+    setStatePersona,
+    getStatePathStyle,
+    getStatePathOptions,
+    setStatePathStyle,
+    getStateDistractionChance,
+    setStateDistractionChance,
+    getStateAttentionMemory,
+    recordStateAttentionMemory,
+    getStateIdle,
+    setStateIdle,
+    getPreviousUrl,
+    setPreviousUrl,
+    getStateAgentElementMap,
+    setStateAgentElementMap,
+    getAutoBanners,
+    setAutoBanners,
+    getMuteAudio,
+    setMuteAudio,
 };

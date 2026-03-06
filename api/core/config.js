@@ -1,7 +1,7 @@
 /**
  * @fileoverview Centralized Configuration Manager
  * Manages global settings, environment variables, timeouts, and LLM configs.
- * 
+ *
  * @module api/core/config
  */
 
@@ -27,12 +27,12 @@ const DEFAULTS = {
             maxSteps: 20,
             stepDelay: 2000,
             adaptiveDelay: true,
-        }
+        },
     },
     timeouts: {
         navigation: 30000,
         element: 10000,
-    }
+    },
 };
 
 export class ConfigurationManager {
@@ -56,17 +56,17 @@ export class ConfigurationManager {
                 agent: {
                     llm: {
                         ...DEFAULTS.agent.llm,
-                        ...(raw.agent?.llm || {})
+                        ...(raw.agent?.llm || {}),
                     },
                     runner: {
                         ...DEFAULTS.agent.runner,
-                        ...(raw.agent?.runner || {})
-                    }
+                        ...(raw.agent?.runner || {}),
+                    },
                 },
                 timeouts: {
                     ...DEFAULTS.timeouts,
-                    ...raw.timeouts
-                }
+                    ...raw.timeouts,
+                },
             };
         } catch (_e) {
             logger.warn('Failed to load raw settings, using defaults');
@@ -78,8 +78,8 @@ export class ConfigurationManager {
 
     /**
      * Get a configuration value by dot-notation path (e.g., 'agent.llm.model')
-     * @param {string} path 
-     * @param {*} defaultValue 
+     * @param {string} path
+     * @param {*} defaultValue
      */
     get(path, defaultValue = undefined) {
         if (!this._config) {
@@ -107,8 +107,8 @@ export class ConfigurationManager {
 
     /**
      * Temporary overrides for a specific run/persona.
-     * @param {string} path 
-     * @param {*} value 
+     * @param {string} path
+     * @param {*} value
      */
     setOverride(path, value) {
         this._overrides[path] = value;

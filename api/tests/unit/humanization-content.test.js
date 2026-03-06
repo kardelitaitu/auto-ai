@@ -11,7 +11,7 @@ vi.mock('../../../api/index.js', () => {
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
             read: vi.fn().mockResolvedValue(undefined),
-            focus: vi.fn().mockResolvedValue(undefined)
+            focus: vi.fn().mockResolvedValue(undefined),
         }),
         visible: vi.fn().mockResolvedValue(true),
         exists: vi.fn().mockResolvedValue(true),
@@ -21,7 +21,7 @@ vi.mock('../../../api/index.js', () => {
         eval: vi.fn().mockResolvedValue('mock result'),
         text: vi.fn().mockResolvedValue('mock text'),
         click: vi.fn().mockResolvedValue(undefined),
-        type: vi.fn().mockResolvedValue(undefined)
+        type: vi.fn().mockResolvedValue(undefined),
     };
     return { api, default: api };
 });
@@ -34,12 +34,12 @@ import { scrollRandom } from '@api/behaviors/scroll-helper.js';
 vi.mock('../../utils/math.js', () => ({
     mathUtils: {
         randomInRange: vi.fn((min, max) => min),
-        roll: vi.fn(() => true)
-    }
+        roll: vi.fn(() => true),
+    },
 }));
 
 vi.mock('../../utils/scroll-helper.js', () => ({
-    scrollRandom: vi.fn().mockResolvedValue(undefined)
+    scrollRandom: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('ContentSkimmer', () => {
@@ -50,10 +50,16 @@ describe('ContentSkimmer', () => {
         vi.clearAllMocks();
         mockPage = {
             mouse: {
-                move: vi.fn().mockResolvedValue(undefined)
+                move: vi.fn().mockResolvedValue(undefined),
             },
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
+            context: vi
+                .fn()
+                .mockReturnValue({
+                    browser: vi
+                        .fn()
+                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+                }),
         };
         api.getPage.mockReturnValue(mockPage);
         api.setPage.mockReturnValue(undefined);

@@ -113,7 +113,7 @@ export function getStore() {
 /**
  * Executes a function within an isolated page context.
  * Best practice for orchestrating multiple concurrent agents.
- * 
+ *
  * @param {import('playwright').Page} page - Playwright page instance
  * @param {Function} asyncFn - Async function to execute with this page bound
  * @param {object} [options] - Context options
@@ -126,7 +126,10 @@ export async function withPage(page, asyncFn, options = {}) {
 
     // Logging context integration
     const existingLoggerContext = loggerContext.getStore();
-    const sessionId = options.sessionId || existingLoggerContext?.sessionId || `session-${randomUUID().slice(0, 8)}`;
+    const sessionId =
+        options.sessionId ||
+        existingLoggerContext?.sessionId ||
+        `session-${randomUUID().slice(0, 8)}`;
     const traceId = existingLoggerContext?.traceId || randomUUID();
     const taskName = options.taskName || existingLoggerContext?.taskName;
 

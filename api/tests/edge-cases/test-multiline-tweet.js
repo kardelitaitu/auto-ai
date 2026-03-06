@@ -73,7 +73,9 @@ const TWEET_FILE = path.join(__dirname, '../tasks/twitterTweet.txt');
 
 if (fs.existsSync(TWEET_FILE)) {
     const content = fs.readFileSync(TWEET_FILE, 'utf-8');
-    const lines = content.split(/\r?\n/).filter(line => line.trim().length > 0 && !line.trim().startsWith('#'));
+    const lines = content
+        .split(/\r?\n/)
+        .filter((line) => line.trim().length > 0 && !line.trim().startsWith('#'));
 
     console.log(`Found ${lines.length} tweet(s) in queue:\n`);
 

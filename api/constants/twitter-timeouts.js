@@ -15,13 +15,13 @@ export const TWITTER_TIMEOUTS = {
     DIVE_TIMEOUT: 120000,
     QUICK_MODE_TIMEOUT: 30000,
     QUEUE_ITEM_TIMEOUT: 5000,
-    FALLBACK_TIMEOUT: 3000
+    FALLBACK_TIMEOUT: 3000,
 };
 
 export function importTimeouts(settings = {}) {
     return {
         ...TWITTER_TIMEOUTS,
-        ...settings.timeouts?.twitter
+        ...settings.timeouts?.twitter,
     };
 }
 

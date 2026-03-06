@@ -6,8 +6,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('ModelPerfTracker', () => {
@@ -34,7 +34,7 @@ describe('ModelPerfTracker', () => {
     describe('trackSuccess', () => {
         it('should track success for new model', () => {
             tracker.trackSuccess('gpt-4', 100);
-            
+
             const stats = tracker.getModelStats('gpt-4');
             expect(stats).not.toBeNull();
             expect(stats.successes).toBe(1);
@@ -45,7 +45,7 @@ describe('ModelPerfTracker', () => {
         it('should track success for existing model', () => {
             tracker.trackSuccess('gpt-4', 100);
             tracker.trackSuccess('gpt-4', 200);
-            
+
             const stats = tracker.getModelStats('gpt-4');
             expect(stats.successes).toBe(2);
             expect(stats.total).toBe(2);
@@ -53,7 +53,7 @@ describe('ModelPerfTracker', () => {
 
         it('should track success with apiKey', () => {
             tracker.trackSuccess('gpt-4', 100, 'sk-key123');
-            
+
             const stats = tracker.getModelStats('gpt-4', 'sk-key123');
             expect(stats).not.toBeNull();
             expect(stats.apiKey).toBe('sk-k...y123');
@@ -61,12 +61,12 @@ describe('ModelPerfTracker', () => {
 
         it('should maintain recent durations window', () => {
             const smallWindow = new ModelPerfTracker({ windowSize: 3 });
-            
+
             smallWindow.trackSuccess('gpt-4', 100);
             smallWindow.trackSuccess('gpt-4', 200);
             smallWindow.trackSuccess('gpt-4', 300);
             smallWindow.trackSuccess('gpt-4', 400);
-            
+
             const stats = smallWindow.getModelStats('gpt-4');
             expect(stats.recentDurations.length).toBe(3);
             expect(stats.recentDurations).toContain(400);
@@ -77,7 +77,7 @@ describe('ModelPerfTracker', () => {
     describe('trackFailure', () => {
         it('should track failure for new model', () => {
             tracker.trackFailure('gpt-4', 'Rate limit exceeded');
-            
+
             const stats = tracker.getModelStats('gpt-4');
             expect(stats).not.toBeNull();
             expect(stats.failures).toBe(1);
@@ -88,7 +88,7 @@ describe('ModelPerfTracker', () => {
         it('should track failure for existing model', () => {
             tracker.trackFailure('gpt-4', 'Error 1');
             tracker.trackFailure('gpt-4', 'Error 2');
-            
+
             const stats = tracker.getModelStats('gpt-4');
             expect(stats.failures).toBe(2);
             expect(stats.total).toBe(2);
@@ -97,7 +97,7 @@ describe('ModelPerfTracker', () => {
         it('should truncate long error messages', () => {
             const longError = 'A'.repeat(200);
             tracker.trackFailure('gpt-4', longError);
-            
+
             const stats = tracker.getModelStats('gpt-4');
             expect(stats.lastError.length).toBe(100);
         });
@@ -106,7 +106,7 @@ describe('ModelPerfTracker', () => {
     describe('getModelStats', () => {
         it('should return stats for existing model', () => {
             tracker.trackSuccess('gpt-4', 100);
-            
+
             const stats = tracker.getModelStats('gpt-4');
             expect(stats.model).toBe('gpt-4');
         });
@@ -126,7 +126,7 @@ describe('ModelPerfTracker', () => {
         it('should return formatted stats for all models', () => {
             tracker.trackSuccess('gpt-4', 100);
             tracker.trackFailure('gpt-4', 'Error');
-            
+
             const allStats = tracker.getAllStats();
             expect(allStats['gpt-4']).not.toBeUndefined();
             expect(allStats['gpt-4'].successRate).toBe('50.0%');
@@ -142,7 +142,7 @@ describe('ModelPerfTracker', () => {
         it('should return null if no model meets minSamples', () => {
             tracker.trackSuccess('gpt-4', 100);
             tracker.trackSuccess('gpt-4', 100);
-            
+
             const best = tracker.getBestModel(['gpt-4', 'claude']);
             expect(best).toBeNull();
         });
@@ -154,7 +154,7 @@ describe('ModelPerfTracker', () => {
             tracker.trackFailure('slow-model', 'Error');
             tracker.trackFailure('slow-model', 'Error');
             tracker.trackFailure('slow-model', 'Error');
-            
+
             const best = tracker.getBestModel(['fast-model', 'slow-model']);
             expect(best).toBe('fast-model');
         });
@@ -168,7 +168,7 @@ describe('ModelPerfTracker', () => {
 
         it('should return null if no model meets minSamples', () => {
             tracker.trackSuccess('gpt-4', 100);
-            
+
             const worst = tracker.getWorstModel(['gpt-4', 'claude']);
             expect(worst).toBeNull();
         });
@@ -180,7 +180,7 @@ describe('ModelPerfTracker', () => {
             tracker.trackFailure('slow-model', 'Error');
             tracker.trackFailure('slow-model', 'Error');
             tracker.trackFailure('slow-model', 'Error');
-            
+
             const worst = tracker.getWorstModel(['fast-model', 'slow-model']);
             expect(worst).toBe('slow-model');
         });
@@ -196,7 +196,7 @@ describe('ModelPerfTracker', () => {
             tracker.trackSuccess('good-model', 100);
             tracker.trackSuccess('good-model', 100);
             tracker.trackFailure('bad-model', 'Error');
-            
+
             const sorted = tracker.getSortedModels();
             expect(sorted[0].model).toBe('good-model');
         });
@@ -204,7 +204,7 @@ describe('ModelPerfTracker', () => {
         it('should filter by apiKey', () => {
             tracker.trackSuccess('model1', 100, 'key1');
             tracker.trackSuccess('model2', 100, 'key2');
-            
+
             const sorted = tracker.getSortedModels('key1');
             expect(sorted.length).toBe(1);
             expect(sorted[0].model).toBe('model1');
@@ -216,7 +216,7 @@ describe('ModelPerfTracker', () => {
             for (let i = 0; i < 60; i++) {
                 tracker.trackSuccess('gpt-4', 100);
             }
-            
+
             const history = tracker.getHistory();
             expect(history.length).toBe(50);
         });
@@ -224,7 +224,7 @@ describe('ModelPerfTracker', () => {
         it('should respect limit parameter', () => {
             tracker.trackSuccess('gpt-4', 100);
             tracker.trackSuccess('gpt-4', 100);
-            
+
             const history = tracker.getHistory(1);
             expect(history.length).toBe(1);
         });
@@ -234,9 +234,9 @@ describe('ModelPerfTracker', () => {
         it('should reset specific model', () => {
             tracker.trackSuccess('gpt-4', 100);
             tracker.trackSuccess('claude', 100);
-            
+
             tracker.reset('gpt-4');
-            
+
             expect(tracker.getModelStats('gpt-4')).toBeNull();
             expect(tracker.getModelStats('claude')).not.toBeNull();
         });
@@ -244,9 +244,9 @@ describe('ModelPerfTracker', () => {
         it('should reset all models', () => {
             tracker.trackSuccess('gpt-4', 100);
             tracker.trackSuccess('claude', 100);
-            
+
             tracker.reset();
-            
+
             expect(tracker.getModelStats('gpt-4')).toBeNull();
             expect(tracker.getModelStats('claude')).toBeNull();
             expect(tracker.history.length).toBe(0);
@@ -265,7 +265,7 @@ describe('ModelPerfTracker', () => {
             tracker.trackSuccess('gpt-4', 100);
             tracker.trackSuccess('claude', 200);
             tracker.trackFailure('gpt-4', 'Error');
-            
+
             const stats = tracker.getStats();
             expect(stats.modelsTracked).toBe(2);
             expect(stats.totalRequests).toBe(3);

@@ -2,7 +2,7 @@
  * Human Timing Module
  * Provides Gaussian (bell curve) timing distribution with jitter
  * Simulates natural human behavior patterns.
- * 
+ *
  * @module utils/human-timing
  */
 
@@ -22,7 +22,7 @@ function humanDelay(baseMs, options = {}) {
         jitter = DEFAULT_JITTER,
         pauseChance = DEFAULT_PAUSE_CHANCE,
         burstChance = DEFAULT_BURST_CHANCE,
-        minDelay = 50
+        minDelay = 50,
     } = options;
 
     let delay = gaussianRandom(baseMs, baseMs * jitter);
@@ -46,12 +46,12 @@ function gaussianInRange(mean, stdev, min, max) {
     let value;
     let attempts = 0;
     const maxAttempts = 100;
-    
+
     do {
         value = gaussianRandom(mean, stdev);
         attempts++;
     } while ((value < min || value > max) && attempts < maxAttempts);
-    
+
     return Math.max(min, Math.min(max, Math.round(value)));
 }
 
@@ -61,7 +61,7 @@ const READING_TIMES = {
     image: { mean: 8000, stdev: 3000 },
     video: { mean: 15000, stdev: 5000 },
     thread: { mean: 30000, stdev: 10000 },
-    longThread: { mean: 60000, stdev: 20000 }
+    longThread: { mean: 60000, stdev: 20000 },
 };
 
 function getReadingTime(contentType = 'text', options = {}) {
@@ -78,7 +78,7 @@ const ACTION_DELAYS = {
     reply: { mean: 1500, stdev: 500 },
     follow: { mean: 5000, stdev: 2000 },
     dive: { mean: 1000, stdev: 400 },
-    scroll: { mean: 300, stdev: 100 }
+    scroll: { mean: 300, stdev: 100 },
 };
 
 function getActionDelay(action, options = {}) {
@@ -141,8 +141,8 @@ export const humanTiming = {
     defaults: {
         jitter: DEFAULT_JITTER,
         pauseChance: DEFAULT_PAUSE_CHANCE,
-        burstChance: DEFAULT_BURST_CHANCE
-    }
+        burstChance: DEFAULT_BURST_CHANCE,
+    },
 };
 
 export default humanTiming;

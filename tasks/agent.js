@@ -14,7 +14,7 @@ import { scrollRandom } from '../utils/scroll-helper.js';
 const logger = createLogger('agent.js');
 
 async function agent(page, payload) {
-    const { browserInfo = 'unknown', goal = "Browse blindly", steps = [] } = payload;
+    const { browserInfo = 'unknown', goal = 'Browse blindly', steps = [] } = payload;
     logger.info(`[${browserInfo}] 🧠 STARTING UNIVERSAL AGENT. Goal: "${goal}"`);
 
     // Initialize Core Modules
@@ -35,7 +35,10 @@ async function agent(page, payload) {
 
             let visionPacket;
             try {
-                visionPacket = await visionPackager.captureWithROI(page, `${browserInfo}_${Date.now()}`);
+                visionPacket = await visionPackager.captureWithROI(
+                    page,
+                    `${browserInfo}_${Date.now()}`
+                );
             } catch (e) {
                 logger.error(`[${browserInfo}] Vision failed: ${e.message}`);
                 break;
@@ -47,8 +50,12 @@ async function agent(page, payload) {
 
             // 3. CHECK TERMINATION
             // Check if the plan itself is a terminate action or if first action is terminate
-            if (actionPlan.type === 'terminate' || (actionPlan.actions && actionPlan.actions[0]?.type === 'terminate')) {
-                const reason = actionPlan.reason || actionPlan.actions?.[0]?.reason || actionPlan.description;
+            if (
+                actionPlan.type === 'terminate' ||
+                (actionPlan.actions && actionPlan.actions[0]?.type === 'terminate')
+            ) {
+                const reason =
+                    actionPlan.reason || actionPlan.actions?.[0]?.reason || actionPlan.description;
                 logger.success(`[${browserInfo}] 🏁 GOAL ACHIEVED: ${reason}`);
                 break;
             }
@@ -60,10 +67,12 @@ async function agent(page, payload) {
 
             for (const action of actionsToExecute) {
                 let success = true;
-                let resultMessage = "Executed";
+                let resultMessage = 'Executed';
 
                 try {
-                    logger.info(`[${browserInfo}] ▶ ACT: ${action.type} (${action.description || 'no description'})`);
+                    logger.info(
+                        `[${browserInfo}] ▶ ACT: ${action.type} (${action.description || 'no description'})`
+                    );
 
                     if (action.type === 'click') {
                         const { x, y, description } = action;
@@ -94,10 +103,11 @@ async function agent(page, payload) {
                         await page.waitForTimeout(300);
 
                         logger.success(`[${browserInfo}] ✓ Clicked at (${x}, ${y})`);
-
                     } else if (action.type === 'type') {
                         const { text, description } = action;
-                        logger.info(`[${browserInfo}] ⌨️ Typing "${text}": ${description || 'input'}`);
+                        logger.info(
+                            `[${browserInfo}] ⌨️ Typing "${text}": ${description || 'input'}`
+                        );
 
                         // Type at current cursor position (after clicking)
                         // const timings = humanizer.generateKeystrokeTiming(text);
@@ -106,7 +116,6 @@ async function agent(page, payload) {
                             await page.waitForTimeout(Math.random() * 100 + 30);
                         }
                         logger.success(`[${browserInfo}] ✓ Typed "${text}"`);
-
                     } else if (action.type === 'press') {
                         const { key } = action;
                         const keyName = key || 'Enter';
@@ -115,23 +124,22 @@ async function agent(page, payload) {
                         await page.keyboard.press(keyName);
                         await page.waitForTimeout(Math.random() * 200 + 100);
                         logger.success(`[${browserInfo}] ✓ Pressed ${keyName}`);
-
                     } else if (action.type === 'navigate') {
                         await page.goto(action.url, { waitUntil: 'domcontentloaded' });
                         logger.info(`[${browserInfo}] ⏳ Stabilization Wait (2000ms)...`);
                         await page.waitForTimeout(2000);
-
                     } else if (action.type === 'wait') {
                         await page.waitForTimeout(action.duration || 2000);
-
                     } else if (action.type === 'scroll') {
-                        await scrollRandom(page, action.direction === 'up' ? -300 : 300, action.direction === 'up' ? -300 : 300);
+                        await scrollRandom(
+                            page,
+                            action.direction === 'up' ? -300 : 300,
+                            action.direction === 'up' ? -300 : 300
+                        );
                         await page.waitForTimeout(500);
-
                     } else {
                         logger.warn(`[${browserInfo}] Unknown interaction: ${action.type}`);
                     }
-
                 } catch (actErr) {
                     success = false;
                     resultMessage = actErr.message;
@@ -155,7 +163,6 @@ async function agent(page, payload) {
 
         // Final Audit
         await takeScreenshot(page, browserInfo, '-Final');
-
     } catch (err) {
         logger.error(`[${browserInfo}] CRITICAL AGENT FAILURE:`, err);
         throw err;

@@ -37,7 +37,7 @@ export async function takeScreenshot(page, sessionName = 'default', suffix = '')
             path: filePath,
             type: 'jpeg',
             quality: 30,
-            fullPage: false
+            fullPage: false,
         });
         logger.info(`Screenshoted '${filename}'`);
         logger.debug(`Screenshot saved to: ${filePath}`);

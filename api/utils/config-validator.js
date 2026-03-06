@@ -27,7 +27,7 @@ export class ConfigValidator {
                 cycles: { type: 'number', min: 1, max: 100, required: true },
                 minDuration: { type: 'number', min: 60, max: 3600, required: true },
                 maxDuration: { type: 'number', min: 120, max: 7200, required: true },
-                timeout: { type: 'number', min: 30000, max: 3600000, required: false }
+                timeout: { type: 'number', min: 30000, max: 3600000, required: false },
             },
             engagement: {
                 limits: {
@@ -38,9 +38,9 @@ export class ConfigValidator {
                         quotes: { type: 'number', min: 0, max: 10, required: true },
                         likes: { type: 'number', min: 0, max: 50, required: true },
                         follows: { type: 'number', min: 0, max: 20, required: true },
-                        bookmarks: { type: 'number', min: 0, max: 20, required: true }
+                        bookmarks: { type: 'number', min: 0, max: 20, required: true },
                     },
-                    required: true
+                    required: true,
                 },
                 probabilities: {
                     type: 'object',
@@ -48,106 +48,106 @@ export class ConfigValidator {
                         reply: { type: 'number', min: 0, max: 1, required: true },
                         quote: { type: 'number', min: 0, max: 1, required: true },
                         like: { type: 'number', min: 0, max: 1, required: true },
-                        bookmark: { type: 'number', min: 0, max: 1, required: true }
+                        bookmark: { type: 'number', min: 0, max: 1, required: true },
                     },
-                    required: true
-                }
+                    required: true,
+                },
             },
             timing: {
                 warmup: {
                     type: 'object',
                     properties: {
                         min: { type: 'number', min: 1000, max: 30000, required: true },
-                        max: { type: 'number', min: 2000, max: 60000, required: true }
+                        max: { type: 'number', min: 2000, max: 60000, required: true },
                     },
-                    required: true
+                    required: true,
                 },
                 scroll: {
                     type: 'object',
                     properties: {
                         min: { type: 'number', min: 100, max: 2000, required: true },
-                        max: { type: 'number', min: 200, max: 5000, required: true }
+                        max: { type: 'number', min: 200, max: 5000, required: true },
                     },
-                    required: true
+                    required: true,
                 },
                 read: {
                     type: 'object',
                     properties: {
                         min: { type: 'number', min: 1000, max: 60000, required: true },
-                        max: { type: 'number', min: 2000, max: 120000, required: true }
+                        max: { type: 'number', min: 2000, max: 120000, required: true },
                     },
-                    required: true
+                    required: true,
                 },
                 diveRead: { type: 'number', min: 5000, max: 30000, required: false },
-                globalScrollMultiplier: { type: 'number', min: 0.1, max: 5.0, required: false }
+                globalScrollMultiplier: { type: 'number', min: 0.1, max: 5.0, required: false },
             },
             humanization: {
                 mouse: {
                     type: 'object',
                     properties: {
                         speed: { type: 'number', min: 0.1, max: 5.0, required: false },
-                        jitter: { type: 'number', min: 0, max: 20, required: false }
+                        jitter: { type: 'number', min: 0, max: 20, required: false },
                     },
-                    required: false
+                    required: false,
                 },
                 typing: {
                     type: 'object',
                     properties: {
                         delay: { type: 'number', min: 10, max: 1000, required: false },
-                        errorRate: { type: 'number', min: 0, max: 0.5, required: false }
+                        errorRate: { type: 'number', min: 0, max: 0.5, required: false },
                     },
-                    required: false
+                    required: false,
                 },
                 session: {
                     type: 'object',
                     properties: {
                         minMinutes: { type: 'number', min: 1, max: 60, required: false },
-                        maxMinutes: { type: 'number', min: 2, max: 120, required: false }
+                        maxMinutes: { type: 'number', min: 2, max: 120, required: false },
                     },
-                    required: false
-                }
+                    required: false,
+                },
             },
             ai: {
                 enabled: { type: 'boolean', required: false },
                 localEnabled: { type: 'boolean', required: false },
                 visionEnabled: { type: 'boolean', required: false },
-                timeout: { type: 'number', min: 10000, max: 600000, required: false }
+                timeout: { type: 'number', min: 10000, max: 600000, required: false },
             },
             browser: {
                 theme: { type: 'string', enum: ['light', 'dark', 'auto'], required: false },
                 referrer: {
                     type: 'object',
                     properties: {
-                        addUTM: { type: 'boolean', required: false }
+                        addUTM: { type: 'boolean', required: false },
                     },
-                    required: false
+                    required: false,
                 },
                 headers: {
                     type: 'object',
                     properties: {
                         secFetchSite: { type: 'string', required: false },
-                        secFetchMode: { type: 'string', required: false }
+                        secFetchMode: { type: 'string', required: false },
                     },
-                    required: false
-                }
+                    required: false,
+                },
             },
             monitoring: {
                 queueMonitor: {
                     type: 'object',
                     properties: {
                         enabled: { type: 'boolean', required: false },
-                        interval: { type: 'number', min: 1000, max: 300000, required: false }
+                        interval: { type: 'number', min: 1000, max: 300000, required: false },
                     },
-                    required: false
+                    required: false,
                 },
                 engagementProgress: {
                     type: 'object',
                     properties: {
                         enabled: { type: 'boolean', required: false },
-                        showProgressBar: { type: 'boolean', required: false }
+                        showProgressBar: { type: 'boolean', required: false },
                     },
-                    required: false
-                }
+                    required: false,
+                },
             },
             system: {
                 debugMode: { type: 'boolean', required: false },
@@ -157,11 +157,11 @@ export class ConfigValidator {
                     properties: {
                         maxRetries: { type: 'number', min: 0, max: 10, required: false },
                         retryDelay: { type: 'number', min: 1000, max: 60000, required: false },
-                        fallbackStrategies: { type: 'array', required: false }
+                        fallbackStrategies: { type: 'array', required: false },
                     },
-                    required: false
-                }
-            }
+                    required: false,
+                },
+            },
         };
     }
 
@@ -182,11 +182,14 @@ export class ConfigValidator {
 
         const result = {
             valid: errors.length === 0,
-            errors
+            errors,
         };
 
         if (!result.valid) {
-            logger.warn(`[ConfigValidator] Validation failed with ${errors.length} errors:`, errors);
+            logger.warn(
+                `[ConfigValidator] Validation failed with ${errors.length} errors:`,
+                errors
+            );
         }
 
         return result;
@@ -201,14 +204,24 @@ export class ConfigValidator {
 
         // Handle schemas that are plain objects with field definitions (no type property)
         // This is the case for session, timing, humanization, etc. schemas
-        if (schema.cycles !== undefined || schema.enabled !== undefined ||
-            schema.limits !== undefined || schema.warmup !== undefined ||
-            schema.mouse !== undefined || schema.theme !== undefined ||
-            schema.queueMonitor !== undefined || schema.debugMode !== undefined) {
+        if (
+            schema.cycles !== undefined ||
+            schema.enabled !== undefined ||
+            schema.limits !== undefined ||
+            schema.warmup !== undefined ||
+            schema.mouse !== undefined ||
+            schema.theme !== undefined ||
+            schema.queueMonitor !== undefined ||
+            schema.debugMode !== undefined
+        ) {
             // This is a field-based schema (not type: 'object')
             for (const [field, rules] of Object.entries(schema)) {
                 if (data[field] !== undefined) {
-                    const fieldErrors = this.validateField(data[field], rules, `${sectionName}.${field}`);
+                    const fieldErrors = this.validateField(
+                        data[field],
+                        rules,
+                        `${sectionName}.${field}`
+                    );
                     errors.push(...fieldErrors);
                 } else if (rules.required) {
                     errors.push(`${sectionName}.${field} is required but missing`);
@@ -218,7 +231,11 @@ export class ConfigValidator {
             // Validate object properties
             for (const [field, rules] of Object.entries(schema.properties || {})) {
                 if (data[field] !== undefined) {
-                    const fieldErrors = this.validateField(data[field], rules, `${sectionName}.${field}`);
+                    const fieldErrors = this.validateField(
+                        data[field],
+                        rules,
+                        `${sectionName}.${field}`
+                    );
                     errors.push(...fieldErrors);
                 } else if (rules.required) {
                     errors.push(`${sectionName}.${field} is required but missing`);
@@ -264,10 +281,14 @@ export class ConfigValidator {
         // Check array constraints
         if (rules.type === 'array' && Array.isArray(value)) {
             if (rules.minItems !== undefined && value.length < rules.minItems) {
-                errors.push(`${fieldName} must have at least ${rules.minItems} items, got ${value.length}`);
+                errors.push(
+                    `${fieldName} must have at least ${rules.minItems} items, got ${value.length}`
+                );
             }
             if (rules.maxItems !== undefined && value.length > rules.maxItems) {
-                errors.push(`${fieldName} must have at most ${rules.maxItems} items, got ${value.length}`);
+                errors.push(
+                    `${fieldName} must have at most ${rules.maxItems} items, got ${value.length}`
+                );
             }
         }
 
@@ -305,14 +326,14 @@ export class ConfigValidator {
         if (!this.schemas[section]) {
             return {
                 valid: false,
-                errors: [`Unknown section: ${section}`]
+                errors: [`Unknown section: ${section}`],
             };
         }
 
         const errors = this.validateSection(data, this.schemas[section], section);
         return {
             valid: errors.length === 0,
-            errors
+            errors,
         };
     }
 
@@ -340,10 +361,12 @@ export class ConfigValidator {
             errors: result.errors,
             errorCount: result.errors.length,
             duration,
-            sections: this.getSectionValidationReport(config)
+            sections: this.getSectionValidationReport(config),
         };
 
-        logger.debug(`[ConfigValidator] Validation completed in ${duration}ms, ${result.errors.length} errors`);
+        logger.debug(
+            `[ConfigValidator] Validation completed in ${duration}ms, ${result.errors.length} errors`
+        );
 
         return report;
     }
@@ -361,14 +384,14 @@ export class ConfigValidator {
                 report[section] = {
                     valid: sectionErrors.length === 0,
                     errors: sectionErrors,
-                    errorCount: sectionErrors.length
+                    errorCount: sectionErrors.length,
                 };
             } else {
                 report[section] = {
                     valid: true,
                     errors: [],
                     errorCount: 0,
-                    skipped: true
+                    skipped: true,
                 };
             }
         }

@@ -12,8 +12,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('utils/validator', () => {
@@ -80,7 +80,7 @@ describe('utils/validator', () => {
 
         it('should merge custom schema with defaults', () => {
             const customSchema = {
-                customField: { type: 'string', required: true }
+                customField: { type: 'string', required: true },
             };
 
             const result = validator.validatePayload({ customField: 'value' }, customSchema);
@@ -90,7 +90,7 @@ describe('utils/validator', () => {
 
         it('should reject when custom required field is missing', () => {
             const customSchema = {
-                customField: { type: 'string', required: true }
+                customField: { type: 'string', required: true },
             };
 
             const result = validator.validatePayload({}, customSchema);
@@ -117,8 +117,13 @@ describe('utils/validator', () => {
                 code: 200,
                 msg: 'success',
                 data: [
-                    { ws: 'ws://localhost:9222', http: 'http://localhost:9222', windowName: 'Test', sortNum: 1 }
-                ]
+                    {
+                        ws: 'ws://localhost:9222',
+                        http: 'http://localhost:9222',
+                        windowName: 'Test',
+                        sortNum: 1,
+                    },
+                ],
             };
 
             const result = validator.validateApiResponse(response, 'roxybrowser');
@@ -130,7 +135,7 @@ describe('utils/validator', () => {
         it('should reject roxybrowser response missing required code', () => {
             const response = {
                 msg: 'success',
-                data: []
+                data: [],
             };
 
             const result = validator.validateApiResponse(response, 'roxybrowser');
@@ -141,7 +146,7 @@ describe('utils/validator', () => {
         it('should reject roxybrowser response with invalid data type', () => {
             const response = {
                 code: 200,
-                data: 'not-an-array'
+                data: 'not-an-array',
             };
 
             const result = validator.validateApiResponse(response, 'roxybrowser');
@@ -151,7 +156,7 @@ describe('utils/validator', () => {
 
         it('should validate ixbrowser response structure', () => {
             const response = {
-                code: 200
+                code: 200,
             };
 
             const result = validator.validateApiResponse(response, 'ixbrowser');
@@ -169,7 +174,7 @@ describe('utils/validator', () => {
 
         it('should validate morelogin response structure', () => {
             const response = {
-                code: 200
+                code: 200,
             };
 
             const result = validator.validateApiResponse(response, 'morelogin');
@@ -179,7 +184,7 @@ describe('utils/validator', () => {
 
         it('should validate localChrome response structure', () => {
             const response = {
-                code: 200
+                code: 200,
             };
 
             const result = validator.validateApiResponse(response, 'localChrome');
@@ -192,8 +197,8 @@ describe('utils/validator', () => {
                 code: 200,
                 data: [
                     { ws: 'ws://localhost:9222', http: 'http://localhost:9222' },
-                    { ws: 'ws://localhost:9223', http: 'http://localhost:9223' }
-                ]
+                    { ws: 'ws://localhost:9223', http: 'http://localhost:9223' },
+                ],
             };
 
             const result = validator.validateApiResponse(response, 'roxybrowser');
@@ -206,8 +211,8 @@ describe('utils/validator', () => {
             const response = {
                 code: 200,
                 data: [
-                    { ws: 123 } // ws should be string
-                ]
+                    { ws: 123 }, // ws should be string
+                ],
             };
 
             const result = validator.validateApiResponse(response, 'roxybrowser');
@@ -218,13 +223,17 @@ describe('utils/validator', () => {
 
     describe('validateBrowserConnection', () => {
         it('should validate ws:// endpoint', () => {
-            const result = validator.validateBrowserConnection('ws://localhost:9222/devtools/browser/abc');
+            const result = validator.validateBrowserConnection(
+                'ws://localhost:9222/devtools/browser/abc'
+            );
 
             expect(result.isValid).toBe(true);
         });
 
         it('should validate wss:// endpoint', () => {
-            const result = validator.validateBrowserConnection('wss://secure.example.com/devtools/browser/abc');
+            const result = validator.validateBrowserConnection(
+                'wss://secure.example.com/devtools/browser/abc'
+            );
 
             expect(result.isValid).toBe(true);
         });
@@ -257,7 +266,7 @@ describe('utils/validator', () => {
     describe('validateTaskExecution', () => {
         it('should validate valid browser instance with payload', () => {
             const mockBrowser = {
-                newContext: vi.fn()
+                newContext: vi.fn(),
             };
 
             const result = validator.validateTaskExecution(mockBrowser, {});
@@ -267,7 +276,7 @@ describe('utils/validator', () => {
 
         it('should validate valid context instance with payload', () => {
             const mockContext = {
-                newPage: vi.fn()
+                newPage: vi.fn(),
             };
 
             const result = validator.validateTaskExecution(mockContext, {});
@@ -277,7 +286,7 @@ describe('utils/validator', () => {
 
         it('should validate valid page instance with payload', () => {
             const mockPage = {
-                goto: vi.fn()
+                goto: vi.fn(),
             };
 
             const result = validator.validateTaskExecution(mockPage, {});
@@ -305,26 +314,34 @@ describe('utils/validator', () => {
 
         it('should merge custom schema with payload validation', () => {
             const mockBrowser = {
-                newContext: vi.fn()
+                newContext: vi.fn(),
             };
             const customSchema = {
-                customField: { type: 'number', required: true, min: 10 }
+                customField: { type: 'number', required: true, min: 10 },
             };
 
-            const result = validator.validateTaskExecution(mockBrowser, { customField: 20 }, customSchema);
+            const result = validator.validateTaskExecution(
+                mockBrowser,
+                { customField: 20 },
+                customSchema
+            );
 
             expect(result.isValid).toBe(true);
         });
 
         it('should reject invalid payload with custom schema', () => {
             const mockBrowser = {
-                newContext: vi.fn()
+                newContext: vi.fn(),
             };
             const customSchema = {
-                customField: { type: 'number', required: true }
+                customField: { type: 'number', required: true },
             };
 
-            const result = validator.validateTaskExecution(mockBrowser, { customField: 'invalid' }, customSchema);
+            const result = validator.validateTaskExecution(
+                mockBrowser,
+                { customField: 'invalid' },
+                customSchema
+            );
 
             expect(result.isValid).toBe(false);
         });
@@ -365,7 +382,7 @@ describe('utils/validator', () => {
 
         it('should validate string with minLength', () => {
             const customSchema = {
-                username: { type: 'string', minLength: 3 }
+                username: { type: 'string', minLength: 3 },
             };
 
             const result = validator.validatePayload({ username: 'ab' }, customSchema);
@@ -375,7 +392,7 @@ describe('utils/validator', () => {
 
         it('should validate string with maxLength', () => {
             const customSchema = {
-                username: { type: 'string', maxLength: 5 }
+                username: { type: 'string', maxLength: 5 },
             };
 
             const result = validator.validatePayload({ username: 'longname' }, customSchema);
@@ -385,7 +402,7 @@ describe('utils/validator', () => {
 
         it('should validate string with pattern', () => {
             const customSchema = {
-                email: { type: 'string', pattern: '^[^@]+@[^@]+\\.[^@]+$' }
+                email: { type: 'string', pattern: '^[^@]+@[^@]+\\.[^@]+$' },
             };
 
             const result = validator.validatePayload({ email: 'valid@email.com' }, customSchema);
@@ -395,7 +412,7 @@ describe('utils/validator', () => {
 
         it('should reject string not matching pattern', () => {
             const customSchema = {
-                email: { type: 'string', pattern: '^[^@]+@[^@]+\\.[^@]+$' }
+                email: { type: 'string', pattern: '^[^@]+@[^@]+\\.[^@]+$' },
             };
 
             const result = validator.validatePayload({ email: 'invalid-email' }, customSchema);
@@ -405,7 +422,7 @@ describe('utils/validator', () => {
 
         it('should validate array with nonEmpty rule', () => {
             const customSchema = {
-                items: { type: 'array', nonEmpty: true }
+                items: { type: 'array', nonEmpty: true },
             };
 
             const result = validator.validatePayload({ items: [1, 2] }, customSchema);
@@ -416,7 +433,7 @@ describe('utils/validator', () => {
 
         it('should reject empty array with nonEmpty rule', () => {
             const customSchema = {
-                items: { type: 'array', nonEmpty: true }
+                items: { type: 'array', nonEmpty: true },
             };
 
             const result = validator.validatePayload({ items: [] }, customSchema);
@@ -429,14 +446,17 @@ describe('utils/validator', () => {
                 users: {
                     type: 'array',
                     itemSchema: {
-                        name: { type: 'string', required: true }
-                    }
-                }
+                        name: { type: 'string', required: true },
+                    },
+                },
             };
 
-            const result = validator.validatePayload({
-                users: [{ name: 'John' }, { name: 'Jane' }]
-            }, customSchema);
+            const result = validator.validatePayload(
+                {
+                    users: [{ name: 'John' }, { name: 'Jane' }],
+                },
+                customSchema
+            );
 
             // Result depends on implementation
             expect(typeof result.isValid).toBe('boolean');
@@ -447,30 +467,33 @@ describe('utils/validator', () => {
                 users: {
                     type: 'array',
                     itemSchema: {
-                        name: { type: 'string', required: true }
-                    }
-                }
+                        name: { type: 'string', required: true },
+                    },
+                },
             };
 
-            const result = validator.validatePayload({
-                users: [{ name: 'John' }, { invalid: 'item' }]
-            }, customSchema);
+            const result = validator.validatePayload(
+                {
+                    users: [{ name: 'John' }, { invalid: 'item' }],
+                },
+                customSchema
+            );
 
             expect(result.isValid).toBe(false);
         });
 
         it('should validate array where value is not an array', () => {
             const customSchema = {
-                items: { type: 'array' }
+                items: { type: 'array' },
             };
             const result = validator.validatePayload({ items: 'not-an-array' }, customSchema);
             expect(result.isValid).toBe(false);
-            expect(result.errors[0]).toContain("expected array");
+            expect(result.errors[0]).toContain('expected array');
         });
 
         it('should validate actual array when type is array', () => {
             const customSchema = {
-                items: { type: 'array' }
+                items: { type: 'array' },
             };
 
             const result = validator.validatePayload({ items: [1, 2, 3] }, customSchema);
@@ -492,7 +515,7 @@ describe('utils/validator', () => {
 
         it('should reject string with invalid pattern schema', () => {
             const schema = { val: { type: 'string', pattern: '[' } }; // Invalid regex
-            // Depending on implementation, this might throw or fail. 
+            // Depending on implementation, this might throw or fail.
             // The code uses new RegExp(rules.pattern).test(value)
             expect(() => validator.validatePayload({ val: 'test' }, schema)).toThrow();
         });
@@ -507,16 +530,16 @@ describe('utils/validator', () => {
 
         it('should accept non-empty array with nonEmpty rule', () => {
             const customSchema = {
-                items: { type: 'array', nonEmpty: true }
+                items: { type: 'array', nonEmpty: true },
             };
             const result = validator.validatePayload({ items: [1] }, customSchema);
             expect(result.isValid).toBe(true);
         });
 
         it('should validate all Playwright instance types', () => {
-            const mockBrowser = { newContext: () => { } };
-            const mockContext = { newPage: () => { } };
-            const mockPage = { goto: () => { } };
+            const mockBrowser = { newContext: () => {} };
+            const mockContext = { newPage: () => {} };
+            const mockPage = { goto: () => {} };
 
             expect(validator.validateTaskExecution(mockBrowser, {}).isValid).toBe(true);
             expect(validator.validateTaskExecution(mockContext, {}).isValid).toBe(true);

@@ -14,13 +14,13 @@ The `api/` module is a **sophisticated, well-architected** browser automation fr
 
 ### 1. Architecture & Design Patterns
 
-| Strength | Details |
-|---|---|
-| **Session Isolation** | `AsyncLocalStorage` + `WeakMap` cache in `context.js` enables truly concurrent multi-agent execution with zero state leakage |
-| **Unified Facade** | `index.js` assembles ~50 exports into an ergonomic `api.*` object with dual-callable APIs (e.g., `api.scroll(300)` + `api.scroll.focus('.el')`) |
-| **Error Hierarchy** | 20+ typed errors in `errors.js` with codes (`ELEMENT_OBSCURED`, `LLM_CIRCUIT_OPEN`, etc.) and the `isErrorCode()` helper |
-| **Middleware Pipeline** | 6 composable middlewares (logging, validation, retry, recovery, metrics, rate-limit) in `middleware.js` |
-| **Plugin System** | Event-driven hooks (`before:click`, `on:error`, etc.) with dynamic URL-based plugin evaluation |
+| Strength                | Details                                                                                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Session Isolation**   | `AsyncLocalStorage` + `WeakMap` cache in `context.js` enables truly concurrent multi-agent execution with zero state leakage                    |
+| **Unified Facade**      | `index.js` assembles ~50 exports into an ergonomic `api.*` object with dual-callable APIs (e.g., `api.scroll(300)` + `api.scroll.focus('.el')`) |
+| **Error Hierarchy**     | 20+ typed errors in `errors.js` with codes (`ELEMENT_OBSCURED`, `LLM_CIRCUIT_OPEN`, etc.) and the `isErrorCode()` helper                        |
+| **Middleware Pipeline** | 6 composable middlewares (logging, validation, retry, recovery, metrics, rate-limit) in `middleware.js`                                         |
+| **Plugin System**       | Event-driven hooks (`before:click`, `on:error`, etc.) with dynamic URL-based plugin evaluation                                                  |
 
 ### 2. Human-Mimetic Realism
 
@@ -56,11 +56,11 @@ This is the **crown jewel** of the codebase:
 
 Several modules exist in **two locations** with near-identical code, creating maintenance risk:
 
-| Module | Location 1 | Location 2 | Issue |
-|---|---|---|---|
-| **CircuitBreaker** | `core/circuit-breaker.js` (291 lines) | `utils/circuit-breaker.js` (157 lines) | Two incompatible implementations |
-| **GhostCursor** | `utils/ghostCursor.js` (383 lines) | `behaviors/ghostCursor.js` (540 lines) | `utils/` is the one actually imported by `context.js` |
-| **math utilities** | `utils/math.js` | `utils/mathUtils.js` | Identical API surface; `math.js` self-documents as "internal copy" |
+| Module             | Location 1                            | Location 2                             | Issue                                                              |
+| ------------------ | ------------------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
+| **CircuitBreaker** | `core/circuit-breaker.js` (291 lines) | `utils/circuit-breaker.js` (157 lines) | Two incompatible implementations                                   |
+| **GhostCursor**    | `utils/ghostCursor.js` (383 lines)    | `behaviors/ghostCursor.js` (540 lines) | `utils/` is the one actually imported by `context.js`              |
+| **math utilities** | `utils/math.js`                       | `utils/mathUtils.js`                   | Identical API surface; `math.js` self-documents as "internal copy" |
 
 > [!CAUTION]
 > Fixing a bug in one copy but not the other is a real risk. Consolidate each pair into a single source of truth.
@@ -85,7 +85,7 @@ These files exist only to re-export a V2 module. After confirming no external co
 ```js
 // wait.js line 17 — negative ms will resolve immediately (silent bug)
 const jitter = ms * 0.15 * (Math.random() - 0.5) * 2;
-await new Promise(r => setTimeout(r, Math.max(0, Math.round(ms + jitter))));
+await new Promise((r) => setTimeout(r, Math.max(0, Math.round(ms + jitter))));
 ```
 
 No guard against `NaN`, `undefined`, or negative values being passed.
@@ -99,24 +99,29 @@ The `rateLimitMiddleware()` in `middleware.js` uses closure-scoped `actionCount`
 ## 🔧 Improvement Suggestions
 
 ### 1. Consolidate Duplicate Modules
+
 - Pick one canonical location per module and make the other a re-export
 - Recommended: keep `utils/ghostCursor.js` (imported by context), delete `behaviors/ghostCursor.js`
 - Recommended: keep `core/circuit-breaker.js` (richer API), replace `utils/` with re-export
 
 ### 2. Add Input Validation Layer
+
 - The `wait()`, `scroll()`, and `delay()` functions accept raw numbers without guards
 - Add runtime assertions: `if (typeof ms !== 'number' || ms < 0) throw new ValidationError(...)`
 
 ### 3. Extract Config Defaults to a Single Object
+
 ```js
 // Refactor config.js to use one source of truth
 const DEFAULTS = { agent: { llm: { ... }, runner: { ... } }, timeouts: { ... } };
 ```
 
 ### 4. Centralize the `_test-command-line` File
+
 - `api/_test-command-line` appears to be a scratch/test artifact — move it out of the production source tree
 
 ### 5. Add `api.version` Property
+
 - Expose a version constant so consumers can check compatibility at runtime
 
 ---
@@ -125,46 +130,46 @@ const DEFAULTS = { agent: { llm: { ... }, runner: { ... } }, timeouts: { ... } }
 
 ### Tier 1 — Quick Wins
 
-| Upgrade | Benefit |
-|---|---|
-| **TypeScript type definitions** (`.d.ts`) | IDE autocomplete for consumers without full TS migration |
-| **Unit test suite** | At minimum: `context.js` isolation, `middleware.js` pipeline, `errors.js` hierarchy, `math.js` functions |
-| **Retry budget** per session | Prevent infinite retry loops by capping total retries across all middlewares |
+| Upgrade                                   | Benefit                                                                                                  |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **TypeScript type definitions** (`.d.ts`) | IDE autocomplete for consumers without full TS migration                                                 |
+| **Unit test suite**                       | At minimum: `context.js` isolation, `middleware.js` pipeline, `errors.js` hierarchy, `math.js` functions |
+| **Retry budget** per session              | Prevent infinite retry loops by capping total retries across all middlewares                             |
 
 ### Tier 2 — Medium Effort
 
-| Upgrade | Benefit |
-|---|---|
-| **OpenTelemetry integration** | Replace custom metrics middleware with industry-standard tracing for distributed debugging |
-| **Action replay/recording** | Record all actions as a replayable JSON sequence — invaluable for debugging failed automation runs |
+| Upgrade                       | Benefit                                                                                                     |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **OpenTelemetry integration** | Replace custom metrics middleware with industry-standard tracing for distributed debugging                  |
+| **Action replay/recording**   | Record all actions as a replayable JSON sequence — invaluable for debugging failed automation runs          |
 | **Per-site persona profiles** | Automatically select persona based on the target domain (social media → `casual`, banking → `professional`) |
-| **Plugin marketplace** | Let users share and install plugin packs (e.g., "Twitter Engagement Pack", "E-Commerce Checkout Pack") |
+| **Plugin marketplace**        | Let users share and install plugin packs (e.g., "Twitter Engagement Pack", "E-Commerce Checkout Pack")      |
 
 ### Tier 3 — Strategic
 
-| Upgrade | Benefit |
-|---|---|
-| **Visual regression testing** | Screenshot comparison before/after to catch site layout breaking changes |
-| **Playwright trace integration** | Attach Playwright trace files to failed task reports for deep debugging |
-| **Multi-model LLM routing** | Route agent tasks to different models based on complexity (simple → local Ollama, complex → cloud API) |
-| **Distributed orchestration** | Scale orchestrator across multiple machines with a shared task queue (Redis/BullMQ) |
-| **Fingerprint rotation** | Rotate browser fingerprints mid-session for ultra-long automation runs |
+| Upgrade                          | Benefit                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Visual regression testing**    | Screenshot comparison before/after to catch site layout breaking changes                               |
+| **Playwright trace integration** | Attach Playwright trace files to failed task reports for deep debugging                                |
+| **Multi-model LLM routing**      | Route agent tasks to different models based on complexity (simple → local Ollama, complex → cloud API) |
+| **Distributed orchestration**    | Scale orchestrator across multiple machines with a shared task queue (Redis/BullMQ)                    |
+| **Fingerprint rotation**         | Rotate browser fingerprints mid-session for ultra-long automation runs                                 |
 
 ---
 
 ## 📊 Codebase Metrics Summary
 
-| Metric | Value |
-|---|---|
-| Total files | ~200 |
-| Subdirectories | 12 (`actions`, `agent`, `behaviors`, `connectors`, `constants`, `core`, `docs`, `interactions`, `profiles`, `twitter`, `ui`, `utils`) |
-| Main entry point | `index.js` (462 lines, ~50 exports) |
-| Largest module | `orchestrator-v2.js` (670 lines) |
-| Persona profiles | 16 |
-| Error types | 20+ |
-| Middleware types | 6 |
-| Browser connectors | 7+ |
-| Documentation files | 7 (`docs/` directory + `_api-overview.md`) |
+| Metric              | Value                                                                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Total files         | ~200                                                                                                                                  |
+| Subdirectories      | 12 (`actions`, `agent`, `behaviors`, `connectors`, `constants`, `core`, `docs`, `interactions`, `profiles`, `twitter`, `ui`, `utils`) |
+| Main entry point    | `index.js` (462 lines, ~50 exports)                                                                                                   |
+| Largest module      | `orchestrator-v2.js` (670 lines)                                                                                                      |
+| Persona profiles    | 16                                                                                                                                    |
+| Error types         | 20+                                                                                                                                   |
+| Middleware types    | 6                                                                                                                                     |
+| Browser connectors  | 7+                                                                                                                                    |
+| Documentation files | 7 (`docs/` directory + `_api-overview.md`)                                                                                            |
 
 ---
 

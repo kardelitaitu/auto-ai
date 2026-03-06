@@ -5,7 +5,7 @@
  * - Random right-click
  * - Logo clicks
  * - Whitespace clicks
- * 
+ *
  * @module utils/micro-interactions
  */
 
@@ -16,9 +16,9 @@ const MICRO_CONFIG = {
     highlightChance: 0.03,
     rightClickChance: 0.02,
     logoClickChance: 0.05,
-    whitespaceClickChance: 0.10,
+    whitespaceClickChance: 0.1,
     fidgetChance: 0.08,
-    fidgetInterval: { min: 10000, max: 30000 }
+    fidgetInterval: { min: 10000, max: 30000 },
 };
 
 function randomInRange(min, max) {
@@ -67,7 +67,6 @@ function createMicroInteractionHandler(options = {}) {
                 await page.mouse.click(startX - 20, startY);
 
                 return { success: true, type: 'highlight', distance };
-
             } catch (error) {
                 logger.error(`[Micro] Highlight error: ${error.message}`);
                 return { success: false, reason: error.message };
@@ -82,7 +81,9 @@ function createMicroInteractionHandler(options = {}) {
                 const targetX = x !== null ? x : Math.random() * viewport.width * 0.8;
                 const targetY = y !== null ? y : Math.random() * viewport.height * 0.8;
 
-                logger.info(`[Micro] Random right-click at (${Math.round(targetX)}, ${Math.round(targetY)})`);
+                logger.info(
+                    `[Micro] Random right-click at (${Math.round(targetX)}, ${Math.round(targetY)})`
+                );
 
                 await page.mouse.move(targetX, targetY);
                 await page.mouse.click(targetX, targetY, { button: 'right' });
@@ -91,7 +92,6 @@ function createMicroInteractionHandler(options = {}) {
                 await page.mouse.click(targetX - 50, targetY, { button: 'left' });
 
                 return { success: true, type: 'right_click', x: targetX, y: targetY };
-
             } catch (error) {
                 logger.error(`[Micro] Right-click error: ${error.message}`);
                 return { success: false, reason: error.message };
@@ -102,7 +102,8 @@ function createMicroInteractionHandler(options = {}) {
             const { logger = console } = options;
 
             try {
-                const logoSelector = '[data-testid="appleLogo"], [data-testid="logo"], [aria-label="Home"]';
+                const logoSelector =
+                    '[data-testid="appleLogo"], [data-testid="logo"], [aria-label="Home"]';
                 const logo = await page.$(logoSelector);
 
                 if (!logo) {
@@ -115,7 +116,6 @@ function createMicroInteractionHandler(options = {}) {
                 logger.info(`[Micro] Logo click (refresh)`);
 
                 return { success: true, type: 'logo_click' };
-
             } catch (error) {
                 logger.error(`[Micro] Logo click error: ${error.message}`);
                 return { success: false, reason: error.message };
@@ -136,7 +136,6 @@ function createMicroInteractionHandler(options = {}) {
                 await page.mouse.click(x, y);
 
                 return { success: true, type: 'whitespace_click', x, y };
-
             } catch (error) {
                 logger.error(`[Micro] Whitespace click error: ${error.message}`);
                 return { success: false, reason: error.message };
@@ -218,20 +217,29 @@ function createMicroInteractionHandler(options = {}) {
                 return await this.textHighlight(page, { logger });
             } else if (actionRoll < config.highlightChance + config.rightClickChance) {
                 return await this.randomRightClick(page, { logger });
-            } else if (actionRoll < config.highlightChance + config.rightClickChance + config.logoClickChance) {
+            } else if (
+                actionRoll <
+                config.highlightChance + config.rightClickChance + config.logoClickChance
+            ) {
                 return await this.logoClick(page, { logger });
-            } else if (actionRoll < config.highlightChance + config.rightClickChance + config.logoClickChance + config.whitespaceClickChance) {
+            } else if (
+                actionRoll <
+                config.highlightChance +
+                    config.rightClickChance +
+                    config.logoClickChance +
+                    config.whitespaceClickChance
+            ) {
                 return await this.whitespaceClick(page, { logger });
             }
 
             return { success: false, reason: 'no_action' };
-        }
+        },
     };
 }
 
 export const microInteractions = {
     createMicroInteractionHandler,
-    defaults: MICRO_CONFIG
+    defaults: MICRO_CONFIG,
 };
 
 export default microInteractions;

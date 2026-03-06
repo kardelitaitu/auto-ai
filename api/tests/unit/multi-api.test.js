@@ -6,8 +6,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('MultiOpenRouterClient', () => {
@@ -19,7 +19,7 @@ describe('MultiOpenRouterClient', () => {
             apiKeys: ['key1', 'key2'],
             models: ['model1', 'model2'],
             timeout: 5000,
-            retryDelay: 100
+            retryDelay: 100,
         });
     });
 
@@ -45,12 +45,12 @@ describe('MultiOpenRouterClient', () => {
                 json: vi.fn().mockResolvedValue({
                     choices: [{ message: { content: 'Hello' } }],
                     model: 'model1',
-                    usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 }
-                })
+                    usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
+                }),
             });
 
             const result = await client.processRequest({
-                messages: [{ role: 'user', content: 'Hi' }]
+                messages: [{ role: 'user', content: 'Hi' }],
             });
 
             expect(result.success).toBe(true);
@@ -60,18 +60,19 @@ describe('MultiOpenRouterClient', () => {
         });
 
         it('should fallback to second key on rate limit', async () => {
-            global.fetch = vi.fn()
+            global.fetch = vi
+                .fn()
                 .mockRejectedValueOnce(new Error('429 Rate limit'))
                 .mockResolvedValueOnce({
                     ok: true,
                     json: vi.fn().mockResolvedValue({
                         choices: [{ message: { content: 'Hello' } }],
-                        model: 'model2'
-                    })
+                        model: 'model2',
+                    }),
                 });
 
             const result = await client.processRequest({
-                messages: [{ role: 'user', content: 'Hi' }]
+                messages: [{ role: 'user', content: 'Hi' }],
             });
 
             expect(result.success).toBe(true);
@@ -83,7 +84,7 @@ describe('MultiOpenRouterClient', () => {
             global.fetch = vi.fn().mockRejectedValue(new Error('Invalid API key'));
 
             const result = await client.processRequest({
-                messages: [{ role: 'user', content: 'Hi' }]
+                messages: [{ role: 'user', content: 'Hi' }],
             });
 
             expect(result.success).toBe(false);
@@ -94,7 +95,7 @@ describe('MultiOpenRouterClient', () => {
             global.fetch = vi.fn().mockRejectedValue(new Error('Invalid API key'));
 
             const result = await client.processRequest({
-                messages: [{ role: 'user', content: 'Hi' }]
+                messages: [{ role: 'user', content: 'Hi' }],
             });
 
             expect(result.success).toBe(false);
@@ -109,14 +110,14 @@ describe('MultiOpenRouterClient', () => {
                 json: vi.fn().mockResolvedValue({
                     choices: [{ message: { content: 'Response' } }],
                     model: 'test-model',
-                    usage: { prompt_tokens: 5, completion_tokens: 10, total_tokens: 15 }
-                })
+                    usage: { prompt_tokens: 5, completion_tokens: 10, total_tokens: 15 },
+                }),
             });
 
             const result = await client.callAPI('test-key', [{ role: 'user', content: 'Hi' }], {
                 maxTokens: 100,
                 temperature: 0.7,
-                model: 'test-model'
+                model: 'test-model',
             });
 
             expect(result.content).toBe('Response');
@@ -128,10 +129,12 @@ describe('MultiOpenRouterClient', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: false,
                 status: 401,
-                text: vi.fn().mockResolvedValue('Unauthorized')
+                text: vi.fn().mockResolvedValue('Unauthorized'),
             });
 
-            await expect(client.callAPI('bad-key', [], {})).rejects.toThrow('HTTP 401: Unauthorized');
+            await expect(client.callAPI('bad-key', [], {})).rejects.toThrow(
+                'HTTP 401: Unauthorized'
+            );
         });
 
         it('should handle empty response', async () => {
@@ -139,8 +142,8 @@ describe('MultiOpenRouterClient', () => {
                 ok: true,
                 json: vi.fn().mockResolvedValue({
                     choices: [],
-                    model: 'test'
-                })
+                    model: 'test',
+                }),
             });
 
             const result = await client.callAPI('key', [], {});

@@ -65,7 +65,7 @@ describe('api/utils/math.js', () => {
             for (let i = 0; i < 100; i++) {
                 results.push(mathUtils.roll(1));
             }
-            expect(results.every(r => r === true)).toBe(true);
+            expect(results.every((r) => r === true)).toBe(true);
         });
 
         it('should return false for threshold of 0', () => {
@@ -73,7 +73,7 @@ describe('api/utils/math.js', () => {
             for (let i = 0; i < 100; i++) {
                 results.push(mathUtils.roll(0));
             }
-            expect(results.every(r => r === false)).toBe(true);
+            expect(results.every((r) => r === false)).toBe(true);
         });
 
         it('should return boolean', () => {

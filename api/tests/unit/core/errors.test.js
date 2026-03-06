@@ -227,17 +227,21 @@ describe('api/core/errors.js', () => {
         it('should pass through AutomationError', async () => {
             const automationError = new errors.AutomationError('Auto error');
             const fn = vi.fn().mockRejectedValue(automationError);
-            
-            await expect(errors.withErrorHandling(fn, 'test')).rejects.toThrow(errors.AutomationError);
+
+            await expect(errors.withErrorHandling(fn, 'test')).rejects.toThrow(
+                errors.AutomationError
+            );
         });
 
         it('should wrap other errors in ActionError', async () => {
             const fn = vi.fn().mockRejectedValue(new Error('Regular error'));
-            
-            await expect(errors.withErrorHandling(fn, 'test operation'))
-                .rejects.toThrow(errors.ActionError);
-            await expect(errors.withErrorHandling(fn, 'test operation'))
-                .rejects.toThrow('Error during test operation');
+
+            await expect(errors.withErrorHandling(fn, 'test operation')).rejects.toThrow(
+                errors.ActionError
+            );
+            await expect(errors.withErrorHandling(fn, 'test operation')).rejects.toThrow(
+                'Error during test operation'
+            );
         });
     });
 

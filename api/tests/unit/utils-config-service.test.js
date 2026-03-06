@@ -10,72 +10,74 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 vi.mock('../../utils/configLoader.js', () => ({
-    getSettings: vi.fn(() => Promise.resolve({
-        twitter: {
-            activity: {
-                defaultCycles: 10,
-                defaultMinDuration: 300,
-                defaultMaxDuration: 540,
-                engagementLimits: {
-                    replies: 3,
-                    retweets: 1,
-                    quotes: 1,
-                    likes: 5,
-                    follows: 2,
-                    bookmarks: 2
-                }
+    getSettings: vi.fn(() =>
+        Promise.resolve({
+            twitter: {
+                activity: {
+                    defaultCycles: 10,
+                    defaultMinDuration: 300,
+                    defaultMaxDuration: 540,
+                    engagementLimits: {
+                        replies: 3,
+                        retweets: 1,
+                        quotes: 1,
+                        likes: 5,
+                        follows: 2,
+                        bookmarks: 2,
+                    },
+                },
+                reply: {
+                    probability: 0.6,
+                    minChars: 10,
+                    maxChars: 200,
+                },
+                quote: {
+                    probability: 0.2,
+                },
+                timing: {
+                    warmupMin: 2000,
+                    warmupMax: 15000,
+                    scrollMin: 300,
+                    scrollMax: 700,
+                    globalScrollMultiplier: 1.0,
+                },
+                phases: {
+                    warmupPercent: 0.1,
+                    activePercent: 0.7,
+                    cooldownPercent: 0.2,
+                },
             },
-            reply: {
-                probability: 0.6,
-                minChars: 10,
-                maxChars: 200
+            humanization: {
+                mouse: {
+                    speed: { mean: 1.0, deviation: 0.2 },
+                    jitter: { x: 10, y: 5 },
+                },
+                typing: {
+                    keystrokeDelay: { mean: 80, deviation: 40 },
+                    errorRate: 0.05,
+                },
+                session: {
+                    minMinutes: 5,
+                    maxMinutes: 9,
+                },
             },
-            quote: {
-                probability: 0.2
+            llm: {
+                local: {
+                    vllm: { enabled: false },
+                    ollama: { enabled: true },
+                    docker: { enabled: false },
+                },
+                cloud: {
+                    enabled: true,
+                },
             },
-            timing: {
-                warmupMin: 2000,
-                warmupMax: 15000,
-                scrollMin: 300,
-                scrollMax: 700,
-                globalScrollMultiplier: 1.0
-            },
-            phases: {
-                warmupPercent: 0.1,
-                activePercent: 0.7,
-                cooldownPercent: 0.2
-            }
-        },
-        humanization: {
-            mouse: {
-                speed: { mean: 1.0, deviation: 0.2 },
-                jitter: { x: 10, y: 5 }
-            },
-            typing: {
-                keystrokeDelay: { mean: 80, deviation: 40 },
-                errorRate: 0.05
-            },
-            session: {
-                minMinutes: 5,
-                maxMinutes: 9
-            }
-        },
-        llm: {
-            local: {
-                vllm: { enabled: false },
-                ollama: { enabled: true },
-                docker: { enabled: false }
-            },
-            cloud: {
-                enabled: true
-            }
-        }
-    }))
+        })
+    ),
 }));
 
 describe('utils/config-service', () => {
@@ -295,12 +297,12 @@ describe('utils/config-service', () => {
         it('should use env var for global scroll multiplier', async () => {
             const original = process.env.GLOBAL_SCROLL_MULTIPLIER;
             process.env.GLOBAL_SCROLL_MULTIPLIER = '2.5';
-            
+
             await config.reload();
             const multiplier = await config.getGlobalScrollMultiplier();
-            
+
             expect(multiplier).toBe(2.5);
-            
+
             if (original !== undefined) {
                 process.env.GLOBAL_SCROLL_MULTIPLIER = original;
             } else {
@@ -311,12 +313,12 @@ describe('utils/config-service', () => {
         it('should use env var for twitter activity cycles', async () => {
             const original = process.env.TWITTER_ACTIVITY_CYCLES;
             process.env.TWITTER_ACTIVITY_CYCLES = '25';
-            
+
             await config.reload();
             const activity = await config.getTwitterActivity();
-            
+
             expect(activity.defaultCycles).toBe(25);
-            
+
             if (original !== undefined) {
                 process.env.TWITTER_ACTIVITY_CYCLES = original;
             } else {
@@ -327,12 +329,12 @@ describe('utils/config-service', () => {
         it('should use env var for reply probability', async () => {
             const original = process.env.TWITTER_REPLY_PROBABILITY;
             process.env.TWITTER_REPLY_PROBABILITY = '0.8';
-            
+
             await config.reload();
             const reply = await config.getReplyConfig();
-            
+
             expect(reply.probability).toBe(0.8);
-            
+
             if (original !== undefined) {
                 process.env.TWITTER_REPLY_PROBABILITY = original;
             } else {
@@ -343,12 +345,12 @@ describe('utils/config-service', () => {
         it('should use env var for ollama enabled', async () => {
             const original = process.env.OLLAMA_ENABLED;
             process.env.OLLAMA_ENABLED = 'false';
-            
+
             await config.reload();
             const enabled = await config.isLocalLLMEnabled();
-            
+
             expect(enabled).toBe(false);
-            
+
             if (original !== undefined) {
                 process.env.OLLAMA_ENABLED = original;
             } else {
@@ -386,9 +388,9 @@ describe('utils/config-service defaults', () => {
 
     beforeEach(async () => {
         vi.mock('../../utils/configLoader.js', () => ({
-            getSettings: vi.fn(() => Promise.resolve({}))
+            getSettings: vi.fn(() => Promise.resolve({})),
         }));
-        
+
         const { config: configModule } = await import('../../utils/config-service.js');
         config = configModule;
         await config.reload();
@@ -434,16 +436,18 @@ describe('utils/config-service edge cases', () => {
     describe('_getWithDefaults edge cases', () => {
         it('should return data when key not in defaults', async () => {
             vi.mock('../../utils/configLoader.js', () => ({
-                getSettings: vi.fn(() => Promise.resolve({
-                    customSection: {
-                        customKey: 'customValue'
-                    }
-                }))
+                getSettings: vi.fn(() =>
+                    Promise.resolve({
+                        customSection: {
+                            customKey: 'customValue',
+                        },
+                    })
+                ),
             }));
-            
+
             const { config } = await import('../../utils/config-service.js');
             await config.reload();
-            
+
             const result = await config.get('customSection');
             expect(result.customKey).toBe('customValue');
         });

@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EntropyController, entropy } from '@api/utils/entropyController.js';
 
@@ -8,8 +7,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('EntropyController', () => {
@@ -59,10 +58,10 @@ describe('EntropyController', () => {
         it('should calculate fatigue level correctly', () => {
             controller.fatigueActivationTime = 0;
             controller.sessionStart = Date.now();
-            
+
             // 5 minutes past activation
             vi.advanceTimersByTime(5 * 60 * 1000);
-            
+
             controller.checkFatigue();
             // Fatigue rate is 1 / 10min. So 5min should be ~0.5
             expect(controller.fatigueLevel).toBeCloseTo(0.5, 1);
@@ -83,7 +82,7 @@ describe('EntropyController', () => {
             controller.fatigueActive = true;
             controller.fatigueLevel = 0.5;
             const mods = controller.getFatigueModifiers();
-            
+
             expect(mods).toBeDefined();
             expect(mods.movementSpeed).toBeLessThan(1.0);
             expect(mods.hesitationIncrease).toBeGreaterThan(1.0);
@@ -103,13 +102,13 @@ describe('EntropyController', () => {
         it('should apply fatigue to timing', () => {
             controller.fatigueActive = true;
             controller.fatigueLevel = 0.5;
-            
+
             const base = 1000;
             const mods = controller.getFatigueModifiers();
-            
+
             const movement = controller.applyFatigueToTiming('movement', base);
             expect(movement).toBe(base / mods.movementSpeed);
-            
+
             const click = controller.applyFatigueToTiming('click', base);
             expect(click).toBe(base * mods.clickHoldTime);
         });
@@ -136,7 +135,7 @@ describe('EntropyController', () => {
         it('should allow creating independent instances', () => {
             const e1 = new EntropyController({ sessionId: '1' });
             const e2 = new EntropyController({ sessionId: '2' });
-            
+
             e1.logAction('test');
             expect(e1.actionLog.length).toBe(1);
             expect(e2.actionLog.length).toBe(0);
@@ -149,11 +148,11 @@ describe('EntropyController', () => {
             for (let i = 0; i < 600; i++) {
                 controller.logAction('action-' + i);
             }
-            
+
             expect(controller.actionLog.length).toBeLessThanOrEqual(500);
             expect(controller.getSessionStats().actionCount).toBe(controller.actionLog.length);
         });
-        
+
         it('should reset session', () => {
             controller.logAction('test');
             controller.resetSession();
@@ -170,7 +169,7 @@ describe('EntropyController', () => {
                     values.push(controller.logNormal(0, 1));
                 }
                 // Log-normal should produce values >= 0
-                values.forEach(v => expect(v).toBeGreaterThanOrEqual(0));
+                values.forEach((v) => expect(v).toBeGreaterThanOrEqual(0));
             });
 
             it('should handle different mu and sigma values', () => {
@@ -278,11 +277,11 @@ describe('EntropyController', () => {
                 // First call without distraction (random > 0.1)
                 vi.spyOn(Math, 'random').mockImplementation(() => 0.5);
                 const _normal = controller.pageLoadWait();
-                
+
                 // Force distraction with random < 0.1
                 vi.spyOn(Math, 'random').mockImplementation(() => 0.05);
                 const distracted = controller.pageLoadWait();
-                
+
                 // Distracted should be longer due to 1.8x multiplier
                 // Note: due to gaussian randomness, we can't guarantee exact comparison
                 // but the minimum distracted value should be higher than minimum normal
@@ -413,7 +412,7 @@ describe('EntropyController', () => {
             it('should handle all valid timing types', () => {
                 controller.fatigueActive = true;
                 controller.fatigueLevel = 0.5;
-                
+
                 expect(controller.applyFatigueToTiming('movement', 1000)).toBeDefined();
                 expect(controller.applyFatigueToTiming('hesitation', 1000)).toBeDefined();
                 expect(controller.applyFatigueToTiming('click', 1000)).toBeDefined();
@@ -429,9 +428,9 @@ describe('EntropyController', () => {
             });
 
             it('should handle disabled fatigue', () => {
-                const controllerNoFatigue = new EntropyController({ 
+                const controllerNoFatigue = new EntropyController({
                     sessionId: 'no-fatigue',
-                    fatigueEnabled: false 
+                    fatigueEnabled: false,
                 });
                 controllerNoFatigue.fatigueActivationTime = 0;
                 vi.advanceTimersByTime(10 * 60 * 1000);
@@ -469,7 +468,7 @@ describe('EntropyController', () => {
             it('should include all expected fields', () => {
                 controller.logAction('test-action', { detail: 'value' });
                 const stats = controller.getSessionStats();
-                
+
                 expect(stats.sessionAge).toBeGreaterThanOrEqual(0);
                 expect(stats.entropy).toBeDefined();
                 expect(stats.actionCount).toBe(1);
@@ -490,7 +489,9 @@ describe('EntropyController', () => {
             it('should regenerate session profile', () => {
                 const oldProfile = { ...controller.sessionEntropy };
                 controller.resetSession();
-                expect(controller.sessionEntropy.paceMultiplier).not.toBe(oldProfile.paceMultiplier);
+                expect(controller.sessionEntropy.paceMultiplier).not.toBe(
+                    oldProfile.paceMultiplier
+                );
             });
 
             it('should reset fatigue activation time', () => {

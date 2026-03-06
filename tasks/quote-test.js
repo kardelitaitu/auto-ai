@@ -4,12 +4,15 @@ import { api } from '../api/index.js';
 /**
  * Quote Test Task (Refactored)
  * Tests the "Quote Tweet" functionality using the new api.quoteWithAI()
- * 
+ *
  * Usage: node main.js quote-test
  */
 export default async function quoteTestTask(page, payload) {
     const logger = createLogger('quote-test.js');
-    const targetUrl = payload?.url || process.env.TARGET_URL || 'https://x.com/SightlyGirls/status/2026039840634994891';
+    const targetUrl =
+        payload?.url ||
+        process.env.TARGET_URL ||
+        'https://x.com/SightlyGirls/status/2026039840634994891';
 
     logger.info(`Starting refactored quote test task...`);
 
@@ -19,7 +22,11 @@ export default async function quoteTestTask(page, payload) {
 
             // 1. Navigate to target tweet
             logger.info(`Navigating to ${targetUrl}...`);
-            await api.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000, warmup: false });
+            await api.goto(targetUrl, {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000,
+                warmup: false,
+            });
             await api.wait(3000);
 
             // 2. Perform Quote with AI (Integrated high-level function)
@@ -36,7 +43,6 @@ export default async function quoteTestTask(page, payload) {
             await api.wait(1000);
 
             return result;
-
         } catch (error) {
             logger.error(`Error during quote test: ${error.message}`);
             throw error;

@@ -57,16 +57,16 @@ describe('api/profiles/click-profiles.js', () => {
 
         it('should have all required profile properties', () => {
             const requiredProps = ['hoverMin', 'hoverMax', 'holdMs', 'hesitation', 'microMove'];
-            
-            Object.values(TWITTER_CLICK_PROFILES).forEach(profile => {
-                requiredProps.forEach(prop => {
+
+            Object.values(TWITTER_CLICK_PROFILES).forEach((profile) => {
+                requiredProps.forEach((prop) => {
                     expect(profile).toHaveProperty(prop);
                 });
             });
         });
 
         it('should have valid numeric values for timing', () => {
-            Object.values(TWITTER_CLICK_PROFILES).forEach(profile => {
+            Object.values(TWITTER_CLICK_PROFILES).forEach((profile) => {
                 expect(typeof profile.hoverMin).toBe('number');
                 expect(typeof profile.hoverMax).toBe('number');
                 expect(typeof profile.holdMs).toBe('number');
@@ -77,7 +77,7 @@ describe('api/profiles/click-profiles.js', () => {
         });
 
         it('should have boolean values for flags', () => {
-            Object.values(TWITTER_CLICK_PROFILES).forEach(profile => {
+            Object.values(TWITTER_CLICK_PROFILES).forEach((profile) => {
                 expect(typeof profile.hesitation).toBe('boolean');
                 expect(typeof profile.microMove).toBe('boolean');
             });

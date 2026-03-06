@@ -20,7 +20,7 @@ vi.mock('@api/index.js', () => {
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
             read: vi.fn().mockResolvedValue(undefined),
-            focus: vi.fn().mockResolvedValue(undefined)
+            focus: vi.fn().mockResolvedValue(undefined),
         }),
         visible: vi.fn().mockImplementation(async (el) => {
             if (el && typeof el.isVisible === 'function') return await el.isVisible();
@@ -45,7 +45,7 @@ vi.mock('@api/index.js', () => {
         isSessionActive: vi.fn().mockReturnValue(true),
         waitVisible: vi.fn().mockResolvedValue(undefined),
         count: vi.fn().mockResolvedValue(1),
-        waitForLoadState: vi.fn().mockResolvedValue(undefined)
+        waitForLoadState: vi.fn().mockResolvedValue(undefined),
     };
     return { api, default: api };
 });
@@ -58,7 +58,7 @@ vi.mock('../../utils/urlReferrer.js');
 vi.mock('../../utils/metrics.js');
 vi.mock('../../utils/screenshot.js');
 vi.mock('../../utils/browserPatch.js', () => ({
-    applyHumanizationPatch: vi.fn().mockResolvedValue(undefined)
+    applyHumanizationPatch: vi.fn().mockResolvedValue(undefined),
 }));
 vi.mock('../../utils/utils.js', () => ({
     createLogger: vi.fn(() => ({
@@ -66,14 +66,14 @@ vi.mock('../../utils/utils.js', () => ({
         warn: vi.fn(),
         error: vi.fn(),
         success: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 vi.mock('../../utils/math.js', () => ({
     mathUtils: {
         randomInRange: vi.fn().mockReturnValue(100),
-        roll: vi.fn().mockReturnValue(true)
-    }
+        roll: vi.fn().mockReturnValue(true),
+    },
 }));
 
 describe('tasks/twitterFollow', () => {
@@ -94,11 +94,11 @@ describe('tasks/twitterFollow', () => {
             locator: vi.fn().mockReturnValue({
                 first: vi.fn().mockReturnThis(),
                 count: vi.fn().mockResolvedValue(1),
-                isVisible: vi.fn().mockResolvedValue(true)
+                isVisible: vi.fn().mockResolvedValue(true),
             }),
             isClosed: vi.fn().mockReturnValue(false),
             close: vi.fn().mockResolvedValue(undefined),
-            waitForLoadState: vi.fn().mockResolvedValue(undefined)
+            waitForLoadState: vi.fn().mockResolvedValue(undefined),
         };
 
         api.getPage.mockReturnValue(mockPage);
@@ -107,31 +107,40 @@ describe('tasks/twitterFollow', () => {
         mockAgent = {
             config: {
                 probabilities: {
-                    refresh: 1, profileDive: 1, tweetDive: 1, idle: 0.1,
-                    likeTweetAfterDive: 1, bookmarkAfterDive: 1, followOnProfile: 1
+                    refresh: 1,
+                    profileDive: 1,
+                    tweetDive: 1,
+                    idle: 0.1,
+                    likeTweetAfterDive: 1,
+                    bookmarkAfterDive: 1,
+                    followOnProfile: 1,
                 },
                 timings: {
-                    readingPhase: { mean: 1000, deviation: 100 }
-                }
+                    readingPhase: { mean: 1000, deviation: 100 },
+                },
             },
             simulateReading: vi.fn().mockResolvedValue(undefined),
             humanClick: vi.fn().mockResolvedValue(undefined),
             robustFollow: vi.fn().mockResolvedValue({ success: true, attempts: 1 }),
             navigateHome: vi.fn().mockResolvedValue(undefined),
             checkLoginState: vi.fn().mockResolvedValue(true),
-            sessionStart: Date.now()
+            sessionStart: Date.now(),
         };
-        TwitterAgent.mockImplementation(function () { return mockAgent; });
+        TwitterAgent.mockImplementation(function () {
+            return mockAgent;
+        });
 
         mockReferrerEngine = {
             generateContext: vi.fn().mockReturnValue({
                 strategy: 'dynamic',
                 referrer: 'https://google.com',
-                headers: { 'Referer': 'https://google.com' },
-                targetWithParams: 'https://x.com/status/123?utm=test'
-            })
+                headers: { Referer: 'https://google.com' },
+                targetWithParams: 'https://x.com/status/123?utm=test',
+            }),
         };
-        ReferrerEngine.mockImplementation(function () { return mockReferrerEngine; });
+        ReferrerEngine.mockImplementation(function () {
+            return mockReferrerEngine;
+        });
 
         profileManager.getStarter.mockReturnValue({ theme: 'dark' });
         profileManager.getById.mockReturnValue({ id: 'p1', theme: 'light' });
@@ -158,7 +167,8 @@ describe('tasks/twitterFollow', () => {
 
     it('should handle profile navigation retry via avatar if handle click fails', async () => {
         // First call to url() returns status, second returns profile
-        api.getCurrentUrl.mockResolvedValueOnce('https://x.com/user/status/123')
+        api.getCurrentUrl
+            .mockResolvedValueOnce('https://x.com/user/status/123')
             .mockResolvedValueOnce('https://x.com/user/status/123')
             .mockResolvedValue('https://x.com/user');
 
@@ -167,8 +177,7 @@ describe('tasks/twitterFollow', () => {
     });
 
     it('should handle navigation failures with retry', async () => {
-        api.goto.mockRejectedValueOnce(new Error('nav error'))
-            .mockResolvedValueOnce(undefined);
+        api.goto.mockRejectedValueOnce(new Error('nav error')).mockResolvedValueOnce(undefined);
 
         await twitterFollowTask(mockPage, { browserInfo: 'test' });
         expect(api.goto).toHaveBeenCalledTimes(2);

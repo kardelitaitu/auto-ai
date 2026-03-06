@@ -15,7 +15,7 @@ describe('CircuitBreaker', () => {
             successThreshold: 2,
             halfOpenTime: 500, // Increased to prevent flaky HALF_OPEN transition
             monitoringWindow: 1000,
-            minSamples: 1 // Require 1 sample to react immediately
+            minSamples: 1, // Require 1 sample to react immediately
         });
     });
 

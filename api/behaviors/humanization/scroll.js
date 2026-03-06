@@ -2,7 +2,7 @@ import { api } from '../../index.js';
 /**
  * Human Scroll Engine
  * Human-like scrolling patterns with bursts, pauses, and micro-adjustments
- * 
+ *
  * Human Scroll Patterns:
  * 1. Quick burst (100-300px)
  * 2. Pause to "look" (200-800ms)
@@ -28,7 +28,7 @@ export class HumanScroll {
 
     /**
      * Main scroll method - use this instead of page.mouse.wheel()
-     * 
+     *
      * @param {string} direction - 'up', 'down', or 'random'
      * @param {string} intensity - 'light', 'normal', 'heavy'
      */
@@ -36,7 +36,7 @@ export class HumanScroll {
         const intensityConfig = {
             light: { bursts: 2, pxMin: 50, pxMax: 150 },
             normal: { bursts: 3, pxMin: 100, pxMax: 300 },
-            heavy: { bursts: 5, pxMax: 500 }
+            heavy: { bursts: 5, pxMax: 500 },
         };
 
         const config = intensityConfig[intensity] || intensityConfig.normal;
@@ -53,9 +53,10 @@ export class HumanScroll {
                 break;
             case 'random':
             default:
-                scrollAmount = Math.random() > 0.5
-                    ? mathUtils.randomInRange(100, 300)
-                    : -mathUtils.randomInRange(50, 150);
+                scrollAmount =
+                    Math.random() > 0.5
+                        ? mathUtils.randomInRange(100, 300)
+                        : -mathUtils.randomInRange(50, 150);
                 break;
         }
 
@@ -81,11 +82,14 @@ export class HumanScroll {
         }
 
         // Final pause (processing time)
-        const _endPause = intensity === 'light' ? mathUtils.gaussian(800, 300) : mathUtils.gaussian(1500, 500);
+        const _endPause =
+            intensity === 'light' ? mathUtils.gaussian(800, 300) : mathUtils.gaussian(1500, 500);
         await api.wait(1000);
 
         if (this.agent) {
-            this.agent.log(`[Scroll] ${direction} (${burstCount} bursts, ${Math.abs(scrollAmount)}px)`);
+            this.agent.log(
+                `[Scroll] ${direction} (${burstCount} bursts, ${Math.abs(scrollAmount)}px)`
+            );
         }
     }
 
@@ -127,7 +131,6 @@ export class HumanScroll {
 
             // Pause to "look" at element
             await api.wait(1000);
-
         } catch (_e) {
             // Fallback to direct scroll
             await scrollRandom(200, 200);

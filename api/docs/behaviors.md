@@ -19,34 +19,34 @@ The persona system controls biometrics like typing speed, typo rates, mouse "jit
 
 ### Available Personas
 
-| Persona | Description |
-|---------|-------------|
-| `casual` | Casual browser, moderate speed |
-| `efficient` | Power user, fast and precise |
-| `power` | Advanced user, shortcuts |
-| `researcher` | Careful reader, thorough |
-| `elderly` | Slower movements, careful |
-| `teen` | Quick, distracted |
-| `professional` | Business-like, efficient |
-| `gamer` | Fast reflexes, precise |
-| `distracted` | Often loses focus |
-| `fast` | Quick execution |
-| `slow` | Deliberate movements |
-| `random` | Unpredictable behavior |
-| `typer` | Fast typer |
-| `careful` | Very cautious |
-| `lazy` | Minimal effort |
-| `default` | Balanced profile |
+| Persona        | Description                    |
+| -------------- | ------------------------------ |
+| `casual`       | Casual browser, moderate speed |
+| `efficient`    | Power user, fast and precise   |
+| `power`        | Advanced user, shortcuts       |
+| `researcher`   | Careful reader, thorough       |
+| `elderly`      | Slower movements, careful      |
+| `teen`         | Quick, distracted              |
+| `professional` | Business-like, efficient       |
+| `gamer`        | Fast reflexes, precise         |
+| `distracted`   | Often loses focus              |
+| `fast`         | Quick execution                |
+| `slow`         | Deliberate movements           |
+| `random`       | Unpredictable behavior         |
+| `typer`        | Fast typer                     |
+| `careful`      | Very cautious                  |
+| `lazy`         | Minimal effort                 |
+| `default`      | Balanced profile               |
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `setPersona(name)` | Set the active persona |
-| `getPersona()` | Get the current persona object |
-| `getPersonaName()` | Get the current persona name |
-| `listPersonas()` | List all available personas |
-| `getSessionDuration()` | Get session duration in ms |
+| Function               | Description                    |
+| ---------------------- | ------------------------------ |
+| `setPersona(name)`     | Set the active persona         |
+| `getPersona()`         | Get the current persona object |
+| `getPersonaName()`     | Get the current persona name   |
+| `listPersonas()`       | List all available personas    |
+| `getSessionDuration()` | Get session duration in ms     |
 
 ### Persona Properties
 
@@ -85,12 +85,12 @@ Timing utilities for realistic delays and pauses.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `think(ms)` | Think pause (variable based on persona) |
-| `delay(ms)` | Fixed delay |
-| `gaussian(mean, stdDev)` | Gaussian random value |
-| `randomInRange(min, max)` | Random value in range |
+| Function                  | Description                             |
+| ------------------------- | --------------------------------------- |
+| `think(ms)`               | Think pause (variable based on persona) |
+| `delay(ms)`               | Fixed delay                             |
+| `gaussian(mean, stdDev)`  | Gaussian random value                   |
+| `randomInRange(min, max)` | Random value in range                   |
 
 ### Usage
 
@@ -117,16 +117,16 @@ Simulates human attention patterns including gazing, distractions, and focus shi
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `gaze(selector)` | Gaze at an element |
-| `attention(selector)` | Full attention sequence |
-| `distraction()` | Random distraction behavior |
-| `beforeLeave()` | Before leaving page |
-| `focusShift()` | Shift focus randomly |
-| `maybeDistract()` | Random chance of distraction |
-| `setDistractionChance(chance)` | Set distraction probability |
-| `getDistractionChance()` | Get current distraction chance |
+| Function                       | Description                    |
+| ------------------------------ | ------------------------------ |
+| `gaze(selector)`               | Gaze at an element             |
+| `attention(selector)`          | Full attention sequence        |
+| `distraction()`                | Random distraction behavior    |
+| `beforeLeave()`                | Before leaving page            |
+| `focusShift()`                 | Shift focus randomly           |
+| `maybeDistract()`              | Random chance of distraction   |
+| `setDistractionChance(chance)` | Set distraction probability    |
+| `getDistractionChance()`       | Get current distraction chance |
 
 ### Usage
 
@@ -158,13 +158,13 @@ Simulates presence during inactivity with micro-movements.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `idle.start()` | Start idle behavior |
-| `idle.stop()` | Stop idle behavior |
+| Function           | Description              |
+| ------------------ | ------------------------ |
+| `idle.start()`     | Start idle behavior      |
+| `idle.stop()`      | Stop idle behavior       |
 | `idle.isRunning()` | Check if idle is running |
-| `idle.wiggle()` | Small cursor movement |
-| `idle.scroll()` | Small scroll movement |
+| `idle.wiggle()`    | Small cursor movement    |
+| `idle.scroll()`    | Small scroll movement    |
 | `idle.heartbeat()` | Periodic presence signal |
 
 ### Usage
@@ -195,14 +195,14 @@ Error recovery and self-healing mechanisms.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `recover()` | Attempt to restore state |
-| `goBack()` | Go back with recovery |
-| `findElement(selector)` | Find element by scrolling |
+| Function                        | Description                    |
+| ------------------------------- | ------------------------------ |
+| `recover()`                     | Attempt to restore state       |
+| `goBack()`                      | Go back with recovery          |
+| `findElement(selector)`         | Find element by scrolling      |
 | `smartClick(selector, options)` | High-level click with recovery |
-| `undo()` | Undo last action |
-| `urlChanged()` | Check if URL changed |
+| `undo()`                        | Undo last action               |
+| `urlChanged()`                  | Check if URL changed           |
 
 ### Smart Click Options
 
@@ -222,7 +222,7 @@ Error recovery and self-healing mechanisms.
 // Smart click with recovery
 await api.smartClick('.dynamic-button', {
     recovery: true,
-    maxRetries: 3
+    maxRetries: 3,
 });
 
 // Find element (scroll if needed)
@@ -246,12 +246,12 @@ Pre-navigation and preparation routines.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
+| Function           | Description                      |
+| ------------------ | -------------------------------- |
 | `beforeNavigate()` | Execute warmup before navigation |
-| `randomMouse()` | Random mouse movement |
-| `fakeRead()` | Simulate reading behavior |
-| `warmupPause()` | Warmup pause |
+| `randomMouse()`    | Random mouse movement            |
+| `fakeRead()`       | Simulate reading behavior        |
+| `warmupPause()`    | Warmup pause                     |
 
 ### Usage
 

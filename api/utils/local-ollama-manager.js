@@ -86,7 +86,7 @@ function isOllamaProcessRunning() {
     try {
         const output = execSync('tasklist /FI "IMAGENAME eq ollama.exe" /NH', {
             encoding: 'utf8',
-            timeout: EXEC_TIMEOUT_MS
+            timeout: EXEC_TIMEOUT_MS,
         });
         return output.toLowerCase().includes('ollama.exe');
     } catch {
@@ -101,7 +101,10 @@ function resolveOllamaCommand() {
 
     try {
         const output = execSync('where ollama', { encoding: 'utf8', timeout: EXEC_TIMEOUT_MS });
-        const firstPath = output.split('\n').map(line => line.trim()).find(Boolean);
+        const firstPath = output
+            .split('\n')
+            .map((line) => line.trim())
+            .find(Boolean);
         if (firstPath) {
             return `"${firstPath}"`;
         }
@@ -135,7 +138,7 @@ async function getOllamaBaseUrl() {
 async function isOllamaEndpointReady(baseUrl) {
     try {
         const rootResponse = await fetch(`${baseUrl}/`, {
-            signal: AbortSignal.timeout(1500)
+            signal: AbortSignal.timeout(1500),
         });
         if (rootResponse.ok) {
             return true;
@@ -146,7 +149,7 @@ async function isOllamaEndpointReady(baseUrl) {
 
     try {
         const tagsResponse = await fetch(`${baseUrl}/api/tags`, {
-            signal: AbortSignal.timeout(1500)
+            signal: AbortSignal.timeout(1500),
         });
         return tagsResponse.ok;
     } catch {
@@ -159,7 +162,7 @@ async function waitForOllamaReady(baseUrl, attempts = 12, delayMs = 2000) {
         if (await isOllamaEndpointReady(baseUrl)) {
             return true;
         }
-        await new Promise(resolve => setTimeout(resolve, delayMs));
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
     return false;
 }
@@ -173,11 +176,11 @@ async function waitForOllamaReady(baseUrl, attempts = 12, delayMs = 2000) {
 export async function isOllamaRunning(forceRefresh = false) {
     const now = Date.now();
 
-    if (!forceRefresh && (now - _penaltyTimestamp) < PENALTY_TTL_MS) {
+    if (!forceRefresh && now - _penaltyTimestamp < PENALTY_TTL_MS) {
         return false;
     }
 
-    if (!forceRefresh && _cachedIsRunning !== null && (now - _cacheTimestamp) < CACHE_TTL_MS) {
+    if (!forceRefresh && _cachedIsRunning !== null && now - _cacheTimestamp < CACHE_TTL_MS) {
         return _cachedIsRunning;
     }
 
@@ -237,14 +240,14 @@ export function clearOllamaCache() {
 
 /**
  * Check if a specific model exists in Ollama.
- * @param {string} modelName 
+ * @param {string} modelName
  * @returns {Promise<boolean>}
  */
 async function doesModelExist(modelName) {
     try {
         const { stdout } = await execWithTimeout('ollama list', { encoding: 'utf8' });
-        const lines = stdout.split('\n').map(l => l.trim().split(/\s+/)[0]);
-        return lines.some(l => l === modelName || l.startsWith(`${modelName}:`));
+        const lines = stdout.split('\n').map((l) => l.trim().split(/\s+/)[0]);
+        return lines.some((l) => l === modelName || l.startsWith(`${modelName}:`));
     } catch {
         return false;
     }
@@ -260,8 +263,9 @@ export async function startOllama() {
     try {
         const settings = await getSettings();
         const model = settings.llm?.local?.model || 'hermes3:8b';
-        const skipModelOps = (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test')
-            && process.env.ALLOW_OLLAMA_MODEL_OPS !== 'true';
+        const skipModelOps =
+            (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test') &&
+            process.env.ALLOW_OLLAMA_MODEL_OPS !== 'true';
         const baseUrl = await getOllamaBaseUrl();
         const ollamaCmd = resolveOllamaCommand();
 
@@ -269,7 +273,7 @@ export async function startOllama() {
         if (isOllamaProcessRunning()) {
             logger.info(`[OllamaManager] Existing process found, killing first...`);
             killOllamaProcesses();
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
 
         if (!isOllamaProcessRunning()) {
@@ -284,7 +288,7 @@ export async function startOllama() {
             }
 
             // Wait for process to start
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise((resolve) => setTimeout(resolve, 5000));
         }
 
         const apiReady = await waitForOllamaReady(baseUrl, 12, 2000);
@@ -300,9 +304,11 @@ export async function startOllama() {
         }
 
         // Ensure Model exists (Pull if missing)
-        if (!await doesModelExist(model)) {
+        if (!(await doesModelExist(model))) {
             logger.warn(`[OllamaManager] Model '${model}' not found. Pulling...`);
-            const pulled = await execWithExitCode(`${ollamaCmd} pull ${model}`, { timeout: 300000 });
+            const pulled = await execWithExitCode(`${ollamaCmd} pull ${model}`, {
+                timeout: 300000,
+            });
             if (!pulled) {
                 logger.error(`[OllamaManager] Pull failed for ${model}`);
                 return false;
@@ -328,8 +334,10 @@ export function ensureOllama() {
 
     _ongoingEnsurePromise = (async () => {
         try {
-            if ((process.env.VITEST === 'true' || process.env.NODE_ENV === 'test')
-                && process.env.ALLOW_OLLAMA_MODEL_OPS !== 'true') {
+            if (
+                (process.env.VITEST === 'true' || process.env.NODE_ENV === 'test') &&
+                process.env.ALLOW_OLLAMA_MODEL_OPS !== 'true'
+            ) {
                 if (!hasTestWarning) {
                     logger.warn('[OllamaManager] Ollama checks are disabled in test mode.');
                     hasTestWarning = true;
@@ -353,7 +361,7 @@ export function ensureOllama() {
                     logger.success('[OllamaManager] Ollama is now ready.');
                     return true;
                 }
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise((resolve) => setTimeout(resolve, 2000));
             }
 
             logger.error('[OllamaManager] Could not start Ollama service automatically.');

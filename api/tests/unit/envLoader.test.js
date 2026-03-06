@@ -44,7 +44,9 @@ describe('utils/envLoader', () => {
         });
 
         it('should throw error if not set', () => {
-            expect(() => envLoader.getRequiredEnv('MISSING_VAR')).toThrow(/Required environment variable/);
+            expect(() => envLoader.getRequiredEnv('MISSING_VAR')).toThrow(
+                /Required environment variable/
+            );
         });
     });
 
@@ -73,17 +75,17 @@ describe('utils/envLoader', () => {
                 a: '${V1}',
                 b: {
                     c: '${V2}',
-                    d: 123
+                    d: 123,
                 },
-                e: ['${V1}', 456]
+                e: ['${V1}', 456],
             };
             const expected = {
                 a: 'one',
                 b: {
                     c: 'two',
-                    d: 123
+                    d: 123,
                 },
-                e: ['one', 456]
+                e: ['one', 456],
             };
             expect(envLoader.resolveEnvVarsInObject(input)).toEqual(expected);
         });
@@ -115,7 +117,9 @@ describe('utils/envLoader', () => {
 
         it('should throw if any var is missing', () => {
             process.env.V1 = 'val1';
-            expect(() => envLoader.validateRequiredEnvVars(['V1', 'V2'])).toThrow(/Missing required environment variables/);
+            expect(() => envLoader.validateRequiredEnvVars(['V1', 'V2'])).toThrow(
+                /Missing required environment variables/
+            );
         });
     });
 });

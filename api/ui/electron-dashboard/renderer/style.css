@@ -41,7 +41,7 @@ header h1 {
 }
 
 .status span.online {
-    background: #4CAF50;
+    background: #4caf50;
     color: #ffffff;
 }
 
@@ -84,7 +84,7 @@ header h1 {
 }
 
 .session-box.online {
-    border-color: #4CAF50;
+    border-color: #4caf50;
 }
 
 .session-box.offline {
@@ -119,7 +119,7 @@ header h1 {
 }
 
 .session-tasks.running {
-    color: #4CAF50;
+    color: #4caf50;
 }
 
 .session-tasks.idle {
@@ -138,8 +138,13 @@ header h1 {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 /* No sessions message */

@@ -1,13 +1,20 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { wait, waitFor, waitVisible, waitHidden, waitForLoadState, waitForURL } from '@api/interactions/wait.js';
+import {
+    wait,
+    waitFor,
+    waitVisible,
+    waitHidden,
+    waitForLoadState,
+    waitForURL,
+} from '@api/interactions/wait.js';
 
 // Mock dependencies
 vi.mock('@api/core/context.js', () => ({
-    getPage: vi.fn()
+    getPage: vi.fn(),
 }));
 
 vi.mock('@api/utils/locator.js', () => ({
-    getLocator: vi.fn()
+    getLocator: vi.fn(),
 }));
 
 vi.mock('@api/core/errors.js', () => ({
@@ -22,7 +29,7 @@ vi.mock('@api/core/errors.js', () => ({
             super(`Timeout waiting for ${type} after ${timeout}ms`);
             this.name = 'ElementTimeoutError';
         }
-    }
+    },
 }));
 
 import { getPage } from '@api/core/context.js';
@@ -39,12 +46,12 @@ describe('api/interactions/wait.js', () => {
 
         mockLocator = {
             waitFor: vi.fn().mockResolvedValue(undefined),
-            first: vi.fn().mockReturnThis()
+            first: vi.fn().mockReturnThis(),
         };
 
         mockPage = {
             waitForLoadState: vi.fn().mockResolvedValue(undefined),
-            waitForURL: vi.fn().mockResolvedValue(undefined)
+            waitForURL: vi.fn().mockResolvedValue(undefined),
         };
 
         getLocator.mockReturnValue(mockLocator);
@@ -57,11 +64,13 @@ describe('api/interactions/wait.js', () => {
 
     describe('wait', () => {
         it('should wait for specified duration with jitter', async () => {
-            const setTimeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((cb, _delay) => {
-                cb();
-                return 1;
-            });
-            
+            const setTimeoutSpy = vi
+                .spyOn(global, 'setTimeout')
+                .mockImplementation((cb, _delay) => {
+                    cb();
+                    return 1;
+                });
+
             await wait(1000);
 
             expect(setTimeoutSpy).toHaveBeenCalled();
@@ -83,11 +92,13 @@ describe('api/interactions/wait.js', () => {
         });
 
         it('should wait for 0ms without error', async () => {
-            const setTimeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((cb, _delay) => {
-                cb();
-                return 1;
-            });
-            
+            const setTimeoutSpy = vi
+                .spyOn(global, 'setTimeout')
+                .mockImplementation((cb, _delay) => {
+                    cb();
+                    return 1;
+                });
+
             await wait(0);
 
             expect(setTimeoutSpy).toHaveBeenCalled();
@@ -96,7 +107,7 @@ describe('api/interactions/wait.js', () => {
 
         it('should apply jitter to wait time', async () => {
             const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
-            
+
             const waitPromise = wait(1000);
             await vi.advanceTimersByTimeAsync(1000);
             await waitPromise;
@@ -108,13 +119,13 @@ describe('api/interactions/wait.js', () => {
     describe('waitFor', () => {
         it('should wait for selector with default options', async () => {
             const waitPromise = waitFor('[data-testid="tweet"]');
-            
+
             await vi.advanceTimersByTimeAsync(0);
             await waitPromise;
 
             expect(mockLocator.waitFor).toHaveBeenCalledWith({
                 state: 'attached',
-                timeout: 10000
+                timeout: 10000,
             });
         });
 
@@ -123,7 +134,7 @@ describe('api/interactions/wait.js', () => {
 
             expect(mockLocator.waitFor).toHaveBeenCalledWith({
                 state: 'attached',
-                timeout: 5000
+                timeout: 5000,
             });
         });
 
@@ -132,12 +143,13 @@ describe('api/interactions/wait.js', () => {
 
             expect(mockLocator.waitFor).toHaveBeenCalledWith({
                 state: 'visible',
-                timeout: 10000
+                timeout: 10000,
             });
         });
 
         it('should wait for predicate function', async () => {
-            const predicate = vi.fn()
+            const predicate = vi
+                .fn()
                 .mockResolvedValueOnce(false)
                 .mockResolvedValueOnce(false)
                 .mockResolvedValueOnce(true);
@@ -154,11 +166,14 @@ describe('api/interactions/wait.js', () => {
             // Skipped: fake timers interfere with real setTimeout in waitFor
             const predicate = vi.fn().mockResolvedValue(false);
 
-            await expect(waitFor(predicate, { timeout: 100, polling: 50 })).rejects.toThrow(ElementTimeoutError);
+            await expect(waitFor(predicate, { timeout: 100, polling: 50 })).rejects.toThrow(
+                ElementTimeoutError
+            );
         });
 
         it('should ignore errors during predicate polling', async () => {
-            const predicate = vi.fn()
+            const predicate = vi
+                .fn()
                 .mockRejectedValueOnce(new Error('Temporary error'))
                 .mockResolvedValue(true);
 
@@ -186,7 +201,7 @@ describe('api/interactions/wait.js', () => {
 
             expect(mockLocator.waitFor).toHaveBeenCalledWith({
                 state: 'visible',
-                timeout: 10000
+                timeout: 10000,
             });
         });
 
@@ -195,7 +210,7 @@ describe('api/interactions/wait.js', () => {
 
             expect(mockLocator.waitFor).toHaveBeenCalledWith({
                 state: 'visible',
-                timeout: 5000
+                timeout: 5000,
             });
         });
 
@@ -212,7 +227,7 @@ describe('api/interactions/wait.js', () => {
 
             expect(mockLocator.waitFor).toHaveBeenCalledWith({
                 state: 'hidden',
-                timeout: 10000
+                timeout: 10000,
             });
         });
 
@@ -221,7 +236,7 @@ describe('api/interactions/wait.js', () => {
 
             expect(mockLocator.waitFor).toHaveBeenCalledWith({
                 state: 'hidden',
-                timeout: 5000
+                timeout: 5000,
             });
         });
 
@@ -237,7 +252,7 @@ describe('api/interactions/wait.js', () => {
             await waitForLoadState();
 
             expect(mockPage.waitForLoadState).toHaveBeenCalledWith('networkidle', {
-                timeout: 10000
+                timeout: 10000,
             });
         });
 
@@ -245,7 +260,7 @@ describe('api/interactions/wait.js', () => {
             await waitForLoadState('domcontentloaded');
 
             expect(mockPage.waitForLoadState).toHaveBeenCalledWith('domcontentloaded', {
-                timeout: 10000
+                timeout: 10000,
             });
         });
 
@@ -253,7 +268,7 @@ describe('api/interactions/wait.js', () => {
             await waitForLoadState('networkidle', { timeout: 5000 });
 
             expect(mockPage.waitForLoadState).toHaveBeenCalledWith('networkidle', {
-                timeout: 5000
+                timeout: 5000,
             });
         });
     });
@@ -263,7 +278,7 @@ describe('api/interactions/wait.js', () => {
             await waitForURL('https://x.com/home');
 
             expect(mockPage.waitForURL).toHaveBeenCalledWith('https://x.com/home', {
-                timeout: 10000
+                timeout: 10000,
             });
         });
 
@@ -272,7 +287,7 @@ describe('api/interactions/wait.js', () => {
             await waitForURL(urlPredicate);
 
             expect(mockPage.waitForURL).toHaveBeenCalledWith(urlPredicate, {
-                timeout: 10000
+                timeout: 10000,
             });
         });
 
@@ -280,7 +295,7 @@ describe('api/interactions/wait.js', () => {
             await waitForURL('https://x.com/home', { timeout: 5000 });
 
             expect(mockPage.waitForURL).toHaveBeenCalledWith('https://x.com/home', {
-                timeout: 5000
+                timeout: 5000,
             });
         });
 
@@ -289,7 +304,7 @@ describe('api/interactions/wait.js', () => {
 
             expect(mockPage.waitForURL).toHaveBeenCalledWith('https://x.com/home', {
                 timeout: 10000,
-                waitUntil: 'domcontentloaded'
+                waitUntil: 'domcontentloaded',
             });
         });
     });

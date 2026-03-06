@@ -11,12 +11,12 @@ vi.mock('../../../api/index.js', () => ({
         scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
-            read: vi.fn().mockResolvedValue(undefined)
+            read: vi.fn().mockResolvedValue(undefined),
         }),
         visible: vi.fn().mockResolvedValue(true),
         exists: vi.fn().mockResolvedValue(true),
-        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
-    }
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home'),
+    },
 }));
 import { api } from '@api/index.js';
 
@@ -25,14 +25,14 @@ vi.mock('../../utils/math.js', () => ({
     mathUtils: {
         randomInRange: vi.fn(),
         gaussian: vi.fn(),
-        roll: vi.fn()
-    }
+        roll: vi.fn(),
+    },
 }));
 
 vi.mock('../../utils/entropyController.js', () => ({
     entropy: {
-        reactionTime: vi.fn()
-    }
+        reactionTime: vi.fn(),
+    },
 }));
 
 import { mathUtils } from '../../utils/math.js';
@@ -43,18 +43,21 @@ describe('HumanTiming', () => {
     let mockLogger;
 
     beforeEach(() => {
-        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        const mockPageForApi = {
+            isClosed: () => false,
+            context: () => ({ browser: () => ({ isConnected: () => true }) }),
+        };
         if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         vi.useFakeTimers();
         vi.setSystemTime(new Date('2024-01-01T12:00:00')); // Noon
         vi.clearAllMocks();
 
         mockPage = {
-            waitForTimeout: vi.fn().mockResolvedValue(undefined)
+            waitForTimeout: vi.fn().mockResolvedValue(undefined),
         };
 
         mockLogger = {
-            log: vi.fn()
+            log: vi.fn(),
         };
 
         mathUtils.gaussian.mockImplementation((mean) => mean);
@@ -209,8 +212,8 @@ describe('HumanTiming', () => {
     describe('getReadingTime', () => {
         it('should compute reading time with multipliers', () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.5); // variation = 0.7 + 0.5 * 0.6 = 1.0
-            // wpm = 220. wordCount = 220. minutes = 1. baseMs = 60000. 
-            // type = 'thread', mult = 1.5. adjustedMs = 90000. variation = 1.0. 
+            // wpm = 220. wordCount = 220. minutes = 1. baseMs = 60000.
+            // type = 'thread', mult = 1.5. adjustedMs = 90000. variation = 1.0.
             const time = humanTiming.getReadingTime(220, 'thread');
             expect(time).toBe(90000);
         });

@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BookmarkAction } from '@api/actions/ai-twitter-bookmark.js';
 
@@ -8,8 +7,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('BookmarkAction', () => {
@@ -24,14 +23,14 @@ describe('BookmarkAction', () => {
                 actions: {
                     bookmark: {
                         enabled: true,
-                        probability: 0.5
-                    }
-                }
+                        probability: 0.5,
+                    },
+                },
             },
             handleBookmark: vi.fn().mockResolvedValue(undefined),
             diveQueue: {
-                canEngage: vi.fn().mockReturnValue(true)
-            }
+                canEngage: vi.fn().mockReturnValue(true),
+            },
         };
 
         bookmarkAction = new BookmarkAction(mockAgent);
@@ -90,7 +89,7 @@ describe('BookmarkAction', () => {
 
         it('should handle exception', async () => {
             mockAgent.handleBookmark.mockRejectedValue(new Error('Bookmark failed'));
-            
+
             const context = { tweetElement: {} };
             const result = await bookmarkAction.execute(context);
 
@@ -103,9 +102,9 @@ describe('BookmarkAction', () => {
     describe('tryExecute', () => {
         it('should skip if not allowed', async () => {
             mockAgent.diveQueue.canEngage.mockReturnValue(false);
-            
+
             const result = await bookmarkAction.tryExecute();
-            
+
             expect(result.executed).toBe(false);
             expect(result.reason).toBe('engagement_limit_reached');
             expect(bookmarkAction.stats.skipped).toBe(1);
@@ -113,9 +112,9 @@ describe('BookmarkAction', () => {
 
         it('should skip based on probability', async () => {
             bookmarkAction.probability = 0; // Never execute
-            
+
             const result = await bookmarkAction.tryExecute();
-            
+
             expect(result.executed).toBe(false);
             expect(result.reason).toBe('probability');
             expect(bookmarkAction.stats.skipped).toBe(1);
@@ -123,9 +122,9 @@ describe('BookmarkAction', () => {
 
         it('should execute if allowed and probability check passes', async () => {
             bookmarkAction.probability = 1; // Always execute
-            
+
             const result = await bookmarkAction.tryExecute({ tweetElement: {} });
-            
+
             expect(result.executed).toBe(true);
             expect(result.success).toBe(true);
         });

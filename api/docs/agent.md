@@ -32,10 +32,10 @@ Gets a semantic map of interactive elements on the page.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `see()` | Returns compact list of interactive elements |
-| `see(options)` | Get view with custom options |
+| Function       | Description                                  |
+| -------------- | -------------------------------------------- |
+| `see()`        | Returns compact list of interactive elements |
+| `see(options)` | Get view with custom options                 |
 
 ### See Options
 
@@ -88,22 +88,22 @@ Executes actions on elements using IDs or Labels.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
+| Function                    | Description               |
+| --------------------------- | ------------------------- |
 | `do(action, target, value)` | Execute action on element |
 
 ### Actions
 
-| Action | Description | Value |
-|--------|-------------|-------|
-| `click` | Click element | - |
-| `type` | Type text | text string |
-| `hover` | Hover over element | - |
-| `focus` | Focus element | - |
-| `select` | Select option | option value |
-| `check` | Check checkbox | - |
-| `uncheck` | Uncheck checkbox | - |
-| `submit` | Submit form | - |
+| Action    | Description        | Value        |
+| --------- | ------------------ | ------------ |
+| `click`   | Click element      | -            |
+| `type`    | Type text          | text string  |
+| `hover`   | Hover over element | -            |
+| `focus`   | Focus element      | -            |
+| `select`  | Select option      | option value |
+| `check`   | Check checkbox     | -            |
+| `uncheck` | Uncheck checkbox   | -            |
+| `submit`  | Submit form        | -            |
 
 ### Usage
 
@@ -132,10 +132,10 @@ Locates elements based on fuzzy text descriptions.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `find(description)` | Find element by description |
-| `find(description, options)` | Find with options |
+| Function                     | Description                 |
+| ---------------------------- | --------------------------- |
+| `find(description)`          | Find element by description |
+| `find(description, options)` | Find with options           |
 
 ### Usage
 
@@ -147,7 +147,7 @@ console.log('Found:', element.id);
 // Find with options
 const searchBox = await api.agent.find('search input', {
     fuzzy: true,
-    caseSensitive: false
+    caseSensitive: false,
 });
 ```
 
@@ -159,10 +159,10 @@ Screenshot capture and analysis.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `screenshot(options)` | Capture screenshot |
-| `annotate(elements)` | Annotate screenshot with element IDs |
+| Function              | Description                          |
+| --------------------- | ------------------------------------ |
+| `screenshot(options)` | Capture screenshot                   |
+| `annotate(elements)`  | Annotate screenshot with element IDs |
 
 ### Screenshot Options
 
@@ -183,14 +183,14 @@ Screenshot capture and analysis.
 const screenshot = await api.agent.screenshot();
 
 // Screenshot as base64
-const base64 = await api.agent.screenshot({ 
-    type: 'png' 
+const base64 = await api.agent.screenshot({
+    type: 'png',
 });
 
 // Annotated screenshot
 const annotated = await api.agent.screenshot({
     annotate: true,
-    highlight: ['login-button', 'username']
+    highlight: ['login-button', 'username'],
 });
 ```
 
@@ -202,12 +202,12 @@ Full LLM-driven agent for complex automation tasks.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `run(goal, config)` | Run agent with goal |
-| `stop()` | Stop running agent |
-| `isRunning()` | Check if agent is running |
-| `getStats()` | Get usage statistics |
+| Function            | Description               |
+| ------------------- | ------------------------- |
+| `run(goal, config)` | Run agent with goal       |
+| `stop()`            | Stop running agent        |
+| `isRunning()`       | Check if agent is running |
+| `getStats()`        | Get usage statistics      |
 
 ### Runner Config
 
@@ -228,7 +228,7 @@ Full LLM-driven agent for complex automation tasks.
 // Run LLM-driven task
 await api.agent.run('Search for "AI news" and click the first result', {
     model: 'claude-3.5-sonnet',
-    maxSteps: 10
+    maxSteps: 10,
 });
 
 // Check status
@@ -253,10 +253,10 @@ Direct LLM interaction for custom prompts.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `complete(prompt)` | Complete prompt with LLM |
-| `complete(prompt, options)` | Complete with options |
+| Function                    | Description              |
+| --------------------------- | ------------------------ |
+| `complete(prompt)`          | Complete prompt with LLM |
+| `complete(prompt, options)` | Complete with options    |
 
 ### Usage
 
@@ -268,7 +268,7 @@ const response = await api.agent.llm.complete('What is on the page?');
 const response = await api.agent.llm.complete('Summarize this page', {
     model: 'gpt-4',
     temperature: 0.7,
-    maxTokens: 500
+    maxTokens: 500,
 });
 ```
 
@@ -280,12 +280,12 @@ Low-level action execution engine.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `execute(action, target, value)` | Execute action |
-| `executeAsync(action, target, value)` | Execute async |
-| `captureAXTree()` | Capture accessibility tree |
-| `captureState()` | Capture full page state |
+| Function                              | Description                |
+| ------------------------------------- | -------------------------- |
+| `execute(action, target, value)`      | Execute action             |
+| `executeAsync(action, target, value)` | Execute async              |
+| `captureAXTree()`                     | Capture accessibility tree |
+| `captureState()`                      | Capture full page state    |
 
 ### Usage
 
@@ -307,23 +307,23 @@ console.log('State:', state);
 await api.withPage(page, async () => {
     await api.init(page, { persona: 'researcher' });
     await api.goto('https://twitter.com');
-    
+
     // Get semantic view
     const view = await api.agent.see();
-    
+
     // Click login by label
     await api.agent.do('click', 'Login');
-    
+
     // Wait for form
     await api.waitVisible('#username');
-    
+
     // Type credentials
     await api.agent.do('type', 'Username', 'myuser');
     await api.agent.do('type', 'Password', 'mypass');
-    
+
     // Submit
     await api.agent.do('click', 'Log in');
-    
+
     // Take screenshot
     const screenshot = await api.agent.screenshot({ annotate: true });
 });

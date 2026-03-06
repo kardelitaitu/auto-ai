@@ -40,7 +40,7 @@ class CircuitBreaker {
         this.monitoringWindow = options.monitoringWindow ?? 60000;
         this.minSamples = options.minSamples ?? 5;
         this.breakers = new Map();
-        
+
         // Then async load to override with config values
         this._configLoaded = false;
         this._loadConfig(options);
@@ -59,7 +59,9 @@ class CircuitBreaker {
                     logger.info(`[${key}] Circuit breaker transitioning to half-open`);
                     return { allowed: true, state: 'half-open' };
                 }
-                const retryAfter = breaker.nextAttempt ? breaker.nextAttempt - now : this.halfOpenTime;
+                const retryAfter = breaker.nextAttempt
+                    ? breaker.nextAttempt - now
+                    : this.halfOpenTime;
                 return { allowed: false, state: 'open', retryAfter };
             }
             case STATE_HALF_OPEN:
@@ -103,7 +105,9 @@ class CircuitBreaker {
         } else if (breaker.state === STATE_CLOSED && failureRate >= this.failureThreshold) {
             breaker.state = STATE_OPEN;
             breaker.nextAttempt = Date.now() + this.halfOpenTime;
-            logger.warn(`[${key}] Circuit breaker opened after ${breaker.failures} failures (rate: ${failureRate}%)`);
+            logger.warn(
+                `[${key}] Circuit breaker opened after ${breaker.failures} failures (rate: ${failureRate}%)`
+            );
         }
     }
 
@@ -116,7 +120,7 @@ class CircuitBreaker {
             failures: breaker.failures,
             successes: breaker.successes,
             lastFailure: breaker.lastFailure,
-            lastSuccess: breaker.lastSuccess
+            lastSuccess: breaker.lastSuccess,
         };
     }
 
@@ -127,7 +131,7 @@ class CircuitBreaker {
                 state: breaker.state,
                 failures: breaker.failures,
                 successes: breaker.successes,
-                lastFailure: breaker.lastFailure
+                lastFailure: breaker.lastFailure,
             };
         }
         return states;
@@ -160,7 +164,7 @@ class CircuitBreaker {
             total: this.breakers.size,
             open,
             halfOpen,
-            closed
+            closed,
         };
     }
 
@@ -170,10 +174,13 @@ class CircuitBreaker {
         const cbConfig = await getTimeoutValue('circuitBreaker', {});
 
         // Only override if config provides values
-        if (cbConfig.failureThreshold !== undefined) this.failureThreshold = cbConfig.failureThreshold;
-        if (cbConfig.successThreshold !== undefined) this.successThreshold = cbConfig.successThreshold;
+        if (cbConfig.failureThreshold !== undefined)
+            this.failureThreshold = cbConfig.failureThreshold;
+        if (cbConfig.successThreshold !== undefined)
+            this.successThreshold = cbConfig.successThreshold;
         if (cbConfig.halfOpenTime !== undefined) this.halfOpenTime = cbConfig.halfOpenTime;
-        if (cbConfig.monitoringWindow !== undefined) this.monitoringWindow = cbConfig.monitoringWindow;
+        if (cbConfig.monitoringWindow !== undefined)
+            this.monitoringWindow = cbConfig.monitoringWindow;
         if (cbConfig.minSamples !== undefined) this.minSamples = cbConfig.minSamples;
 
         this._configLoaded = true;
@@ -203,7 +210,7 @@ class CircuitBreaker {
             lastFailure: null,
             lastSuccess: null,
             nextAttempt: null,
-            history: []
+            history: [],
         };
     }
 
@@ -286,7 +293,9 @@ class CircuitBreaker {
         if (breaker.state === STATE_HALF_OPEN) {
             breaker.state = STATE_OPEN;
             breaker.nextAttempt = Date.now() + this.halfOpenTime;
-            logger.warn(`[${modelId}] Circuit breaker OPEN (failed in HALF_OPEN, rate: ${failureRate}%)`);
+            logger.warn(
+                `[${modelId}] Circuit breaker OPEN (failed in HALF_OPEN, rate: ${failureRate}%)`
+            );
         } else if (breaker.state === STATE_CLOSED && failureRate >= this.failureThreshold) {
             breaker.state = STATE_OPEN;
             breaker.nextAttempt = Date.now() + this.halfOpenTime;
@@ -300,11 +309,11 @@ class CircuitBreaker {
      */
     _calculateFailureRate(breaker) {
         const windowStart = Date.now() - this.monitoringWindow;
-        const recentHistory = breaker.history.filter(h => h.time >= windowStart);
+        const recentHistory = breaker.history.filter((h) => h.time >= windowStart);
 
         if (recentHistory.length === 0 || recentHistory.length < this.minSamples) return 0;
 
-        const failures = recentHistory.filter(h => h.type === 'failure').length;
+        const failures = recentHistory.filter((h) => h.type === 'failure').length;
         return Math.round((failures / recentHistory.length) * 100);
     }
 
@@ -314,7 +323,7 @@ class CircuitBreaker {
      */
     _cleanupHistory(breaker) {
         const windowStart = Date.now() - this.monitoringWindow;
-        breaker.history = breaker.history.filter(h => h.time >= windowStart);
+        breaker.history = breaker.history.filter((h) => h.time >= windowStart);
 
         if (breaker.history.length > 100) {
             breaker.history = breaker.history.slice(-100);
@@ -335,7 +344,7 @@ class CircuitBreaker {
 
         const failureRate = this._calculateFailureRate(breaker);
         const windowStart = Date.now() - this.monitoringWindow;
-        const recentHistory = breaker.history.filter(h => h.time >= windowStart);
+        const recentHistory = breaker.history.filter((h) => h.time >= windowStart);
 
         return {
             status: breaker.state,
@@ -344,7 +353,7 @@ class CircuitBreaker {
             recentOperations: recentHistory.length,
             lastSuccess: breaker.lastSuccess,
             lastFailure: breaker.lastFailure,
-            nextAttempt: breaker.nextAttempt
+            nextAttempt: breaker.nextAttempt,
         };
     }
 
@@ -361,7 +370,7 @@ class CircuitBreaker {
                 state: breaker.state,
                 failureRate: `${failureRate}%`,
                 failures: breaker.failures,
-                successes: breaker.successes
+                successes: breaker.successes,
             };
         }
 

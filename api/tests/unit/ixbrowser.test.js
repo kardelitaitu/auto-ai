@@ -6,15 +6,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const mockApiHandler = {
-    post: vi.fn()
+    post: vi.fn(),
 };
 
 vi.mock('../../utils/apiHandler.js', () => ({
-    default: mockApiHandler
+    default: mockApiHandler,
 }));
 
 vi.mock('../../utils/envLoader.js', () => ({
-    getEnv: vi.fn((key, def) => def)
+    getEnv: vi.fn((key, def) => def),
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -22,8 +22,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    })
+        debug: vi.fn(),
+    }),
 }));
 
 describe('connectors/discovery/ixbrowser', () => {
@@ -47,15 +47,15 @@ describe('connectors/discovery/ixbrowser', () => {
                     profile_id: '123',
                     debugging_port: 53201,
                     debugging_address: '127.0.0.1:53201',
-                    pid: 1001
-                }
-            ]
+                    pid: 1001,
+                },
+            ],
         };
         mockApiHandler.post.mockResolvedValue(mockResponse);
-        
+
         const discoverer = new IxbrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toHaveLength(1);
         expect(results[0].id).toBe('ixbrowser-123');
         expect(results[0].port).toBe(53201);
@@ -68,15 +68,15 @@ describe('connectors/discovery/ixbrowser', () => {
                 'profile-1': {
                     profile_id: '456',
                     debugging_port: 53202,
-                    debugging_address: '127.0.0.1:53202'
-                }
-            }
+                    debugging_address: '127.0.0.1:53202',
+                },
+            },
         };
         mockApiHandler.post.mockResolvedValue(mockResponse);
-        
+
         const discoverer = new IxbrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toHaveLength(1);
         expect(results[0].id).toBe('ixbrowser-456');
     });
@@ -84,13 +84,13 @@ describe('connectors/discovery/ixbrowser', () => {
     it('should handle no open profiles found', async () => {
         const mockResponse = {
             error: { code: 0 },
-            data: []
+            data: [],
         };
         mockApiHandler.post.mockResolvedValue(mockResponse);
-        
+
         const discoverer = new IxbrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toEqual([]);
     });
 
@@ -98,14 +98,14 @@ describe('connectors/discovery/ixbrowser', () => {
         const mockResponse = {
             error: { code: 0 },
             data: [
-                { profile_id: '123' } // Missing debugging_port and ws
-            ]
+                { profile_id: '123' }, // Missing debugging_port and ws
+            ],
         };
         mockApiHandler.post.mockResolvedValue(mockResponse);
-        
+
         const discoverer = new IxbrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toEqual([]);
     });
 
@@ -115,19 +115,19 @@ describe('connectors/discovery/ixbrowser', () => {
             if (key === 'IXBROWSER_API_URL') return undefined;
             return def;
         });
-        
+
         const discoverer = new IxbrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toEqual([]);
     });
 
     it('should handle exceptions', async () => {
         mockApiHandler.post.mockRejectedValue(new Error('Connection failed'));
-        
+
         const discoverer = new IxbrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toEqual([]);
     });
 });

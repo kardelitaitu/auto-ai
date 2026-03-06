@@ -3,8 +3,8 @@ import { readline } from '@api/utils/file.readline.js';
 
 vi.mock('fs/promises', () => ({
     default: {
-        readFile: vi.fn()
-    }
+        readFile: vi.fn(),
+    },
 }));
 
 import fs from 'fs/promises';

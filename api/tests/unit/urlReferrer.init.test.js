@@ -10,7 +10,7 @@ describe('ReferrerEngine Initialization', () => {
         vi.resetAllMocks();
         vi.resetModules();
 
-        vi.mocked(path.resolve).mockImplementation((...args) => 
+        vi.mocked(path.resolve).mockImplementation((...args) =>
             args.filter(Boolean).join('/').replace(/\/+/g, '/')
         );
     });
@@ -24,7 +24,7 @@ describe('ReferrerEngine Initialization', () => {
             TOPICS: ['mock_tech'],
             ACTIONS: ['mock_read'],
             CONTEXT: ['mock_thread'],
-            SUBREDDITS: ['mock_sub']
+            SUBREDDITS: ['mock_sub'],
         };
 
         vi.mocked(fs.existsSync).mockImplementation((p) => {
@@ -43,12 +43,12 @@ describe('ReferrerEngine Initialization', () => {
         const { ReferrerEngine } = await import('@api/utils/urlReferrer.js');
         const engine = new ReferrerEngine();
 
-        vi.spyOn(Math, 'random').mockReturnValue(0.20);
-        
+        vi.spyOn(Math, 'random').mockReturnValue(0.2);
+
         const ctx = engine.generateContext('https://target.com');
         expect(ctx.strategy).toBe('google_search');
         const decoded = decodeURIComponent(ctx.referrer);
-        
+
         expect(decoded).toMatch(/mock_tech|mock_read/);
     });
 
@@ -69,15 +69,15 @@ describe('ReferrerEngine Initialization', () => {
         const { ReferrerEngine } = await import('@api/utils/urlReferrer.js');
         const engine = new ReferrerEngine();
 
-        vi.spyOn(Math, 'random').mockReturnValue(0.20);
-        
+        vi.spyOn(Math, 'random').mockReturnValue(0.2);
+
         const ctx = engine.generateContext('https://target.com');
         expect(ctx.strategy).toBe('google_search');
-        
+
         const vedMatch = ctx.referrer.match(/ved=([^&]+)/);
         expect(vedMatch).not.toBeNull();
         const ved = vedMatch[1];
-        
+
         expect(ved).toMatch(/^0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ/);
     });
 
@@ -94,13 +94,13 @@ describe('ReferrerEngine Initialization', () => {
             if (pathStr.includes('ved_data.json')) throw new Error('Read error');
             return '{}';
         });
-        
+
         const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
         vi.resetModules();
-        
+
         await import('../../utils/urlReferrer.js');
-        
-        const output = warnSpy.mock.calls.map(c => c.join(' ')).join(' ');
+
+        const output = warnSpy.mock.calls.map((c) => c.join(' ')).join(' ');
         expect(output).toContain('VED Dictionary not loaded');
         warnSpy.mockRestore();
     });
@@ -123,10 +123,10 @@ describe('ReferrerEngine Initialization', () => {
 
         const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         vi.resetModules();
-        
+
         await import('../../utils/urlReferrer.js');
-        
-        const output = errorSpy.mock.calls.map(c => c.join(' ')).join(' ');
+
+        const output = errorSpy.mock.calls.map((c) => c.join(' ')).join(' ');
         expect(output).toContain('Error loading dictionary');
         errorSpy.mockRestore();
     });
@@ -146,13 +146,13 @@ describe('ReferrerEngine Initialization', () => {
             if (pathStr.includes('ved_data.json')) return '[]';
             return '{}';
         });
-        
+
         const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
         vi.resetModules();
-        
+
         await import('../../utils/urlReferrer.js');
-        
-        const output = warnSpy.mock.calls.map(c => c.join(' ')).join(' ');
+
+        const output = warnSpy.mock.calls.map((c) => c.join(' ')).join(' ');
         expect(output).toContain('t.co Dictionary not loaded');
         warnSpy.mockRestore();
     });

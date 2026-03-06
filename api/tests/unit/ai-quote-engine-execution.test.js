@@ -17,7 +17,7 @@ vi.mock('../../../api/index.js', () => {
             eval: vi.fn().mockResolvedValue('<div><br></div>'),
             text: vi.fn(async (sel) => 'Mocked Text'),
             waitVisible: vi.fn().mockResolvedValue(),
-        }
+        },
     };
 });
 import { api } from '../../../api/index.js';
@@ -27,8 +27,8 @@ vi.mock('../../../api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 vi.mock('../../../api/utils/config-service.js', () => ({ config: {} }));
@@ -36,21 +36,42 @@ vi.mock('../../../api/utils/scroll-helper.js', () => ({ scrollRandom: vi.fn() })
 
 vi.mock('../../../api/behaviors/human-interaction.js', () => ({
     HumanInteraction: class {
-        constructor() { }
-        selectMethod(methods) { return methods[0]; }
-        logStep() { }
+        constructor() {}
+        selectMethod(methods) {
+            return methods[0];
+        }
+        logStep() {}
         verifyComposerOpen() {
             return { open: true, selector: '[data-testid="tweetTextarea_0"]' };
         }
-        typeText() { return Promise.resolve(); }
-        postTweet() { return Promise.resolve({ success: true, reason: 'posted' }); }
-        safeHumanClick() { return Promise.resolve(true); }
-        fixation() { return Promise.resolve(); }
-        microMove() { return Promise.resolve(); }
-        hesitation() { return Promise.resolve(); }
-        ensureFocus() { return Promise.resolve(true); }
-        findElement() { return Promise.resolve({ element: { click: () => Promise.resolve() }, selector: '#id' }); }
-    }
+        typeText() {
+            return Promise.resolve();
+        }
+        postTweet() {
+            return Promise.resolve({ success: true, reason: 'posted' });
+        }
+        safeHumanClick() {
+            return Promise.resolve(true);
+        }
+        fixation() {
+            return Promise.resolve();
+        }
+        microMove() {
+            return Promise.resolve();
+        }
+        hesitation() {
+            return Promise.resolve();
+        }
+        ensureFocus() {
+            return Promise.resolve(true);
+        }
+        findElement() {
+            return Promise.resolve({
+                element: { click: () => Promise.resolve() },
+                selector: '#id',
+            });
+        }
+    },
 }));
 
 import { HumanInteraction } from '../../../api/behaviors/human-interaction.js';
@@ -62,7 +83,10 @@ describe('AIQuoteEngine - Execution Methods', () => {
     beforeEach(async () => {
         vi.clearAllMocks();
         ({ default: AIQuoteEngine } = await import('../../../api/agent/ai-quote-engine.js'));
-        engine = new AIQuoteEngine({ processRequest: vi.fn(), sessionId: 'test' }, { quoteProbability: 1, maxRetries: 1 });
+        engine = new AIQuoteEngine(
+            { processRequest: vi.fn(), sessionId: 'test' },
+            { quoteProbability: 1, maxRetries: 1 }
+        );
     });
 
     afterEach(() => {
@@ -97,7 +121,8 @@ describe('AIQuoteEngine - Execution Methods', () => {
             const { page } = createPageMock();
             const human = createHumanMock();
             api.getPage.mockReturnValue(page);
-            api.findElement.mockResolvedValueOnce('#mock-selector') // retweet
+            api.findElement
+                .mockResolvedValueOnce('#mock-selector') // retweet
                 .mockResolvedValueOnce('#mock-selector') // quote option
                 .mockResolvedValueOnce(null); // preview
             api.waitVisible.mockRejectedValue(new Error('timeout'));
@@ -113,7 +138,8 @@ describe('AIQuoteEngine - Execution Methods', () => {
             const { page } = createPageMock();
             const human = createHumanMock();
             api.getPage.mockReturnValue(page);
-            api.findElement.mockResolvedValueOnce('#mock-selector') // retweet
+            api.findElement
+                .mockResolvedValueOnce('#mock-selector') // retweet
                 .mockResolvedValueOnce('#mock-selector') // quote option
                 .mockResolvedValueOnce(null); // preview
             api.waitVisible.mockRejectedValue(new Error('timeout'));
@@ -146,7 +172,7 @@ describe('AIQuoteEngine - Execution Methods', () => {
         it('handles composer failing to open', async () => {
             const { page } = createPageMock();
             const human = createHumanMock({
-                verifyComposerOpen: vi.fn().mockResolvedValue({ open: false })
+                verifyComposerOpen: vi.fn().mockResolvedValue({ open: false }),
             });
             api.getPage.mockReturnValue(page);
 
@@ -197,7 +223,7 @@ describe('AIQuoteEngine - Execution Methods', () => {
             const result = await engine.quoteMethodC_Url(page, 'Test', human);
 
             // Count exact number of 'Enter' presses
-            const enterCalls = page.keyboard.press.mock.calls.filter(call => call[0] === 'Enter');
+            const enterCalls = page.keyboard.press.mock.calls.filter((call) => call[0] === 'Enter');
             expect(enterCalls.length).toBe(2);
             expect(result.success).toBe(true);
         });
@@ -214,29 +240,31 @@ describe('AIQuoteEngine - Execution Methods', () => {
         });
     });
 
-        it('falls back to secondary method if primary fails', async () => {
-            const { page } = createPageMock();
-            api.getPage.mockReturnValue(page);
-            
-            engine.quoteMethodA_Keyboard = vi.fn().mockResolvedValue({ success: true, method: 'keyboard_compose' });
+    it('falls back to secondary method if primary fails', async () => {
+        const { page } = createPageMock();
+        api.getPage.mockReturnValue(page);
 
-            const result = await engine.executeQuote(page, 'Main quote');
-            expect(result.success).toBe(true);
-            expect(engine.quoteMethodA_Keyboard).toHaveBeenCalled();
-        });
+        engine.quoteMethodA_Keyboard = vi
+            .fn()
+            .mockResolvedValue({ success: true, method: 'keyboard_compose' });
 
-        it('falls back to retweet method if keyboard method fails', async () => {
-            const { page } = createPageMock();
-            api.getPage.mockReturnValue(page);
-
-            engine.quoteMethodA_Keyboard = vi.fn().mockRejectedValue(new Error('UI Error'));
-            engine.quoteMethodB_Retweet = vi.fn().mockResolvedValue({ success: true, method: 'retweet_menu' });
-
-            const result = await engine.executeQuote(page, 'Fallback quote');
-            expect(result.success).toBe(true);
-            expect(engine.quoteMethodA_Keyboard).toHaveBeenCalled();
-            expect(engine.quoteMethodB_Retweet).toHaveBeenCalled();
-        });
+        const result = await engine.executeQuote(page, 'Main quote');
+        expect(result.success).toBe(true);
+        expect(engine.quoteMethodA_Keyboard).toHaveBeenCalled();
     });
 
+    it('falls back to retweet method if keyboard method fails', async () => {
+        const { page } = createPageMock();
+        api.getPage.mockReturnValue(page);
 
+        engine.quoteMethodA_Keyboard = vi.fn().mockRejectedValue(new Error('UI Error'));
+        engine.quoteMethodB_Retweet = vi
+            .fn()
+            .mockResolvedValue({ success: true, method: 'retweet_menu' });
+
+        const result = await engine.executeQuote(page, 'Fallback quote');
+        expect(result.success).toBe(true);
+        expect(engine.quoteMethodA_Keyboard).toHaveBeenCalled();
+        expect(engine.quoteMethodB_Retweet).toHaveBeenCalled();
+    });
+});

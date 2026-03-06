@@ -16,7 +16,7 @@ vi.mock('../../../api/index.js', () => ({
         getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/status/1'),
         eval: vi.fn().mockResolvedValue('<div><br></div>'),
         text: vi.fn().mockResolvedValue('https://x.com/status/1'),
-    }
+    },
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -24,23 +24,25 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 vi.mock('../../utils/math.js', () => ({
     mathUtils: {
         roll: vi.fn(),
-        randomInRange: vi.fn().mockImplementation((min, max) => Math.floor(Math.random() * (max - min + 1)) + min),
-        gaussian: vi.fn().mockReturnValue(0.5)
-    }
+        randomInRange: vi
+            .fn()
+            .mockImplementation((min, max) => Math.floor(Math.random() * (max - min + 1)) + min),
+        gaussian: vi.fn().mockReturnValue(0.5),
+    },
 }));
 
 vi.mock('../../utils/sentiment-service.js', () => ({
     sentimentService: {
         analyze: vi.fn(),
-        analyzeForReplySelection: vi.fn()
-    }
+        analyzeForReplySelection: vi.fn(),
+    },
 }));
 
 vi.mock('../../utils/config-service.js', () => ({ config: {} }));
@@ -57,7 +59,10 @@ describe('AIQuoteEngine - Core Logic', () => {
         ({ default: AIQuoteEngine } = await import('../../agent/ai-quote-engine.js'));
         ({ mathUtils } = await import('../../utils/math.js'));
         ({ sentimentService } = await import('../../utils/sentiment-service.js'));
-        engine = new AIQuoteEngine({ processRequest: vi.fn(), sessionId: 'test' }, { quoteProbability: 0.5, maxRetries: 1 });
+        engine = new AIQuoteEngine(
+            { processRequest: vi.fn(), sessionId: 'test' },
+            { quoteProbability: 0.5, maxRetries: 1 }
+        );
     });
 
     afterEach(() => {
@@ -94,14 +99,21 @@ describe('AIQuoteEngine - Core Logic', () => {
 
     describe('Sentiment & Guidance', () => {
         it('rejects negative sentiment content', async () => {
-            sentimentService.analyze.mockReturnValue({ ...baseSentiment, isNegative: true, score: 0.6 });
+            sentimentService.analyze.mockReturnValue({
+                ...baseSentiment,
+                isNegative: true,
+                score: 0.6,
+            });
             const result = await engine.generateQuote('bad content', 'user', {});
             expect(result.success).toBe(false);
             expect(result.reason).toBe('negative_content');
         });
 
         it('rejects high risk conversations', async () => {
-            sentimentService.analyze.mockReturnValue({ ...baseSentiment, composite: { ...baseSentiment.composite, riskLevel: 'high' } });
+            sentimentService.analyze.mockReturnValue({
+                ...baseSentiment,
+                composite: { ...baseSentiment.composite, riskLevel: 'high' },
+            });
             const result = await engine.generateQuote('risky content', 'user', {});
             expect(result.success).toBe(false);
             expect(result.reason).toBe('high_risk_conversation');
@@ -160,11 +172,21 @@ describe('AIQuoteEngine - Core Logic', () => {
             sentimentService.analyzeForReplySelection.mockReturnValue({
                 strategy: 'mixed',
                 distribution: { positive: 1, negative: 0, sarcastic: 0 },
-                recommendations: { manualSelection: null, filter: () => true, sort: () => 0, max: 1 },
-                analyzed: [{ author: 'a', text: 'nice' }]
+                recommendations: {
+                    manualSelection: null,
+                    filter: () => true,
+                    sort: () => 0,
+                    max: 1,
+                },
+                analyzed: [{ author: 'a', text: 'nice' }],
             });
-            engine.agent.processRequest.mockResolvedValue({ success: true, data: { content: 'Great take here.' } });
-            const result = await engine.generateQuote('tweet text', 'user', { replies: [{ author: 'a', text: 'nice' }] });
+            engine.agent.processRequest.mockResolvedValue({
+                success: true,
+                data: { content: 'Great take here.' },
+            });
+            const result = await engine.generateQuote('tweet text', 'user', {
+                replies: [{ author: 'a', text: 'nice' }],
+            });
             expect(result.success).toBe(true);
             expect(result.quote.toLowerCase()).toContain('great');
         });
@@ -174,18 +196,29 @@ describe('AIQuoteEngine - Core Logic', () => {
             sentimentService.analyzeForReplySelection.mockReturnValue({
                 strategy: 'mixed',
                 distribution: { positive: 0, negative: 0, sarcastic: 0 },
-                recommendations: { manualSelection: null, filter: () => true, sort: () => 0, max: 1 },
-                analyzed: []
+                recommendations: {
+                    manualSelection: null,
+                    filter: () => true,
+                    sort: () => 0,
+                    max: 1,
+                },
+                analyzed: [],
             });
 
             // Empty content
-            engine.agent.processRequest.mockResolvedValueOnce({ success: true, data: { content: '' } });
+            engine.agent.processRequest.mockResolvedValueOnce({
+                success: true,
+                data: { content: '' },
+            });
             const resultEmpty = await engine.generateQuote('tweet text', 'user', {});
             expect(resultEmpty.success).toBe(false);
             expect(resultEmpty.reason).toContain('llm_empty_content');
 
             // Request fail
-            engine.agent.processRequest.mockResolvedValueOnce({ success: false, error: 'bad_request' });
+            engine.agent.processRequest.mockResolvedValueOnce({
+                success: false,
+                error: 'bad_request',
+            });
             const resultFail = await engine.generateQuote('tweet text', 'user', {});
             expect(resultFail.success).toBe(false);
         });

@@ -1,4 +1,5 @@
 # Phase 3: Roadmap Checklist
+
 - [ ] Set up Vitest test suite for `core/` and `interactions/`
 - [ ] Build action recorder (`api/core/recorder.js`)
 - [ ] Implement per-site persona auto-selection
@@ -11,7 +12,6 @@
 
 # Phase 3: Future Upgrades
 
-
 > **Priority**: Strategic | **Effort**: High | **Risk**: Medium
 > **Goal**: Build the features that take the framework from "internal tool" to "production platform".
 
@@ -21,16 +21,17 @@
 
 ### Priority Test Targets
 
-| Module | What to Test |
-|---|---|
-| `core/context.js` | Session isolation — two concurrent `withPage()` calls don't leak state |
-| `core/middleware.js` | Pipeline composition, retry backoff timing, recovery strategies |
-| `core/errors.js` | Error hierarchy (`instanceof` chains), `isErrorCode()` matching |
-| `utils/math.js` | Gaussian distribution bounds, `randomInRange` min/max, `roll()` probabilities |
-| `interactions/wait.js` | Timeout behavior, predicate polling, jitter bounds |
-| `core/config.js` | Dot-path resolution, override precedence, missing key defaults |
+| Module                 | What to Test                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| `core/context.js`      | Session isolation — two concurrent `withPage()` calls don't leak state        |
+| `core/middleware.js`   | Pipeline composition, retry backoff timing, recovery strategies               |
+| `core/errors.js`       | Error hierarchy (`instanceof` chains), `isErrorCode()` matching               |
+| `utils/math.js`        | Gaussian distribution bounds, `randomInRange` min/max, `roll()` probabilities |
+| `interactions/wait.js` | Timeout behavior, predicate polling, jitter bounds                            |
+| `core/config.js`       | Dot-path resolution, override precedence, missing key defaults                |
 
 ### Recommended Setup
+
 - **Runner**: Vitest (already in project ecosystem)
 - **Mocking**: Vitest built-in mocks for Playwright `Page` objects
 - **Target**: ≥80% coverage on `core/` and `interactions/`
@@ -51,8 +52,14 @@ class ActionRecorder {
         this.recording = false;
     }
 
-    start() { this.recording = true; this.events = []; }
-    stop()  { this.recording = false; return this.events; }
+    start() {
+        this.recording = true;
+        this.events = [];
+    }
+    stop() {
+        this.recording = false;
+        return this.events;
+    }
 
     record(action, args, result, duration) {
         if (!this.recording) return;
@@ -72,6 +79,7 @@ class ActionRecorder {
 ```
 
 ### Integration
+
 - Hook into the `metricsMiddleware` or the event system (`after:click`, `after:type`, etc.)
 - Expose as `api.recorder.start()` / `api.recorder.stop()` / `api.recorder.export()`
 - Save recordings alongside orchestrator task logs
@@ -87,13 +95,13 @@ Automatically select a persona based on the target domain.
 ```js
 // New file: api/behaviors/site-personas.js
 const SITE_PERSONA_MAP = {
-    'twitter.com':    'casual',
-    'x.com':          'casual',
-    'linkedin.com':   'professional',
-    'reddit.com':     'researcher',
-    'facebook.com':   'casual',
-    'instagram.com':  'teen',
-    'github.com':     'power',
+    'twitter.com': 'casual',
+    'x.com': 'casual',
+    'linkedin.com': 'professional',
+    'reddit.com': 'researcher',
+    'facebook.com': 'casual',
+    'instagram.com': 'teen',
+    'github.com': 'power',
     // custom overrides via config
 };
 
@@ -104,6 +112,7 @@ export function getPersonaForSite(url) {
 ```
 
 ### Integration
+
 - In `navigation.js` `goto()`, after navigation, auto-set persona if `options.autoPersona !== false`
 - Configurable via settings file so users can override mappings
 
@@ -114,11 +123,13 @@ export function getPersonaForSite(url) {
 Replace the custom `metricsMiddleware` with OpenTelemetry spans for industry-standard observability.
 
 ### Benefits
+
 - Distributed tracing across orchestrator → worker → agent
 - Export to Jaeger, Grafana Tempo, or Datadog
 - Correlate LLM latency, action success rates, and session duration
 
 ### Approach
+
 1. Add `@opentelemetry/api` as optional dependency
 2. Create `api/core/telemetry.js` that wraps the OTel API
 3. Replace `metricsMiddleware` event emissions with span creation
@@ -131,6 +142,7 @@ Replace the custom `metricsMiddleware` with OpenTelemetry spans for industry-sta
 Attach Playwright trace files to failed task reports for deep visual debugging.
 
 ### Design
+
 ```js
 // In orchestrator-v2.js executeTask()
 const context = page.context();
@@ -147,6 +159,7 @@ await context.tracing.stop(); // Discard on success (or keep if configured)
 ```
 
 ### Benefits
+
 - Failed tasks produce a `.zip` trace viewable in [Playwright Trace Viewer](https://trace.playwright.dev)
 - Captures DOM snapshots, network requests, and screenshots at each step
 - Eliminates guesswork when debugging site-specific failures
@@ -158,12 +171,13 @@ await context.tracing.stop(); // Discard on success (or keep if configured)
 Route agent tasks to different models based on complexity.
 
 ### Design
+
 ```js
 // api/agent/model-router.js
 const ROUTING_TABLE = {
-    simple:  { model: 'qwen2.5:7b', serverType: 'ollama' },     // Local, fast
-    medium:  { model: 'qwen2.5:32b', serverType: 'ollama' },    // Local, capable
-    complex: { model: 'gpt-4o-mini', serverType: 'openai' },    // Cloud, powerful
+    simple: { model: 'qwen2.5:7b', serverType: 'ollama' }, // Local, fast
+    medium: { model: 'qwen2.5:32b', serverType: 'ollama' }, // Local, capable
+    complex: { model: 'gpt-4o-mini', serverType: 'openai' }, // Cloud, powerful
 };
 
 export function selectModel(taskComplexity) {
@@ -172,6 +186,7 @@ export function selectModel(taskComplexity) {
 ```
 
 ### Complexity Detection
+
 - Token count of page context → high token count = complex
 - Number of interactive elements → many elements = complex
 - Task goal keywords (e.g., "analyze" → complex, "click" → simple)
@@ -183,6 +198,7 @@ export function selectModel(taskComplexity) {
 Scale the orchestrator across multiple machines.
 
 ### Architecture
+
 ```
 ┌─────────────┐     ┌─────────────────┐     ┌──────────────┐
 │  Task Queue │────▶│  Worker Node 1  │     │  Worker Node 2 │
@@ -195,6 +211,7 @@ Scale the orchestrator across multiple machines.
 ```
 
 ### Requirements
+
 - Replace in-memory task queue with Redis-backed BullMQ
 - Add worker heartbeat and task re-assignment on worker failure
 - Centralized metrics dashboard aggregating all worker nodes

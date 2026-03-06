@@ -42,13 +42,15 @@ class LLMClient {
 
             const response = await fetch(`${this.config.baseUrl}/models`, {
                 method: 'GET',
-                signal: controller.signal
+                signal: controller.signal,
             });
             clearTimeout(timeoutId);
 
             if (response.ok) {
                 const data = await response.json();
-                logger.info(`LLM Service Available. Found ${data.data ? data.data.length : 0} models.`);
+                logger.info(
+                    `LLM Service Available. Found ${data.data ? data.data.length : 0} models.`
+                );
                 return true;
             } else {
                 const text = await response.text();
@@ -104,8 +106,8 @@ class LLMClient {
                 stream: false,
                 options: {
                     temperature: this.config.temperature,
-                    num_ctx: this.config.contextLength
-                }
+                    num_ctx: this.config.contextLength,
+                },
             };
         } else {
             url = `${this.config.baseUrl}/chat/completions`;
@@ -114,7 +116,7 @@ class LLMClient {
                 messages: messages,
                 temperature: this.config.temperature,
                 stream: false,
-                max_tokens: this.config.maxTokens
+                max_tokens: this.config.maxTokens,
             };
         }
 
@@ -130,7 +132,7 @@ class LLMClient {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
-                signal: controller.signal
+                signal: controller.signal,
             });
 
             clearTimeout(timeoutId);
@@ -146,7 +148,9 @@ class LLMClient {
             if (data.usage) {
                 const { prompt_tokens, completion_tokens, total_tokens } = data.usage;
                 const tokensPerSec = completion_tokens / (elapsedMs / 1000);
-                logger.info(`Tokens: ${prompt_tokens} + ${completion_tokens} = ${total_tokens} total | ${tokensPerSec.toFixed(1)} tok/s | ${elapsedMs}ms`);
+                logger.info(
+                    `Tokens: ${prompt_tokens} + ${completion_tokens} = ${total_tokens} total | ${tokensPerSec.toFixed(1)} tok/s | ${elapsedMs}ms`
+                );
             } else {
                 logger.info(`Response time: ${elapsedMs}ms`);
             }
@@ -157,11 +161,14 @@ class LLMClient {
             } else if (data.message) {
                 content = data.message.content;
             } else {
-                throw new Error("Unexpected API response format");
+                throw new Error('Unexpected API response format');
             }
 
             content = content.trim();
-            content = content.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/, '');
+            content = content
+                .replace(/^```json\s*/i, '')
+                .replace(/^```\s*/i, '')
+                .replace(/\s*```$/, '');
 
             const firstBrace = content.indexOf('{');
             if (firstBrace !== -1) {
@@ -189,7 +196,7 @@ class LLMClient {
             model: this.config?.model,
             baseUrl: this.config?.baseUrl,
             useVision: this.config?.useVision,
-            isRestarting: this.isRestarting
+            isRestarting: this.isRestarting,
         };
     }
 }

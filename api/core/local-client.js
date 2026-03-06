@@ -29,7 +29,7 @@ class LocalClient {
             failedRequests: 0,
             totalDuration: 0,
             vllmRequests: 0,
-            ollamaRequests: 0
+            ollamaRequests: 0,
         };
 
         this._loadConfig();
@@ -41,7 +41,7 @@ class LocalClient {
      */
     async _loadConfig() {
         if (this._configLoaded) return;
-        
+
         try {
             const settings = await getSettings();
             const localConfig = settings.llm?.local || {};
@@ -66,7 +66,6 @@ class LocalClient {
             }
 
             this._configLoaded = true;
-
         } catch (error) {
             logger.error('[Local] Failed to load config:', error.message);
         }
@@ -106,8 +105,8 @@ class LocalClient {
                         ...result,
                         metadata: {
                             ...result.metadata,
-                            routedTo: 'vllm'
-                        }
+                            routedTo: 'vllm',
+                        },
                     };
                 }
 
@@ -136,8 +135,8 @@ class LocalClient {
                         ...result,
                         metadata: {
                             ...result.metadata,
-                            routedTo: 'ollama'
-                        }
+                            routedTo: 'ollama',
+                        },
                     };
                 }
 
@@ -158,7 +157,12 @@ class LocalClient {
         return {
             success: false,
             error: lastError || 'All local providers failed',
-            metadata: { duration, providersTried: ['vllm', 'ollama'].filter(p => p === 'vllm' ? this.vllmEnabled : this.ollamaEnabled) }
+            metadata: {
+                duration,
+                providersTried: ['vllm', 'ollama'].filter((p) =>
+                    p === 'vllm' ? this.vllmEnabled : this.ollamaEnabled
+                ),
+            },
         };
     }
 
@@ -169,14 +173,18 @@ class LocalClient {
     getStats() {
         return {
             ...this.stats,
-            avgDuration: this.stats.totalRequests > 0
-                ? Math.round(this.stats.totalDuration / this.stats.totalRequests)
-                : 0,
-            successRate: this.stats.totalRequests > 0
-                ? ((this.stats.successfulRequests / this.stats.totalRequests) * 100).toFixed(2) + '%'
-                : '0%',
+            avgDuration:
+                this.stats.totalRequests > 0
+                    ? Math.round(this.stats.totalDuration / this.stats.totalRequests)
+                    : 0,
+            successRate:
+                this.stats.totalRequests > 0
+                    ? ((this.stats.successfulRequests / this.stats.totalRequests) * 100).toFixed(
+                          2
+                      ) + '%'
+                    : '0%',
             vllmEnabled: this.vllmEnabled,
-            ollamaEnabled: this.ollamaEnabled
+            ollamaEnabled: this.ollamaEnabled,
         };
     }
 
@@ -190,7 +198,7 @@ class LocalClient {
             failedRequests: 0,
             totalDuration: 0,
             vllmRequests: 0,
-            ollamaRequests: 0
+            ollamaRequests: 0,
         };
         if (this.vllmClient) this.vllmClient.resetStats();
         if (this.ollamaClient) this.ollamaClient.resetStats();

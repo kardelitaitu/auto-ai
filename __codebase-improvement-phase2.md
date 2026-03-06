@@ -1,4 +1,5 @@
 # Phase 2: Roadmap Checklist
+
 - [ ] Add validation guards to `wait()`, `scroll()`, `delay()`, `think()`
 - [ ] Fix `rateLimitMiddleware` with optional shared state
 - [ ] Add `api.version` from `package.json`
@@ -10,7 +11,6 @@
 
 # Phase 2: Hardening & Quality
 
-
 > **Priority**: Medium | **Effort**: Medium | **Risk**: Low-Medium
 > **Goal**: Add defensive guards, improve reliability, and introduce type safety without breaking existing consumers.
 
@@ -21,6 +21,7 @@
 Add runtime validation to all functions that accept numeric timing/distance parameters.
 
 ### `interactions/wait.js`
+
 ```js
 export async function wait(ms) {
     if (typeof ms !== 'number' || Number.isNaN(ms) || ms < 0) {
@@ -31,10 +32,12 @@ export async function wait(ms) {
 ```
 
 ### `interactions/scroll.js`
+
 - `scroll(distance)` — validate `distance` is a finite number
 - `read(target, options)` — validate `options.pauses` ≥ 0
 
 ### `behaviors/timing.js`
+
 - `delay(ms)` — validate `ms` is a positive number
 - `think(options)` — validate `min`/`max` are positive and `min ≤ max`
 
@@ -58,6 +61,7 @@ export function rateLimitMiddleware(options = {}) {
 ```
 
 This lets consumers opt-in to global rate limiting:
+
 ```js
 const shared = { actionCount: 0, windowStart: Date.now() };
 pipeline1 = createPipeline(rateLimitMiddleware({ state: shared }));
@@ -109,6 +113,7 @@ if (getStateSection('retryBudget').used >= getStateSection('retryBudget').max) {
 Create `api/index.d.ts` with type declarations for the public API surface. This gives consumers IDE autocomplete without requiring a full TypeScript migration.
 
 **Key types to declare**:
+
 - `ApiOptions`, `ClickOptions`, `TypeOptions`, `ScrollOptions` (already documented in JSDoc)
 - `api` object shape with method signatures
 - `GhostCursor` class

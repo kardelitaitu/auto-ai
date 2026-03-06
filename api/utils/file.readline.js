@@ -15,7 +15,7 @@ import fs from 'fs/promises';
 export async function readline(filePath) {
     try {
         const data = await fs.readFile(filePath, 'utf8');
-        const lines = data.split(/\r?\n/).filter(line => line.trim() !== '');
+        const lines = data.split(/\r?\n/).filter((line) => line.trim() !== '');
         if (lines.length === 0) return null;
         return lines[Math.floor(Math.random() * lines.length)];
     } catch (_error) {

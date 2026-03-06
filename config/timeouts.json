@@ -1,82 +1,82 @@
 {
-  "session": {
-    "timeoutMs": 1800000,
-    "cleanupIntervalMs": 300000
-  },
-  "task": {
-    "minDelayMs": 1000,
-    "maxDelayMs": 5000,
-    "finalDelayMs": 1000
-  },
-  "automation": {
-    "zoom": {
-      "minWaitMs": 2000,
-      "maxWaitMs": 5000
+    "session": {
+        "timeoutMs": 1800000,
+        "cleanupIntervalMs": 300000
     },
-    "scrolling": {
-      "minReadDelayMs": 1000,
-      "maxReadDelayMs": 3500,
-      "minPauseMs": 500,
-      "maxPauseMs": 1500
+    "task": {
+        "minDelayMs": 1000,
+        "maxDelayMs": 5000,
+        "finalDelayMs": 1000
+    },
+    "automation": {
+        "zoom": {
+            "minWaitMs": 2000,
+            "maxWaitMs": 5000
+        },
+        "scrolling": {
+            "minReadDelayMs": 1000,
+            "maxReadDelayMs": 3500,
+            "minPauseMs": 500,
+            "maxPauseMs": 1500
+        }
+    },
+    "api": {
+        "retryDelayMs": 2000,
+        "maxRetries": 3,
+        "pollingIntervalMs": 250,
+        "requestTimeoutMs": 60000
+    },
+    "browser": {
+        "connectionTimeoutMs": 10000,
+        "healthCheckIntervalMs": 30000,
+        "reconnectDelayMs": 2000,
+        "maxReconnectAttempts": 3
+    },
+    "orchestration": {
+        "workerWaitTimeoutMs": 10000,
+        "workerLockTimeoutMs": 10000,
+        "maxTaskQueueSize": 500,
+        "reuseSharedContext": false,
+        "pagePoolMaxPerSession": null,
+        "pagePoolIdleTimeoutMs": 300000,
+        "pagePoolHealthCheckIntervalMs": 30000,
+        "pagePoolHealthCheckTimeoutMs": 5000,
+        "workerWaiterMaxPerSession": 50,
+        "taskMaxDurationMs": 540000,
+        "taskSpecificMaxDurationMs": {
+            "cookiebot": 180000
+        },
+        "workerStuckThresholdMs": 600000
+    },
+    "circuitBreaker": {
+        "failureThreshold": 50,
+        "successThreshold": 2,
+        "halfOpenTime": 30000,
+        "monitoringWindow": 60000,
+        "minSamples": 5
+    },
+    "requestQueue": {
+        "maxConcurrent": 3,
+        "retryDelay": 1000,
+        "maxRetries": 3,
+        "maxQueueSize": 100,
+        "intervalMs": 0
+    },
+    "agent": {
+        "maxStepAttempts": 5,
+        "stuckThreshold": 3
+    },
+    "vision": {
+        "maxWidth": 1280,
+        "maxHeight": 720,
+        "quality": 80,
+        "targetSizeKB": 50
+    },
+    "history": {
+        "compactionThreshold": 20,
+        "targetLength": 5
+    },
+    "state": {
+        "maxBreadcrumbs": 50
     }
-  },
-  "api": {
-    "retryDelayMs": 2000,
-    "maxRetries": 3,
-    "pollingIntervalMs": 250,
-    "requestTimeoutMs": 60000
-  },
-  "browser": {
-    "connectionTimeoutMs": 10000,
-    "healthCheckIntervalMs": 30000,
-    "reconnectDelayMs": 2000,
-    "maxReconnectAttempts": 3
-  },
-  "orchestration": {
-    "workerWaitTimeoutMs": 10000,
-    "workerLockTimeoutMs": 10000,
-    "maxTaskQueueSize": 500,
-    "reuseSharedContext": false,
-    "pagePoolMaxPerSession": null,
-    "pagePoolIdleTimeoutMs": 300000,
-    "pagePoolHealthCheckIntervalMs": 30000,
-    "pagePoolHealthCheckTimeoutMs": 5000,
-    "workerWaiterMaxPerSession": 50,
-    "taskMaxDurationMs": 540000,
-    "taskSpecificMaxDurationMs": {
-      "cookiebot": 180000
-    },
-    "workerStuckThresholdMs": 600000
-  },
-  "circuitBreaker": {
-    "failureThreshold": 50,
-    "successThreshold": 2,
-    "halfOpenTime": 30000,
-    "monitoringWindow": 60000,
-    "minSamples": 5
-  },
-  "requestQueue": {
-    "maxConcurrent": 3,
-    "retryDelay": 1000,
-    "maxRetries": 3,
-    "maxQueueSize": 100,
-    "intervalMs": 0
-  },
-  "agent": {
-    "maxStepAttempts": 5,
-    "stuckThreshold": 3
-  },
-  "vision": {
-    "maxWidth": 1280,
-    "maxHeight": 720,
-    "quality": 80,
-    "targetSizeKB": 50
-  },
-  "history": {
-    "compactionThreshold": 20,
-    "targetLength": 5
-  },
-  "state": {
-    "maxBreadcrumbs": 50
-  }
 }

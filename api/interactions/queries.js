@@ -1,7 +1,7 @@
 /**
  * @fileoverview Read-Only DOM Queries
  * Simple extraction functions with zero humanization or entropy.
- * 
+ *
  * @module api/queries
  */
 

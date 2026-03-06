@@ -5,17 +5,17 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         debug: vi.fn(),
-        error: vi.fn()
-    }))
+        error: vi.fn(),
+    })),
 }));
 
 vi.mock('@api/core/context.js', () => ({
-    getPage: vi.fn()
+    getPage: vi.fn(),
 }));
 
 vi.mock('@api/behaviors/timing.js', () => ({
     delay: vi.fn().mockResolvedValue(undefined),
-    randomInRange: vi.fn(() => 1000)
+    randomInRange: vi.fn(() => 1000),
 }));
 
 import { getPage } from '@api/core/context.js';
@@ -31,11 +31,11 @@ describe('api/interactions/banners.js', () => {
         mockLocator = {
             first: vi.fn(() => mockLocator),
             isVisible: vi.fn(),
-            click: vi.fn().mockResolvedValue(undefined)
+            click: vi.fn().mockResolvedValue(undefined),
         };
 
         mockPage = {
-            locator: vi.fn(() => mockLocator)
+            locator: vi.fn(() => mockLocator),
         };
 
         getPage.mockReturnValue(mockPage);

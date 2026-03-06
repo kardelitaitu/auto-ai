@@ -2,7 +2,7 @@ import { api } from '../../index.js';
 /**
  * Session Manager
  * Human-like session patterns based on time-of-day
- * 
+ *
  * Human Session Patterns:
  * - Peak hours (8-10am, 12-1pm, 7-9pm): 10-20 minute sessions
  * - Off hours: 3-8 minute sessions
@@ -23,7 +23,7 @@ export class SessionManager {
 
     /**
      * Get optimal session length based on time-of-day
-     * 
+     *
      * @returns {object} Session configuration
      */
     getOptimalLength() {
@@ -40,7 +40,7 @@ export class SessionManager {
                 minMs,
                 maxMs,
                 targetMs,
-                reason: `configured ${configMinSec}-${configMaxSec}s session`
+                reason: `configured ${configMinSec}-${configMaxSec}s session`,
             };
         }
 
@@ -72,13 +72,16 @@ export class SessionManager {
         }
 
         // Add gaussian variation
-        const variation = mathUtils.gaussian(baseLength * 60 * 1000, baseLength * variability * 60 * 1000);
+        const variation = mathUtils.gaussian(
+            baseLength * 60 * 1000,
+            baseLength * variability * 60 * 1000
+        );
 
         return {
-            minMs: (baseLength * 0.6) * 60 * 1000,
-            maxMs: (baseLength * 1.4) * 60 * 1000,
+            minMs: baseLength * 0.6 * 60 * 1000,
+            maxMs: baseLength * 1.4 * 60 * 1000,
             targetMs: Math.round(variation),
-            reason: this._getReason(hour, isWeekend)
+            reason: this._getReason(hour, isWeekend),
         };
     }
 
@@ -86,15 +89,16 @@ export class SessionManager {
      * Get reason for session length (for logging)
      */
     _getReason(hour, isWeekend) {
-        const timeOfDay = hour >= 22 || hour <= 5
-            ? 'late night'
-            : hour <= 9
-                ? 'morning'
-                : hour <= 14
+        const timeOfDay =
+            hour >= 22 || hour <= 5
+                ? 'late night'
+                : hour <= 9
+                  ? 'morning'
+                  : hour <= 14
                     ? 'lunch'
                     : hour <= 21
-                        ? 'evening'
-                        : 'night';
+                      ? 'evening'
+                      : 'night';
 
         const dayType = isWeekend ? 'weekend' : 'weekday';
 
@@ -160,7 +164,7 @@ export class SessionManager {
             },
             async () => {
                 // Pure idle
-            }
+            },
         ];
 
         const behavior = mathUtils.sample(behaviors);
@@ -195,7 +199,7 @@ export class SessionManager {
             async () => {
                 // Final scroll
                 await scrollRandom(50, 150);
-            }
+            },
         ];
 
         // Weighted: 50% scroll, 30% bookmark, 20% mentions
@@ -281,7 +285,7 @@ export class SessionManager {
             warmup: 1.0,
             active: 0.95,
             winding_down: 0.85,
-            ending: 0.7
+            ending: 0.7,
         };
 
         return multipliers[phase] || 0.9;

@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import RequestQueue from '@api/core/request-queue.js';
 
 vi.mock('../../utils/configLoader.js', () => ({
-    getTimeoutValue: vi.fn().mockResolvedValue({})
+    getTimeoutValue: vi.fn().mockResolvedValue({}),
 }));
 
 describe('RequestQueue', () => {
@@ -17,7 +17,7 @@ describe('RequestQueue', () => {
         queue = new RequestQueue({
             maxConcurrent: 2,
             maxRetries: 2,
-            retryDelay: 50
+            retryDelay: 50,
         });
     });
 
@@ -43,15 +43,17 @@ describe('RequestQueue', () => {
             let running = 0;
             let maxRunning = 0;
 
-            const tasks = Array(5).fill().map(() =>
-                queue.enqueue(async () => {
-                    running++;
-                    maxRunning = Math.max(maxRunning, running);
-                    await new Promise(r => setTimeout(r, 50));
-                    running--;
-                    return 'done';
-                })
-            );
+            const tasks = Array(5)
+                .fill()
+                .map(() =>
+                    queue.enqueue(async () => {
+                        running++;
+                        maxRunning = Math.max(maxRunning, running);
+                        await new Promise((r) => setTimeout(r, 50));
+                        running--;
+                        return 'done';
+                    })
+                );
 
             await Promise.all(tasks);
             expect(maxRunning).toBeLessThanOrEqual(2);

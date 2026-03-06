@@ -1,11 +1,10 @@
-
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { mathUtils } from '@api/utils/math.js';
 
 describe('mathUtils', () => {
     describe('gaussian', () => {
         it('should return value within bounds', () => {
-            for(let i=0; i<100; i++) {
+            for (let i = 0; i < 100; i++) {
                 const val = mathUtils.gaussian(100, 10, 80, 120);
                 expect(val).toBeGreaterThanOrEqual(80);
                 expect(val).toBeLessThanOrEqual(120);
@@ -23,17 +22,13 @@ describe('mathUtils', () => {
         });
 
         it('should apply max only when provided', () => {
-            vi.spyOn(Math, 'random')
-                .mockReturnValueOnce(0.5)
-                .mockReturnValueOnce(0.5);
+            vi.spyOn(Math, 'random').mockReturnValueOnce(0.5).mockReturnValueOnce(0.5);
             const val = mathUtils.gaussian(100, 100, undefined, 50);
             expect(val).toBeLessThanOrEqual(50);
         });
 
         it('should return floored value without bounds', () => {
-            vi.spyOn(Math, 'random')
-                .mockReturnValueOnce(0.25)
-                .mockReturnValueOnce(0.75);
+            vi.spyOn(Math, 'random').mockReturnValueOnce(0.25).mockReturnValueOnce(0.75);
             const val = mathUtils.gaussian(0, 1);
             expect(Number.isInteger(val)).toBe(true);
         });
@@ -45,7 +40,7 @@ describe('mathUtils', () => {
 
     describe('randomInRange', () => {
         it('should return value within bounds', () => {
-            for(let i=0; i<100; i++) {
+            for (let i = 0; i < 100; i++) {
                 const val = mathUtils.randomInRange(10, 20);
                 expect(val).toBeGreaterThanOrEqual(10);
                 expect(val).toBeLessThanOrEqual(20);
@@ -85,7 +80,7 @@ describe('mathUtils', () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.9999);
             expect(mathUtils.roll(1)).toBe(true);
         });
-        
+
         afterEach(() => {
             vi.restoreAllMocks();
         });
@@ -130,9 +125,9 @@ describe('mathUtils', () => {
             const state = { pos: 100 };
             const target = 150;
             const model = { Kp: 1, Ki: 0.1, Kd: 0.5 };
-            
+
             const result = mathUtils.pidStep(state, target, model, 0.1);
-            
+
             expect(result).toBeDefined();
             expect(typeof result).toBe('number');
         });
@@ -141,9 +136,9 @@ describe('mathUtils', () => {
             const state = { pos: 0, integral: 100 };
             const target = 1000;
             const model = { Kp: 1, Ki: 1, Kd: 0 };
-            
+
             const result = mathUtils.pidStep(state, target, model, 0.1);
-            
+
             expect(state.integral).toBeLessThanOrEqual(10);
             expect(state.integral).toBeGreaterThanOrEqual(-10);
         });
@@ -152,9 +147,9 @@ describe('mathUtils', () => {
             const state = { pos: 50 };
             const target = 100;
             const model = { Kp: 1, Ki: 0, Kd: 1 };
-            
+
             const result = mathUtils.pidStep(state, target, model, 0.1);
-            
+
             expect(typeof result).toBe('number');
         });
     });

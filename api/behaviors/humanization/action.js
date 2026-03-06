@@ -2,7 +2,7 @@ import { api } from '../../index.js';
 /**
  * Action Predictor
  * Weighted random action selection for natural behavior
- * 
+ *
  * Action Probabilities (based on human behavior research):
  * - Scroll: 35-45%
  * - Click/Tweet: 20-30%
@@ -21,12 +21,12 @@ export class ActionPredictor {
 
         // Base action probabilities
         this.baseProbabilities = {
-            scroll: { weight: 0.40, min: 0.35, max: 0.45 },
-            click: { weight: 0.25, min: 0.20, max: 0.30 },
+            scroll: { weight: 0.4, min: 0.35, max: 0.45 },
+            click: { weight: 0.25, min: 0.2, max: 0.3 },
             back: { weight: 0.12, min: 0.08, max: 0.15 },
-            explore: { weight: 0.10, min: 0.08, max: 0.12 },
-            profile: { weight: 0.08, min: 0.05, max: 0.10 },
-            idle: { weight: 0.05, min: 0.02, max: 0.08 }
+            explore: { weight: 0.1, min: 0.08, max: 0.12 },
+            profile: { weight: 0.08, min: 0.05, max: 0.1 },
+            idle: { weight: 0.05, min: 0.02, max: 0.08 },
         };
 
         // Cycle modifiers
@@ -35,7 +35,7 @@ export class ActionPredictor {
 
     /**
      * Predict next action based on patterns
-     * 
+     *
      * @param {number} cycleCount - Current cycle count
      * @returns {object} Predicted action
      */
@@ -55,7 +55,7 @@ export class ActionPredictor {
             type: action,
             confidence,
             probabilities: adjusted,
-            phase: this._getPhase(cycleCount)
+            phase: this._getPhase(cycleCount),
         };
     }
 
@@ -122,7 +122,7 @@ export class ActionPredictor {
             const tweet = tweets[index];
 
             if (tweet) {
-                await tweet.evaluate(el => el.scrollIntoView({ block: 'center' }));
+                await tweet.evaluate((el) => el.scrollIntoView({ block: 'center' }));
                 await api.wait(1000);
 
                 // Click on tweet text or time
@@ -135,7 +135,7 @@ export class ActionPredictor {
     }
 
     async _actionBack(page) {
-        await page.goBack().catch(() => { });
+        await page.goBack().catch(() => {});
         await api.wait(1000);
     }
 
@@ -150,7 +150,7 @@ export class ActionPredictor {
         const profileLinks = await page.$$('a[href*="/"][role="link"]:not([href*="search"]');
         if (profileLinks.length > 0) {
             const index = Math.floor(Math.random() * Math.min(profileLinks.length, 10));
-            await ghost.click(profileLinks[index]).catch(() => { });
+            await ghost.click(profileLinks[index]).catch(() => {});
             await api.wait(1000);
         }
     }
@@ -172,7 +172,7 @@ export class ActionPredictor {
         const scrollAmounts = {
             light: { min: 50, max: 150 },
             normal: { min: 100, max: 300 },
-            heavy: { min: 300, max: 600 }
+            heavy: { min: 300, max: 600 },
         };
 
         const config = scrollAmounts[intensity] || scrollAmounts.normal;
@@ -210,7 +210,7 @@ export class ActionPredictor {
 
         adjusted.scroll.weight *= fatigueMultiplier;
         adjusted.click.weight *= fatigueMultiplier2;
-        adjusted.idle.weight *= (1 + (1 - fatigueMultiplier2));
+        adjusted.idle.weight *= 1 + (1 - fatigueMultiplier2);
 
         // Normalize
         const total = Object.values(adjusted).reduce((sum, p) => sum + p.weight, 0);

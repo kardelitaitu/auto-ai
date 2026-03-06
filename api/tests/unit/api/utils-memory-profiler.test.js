@@ -126,9 +126,27 @@ describe('api/utils/memory-profiler.js', () => {
 
             it('should detect leak when growth exceeds threshold', () => {
                 vi.spyOn(profiler, 'getUsage')
-                    .mockReturnValueOnce({ heapUsed: 100, heapTotal: 200, external: 50, rss: 300, timestamp: Date.now() })
-                    .mockReturnValueOnce({ heapUsed: 200, heapTotal: 200, external: 50, rss: 300, timestamp: Date.now() })
-                    .mockReturnValueOnce({ heapUsed: 300, heapTotal: 200, external: 50, rss: 300, timestamp: Date.now() });
+                    .mockReturnValueOnce({
+                        heapUsed: 100,
+                        heapTotal: 200,
+                        external: 50,
+                        rss: 300,
+                        timestamp: Date.now(),
+                    })
+                    .mockReturnValueOnce({
+                        heapUsed: 200,
+                        heapTotal: 200,
+                        external: 50,
+                        rss: 300,
+                        timestamp: Date.now(),
+                    })
+                    .mockReturnValueOnce({
+                        heapUsed: 300,
+                        heapTotal: 200,
+                        external: 50,
+                        rss: 300,
+                        timestamp: Date.now(),
+                    });
 
                 profiler.getSnapshot();
                 profiler.getSnapshot();
@@ -141,8 +159,20 @@ describe('api/utils/memory-profiler.js', () => {
 
             it('should return no leak when growth is below threshold', () => {
                 vi.spyOn(profiler, 'getUsage')
-                    .mockReturnValueOnce({ heapUsed: 100, heapTotal: 200, external: 50, rss: 300, timestamp: Date.now() })
-                    .mockReturnValueOnce({ heapUsed: 110, heapTotal: 200, external: 50, rss: 300, timestamp: Date.now() });
+                    .mockReturnValueOnce({
+                        heapUsed: 100,
+                        heapTotal: 200,
+                        external: 50,
+                        rss: 300,
+                        timestamp: Date.now(),
+                    })
+                    .mockReturnValueOnce({
+                        heapUsed: 110,
+                        heapTotal: 200,
+                        external: 50,
+                        rss: 300,
+                        timestamp: Date.now(),
+                    });
 
                 profiler.getSnapshot();
                 profiler.getSnapshot();

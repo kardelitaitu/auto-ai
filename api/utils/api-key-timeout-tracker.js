@@ -9,204 +9,204 @@ import { createLogger } from '../core/logger.js';
 const logger = createLogger('api-key-timeout-tracker.js');
 
 export class ApiKeyTimeoutTracker {
-  constructor(options = {}) {
-    this.defaultTimeout = options.defaultTimeout || 30000;
-    this.quickTimeout = options.quickTimeout || 20000;
-    this.slowThreshold = options.slowThreshold || 15000;
-    this.failureThreshold = options.failureThreshold || 3;
+    constructor(options = {}) {
+        this.defaultTimeout = options.defaultTimeout || 30000;
+        this.quickTimeout = options.quickTimeout || 20000;
+        this.slowThreshold = options.slowThreshold || 15000;
+        this.failureThreshold = options.failureThreshold || 3;
 
-    this.keyStats = new Map();
-    this.timeoutHistory = [];
-  }
-
-  trackRequest(apiKey, duration, success) {
-    const key = this._getKeyIdentifier(apiKey);
-    let stats = this.keyStats.get(key);
-
-    if (!stats) {
-      stats = {
-        apiKey: key,
-        requestCount: 0,
-        successCount: 0,
-        failureCount: 0,
-        timeoutCount: 0,
-        avgDuration: 0,
-        recentDurations: [],
-        isSlow: false,
-        isProblematic: false,
-        lastRequest: null
-      };
-      this.keyStats.set(key, stats);
+        this.keyStats = new Map();
+        this.timeoutHistory = [];
     }
 
-    stats.requestCount++;
-    stats.lastRequest = Date.now();
+    trackRequest(apiKey, duration, success) {
+        const key = this._getKeyIdentifier(apiKey);
+        let stats = this.keyStats.get(key);
 
-    if (success) {
-      stats.successCount++;
-      stats.recentDurations.push(duration);
-    } else {
-      stats.failureCount++;
-    }
+        if (!stats) {
+            stats = {
+                apiKey: key,
+                requestCount: 0,
+                successCount: 0,
+                failureCount: 0,
+                timeoutCount: 0,
+                avgDuration: 0,
+                recentDurations: [],
+                isSlow: false,
+                isProblematic: false,
+                lastRequest: null,
+            };
+            this.keyStats.set(key, stats);
+        }
 
-    if (duration > this.slowThreshold) {
-      stats.timeoutCount++;
-    }
+        stats.requestCount++;
+        stats.lastRequest = Date.now();
 
-    if (stats.recentDurations.length > 20) {
-      stats.recentDurations.shift();
-    }
+        if (success) {
+            stats.successCount++;
+            stats.recentDurations.push(duration);
+        } else {
+            stats.failureCount++;
+        }
 
-    stats.avgDuration = this._calculateAvg(stats.recentDurations);
+        if (duration > this.slowThreshold) {
+            stats.timeoutCount++;
+        }
 
-    stats.isSlow = stats.avgDuration > this.slowThreshold;
-    stats.isProblematic = stats.failureCount >= this.failureThreshold;
+        if (stats.recentDurations.length > 20) {
+            stats.recentDurations.shift();
+        }
 
-    this._addToHistory({
-      apiKey: key,
-      duration,
-      success,
-      timestamp: Date.now()
-    });
+        stats.avgDuration = this._calculateAvg(stats.recentDurations);
 
-    return stats;
-  }
+        stats.isSlow = stats.avgDuration > this.slowThreshold;
+        stats.isProblematic = stats.failureCount >= this.failureThreshold;
 
-  _calculateAvg(durations) {
-    if (durations.length === 0) return 0;
-    return durations.reduce((a, b) => a + b, 0) / durations.length;
-  }
-
-  _getKeyIdentifier(apiKey) {
-    if (!apiKey) return 'unknown';
-    return `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}`;
-  }
-
-  _addToHistory(entry) {
-    this.timeoutHistory.push(entry);
-    if (this.timeoutHistory.length > 1000) {
-      this.timeoutHistory.shift();
-    }
-  }
-
-  getTimeoutForKey(apiKey) {
-    const key = this._getKeyIdentifier(apiKey);
-    const stats = this.keyStats.get(key);
-
-    if (!stats) {
-      return this.defaultTimeout;
-    }
-
-    if (stats.isProblematic) {
-      return this.quickTimeout;
-    }
-
-    if (stats.isSlow) {
-      return Math.min(this.quickTimeout, stats.avgDuration * 0.8);
-    }
-
-    return this.defaultTimeout;
-  }
-
-  shouldSkipKey(apiKey) {
-    const key = this._getKeyIdentifier(apiKey);
-    const stats = this.keyStats.get(key);
-
-    if (!stats) {
-      return false;
-    }
-
-    return stats.isProblematic && stats.recentDurations.length < 3;
-  }
-
-  getKeyStats(apiKey) {
-    const key = this._getKeyIdentifier(apiKey);
-    return this.keyStats.get(key) || null;
-  }
-
-  getAllStats() {
-    const stats = {};
-    this.keyStats.forEach((value, key) => {
-      stats[key] = {
-        requestCount: value.requestCount,
-        successCount: value.successCount,
-        failureCount: value.failureCount,
-        avgDuration: value.avgDuration.toFixed(0) + 'ms',
-        isSlow: value.isSlow,
-        isProblematic: value.isProblematic,
-        recommendedTimeout: this.getTimeoutForKey(value.apiKey) + 'ms'
-      };
-    });
-    return stats;
-  }
-
-  getSlowKeys() {
-    const slow = [];
-    this.keyStats.forEach((stats, key) => {
-      if (stats.isSlow) {
-        slow.push({
-          key,
-          avgDuration: stats.avgDuration.toFixed(0) + 'ms',
-          requestCount: stats.requestCount
+        this._addToHistory({
+            apiKey: key,
+            duration,
+            success,
+            timestamp: Date.now(),
         });
-      }
-    });
-    return slow.sort((a, b) => b.avgDuration - a.avgDuration);
-  }
 
-  getProblematicKeys() {
-    const problematic = [];
-    this.keyStats.forEach((stats, key) => {
-      if (stats.isProblematic) {
-        problematic.push({
-          key,
-          failureCount: stats.failureCount,
-          successCount: stats.successCount
-        });
-      }
-    });
-    return problematic;
-  }
-
-  getHistory(limit = 50) {
-    return this.timeoutHistory.slice(-limit).reverse();
-  }
-
-  reset(apiKey = null) {
-    if (apiKey) {
-      const key = this._getKeyIdentifier(apiKey);
-      this.keyStats.delete(key);
-      logger.info(`[ApiKeyTimeoutTracker] Reset stats for ${key}`);
-    } else {
-      this.keyStats.clear();
-      this.timeoutHistory = [];
-      logger.info('[ApiKeyTimeoutTracker] Reset all stats');
+        return stats;
     }
-  }
 
-  getStats() {
-    let totalRequests = 0;
-    let totalFailures = 0;
-    let slowKeys = 0;
-    let problematicKeys = 0;
+    _calculateAvg(durations) {
+        if (durations.length === 0) return 0;
+        return durations.reduce((a, b) => a + b, 0) / durations.length;
+    }
 
-    this.keyStats.forEach(stats => {
-      totalRequests += stats.requestCount;
-      totalFailures += stats.failureCount;
-      if (stats.isSlow) slowKeys++;
-      if (stats.isProblematic) problematicKeys++;
-    });
+    _getKeyIdentifier(apiKey) {
+        if (!apiKey) return 'unknown';
+        return `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}`;
+    }
 
-    return {
-      trackedKeys: this.keyStats.size,
-      totalRequests,
-      totalFailures,
-      slowKeys,
-      problematicKeys,
-      avgTimeout: this.defaultTimeout + 'ms',
-      quickTimeout: this.quickTimeout + 'ms'
-    };
-  }
+    _addToHistory(entry) {
+        this.timeoutHistory.push(entry);
+        if (this.timeoutHistory.length > 1000) {
+            this.timeoutHistory.shift();
+        }
+    }
+
+    getTimeoutForKey(apiKey) {
+        const key = this._getKeyIdentifier(apiKey);
+        const stats = this.keyStats.get(key);
+
+        if (!stats) {
+            return this.defaultTimeout;
+        }
+
+        if (stats.isProblematic) {
+            return this.quickTimeout;
+        }
+
+        if (stats.isSlow) {
+            return Math.min(this.quickTimeout, stats.avgDuration * 0.8);
+        }
+
+        return this.defaultTimeout;
+    }
+
+    shouldSkipKey(apiKey) {
+        const key = this._getKeyIdentifier(apiKey);
+        const stats = this.keyStats.get(key);
+
+        if (!stats) {
+            return false;
+        }
+
+        return stats.isProblematic && stats.recentDurations.length < 3;
+    }
+
+    getKeyStats(apiKey) {
+        const key = this._getKeyIdentifier(apiKey);
+        return this.keyStats.get(key) || null;
+    }
+
+    getAllStats() {
+        const stats = {};
+        this.keyStats.forEach((value, key) => {
+            stats[key] = {
+                requestCount: value.requestCount,
+                successCount: value.successCount,
+                failureCount: value.failureCount,
+                avgDuration: value.avgDuration.toFixed(0) + 'ms',
+                isSlow: value.isSlow,
+                isProblematic: value.isProblematic,
+                recommendedTimeout: this.getTimeoutForKey(value.apiKey) + 'ms',
+            };
+        });
+        return stats;
+    }
+
+    getSlowKeys() {
+        const slow = [];
+        this.keyStats.forEach((stats, key) => {
+            if (stats.isSlow) {
+                slow.push({
+                    key,
+                    avgDuration: stats.avgDuration.toFixed(0) + 'ms',
+                    requestCount: stats.requestCount,
+                });
+            }
+        });
+        return slow.sort((a, b) => b.avgDuration - a.avgDuration);
+    }
+
+    getProblematicKeys() {
+        const problematic = [];
+        this.keyStats.forEach((stats, key) => {
+            if (stats.isProblematic) {
+                problematic.push({
+                    key,
+                    failureCount: stats.failureCount,
+                    successCount: stats.successCount,
+                });
+            }
+        });
+        return problematic;
+    }
+
+    getHistory(limit = 50) {
+        return this.timeoutHistory.slice(-limit).reverse();
+    }
+
+    reset(apiKey = null) {
+        if (apiKey) {
+            const key = this._getKeyIdentifier(apiKey);
+            this.keyStats.delete(key);
+            logger.info(`[ApiKeyTimeoutTracker] Reset stats for ${key}`);
+        } else {
+            this.keyStats.clear();
+            this.timeoutHistory = [];
+            logger.info('[ApiKeyTimeoutTracker] Reset all stats');
+        }
+    }
+
+    getStats() {
+        let totalRequests = 0;
+        let totalFailures = 0;
+        let slowKeys = 0;
+        let problematicKeys = 0;
+
+        this.keyStats.forEach((stats) => {
+            totalRequests += stats.requestCount;
+            totalFailures += stats.failureCount;
+            if (stats.isSlow) slowKeys++;
+            if (stats.isProblematic) problematicKeys++;
+        });
+
+        return {
+            trackedKeys: this.keyStats.size,
+            totalRequests,
+            totalFailures,
+            slowKeys,
+            problematicKeys,
+            avgTimeout: this.defaultTimeout + 'ms',
+            quickTimeout: this.quickTimeout + 'ms',
+        };
+    }
 }
 
 export default ApiKeyTimeoutTracker;

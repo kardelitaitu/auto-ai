@@ -6,8 +6,8 @@ vi.mock('../../core/logger.js', () => ({
         error: vi.fn(),
         warn: vi.fn(),
         debug: vi.fn(),
-        success: vi.fn()
-    }))
+        success: vi.fn(),
+    })),
 }));
 
 vi.mock('../../utils/configLoader.js', () => ({
@@ -15,15 +15,15 @@ vi.mock('../../utils/configLoader.js', () => ({
         llm: {
             local: {
                 endpoint: 'http://localhost:11434',
-                model: 'test-model'
-            }
-        }
-    })
+                model: 'test-model',
+            },
+        },
+    }),
 }));
 
 vi.mock('child_process', () => ({
     exec: vi.fn((cmd, cb) => cb && cb(null)),
-    execSync: vi.fn()
+    execSync: vi.fn(),
 }));
 
 describe('local-ollama-manager', () => {
@@ -60,7 +60,9 @@ describe('local-ollama-manager', () => {
 
         it('should return false when tasklist check throws', async () => {
             const { execSync } = await import('child_process');
-            execSync.mockImplementation(() => { throw new Error('tasklist fail'); });
+            execSync.mockImplementation(() => {
+                throw new Error('tasklist fail');
+            });
 
             global.fetch = vi.fn().mockRejectedValue(new Error('Connection refused'));
 
@@ -75,7 +77,7 @@ describe('local-ollama-manager', () => {
             execSync.mockReturnValue('ollama.exe');
 
             global.fetch = vi.fn().mockResolvedValue({
-                ok: true
+                ok: true,
             });
 
             const { isOllamaRunning } = await import('../../utils/local-ollama-manager.js');
@@ -108,7 +110,10 @@ describe('local-ollama-manager', () => {
             const result = await isOllamaRunning();
 
             expect(result).toBe(true);
-            expect(global.fetch).toHaveBeenCalledWith('http://localhost:11434/', expect.any(Object));
+            expect(global.fetch).toHaveBeenCalledWith(
+                'http://localhost:11434/',
+                expect.any(Object)
+            );
         });
     });
 

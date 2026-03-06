@@ -11,8 +11,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('utils/api-key-timeout-tracker', () => {
@@ -23,7 +23,7 @@ describe('utils/api-key-timeout-tracker', () => {
             defaultTimeout: 30000,
             quickTimeout: 20000,
             slowThreshold: 15000,
-            failureThreshold: 3
+            failureThreshold: 3,
         });
     });
 
@@ -49,7 +49,7 @@ describe('utils/api-key-timeout-tracker', () => {
     describe('trackRequest', () => {
         it('should create new stats for unknown key', () => {
             const result = tracker.trackRequest('test-api-key-12345', 10000, true);
-            
+
             expect(result.apiKey).toBe('test...2345');
             expect(result.requestCount).toBe(1);
             expect(result.successCount).toBe(1);
@@ -59,7 +59,7 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should track successful request', () => {
             tracker.trackRequest('key1', 10000, true);
             const stats = tracker.getKeyStats('key1');
-            
+
             expect(stats.requestCount).toBe(1);
             expect(stats.successCount).toBe(1);
             expect(stats.failureCount).toBe(0);
@@ -68,7 +68,7 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should track failed request', () => {
             tracker.trackRequest('key1', 5000, false);
             const stats = tracker.getKeyStats('key1');
-            
+
             expect(stats.requestCount).toBe(1);
             expect(stats.successCount).toBe(0);
             expect(stats.failureCount).toBe(1);
@@ -77,21 +77,21 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should count timeouts when duration exceeds slowThreshold', () => {
             tracker.trackRequest('key1', 20000, true); // > 15000
             const stats = tracker.getKeyStats('key1');
-            
+
             expect(stats.timeoutCount).toBe(1);
         });
 
         it('should not count timeout when duration is below threshold', () => {
             tracker.trackRequest('key1', 10000, true); // < 15000
             const stats = tracker.getKeyStats('key1');
-            
+
             expect(stats.timeoutCount).toBe(0);
         });
 
         it('should calculate average duration', () => {
             tracker.trackRequest('key1', 10000, true);
             tracker.trackRequest('key1', 20000, true);
-            
+
             const stats = tracker.getKeyStats('key1');
             expect(stats.avgDuration).toBe(15000);
         });
@@ -100,7 +100,7 @@ describe('utils/api-key-timeout-tracker', () => {
             for (let i = 0; i < 25; i++) {
                 tracker.trackRequest('key1', 10000, true);
             }
-            
+
             const stats = tracker.getKeyStats('key1');
             expect(stats.recentDurations.length).toBe(20);
         });
@@ -108,7 +108,7 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should mark key as slow when avg exceeds threshold', () => {
             tracker.trackRequest('key1', 20000, true);
             tracker.trackRequest('key1', 20000, true);
-            
+
             const stats = tracker.getKeyStats('key1');
             expect(stats.isSlow).toBe(true);
         });
@@ -117,7 +117,7 @@ describe('utils/api-key-timeout-tracker', () => {
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
-            
+
             const stats = tracker.getKeyStats('key1');
             expect(stats.isProblematic).toBe(true);
         });
@@ -134,7 +134,7 @@ describe('utils/api-key-timeout-tracker', () => {
 
         it('should add entry to history', () => {
             tracker.trackRequest('key1', 5000, true);
-            
+
             const history = tracker.getHistory();
             expect(history.length).toBe(1);
             expect(history[0].apiKey).toBe('key1...key1');
@@ -146,7 +146,7 @@ describe('utils/api-key-timeout-tracker', () => {
             for (let i = 0; i < 1100; i++) {
                 tracker.trackRequest('key' + i, 5000, true);
             }
-            
+
             const history = tracker.getHistory();
             expect(history.length).toBe(50); // default limit
         });
@@ -162,7 +162,7 @@ describe('utils/api-key-timeout-tracker', () => {
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
-            
+
             const timeout = tracker.getTimeoutForKey('key1');
             expect(timeout).toBe(20000);
         });
@@ -170,14 +170,14 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should return calculated timeout for slow key', () => {
             tracker.trackRequest('key1', 20000, true);
             tracker.trackRequest('key1', 20000, true);
-            
+
             const timeout = tracker.getTimeoutForKey('key1');
             expect(timeout).toBeLessThan(30000);
         });
 
         it('should return defaultTimeout for healthy key', () => {
             tracker.trackRequest('key1', 5000, true);
-            
+
             const timeout = tracker.getTimeoutForKey('key1');
             expect(timeout).toBe(30000);
         });
@@ -197,7 +197,7 @@ describe('utils/api-key-timeout-tracker', () => {
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
-            
+
             // Not enough recent durations to recover
             expect(tracker.shouldSkipKey('key1')).toBe(true);
         });
@@ -209,7 +209,7 @@ describe('utils/api-key-timeout-tracker', () => {
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
-            
+
             // Has enough recent successful requests
             expect(tracker.shouldSkipKey('key1')).toBe(false);
         });
@@ -223,7 +223,7 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should return stats for known key', () => {
             tracker.trackRequest('key1', 5000, true);
             const stats = tracker.getKeyStats('key1');
-            
+
             expect(stats).not.toBeNull();
             expect(stats.requestCount).toBe(1);
         });
@@ -237,7 +237,7 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should return stats for all tracked keys', () => {
             tracker.trackRequest('key1', 5000, true);
             tracker.trackRequest('key2', 10000, true);
-            
+
             const allStats = tracker.getAllStats();
             expect(Object.keys(allStats).length).toBe(2);
             expect(allStats['key1...key1']).toBeDefined();
@@ -246,7 +246,7 @@ describe('utils/api-key-timeout-tracker', () => {
 
         it('should format avgDuration as string with ms', () => {
             tracker.trackRequest('key1', 5000, true);
-            
+
             const allStats = tracker.getAllStats();
             expect(allStats['key1...key1'].avgDuration).toBe('5000ms');
         });
@@ -261,7 +261,7 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should return slow keys sorted by avgDuration', () => {
             tracker.trackRequest('slow-key', 25000, true);
             tracker.trackRequest('fast-key', 5000, true);
-            
+
             const slowKeys = tracker.getSlowKeys();
             expect(slowKeys.length).toBe(1);
             expect(slowKeys[0].key).toBe('slow...-key');
@@ -278,7 +278,7 @@ describe('utils/api-key-timeout-tracker', () => {
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
-            
+
             const problematic = tracker.getProblematicKeys();
             expect(problematic.length).toBe(1);
             expect(problematic[0].failureCount).toBe(3);
@@ -290,7 +290,7 @@ describe('utils/api-key-timeout-tracker', () => {
             for (let i = 0; i < 100; i++) {
                 tracker.trackRequest('key1', 5000, true);
             }
-            
+
             const history = tracker.getHistory();
             expect(history.length).toBe(50);
         });
@@ -299,7 +299,7 @@ describe('utils/api-key-timeout-tracker', () => {
             for (let i = 0; i < 20; i++) {
                 tracker.trackRequest('key1', 5000, true);
             }
-            
+
             const history = tracker.getHistory(10);
             expect(history.length).toBe(10);
         });
@@ -307,7 +307,7 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should return entries in reverse chronological order', () => {
             tracker.trackRequest('key1', 1000, true);
             tracker.trackRequest('key1', 2000, true);
-            
+
             const history = tracker.getHistory();
             expect(history[0].duration).toBe(2000);
             expect(history[1].duration).toBe(1000);
@@ -318,9 +318,9 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should reset specific key stats', () => {
             tracker.trackRequest('key1', 5000, true);
             tracker.trackRequest('key2', 5000, true);
-            
+
             tracker.reset('key1');
-            
+
             expect(tracker.getKeyStats('key1')).toBeNull();
             expect(tracker.getKeyStats('key2')).not.toBeNull();
         });
@@ -328,9 +328,9 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should reset all stats when no key provided', () => {
             tracker.trackRequest('key1', 5000, true);
             tracker.trackRequest('key2', 5000, true);
-            
+
             tracker.reset();
-            
+
             expect(tracker.getKeyStats('key1')).toBeNull();
             expect(tracker.getKeyStats('key2')).toBeNull();
             expect(tracker.timeoutHistory).toEqual([]);
@@ -348,9 +348,9 @@ describe('utils/api-key-timeout-tracker', () => {
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key1', 5000, false);
             tracker.trackRequest('key2', 25000, true); // slow
-            
+
             const stats = tracker.getStats();
-            
+
             expect(stats.trackedKeys).toBe(2);
             expect(stats.totalRequests).toBe(5);
             expect(stats.totalFailures).toBe(3);
@@ -360,7 +360,7 @@ describe('utils/api-key-timeout-tracker', () => {
 
         it('should return zeros for empty tracker', () => {
             const stats = tracker.getStats();
-            
+
             expect(stats.trackedKeys).toBe(0);
             expect(stats.totalRequests).toBe(0);
             expect(stats.totalFailures).toBe(0);
@@ -395,12 +395,12 @@ describe('utils/api-key-timeout-tracker', () => {
         it('should handle custom thresholds', () => {
             const customTracker = new ApiKeyTimeoutTracker({
                 slowThreshold: 5000,
-                failureThreshold: 1
+                failureThreshold: 1,
             });
-            
+
             customTracker.trackRequest('key1', 3000, true); // < 5000, not slow
             customTracker.trackRequest('key1', 3000, false); // 1 failure
-            
+
             const stats = customTracker.getKeyStats('key1');
             expect(stats.isSlow).toBe(false);
             expect(stats.isProblematic).toBe(true);

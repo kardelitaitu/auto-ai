@@ -28,10 +28,12 @@ export class AsyncQueue {
             totalFailed: 0,
             totalTimedOut: 0,
             averageWaitTime: 0,
-            averageProcessingTime: 0
+            averageProcessingTime: 0,
         };
 
-        this.logger.info(`[AsyncQueue] Initialized (maxConcurrent: ${this.maxConcurrent}, maxQueueSize: ${this.maxQueueSize}, defaultTimeout: ${this.defaultTimeout}ms)`);
+        this.logger.info(
+            `[AsyncQueue] Initialized (maxConcurrent: ${this.maxConcurrent}, maxQueueSize: ${this.maxQueueSize}, defaultTimeout: ${this.defaultTimeout}ms)`
+        );
     }
 
     /**
@@ -49,7 +51,9 @@ export class AsyncQueue {
         // Check queue size with atomic access
         const currentQueueSize = this.queue.length + this.active.size;
         if (currentQueueSize >= this.maxQueueSize) {
-            this.logger.warn(`[AsyncQueue] Queue full, rejecting task: ${taskName} (current: ${currentQueueSize}, max: ${this.maxQueueSize})`);
+            this.logger.warn(
+                `[AsyncQueue] Queue full, rejecting task: ${taskName} (current: ${currentQueueSize}, max: ${this.maxQueueSize})`
+            );
             return { success: false, reason: 'queue_full', taskName: id };
         }
 
@@ -59,17 +63,17 @@ export class AsyncQueue {
             this.queue.push({
                 id,
                 taskFn,
-                timeout,  // Ensure timeout is properly stored
+                timeout, // Ensure timeout is properly stored
                 priority,
                 taskName,
                 resolve,
                 reject,
-                enqueueTime: startTime
+                enqueueTime: startTime,
             });
             this.stats.totalAdded++;
 
             // Trigger queue processing with promise chaining
-            this._processQueue().catch(err => {
+            this._processQueue().catch((err) => {
                 this.logger.error(`[AsyncQueue] Queue processing error: ${err.message}`);
             });
         });
@@ -109,13 +113,15 @@ export class AsyncQueue {
             const startTime = Date.now();
 
             if (item.taskName !== 'unnamed') {
-                this.logger.debug(`[AsyncQueue] Starting task: ${item.taskName} (queue: ${this.queue.length}, active: ${this.active.size}/${this.maxConcurrent})`);
+                this.logger.debug(
+                    `[AsyncQueue] Starting task: ${item.taskName} (queue: ${this.queue.length}, active: ${this.active.size}/${this.maxConcurrent})`
+                );
             }
 
             // Track active task
             this.active.set(item.id, {
                 ...item,
-                startTime
+                startTime,
             });
 
             // Process task with timeout
@@ -123,17 +129,16 @@ export class AsyncQueue {
             const timeoutPromise = new Promise((_, reject) => {
                 timeoutId = setTimeout(() => {
                     if (item.taskName !== 'unnamed') {
-                        this.logger.warn(`[AsyncQueue] ⚠ Task timeout reached: ${item.timeout}ms for ${item.taskName}`);
+                        this.logger.warn(
+                            `[AsyncQueue] ⚠ Task timeout reached: ${item.timeout}ms for ${item.taskName}`
+                        );
                     }
                     reject(new Error('timeout'));
                 }, item.timeout);
             });
 
             try {
-                const result = await Promise.race([
-                    this._executeTask(item),
-                    timeoutPromise
-                ]);
+                const result = await Promise.race([this._executeTask(item), timeoutPromise]);
 
                 clearTimeout(timeoutId);
 
@@ -142,23 +147,28 @@ export class AsyncQueue {
                 this._updateAverageStats('processing', processingTime);
 
                 if (item.taskName !== 'unnamed') {
-                    this.logger.info(`[AsyncQueue] ✓ Completed task: ${item.taskName} in ${processingTime}ms`);
+                    this.logger.info(
+                        `[AsyncQueue] ✓ Completed task: ${item.taskName} in ${processingTime}ms`
+                    );
                 }
                 item.resolve({ success: true, result, taskName: item.taskName, processingTime });
-
             } catch (error) {
                 const isTimeout = error.message === 'timeout';
                 const processingTime = Date.now() - startTime;
 
                 // Get just the first line of the error to avoid huge Playwright traces
                 const shortError = error.message ? error.message.split('\n')[0] : 'Unknown error';
-                const isExpectedTimeout = shortError.includes('Timeout') || shortError.includes('Target page, context or browser has been closed');
+                const isExpectedTimeout =
+                    shortError.includes('Timeout') ||
+                    shortError.includes('Target page, context or browser has been closed');
 
                 if (isTimeout) {
                     this.stats.totalTimedOut++;
                     this.timedOutCount++;
                     if (item.taskName !== 'unnamed') {
-                        this.logger.warn(`[AsyncQueue] ⚠ Task timed out: ${item.taskName} after ${processingTime}ms`);
+                        this.logger.warn(
+                            `[AsyncQueue] ⚠ Task timed out: ${item.taskName} after ${processingTime}ms`
+                        );
                     }
                 } else {
                     this.stats.totalFailed++;
@@ -166,9 +176,13 @@ export class AsyncQueue {
 
                     if (item.taskName === 'unnamed' && isExpectedTimeout) {
                         // Expected timeout behavior for background tasks, log silently
-                        this.logger.debug(`[AsyncQueue] ⚡ Background task expected timeout: ${shortError}`);
+                        this.logger.debug(
+                            `[AsyncQueue] ⚡ Background task expected timeout: ${shortError}`
+                        );
                     } else {
-                        this.logger.error(`[AsyncQueue] ✗ Task failed: ${item.taskName} - ${shortError}`);
+                        this.logger.error(
+                            `[AsyncQueue] ✗ Task failed: ${item.taskName} - ${shortError}`
+                        );
                     }
                 }
 
@@ -177,9 +191,8 @@ export class AsyncQueue {
                     reason: isTimeout ? 'timeout' : 'error',
                     error: error.message,
                     taskName: item.taskName,
-                    processingTime
+                    processingTime,
                 });
-
             } finally {
                 if (timeoutId) {
                     clearTimeout(timeoutId);
@@ -203,7 +216,9 @@ export class AsyncQueue {
     _createTimeout(item) {
         return new Promise((_, reject) => {
             setTimeout(() => {
-                this.logger.warn(`[AsyncQueue] Task timeout reached: ${item.timeout}ms for ${item.taskName}`);
+                this.logger.warn(
+                    `[AsyncQueue] Task timeout reached: ${item.timeout}ms for ${item.taskName}`
+                );
                 reject(new Error('timeout'));
             }, item.timeout);
         });
@@ -238,7 +253,7 @@ export class AsyncQueue {
             isProcessing: this.processing,
             processed: this.processedCount,
             failed: this.failedCount,
-            timedOut: this.timedOutCount
+            timedOut: this.timedOutCount,
         };
     }
 
@@ -249,9 +264,10 @@ export class AsyncQueue {
         return {
             ...this.stats,
             queueStatus: this.getStatus(),
-            utilizationPercent: this.active.size > 0
-                ? Math.round((this.active.size / this.maxConcurrent) * 100)
-                : 0
+            utilizationPercent:
+                this.active.size > 0
+                    ? Math.round((this.active.size / this.maxConcurrent) * 100)
+                    : 0,
         };
     }
 
@@ -289,7 +305,7 @@ export class AsyncQueue {
             healthy: this.isHealthy(),
             failedCount: this.failedCount,
             timedOutCount: this.timedOutCount,
-            queueLength: this.queue.length
+            queueLength: this.queue.length,
         };
     }
 
@@ -299,8 +315,8 @@ export class AsyncQueue {
     shutdown() {
         this.logger.info(`[AsyncQueue] Shutting down...`);
         this.clear();
-        // Since we can't easily cancel running taskPromises, we rely on 
-        // their internal timeouts or page closures. 
+        // Since we can't easily cancel running taskPromises, we rely on
+        // their internal timeouts or page closures.
         // Clearing the queue prevents new tasks from starting.
     }
 }
@@ -316,10 +332,10 @@ export class DiveQueue extends AsyncQueue {
         const finalTimeout = Math.max(10000, Math.min(timeout, 300000)); // Clamp between 10s and 5min
 
         super({
-            maxConcurrent: 1,  // Force sequential processing - only 1 dive at a time
+            maxConcurrent: 1, // Force sequential processing - only 1 dive at a time
             maxQueueSize: options.maxQueueSize ?? 30,
             defaultTimeout: finalTimeout,
-            logger: options.logger // Pass logger to parent
+            logger: options.logger, // Pass logger to parent
         });
 
         this.fallbackEngagement = options.fallbackEngagement ?? false;
@@ -332,7 +348,7 @@ export class DiveQueue extends AsyncQueue {
             quotes: options.quotes ?? 1,
             likes: options.likes ?? 5,
             follows: options.follows ?? 2,
-            bookmarks: options.bookmarks ?? 2
+            bookmarks: options.bookmarks ?? 2,
         };
 
         this.engagementCounters = {
@@ -341,10 +357,12 @@ export class DiveQueue extends AsyncQueue {
             quotes: 0,
             likes: 0,
             follows: 0,
-            bookmarks: 0
+            bookmarks: 0,
         };
 
-        this.logger.info(`[DiveQueue] Initialized with engagement limits: ${JSON.stringify(this.engagementLimits)}`);
+        this.logger.info(
+            `[DiveQueue] Initialized with engagement limits: ${JSON.stringify(this.engagementLimits)}`
+        );
     }
 
     /**
@@ -366,10 +384,14 @@ export class DiveQueue extends AsyncQueue {
 
             if (current < limit) {
                 this.engagementCounters[action]++;
-                this.logger.debug(`[DiveQueue] ✓ Engagement recorded: ${action} (${current + 1}/${limit})`);
+                this.logger.debug(
+                    `[DiveQueue] ✓ Engagement recorded: ${action} (${current + 1}/${limit})`
+                );
                 return true;
             } else {
-                this.logger.debug(`[DiveQueue] ⚠ Engagement limit reached: ${action} (${current}/${limit})`);
+                this.logger.debug(
+                    `[DiveQueue] ⚠ Engagement limit reached: ${action} (${current}/${limit})`
+                );
                 return false;
             }
         }
@@ -385,8 +407,13 @@ export class DiveQueue extends AsyncQueue {
             progress[action] = {
                 current: this.engagementCounters[action],
                 limit: this.engagementLimits[action],
-                remaining: Math.max(0, this.engagementLimits[action] - this.engagementCounters[action]),
-                percentUsed: Math.round((this.engagementCounters[action] / this.engagementLimits[action]) * 100)
+                remaining: Math.max(
+                    0,
+                    this.engagementLimits[action] - this.engagementCounters[action]
+                ),
+                percentUsed: Math.round(
+                    (this.engagementCounters[action] / this.engagementLimits[action]) * 100
+                ),
             };
         }
         return progress;
@@ -397,104 +424,114 @@ export class DiveQueue extends AsyncQueue {
      */
     updateEngagementLimits(newLimits) {
         this.engagementLimits = { ...this.engagementLimits, ...newLimits };
-        this.logger.info(`[DiveQueue] Updated engagement limits: ${JSON.stringify(this.engagementLimits)}`);
+        this.logger.info(
+            `[DiveQueue] Updated engagement limits: ${JSON.stringify(this.engagementLimits)}`
+        );
     }
 
     /**
-      * Add dive task with fallback support
-      */
+     * Add dive task with fallback support
+     */
     async addDive(diveFn, fallbackFn, options = {}) {
         const taskName = options.taskName || `dive_${Date.now()}`;
         const timeout = options.timeout ?? this.defaultTimeout;
 
         this.logger.debug(`[DiveQueue] addDive called: ${taskName}, timeout: ${timeout}ms`);
 
-        return this.add(async () => {
-            try {
-                this.logger.debug(`[DiveQueue] Starting dive function: ${taskName}`);
-
-                // Create dive promise with proper timeout closure
-                const divePromise = diveFn();
-
-                // Create timeout promise with correct closure variables
-                let timeoutId;
-                const timeoutPromise = new Promise((_, reject) => {
-                    timeoutId = setTimeout(() => {
-                        this.logger.warn(`[DiveQueue] Dive timeout reached: ${timeout}ms for ${taskName}`);
-                        reject(new Error('dive_timeout'));
-                    }, timeout);
-                });
-
+        return this.add(
+            async () => {
                 try {
-                    const result = await Promise.race([divePromise, timeoutPromise]);
-                    clearTimeout(timeoutId); // Clear timeout on success
+                    this.logger.debug(`[DiveQueue] Starting dive function: ${taskName}`);
 
-                    this.logger.debug(`[DiveQueue] Dive function completed: ${taskName}`);
-                    return {
-                        success: true,
-                        result,
-                        fallbackUsed: false,
-                        taskName
-                    };
-                } catch (error) {
-                    clearTimeout(timeoutId); // Clear timeout on error
-                    throw error;
-                }
+                    // Create dive promise with proper timeout closure
+                    const divePromise = diveFn();
 
-            } catch (error) {
-                this.logger.warn(`[DiveQueue] Dive failed: ${error.message}, checking fallback...`);
+                    // Create timeout promise with correct closure variables
+                    let timeoutId;
+                    const timeoutPromise = new Promise((_, reject) => {
+                        timeoutId = setTimeout(() => {
+                            this.logger.warn(
+                                `[DiveQueue] Dive timeout reached: ${timeout}ms for ${taskName}`
+                            );
+                            reject(new Error('dive_timeout'));
+                        }, timeout);
+                    });
 
-                // Check if we should use fallback
-                if (this.fallbackEngagement && fallbackFn) {
                     try {
-                        const fallbackResult = await fallbackFn();
-                        return {
-                            success: false,
-                            fallbackUsed: true,
-                            fallbackResult,
-                            error: error.message,
-                            taskName
-                        };
-                    } catch (fallbackError) {
-                        this.logger.error(`[DiveQueue] Fallback also failed: ${fallbackError.message}`);
-                        return {
-                            success: false,
-                            fallbackUsed: false,
-                            error: `${error.message}; fallback: ${fallbackError.message}`,
-                            taskName
-                        };
-                    }
-                }
+                        const result = await Promise.race([divePromise, timeoutPromise]);
+                        clearTimeout(timeoutId); // Clear timeout on success
 
-                return {
-                    success: false,
-                    fallbackUsed: false,
-                    error: error.message,
-                    taskName
-                };
+                        this.logger.debug(`[DiveQueue] Dive function completed: ${taskName}`);
+                        return {
+                            success: true,
+                            result,
+                            fallbackUsed: false,
+                            taskName,
+                        };
+                    } catch (error) {
+                        clearTimeout(timeoutId); // Clear timeout on error
+                        throw error;
+                    }
+                } catch (error) {
+                    this.logger.warn(
+                        `[DiveQueue] Dive failed: ${error.message}, checking fallback...`
+                    );
+
+                    // Check if we should use fallback
+                    if (this.fallbackEngagement && fallbackFn) {
+                        try {
+                            const fallbackResult = await fallbackFn();
+                            return {
+                                success: false,
+                                fallbackUsed: true,
+                                fallbackResult,
+                                error: error.message,
+                                taskName,
+                            };
+                        } catch (fallbackError) {
+                            this.logger.error(
+                                `[DiveQueue] Fallback also failed: ${fallbackError.message}`
+                            );
+                            return {
+                                success: false,
+                                fallbackUsed: false,
+                                error: `${error.message}; fallback: ${fallbackError.message}`,
+                                taskName,
+                            };
+                        }
+                    }
+
+                    return {
+                        success: false,
+                        fallbackUsed: false,
+                        error: error.message,
+                        taskName,
+                    };
+                }
+            },
+            {
+                ...options,
+                name: taskName,
+                timeout: timeout, // Explicitly pass timeout to base add method
             }
-        }, {
-            ...options,
-            name: taskName,
-            timeout: timeout  // Explicitly pass timeout to base add method
-        });
+        );
     }
 
     /**
-      * Enable quick mode (reduced timeouts for faster fallback)
-      */
+     * Enable quick mode (reduced timeouts for faster fallback)
+     */
     enableQuickMode() {
         this.quickMode = true;
-        this.defaultTimeout = 15000;  // Still faster than normal 20-30s, but enough for AI
+        this.defaultTimeout = 15000; // Still faster than normal 20-30s, but enough for AI
         this.logger.info(`[DiveQueue] Quick mode enabled (timeout: ${this.defaultTimeout}ms)`);
     }
 
     /**
-      * Disable quick mode
-      */
+     * Disable quick mode
+     */
     disableQuickMode() {
         this.quickMode = false;
-        this.defaultTimeout = 20000;  // Normal timeout
+        this.defaultTimeout = 20000; // Normal timeout
         this.logger.info(`[DiveQueue] Quick mode disabled (timeout: ${this.defaultTimeout}ms)`);
     }
 
@@ -506,7 +543,7 @@ export class DiveQueue extends AsyncQueue {
             queue: this.getStatus(),
             engagement: this.getEngagementProgress(),
             quickMode: this.quickMode,
-            health: this.getHealth()
+            health: this.getHealth(),
         };
     }
 
@@ -519,7 +556,6 @@ export class DiveQueue extends AsyncQueue {
         }
         this.logger.info(`[DiveQueue] Engagement counters reset`);
     }
-
 }
 
 export default AsyncQueue;

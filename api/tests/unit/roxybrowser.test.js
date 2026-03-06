@@ -6,11 +6,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const mockApiHandler = {
-    get: vi.fn()
+    get: vi.fn(),
 };
 
 vi.mock('../../utils/apiHandler.js', () => ({
-    default: mockApiHandler
+    default: mockApiHandler,
 }));
 
 vi.mock('../../utils/envLoader.js', () => ({
@@ -18,7 +18,7 @@ vi.mock('../../utils/envLoader.js', () => ({
         if (key === 'ROXYBROWSER_API_KEY') return 'test-key';
         if (key === 'ROXYBROWSER_API_URL') return 'http://127.0.0.1:50000/';
         return def;
-    })
+    }),
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -26,8 +26,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    })
+        debug: vi.fn(),
+    }),
 }));
 
 describe('connectors/discovery/roxybrowser', () => {
@@ -49,23 +49,23 @@ describe('connectors/discovery/roxybrowser', () => {
             if (key === 'ROXYBROWSER_API_KEY') return undefined;
             return def;
         });
-        
+
         const discoverer = new RoxybrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toEqual([]);
     });
 
     it('should handle no open profiles from API', async () => {
         const mockResponse = {
             code: 0,
-            data: []
+            data: [],
         };
         mockApiHandler.get.mockResolvedValue(mockResponse);
-        
+
         const discoverer = new RoxybrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toEqual([]);
     });
 
@@ -78,15 +78,15 @@ describe('connectors/discovery/roxybrowser', () => {
                     name: 'Profile 1',
                     ws: 'ws://localhost:1234',
                     http: 'http://localhost:1234',
-                    sortNum: 1
-                }
-            ]
+                    sortNum: 1,
+                },
+            ],
         };
         mockApiHandler.get.mockResolvedValue(mockResponse);
-        
+
         const discoverer = new RoxybrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toHaveLength(1);
         expect(results[0].id).toBe('p1');
         expect(results[0].ws).toBe('ws://localhost:1234');
@@ -94,10 +94,10 @@ describe('connectors/discovery/roxybrowser', () => {
 
     it('should handle API errors gracefully', async () => {
         mockApiHandler.get.mockRejectedValue(new Error('Network error'));
-        
+
         const discoverer = new RoxybrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toEqual([]);
     });
 
@@ -106,14 +106,14 @@ describe('connectors/discovery/roxybrowser', () => {
             code: 0,
             data: [
                 { id: 'p1', name: 'Valid', ws: 'ws://...' },
-                { id: 'p2', name: 'Invalid' } // missing ws and http
-            ]
+                { id: 'p2', name: 'Invalid' }, // missing ws and http
+            ],
         };
         mockApiHandler.get.mockResolvedValue(mockResponse);
-        
+
         const discoverer = new RoxybrowserDiscover();
         const results = await discoverer.discover();
-        
+
         expect(results).toHaveLength(1);
         expect(results[0].id).toBe('p1');
     });

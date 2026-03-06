@@ -102,7 +102,7 @@ describe('api/utils/timing.js', () => {
         });
 
         it('should have mean and stdev for each type', () => {
-            Object.values(humanTiming.readingTimes).forEach(config => {
+            Object.values(humanTiming.readingTimes).forEach((config) => {
                 expect(config.mean).toBeGreaterThan(0);
                 expect(config.stdev).toBeGreaterThan(0);
             });

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Synchronization Helpers
  * Wait for time, selectors, visibility, and hidden states.
- * 
+ *
  * @module api/wait
  */
 
@@ -20,7 +20,7 @@ export async function wait(ms) {
         throw new ValidationError(`wait() requires a positive number, got: ${ms}`);
     }
     const jitter = ms * 0.15 * (Math.random() - 0.5) * 2;
-    await new Promise(r => setTimeout(r, Math.max(0, Math.round(ms + jitter))));
+    await new Promise((r) => setTimeout(r, Math.max(0, Math.round(ms + jitter))));
 }
 
 /**
@@ -43,7 +43,7 @@ export async function waitFor(selectorOrPredicate, options = {}) {
             } catch (e) {
                 // Ignore errors during polling (e.g. page crashes, temporary disconnects)
             }
-            await new Promise(r => setTimeout(r, polling));
+            await new Promise((r) => setTimeout(r, polling));
         }
         throw new ElementTimeoutError('predicate', timeout);
     }

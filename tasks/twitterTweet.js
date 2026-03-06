@@ -29,7 +29,7 @@ const DEFAULT_TASK_TIMEOUT_MS = 6 * 60 * 1000; // 6 Minutes (Robustness takes ti
  * @param {number} [payload.taskTimeoutMs]
  */
 export default async function apiTwitterTweetTask(page, payload) {
-    const browserInfo = payload.browserInfo || "unknown_profile";
+    const browserInfo = payload.browserInfo || 'unknown_profile';
     const logger = createLogger(`api-twitterTweet [${browserInfo}]`);
     const taskTimeoutMs = payload.taskTimeoutMs || DEFAULT_TASK_TIMEOUT_MS;
 
@@ -68,7 +68,7 @@ export default async function apiTwitterTweetTask(page, payload) {
                     waitUntil: 'domcontentloaded',
                     warmup: true,
                     warmupMouse: true,
-                    warmupPause: true
+                    warmupPause: true,
                 });
 
                 // 3. Warm-up Reading (30-45s)
@@ -88,7 +88,7 @@ export default async function apiTwitterTweetTask(page, payload) {
                         throw new Error(`Source file not found: ${TWEET_SOURCE_FILE}`);
                     }
                     const content = fs.readFileSync(TWEET_SOURCE_FILE, 'utf-8');
-                    const lines = content.split(/\r?\n/).filter(line => line.trim().length > 0);
+                    const lines = content.split(/\r?\n/).filter((line) => line.trim().length > 0);
 
                     if (lines.length === 0) {
                         throw new Error(`Source file is empty: ${TWEET_SOURCE_FILE}`);
@@ -101,7 +101,9 @@ export default async function apiTwitterTweetTask(page, payload) {
                     tweetLine = tweetLine.replace(/\\n/g, '\n');
 
                     fs.writeFileSync(TWEET_SOURCE_FILE, remainingLines.join('\n'), 'utf-8');
-                    logger.info(`[api-twitterTweet] Picked tweet: "${tweetLine.substring(0, 30).replace(/\n/g, ' ')}..."`);
+                    logger.info(
+                        `[api-twitterTweet] Picked tweet: "${tweetLine.substring(0, 30).replace(/\n/g, ' ')}..."`
+                    );
                 } catch (fileError) {
                     logger.error(`[api-twitterTweet] File Error: ${fileError.message}`);
                     throw fileError;
@@ -128,9 +130,14 @@ export default async function apiTwitterTweetTask(page, payload) {
                     composerOpen = true;
                     logger.info(`[api-twitterTweet] Composer area visible.`);
                 } catch (_e) {
-                    logger.warn(`[api-twitterTweet] Composer did not appear via standard UI. Retrying 'n'...`);
+                    logger.warn(
+                        `[api-twitterTweet] Composer did not appear via standard UI. Retrying 'n'...`
+                    );
                     await page.keyboard.press('n');
-                    await api.waitVisible(inlineComposeInput, { timeout: 5000 }).then(() => composerOpen = true).catch(() => { });
+                    await api
+                        .waitVisible(inlineComposeInput, { timeout: 5000 })
+                        .then(() => (composerOpen = true))
+                        .catch(() => {});
                 }
 
                 if (!composerOpen) {
@@ -148,7 +155,8 @@ export default async function apiTwitterTweetTask(page, payload) {
 
                 // 7. Post
                 logger.info(`[api-twitterTweet] Clicking Post button...`);
-                const postBtn = 'button[data-testid="tweetButton"], button[data-testid="tweetButtonInline"]';
+                const postBtn =
+                    'button[data-testid="tweetButton"], button[data-testid="tweetButtonInline"]';
 
                 const clickResult = await api.click(postBtn, { recovery: true });
 
@@ -161,7 +169,9 @@ export default async function apiTwitterTweetTask(page, payload) {
                         metricsCollector.recordSocialAction('tweet', 1);
                         await takeScreenshot(page, `api-tweet-success`);
                     } catch (_e) {
-                        logger.warn(`[api-twitterTweet] Post button still visible, checking URL or modal state...`);
+                        logger.warn(
+                            `[api-twitterTweet] Post button still visible, checking URL or modal state...`
+                        );
                     }
                 } else {
                     throw new Error('Failed to click Post button.');
@@ -178,7 +188,9 @@ export default async function apiTwitterTweetTask(page, payload) {
 
                 logger.info(`[api-twitterTweet] Task finished successfully.`);
             })(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Global Task Timeout')), taskTimeoutMs))
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Global Task Timeout')), taskTimeoutMs)
+            ),
         ]);
     } catch (error) {
         logger.error(`[api-twitterTweet] Fatal Task Error: ${error.message}`);

@@ -22,9 +22,9 @@ Safe, concurrent utilities for handling text-based data.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `file.readline(path)` | Read a random non-empty line |
+| Function                 | Description                   |
+| ------------------------ | ----------------------------- |
+| `file.readline(path)`    | Read a random non-empty line  |
 | `file.consumeline(path)` | Read and remove a random line |
 
 ### Usage
@@ -50,11 +50,11 @@ Memory profiling utilities.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
+| Function            | Description              |
+| ------------------- | ------------------------ |
 | `memory.getUsage()` | Get current memory usage |
-| `memory.getHeap()` | Get heap statistics |
-| `memory.track()` | Start tracking |
+| `memory.getHeap()`  | Get heap statistics      |
+| `memory.track()`    | Start tracking           |
 
 ### Usage
 
@@ -78,11 +78,11 @@ Detection patching utilities for anti-bot measures.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `patch.apply()` | Apply detection patches |
-| `patch.stripCDPMarkers()` | Strip CDP markers |
-| `patch.check()` | Check patch status |
+| Function                  | Description             |
+| ------------------------- | ----------------------- |
+| `patch.apply()`           | Apply detection patches |
+| `patch.stripCDPMarkers()` | Strip CDP markers       |
+| `patch.check()`           | Check patch status      |
 
 ### Usage
 
@@ -106,9 +106,9 @@ Retry logic with exponential backoff.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `retry(fn, options)` | Retry function |
+| Function                         | Description        |
+| -------------------------------- | ------------------ |
+| `retry(fn, options)`             | Retry function     |
 | `retry.withBackoff(fn, options)` | Retry with backoff |
 
 ### Retry Options
@@ -128,13 +128,16 @@ Retry logic with exponential backoff.
 ```javascript
 import { retry } from './api/utils/retry.js';
 
-const result = await retry(async () => {
-    await api.click('.button');
-}, {
-    maxAttempts: 3,
-    initialDelay: 100,
-    backoffMultiplier: 2
-});
+const result = await retry(
+    async () => {
+        await api.click('.button');
+    },
+    {
+        maxAttempts: 3,
+        initialDelay: 100,
+        backoffMultiplier: 2,
+    }
+);
 ```
 
 ---
@@ -145,13 +148,13 @@ Configuration management utilities.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `config.get(key)` | Get config value |
+| Function                 | Description      |
+| ------------------------ | ---------------- |
+| `config.get(key)`        | Get config value |
 | `config.set(key, value)` | Set config value |
-| `config.load(path)` | Load from file |
-| `config.save(path)` | Save to file |
-| `config.merge(obj)` | Merge config |
+| `config.load(path)`      | Load from file   |
+| `config.save(path)`      | Save to file     |
+| `config.merge(obj)`      | Merge config     |
 
 ### Usage
 
@@ -167,8 +170,8 @@ await api.config.save('./config.json');
 // Merge
 await api.config.merge({
     humanization: {
-        enabled: true
-    }
+        enabled: true,
+    },
 });
 ```
 
@@ -180,13 +183,13 @@ Math utilities for calculations.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `gaussian(mean, stdDev)` | Gaussian random |
-| `randomInRange(min, max)` | Random in range |
-| `clamp(value, min, max)` | Clamp value |
-| `lerp(a, b, t)` | Linear interpolation |
-| `map(value, inMin, inMax, outMin, outMax)` | Map value range |
+| Function                                   | Description          |
+| ------------------------------------------ | -------------------- |
+| `gaussian(mean, stdDev)`                   | Gaussian random      |
+| `randomInRange(min, max)`                  | Random in range      |
+| `clamp(value, min, max)`                   | Clamp value          |
+| `lerp(a, b, t)`                            | Linear interpolation |
+| `map(value, inMin, inMax, outMin, outMax)` | Map value range      |
 
 ### Usage
 
@@ -208,9 +211,9 @@ Timing utilities.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `delay(ms)` | Fixed delay |
+| Function      | Description            |
+| ------------- | ---------------------- |
+| `delay(ms)`   | Fixed delay            |
 | `measure(fn)` | Measure execution time |
 | `timeout(ms)` | Create timeout promise |
 
@@ -240,12 +243,12 @@ Logging utilities.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `logger.info(msg)` | Info log |
-| `logger.warn(msg)` | Warning log |
-| `logger.error(msg)` | Error log |
-| `logger.debug(msg)` | Debug log |
+| Function            | Description |
+| ------------------- | ----------- |
+| `logger.info(msg)`  | Info log    |
+| `logger.warn(msg)`  | Warning log |
+| `logger.error(msg)` | Error log   |
+| `logger.debug(msg)` | Debug log   |
 
 ### Usage
 
@@ -266,14 +269,14 @@ Other utility functions.
 
 ### Functions
 
-| Function | Description |
-|----------|-------------|
-| `uniqueId()` | Generate unique ID |
-| `uuid()` | Generate UUID |
-| `sleep(ms)` | Sleep for ms |
+| Function           | Description             |
+| ------------------ | ----------------------- |
+| `uniqueId()`       | Generate unique ID      |
+| `uuid()`           | Generate UUID           |
+| `sleep(ms)`        | Sleep for ms            |
 | `chunk(arr, size)` | Split array into chunks |
-| `debounce(fn, ms)` | Debounce function |
-| `throttle(fn, ms)` | Throttle function |
+| `debounce(fn, ms)` | Debounce function       |
+| `throttle(fn, ms)` | Throttle function       |
 
 ### Usage
 
@@ -287,7 +290,7 @@ const uuid = uuid();
 await sleep(1000);
 
 // Chunk
-const chunks = chunk([1,2,3,4,5], 2); // [[1,2], [3,4], [5]]
+const chunks = chunk([1, 2, 3, 4, 5], 2); // [[1,2], [3,4], [5]]
 
 // Debounce
 const debounced = debounce(() => console.log('Hi'), 100);

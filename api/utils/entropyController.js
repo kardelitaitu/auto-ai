@@ -11,13 +11,14 @@ import { calculateBackoffDelay } from './retry.js';
 /**
  * EntropyController Class
  * Create NEW INSTANCE per browser session for parallel safety.
- * 
+ *
  * @class EntropyController
  */
 class EntropyController {
     constructor(options = {}) {
         this.logger = createLogger('EntropyController');
-        this.sessionId = options.sessionId || `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        this.sessionId =
+            options.sessionId || `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         this.sessionStart = Date.now();
         this.sessionEntropy = this.generateSessionProfile();
         this.actionLog = [];
@@ -37,8 +38,12 @@ class EntropyController {
         this.fatigueActive = false;
         this.fatigueLevel = 0;
 
-        this.logger.info(`[${this.sessionId}] Session initialized with paceMultiplier=${this.sessionEntropy.paceMultiplier.toFixed(2)}`);
-        this.logger.info(`[${this.sessionId}] Fatigue scheduled for T+${(this.fatigueActivationTime / 60000).toFixed(1)}m`);
+        this.logger.info(
+            `[${this.sessionId}] Session initialized with paceMultiplier=${this.sessionEntropy.paceMultiplier.toFixed(2)}`
+        );
+        this.logger.info(
+            `[${this.sessionId}] Fatigue scheduled for T+${(this.fatigueActivationTime / 60000).toFixed(1)}m`
+        );
     }
 
     /**
@@ -52,12 +57,14 @@ class EntropyController {
             return this.fatigueActive;
         }
 
-        const elapsed = elapsedMs !== null ? elapsedMs : (Date.now() - this.sessionStart);
+        const elapsed = elapsedMs !== null ? elapsedMs : Date.now() - this.sessionStart;
 
         if (elapsed > this.fatigueActivationTime) {
             this.fatigueActive = true;
             this.fatigueLevel = this.calculateFatigueLevel();
-            this.logger.info(`[${this.sessionId}] [Fatigue] Activated at T+${(elapsed / 60000).toFixed(1)}m (level=${this.fatigueLevel.toFixed(2)})`);
+            this.logger.info(
+                `[${this.sessionId}] [Fatigue] Activated at T+${(elapsed / 60000).toFixed(1)}m (level=${this.fatigueLevel.toFixed(2)})`
+            );
         }
 
         return this.fatigueActive;
@@ -90,17 +97,17 @@ class EntropyController {
 
         return {
             // Movement becomes slower (0.7 - 0.9)
-            movementSpeed: 1.0 - (level * 0.3),
+            movementSpeed: 1.0 - level * 0.3,
             // Hesitation increases (1.2 - 1.5x)
-            hesitationIncrease: 1.0 + (level * 0.5),
+            hesitationIncrease: 1.0 + level * 0.5,
             // Click hold time increases (1.1 - 1.3x)
-            clickHoldTime: 1.0 + (level * 0.3),
+            clickHoldTime: 1.0 + level * 0.3,
             // Scroll amounts decrease (0.8 - 0.95)
-            scrollAmount: 1.0 - (level * 0.2),
+            scrollAmount: 1.0 - level * 0.2,
             // Micro-break chance increases (0.05 -> 0.15)
-            microBreakChance: 0.05 + (level * 0.10),
+            microBreakChance: 0.05 + level * 0.1,
             // Typing speed decreases
-            typingSpeed: 1.0 - (level * 0.25)
+            typingSpeed: 1.0 - level * 0.25,
         };
     }
 
@@ -143,7 +150,7 @@ class EntropyController {
         const timeSinceLastAction = Date.now() - this.lastActionTimestamp;
         const fatigueFactor = Math.min(timeSinceLastAction / 300000, 1);
 
-        return Math.random() < (adjustedChance + fatigueFactor * 0.08);
+        return Math.random() < adjustedChance + fatigueFactor * 0.08;
     }
 
     /**
@@ -184,7 +191,7 @@ class EntropyController {
             // Scroll preference intensity
             scrollIntensity: this.gaussian(1.0, 0.2, 0.6, 1.5),
             // Reaction speed profile
-            reactionProfile: Math.random() < 0.3 ? 'fast' : (Math.random() < 0.5 ? 'normal' : 'slow'),
+            reactionProfile: Math.random() < 0.3 ? 'fast' : Math.random() < 0.5 ? 'normal' : 'slow',
         };
     }
 
@@ -199,7 +206,8 @@ class EntropyController {
      * @returns {number} Normally distributed value
      */
     gaussian(mean, stdDev, min, max) {
-        let u = 0, v = 0;
+        let u = 0,
+            v = 0;
         while (u === 0) u = Math.random();
         while (v === 0) v = Math.random();
         const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
@@ -222,17 +230,17 @@ class EntropyController {
     }
 
     /**
-      * @param {number} [attempt=0] - Current attempt number (0-indexed)
-      * @param {number} [baseMs=1500] - Base delay for first retry
-      * @returns {number} Delay in milliseconds
-      */
+     * @param {number} [attempt=0] - Current attempt number (0-indexed)
+     * @param {number} [baseMs=1500] - Base delay for first retry
+     * @returns {number} Delay in milliseconds
+     */
     retryDelay(attempt = 0, baseMs = 1500) {
         const delay = calculateBackoffDelay(attempt, {
             baseDelay: baseMs,
             maxDelay: 30000,
             factor: 1.8,
             jitterMin: 0.7,
-            jitterMax: 1.3
+            jitterMax: 1.3,
         });
         return Math.max(500, delay);
     }
@@ -262,9 +270,9 @@ class EntropyController {
      */
     reactionTime() {
         const baseProfiles = {
-            fast: { mu: 5.2, sigma: 0.25 },   // ~180ms median
-            normal: { mu: 5.5, sigma: 0.3 },  // ~245ms median
-            slow: { mu: 5.7, sigma: 0.35 }    // ~300ms median
+            fast: { mu: 5.2, sigma: 0.25 }, // ~180ms median
+            normal: { mu: 5.5, sigma: 0.3 }, // ~245ms median
+            slow: { mu: 5.7, sigma: 0.35 }, // ~300ms median
         };
         const profile = baseProfiles[this.sessionEntropy.reactionProfile];
         const base = this.logNormal(profile.mu, profile.sigma);
@@ -319,12 +327,12 @@ class EntropyController {
             // Hesitant user: longer delay, possible micro-retreat
             return {
                 delay: Math.floor(this.gaussian(1500, 500, 800, 4000)),
-                microRetreat: Math.random() < 0.25
+                microRetreat: Math.random() < 0.25,
             };
         }
         return {
             delay: Math.floor(this.gaussian(500, 200, 200, 1200)),
-            microRetreat: false
+            microRetreat: false,
         };
     }
 
@@ -336,10 +344,14 @@ class EntropyController {
         // Mix of short and long gaps
         if (Math.random() < 0.7) {
             // Short gap (continuing flow)
-            return Math.floor(this.gaussian(800, 300, 300, 2000) * this.sessionEntropy.paceMultiplier);
+            return Math.floor(
+                this.gaussian(800, 300, 300, 2000) * this.sessionEntropy.paceMultiplier
+            );
         }
         // Long gap (micro-pause/distraction)
-        return Math.floor(this.gaussian(3000, 1000, 1500, 8000) * this.sessionEntropy.paceMultiplier);
+        return Math.floor(
+            this.gaussian(3000, 1000, 1500, 8000) * this.sessionEntropy.paceMultiplier
+        );
     }
 
     /**
@@ -352,7 +364,8 @@ class EntropyController {
         const wpm = this.gaussian(250, 50, 150, 400);
         const baseTime = (wordCount / wpm) * 60 * 1000;
         // Add comprehension pauses
-        const pauses = this.poisson(Math.max(1, wordCount / 50)) * this.gaussian(400, 150, 100, 800);
+        const pauses =
+            this.poisson(Math.max(1, wordCount / 50)) * this.gaussian(400, 150, 100, 800);
         return Math.floor((baseTime + pauses) * this.sessionEntropy.paceMultiplier);
     }
 
@@ -363,7 +376,9 @@ class EntropyController {
     scrollDistance() {
         // 70% small scans, 30% large sweeps
         if (Math.random() < 0.7) {
-            return Math.floor(this.gaussian(180, 60, 50, 350) * this.sessionEntropy.scrollIntensity);
+            return Math.floor(
+                this.gaussian(180, 60, 50, 350) * this.sessionEntropy.scrollIntensity
+            );
         }
         return Math.floor(this.gaussian(650, 200, 400, 1200) * this.sessionEntropy.scrollIntensity);
     }
@@ -381,7 +396,7 @@ class EntropyController {
             timestamp: this.lastActionTimestamp,
             type: actionType,
             sessionAge: this.lastActionTimestamp - this.sessionStart,
-            ...details
+            ...details,
         });
 
         // Keep log bounded (prevent memory leak)
@@ -390,7 +405,7 @@ class EntropyController {
         }
     }
 
-/**
+    /**
      * Get session statistics for debugging/monitoring
      * @returns {object} Session stats
      */
@@ -403,13 +418,13 @@ class EntropyController {
                 active: this.fatigueActive,
                 level: this.fatigueLevel,
                 modifiers: this.getFatigueModifiers(),
-                activationTime: this.fatigueActivationTime
+                activationTime: this.fatigueActivationTime,
             },
-            recentActions: this.actionLog.slice(-20)
+            recentActions: this.actionLog.slice(-20),
         };
     }
 
-/**
+    /**
      * Reset session entropy (call between browser sessions)
      */
     resetSession() {
@@ -428,7 +443,9 @@ class EntropyController {
             this.fatigueMaxStartMs
         );
 
-        this.logger.info(`[${this.sessionId}] Session reset. paceMultiplier=${this.sessionEntropy.paceMultiplier.toFixed(2)}, Fatigue T+${(this.fatigueActivationTime / 60000).toFixed(1)}m`);
+        this.logger.info(
+            `[${this.sessionId}] Session reset. paceMultiplier=${this.sessionEntropy.paceMultiplier.toFixed(2)}, Fatigue T+${(this.fatigueActivationTime / 60000).toFixed(1)}m`
+        );
     }
 }
 
@@ -436,7 +453,7 @@ class EntropyController {
 // PARALLEL SAFETY NOTE
 // ============================================================================
 // For parallel browser sessions, create NEW INSTANCES per browser:
-// 
+//
 // ❌ UNSAFE (shared state):
 //   import { entropy } from './entropyController.js';
 //   entropy.retryDelay();

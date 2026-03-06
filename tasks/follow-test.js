@@ -17,7 +17,10 @@ export default async function followTestTask(page, payload) {
     const logger = createLogger('follow-test.js');
 
     // Default to a known tweet — override with payload.url or env var
-    const tweetUrl = payload?.url || process.env.TARGET_URL || 'https://x.com/JTomCorVi/status/2028699457823342755';
+    const tweetUrl =
+        payload?.url ||
+        process.env.TARGET_URL ||
+        'https://x.com/JTomCorVi/status/2028699457823342755';
 
     // Derive profile URL: strip /status/{id} from tweet URL
     const profileUrl = tweetUrl.replace(/\/status\/\d+.*/, '');
@@ -37,7 +40,11 @@ export default async function followTestTask(page, payload) {
 
             // 1. Navigate to the tweet first (simulates arriving via feed dive)
             logger.info(`[follow-test] Navigating to tweet...`);
-            await api.goto(tweetUrl, { waitUntil: 'domcontentloaded', timeout: 30000, warmup: false });
+            await api.goto(tweetUrl, {
+                waitUntil: 'domcontentloaded',
+                timeout: 30000,
+                warmup: false,
+            });
             await api.wait(mathUtils.randomInRange(2500, 4500));
 
             // 2. Navigate to profile — click author username link (ghost cursor)
@@ -47,7 +54,9 @@ export default async function followTestTask(page, payload) {
                 logger.info(`[follow-test] Clicking author name link (ghost cursor)...`);
                 await api.click(authorSel);
             } catch (_e) {
-                logger.info(`[follow-test] Click failed (${_e.message}) api.click FAILED ,no api.goto fallback for stealth`);
+                logger.info(
+                    `[follow-test] Click failed (${_e.message}) api.click FAILED ,no api.goto fallback for stealth`
+                );
             }
             await api.wait(mathUtils.randomInRange(2000, 4000));
 
@@ -56,9 +65,13 @@ export default async function followTestTask(page, payload) {
             const result = await api.followWithAPI({ username });
 
             if (result.success) {
-                logger.info(`✅ Follow Test PASSED  reason=${result.reason}  method=${result.method}`);
+                logger.info(
+                    `✅ Follow Test PASSED  reason=${result.reason}  method=${result.method}`
+                );
             } else {
-                logger.error(`❌ Follow Test FAILED  reason=${result.reason}  method=${result.method}`);
+                logger.error(
+                    `❌ Follow Test FAILED  reason=${result.reason}  method=${result.method}`
+                );
             }
 
             // 4. Keep page open briefly for observation
@@ -66,7 +79,6 @@ export default async function followTestTask(page, payload) {
             await api.wait(5000);
 
             return result;
-
         } catch (error) {
             logger.error(`[follow-test] Error: ${error.message}`);
             throw error;

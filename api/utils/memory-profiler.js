@@ -29,21 +29,23 @@ class MemoryProfiler {
             heapTotal: Math.round(usage.heapTotal / 1024 / 1024),
             external: Math.round(usage.external / 1024 / 1024),
             rss: Math.round(usage.rss / 1024 / 1024),
-            timestamp: Date.now()
+            timestamp: Date.now(),
         };
     }
 
     getSnapshot() {
         const current = this.getUsage();
-        const delta = this.#baseline ? {
-            heapUsed: current.heapUsed - this.#baseline.heapUsed,
-            heapTotal: current.heapTotal - this.#baseline.heapTotal,
-            external: current.external - this.#baseline.external,
-            rss: current.rss - this.#baseline.rss
-        } : null;
+        const delta = this.#baseline
+            ? {
+                  heapUsed: current.heapUsed - this.#baseline.heapUsed,
+                  heapTotal: current.heapTotal - this.#baseline.heapTotal,
+                  external: current.external - this.#baseline.external,
+                  rss: current.rss - this.#baseline.rss,
+              }
+            : null;
 
         const snapshot = { current, delta, timestamp: Date.now() };
-        
+
         this.#snapshots.push(snapshot);
         if (this.#snapshots.length > SNAPSHOT_LIMIT) {
             this.#snapshots.shift();
@@ -65,7 +67,9 @@ class MemoryProfiler {
 
         this.#trackingInterval = setInterval(() => {
             const snapshot = this.getSnapshot();
-            logger.info(`[memory] heap: ${snapshot.current.heapUsed}MB (${snapshot.delta?.heapUsed >= 0 ? '+' : ''}${snapshot.delta?.heapUsed}MB) rss: ${snapshot.current.rss}MB`);
+            logger.info(
+                `[memory] heap: ${snapshot.current.heapUsed}MB (${snapshot.delta?.heapUsed >= 0 ? '+' : ''}${snapshot.delta?.heapUsed}MB) rss: ${snapshot.current.rss}MB`
+            );
         }, this.#intervalMs);
 
         logger.info(`Memory tracking started (interval: ${this.#intervalMs}ms)`);
@@ -107,7 +111,7 @@ class MemoryProfiler {
                 hasLeak: true,
                 growthMB: growth,
                 thresholdMB,
-                snapshotCount: this.#snapshots.length
+                snapshotCount: this.#snapshots.length,
             };
         }
 
@@ -138,7 +142,7 @@ export const memory = {
     get isTracking() {
         return globalProfiler.isTracking;
     },
-    dispose: () => globalProfiler.dispose()
+    dispose: () => globalProfiler.dispose(),
 };
 
 export { MemoryProfiler };

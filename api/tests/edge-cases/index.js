@@ -1,6 +1,6 @@
 /**
  * Edge Case Tests Index
- * 
+ *
  * This file re-exports all edge case tests for aggregated testing.
  * Import paths using @tests alias:
  *   import { describe, it, expect } from 'vitest';
@@ -18,29 +18,29 @@ export { phase1Validation, multilineTweet, models, diveLock };
  * Run all edge case tests
  */
 export async function runAllEdgeCaseTests() {
-  const results = {
-    passed: 0,
-    failed: 0,
-    tests: []
-  };
+    const results = {
+        passed: 0,
+        failed: 0,
+        tests: [],
+    };
 
-  const testModules = [
-    { name: 'phase1-3-validation', module: phase1Validation },
-    { name: 'test-multiline-tweet', module: multilineTweet },
-    { name: 'test-models', module: models },
-    { name: 'test-dive-lock', module: diveLock }
-  ];
+    const testModules = [
+        { name: 'phase1-3-validation', module: phase1Validation },
+        { name: 'test-multiline-tweet', module: multilineTweet },
+        { name: 'test-models', module: models },
+        { name: 'test-dive-lock', module: diveLock },
+    ];
 
-  for (const { name } of testModules) {
-    try {
-      // Module is loaded, tests will be discovered by vitest
-      results.tests.push({ name, status: 'loaded' });
-      results.passed++;
-    } catch (error) {
-      results.tests.push({ name, status: 'failed', error: error.message });
-      results.failed++;
+    for (const { name } of testModules) {
+        try {
+            // Module is loaded, tests will be discovered by vitest
+            results.tests.push({ name, status: 'loaded' });
+            results.passed++;
+        } catch (error) {
+            results.tests.push({ name, status: 'failed', error: error.message });
+            results.failed++;
+        }
     }
-  }
 
-  return results;
+    return results;
 }

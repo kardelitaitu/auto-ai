@@ -1,7 +1,7 @@
 /**
  * @fileoverview Browser Patch — Anti-detection and humanization scripts.
  * Internal copy for api/ independence from utils/browserPatch.js.
- * 
+ *
  * @module api/utils/browserPatch
  */
 
@@ -37,8 +37,12 @@ export async function applyHumanizationPatch(page, logger) {
             const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
             HTMLCanvasElement.prototype.toDataURL = function (...args) {
                 // Skip poisoning on X.com/Twitter to avoid "privacy extension" detection
-                if (typeof window !== 'undefined' && window.location && 
-                    (window.location.hostname.includes('x.com') || window.location.hostname.includes('twitter.com'))) {
+                if (
+                    typeof window !== 'undefined' &&
+                    window.location &&
+                    (window.location.hostname.includes('x.com') ||
+                        window.location.hostname.includes('twitter.com'))
+                ) {
                     return originalToDataURL.apply(this, args);
                 }
 
@@ -61,7 +65,10 @@ export async function applyHumanizationPatch(page, logger) {
         // 5. Visibility Spoofing
         try {
             Object.defineProperty(document, 'hidden', { get: () => false, configurable: true });
-            Object.defineProperty(document, 'visibilityState', { get: () => 'visible', configurable: true });
+            Object.defineProperty(document, 'visibilityState', {
+                get: () => 'visible',
+                configurable: true,
+            });
 
             const originalAddEventListener = document.addEventListener;
             document.addEventListener = function (type, listener, options) {

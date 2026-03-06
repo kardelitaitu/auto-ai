@@ -2,7 +2,7 @@ import { api } from '../../index.js';
 /**
  * Content Skimmer
  * Human-like content consumption patterns
- * 
+ *
  * Human Reading Patterns:
  * 1. Quick glance (1-2s) - "What is this?"
  * 2. Scan (2-4s) - "Is this interesting?"
@@ -27,7 +27,7 @@ export class ContentSkimmer {
 
     /**
      * Main content consumption method
-     * 
+     *
      * @param {string} type - 'tweet', 'thread', 'media', 'profile'
      * @param {string} duration - 'glance', 'skim', 'read', 'deep'
      */
@@ -36,7 +36,7 @@ export class ContentSkimmer {
             glance: { read: 1000, scroll: 50, pause: 500 },
             skim: { read: 2500, scroll: 100, pause: 1000 },
             read: { read: 5000, scroll: 150, pause: 1500 },
-            deep: { read: 10000, scroll: 200, pause: 2500 }
+            deep: { read: 10000, scroll: 200, pause: 2500 },
         };
 
         const config = durationConfig[duration] || durationConfig.skim;
@@ -66,7 +66,7 @@ export class ContentSkimmer {
         const durationMap = {
             quick: { min: 1000, max: 2000 },
             normal: { min: 2000, max: 4000 },
-            long: { min: 4000, max: 8000 }
+            long: { min: 4000, max: 8000 },
         };
 
         const config = durationMap[duration] || durationMap.normal;

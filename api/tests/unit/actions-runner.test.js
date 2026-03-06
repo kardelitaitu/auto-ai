@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ActionRunner } from '@api/actions/advanced-index.js';
 
@@ -8,8 +7,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('ActionRunner', () => {
@@ -29,20 +28,24 @@ describe('ActionRunner', () => {
                     bookmark: { probability: 0.1, enabled: true },
                     retweet: { probability: 0, enabled: false },
                     follow: { probability: 0, enabled: false },
-                    goHome: { enabled: true }
-                }
+                    goHome: { enabled: true },
+                },
             },
             diveQueue: {
-                canEngage: vi.fn().mockReturnValue(true)
-            }
+                canEngage: vi.fn().mockReturnValue(true),
+            },
         };
 
         mockActions = {
-            reply: { execute: vi.fn().mockResolvedValue({ success: true }), tryExecute: vi.fn().mockResolvedValue({ executed: true }), getStats: vi.fn().mockReturnValue({ attempts: 1 }) },
+            reply: {
+                execute: vi.fn().mockResolvedValue({ success: true }),
+                tryExecute: vi.fn().mockResolvedValue({ executed: true }),
+                getStats: vi.fn().mockReturnValue({ attempts: 1 }),
+            },
             quote: { execute: vi.fn(), tryExecute: vi.fn(), getStats: vi.fn() },
             like: { execute: vi.fn(), tryExecute: vi.fn(), getStats: vi.fn() },
             bookmark: { execute: vi.fn(), tryExecute: vi.fn(), getStats: vi.fn() },
-            goHome: { execute: vi.fn(), tryExecute: vi.fn(), getStats: vi.fn() }
+            goHome: { execute: vi.fn(), tryExecute: vi.fn(), getStats: vi.fn() },
         };
 
         actionRunner = new ActionRunner(mockAgent, mockActions);
@@ -165,7 +168,7 @@ describe('ActionRunner', () => {
             // Mock probabilities
             vi.spyOn(actionRunner, 'calculateSmartProbabilities').mockReturnValue({
                 reply: 0.5,
-                quote: 0.5
+                quote: 0.5,
             });
 
             // Random 0.999 -> should pick quote

@@ -6,8 +6,8 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('LocalBraveDiscover', () => {
@@ -28,13 +28,20 @@ describe('LocalBraveDiscover', () => {
             if (url.includes(':9005/json/version')) {
                 return {
                     ok: true,
-                    json: async () => ({ webSocketDebuggerUrl: 'ws://127.0.0.1:9005/devtools/browser/xyz' })
+                    json: async () => ({
+                        webSocketDebuggerUrl: 'ws://127.0.0.1:9005/devtools/browser/xyz',
+                    }),
                 };
             }
             if (url.includes(':9005/json')) {
                 return {
                     ok: true,
-                    json: async () => [{ id: 'tab1', webSocketDebuggerUrl: 'ws://127.0.0.1:9005/devtools/page/abc' }]
+                    json: async () => [
+                        {
+                            id: 'tab1',
+                            webSocketDebuggerUrl: 'ws://127.0.0.1:9005/devtools/page/abc',
+                        },
+                    ],
                 };
             }
             return { ok: false };
@@ -54,12 +61,14 @@ describe('LocalBraveDiscover', () => {
             if (url.includes(':9010/json')) {
                 return {
                     ok: true,
-                    json: async () => [{
-                        id: 'tab1',
-                        webSocketDebuggerUrl: 'ws://127.0.0.1:9010/devtools/page/abc',
-                        version: '1.2.3',
-                        userAgent: 'Mock Brave'
-                    }]
+                    json: async () => [
+                        {
+                            id: 'tab1',
+                            webSocketDebuggerUrl: 'ws://127.0.0.1:9010/devtools/page/abc',
+                            version: '1.2.3',
+                            userAgent: 'Mock Brave',
+                        },
+                    ],
                 };
             }
             return { ok: false };
@@ -83,7 +92,9 @@ describe('LocalBraveDiscover', () => {
             if (url.includes(':9015/json')) {
                 return {
                     ok: true,
-                    json: async () => { throw new Error('invalid json'); }
+                    json: async () => {
+                        throw new Error('invalid json');
+                    },
                 };
             }
             return { ok: false };

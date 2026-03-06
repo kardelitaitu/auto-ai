@@ -37,7 +37,7 @@ class AgentConnector {
             localRequests: 0,
             cloudRequests: 0,
             visionRequests: 0,
-            startTime: Date.now()
+            startTime: Date.now(),
         };
 
         this._loadTimeoutConfig();
@@ -55,13 +55,17 @@ class AgentConnector {
     async processRequest(request) {
         const { action, payload, sessionId } = request;
         const requestStartTime = Date.now();
-        
+
         logger.info(`[${sessionId}] Processing request: ${action}`);
-        logger.debug(`[${sessionId}] Request payload keys: ${Object.keys(payload || {}).join(', ')}`);
-        
+        logger.debug(
+            `[${sessionId}] Request payload keys: ${Object.keys(payload || {}).join(', ')}`
+        );
+
         // Check queue status before enqueueing
         const queueStats = this.requestQueue.getStats();
-        logger.debug(`[${sessionId}] Queue status before enqueue: running=${queueStats.running}, queued=${queueStats.queued}`);
+        logger.debug(
+            `[${sessionId}] Queue status before enqueue: running=${queueStats.running}, queued=${queueStats.queued}`
+        );
 
         const startTime = Date.now();
         this.stats.totalRequests++;
@@ -76,21 +80,26 @@ class AgentConnector {
 
             // Wrap the queue call with a timeout to prevent infinite hangs
             const REQUEST_TIMEOUT_MS = 60000; // 60 second timeout for any AI request
-            
+
             logger.debug(`[${sessionId}] Enqueueing request with timeout ${REQUEST_TIMEOUT_MS}ms`);
-            
+
             const queueResult = await Promise.race([
-                this.requestQueue.enqueue(async () => {
-                    return this._executeWithCircuitBreaker(request, action);
-                }, { priority }),
+                this.requestQueue.enqueue(
+                    async () => {
+                        return this._executeWithCircuitBreaker(request, action);
+                    },
+                    { priority }
+                ),
                 new Promise((_, reject) => {
                     setTimeout(() => {
                         reject(new Error(`Request timeout after ${REQUEST_TIMEOUT_MS}ms`));
                     }, REQUEST_TIMEOUT_MS);
-                })
+                }),
             ]);
 
-            logger.debug(`[${sessionId}] Request dequeued after ${Date.now() - requestStartTime}ms`);
+            logger.debug(
+                `[${sessionId}] Request dequeued after ${Date.now() - requestStartTime}ms`
+            );
 
             this.stats.successfulRequests++;
 
@@ -99,7 +108,9 @@ class AgentConnector {
 
             // DEBUG: Log result content before returning
             const contentLen = result.content?.length || 0;
-            logger.debug(`[${sessionId}] processRequest returning: success=${result.success}, contentLen=${contentLen}`);
+            logger.debug(
+                `[${sessionId}] processRequest returning: success=${result.success}, contentLen=${contentLen}`
+            );
 
             if (result.metadata?.routedTo === 'cloud') {
                 this.stats.cloudRequests++;
@@ -168,7 +179,9 @@ class AgentConnector {
         }
 
         // Fallback to local if cloud is disabled/unconfigured
-        logger.info(`[${sessionId}] Cloud is disabled or unconfigured, attempting local fallback for ${action}`);
+        logger.info(
+            `[${sessionId}] Cloud is disabled or unconfigured, attempting local fallback for ${action}`
+        );
         return this.handleGenerateReply(request);
     }
 
@@ -178,9 +191,19 @@ class AgentConnector {
      * @returns {object}
      */
     getStats(_sessionId = null) {
-        const { totalRequests, successfulRequests, failedRequests, totalDuration, localRequests, cloudRequests, visionRequests, startTime } = this.stats;
+        const {
+            totalRequests,
+            successfulRequests,
+            failedRequests,
+            totalDuration,
+            localRequests,
+            cloudRequests,
+            visionRequests,
+            startTime,
+        } = this.stats;
 
-        const successRate = totalRequests > 0 ? Number(((successfulRequests / totalRequests) * 100).toFixed(2)) : 0;
+        const successRate =
+            totalRequests > 0 ? Number(((successfulRequests / totalRequests) * 100).toFixed(2)) : 0;
         const avgDuration = totalRequests > 0 ? Math.round(totalDuration / totalRequests) : 0;
         const uptime = Date.now() - startTime;
 
@@ -193,11 +216,11 @@ class AgentConnector {
                 avgDuration,
                 local: localRequests,
                 cloud: cloudRequests,
-                vision: visionRequests
+                vision: visionRequests,
             },
             queue: this.requestQueue.getStats(),
             circuitBreaker: this.circuitBreaker.getAllStatus(),
-            uptime
+            uptime,
         };
     }
 
@@ -231,23 +254,23 @@ class AgentConnector {
                 queue: {
                     status: queueStats.running < queueStats.running * 0.8 ? 'healthy' : 'degraded',
                     running: queueStats.running,
-                    queued: queueStats.queued
+                    queued: queueStats.queued,
                 },
                 circuitBreaker: {
                     status: circuitHealth,
-                    breakers: cbStatus
+                    breakers: cbStatus,
                 },
                 requests: {
                     status: parseFloat(stats.requests.successRate) > 80 ? 'healthy' : 'degraded',
                     successRate: stats.requests.successRate,
-                    avgDuration: stats.requests.avgDuration
-                }
+                    avgDuration: stats.requests.avgDuration,
+                },
             },
             summary: {
                 totalRequests: stats.requests.total,
                 uptime: stats.uptime,
-                utilization: (queueStats.running / 3 * 100).toFixed(0) + '%'
-            }
+                utilization: ((queueStats.running / 3) * 100).toFixed(0) + '%',
+            },
         };
     }
 
@@ -259,7 +282,7 @@ class AgentConnector {
         let score = 100;
 
         const successRatePenalty = 100 - stats.requests.successRate;
-        score -= (successRatePenalty * 0.5);
+        score -= successRatePenalty * 0.5;
 
         const queueUtilization = stats.queue.running / 3;
         if (queueUtilization > 0.8) {
@@ -288,8 +311,12 @@ class AgentConnector {
 
         console.log(`\n[${timestamp}] Agent Connector Health Report`);
         console.log(`Status: ${health.status.toUpperCase()} (score: ${health.healthScore})`);
-        console.log(`Requests: ${health.summary.totalRequests} total, ${health.checks.requests.successRate}% success`);
-        console.log(`Queue: ${health.checks.queue.running} running, ${health.checks.queue.queued} queued`);
+        console.log(
+            `Requests: ${health.summary.totalRequests} total, ${health.checks.requests.successRate}% success`
+        );
+        console.log(
+            `Queue: ${health.checks.queue.running} running, ${health.checks.queue.queued} queued`
+        );
         console.log(`Circuit Breakers: ${health.checks.circuitBreaker.status}`);
         console.log(`Uptime: ${Math.round(health.summary.uptime / 1000)}s\n`);
     }
@@ -317,11 +344,11 @@ class AgentConnector {
     }
 
     /**
-      * Handle text-only generation requests using local Ollama.
-      * Optimized for Twitter reply generation with optional vision support.
-      * Falls back to text-only if vision times out.
-      * @param {object} request
-      */
+     * Handle text-only generation requests using local Ollama.
+     * Optimized for Twitter reply generation with optional vision support.
+     * Falls back to text-only if vision times out.
+     * @param {object} request
+     */
     async handleGenerateReply(request) {
         const { payload, sessionId } = request;
         const start = Date.now();
@@ -339,11 +366,15 @@ class AgentConnector {
 
         // Skip local if both vLLM and Ollama are disabled
         if (!vllmEnabled && !localEnabled) {
-            logger.info(`[${sessionId}] All local providers disabled (vllm: ${vllmEnabled}, ollama: ${localEnabled}), using cloud only`);
+            logger.info(
+                `[${sessionId}] All local providers disabled (vllm: ${vllmEnabled}, ollama: ${localEnabled}), using cloud only`
+            );
             return this._sendToCloud(request, start);
         }
 
-        logger.info(`[${sessionId}] Routing to local providers (vllm: ${vllmEnabled}, ollama: ${localEnabled})`);
+        logger.info(
+            `[${sessionId}] Routing to local providers (vllm: ${vllmEnabled}, ollama: ${localEnabled})`
+        );
 
         const hasVision = payload.vision && payload.context?.hasScreenshot;
         let llmRequest;
@@ -352,12 +383,14 @@ class AgentConnector {
 
         if (hasVision) {
             // Vision-enabled request with timeout handling
-            logger.info(`[${sessionId}] Using vision mode with ${payload.context.replyCount} replies context`);
+            logger.info(
+                `[${sessionId}] Using vision mode with ${payload.context.replyCount} replies context`
+            );
             llmRequest = {
                 prompt: payload.systemPrompt + '\n\n' + payload.userPrompt,
                 vision: payload.vision,
                 maxTokens: 150,
-                temperature: payload.temperature || 0.7
+                temperature: payload.temperature || 0.7,
             };
 
             try {
@@ -374,8 +407,8 @@ class AgentConnector {
                             duration,
                             model: response.metadata?.model,
                             visionEnabled: true,
-                            replyCount: payload.context?.replyCount || 0
-                        }
+                            replyCount: payload.context?.replyCount || 0,
+                        },
                     };
                 }
 
@@ -383,10 +416,11 @@ class AgentConnector {
                 logger.warn(`[${sessionId}] Vision failed: ${lastError}`);
 
                 // Check if it's a timeout error
-                const isTimeout = lastError.toLowerCase().includes('timeout') ||
-                                   lastError.toLowerCase().includes('timed out') ||
-                                   lastError.toLowerCase().includes('abort') ||
-                                   lastError.toLowerCase().includes('cancel');
+                const isTimeout =
+                    lastError.toLowerCase().includes('timeout') ||
+                    lastError.toLowerCase().includes('timed out') ||
+                    lastError.toLowerCase().includes('abort') ||
+                    lastError.toLowerCase().includes('cancel');
 
                 if (!isTimeout) {
                     logger.info(`[${sessionId}] Non-timeout error, falling back to text-only...`);
@@ -395,7 +429,6 @@ class AgentConnector {
                     logger.warn(`[${sessionId}] Vision timed out, falling back to text-only...`);
                     usedVision = false;
                 }
-
             } catch (error) {
                 lastError = error.message;
                 logger.warn(`[${sessionId}] Vision exception: ${lastError}`);
@@ -408,7 +441,7 @@ class AgentConnector {
         llmRequest = {
             prompt: payload.systemPrompt + '\n\n' + payload.userPrompt,
             maxTokens: payload.maxTokens || 100,
-            temperature: payload.temperature || 0.7
+            temperature: payload.temperature || 0.7,
         };
 
         try {
@@ -426,14 +459,13 @@ class AgentConnector {
                         model: response.metadata?.model,
                         visionEnabled: false,
                         replyCount: payload.context?.replyCount || 0,
-                        fallbackFromVision: hasVision
-                    }
+                        fallbackFromVision: hasVision,
+                    },
                 };
             }
 
             lastError = response.error;
             logger.warn(`[${sessionId}] Local text-only failed: ${lastError}`);
-
         } catch (error) {
             lastError = error.message;
             logger.warn(`[${sessionId}] Local exception: ${lastError}`);
@@ -447,25 +479,25 @@ class AgentConnector {
         } catch (_e) {
             // ignore
         }
-        
+
         if (!cloudEnabled) {
             logger.warn(`[${sessionId}] Cloud is disabled in config, skipping fallback`);
             logger.error(`[${sessionId}] All providers failed. Last error: ${lastError}`);
             return {
                 success: false,
                 error: lastError || 'Local failed and cloud is disabled',
-                metadata: { routedTo: 'none' }
+                metadata: { routedTo: 'none' },
             };
         }
-        
+
         logger.info(`[${sessionId}] Trying cloud fallback...`);
         try {
             const cloudRequest = {
                 ...request,
                 payload: {
                     ...payload,
-                    vision: null
-                }
+                    vision: null,
+                },
             };
             const cloudResponse = await this._callCloudWithBreaker(cloudRequest, sessionId);
 
@@ -480,14 +512,13 @@ class AgentConnector {
                         duration,
                         model: cloudResponse.metadata?.model || 'unknown',
                         visionEnabled: false,
-                        fallbackFromLocal: true
-                    }
+                        fallbackFromLocal: true,
+                    },
                 };
             }
 
             lastError = cloudResponse.error || 'Unknown cloud error';
             logger.warn(`[${sessionId}] Cloud fallback failed: ${lastError}`);
-
         } catch (cloudError) {
             logger.warn(`[${sessionId}] Cloud exception: ${cloudError.message}`);
             lastError = cloudError.message;
@@ -499,9 +530,11 @@ class AgentConnector {
             success: false,
             error: lastError,
             metadata: {
-                providersTried: ['vllm', 'ollama', 'cloud'].filter(p => p === 'vllm' ? vllmEnabled : p === 'ollama' ? localEnabled : true),
-                fallbackFromVision: hasVision && !usedVision
-            }
+                providersTried: ['vllm', 'ollama', 'cloud'].filter((p) =>
+                    p === 'vllm' ? vllmEnabled : p === 'ollama' ? localEnabled : true
+                ),
+                fallbackFromVision: hasVision && !usedVision,
+            },
         };
     }
 
@@ -519,8 +552,8 @@ class AgentConnector {
                 ...request,
                 payload: {
                     ...payload,
-                    vision: null
-                }
+                    vision: null,
+                },
             };
             const cloudResponse = await this._callCloudWithBreaker(cloudRequest, sessionId);
 
@@ -535,8 +568,8 @@ class AgentConnector {
                         duration,
                         model: cloudResponse.metadata?.model || 'unknown',
                         visionEnabled: false,
-                        fallbackFromLocal: false
-                    }
+                        fallbackFromLocal: false,
+                    },
                 };
             }
 
@@ -545,10 +578,9 @@ class AgentConnector {
                 error: cloudResponse.error || 'Unknown cloud error',
                 metadata: {
                     duration: Date.now() - startTime,
-                    providersTried: ['cloud']
-                }
+                    providersTried: ['cloud'],
+                },
             };
-
         } catch (cloudError) {
             logger.warn(`[${sessionId}] Cloud exception: ${cloudError.message}`);
             return {
@@ -556,8 +588,8 @@ class AgentConnector {
                 error: cloudError.message,
                 metadata: {
                     duration: Date.now() - startTime,
-                    providersTried: ['cloud']
-                }
+                    providersTried: ['cloud'],
+                },
             };
         }
     }
@@ -574,7 +606,7 @@ class AgentConnector {
             // 1. Construct prompt using VisionInterpreter (The Bridge)
             const prompt = this.visionInterpreter.buildPrompt({
                 goal: payload.goal,
-                semanticTree: payload.semanticTree
+                semanticTree: payload.semanticTree,
             });
 
             // 2. Prepare request for Local Client
@@ -582,7 +614,7 @@ class AgentConnector {
                 prompt: prompt,
                 vision: payload.vision, // Base64 image
                 maxTokens: 1024,
-                temperature: 0.1 // Low temperature for consistent JSON
+                temperature: 0.1, // Low temperature for consistent JSON
             };
 
             let response = await this._sendToLocal(llmRequest, sessionId);
@@ -590,7 +622,9 @@ class AgentConnector {
 
             // 3. Fallback to Cloud if local failed (not implemented fully yet, but logic placeholder)
             if (!response.success) {
-                logger.warn(`[${sessionId}] Local vision failed: ${response.error}. Fallback to Cloud (not impl).`);
+                logger.warn(
+                    `[${sessionId}] Local vision failed: ${response.error}. Fallback to Cloud (not impl).`
+                );
                 // return this.cloudClient.sendRequest(request); // Uncomment when cloud has vision
                 return response; // Return error for now
             }
@@ -609,8 +643,8 @@ class AgentConnector {
                     routedTo: usedProvider,
                     duration,
                     parsedSuccessfully: parsed.success,
-                    model: response.metadata?.model
-                }
+                    model: response.metadata?.model,
+                },
             };
         } catch (error) {
             logger.error(`[${sessionId}] Vision request exception: ${error.message}`);
@@ -619,8 +653,8 @@ class AgentConnector {
                 error: error.message || 'Unknown Error: Vision String Error',
                 metadata: {
                     routedTo: 'local',
-                    duration: Date.now() - start
-                }
+                    duration: Date.now() - start,
+                },
             };
         }
     }

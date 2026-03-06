@@ -14,7 +14,7 @@ async function run() {
     const task = {
         taskName: 'hanging-test-task',
         modulePath: './tasks/hanging-test-task.js',
-        payload: { hangTime: 10000 }
+        payload: { hangTime: 10000 },
     };
 
     logger.info('Adding hanging task to orchestrator...');
@@ -24,57 +24,58 @@ async function run() {
             id: 'test-session',
             browserInfo: 'test-browser',
             currentTaskName: '',
-            currentProcessing: ''
+            currentProcessing: '',
         };
 
         const mockContext = {
-            on: () => { },
-            grantPermissions: async () => { },
-            clearPermissions: async () => { },
-            addInitScript: async () => { },
+            on: () => {},
+            grantPermissions: async () => {},
+            clearPermissions: async () => {},
+            addInitScript: async () => {},
             cookies: async () => [],
-            setCookies: async () => { },
-            clearCookies: async () => { }
+            setCookies: async () => {},
+            clearCookies: async () => {},
         };
 
         const mockPage = {
             close: async () => logger.info('Mock page closed'),
             isClosed: () => false,
-            on: () => { },
-            once: () => { },
-            off: () => { },
-            removeAllListeners: () => { },
+            on: () => {},
+            once: () => {},
+            off: () => {},
+            removeAllListeners: () => {},
             url: () => 'about:blank',
             context: () => mockContext,
             evaluate: async () => 'test-ua',
-            emulateMedia: async () => { },
-            route: async () => { },
-            setMuted: async () => { },
-            waitForLoadState: async () => { },
+            emulateMedia: async () => {},
+            route: async () => {},
+            setMuted: async () => {},
+            waitForLoadState: async () => {},
             mouse: {
-                move: async () => { },
-                click: async () => { },
-                down: async () => { },
-                up: async () => { }
+                move: async () => {},
+                click: async () => {},
+                down: async () => {},
+                up: async () => {},
             },
             keyboard: {
-                type: async () => { },
-                press: async () => { },
-                down: async () => { },
-                up: async () => { }
-            }
+                type: async () => {},
+                press: async () => {},
+                down: async () => {},
+                up: async () => {},
+            },
         };
 
         // Mock sessionManager methods
         orchestrator.sessionManager.acquireWorker = async () => 1;
-        orchestrator.sessionManager.releaseWorker = (sid, wid) => logger.info(`Worker ${wid} released for session ${sid}`);
+        orchestrator.sessionManager.releaseWorker = (sid, wid) =>
+            logger.info(`Worker ${wid} released for session ${sid}`);
         orchestrator.sessionManager.getSession = () => mockSession;
 
         logger.info('Executing task (should timeout in 3s)...');
         // We wrap executeTask to see if it catches the timeout internally
         await orchestrator.executeTask(task, mockPage, mockSession);
 
-        // Orchestrator logs the error but doesn't rethrow. 
+        // Orchestrator logs the error but doesn't rethrow.
         // We can check the recorded outcome if we want, or just rely on console output.
         logger.info('executeTask call finished. Check logs above for "TaskTimeoutError".');
     } catch (error) {
@@ -84,7 +85,7 @@ async function run() {
     }
 }
 
-run().catch(err => {
+run().catch((err) => {
     console.error(err);
     process.exit(1);
 });

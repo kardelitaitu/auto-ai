@@ -35,7 +35,11 @@ export async function likeWithAPI(options = {}) {
     try {
         // Already liked guard
         const alreadyLiked = tweetElement
-            ? await tweetElement.locator(unlikeSel).first().isVisible().catch(() => false)
+            ? await tweetElement
+                  .locator(unlikeSel)
+                  .first()
+                  .isVisible()
+                  .catch(() => false)
             : await visible(unlikeSel);
 
         if (alreadyLiked) {
@@ -45,7 +49,7 @@ export async function likeWithAPI(options = {}) {
 
         // Scroll into view
         if (tweetElement) {
-            await tweetElement.scrollIntoViewIfNeeded().catch(() => { });
+            await tweetElement.scrollIntoViewIfNeeded().catch(() => {});
         }
         await wait(mathUtils.randomInRange(300, 700));
 
@@ -61,7 +65,11 @@ export async function likeWithAPI(options = {}) {
         const toastSel = '[data-testid="toast"]';
         const toastVisible = await visible(toastSel);
         const nowUnliked = tweetElement
-            ? await tweetElement.locator(unlikeSel).first().isVisible().catch(() => false)
+            ? await tweetElement
+                  .locator(unlikeSel)
+                  .first()
+                  .isVisible()
+                  .catch(() => false)
             : await visible(unlikeSel);
 
         if (toastVisible || nowUnliked) {
@@ -71,7 +79,6 @@ export async function likeWithAPI(options = {}) {
 
         logger.warn(`❌ api.likeWithAPI: no confirmation signal detected`);
         return { success: false, reason: 'verification_failed', method: 'likeAPI' };
-
     } catch (error) {
         logger.error(`api.likeWithAPI error: ${error.message}`);
         return { success: false, reason: error.message, method: 'likeAPI' };

@@ -9,7 +9,7 @@ export class EngagementHandler extends BaseHandler {
     /**
      * Poll for follow state changes with timeout
      * @param {string} unfollowSelector - Selector for unfollow button
-     * @param {string} followSelector - Selector for follow button  
+     * @param {string} followSelector - Selector for follow button
      * @param {number} maxWaitMs - Maximum wait time in milliseconds
      * @returns {Promise<boolean>} true if state changed to follow, false otherwise
      */
@@ -56,7 +56,8 @@ export class EngagementHandler extends BaseHandler {
     async sixLayerClick(element, logPrefix) {
         const layers = [
             {
-                name: 'Ghost Click (Primary)', method: async (el) => {
+                name: 'Ghost Click (Primary)',
+                method: async (el) => {
                     try {
                         const handle = await el.elementHandle();
                         if (handle) {
@@ -69,57 +70,62 @@ export class EngagementHandler extends BaseHandler {
                     } catch (e) {
                         return { success: false, error: e.message };
                     }
-                }
+                },
             },
             {
-                name: 'Ghost Click (Fallback)', method: async (el) => {
+                name: 'Ghost Click (Fallback)',
+                method: async (el) => {
                     try {
                         return await this.ghost.click(el, { allowNativeFallback: true });
                     } catch (e) {
                         return { success: false, error: e.message };
                     }
-                }
+                },
             },
             {
-                name: 'Human Click', method: async (el) => {
+                name: 'Human Click',
+                method: async (el) => {
                     try {
                         await this.humanClick(el, 'SixLayer Human');
                         return { success: true };
                     } catch (e) {
                         return { success: false, error: e.message };
                     }
-                }
+                },
             },
             {
-                name: 'Safe Human Click', method: async (el) => {
+                name: 'Safe Human Click',
+                method: async (el) => {
                     try {
                         await this.safeHumanClick(el, 'SixLayer SafeHuman', 2);
                         return { success: true };
                     } catch (e) {
                         return { success: false, error: e.message };
                     }
-                }
+                },
             },
             {
-                name: 'Native Click (Element)', method: async (el) => {
+                name: 'Native Click (Element)',
+                method: async (el) => {
                     try {
                         await el.click();
                         return { success: true };
                     } catch (e) {
                         return { success: false, error: e.message };
                     }
-                }
+                },
             },
             {
-                name: 'JavaScript Click', method: async (el) => {
+                name: 'JavaScript Click',
+                method: async (el) => {
                     try {
-                        await el.evaluate(el => el.click());
+                        await el.evaluate((el) => el.click());
                         return { success: true };
                     } catch (e) {
                         return { success: false, error: e.message };
                     }
-                }
-            }
+                },
+            },
         ];
 
         for (let i = 0; i < layers.length; i++) {
@@ -132,7 +138,9 @@ export class EngagementHandler extends BaseHandler {
                     this.log(`${logPrefix} ✅ Success with layer ${i + 1}: ${layer.name}`);
                     return true;
                 }
-                this.log(`${logPrefix} ❌ Layer ${i + 1} failed: ${result.error || 'Unknown error'}`);
+                this.log(
+                    `${logPrefix} ❌ Layer ${i + 1} failed: ${result.error || 'Unknown error'}`
+                );
             } catch (_error) {
                 // Should be unreachable
             }
@@ -152,8 +160,10 @@ export class EngagementHandler extends BaseHandler {
      * Handles various Twitter follow button states and edge cases
      */
     async robustFollow(logPrefix = '[Follow]', reloadUrl = null) {
-        const followBtnSelector = 'div[data-testid="placementTracking"] [data-testid$="-follow"], div[role="button"][data-testid$="-follow"]';
-        const unfollowBtnSelector = 'div[data-testid="placementTracking"] [data-testid$="-unfollow"], div[role="button"][data-testid$="-unfollow"]';
+        const followBtnSelector =
+            'div[data-testid="placementTracking"] [data-testid$="-follow"], div[role="button"][data-testid$="-follow"]';
+        const unfollowBtnSelector =
+            'div[data-testid="placementTracking"] [data-testid$="-unfollow"], div[role="button"][data-testid$="-unfollow"]';
 
         const MAX_ATTEMPTS = 3;
         // Always allow one extra attempt for reload/recovery
@@ -164,7 +174,7 @@ export class EngagementHandler extends BaseHandler {
             success: false,
             attempts: 0,
             reloaded: false,
-            error: null
+            error: null,
         };
 
         // Pre-check: If already unfollowing, skip
@@ -182,13 +192,17 @@ export class EngagementHandler extends BaseHandler {
             const preTextRaw = await preCheckFollow.textContent().catch(() => '');
             const preText = preTextRaw.toLowerCase();
             if (preText.includes('following')) {
-                this.log(`${logPrefix} ⚠️ Already following (button text: '${preTextRaw}'). Skipping.`);
+                this.log(
+                    `${logPrefix} ⚠️ Already following (button text: '${preTextRaw}'). Skipping.`
+                );
                 result.success = true;
                 result.skipped = true;
                 return result;
             }
             if (preText.includes('pending')) {
-                this.log(`${logPrefix} ⚠️ Follow request pending (button text: '${preTextRaw}'). Skipping.`);
+                this.log(
+                    `${logPrefix} ⚠️ Follow request pending (button text: '${preTextRaw}'). Skipping.`
+                );
                 result.success = true;
                 result.skipped = true;
                 return result;
@@ -222,7 +236,9 @@ export class EngagementHandler extends BaseHandler {
             // Health check
             const health = await this.performHealthCheck();
             if (!health.healthy) {
-                this.log(`${logPrefix} 💀 CRITICAL HEALTH FAILURE: ${health.reason}. Aborting task.`);
+                this.log(
+                    `${logPrefix} 💀 CRITICAL HEALTH FAILURE: ${health.reason}. Aborting task.`
+                );
                 result.error = `Health failure: ${health.reason}`;
                 break;
             }
@@ -233,7 +249,9 @@ export class EngagementHandler extends BaseHandler {
 
             // Check if already unfollowing after reload
             if (await api.visible(freshUnfollowBtn).catch(() => false)) {
-                this.log(`${logPrefix} ✅ Successfully followed (unfollow button visible after reload).`);
+                this.log(
+                    `${logPrefix} ✅ Successfully followed (unfollow button visible after reload).`
+                );
                 result.success = true;
                 break;
             }
@@ -244,7 +262,9 @@ export class EngagementHandler extends BaseHandler {
 
                 // Check if already in following state
                 if (buttonText.includes('following') || buttonText.includes('unfollow')) {
-                    this.log(`${logPrefix} ✅ Already following (button text: '${buttonTextRaw}').`);
+                    this.log(
+                        `${logPrefix} ✅ Already following (button text: '${buttonTextRaw}').`
+                    );
                     result.success = true;
                     break;
                 }
@@ -255,7 +275,9 @@ export class EngagementHandler extends BaseHandler {
                         // Ensure element is actionable
                         const isActionable = await this.isElementActionable(freshFollowBtn);
                         if (!isActionable) {
-                            this.log(`${logPrefix} Button not actionable (covered by overlay?). Retrying...`);
+                            this.log(
+                                `${logPrefix} Button not actionable (covered by overlay?). Retrying...`
+                            );
                             await api.wait(1000);
                             continue;
                         }
@@ -263,9 +285,18 @@ export class EngagementHandler extends BaseHandler {
                         // Pre-click text check
                         const preClickTextRaw = await freshFollowBtn.textContent().catch(() => '');
                         const preClickText = preClickTextRaw.toLowerCase();
-                        if (preClickText.includes('following') || preClickText.includes('pending')) {
-                            this.log(`${logPrefix} ⚠️ Already in following/pending state: '${preClickTextRaw}'.`);
-                            if (await api.visible(this.page.locator(unfollowBtnSelector).first()).catch(() => false)) {
+                        if (
+                            preClickText.includes('following') ||
+                            preClickText.includes('pending')
+                        ) {
+                            this.log(
+                                `${logPrefix} ⚠️ Already in following/pending state: '${preClickTextRaw}'.`
+                            );
+                            if (
+                                await api
+                                    .visible(this.page.locator(unfollowBtnSelector).first())
+                                    .catch(() => false)
+                            ) {
                                 result.success = true;
                                 break;
                             }
@@ -283,19 +314,29 @@ export class EngagementHandler extends BaseHandler {
 
                         // Verify follow was successful
                         await api.wait(1500);
-                        const verified = await this.pollForFollowState(unfollowBtnSelector, followBtnSelector, 5000);
+                        const verified = await this.pollForFollowState(
+                            unfollowBtnSelector,
+                            followBtnSelector,
+                            5000
+                        );
                         if (verified) {
                             this.state.follows++;
-                            this.log(`${logPrefix} ✅ Follow successful! Total follows: ${this.state.follows}`);
+                            this.log(
+                                `${logPrefix} ✅ Follow successful! Total follows: ${this.state.follows}`
+                            );
                             result.success = true;
                             break;
                         }
 
                         // Additional verification: check aria-label
-                        const ariaLabel = await freshFollowBtn.getAttribute('aria-label').catch(() => null);
+                        const ariaLabel = await freshFollowBtn
+                            .getAttribute('aria-label')
+                            .catch(() => null);
                         if (ariaLabel && ariaLabel.toLowerCase().includes('following')) {
                             this.state.follows++;
-                            this.log(`${logPrefix} ✅ Follow successful (aria-label indicates following)! Total follows: ${this.state.follows}`);
+                            this.log(
+                                `${logPrefix} ✅ Follow successful (aria-label indicates following)! Total follows: ${this.state.follows}`
+                            );
                             result.success = true;
                             break;
                         }
@@ -305,11 +346,12 @@ export class EngagementHandler extends BaseHandler {
                         const postPollText = postPollTextRaw.toLowerCase();
                         if (postPollText.includes('following')) {
                             this.state.follows++;
-                            this.log(`${logPrefix} ✅ Follow successful (post-poll text indicates following)! Total follows: ${this.state.follows}`);
+                            this.log(
+                                `${logPrefix} ✅ Follow successful (post-poll text indicates following)! Total follows: ${this.state.follows}`
+                            );
                             result.success = true;
                             break;
                         }
-
                     } catch (clickError) {
                         this.log(`${logPrefix} ❌ Click error: ${clickError.message}`);
                     }
@@ -349,7 +391,9 @@ export class EngagementHandler extends BaseHandler {
 
         // Find tweet targets
         for (let attempt = 0; attempt < 3; attempt++) {
-            const tweetTargets = this.page.locator('[data-testid="tweet"], article[data-testid="tweet"], [role="article"]');
+            const tweetTargets = this.page.locator(
+                '[data-testid="tweet"], article[data-testid="tweet"], [role="article"]'
+            );
             const count = await tweetTargets.count();
 
             if (count > 0) {
@@ -378,20 +422,30 @@ export class EngagementHandler extends BaseHandler {
                         await api.scroll.focus(targetTweet);
 
                         // Check for text content to ensure it's a real tweet
-                        const textContent = targetTweet.locator('[data-testid="tweetText"], [lang]');
-                        if (await api.exists(textContent) && await api.visible(textContent)) {
+                        const textContent = targetTweet.locator(
+                            '[data-testid="tweetText"], [lang]'
+                        );
+                        if ((await api.exists(textContent)) && (await api.visible(textContent))) {
                             this.log('[Dive] Found valid tweet target, engaging...');
 
                             // Human-like reading behavior
                             await this.simulateReading();
 
                             // Like engagement
-                            if (this.mathUtils.roll(this.config.probabilities?.likeTweetAfterDive || 0.3)) {
+                            if (
+                                this.mathUtils.roll(
+                                    this.config.probabilities?.likeTweetAfterDive || 0.3
+                                )
+                            ) {
                                 await this.likeTweet(targetTweet);
                             }
 
                             // Bookmark engagement
-                            if (this.mathUtils.roll(this.config.probabilities?.bookmarkAfterDive || 0.1)) {
+                            if (
+                                this.mathUtils.roll(
+                                    this.config.probabilities?.bookmarkAfterDive || 0.1
+                                )
+                            ) {
                                 await this.bookmarkTweet(targetTweet);
                             }
 
@@ -417,8 +471,10 @@ export class EngagementHandler extends BaseHandler {
      */
     async likeTweet(tweetElement) {
         try {
-            const likeButton = tweetElement.locator('[data-testid="like"], [aria-label*="Like"], [aria-label*="like"]');
-            if (await api.exists(likeButton) && await api.visible(likeButton)) {
+            const likeButton = tweetElement.locator(
+                '[data-testid="like"], [aria-label*="Like"], [aria-label*="like"]'
+            );
+            if ((await api.exists(likeButton)) && (await api.visible(likeButton))) {
                 await this.safeHumanClick(likeButton, 'Like Button');
                 this.state.likes++;
                 this.log(`[Like] ✅ Liked tweet! Total likes: ${this.state.likes}`);
@@ -435,8 +491,10 @@ export class EngagementHandler extends BaseHandler {
      */
     async bookmarkTweet(tweetElement) {
         try {
-            const bookmarkButton = tweetElement.locator('[data-testid="bookmark"], [aria-label*="Bookmark"], [aria-label*="bookmark"]');
-            if (await api.exists(bookmarkButton) && await api.visible(bookmarkButton)) {
+            const bookmarkButton = tweetElement.locator(
+                '[data-testid="bookmark"], [aria-label*="Bookmark"], [aria-label*="bookmark"]'
+            );
+            if ((await api.exists(bookmarkButton)) && (await api.visible(bookmarkButton))) {
                 await this.safeHumanClick(bookmarkButton, 'Bookmark Button');
                 this.log('[Bookmark] ✅ Bookmarked tweet!');
                 return true;
@@ -458,7 +516,16 @@ export class EngagementHandler extends BaseHandler {
         // Evaluate all to find valid profile links (exclude /status/, /hashtag/, etc.)
         const validIndices = await api.eval((selector) => {
             const els = Array.from(document.querySelectorAll(selector));
-            const reserved = ['home', 'explore', 'notifications', 'messages', 'compose', 'settings', 'search', 'i'];
+            const reserved = [
+                'home',
+                'explore',
+                'notifications',
+                'messages',
+                'compose',
+                'settings',
+                'search',
+                'i',
+            ];
             return els.map((el, i) => {
                 let href = el.getAttribute('href');
                 if (!href) return -1;
@@ -466,7 +533,7 @@ export class EngagementHandler extends BaseHandler {
                 // Remove trailing slash for checking
                 if (href.endsWith('/')) href = href.slice(0, -1);
 
-                const parts = href.split('/').filter(p => p.trim() !== '');
+                const parts = href.split('/').filter((p) => p.trim() !== '');
 
                 // Valid profile link: 1 part (e.g. /username)
                 // AND not in reserved list
@@ -484,7 +551,7 @@ export class EngagementHandler extends BaseHandler {
         }, selector);
 
         // Filter out invalid indices
-        const indices = validIndices.filter(i => i !== -1);
+        const indices = validIndices.filter((i) => i !== -1);
 
         if (indices.length > 0) {
             // Pick a random valid profile link

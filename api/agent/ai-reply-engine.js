@@ -6,5 +6,5 @@
  * @deprecated Use utils/ai-reply-engine/index.js for new code
  */
 
-export { AIReplyEngine, SAFETY_FILTERS } from "./ai-reply-engine/index.js";
-export { default } from "./ai-reply-engine/index.js";
+export { AIReplyEngine, SAFETY_FILTERS } from './ai-reply-engine/index.js';
+export { default } from './ai-reply-engine/index.js';

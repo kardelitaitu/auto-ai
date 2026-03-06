@@ -84,7 +84,7 @@ export class EnvironmentConfig {
             DEBUG_MODE: 'system.debugMode',
             PERFORMANCE_TRACKING: 'system.performanceTracking',
             ERROR_RECOVERY_MAX_RETRIES: 'system.errorRecovery.maxRetries',
-            ERROR_RECOVERY_RETRY_DELAY: 'system.errorRecovery.retryDelay'
+            ERROR_RECOVERY_RETRY_DELAY: 'system.errorRecovery.retryDelay',
         };
     }
 
@@ -110,19 +110,24 @@ export class EnvironmentConfig {
                         path: configPath,
                         oldValue,
                         newValue: parsedValue,
-                        type: typeof parsedValue
+                        type: typeof parsedValue,
                     });
 
-                    logger.info(`[EnvironmentConfig] Applied override: ${envVar} = ${parsedValue} (${typeof parsedValue})`);
-
+                    logger.info(
+                        `[EnvironmentConfig] Applied override: ${envVar} = ${parsedValue} (${typeof parsedValue})`
+                    );
                 } catch (error) {
-                    logger.warn(`[EnvironmentConfig] Failed to apply override ${envVar}: ${error.message}`);
+                    logger.warn(
+                        `[EnvironmentConfig] Failed to apply override ${envVar}: ${error.message}`
+                    );
                 }
             }
         }
 
         if (appliedOverrides.size > 0) {
-            logger.info(`[EnvironmentConfig] Applied ${appliedOverrides.size} environment overrides`);
+            logger.info(
+                `[EnvironmentConfig] Applied ${appliedOverrides.size} environment overrides`
+            );
             this.logAppliedOverrides(appliedOverrides);
         } else {
             logger.debug('[EnvironmentConfig] No environment overrides found');
@@ -152,7 +157,7 @@ export class EnvironmentConfig {
 
         // Handle array values (comma-separated)
         if (value.includes(',')) {
-            return value.split(',').map(item => item.trim());
+            return value.split(',').map((item) => item.trim());
         }
 
         // Default to string
@@ -197,7 +202,9 @@ export class EnvironmentConfig {
     static logAppliedOverrides(appliedOverrides) {
         logger.debug('[EnvironmentConfig] Applied overrides:');
         for (const [envVar, details] of appliedOverrides.entries()) {
-            logger.debug(`  ${envVar}: ${details.oldValue} → ${details.newValue} (${details.type})`);
+            logger.debug(
+                `  ${envVar}: ${details.oldValue} → ${details.newValue} (${details.type})`
+            );
         }
     }
 
@@ -259,14 +266,14 @@ export class EnvironmentConfig {
                 errors.push({
                     envVar,
                     value,
-                    error: error.message
+                    error: error.message,
                 });
             }
         }
 
         return {
             valid: errors.length === 0,
-            errors
+            errors,
         };
     }
 
@@ -276,7 +283,8 @@ export class EnvironmentConfig {
      */
     generateDocumentation() {
         let docs = '# Environment Variable Overrides\n\n';
-        docs += 'The following environment variables can be used to override configuration settings:\n\n';
+        docs +=
+            'The following environment variables can be used to override configuration settings:\n\n';
 
         const sections = {};
 
@@ -293,7 +301,9 @@ export class EnvironmentConfig {
         for (const [section, vars] of Object.entries(sections)) {
             docs += `## ${section.toUpperCase()}\n\n`;
 
-            for (const { envVar, configPath } of vars.sort((a, b) => a.envVar.localeCompare(b.envVar))) {
+            for (const { envVar, configPath } of vars.sort((a, b) =>
+                a.envVar.localeCompare(b.envVar)
+            )) {
                 docs += `- **${envVar}**: Overrides \`${configPath}\`\n`;
             }
             docs += '\n';

@@ -1,10 +1,10 @@
 /**
  * @fileoverview Unified Browser Tool API — Central Export
  * Assembles all modules into a composable `api` object.
- * 
+ *
  * Usage:
  *   import { api } from './api/index.js';
- * 
+ *
  *   // Async context isolation (required for all API methods)
  *   await api.withPage(page, async () => {
  *       await api.init(page, { persona: 'casual' });
@@ -14,11 +14,11 @@
  *       etc ...
  *       details in api/index.js or api/docs
  *   });
- * 
+ *
  *   // File Utilities
  *   const line = await api.file.readline('data.txt'); // Read random line
  *   const consumed = await api.file.consumeline('data.txt'); // Read and remove random line
- * 
+ *
  * @module api
  */
 
@@ -104,8 +104,23 @@ const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8
  */
 
 // ─── Core Context ─────────────────────────────────────────────────
-import { withPage, clearContext, isSessionActive, checkSession, getPage, getCursor, evalPage, getEvents, getPlugins } from './core/context.js';
-import { getContextState, setContextState, getStateSection, updateStateSection } from './core/context-state.js';
+import {
+    withPage,
+    clearContext,
+    isSessionActive,
+    checkSession,
+    getPage,
+    getCursor,
+    evalPage,
+    getEvents,
+    getPlugins,
+} from './core/context.js';
+import {
+    getContextState,
+    setContextState,
+    getStateSection,
+    updateStateSection,
+} from './core/context-state.js';
 import {
     AutomationError,
     SessionError,
@@ -147,16 +162,41 @@ import { followWithAPI } from './actions/follow.js';
 import { focus, scroll, toTop, toBottom, read, back as scrollBack } from './interactions/scroll.js';
 
 // ─── Cursor ───────────────────────────────────────────────────────
-import { move, up, down, setPathStyle, getPathStyle, startFidgeting, stopFidgeting } from './interactions/cursor.js';
+import {
+    move,
+    up,
+    down,
+    setPathStyle,
+    getPathStyle,
+    startFidgeting,
+    stopFidgeting,
+} from './interactions/cursor.js';
 
 // ─── Queries ──────────────────────────────────────────────────────
 import { text, attr, visible, count, exists, currentUrl } from './interactions/queries.js';
 
 // ─── Wait ────────────────────────────────────────────────────────
-import { wait, waitFor, waitVisible, waitHidden, waitForLoadState, waitForURL } from './interactions/wait.js';
+import {
+    wait,
+    waitFor,
+    waitVisible,
+    waitHidden,
+    waitForLoadState,
+    waitForURL,
+} from './interactions/wait.js';
 
 // ─── Navigation ─────────────────────────────────────────────────
-import { goto, reload, back, forward, beforeNavigate, randomMouse, fakeRead, pause as warmupPause, setExtraHTTPHeaders } from './interactions/navigation.js';
+import {
+    goto,
+    reload,
+    back,
+    forward,
+    beforeNavigate,
+    randomMouse,
+    fakeRead,
+    pause as warmupPause,
+    setExtraHTTPHeaders,
+} from './interactions/navigation.js';
 
 // ─── Banners ──────────────────────────────────────────────────
 import { handleBanners } from './interactions/banners.js';
@@ -165,16 +205,38 @@ import { handleBanners } from './interactions/banners.js';
 import { think, delay, gaussian, randomInRange } from './behaviors/timing.js';
 
 // ─── Persona ────────────────────────────────────────────────────
-import { setPersona, getPersona, getPersonaName, listPersonas, getSessionDuration } from './behaviors/persona.js';
+import {
+    setPersona,
+    getPersona,
+    getPersonaName,
+    listPersonas,
+    getSessionDuration,
+} from './behaviors/persona.js';
 
 // ─── Recovery ───────────────────────────────────────────────────
 import { recover, goBack, findElement, smartClick, undo, urlChanged } from './behaviors/recover.js';
 
 // ─── Attention ─────────────────────────────────────────────────
-import { gaze, attention, distraction, beforeLeave, focusShift, maybeDistract, setDistractionChance, getDistractionChance } from './behaviors/attention.js';
+import {
+    gaze,
+    attention,
+    distraction,
+    beforeLeave,
+    focusShift,
+    maybeDistract,
+    setDistractionChance,
+    getDistractionChance,
+} from './behaviors/attention.js';
 
 // ─── Idle ───────────────────────────────────────────────────────
-import { start as idleStart, stop as idleStop, isRunning as idleIsRunning, wiggle, idleScroll, startHeartbeat } from './behaviors/idle.js';
+import {
+    start as idleStart,
+    stop as idleStop,
+    isRunning as idleIsRunning,
+    wiggle,
+    idleScroll,
+    startHeartbeat,
+} from './behaviors/idle.js';
 
 // ─── Patch ─────────────────────────────────────────────────────
 import { apply as patchApply, stripCDPMarkers, check as patchCheck } from './utils/patch.js';
@@ -182,7 +244,6 @@ import { apply as patchApply, stripCDPMarkers, check as patchCheck } from './uti
 // ─── File I/O ──────────────────────────────────────────────────
 import { readline } from './utils/file.readline.js';
 import { consumeline } from './utils/file.consumeline.js';
-
 
 // ─── Agent ─────────────────────────────────────────────────────
 import { see } from './agent/observer.js';
@@ -195,7 +256,7 @@ import {
     llmClient,
     agentRunner,
     captureAXTree,
-    captureState
+    captureState,
 } from './agent/index.js';
 
 // ─── Init ───────────────────────────────────────────────────────
@@ -207,14 +268,31 @@ import { configManager } from './core/config.js';
 // ─── Events & Plugins ─────────────────────────────────────────
 import { getAvailableHooks, getHookDescription } from './core/events.js';
 import { createHookWrapper, withErrorHook } from './core/hooks.js';
-import { loadBuiltinPlugins, registerPlugin, unregisterPlugin, enablePlugin, disablePlugin, listPlugins, listEnabledPlugins, getPluginManager } from './core/plugins/index.js';
+import {
+    loadBuiltinPlugins,
+    registerPlugin,
+    unregisterPlugin,
+    enablePlugin,
+    disablePlugin,
+    listPlugins,
+    listEnabledPlugins,
+    getPluginManager,
+} from './core/plugins/index.js';
 
 // ─── Middleware ────────────────────────────────────────────────
-import { createPipeline, createSyncPipeline, loggingMiddleware, validationMiddleware, retryMiddleware, recoveryMiddleware, metricsMiddleware, rateLimitMiddleware } from './core/middleware.js';
+import {
+    createPipeline,
+    createSyncPipeline,
+    loggingMiddleware,
+    validationMiddleware,
+    retryMiddleware,
+    recoveryMiddleware,
+    metricsMiddleware,
+    rateLimitMiddleware,
+} from './core/middleware.js';
 
 // ─── Memory ─────────────────────────────────────────────────────
 import { memory } from './utils/memory-profiler.js';
-
 
 // ─── Build Dual-Callable APIs ──────────────────────────────────
 
@@ -228,11 +306,15 @@ const scrollFn = Object.assign(scroll, {
 });
 
 // Cursor: api.cursor(selector) + api.cursor.move() + api.cursor.up()
-const cursorFn = Object.assign(
-    (selector) => move(selector),
-    { move, up, down, setPathStyle, getPathStyle, startFidgeting, stopFidgeting }
-);
-
+const cursorFn = Object.assign((selector) => move(selector), {
+    move,
+    up,
+    down,
+    setPathStyle,
+    getPathStyle,
+    startFidgeting,
+    stopFidgeting,
+});
 
 async function init(page, options = {}) {
     return initPage(page, options);
@@ -244,13 +326,8 @@ async function diagnose(page) {
 
 async function screenshot(options = {}) {
     const page = getPage();
-    const {
-        path: outputPath,
-        fullPage = false,
-        type = 'jpeg',
-        quality = 80
-    } = options;
-    
+    const { path: outputPath, fullPage = false, type = 'jpeg', quality = 80 } = options;
+
     return page.screenshot({ path: outputPath, fullPage, type, quality });
 }
 
@@ -391,8 +468,6 @@ export const api = {
         consumeline,
     },
 
-
-
     // ── Agent ────────────────────────────────────────────────────
     /**
      * Agent Interaction Layer (LLM-friendly)
@@ -419,7 +494,9 @@ export const api = {
     },
 
     // ── Events & Plugins ────────────────────────────────────────
-    get events() { return getEvents(); },
+    get events() {
+        return getEvents();
+    },
     plugins: {
         register: registerPlugin,
         unregister: unregisterPlugin,
@@ -451,35 +528,150 @@ export default api;
 // Re-export all named exports
 export {
     // Note: setPage is deprecated - use withPage instead
-    withPage, clearContext, isSessionActive, checkSession, getPage, getCursor, evalPage as eval,
-    getContextState, setContextState, getStateSection, updateStateSection,
-    click, type, hover, rightClick, quoteWithAI, replyWithAI, likeWithAPI, bookmarkWithAPI, retweetWithAPI, followWithAPI,
-    focus, scroll, toTop, toBottom, read, scrollBack,
-    move, up, down, setPathStyle, getPathStyle, startFidgeting, stopFidgeting,
-    text, attr, visible, count, exists, currentUrl,
-    wait, waitFor, waitVisible, waitHidden, waitForLoadState, waitForURL,
-    goto, reload, back, forward, beforeNavigate, randomMouse, fakeRead, warmupPause, setExtraHTTPHeaders,
+    withPage,
+    clearContext,
+    isSessionActive,
+    checkSession,
+    getPage,
+    getCursor,
+    evalPage as eval,
+    getContextState,
+    setContextState,
+    getStateSection,
+    updateStateSection,
+    click,
+    type,
+    hover,
+    rightClick,
+    quoteWithAI,
+    replyWithAI,
+    likeWithAPI,
+    bookmarkWithAPI,
+    retweetWithAPI,
+    followWithAPI,
+    focus,
+    scroll,
+    toTop,
+    toBottom,
+    read,
+    scrollBack,
+    move,
+    up,
+    down,
+    setPathStyle,
+    getPathStyle,
+    startFidgeting,
+    stopFidgeting,
+    text,
+    attr,
+    visible,
+    count,
+    exists,
+    currentUrl,
+    wait,
+    waitFor,
+    waitVisible,
+    waitHidden,
+    waitForLoadState,
+    waitForURL,
+    goto,
+    reload,
+    back,
+    forward,
+    beforeNavigate,
+    randomMouse,
+    fakeRead,
+    warmupPause,
+    setExtraHTTPHeaders,
     handleBanners,
-    think, delay, gaussian, randomInRange,
-    setPersona, getPersona, getPersonaName, listPersonas, getSessionDuration,
-    recover, goBack, findElement, smartClick, undo, urlChanged,
-    gaze, attention, distraction, beforeLeave, focusShift, maybeDistract, setDistractionChance, getDistractionChance,
-    idleStart, idleStop, idleIsRunning, wiggle, idleScroll, startHeartbeat,
-    patchApply, stripCDPMarkers, patchCheck,
-    initPage, diagnosePage, clearLiteMode, screenshot,
-    readline, consumeline,
-    see, doAction as do, agentFind as find, agentVision as vision,
-    getAvailableHooks, getHookDescription, createHookWrapper, withErrorHook, getEvents, getPlugins,
-    loadBuiltinPlugins, registerPlugin, unregisterPlugin, enablePlugin, disablePlugin, listPlugins, listEnabledPlugins, getPluginManager,
-    createPipeline, createSyncPipeline, loggingMiddleware, validationMiddleware, retryMiddleware, recoveryMiddleware, metricsMiddleware, rateLimitMiddleware,
+    think,
+    delay,
+    gaussian,
+    randomInRange,
+    setPersona,
+    getPersona,
+    getPersonaName,
+    listPersonas,
+    getSessionDuration,
+    recover,
+    goBack,
+    findElement,
+    smartClick,
+    undo,
+    urlChanged,
+    gaze,
+    attention,
+    distraction,
+    beforeLeave,
+    focusShift,
+    maybeDistract,
+    setDistractionChance,
+    getDistractionChance,
+    idleStart,
+    idleStop,
+    idleIsRunning,
+    wiggle,
+    idleScroll,
+    startHeartbeat,
+    patchApply,
+    stripCDPMarkers,
+    patchCheck,
+    initPage,
+    diagnosePage,
+    clearLiteMode,
+    screenshot,
+    readline,
+    consumeline,
+    see,
+    doAction as do,
+    agentFind as find,
+    agentVision as vision,
+    getAvailableHooks,
+    getHookDescription,
+    createHookWrapper,
+    withErrorHook,
+    getEvents,
+    getPlugins,
+    loadBuiltinPlugins,
+    registerPlugin,
+    unregisterPlugin,
+    enablePlugin,
+    disablePlugin,
+    listPlugins,
+    listEnabledPlugins,
+    getPluginManager,
+    createPipeline,
+    createSyncPipeline,
+    loggingMiddleware,
+    validationMiddleware,
+    retryMiddleware,
+    recoveryMiddleware,
+    metricsMiddleware,
+    rateLimitMiddleware,
     // Errors
-    AutomationError, SessionError, SessionDisconnectedError, SessionNotFoundError, SessionTimeoutError,
-    ContextError, ContextNotInitializedError, PageClosedError,
-    ElementError, ElementNotFoundError, ElementDetachedError, ElementObscuredError, ElementTimeoutError,
-    ActionError, ActionFailedError, NavigationError,
-    ConfigError, ConfigNotFoundError,
-    LLMError, LLMTimeoutError, LLMRateLimitError, LLMCircuitOpenError,
+    AutomationError,
+    SessionError,
+    SessionDisconnectedError,
+    SessionNotFoundError,
+    SessionTimeoutError,
+    ContextError,
+    ContextNotInitializedError,
+    PageClosedError,
+    ElementError,
+    ElementNotFoundError,
+    ElementDetachedError,
+    ElementObscuredError,
+    ElementTimeoutError,
+    ActionError,
+    ActionFailedError,
+    NavigationError,
+    ConfigError,
+    ConfigNotFoundError,
+    LLMError,
+    LLMTimeoutError,
+    LLMRateLimitError,
+    LLMCircuitOpenError,
     ValidationError,
-    isErrorCode, withErrorHandling,
+    isErrorCode,
+    withErrorHandling,
 };
-

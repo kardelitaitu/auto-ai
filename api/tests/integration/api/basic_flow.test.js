@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { api } from '@api/index.js';
 
@@ -25,21 +24,21 @@ vi.mock('@api/utils/ghostCursor.js', () => ({
         async hoverWithDrift() {
             return undefined;
         }
-    }
+    },
 }));
 
 vi.mock('@api/core/logger.js', () => ({
     loggerContext: {
         run: vi.fn((ctx, fn) => fn()),
-        getStore: vi.fn()
+        getStore: vi.fn(),
     },
     createLogger: vi.fn(() => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
         debug: vi.fn(),
-        success: vi.fn()
-    }))
+        success: vi.fn(),
+    })),
 }));
 
 describe('Integration: Basic Flow (goto -> type -> click)', () => {
@@ -60,14 +59,15 @@ describe('Integration: Basic Flow (goto -> type -> click)', () => {
             boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 20 }),
             evaluate: vi.fn().mockImplementation(async (fn) => {
                 const source = fn?.toString?.() || '';
-                if (source.includes('elementFromPoint')) { // for isObscured
+                if (source.includes('elementFromPoint')) {
+                    // for isObscured
                     return false; // not obscured
                 }
                 if (source.includes('getBoundingClientRect')) {
                     return { left: 100, top: 100, width: 50, height: 20, right: 150, bottom: 120 };
                 }
                 return false;
-            })
+            }),
         };
 
         mockPage = {
@@ -79,21 +79,21 @@ describe('Integration: Basic Flow (goto -> type -> click)', () => {
             isClosed: vi.fn().mockReturnValue(false),
             locator: vi.fn().mockImplementation(() => locator),
             context: vi.fn().mockReturnValue({
-                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) })
+                browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
             }),
             keyboard: {
                 press: vi.fn().mockResolvedValue(undefined),
-                type: vi.fn().mockResolvedValue(undefined)
+                type: vi.fn().mockResolvedValue(undefined),
             },
             mouse: {
                 move: vi.fn().mockResolvedValue(undefined),
-                click: vi.fn().mockResolvedValue(undefined)
+                click: vi.fn().mockResolvedValue(undefined),
             },
             evaluate: vi.fn().mockResolvedValue(undefined),
             reload: vi.fn().mockResolvedValue(undefined),
             goBack: vi.fn().mockResolvedValue({}),
             goForward: vi.fn().mockResolvedValue(undefined),
-            setExtraHTTPHeaders: vi.fn().mockResolvedValue(undefined)
+            setExtraHTTPHeaders: vi.fn().mockResolvedValue(undefined),
         };
     });
 

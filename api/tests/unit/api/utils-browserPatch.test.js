@@ -9,7 +9,7 @@ describe('api/utils/browserPatch.js', () => {
         vi.clearAllMocks();
 
         mockLogger = {
-            info: vi.fn()
+            info: vi.fn(),
         };
 
         mockPage = {
@@ -20,7 +20,10 @@ describe('api/utils/browserPatch.js', () => {
                     const originalCanvas = global.HTMLCanvasElement;
                     const originalMedia = global.HTMLMediaElement;
 
-                    global.navigator = { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', platform: 'Win32' };
+                    global.navigator = {
+                        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                        platform: 'Win32',
+                    };
                     global.document = { hidden: true, addEventListener: vi.fn() };
                     global.HTMLCanvasElement = { prototype: { toDataURL: vi.fn() } };
                     global.HTMLMediaElement = { prototype: { canPlayType: vi.fn() } };
@@ -38,7 +41,7 @@ describe('api/utils/browserPatch.js', () => {
                         delete global.window;
                     }
                 }
-            })
+            }),
         };
     });
 
@@ -79,7 +82,7 @@ describe('api/utils/browserPatch.js', () => {
                     const originalNavigator = global.navigator;
                     global.navigator = {
                         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                        platform: 'Win32'
+                        platform: 'Win32',
                     };
                     global.window = global;
                     global.document = { hidden: true, addEventListener: vi.fn() };
@@ -109,7 +112,7 @@ describe('api/utils/browserPatch.js', () => {
                     const originalNavigator = global.navigator;
                     global.navigator = {
                         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-                        platform: 'MacIntel'
+                        platform: 'MacIntel',
                     };
                     global.window = global;
                     global.document = { hidden: true, addEventListener: vi.fn() };
@@ -138,7 +141,7 @@ describe('api/utils/browserPatch.js', () => {
                     const originalNavigator = global.navigator;
                     global.navigator = {
                         userAgent: 'Mozilla/5.0 (X11; Linux x86_64)',
-                        platform: 'Linux x86_64'
+                        platform: 'Linux x86_64',
                     };
                     global.window = global;
                     global.document = { hidden: true, addEventListener: vi.fn() };

@@ -5,8 +5,8 @@ import path from 'path';
 
 vi.mock('fs/promises', () => ({
     default: {
-        readFile: vi.fn()
-    }
+        readFile: vi.fn(),
+    },
 }));
 
 describe('api/utils/config.js', () => {
@@ -72,9 +72,9 @@ describe('api/utils/config.js', () => {
             const mockData = {
                 twitter: {
                     timing: {
-                        scrollDelay: 500
-                    }
-                }
+                        scrollDelay: 500,
+                    },
+                },
             };
             fs.readFile.mockResolvedValue(JSON.stringify(mockData));
 
@@ -88,14 +88,14 @@ describe('api/utils/config.js', () => {
         it('should clear the cache so next call reads from file', async () => {
             const mockData1 = { version: 1 };
             const mockData2 = { version: 2 };
-            
+
             fs.readFile.mockResolvedValue(JSON.stringify(mockData1));
-            
+
             const result1 = await getSettings();
             expect(result1).toEqual(mockData1);
-            
+
             clearSettingsCache();
-            
+
             fs.readFile.mockResolvedValue(JSON.stringify(mockData2));
             const result2 = await getSettings();
             expect(result2).toEqual(mockData2);

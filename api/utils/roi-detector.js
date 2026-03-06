@@ -22,7 +22,7 @@ export async function identifyROI(page) {
             '[role="main"]',
             'main',
             '#main',
-            '.main-content'
+            '.main-content',
         ];
 
         for (const selector of selectors) {
@@ -37,8 +37,11 @@ export async function identifyROI(page) {
                     return {
                         x: Math.max(0, box.x - padding),
                         y: Math.max(0, box.y - padding),
-                        width: Math.min(viewport.width - box.x + padding, box.width + (padding * 2)),
-                        height: Math.min(viewport.height - box.y + padding, box.height + (padding * 2))
+                        width: Math.min(viewport.width - box.x + padding, box.width + padding * 2),
+                        height: Math.min(
+                            viewport.height - box.y + padding,
+                            box.height + padding * 2
+                        ),
                     };
                 }
             }

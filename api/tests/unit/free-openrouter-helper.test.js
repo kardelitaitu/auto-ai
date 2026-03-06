@@ -10,14 +10,14 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         debug: vi.fn(),
-        error: vi.fn()
-    })
+        error: vi.fn(),
+    }),
 }));
 
 vi.mock('../../utils/proxy-agent.js', () => ({
     createProxyAgent: vi.fn().mockReturnValue({
-        getAgent: vi.fn().mockResolvedValue(null)
-    })
+        getAgent: vi.fn().mockResolvedValue(null),
+    }),
 }));
 
 global.fetch = vi.fn();
@@ -44,7 +44,7 @@ describe('FreeOpenRouterHelper', () => {
         it('should pass options to constructor', () => {
             const instance = FreeOpenRouterHelper.getInstance({
                 apiKeys: ['key1'],
-                models: ['model1']
+                models: ['model1'],
             });
             expect(instance.apiKeys).toEqual(['key1']);
             expect(instance.models).toEqual(['model1']);
@@ -78,7 +78,7 @@ describe('FreeOpenRouterHelper', () => {
                 models: ['model1', 'model2'],
                 proxy: ['proxy1:8080:user:pass'],
                 testTimeout: 20000,
-                batchSize: 3
+                batchSize: 3,
             });
             expect(helper.apiKeys).toEqual(['key1', 'key2']);
             expect(helper.models).toEqual(['model1', 'model2']);
@@ -151,7 +151,7 @@ describe('FreeOpenRouterHelper', () => {
                 host: 'host',
                 port: 'port',
                 username: 'user',
-                password: 'pass'
+                password: 'pass',
             });
         });
 
@@ -272,7 +272,7 @@ describe('FreeOpenRouterHelper', () => {
                 working: ['m1'],
                 failed: ['m2'],
                 total: 2,
-                testDuration: 1000
+                testDuration: 1000,
             };
             const status = helper.getQuickStatus();
             expect(status.status).toBe('done');
@@ -345,7 +345,7 @@ describe('FreeOpenRouterHelper', () => {
         it('should return cached results if valid', async () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
-                apiKeys: ['key1']
+                apiKeys: ['key1'],
             });
             helper.results = { working: ['model1'], testDuration: 100 };
             helper.cacheTimestamp = Date.now();
@@ -357,7 +357,7 @@ describe('FreeOpenRouterHelper', () => {
         it('should return early if no models configured', async () => {
             const helper = new FreeOpenRouterHelper({
                 models: [],
-                apiKeys: ['key1']
+                apiKeys: ['key1'],
             });
 
             const result = await helper.testAllModelsInBackground();
@@ -368,7 +368,7 @@ describe('FreeOpenRouterHelper', () => {
         it('should return early if no API keys configured', async () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
-                apiKeys: []
+                apiKeys: [],
             });
 
             const result = await helper.testAllModelsInBackground();
@@ -379,7 +379,7 @@ describe('FreeOpenRouterHelper', () => {
         it('should wait for existing test lock', async () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
-                apiKeys: ['key1']
+                apiKeys: ['key1'],
             });
             helper.testing = true;
             const pendingPromise = Promise.resolve({ working: ['model1'], total: 1 });
@@ -393,14 +393,14 @@ describe('FreeOpenRouterHelper', () => {
     describe('_testModel', () => {
         it('should test model successfully', async () => {
             const helper = new FreeOpenRouterHelper({
-                testTimeout: 5000
+                testTimeout: 5000,
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -410,14 +410,14 @@ describe('FreeOpenRouterHelper', () => {
 
         it('should fail for unexpected response', async () => {
             const helper = new FreeOpenRouterHelper({
-                testTimeout: 5000
+                testTimeout: 5000,
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'unexpected' } }]
-                })
+                    choices: [{ message: { content: 'unexpected' } }],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -426,13 +426,13 @@ describe('FreeOpenRouterHelper', () => {
 
         it('should fail for HTTP error', async () => {
             const helper = new FreeOpenRouterHelper({
-                testTimeout: 5000
+                testTimeout: 5000,
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: false,
                 status: 500,
-                text: async () => 'Server error'
+                text: async () => 'Server error',
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -442,7 +442,7 @@ describe('FreeOpenRouterHelper', () => {
 
         it('should fail on network error', async () => {
             const helper = new FreeOpenRouterHelper({
-                testTimeout: 5000
+                testTimeout: 5000,
             });
 
             global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
@@ -455,14 +455,14 @@ describe('FreeOpenRouterHelper', () => {
         it('should use proxy when configured', async () => {
             const helper = new FreeOpenRouterHelper({
                 testTimeout: 5000,
-                proxy: ['proxyhost:8080:user:pass']
+                proxy: ['proxyhost:8080:user:pass'],
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -508,7 +508,9 @@ describe('FreeOpenRouterHelper', () => {
             });
 
             it('should return one from proxy list', () => {
-                const helper = new FreeOpenRouterHelper({ proxy: ['proxy1:8080', 'proxy2:9090', 'proxy3:7070'] });
+                const helper = new FreeOpenRouterHelper({
+                    proxy: ['proxy1:8080', 'proxy2:9090', 'proxy3:7070'],
+                });
                 const result = helper._selectProxy();
                 expect(['proxy1:8080', 'proxy2:9090', 'proxy3:7070']).toContain(result);
             });
@@ -529,7 +531,7 @@ describe('FreeOpenRouterHelper', () => {
                     host: 'myhost',
                     port: '3128',
                     username: 'myuser',
-                    password: 'mypass'
+                    password: 'mypass',
                 });
             });
         });
@@ -553,7 +555,7 @@ describe('FreeOpenRouterHelper', () => {
             it('should not update when empty arrays passed', () => {
                 const helper = new FreeOpenRouterHelper({
                     apiKeys: ['existingKey'],
-                    models: ['existingModel']
+                    models: ['existingModel'],
                 });
                 helper.updateConfig([], []);
                 expect(helper.apiKeys).toEqual(['existingKey']);
@@ -603,7 +605,7 @@ describe('FreeOpenRouterHelper', () => {
                     working: ['m1'],
                     failed: [],
                     total: 1,
-                    testDuration: 500
+                    testDuration: 500,
                 };
                 const status = helper.getQuickStatus();
                 expect(status.status).toBe('done');
@@ -660,7 +662,7 @@ describe('FreeOpenRouterHelper', () => {
             it('should return early when no models configured', async () => {
                 const helper = new FreeOpenRouterHelper({
                     models: [],
-                    apiKeys: ['key1']
+                    apiKeys: ['key1'],
                 });
 
                 const result = await helper.testAllModelsInBackground();
@@ -671,7 +673,7 @@ describe('FreeOpenRouterHelper', () => {
             it('should return early when no API keys configured', async () => {
                 const helper = new FreeOpenRouterHelper({
                     models: ['model1'],
-                    apiKeys: []
+                    apiKeys: [],
                 });
 
                 const result = await helper.testAllModelsInBackground();
@@ -705,8 +707,8 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'OK' } }]
-                })
+                    choices: [{ message: { content: 'OK' } }],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -719,8 +721,8 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'Ok' } }]
-                })
+                    choices: [{ message: { content: 'Ok' } }],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -733,8 +735,8 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: []
-                })
+                    choices: [],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -748,8 +750,8 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{}]
-                })
+                    choices: [{}],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -763,8 +765,8 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: {} }]
-                })
+                    choices: [{ message: {} }],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -788,14 +790,14 @@ describe('FreeOpenRouterHelper', () => {
         it('should handle proxy without username/password', async () => {
             const helper = new FreeOpenRouterHelper({
                 testTimeout: 5000,
-                proxy: ['proxyhost:8080']
+                proxy: ['proxyhost:8080'],
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -808,7 +810,7 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: false,
                 status: 401,
-                text: async () => 'Unauthorized'
+                text: async () => 'Unauthorized',
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -822,7 +824,7 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: false,
                 status: 429,
-                text: async () => 'Rate limited'
+                text: async () => 'Rate limited',
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -836,7 +838,7 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: false,
                 status: 403,
-                text: async () => 'Forbidden'
+                text: async () => 'Forbidden',
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -849,7 +851,9 @@ describe('FreeOpenRouterHelper', () => {
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
-                json: async () => { throw new Error('Invalid JSON'); }
+                json: async () => {
+                    throw new Error('Invalid JSON');
+                },
             });
 
             const result = await helper._testModel('test/model', 'test-key');
@@ -877,7 +881,7 @@ describe('FreeOpenRouterHelper', () => {
         it('should handle waitForTests timeout', async () => {
             const helper = new FreeOpenRouterHelper();
             helper.testing = true;
-            helper.testLock = new Promise(() => { });
+            helper.testLock = new Promise(() => {});
 
             const result = await helper.waitForTests(10);
             expect(result).toBeNull();
@@ -894,14 +898,14 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1', 'model2', 'model3', 'model4'],
                 apiKeys: ['key1'],
-                batchSize: 2
+                batchSize: 2,
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             helper.testAllModelsInBackground();
@@ -914,14 +918,14 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1', 'model2', 'model3', 'model4'],
                 apiKeys: ['key1', 'key2'],
-                batchSize: 4
+                batchSize: 4,
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             helper.testAllModelsInBackground();
@@ -934,14 +938,14 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
                 apiKeys: ['key1'],
-                proxy: []
+                proxy: [],
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             const result = await helper._testModel('model1', 'key1');
@@ -955,14 +959,14 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
                 apiKeys: ['key1'],
-                proxy: ['proxyhost:8080:user:pass']
+                proxy: ['proxyhost:8080:user:pass'],
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             const result = await helper._testModel('model1', 'key1');
@@ -1037,7 +1041,7 @@ describe('FreeOpenRouterHelper', () => {
                 working: ['m1', 'm2'],
                 failed: ['m3'],
                 total: 3,
-                testDuration: 5000
+                testDuration: 5000,
             };
 
             const status = helper.getQuickStatus();
@@ -1101,7 +1105,7 @@ describe('FreeOpenRouterHelper', () => {
             vi.useFakeTimers();
 
             const helper = new FreeOpenRouterHelper({
-                testTimeout: 10000
+                testTimeout: 10000,
             });
 
             global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
@@ -1123,14 +1127,14 @@ describe('FreeOpenRouterHelper', () => {
         it('should use proxy with username in URL', async () => {
             const helper = new FreeOpenRouterHelper({
                 testTimeout: 5000,
-                proxy: ['myproxy:8080:user1:pass1']
+                proxy: ['myproxy:8080:user1:pass1'],
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             const result = await helper._testModel('model1', 'key1');
@@ -1140,14 +1144,14 @@ describe('FreeOpenRouterHelper', () => {
         it('should use proxy without username in URL', async () => {
             const helper = new FreeOpenRouterHelper({
                 testTimeout: 5000,
-                proxy: ['myproxy:8080']
+                proxy: ['myproxy:8080'],
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             const result = await helper._testModel('model1', 'key1');
@@ -1159,19 +1163,19 @@ describe('FreeOpenRouterHelper', () => {
 
             const mockAgent = { some: 'agent' };
             createProxyAgent.mockResolvedValue({
-                getAgent: vi.fn().mockResolvedValue(mockAgent)
+                getAgent: vi.fn().mockResolvedValue(mockAgent),
             });
 
             const helper = new FreeOpenRouterHelper({
                 testTimeout: 5000,
-                proxy: ['myproxy:8080:user:pass']
+                proxy: ['myproxy:8080:user:pass'],
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             const result = await helper._testModel('model1', 'key1');
@@ -1183,14 +1187,14 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
                 apiKeys: ['key1'],
-                proxy: ['proxy1:8080']
+                proxy: ['proxy1:8080'],
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             helper.testAllModelsInBackground();
@@ -1201,7 +1205,7 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1', 'model2', 'model3'],
                 apiKeys: ['key1'],
-                batchSize: 5
+                batchSize: 5,
             });
 
             let callCount = 0;
@@ -1213,8 +1217,8 @@ describe('FreeOpenRouterHelper', () => {
                 return Promise.resolve({
                     ok: true,
                     json: async () => ({
-                        choices: [{ message: { content: 'ok' } }]
-                    })
+                        choices: [{ message: { content: 'ok' } }],
+                    }),
                 });
             });
 
@@ -1228,7 +1232,7 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1', 'model2'],
                 apiKeys: ['key1'],
-                batchSize: 2
+                batchSize: 2,
             });
 
             let callCount = 0;
@@ -1238,14 +1242,14 @@ describe('FreeOpenRouterHelper', () => {
                     return Promise.resolve({
                         ok: false,
                         status: 500,
-                        text: async () => 'Server Error'
+                        text: async () => 'Server Error',
                     });
                 }
                 return Promise.resolve({
                     ok: true,
                     json: async () => ({
-                        choices: [{ message: { content: 'ok' } }]
-                    })
+                        choices: [{ message: { content: 'ok' } }],
+                    }),
                 });
             });
 
@@ -1260,13 +1264,13 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
                 apiKeys: ['key1'],
-                batchSize: 1
+                batchSize: 1,
             });
 
             global.fetch = vi.fn().mockResolvedValue({
                 ok: false,
                 status: 400,
-                text: async () => 'Bad'
+                text: async () => 'Bad',
             });
 
             helper.testAllModelsInBackground();
@@ -1280,14 +1284,14 @@ describe('FreeOpenRouterHelper', () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
                 apiKeys: ['key1'],
-                batchSize: 1
+                batchSize: 1,
             });
 
             const longError = 'This is a very long error message that exceeds thirty characters';
             global.fetch = vi.fn().mockResolvedValue({
                 ok: false,
                 status: 500,
-                text: async () => longError
+                text: async () => longError,
             });
 
             helper.testAllModelsInBackground();
@@ -1300,7 +1304,7 @@ describe('FreeOpenRouterHelper', () => {
         it('should recurse when testing without lock', async () => {
             const helper = new FreeOpenRouterHelper({
                 models: ['model1'],
-                apiKeys: ['key1']
+                apiKeys: ['key1'],
             });
 
             helper.testing = true;
@@ -1309,8 +1313,8 @@ describe('FreeOpenRouterHelper', () => {
             global.fetch = vi.fn().mockResolvedValue({
                 ok: true,
                 json: async () => ({
-                    choices: [{ message: { content: 'ok' } }]
-                })
+                    choices: [{ message: { content: 'ok' } }],
+                }),
             });
 
             helper.testAllModelsInBackground();

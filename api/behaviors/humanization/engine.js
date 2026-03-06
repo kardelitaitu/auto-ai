@@ -2,7 +2,7 @@ import { api } from '../../index.js';
 /**
  * Humanization Engine - Main Orchestrator
  * Central hub for all human-like behavior patterns
- * 
+ *
  * Usage:
  *   const human = new HumanizationEngine(page, agent);
  *   await human.scroll();           // Human-like scroll
@@ -129,7 +129,7 @@ export class HumanizationEngine {
             () => this._multitaskEngine.checkNotifications(),
             () => this._multitaskEngine.glanceTrending(),
             () => this._multitaskEngine.shiftPosition(),
-            () => this._multitaskEngine.glanceMentions()
+            () => this._multitaskEngine.glanceMentions(),
         ];
 
         // Weighted random activity
@@ -214,7 +214,7 @@ export class HumanizationEngine {
             cycleCount: this.cycleCount,
             lastActivity: this.lastActivity,
             isIdle: Date.now() - this.lastActivity > 60000,
-            multitasking: this.isMultitasking
+            multitasking: this.isMultitasking,
         };
     }
 

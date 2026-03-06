@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getLocator, stringify } from '@api/utils/locator.js';
 
 vi.mock('@api/core/context.js', () => ({
-    getPage: vi.fn()
+    getPage: vi.fn(),
 }));
 
 import { getPage } from '@api/core/context.js';
@@ -17,11 +17,11 @@ describe('api/utils/locator.js', () => {
         mockLocator = {
             click: vi.fn(),
             waitFor: vi.fn(),
-            isVisible: vi.fn()
+            isVisible: vi.fn(),
         };
 
         mockPage = {
-            locator: vi.fn().mockReturnValue(mockLocator)
+            locator: vi.fn().mockReturnValue(mockLocator),
         };
 
         getPage.mockReturnValue(mockPage);
@@ -72,7 +72,7 @@ describe('api/utils/locator.js', () => {
 
         it('should return toString for Locator input', () => {
             const mockLocatorWithToString = {
-                toString: vi.fn().mockReturnValue('[Locator]')
+                toString: vi.fn().mockReturnValue('[Locator]'),
             };
             const result = stringify(mockLocatorWithToString);
             expect(result).toBe('[Locator]');
@@ -80,7 +80,7 @@ describe('api/utils/locator.js', () => {
 
         it('should return [Locator] placeholder when toString returns falsy', () => {
             const mockLocatorNoToString = {
-                toString: vi.fn().mockReturnValue(null)
+                toString: vi.fn().mockReturnValue(null),
             };
             const result = stringify(mockLocatorNoToString);
             expect(result).toBe('[Locator]');

@@ -28,7 +28,7 @@ async function isLocalLLMReady() {
 
         // Try simple health check
         const response = await fetch(`${baseUrl}/`, {
-            signal: AbortSignal.timeout(2000)
+            signal: AbortSignal.timeout(2000),
         });
 
         if (response.ok) {
@@ -51,22 +51,22 @@ async function startLocalLLM() {
         const settings = await getSettings();
         const provider = settings.llm?.local?.provider || 'ollama';
         const model = settings.llm?.local?.model || 'llama3.2-vision';
-        
+
         // Just check if already running - don't try to start
         logger.info(`[LocalLLM] Checking if ${provider} is already running...`);
-        
+
         if (provider === 'ollama') {
             return await new Promise((resolve) => {
                 exec('ollama serve', () => resolve(true));
             });
         }
-        
+
         if (provider === 'docker') {
             return await new Promise((resolve) => {
                 exec(`docker model run ${model}`, () => resolve(true));
             });
         }
-        
+
         return false;
     } catch (e) {
         logger.warn(`[LocalLLM] Check failed: ${e.message}`);
@@ -84,7 +84,7 @@ export async function ensureDockerLLM() {
         logger.info('[LocalLLM] Local LLM is disabled in config, skipping initialization');
         return false;
     }
-    
+
     // Renamed internally but keeping export name for main.js compatibility
     logger.info('[LocalLLM] Checking local LLM status...');
 
@@ -100,7 +100,7 @@ export async function ensureDockerLLM() {
     while (attempts < 5) {
         attempts++;
         if (await isLocalLLMReady()) return true;
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
     }
 
     logger.error('[LocalLLM] Failed to start local LLM service.');
@@ -108,5 +108,5 @@ export async function ensureDockerLLM() {
 }
 
 export default {
-    ensureDockerLLM
+    ensureDockerLLM,
 };

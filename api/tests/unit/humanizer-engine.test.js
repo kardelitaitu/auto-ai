@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import HumanizerEngine from '@api/core/humanizer-engine.js';
 
@@ -8,8 +7,8 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         debug: vi.fn(),
         warn: vi.fn(),
-        error: vi.fn()
-    })
+        error: vi.fn(),
+    }),
 }));
 
 describe('HumanizerEngine', () => {
@@ -18,7 +17,7 @@ describe('HumanizerEngine', () => {
     beforeEach(async () => {
         engine = new HumanizerEngine();
         // Wait for async config loading
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
     });
 
     describe('generateMousePath', () => {
@@ -42,7 +41,7 @@ describe('HumanizerEngine', () => {
 
             // Stub returns single point regardless of overshoot option
             expect(path.points.length).toBeGreaterThan(0);
-            expect(path.metadata.distance).toBeCloseTo(707.10, 1);
+            expect(path.metadata.distance).toBeCloseTo(707.1, 1);
 
             vi.restoreAllMocks();
         });
@@ -73,7 +72,7 @@ describe('HumanizerEngine', () => {
 
             // Stub returns char + delay for each char only
             expect(timings.length).toBeGreaterThan(0);
-            expect(timings.some(t => t.char === 'a')).toBe(true);
+            expect(timings.some((t) => t.char === 'a')).toBe(true);
 
             vi.restoreAllMocks();
         });

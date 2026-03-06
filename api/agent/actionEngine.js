@@ -33,10 +33,14 @@ class ActionEngine {
      */
     async execute(page, action, sessionId = 'unknown') {
         if (!action || !action.action) {
-            return { success: false, done: false, error: "No action specified" };
+            return { success: false, done: false, error: 'No action specified' };
         }
 
-        try { await page.bringToFront(); } catch (_e) { /* ignore if already closed */ }
+        try {
+            await page.bringToFront();
+        } catch (_e) {
+            /* ignore if already closed */
+        }
 
         let target = action.selector;
         if (!target) {
@@ -76,11 +80,15 @@ class ActionEngine {
                     break;
                 case 'done':
                     logger.info('Agent indicates task completion.');
-                    return { done: true, success: true, error: "" };
+                    return { done: true, success: true, error: '' };
                 default:
-                    return { success: false, done: false, error: `Unknown action: ${action.action}` };
+                    return {
+                        success: false,
+                        done: false,
+                        error: `Unknown action: ${action.action}`,
+                    };
             }
-            return { success: true, done: false, error: "" };
+            return { success: true, done: false, error: '' };
         } catch (e) {
             logger.error(`Action Execution Failed: ${e.message}`);
             return { success: false, done: false, error: e.message };
@@ -97,16 +105,19 @@ class ActionEngine {
         if (typeof selector !== 'string') throw new Error('Selector must be a string');
 
         if (selector.startsWith('role=')) {
-            const parts = selector.split(',').map(s => s.trim());
-            const rolePart = parts.find(p => p.startsWith('role='));
-            const namePart = parts.find(p => p.startsWith('name='));
+            const parts = selector.split(',').map((s) => s.trim());
+            const rolePart = parts.find((p) => p.startsWith('role='));
+            const namePart = parts.find((p) => p.startsWith('name='));
 
             if (rolePart) {
                 const role = rolePart.split('=')[1];
                 const options = {};
                 if (namePart) {
                     let name = namePart.split('=')[1];
-                    if ((name.startsWith('"') && name.endsWith('"')) || (name.startsWith("'") && name.endsWith("'"))) {
+                    if (
+                        (name.startsWith('"') && name.endsWith('"')) ||
+                        (name.startsWith("'") && name.endsWith("'"))
+                    ) {
                         name = name.slice(1, -1);
                     }
                     options.name = name;
@@ -153,7 +164,7 @@ class ActionEngine {
      * @param {string} key - Key to press
      */
     async performPress(page, key) {
-        if (!key) throw new Error("Key is required for press action");
+        if (!key) throw new Error('Key is required for press action');
         logger.info(`Pressing key: ${key}`);
         await page.keyboard.press(key);
     }
@@ -183,7 +194,7 @@ class ActionEngine {
      * @param {string} url - URL to navigate to
      */
     async performNavigate(page, url) {
-        if (!url) throw new Error("URL is required for navigate action");
+        if (!url) throw new Error('URL is required for navigate action');
 
         if (!/^https?:\/\//i.test(url)) {
             url = 'https://' + url;

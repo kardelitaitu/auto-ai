@@ -3,12 +3,16 @@
  * Thin wrapper around GhostCursor's move() for direct spatial manipulation.
  * Includes trajectory sophistication for advanced path patterns.
  * Uses context-aware state for session isolation.
- * 
+ *
  * @module api/cursor
  */
 
 import { getCursor, getPage, setSessionInterval, clearSessionInterval } from '../core/context.js';
-import { getStatePathStyle, setStatePathStyle, getStatePathOptions } from '../core/context-state.js';
+import {
+    getStatePathStyle,
+    setStatePathStyle,
+    getStatePathOptions,
+} from '../core/context-state.js';
 import { getPersona } from '../behaviors/persona.js';
 import { mathUtils } from '../utils/math.js';
 import { createLogger } from '../core/logger.js';
@@ -87,9 +91,13 @@ export async function move(selector, options = {}) {
     // Debug: Show calculated targets
     logger.debug(`Target coordinates: (${Math.round(targetX)}, ${Math.round(targetY)})`);
     logger.debug(`Box center: (${Math.round(centerX)}, ${Math.round(centerY)})`);
-    logger.debug(`Box dimensions: ${Math.round(box.width)}x${Math.round(box.height)} at (${Math.round(box.x)}, ${Math.round(box.y)})`);
+    logger.debug(
+        `Box dimensions: ${Math.round(box.width)}x${Math.round(box.height)} at (${Math.round(box.x)}, ${Math.round(box.y)})`
+    );
     logger.debug(`Random offset: (${randomOffsetX}, ${randomOffsetY})`);
-    logger.debug(`Target from center: (${Math.round(targetX - centerX)}, ${Math.round(targetY - centerY)})`);
+    logger.debug(
+        `Target from center: (${Math.round(targetX - centerX)}, ${Math.round(targetY - centerY)})`
+    );
 
     // Validate target coordinates
     if (isNaN(targetX) || isNaN(targetY)) {
@@ -110,7 +118,8 @@ export async function move(selector, options = {}) {
         const currentBox = await locator.boundingBox().catch(() => null);
         if (currentBox) {
             const shift = Math.abs(currentBox.x - box.x) + Math.abs(currentBox.y - box.y);
-            if (shift > 10) { // Significant movement threshold
+            if (shift > 10) {
+                // Significant movement threshold
                 // Note: We don't throw here to avoid breaking GhostCursor's internal state,
                 // but a more advanced implementation would cancel and recalculate.
                 // For now, we log it for "Visual Guarding" awareness.
@@ -161,7 +170,15 @@ async function _moveWithStyle(cursor, targetX, targetY, style, useCorrection, du
             await _moveZigzag(cursor, start, targetX, targetY, distance, applyJitter);
             break;
         case 'overshoot':
-            await _moveOvershoot(cursor, start, targetX, targetY, distance, applyJitter, pathOptions);
+            await _moveOvershoot(
+                cursor,
+                start,
+                targetX,
+                targetY,
+                distance,
+                applyJitter,
+                pathOptions
+            );
             break;
         case 'stopped':
             await _moveStopped(cursor, start, targetX, targetY, distance, applyJitter, pathOptions);
@@ -179,7 +196,6 @@ async function _moveWithStyle(cursor, targetX, targetY, style, useCorrection, du
 
     // Final snap to target to ensure accuracy
     await cursor.move(targetX, targetY);
-
 
     // Optional correction movement after reaching target (scaled by precision)
     if (useCorrection) {
@@ -217,8 +233,8 @@ async function _moveZigzag(cursor, start, targetX, targetY, distance, applyJitte
         const baseY = start.y + (targetY - start.y) * progress;
 
         // Perpendicular offset for zigzag
-        const perpX = -(targetY - start.y) / distance * zigzagAmount * (i % 2 === 0 ? 1 : -1);
-        const perpY = (targetX - start.x) / distance * zigzagAmount * (i % 2 === 0 ? 1 : -1);
+        const perpX = (-(targetY - start.y) / distance) * zigzagAmount * (i % 2 === 0 ? 1 : -1);
+        const perpY = ((targetX - start.x) / distance) * zigzagAmount * (i % 2 === 0 ? 1 : -1);
 
         await applyJitter(baseX + perpX, baseY + perpY);
     }
@@ -236,7 +252,7 @@ async function _moveOvershoot(cursor, start, targetX, targetY, distance, applyJi
     await applyJitter(overshootX, overshootY);
 
     // Brief pause
-    await new Promise(r => setTimeout(r, mathUtils.randomInRange(50, 150)));
+    await new Promise((r) => setTimeout(r, mathUtils.randomInRange(50, 150)));
 
     // Move back to actual target
     await applyJitter(targetX, targetY);
@@ -257,7 +273,7 @@ async function _moveStopped(cursor, start, targetX, targetY, distance, applyJitt
 
         // Brief stop at each point
         if (i < stops) {
-            await new Promise(r => setTimeout(r, mathUtils.randomInRange(30, 80)));
+            await new Promise((r) => setTimeout(r, mathUtils.randomInRange(30, 80)));
         }
     }
 }
@@ -285,28 +301,35 @@ async function _moveMuscle(cursor, targetX, targetY, persona) {
         const boundedX = Math.max(0, Math.min(1280, nextX));
         const boundedY = Math.max(0, Math.min(720, nextY));
 
-        logger.debug(`Muscle Step ${i}: Moving to (${Math.round(boundedX)}, ${Math.round(boundedY)}) distance: ${Math.round(Math.sqrt(Math.pow(targetX - stateX.pos, 2) + Math.pow(targetY - stateY.pos, 2)))}px`);
+        logger.debug(
+            `Muscle Step ${i}: Moving to (${Math.round(boundedX)}, ${Math.round(boundedY)}) distance: ${Math.round(Math.sqrt(Math.pow(targetX - stateX.pos, 2) + Math.pow(targetY - stateY.pos, 2)))}px`
+        );
 
         // Direct mouse move with bounds
         await cursor.page.mouse.move(boundedX, boundedY);
         cursor.previousPos = { x: boundedX, y: boundedY };
 
-        const distToTarget = Math.sqrt(Math.pow(targetX - boundedX, 2) + Math.pow(targetY - boundedY, 2));
+        const distToTarget = Math.sqrt(
+            Math.pow(targetX - boundedX, 2) + Math.pow(targetY - boundedY, 2)
+        );
         if (distToTarget < tolerance) {
             logger.debug(`Muscle Target reached within ${tolerance}px tolerance`);
             logger.debug(`Muscle Final distance from target: ${Math.round(distToTarget)}px`);
             logger.debug(`Muscle Target was (${Math.round(targetX)}, ${Math.round(targetY)})`);
-            logger.debug(`Muscle Final position (${Math.round(boundedX)}, ${Math.round(boundedY)})`);
-            logger.debug(`Muscle X diff: ${Math.round(targetX - boundedX)}px, Y diff: ${Math.round(targetY - boundedY)}px`);
+            logger.debug(
+                `Muscle Final position (${Math.round(boundedX)}, ${Math.round(boundedY)})`
+            );
+            logger.debug(
+                `Muscle X diff: ${Math.round(targetX - boundedX)}px, Y diff: ${Math.round(targetY - boundedY)}px`
+            );
             break;
         }
 
         // Minimal delay for 2-3 second target
-        const stepDelay = Math.max(1, (3 / persona.speed));
-        await new Promise(r => setTimeout(r, stepDelay));
+        const stepDelay = Math.max(1, 3 / persona.speed);
+        await new Promise((r) => setTimeout(r, stepDelay));
     }
 }
-
 
 /**
  * Move cursor up by relative pixels.
@@ -338,24 +361,28 @@ export async function down(distance) {
  * @returns {void}
  */
 export function startFidgeting() {
-    setSessionInterval(FIDGET_INTERVAL_NAME, async () => {
-        try {
-            const cursor = getCursor();
-            if (!cursor) return;
+    setSessionInterval(
+        FIDGET_INTERVAL_NAME,
+        async () => {
+            try {
+                const cursor = getCursor();
+                if (!cursor) return;
 
-            const currentPos = cursor.previousPos || { x: 0, y: 0 };
-            const tremorAmplitude = 1.0; // 1px breathing
+                const currentPos = cursor.previousPos || { x: 0, y: 0 };
+                const tremorAmplitude = 1.0; // 1px breathing
 
-            const jitterX = mathUtils.gaussian(0, tremorAmplitude);
-            const jitterY = mathUtils.gaussian(0, tremorAmplitude);
+                const jitterX = mathUtils.gaussian(0, tremorAmplitude);
+                const jitterY = mathUtils.gaussian(0, tremorAmplitude);
 
-            // Subtle move without updating previousPos if possible, 
-            // but GhostCursor usually updates it. That's fine.
-            await cursor.move(currentPos.x + jitterX, currentPos.y + jitterY);
-        } catch (_e) {
-            // Ignore (likely page navigation or context loss)
-        }
-    }, mathUtils.randomInRange(3000, 8000)); // Every few seconds
+                // Subtle move without updating previousPos if possible,
+                // but GhostCursor usually updates it. That's fine.
+                await cursor.move(currentPos.x + jitterX, currentPos.y + jitterY);
+            } catch (_e) {
+                // Ignore (likely page navigation or context loss)
+            }
+        },
+        mathUtils.randomInRange(3000, 8000)
+    ); // Every few seconds
 }
 
 /**

@@ -25,48 +25,68 @@ export class GhostCursor {
     async init() {
         this.previousPos = {
             x: mathUtils.randomInRange(50, 500),
-            y: mathUtils.randomInRange(50, 500)
+            y: mathUtils.randomInRange(50, 500),
         };
     }
 
     // ── Vector Arithmetic Helpers ─────────────────────────────────────
-    vecAdd(a, b) { return { x: a.x + b.x, y: a.y + b.y }; }
-    vecSub(a, b) { return { x: a.x - b.x, y: a.y - b.y }; }
-    vecMult(a, s) { return { x: a.x * s, y: a.y * s }; }
-    vecLen(a) { return Math.sqrt(a.x * a.x + a.y * a.y); }
+    vecAdd(a, b) {
+        return { x: a.x + b.x, y: a.y + b.y };
+    }
+    vecSub(a, b) {
+        return { x: a.x - b.x, y: a.y - b.y };
+    }
+    vecMult(a, s) {
+        return { x: a.x * s, y: a.y * s };
+    }
+    vecLen(a) {
+        return Math.sqrt(a.x * a.x + a.y * a.y);
+    }
 
     /** Cubic Bezier Point */
     bezier(t, p0, p1, p2, p3) {
         const u = 1 - t;
-        const tt = t * t, uu = u * u, uuu = uu * u, ttt = tt * t;
+        const tt = t * t,
+            uu = u * u,
+            uuu = uu * u,
+            ttt = tt * t;
         return {
             x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
-            y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y
+            y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y,
         };
     }
 
     /** EaseOutCubic — starts fast, slows down naturally */
-    easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+    easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
 
     /**
      * Move the mouse along a Bezier arc with variable velocity and tremor noise.
      */
     async performMove(start, end, durationMs, _steps = 30) {
-        if (!start || !end ||
-            !Number.isFinite(start.x) || !Number.isFinite(start.y) ||
-            !Number.isFinite(end.x) || !Number.isFinite(end.y)) return;
+        if (
+            !start ||
+            !end ||
+            !Number.isFinite(start.x) ||
+            !Number.isFinite(start.y) ||
+            !Number.isFinite(end.x) ||
+            !Number.isFinite(end.y)
+        )
+            return;
 
         const distance = this.vecLen(this.vecSub(end, start));
         const arcAmount = mathUtils.randomInRange(20, Math.min(200, distance * 0.5));
 
-        const p0 = start, p3 = end;
+        const p0 = start,
+            p3 = end;
         const p1 = {
             x: start.x + (end.x - start.x) * 0.3 + mathUtils.gaussian(0, arcAmount),
-            y: start.y + (end.y - start.y) * 0.3 + mathUtils.gaussian(0, arcAmount)
+            y: start.y + (end.y - start.y) * 0.3 + mathUtils.gaussian(0, arcAmount),
         };
         const p2 = {
             x: start.x + (end.x - start.x) * 0.7 + mathUtils.gaussian(0, arcAmount),
-            y: start.y + (end.y - start.y) * 0.7 + mathUtils.gaussian(0, arcAmount)
+            y: start.y + (end.y - start.y) * 0.7 + mathUtils.gaussian(0, arcAmount),
         };
 
         const startTime = Date.now();
@@ -76,7 +96,10 @@ export class GhostCursor {
             const elapsed = Date.now() - startTime;
             let progress = elapsed / durationMs;
 
-            if (progress >= 1) { progress = 1; loop = false; }
+            if (progress >= 1) {
+                progress = 1;
+                loop = false;
+            }
 
             const easedT = this.easeOutCubic(progress);
             const pos = this.bezier(easedT, p0, p1, p2, p3);
@@ -86,7 +109,7 @@ export class GhostCursor {
             const noisyY = pos.y + (Math.random() - 0.5) * tremorScale;
 
             await this.page.mouse.move(noisyX, noisyY);
-            if (loop) await new Promise(r => setTimeout(r, Math.random() * 8));
+            if (loop) await new Promise((r) => setTimeout(r, Math.random() * 8));
         }
 
         this.previousPos = end;
@@ -100,7 +123,8 @@ export class GhostCursor {
      */
     async waitForStableElement(locator, maxWaitMs = 3000) {
         const startTime = Date.now();
-        let prevBox = null, stableCount = 0;
+        let prevBox = null,
+            stableCount = 0;
         const requiredStableChecks = 3;
 
         while (Date.now() - startTime < maxWaitMs) {
@@ -121,7 +145,7 @@ export class GhostCursor {
             }
 
             prevBox = bbox;
-            await new Promise(r => setTimeout(r, 100));
+            await new Promise((r) => setTimeout(r, 100));
         }
 
         return prevBox;
@@ -133,7 +157,11 @@ export class GhostCursor {
      * @param {object} profile - Specific engagement profile
      * @param {number} [maxRetries=3]
      */
-    async profiledClick(locator, profile = { hoverMin: 200, hoverMax: 800, holdMs: 80, hesitation: false, microMove: false }, maxRetries = 3) {
+    async profiledClick(
+        locator,
+        profile = { hoverMin: 200, hoverMax: 800, holdMs: 80, hesitation: false, microMove: false },
+        maxRetries = 3
+    ) {
         let lastError = null;
 
         for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -142,52 +170,67 @@ export class GhostCursor {
 
                 if (!bbox) {
                     console.warn('[GhostCursor] Twitter click: No bounding box found');
-                    await locator.click({ force: true }).catch(() => { });
+                    await locator.click({ force: true }).catch(() => {});
                     return;
                 }
 
-                const fixationDelay = attempt === 0
-                    ? mathUtils.randomInRange(200, 800)
-                    : mathUtils.randomInRange(50, 200);
-                await new Promise(r => setTimeout(r, fixationDelay));
+                const fixationDelay =
+                    attempt === 0
+                        ? mathUtils.randomInRange(200, 800)
+                        : mathUtils.randomInRange(50, 200);
+                await new Promise((r) => setTimeout(r, fixationDelay));
 
-                const marginX = bbox.width * 0.15, marginY = bbox.height * 0.15;
-                const targetX = mathUtils.gaussian(bbox.x + bbox.width / 2, bbox.width / 6, bbox.x + marginX, bbox.x + bbox.width - marginX);
-                const targetY = mathUtils.gaussian(bbox.y + bbox.height / 2, bbox.height / 6, bbox.y + marginY, bbox.y + bbox.height - marginY);
+                const marginX = bbox.width * 0.15,
+                    marginY = bbox.height * 0.15;
+                const targetX = mathUtils.gaussian(
+                    bbox.x + bbox.width / 2,
+                    bbox.width / 6,
+                    bbox.x + marginX,
+                    bbox.x + bbox.width - marginX
+                );
+                const targetY = mathUtils.gaussian(
+                    bbox.y + bbox.height / 2,
+                    bbox.height / 6,
+                    bbox.y + marginY,
+                    bbox.y + bbox.height - marginY
+                );
 
                 await this.moveWithHesitation(targetX, targetY);
                 await this.hoverWithDrift(targetX, targetY, profile.hoverMin, profile.hoverMax);
 
                 if (profile.hesitation) {
-                    await new Promise(r => setTimeout(r, mathUtils.randomInRange(40, 120)));
+                    await new Promise((r) => setTimeout(r, mathUtils.randomInRange(40, 120)));
                 }
 
                 if (profile.microMove) {
                     const microX = targetX + mathUtils.randomInRange(-2, 2);
                     const microY = targetY + mathUtils.randomInRange(-2, 2);
                     await this.page.mouse.move(microX, microY);
-                    await new Promise(r => setTimeout(r, mathUtils.randomInRange(20, 50)));
+                    await new Promise((r) => setTimeout(r, mathUtils.randomInRange(20, 50)));
                 }
 
                 await this.page.mouse.down();
-                await new Promise(r => setTimeout(r, profile.holdMs));
+                await new Promise((r) => setTimeout(r, profile.holdMs));
                 await this.page.mouse.up();
 
                 this.previousPos = { x: targetX, y: targetY };
                 return;
-
             } catch (error) {
                 lastError = error;
-                console.warn(`[GhostCursor] Twitter click attempt ${attempt + 1}/${maxRetries + 1} failed: ${error.message}`);
+                console.warn(
+                    `[GhostCursor] Twitter click attempt ${attempt + 1}/${maxRetries + 1} failed: ${error.message}`
+                );
 
                 if (attempt < maxRetries) {
                     const delay = Math.pow(2, attempt) * 1000;
-                    await new Promise(r => setTimeout(r, delay));
+                    await new Promise((r) => setTimeout(r, delay));
                 }
             }
         }
 
-        console.warn(`[GhostCursor] All retries failed, using native fallback: ${lastError?.message}`);
+        console.warn(
+            `[GhostCursor] All retries failed, using native fallback: ${lastError?.message}`
+        );
         try {
             await locator.click({ force: true });
         } catch (fallbackError) {
@@ -225,7 +268,7 @@ export class GhostCursor {
         const midY = start.y + (targetY - start.y) * 0.4;
 
         await this.performMove(start, { x: midX, y: midY }, 150);
-        await new Promise(r => setTimeout(r, mathUtils.randomInRange(100, 300)));
+        await new Promise((r) => setTimeout(r, mathUtils.randomInRange(100, 300)));
         await this.move(targetX, targetY);
     }
 
@@ -243,9 +286,9 @@ export class GhostCursor {
             await this.page.mouse.move(startX + driftX, startY + driftY);
 
             if (Math.random() < 0.2) {
-                await new Promise(r => setTimeout(r, mathUtils.randomInRange(50, 150)));
+                await new Promise((r) => setTimeout(r, mathUtils.randomInRange(50, 150)));
             }
-            await new Promise(r => setTimeout(r, mathUtils.randomInRange(50, 100)));
+            await new Promise((r) => setTimeout(r, mathUtils.randomInRange(50, 100)));
         }
 
         this.previousPos = { x: startX, y: startY };
@@ -262,19 +305,19 @@ export class GhostCursor {
         const pathVector = this.vecSub(end, start);
         const distance = this.vecLen(pathVector);
 
-        const targetDuration = 250 + (distance * 0.4) + mathUtils.randomInRange(-50, 50);
+        const targetDuration = 250 + distance * 0.4 + mathUtils.randomInRange(-50, 50);
         const shouldOvershoot = distance > 500 && mathUtils.roll(0.2);
 
         if (shouldOvershoot) {
             const overshootScale = mathUtils.randomInRange(1.05, 1.15);
             const errorLateral = mathUtils.gaussian(0, 20);
             const overshootPoint = {
-                x: start.x + (pathVector.x * overshootScale) + errorLateral,
-                y: start.y + (pathVector.y * overshootScale) + errorLateral
+                x: start.x + pathVector.x * overshootScale + errorLateral,
+                y: start.y + pathVector.y * overshootScale + errorLateral,
             };
 
             await this.performMove(start, overshootPoint, targetDuration * 0.8);
-            await new Promise(r => setTimeout(r, mathUtils.randomInRange(80, 300)));
+            await new Promise((r) => setTimeout(r, mathUtils.randomInRange(80, 300)));
             await this.performMove(overshootPoint, end, mathUtils.randomInRange(150, 300));
         } else {
             await this.performMove(start, end, targetDuration);
@@ -291,12 +334,15 @@ export class GhostCursor {
 
             const side = mathUtils.roll(0.5) ? 'left' : 'right';
             const margin = vp.width * 0.1;
-            const targetX = side === 'left'
-                ? mathUtils.randomInRange(0, margin)
-                : mathUtils.randomInRange(vp.width - margin, vp.width);
+            const targetX =
+                side === 'left'
+                    ? mathUtils.randomInRange(0, margin)
+                    : mathUtils.randomInRange(vp.width - margin, vp.width);
             const targetY = mathUtils.randomInRange(0, vp.height);
             const current = this.previousPos || { x: 0, y: 0 };
-            const dist = Math.sqrt(Math.pow(targetX - current.x, 2) + Math.pow(targetY - current.y, 2));
+            const dist = Math.sqrt(
+                Math.pow(targetX - current.x, 2) + Math.pow(targetY - current.y, 2)
+            );
 
             await this.performMove(current, { x: targetX, y: targetY }, Math.max(800, dist * 0.8));
         } catch (_e) {
@@ -318,13 +364,14 @@ export class GhostCursor {
             hoverMinMs = 120,
             hoverMaxMs = 280,
             precision = 'normal',
-            button = 'left'
+            button = 'left',
         } = options;
         const labelSuffix = label ? ` [${label}]` : '';
 
         let bbox = await this.waitForStableElement(selector, maxStabilityWaitMs);
         if (!bbox) {
-            if (allowNativeFallback && selector.click) await selector.click({ force: true, button }).catch(() => { });
+            if (allowNativeFallback && selector.click)
+                await selector.click({ force: true, button }).catch(() => {});
             return { success: false, usedFallback: true };
         }
 
@@ -334,17 +381,31 @@ export class GhostCursor {
         while (attempt < maxTrackingAttempts) {
             attempt++;
 
-            let marginFactor = 0.15, sigmaDivisor = 6;
-            if (precision === 'high') { marginFactor = 0.35; sigmaDivisor = 12; }
+            let marginFactor = 0.15,
+                sigmaDivisor = 6;
+            if (precision === 'high') {
+                marginFactor = 0.35;
+                sigmaDivisor = 12;
+            }
 
             const marginX = bbox.width * marginFactor;
             const marginY = bbox.height * marginFactor;
-            const targetX = mathUtils.gaussian(bbox.x + bbox.width / 2, bbox.width / sigmaDivisor, bbox.x + marginX, bbox.x + bbox.width - marginX);
-            const targetY = mathUtils.gaussian(bbox.y + bbox.height / 2, bbox.height / sigmaDivisor, bbox.y + marginY, bbox.y + bbox.height - marginY);
+            const targetX = mathUtils.gaussian(
+                bbox.x + bbox.width / 2,
+                bbox.width / sigmaDivisor,
+                bbox.x + marginX,
+                bbox.x + bbox.width - marginX
+            );
+            const targetY = mathUtils.gaussian(
+                bbox.y + bbox.height / 2,
+                bbox.height / sigmaDivisor,
+                bbox.y + marginY,
+                bbox.y + bbox.height - marginY
+            );
 
             const targetStr = `[${Math.round(targetX)}, ${Math.round(targetY)}]`;
             await this.moveWithHesitation(targetX, targetY);
-            await new Promise(r => setTimeout(r, mathUtils.randomInRange(100, 400)));
+            await new Promise((r) => setTimeout(r, mathUtils.randomInRange(100, 400)));
 
             const newBox = await selector.boundingBox();
             if (!newBox) return { success: false, usedFallback: false };
@@ -364,9 +425,11 @@ export class GhostCursor {
                     }
                     await this.page.mouse.move(finalX, finalY);
                     await this.page.mouse.down({ button });
-                    await new Promise(r => setTimeout(r, holdTime));
+                    await new Promise((r) => setTimeout(r, holdTime));
                     await this.page.mouse.up({ button });
-                    this.logger.info(`Mouse Cursor moved to ${targetStr}, clicked [${Math.round(finalX)}, ${Math.round(finalY)}]${labelSuffix}`);
+                    this.logger.info(
+                        `Mouse Cursor moved to ${targetStr}, clicked [${Math.round(finalX)}, ${Math.round(finalY)}]${labelSuffix}`
+                    );
                     return { success: true, usedFallback: false, x: finalX, y: finalY };
                 } catch {
                     break;
@@ -377,7 +440,11 @@ export class GhostCursor {
         }
 
         if (allowNativeFallback && selector.click) {
-            try { await selector.click({ force: true, button }); } catch { /* ignore */ }
+            try {
+                await selector.click({ force: true, button });
+            } catch {
+                /* ignore */
+            }
             return { success: false, usedFallback: true };
         }
         return { success: false, usedFallback: false };

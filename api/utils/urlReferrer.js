@@ -1,9 +1,9 @@
 /**
  * @fileoverview High-End Anti-Detect Referrer Engine (2025 Standard) - Naturalized
  * @module strategies/EntropyReferrer
- * @description 
+ * @description
  * - Generates mathematically diverse, platform-compliant Referrer URLs.
- * - IMPORTS "Natural Privacy" logic: Truncates deep paths for Social Media to match 
+ * - IMPORTS "Natural Privacy" logic: Truncates deep paths for Social Media to match
  * modern browser 'strict-origin-when-cross-origin' policies.
  * - Includes 'Direct' (No Referrer) traffic for realism.
  * - Calculates correct Sec-Fetch-* headers.
@@ -39,7 +39,7 @@ try {
         DICT = {
             TOPICS: data.TOPICS || ['tech', 'news'],
             ACTIONS: data.ACTIONS || ['read'],
-            CONTEXT: data.CONTEXT || ['thread']
+            CONTEXT: data.CONTEXT || ['thread'],
         };
         SUBREDDITS = data.SUBREDDITS || ['technology'];
     } else {
@@ -48,7 +48,7 @@ try {
         DICT = {
             TOPICS: ['technology', 'news'],
             ACTIONS: ['update', 'analysis'],
-            CONTEXT: ['discussion']
+            CONTEXT: ['discussion'],
         };
         SUBREDDITS = ['technology'];
     }
@@ -56,29 +56,30 @@ try {
     console.error('[ReferrerEngine] Error loading dictionary:', e);
 }
 
-
 // Load Real t.co Links
 let REAL_TCO = [];
 try {
     const tcoPath = path.resolve('config/tco_links.json');
     if (fs.existsSync(tcoPath)) {
-        REAL_TCO = JSON.parse(fs.readFileSync(tcoPath, 'utf8')).filter(l => l.includes('t.co/'));
+        REAL_TCO = JSON.parse(fs.readFileSync(tcoPath, 'utf8')).filter((l) => l.includes('t.co/'));
     }
 } catch {
     console.warn('[ReferrerEngine] t.co Dictionary not loaded.');
 }
 
-
 // --- CONFIGURATION ---
 
 const DEVICE_TYPES = {
-    DESKTOP: 'desktop'
+    DESKTOP: 'desktop',
 };
 
 // --- ENTROPY UTILS ---
 
 const getRandom = (length, type = 'alphanum') => {
-    if (type === 'hex') return randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+    if (type === 'hex')
+        return randomBytes(Math.ceil(length / 2))
+            .toString('hex')
+            .slice(0, length);
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const bytes = randomBytes(length);
     let res = '';
@@ -95,13 +96,20 @@ const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
  * Supports: x.com/user, twitter.com/user/status/id, etc.
  */
 // Pre-create Set for O(1) lookup instead of O(n) Array.includes()
-const RESERVED_WORDS = new Set(['home', 'explore', 'notifications', 'messages', 'search', 'settings']);
+const RESERVED_WORDS = new Set([
+    'home',
+    'explore',
+    'notifications',
+    'messages',
+    'search',
+    'settings',
+]);
 const PROFILE_SUBPAGES = new Set(['media', 'with_replies', 'highlights', 'likes']);
 
 const _extractContext = (targetUrl) => {
     try {
         const u = new URL(targetUrl);
-        const parts = u.pathname.split('/').filter(p => p);
+        const parts = u.pathname.split('/').filter((p) => p);
         if (parts.length === 0) return null;
 
         // Case 1: /username/status/123456
@@ -163,7 +171,7 @@ const generateQuery = (targetUrl = '') => {
                 `site:x.com ${ctx.username} status`,
                 `site:twitter.com ${ctx.username} tweet`,
                 `source:twitter ${ctx.username}`,
-                `related:twitter.com/${ctx.username}`
+                `related:twitter.com/${ctx.username}`,
             ];
             return encodeURIComponent(pick(templates));
         }
@@ -197,7 +205,7 @@ const generateQuery = (targetUrl = '') => {
                 // Advanced
                 `site:twitter.com ${ctx.username}`,
                 `site:x.com ${ctx.username}`,
-                `@${ctx.username} twitter`
+                `@${ctx.username} twitter`,
             ];
             return encodeURIComponent(pick(templates));
         }
@@ -213,26 +221,26 @@ const generateQuery = (targetUrl = '') => {
 // --- PROTOCOL SIMULATORS ---
 
 const EMERGENCY_VEDS = [
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ67oDCAU",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ-0EIBw",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ3tUDCAo",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ4G8IDA",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ39UDCA0",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ05YFCA4",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQvs8DCA8",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQhqEICBA",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ4dUDCBE",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ4d8ICBI",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ4tUDCBM",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ68cECBQ",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQlokGCBU",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQmIkGCBY",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ6scECBk",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ6psICBo",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQnJQPCBs",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQtsANCBw",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ8JsICB0",
-    "0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ8ZsICB4"
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ67oDCAU',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ-0EIBw',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ3tUDCAo',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ4G8IDA',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ39UDCA0',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ05YFCA4',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQvs8DCA8',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQhqEICBA',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ4dUDCBE',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ4d8ICBI',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ4tUDCBM',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ68cECBQ',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQlokGCBU',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQmIkGCBY',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ6scECBk',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ6psICBo',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQnJQPCBs',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQtsANCBw',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ8JsICB0',
+    '0ahUKEwidhIC1qL2RAxWY1zgGHToAHtsQ8ZsICB4',
 ];
 
 const generateVED = () => {
@@ -248,7 +256,10 @@ const generateVED = () => {
 const generateSnowflake = () => {
     const twitterEpoch = 1288834974657n;
     const now = BigInt(Date.now());
-    const id = ((now - twitterEpoch) << 22n) | (BigInt(Math.floor(Math.random() * 1024)) << 12n) | BigInt(Math.floor(Math.random() * 4096));
+    const id =
+        ((now - twitterEpoch) << 22n) |
+        (BigInt(Math.floor(Math.random() * 1024)) << 12n) |
+        BigInt(Math.floor(Math.random() * 4096));
     return id.toString();
 };
 
@@ -322,7 +333,8 @@ const Strategies = {
     // --- NEWS AGGREGATORS (High Trust) ---
     hacker_news: () => `https://news.ycombinator.com/item?id=${getRandom(8, 'alphanum')}`,
     medium_article: () => `https://medium.com/tag/${pick(DICT.TOPICS).replace(/ /g, '-')}`,
-    substack: () => `https://${pick(['technews', 'crypto', 'finance', 'daily'])}.substack.com/p/${getRandom(10, 'alphanum')}`,
+    substack: () =>
+        `https://${pick(['technews', 'crypto', 'finance', 'daily'])}.substack.com/p/${getRandom(10, 'alphanum')}`,
 };
 
 // --- PRIVACY ENGINE (The "Natural" Filter) ---
@@ -342,16 +354,16 @@ class PrivacyEngine {
             'bing_search',
             'duckduckgo',
             'twitter_tco', // t.co is designed to be the full referrer
-            'whatsapp_api' // often passes minimal path
+            'whatsapp_api', // often passes minimal path
         ];
 
         if (fullPathWhitelist.includes(strategyName)) {
             return url;
         }
 
-        // For everything else (Reddit, Discord, LinkedIn, Telegram Web), 
+        // For everything else (Reddit, Discord, LinkedIn, Telegram Web),
         // a real browser usually sends ONLY the Origin.
-        // sending /r/subreddit/comments/... to a third party is a privacy leak 
+        // sending /r/subreddit/comments/... to a third party is a privacy leak
         // that browsers prevent by default in 2025.
         try {
             const u = new URL(url);
@@ -370,10 +382,10 @@ class HeaderEngine {
         // Direct traffic has no Referrer header, and specific Fetch metadata
         if (!refererUrl) {
             return {
-                'Sec-Fetch-Site': 'none',      // User typed URL / Bookmark
+                'Sec-Fetch-Site': 'none', // User typed URL / Bookmark
                 'Sec-Fetch-Mode': 'navigate',
                 'Sec-Fetch-User': '?1',
-                'Sec-Fetch-Dest': 'document'
+                'Sec-Fetch-Dest': 'document',
             };
         }
 
@@ -387,13 +399,13 @@ class HeaderEngine {
 
         const isSameOrigin = refHost === targetHost;
         const isSameSite = refHost.endsWith(targetHost.split('.').slice(-2).join('.'));
-        let site = isSameOrigin ? 'same-origin' : (isSameSite ? 'same-site' : 'cross-site');
+        let site = isSameOrigin ? 'same-origin' : isSameSite ? 'same-site' : 'cross-site';
 
         return {
             'Sec-Fetch-Site': site,
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-User': '?1',
-            'Sec-Fetch-Dest': 'document'
+            'Sec-Fetch-Dest': 'document',
         };
     }
 }
@@ -410,32 +422,34 @@ export class ReferrerEngine {
     _selectStrategy(targetUrl) {
         const r = Math.random();
 
-        // CRITICAL SAFETY: 
+        // CRITICAL SAFETY:
         // Never use 'twitter_tco' if we are visiting Twitter/X itself.
         // t.co is a redirector. You cannot "click a link" on a t.co page to go to Twitter.
         // It creates an Impossible Navigation paradox.
         const isInternalTwitter = targetUrl.includes('twitter.com') || targetUrl.includes('x.com');
 
         // 1. Direct Traffic (10%) - Essential for realism
-        if (r < 0.10) return 'direct';
+        if (r < 0.1) return 'direct';
 
         // 2. Search (30%) - High Trust
         if (r < 0.25) return 'google_search';
         if (r < 0.35) return 'bing_search';
-        if (r < 0.40) return 'duckduckgo';
+        if (r < 0.4) return 'duckduckgo';
 
         // 3. Social (30%)
         if (!isInternalTwitter && r < 0.55) return 'twitter_tco'; // ONLY if external
         if (r < 0.65) return 'reddit_thread'; // Will be truncated to Origin
-        if (r < 0.70) return 'discord_channel'; // Will be truncated to Origin
+        if (r < 0.7) return 'discord_channel'; // Will be truncated to Origin
 
         // 4. Messaging (25%)
-        if (r < 0.80) return 'telegram_web';
-        if (r < 0.90) return 'whatsapp_web';
+        if (r < 0.8) return 'telegram_web';
+        if (r < 0.9) return 'whatsapp_web';
         if (r < 0.95) return 'whatsapp_api';
 
         // 5. Long Tail
-        return Math.random() > 0.5 ? 'linkedin_feed' : pick(['hacker_news', 'medium_article', 'substack']);
+        return Math.random() > 0.5
+            ? 'linkedin_feed'
+            : pick(['hacker_news', 'medium_article', 'substack']);
     }
 
     generateContext(targetUrl) {
@@ -449,7 +463,7 @@ export class ReferrerEngine {
         const fetchHeaders = HeaderEngine.getContextHeaders(naturalReferrer, targetUrl);
 
         const finalHeaders = {
-            ...fetchHeaders
+            ...fetchHeaders,
         };
 
         // Only add Referer header if it's not direct
@@ -482,7 +496,7 @@ export class ReferrerEngine {
             strategy,
             referrer: naturalReferrer,
             headers: finalHeaders,
-            targetWithParams: finalTarget
+            targetWithParams: finalTarget,
         };
     }
 
@@ -490,7 +504,7 @@ export class ReferrerEngine {
      * Executes a "True Navigation" by spoofing the referrer via interception.
      * This creates a perfect history.length and navigation.type profile.
      * @param {object} page - Playwright Page
-     * @param {string} targetUrl 
+     * @param {string} targetUrl
      * @param {object} [context] - Optional pre-generated context
      */
     async navigate(page, targetUrl, context = null) {
@@ -521,7 +535,7 @@ export class ReferrerEngine {
                     warmup: false,
                     warmupMouse: false,
                     warmupFakeRead: false,
-                    warmupPause: false
+                    warmupPause: false,
                 });
             }
             await api.setExtraHTTPHeaders(ctx.headers);
@@ -532,10 +546,12 @@ export class ReferrerEngine {
         try {
             // 1. Set up Interception
             // A. Handle Favicon to prevent 404/Network Error signals on this fake page
-            await page.route('**/favicon.ico', route => route.fulfill({ status: 200, contentType: 'image/x-icon', body: '' }));
+            await page.route('**/favicon.ico', (route) =>
+                route.fulfill({ status: 200, contentType: 'image/x-icon', body: '' })
+            );
 
             // B. Serve the Trampoline Page
-            await page.route(ctx.referrer, async route => {
+            await page.route(ctx.referrer, async (route) => {
                 await route.fulfill({
                     status: 200,
                     contentType: 'text/html',
@@ -572,7 +588,7 @@ export class ReferrerEngine {
                                 </script>
                             </body>
                         </html>
-                    `
+                    `,
                 });
             });
 
@@ -585,7 +601,7 @@ export class ReferrerEngine {
                     warmup: false,
                     warmupMouse: false,
                     warmupFakeRead: false,
-                    warmupPause: false
+                    warmupPause: false,
                 });
             } else {
                 await api.goto(ctx.referrer, { waitUntil: 'commit' });
@@ -605,16 +621,23 @@ export class ReferrerEngine {
 
             // 4. Wait for real target load
             if (useApi && this.api?.waitForURL) {
-                await this.api.waitForURL(url => url.toString().includes(new URL(targetUrl).hostname), { timeout: 30000, waitUntil: 'domcontentloaded' });
+                await this.api.waitForURL(
+                    (url) => url.toString().includes(new URL(targetUrl).hostname),
+                    { timeout: 30000, waitUntil: 'domcontentloaded' }
+                );
             } else {
-                await api.waitForURL(url => url.toString().includes(new URL(targetUrl).hostname), { timeout: 30000, waitUntil: 'domcontentloaded' });
+                await api.waitForURL(
+                    (url) => url.toString().includes(new URL(targetUrl).hostname),
+                    { timeout: 30000, waitUntil: 'domcontentloaded' }
+                );
             }
 
             // Cleanup route (optional, but good practice)
             await page.unroute(ctx.referrer);
-
         } catch (e) {
-            console.warn(`[ReferrerEngine] Trampoline failed: ${e.message}. Fallback to direct goto.`);
+            console.warn(
+                `[ReferrerEngine] Trampoline failed: ${e.message}. Fallback to direct goto.`
+            );
             if (useApi) {
                 await this.api.setExtraHTTPHeaders(ctx.headers);
                 await this.api.goto(ctx.targetWithParams, {
@@ -622,7 +645,7 @@ export class ReferrerEngine {
                     warmup: false,
                     warmupMouse: false,
                     warmupFakeRead: false,
-                    warmupPause: false
+                    warmupPause: false,
                 });
                 return;
             }
@@ -636,10 +659,12 @@ export class ReferrerEngine {
 /* c8 ignore start */
 if (import.meta.url === `file://${process.argv[1]}`) {
     const engine = new ReferrerEngine({ addUTM: true });
-    console.log("--- 10-Sample Naturalized Test (Desktop) ---");
+    console.log('--- 10-Sample Naturalized Test (Desktop) ---');
     for (let i = 0; i < 10; i++) {
         const ctx = engine.generateContext('https://target.com');
-        console.log(`[${i + 1}] ${ctx.strategy.padEnd(16)} | ${ctx.referrer ? ctx.referrer.substring(0, 50) + '...' : '(DIRECT)'}`);
+        console.log(
+            `[${i + 1}] ${ctx.strategy.padEnd(16)} | ${ctx.referrer ? ctx.referrer.substring(0, 50) + '...' : '(DIRECT)'}`
+        );
     }
 }
 /* c8 ignore stop */

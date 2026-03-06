@@ -2,7 +2,7 @@
  * @fileoverview Idle Simulation
  * Simulates human presence during idle periods - mouse wiggle, occasional scrolling.
  * Uses context-aware state for session isolation.
- * 
+ *
  * @module api/idle
  */
 
@@ -25,12 +25,7 @@ const IDLE_INTERVAL_NAME = 'idle_simulation';
  * @returns {void}
  */
 export function start(options = {}) {
-    const {
-        wiggle = true,
-        scroll = true,
-        frequency = 3000,
-        magnitude = 5
-    } = options;
+    const { wiggle = true, scroll = true, frequency = 3000, magnitude = 5 } = options;
 
     const state = getStateIdle();
     if (state.isRunning) {
@@ -40,39 +35,45 @@ export function start(options = {}) {
     const page = getPage();
     const cursor = getCursor();
 
-    const intervalId = setSessionInterval(IDLE_INTERVAL_NAME, async () => {
-        try {
-            if (wiggle) {
-                // Mouse wiggle
-                const currentPos = cursor.previousPos || { x: 0, y: 0 };
-                const deltaX = randomInRange(-magnitude, magnitude);
-                const deltaY = randomInRange(-magnitude, magnitude);
+    const intervalId = setSessionInterval(
+        IDLE_INTERVAL_NAME,
+        async () => {
+            try {
+                if (wiggle) {
+                    // Mouse wiggle
+                    const currentPos = cursor.previousPos || { x: 0, y: 0 };
+                    const deltaX = randomInRange(-magnitude, magnitude);
+                    const deltaY = randomInRange(-magnitude, magnitude);
 
-                await cursor.move(
-                    Math.max(0, currentPos.x + deltaX),
-                    Math.max(0, currentPos.y + deltaY)
-                );
-            }
-
-            if (scroll && Math.random() > 0.7) {
-                // Occasional micro-scroll (30% chance)
-                const scrollAmount = randomInRange(-50, 50);
-                try {
-                    await page.mouse.wheel(0, scrollAmount);
-                } catch (_wheelError) {
-                    // Fallback to JS scroll if CDP wheel fails
-                    logger.debug(`[Idle] CDP wheel failed, using window.scrollBy(${scrollAmount})`);
-                    await page.evaluate((dy) => window.scrollBy(0, dy), scrollAmount);
+                    await cursor.move(
+                        Math.max(0, currentPos.x + deltaX),
+                        Math.max(0, currentPos.y + deltaY)
+                    );
                 }
+
+                if (scroll && Math.random() > 0.7) {
+                    // Occasional micro-scroll (30% chance)
+                    const scrollAmount = randomInRange(-50, 50);
+                    try {
+                        await page.mouse.wheel(0, scrollAmount);
+                    } catch (_wheelError) {
+                        // Fallback to JS scroll if CDP wheel fails
+                        logger.debug(
+                            `[Idle] CDP wheel failed, using window.scrollBy(${scrollAmount})`
+                        );
+                        await page.evaluate((dy) => window.scrollBy(0, dy), scrollAmount);
+                    }
+                }
+            } catch {
+                // Ignore errors during idle
             }
-        } catch {
-            // Ignore errors during idle
-        }
-    }, frequency);
+        },
+        frequency
+    );
 
     setStateIdle({
         isRunning: true,
-        fidgetInterval: intervalId // Store ID in state for visibility
+        fidgetInterval: intervalId, // Store ID in state for visibility
     });
 }
 
@@ -112,10 +113,7 @@ export async function wiggle(magnitude = 5) {
     const deltaX = randomInRange(-magnitude, magnitude);
     const deltaY = randomInRange(-magnitude, magnitude);
 
-    await cursor.move(
-        Math.max(0, currentPos.x + deltaX),
-        Math.max(0, currentPos.y + deltaY)
-    );
+    await cursor.move(Math.max(0, currentPos.x + deltaX), Math.max(0, currentPos.y + deltaY));
 }
 
 /**

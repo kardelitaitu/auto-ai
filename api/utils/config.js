@@ -1,7 +1,7 @@
 /**
  * @fileoverview Settings Config Loader Bridge for api/ module.
  * Bridges to the full api/utils/configLoader.js for consistency.
- * 
+ *
  * @module api/utils/config
  */
 

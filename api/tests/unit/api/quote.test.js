@@ -3,22 +3,22 @@ import { quoteWithAI } from '@api/actions/quote.js';
 
 vi.mock('@api/core/context.js', () => ({
     getPage: vi.fn(),
-    evalPage: vi.fn()
+    evalPage: vi.fn(),
 }));
 
 vi.mock('@api/core/logger.js', () => ({
     createLogger: vi.fn(() => ({
         info: vi.fn(),
         warn: vi.fn(),
-        error: vi.fn()
-    }))
+        error: vi.fn(),
+    })),
 }));
 
 vi.mock('@api/utils/math.js', () => ({
     mathUtils: {
         randomInRange: vi.fn((min, max) => (min + max) / 2),
-        gaussian: vi.fn(() => 0.5)
-    }
+        gaussian: vi.fn(() => 0.5),
+    },
 }));
 
 vi.mock('@api/core/agent-connector.js', () => ({
@@ -26,7 +26,7 @@ vi.mock('@api/core/agent-connector.js', () => ({
         constructor() {
             this.chat = vi.fn().mockResolvedValue({ content: 'Test response' });
         }
-    }
+    },
 }));
 
 vi.mock('@api/agent/ai-quote-engine.js', () => ({
@@ -34,36 +34,40 @@ vi.mock('@api/agent/ai-quote-engine.js', () => ({
         constructor() {
             this.generateQuote = vi.fn().mockResolvedValue({
                 success: true,
-                quote: 'Test quote text'
+                quote: 'Test quote text',
             });
             this.quoteMethodB_Retweet = vi.fn().mockResolvedValue({
                 success: true,
-                method: 'quoteMethodB'
+                method: 'quoteMethodB',
             });
         }
-    }
+    },
 }));
 
 vi.mock('@api/behaviors/human-interaction.js', () => ({
     HumanInteraction: class {
         constructor() {}
-        moveTo() { return Promise.resolve(); }
-        click() { return Promise.resolve(); }
-    }
+        moveTo() {
+            return Promise.resolve();
+        }
+        click() {
+            return Promise.resolve();
+        }
+    },
 }));
 
 vi.mock('@api/interactions/scroll.js', () => ({
     scroll: vi.fn().mockResolvedValue(undefined),
-    focus: vi.fn().mockResolvedValue(undefined)
+    focus: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@api/interactions/wait.js', () => ({
-    wait: vi.fn().mockResolvedValue(undefined)
+    wait: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@api/interactions/queries.js', () => ({
     text: vi.fn().mockResolvedValue('Test tweet text content'),
-    exists: vi.fn().mockResolvedValue(true)
+    exists: vi.fn().mockResolvedValue(true),
 }));
 
 import { getPage, evalPage } from '@api/core/context.js';
@@ -81,9 +85,9 @@ describe('api/actions/quote.js', () => {
             locator: vi.fn().mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     click: vi.fn().mockResolvedValue(undefined),
-                    focus: vi.fn().mockResolvedValue(undefined)
-                })
-            })
+                    focus: vi.fn().mockResolvedValue(undefined),
+                }),
+            }),
         };
 
         getPage.mockReturnValue(mockPage);
@@ -150,7 +154,7 @@ describe('api/actions/quote.js', () => {
 
             await quoteWithAI({
                 fallback: 'Custom fallback',
-                contextSteps: 10
+                contextSteps: 10,
             });
 
             expect(scroll).toHaveBeenCalled();

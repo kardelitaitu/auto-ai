@@ -11,19 +11,19 @@ import BaseDiscover from '../baseDiscover.js';
  * @description Discovers MoreLogin browser instances
  */
 class MoreLoginDiscover extends BaseDiscover {
-  constructor() {
-    super();
-    this.browserType = 'morelogin';
-  }
+    constructor() {
+        super();
+        this.browserType = 'morelogin';
+    }
 
-  /**
-   * Discovers MoreLogin browser instances
-   * @returns {Promise<Array>} Array of browser endpoints
-   */
-  async discover() {
-    // Placeholder for MoreLogin discovery logic
-    return [];
-  }
+    /**
+     * Discovers MoreLogin browser instances
+     * @returns {Promise<Array>} Array of browser endpoints
+     */
+    async discover() {
+        // Placeholder for MoreLogin discovery logic
+        return [];
+    }
 }
 
 export default MoreLoginDiscover;

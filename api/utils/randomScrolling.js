@@ -19,7 +19,7 @@ export function createRandomScroller(page) {
      */
     return async function randomScrolling(durationSeconds) {
         const startTime = Date.now();
-        const endTime = startTime + (durationSeconds * 1000);
+        const endTime = startTime + durationSeconds * 1000;
 
         while (Date.now() < endTime) {
             // Use api.scroll.read for human-like behavior
@@ -28,7 +28,7 @@ export function createRandomScroller(page) {
                 pauses: 1,
                 scrollAmount: mathUtils.randomInRange(300, 700),
                 variableSpeed: true,
-                backScroll: Math.random() > 0.8
+                backScroll: Math.random() > 0.8,
             });
 
             // Small extra pause between read cycles

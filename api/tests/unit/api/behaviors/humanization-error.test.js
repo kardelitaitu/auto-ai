@@ -5,26 +5,26 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 vi.mock('@api/utils/math.js', () => ({
     mathUtils: {
         gaussian: vi.fn((mean, std) => mean),
         randomInRange: vi.fn((min, max) => min),
-        roll: vi.fn(() => false)
-    }
+        roll: vi.fn(() => false),
+    },
 }));
 
 vi.mock('@api/utils/entropyController.js', () => ({
     entropy: {
-        reactionTime: vi.fn().mockReturnValue(100)
-    }
+        reactionTime: vi.fn().mockReturnValue(100),
+    },
 }));
 
 vi.mock('@api/behaviors/scroll-helper.js', () => ({
-    scrollRandom: vi.fn().mockResolvedValue(undefined)
+    scrollRandom: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@api/index.js', () => {
@@ -34,9 +34,9 @@ vi.mock('@api/index.js', () => {
         waitForTimeout: vi.fn().mockResolvedValue(undefined),
         goBack: vi.fn().mockResolvedValue(undefined),
         goForward: vi.fn().mockResolvedValue(undefined),
-        title: vi.fn().mockResolvedValue('Test Page')
+        title: vi.fn().mockResolvedValue('Test Page'),
     };
-    
+
     return {
         api: {
             wait: vi.fn().mockResolvedValue(undefined),
@@ -44,9 +44,9 @@ vi.mock('@api/index.js', () => {
             goto: vi.fn().mockResolvedValue(undefined),
             getPage: vi.fn().mockReturnValue(mockPage),
             getCurrentUrl: vi.fn().mockResolvedValue('https://example.com'),
-            think: vi.fn().mockResolvedValue(undefined)
+            think: vi.fn().mockResolvedValue(undefined),
         },
-        __mockPage: mockPage
+        __mockPage: mockPage,
     };
 });
 
@@ -66,7 +66,7 @@ describe('api/behaviors/humanization/error.js', () => {
             info: vi.fn(),
             warn: vi.fn(),
             error: vi.fn(),
-            debug: vi.fn()
+            debug: vi.fn(),
         };
 
         mockPage = {
@@ -75,7 +75,7 @@ describe('api/behaviors/humanization/error.js', () => {
             waitForTimeout: vi.fn().mockResolvedValue(undefined),
             goBack: vi.fn().mockResolvedValue(undefined),
             goForward: vi.fn().mockResolvedValue(undefined),
-            title: vi.fn().mockResolvedValue('Test Page')
+            title: vi.fn().mockResolvedValue('Test Page'),
         };
 
         errorRecovery = new ErrorRecovery(mockPage, mockLogger);
@@ -96,10 +96,12 @@ describe('api/behaviors/humanization/error.js', () => {
     describe('handle method', () => {
         it('should handle element_not_found error', async () => {
             const mockLocator = {
-                count: vi.fn().mockResolvedValue(0)
+                count: vi.fn().mockResolvedValue(0),
             };
 
-            const result = await errorRecovery.handle('element_not_found', { locator: mockLocator });
+            const result = await errorRecovery.handle('element_not_found', {
+                locator: mockLocator,
+            });
 
             expect(result).toHaveProperty('success');
             expect(result).toHaveProperty('strategy');
@@ -107,7 +109,7 @@ describe('api/behaviors/humanization/error.js', () => {
 
         it('should handle click_failed error', async () => {
             const mockLocator = {
-                click: vi.fn().mockRejectedValue(new Error('Click failed'))
+                click: vi.fn().mockRejectedValue(new Error('Click failed')),
             };
 
             const result = await errorRecovery.handle('click_failed', { locator: mockLocator });
@@ -149,10 +151,12 @@ describe('api/behaviors/humanization/error.js', () => {
         it('should try multiple recovery strategies', async () => {
             const mockLocator = {
                 count: vi.fn().mockResolvedValue(0),
-                click: vi.fn().mockRejectedValue(new Error('Failed'))
+                click: vi.fn().mockRejectedValue(new Error('Failed')),
             };
 
-            const result = await errorRecovery.handle('element_not_found', { locator: mockLocator });
+            const result = await errorRecovery.handle('element_not_found', {
+                locator: mockLocator,
+            });
 
             // It should have tried multiple strategies - we just check that it returns a result
             expect(result).toHaveProperty('success');
@@ -163,7 +167,7 @@ describe('api/behaviors/humanization/error.js', () => {
     describe('recovery strategies', () => {
         it('_scrollAndRetry should scroll and wait', async () => {
             const mockLocator = {
-                count: vi.fn().mockResolvedValue(1)
+                count: vi.fn().mockResolvedValue(1),
             };
 
             const result = await errorRecovery._scrollAndRetry({ locator: mockLocator });
@@ -173,7 +177,7 @@ describe('api/behaviors/humanization/error.js', () => {
 
         it('_scrollAndRetry should return failure when element not found', async () => {
             const mockLocator = {
-                count: vi.fn().mockResolvedValue(0)
+                count: vi.fn().mockResolvedValue(0),
             };
 
             const result = await errorRecovery._scrollAndRetry({ locator: mockLocator });
@@ -211,7 +215,7 @@ describe('api/behaviors/humanization/error.js', () => {
 
         it('_retryWithForce should try force click', async () => {
             const mockLocator = {
-                click: vi.fn().mockResolvedValue(undefined)
+                click: vi.fn().mockResolvedValue(undefined),
             };
 
             const result = await errorRecovery._retryWithForce({ locator: mockLocator });
@@ -226,10 +230,12 @@ describe('api/behaviors/humanization/error.js', () => {
         });
 
         it('_clickNearby should try clicking nearby elements', async () => {
-            mockPage.$$ = vi.fn().mockResolvedValue([
-                { click: vi.fn().mockResolvedValue(undefined) },
-                { click: vi.fn().mockResolvedValue(undefined) }
-            ]);
+            mockPage.$$ = vi
+                .fn()
+                .mockResolvedValue([
+                    { click: vi.fn().mockResolvedValue(undefined) },
+                    { click: vi.fn().mockResolvedValue(undefined) },
+                ]);
 
             const result = await errorRecovery._clickNearby({});
 

@@ -11,19 +11,19 @@ import BaseDiscover from '../baseDiscover.js';
  * @description Discovers local Chrome browser instances
  */
 class LocalChromeDiscover extends BaseDiscover {
-  constructor() {
-    super();
-    this.browserType = 'localChrome';
-  }
+    constructor() {
+        super();
+        this.browserType = 'localChrome';
+    }
 
-  /**
-   * Discovers local Chrome browser instances
-   * @returns {Promise<Array>} Array of browser endpoints
-   */
-  async discover() {
-    // Placeholder for local Chrome discovery logic
-    return [];
-  }
+    /**
+     * Discovers local Chrome browser instances
+     * @returns {Promise<Array>} Array of browser endpoints
+     */
+    async discover() {
+        // Placeholder for local Chrome discovery logic
+        return [];
+    }
 }
 
 export default LocalChromeDiscover;

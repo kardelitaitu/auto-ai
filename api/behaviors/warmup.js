@@ -1,7 +1,7 @@
 /**
  * @fileoverview Trampoline / Warmup System
  * Simulates human behavior before state transitions to establish believable session baseline.
- * 
+ *
  * @module api/warmup
  */
 
@@ -27,7 +27,7 @@ export async function randomMouse(duration = 1500) {
     const startTime = Date.now();
     const moves = randomInRange(3, 8);
 
-    for (let i = 0; i < moves && (Date.now() - startTime) < duration; i++) {
+    for (let i = 0; i < moves && Date.now() - startTime < duration; i++) {
         const targetX = randomInRange(0, viewport.width);
         const targetY = randomInRange(0, viewport.height);
 
@@ -53,7 +53,9 @@ export async function fakeRead(scrolls = 3) {
             await page.mouse.wheel(0, scrollAmount * direction);
         } catch (_e) {
             // Fallback if CDP wheel fails
-            logger.debug(`[Warmup] CDP wheel failed, using window.scrollBy(${scrollAmount * direction})`);
+            logger.debug(
+                `[Warmup] CDP wheel failed, using window.scrollBy(${scrollAmount * direction})`
+            );
             await page.evaluate((dy) => window.scrollBy(0, dy), scrollAmount * direction);
         }
         await delay(randomInRange(500, 1500));
@@ -81,11 +83,7 @@ export async function pause(min = 2000, max = 5000) {
  * @returns {Promise<void>}
  */
 export async function beforeNavigate(url, options = {}) {
-    const {
-        mouse = true,
-        fakeRead: shouldFakeRead = false,
-        pause: doPause = true
-    } = options;
+    const { mouse = true, fakeRead: shouldFakeRead = false, pause: doPause = true } = options;
 
     // 1. Random mouse movement (1-2 seconds)
     if (mouse) {

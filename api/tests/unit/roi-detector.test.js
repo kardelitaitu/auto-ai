@@ -9,10 +9,10 @@ describe('RoIDetector', () => {
     beforeEach(() => {
         detector = new RoIDetector();
         mockElement = {
-            boundingBox: vi.fn()
+            boundingBox: vi.fn(),
         };
         mockPage = {
-            $: vi.fn()
+            $: vi.fn(),
         };
     });
 
@@ -23,10 +23,10 @@ describe('RoIDetector', () => {
         const roi = await detector.detect(mockPage);
 
         expect(roi).toEqual({
-            x: 80,  // 100 - 20
-            y: 80,  // 100 - 20
+            x: 80, // 100 - 20
+            y: 80, // 100 - 20
             width: 240, // 200 + 40
-            height: 240 // 200 + 40
+            height: 240, // 200 + 40
         });
     });
 

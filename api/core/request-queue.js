@@ -31,9 +31,9 @@ class RequestQueue {
             dequeued: 0,
             completed: 0,
             failed: 0,
-            retried: 0
+            retried: 0,
         };
-        
+
         // Then async load to override with config values
         this._configLoaded = false;
         this._loadConfig(options);
@@ -65,23 +65,29 @@ class RequestQueue {
         const QUEUE_WAIT_TIMEOUT_MS = 90000; // 90 seconds max wait in queue
 
         if (this.queue.length >= this.maxQueueSize) {
-            logger.warn(`[RequestQueue] Queue full, rejecting task ${id} (size: ${this.queue.length})`);
+            logger.warn(
+                `[RequestQueue] Queue full, rejecting task ${id} (size: ${this.queue.length})`
+            );
             throw new Error(`Queue full (max: ${this.maxQueueSize})`);
         }
 
         this.stats.enqueued++;
         const enqueueTime = Date.now();
-        logger.debug(`[RequestQueue] Enqueued task ${id}, queue size: ${this.queue.length + 1}, running: ${this.running}`);
+        logger.debug(
+            `[RequestQueue] Enqueued task ${id}, queue size: ${this.queue.length + 1}, running: ${this.running}`
+        );
 
         return new Promise((resolve, reject) => {
             // Add queue wait timeout
             const queueTimeoutId = setTimeout(() => {
                 // Check if still in queue
-                const idx = this.queue.findIndex(item => item.id === id);
+                const idx = this.queue.findIndex((item) => item.id === id);
                 if (idx !== -1) {
                     this.queue.splice(idx, 1);
                     this.stats.failed++;
-                    logger.warn(`[RequestQueue] Task ${id} timed out waiting in queue after ${Date.now() - enqueueTime}ms`);
+                    logger.warn(
+                        `[RequestQueue] Task ${id} timed out waiting in queue after ${Date.now() - enqueueTime}ms`
+                    );
                     reject(new Error(`Queue wait timeout after ${QUEUE_WAIT_TIMEOUT_MS}ms`));
                 }
             }, QUEUE_WAIT_TIMEOUT_MS);
@@ -103,7 +109,7 @@ class RequestQueue {
                 resolve: wrappedResolve,
                 reject: wrappedReject,
                 createdAt: enqueueTime,
-                options
+                options,
             });
 
             this.queue.sort((a, b) => b.priority - a.priority);
@@ -117,15 +123,19 @@ class RequestQueue {
      */
     _processQueue() {
         if (this.paused) return;
-        
+
         while (this.running < this.maxConcurrent && this.queue.length > 0) {
             const item = this.queue.shift();
-            logger.debug(`[RequestQueue] Dequeueing task ${item.id}, queue now has ${this.queue.length} items`);
+            logger.debug(
+                `[RequestQueue] Dequeueing task ${item.id}, queue now has ${this.queue.length} items`
+            );
             this._executeTask(item);
         }
-        
+
         if (this.queue.length > 0 && this.running >= this.maxConcurrent) {
-            logger.debug(`[RequestQueue] Queue blocked: ${this.queue.length} waiting, ${this.running} running, max=${this.maxConcurrent}`);
+            logger.debug(
+                `[RequestQueue] Queue blocked: ${this.queue.length} waiting, ${this.running} running, max=${this.maxConcurrent}`
+            );
         }
     }
 
@@ -136,8 +146,10 @@ class RequestQueue {
     async _executeTask(item) {
         this.running++;
         const taskId = item.id;
-        logger.debug(`[RequestQueue] Task ${taskId} starting (running: ${this.running}/${this.maxConcurrent}, queued: ${this.queue.length})`);
-        
+        logger.debug(
+            `[RequestQueue] Task ${taskId} starting (running: ${this.running}/${this.maxConcurrent}, queued: ${this.queue.length})`
+        );
+
         let startTime = Date.now();
 
         try {
@@ -150,7 +162,7 @@ class RequestQueue {
                 success: true,
                 data: result,
                 duration: Date.now() - startTime,
-                attempts: item.retries + 1
+                attempts: item.retries + 1,
             });
         } catch (error) {
             this.stats.failed++;
@@ -159,7 +171,7 @@ class RequestQueue {
                 success: false,
                 error: error.message,
                 attempts: item.retries + 1,
-                duration: Date.now() - startTime
+                duration: Date.now() - startTime,
             });
         } finally {
             this.running--;
@@ -196,7 +208,9 @@ class RequestQueue {
                 this.stats.retried++;
                 const delay = this._calculateBackoff(attempt);
 
-                logger.warn(`[${item.id}] Attempt ${attempt + 1} failed: ${error.message}. Retrying in ${delay}ms`);
+                logger.warn(
+                    `[${item.id}] Attempt ${attempt + 1} failed: ${error.message}. Retrying in ${delay}ms`
+                );
 
                 await this._sleep(delay);
             }
@@ -222,11 +236,11 @@ class RequestQueue {
             '429',
             '503',
             '502',
-            'ENOTFOUND'
+            'ENOTFOUND',
         ];
 
         const errorMessage = (error.message || '').toLowerCase();
-        return retryableMessages.some(msg => errorMessage.includes(msg));
+        return retryableMessages.some((msg) => errorMessage.includes(msg));
     }
 
     _isFatalError(error) {
@@ -249,7 +263,7 @@ class RequestQueue {
             maxDelay: 30000,
             factor: 2,
             jitterMin: 1,
-            jitterMax: 1.3
+            jitterMax: 1.3,
         });
     }
 
@@ -258,7 +272,7 @@ class RequestQueue {
      * @private
      */
     _sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     async _waitForInterval() {
@@ -284,7 +298,7 @@ class RequestQueue {
             ...this.stats,
             running: this.running,
             queued: this.queue.length,
-            utilization: this.maxConcurrent > 0 ? this.running / this.maxConcurrent : 0
+            utilization: this.maxConcurrent > 0 ? this.running / this.maxConcurrent : 0,
         };
     }
 
@@ -293,7 +307,7 @@ class RequestQueue {
      */
     clear() {
         const count = this.queue.length;
-        this.queue.forEach(item => {
+        this.queue.forEach((item) => {
             item.reject(new Error('Queue cleared'));
         });
         this.queue = [];

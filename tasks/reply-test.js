@@ -4,12 +4,15 @@ import { api } from '../api/index.js';
 /**
  * Reply Test Task (Refactored)
  * Tests the "Reply Tweet" functionality using the new api.replyWithAI() helper.
- * 
+ *
  * Usage: node main.js reply-test
  */
 export default async function replyTestTask(page, payload) {
     const logger = createLogger('reply-test.js');
-    const targetUrl = payload?.url || process.env.TARGET_URL || 'https://x.com/SightlyGirls/status/2026039840634994891';
+    const targetUrl =
+        payload?.url ||
+        process.env.TARGET_URL ||
+        'https://x.com/SightlyGirls/status/2026039840634994891';
 
     logger.info(`Starting refactored reply test task...`);
 
@@ -19,7 +22,11 @@ export default async function replyTestTask(page, payload) {
 
             // 1. Navigate to target tweet
             logger.info(`Navigating to ${targetUrl}...`);
-            await api.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000, warmup: false });
+            await api.goto(targetUrl, {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000,
+                warmup: false,
+            });
             await api.wait(3000);
 
             // 2. Perform Reply with AI (Integrated high-level function)
@@ -36,7 +43,6 @@ export default async function replyTestTask(page, payload) {
             await api.wait(5000);
 
             return result;
-
         } catch (error) {
             logger.error(`Error during reply test: ${error.message}`);
             throw error;

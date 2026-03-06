@@ -8,20 +8,20 @@ import { createLogger } from '../core/logger.js';
 const logger = createLogger('retry.js');
 
 export function calculateBackoffDelay(attempt, options = {}) {
-  const {
-    baseDelay = 1000,
-    maxDelay = 30000,
-    factor = 2,
-    jitterMin = 1,
-    jitterMax = 1
-  } = options;
+    const {
+        baseDelay = 1000,
+        maxDelay = 30000,
+        factor = 2,
+        jitterMin = 1,
+        jitterMax = 1,
+    } = options;
 
-  const delay = Math.min(baseDelay * Math.pow(factor, attempt), maxDelay);
-  const min = Math.min(jitterMin, jitterMax);
-  const max = Math.max(jitterMin, jitterMax);
-  const jitterMultiplier = min === max ? min : min + Math.random() * (max - min);
+    const delay = Math.min(baseDelay * Math.pow(factor, attempt), maxDelay);
+    const min = Math.min(jitterMin, jitterMax);
+    const max = Math.max(jitterMin, jitterMax);
+    const jitterMultiplier = min === max ? min : min + Math.random() * (max - min);
 
-  return Math.floor(delay * jitterMultiplier);
+    return Math.floor(delay * jitterMultiplier);
 }
 
 /**
@@ -36,21 +36,25 @@ export function calculateBackoffDelay(attempt, options = {}) {
  * @throws {Error} If the operation fails after all retries.
  */
 export async function withRetry(operation, options = {}) {
-  const { retries = 2, delay = 1000, factor = 1, description = 'operation' } = options;
-  let currentDelay = delay;
+    const { retries = 2, delay = 1000, factor = 1, description = 'operation' } = options;
+    let currentDelay = delay;
 
-  for (let i = 0; i < retries; i++) {
-    try {
-      return await operation();
-    } catch (error) {
-      if (i < retries - 1) {
-        logger.warn(`[${description}] Attempt ${i + 1} failed: ${error.message}. Retrying in ${currentDelay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, currentDelay));
-        currentDelay *= factor;
-      } else {
-        logger.error(`[${description}] All ${retries} attempts failed. Last error: ${error.message}`);
-        throw error;
-      }
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await operation();
+        } catch (error) {
+            if (i < retries - 1) {
+                logger.warn(
+                    `[${description}] Attempt ${i + 1} failed: ${error.message}. Retrying in ${currentDelay}ms...`
+                );
+                await new Promise((resolve) => setTimeout(resolve, currentDelay));
+                currentDelay *= factor;
+            } else {
+                logger.error(
+                    `[${description}] All ${retries} attempts failed. Last error: ${error.message}`
+                );
+                throw error;
+            }
+        }
     }
-  }
 }

@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { InteractionHandler } from '../../../../twitter/twitter-agent/InteractionHandler.js';
 import { mathUtils } from '../../../../utils/math.js';
@@ -8,8 +7,8 @@ vi.mock('../../../../utils/math.js', () => ({
     mathUtils: {
         roll: vi.fn(),
         randomInRange: vi.fn().mockReturnValue(100),
-        random: vi.fn().mockReturnValue(0.5)
-    }
+        random: vi.fn().mockReturnValue(0.5),
+    },
 }));
 
 describe('InteractionHandler', () => {
@@ -28,22 +27,22 @@ describe('InteractionHandler', () => {
             evaluate: vi.fn().mockResolvedValue(),
             locator: vi.fn(),
             on: vi.fn(),
-            off: vi.fn()
+            off: vi.fn(),
         };
 
         mockLogger = {
             info: vi.fn(),
             warn: vi.fn(),
-            error: vi.fn()
+            error: vi.fn(),
         };
 
         mockHuman = {
             think: vi.fn().mockResolvedValue(),
-            recoverFromError: vi.fn().mockResolvedValue()
+            recoverFromError: vi.fn().mockResolvedValue(),
         };
 
         mockGhost = {
-            click: vi.fn().mockResolvedValue({ success: true, x: 10, y: 10 })
+            click: vi.fn().mockResolvedValue({ success: true, x: 10, y: 10 }),
         };
 
         mockAgent = {
@@ -53,7 +52,7 @@ describe('InteractionHandler', () => {
             state: {},
             human: mockHuman,
             ghost: mockGhost,
-            mathUtils: mathUtils
+            mathUtils: mathUtils,
         };
 
         handler = new InteractionHandler(mockAgent);
@@ -63,7 +62,7 @@ describe('InteractionHandler', () => {
         it('should perform human-like click sequence', async () => {
             const mockTarget = {
                 evaluate: vi.fn().mockResolvedValue(),
-                click: vi.fn().mockResolvedValue()
+                click: vi.fn().mockResolvedValue(),
             };
 
             await handler.humanClick(mockTarget, 'Test Click');
@@ -72,18 +71,20 @@ describe('InteractionHandler', () => {
             expect(mockTarget.evaluate).toHaveBeenCalled(); // scrollIntoView
             expect(mockGhost.click).toHaveBeenCalledWith(mockTarget, {
                 label: 'Test Click',
-                hoverBeforeClick: true
+                hoverBeforeClick: true,
             });
         });
 
         it('should recover from error and force click', async () => {
             const mockTarget = {
-                evaluate: vi.fn().mockRejectedValue(new Error('Scroll failed'))
+                evaluate: vi.fn().mockRejectedValue(new Error('Scroll failed')),
             };
 
             await expect(handler.humanClick(mockTarget)).rejects.toThrow('Scroll failed');
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('humanClick failed'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('humanClick failed')
+            );
             expect(mockHuman.recoverFromError).toHaveBeenCalled();
         });
 
@@ -104,7 +105,9 @@ describe('InteractionHandler', () => {
 
             expect(result).toBe(true);
             expect(handler.humanClick).toHaveBeenCalledTimes(2);
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringMatching(/Attempt 1.*failed/i));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringMatching(/Attempt 1.*failed/i)
+            );
         });
 
         it('should return false if all retries fail', async () => {
@@ -114,7 +117,9 @@ describe('InteractionHandler', () => {
 
             expect(result).toBe(false);
             expect(handler.humanClick).toHaveBeenCalledTimes(2);
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringMatching(/all 2 attempts failed/i));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringMatching(/all 2 attempts failed/i)
+            );
         });
     });
 
@@ -124,7 +129,7 @@ describe('InteractionHandler', () => {
                 isVisible: vi.fn().mockResolvedValue(true),
                 isEnabled: vi.fn().mockResolvedValue(true),
                 evaluate: vi.fn().mockResolvedValue(true), // isInViewport
-                elementHandle: vi.fn().mockResolvedValue({}) // Mock handle
+                elementHandle: vi.fn().mockResolvedValue({}), // Mock handle
             };
             mockPage.evaluate.mockResolvedValue(true);
 
@@ -135,17 +140,17 @@ describe('InteractionHandler', () => {
         it('should return false if not visible', async () => {
             const mockEl = {
                 isVisible: vi.fn().mockResolvedValue(false),
-                elementHandle: vi.fn().mockResolvedValue({})
+                elementHandle: vi.fn().mockResolvedValue({}),
             };
             // Implementation logic check:
             // The actual implementation calls elementHandle() first.
             // Then evaluates.
             // If we want to simulate failure, we should rely on what isElementActionable actually checks.
             // It calls page.evaluate(...)
-            
+
             // Re-mocking to match implementation behavior
             mockPage.evaluate.mockResolvedValue(false); // Evaluate returns false
-            
+
             const result = await handler.isElementActionable(mockEl);
             expect(result).toBe(false);
         });
@@ -155,10 +160,10 @@ describe('InteractionHandler', () => {
                 isVisible: vi.fn().mockResolvedValue(true),
                 isEnabled: vi.fn().mockResolvedValue(true),
                 evaluate: vi.fn().mockRejectedValue(new Error('Eval error')),
-                elementHandle: vi.fn().mockResolvedValue({})
+                elementHandle: vi.fn().mockResolvedValue({}),
             };
             mockPage.evaluate.mockRejectedValue(new Error('Eval error'));
-            
+
             const result = await handler.isElementActionable(mockEl);
             expect(result).toBe(false); // catch returns false
         });
@@ -173,7 +178,7 @@ describe('InteractionHandler', () => {
                     // We can't easily simulate the rect logic inside evaluate without running it in browser context or complex mocking.
                     // So we just verify evaluate is called.
                     return Promise.resolve();
-                })
+                }),
             };
 
             await handler.scrollToGoldenZone(mockEl);
@@ -185,7 +190,7 @@ describe('InteractionHandler', () => {
         it('should type text with random delays', async () => {
             const mockEl = {
                 click: vi.fn().mockResolvedValue(),
-                press: vi.fn().mockResolvedValue()
+                press: vi.fn().mockResolvedValue(),
             };
 
             await handler.humanType(mockEl, 'Hi');
@@ -198,9 +203,9 @@ describe('InteractionHandler', () => {
         it('should simulate typos (5% chance)', async () => {
             const mockEl = {
                 click: vi.fn().mockResolvedValue(),
-                press: vi.fn().mockResolvedValue()
+                press: vi.fn().mockResolvedValue(),
             };
-            
+
             // Use spyOn to mock the roll method on the handler's mathUtils
             vi.spyOn(handler.mathUtils, 'roll').mockReturnValue(true);
 
@@ -208,7 +213,7 @@ describe('InteractionHandler', () => {
 
             expect(mockEl.press).toHaveBeenCalledWith('Backspace');
             expect(mockEl.press).toHaveBeenCalledWith('A');
-            
+
             handler.mathUtils.roll.mockRestore();
         });
     });

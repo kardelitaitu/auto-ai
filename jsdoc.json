@@ -1,29 +1,45 @@
 {
-  "source": {
-    "include": ["."],
-    "exclude": ["node_modules", "docs", "coverage", "backup", "tests", "test-dir", ".git", "screenshot", "tools", "data", "examples", "ui", ".qodo", ".llm-context", "utils/free-api-router.js"],
-    "includePattern": ".+\\.js(doc|x)?$",
-    "excludePattern": "(^|\\/|\\\\)_"
-  },
-  "opts": {
-    "destination": "./docs",
-    "recurse": true,
-    "template": "node_modules/docdash",
-    "readme": "README.md"
-  },
-  "docdash": {
-    "sort": true,
-    "search": true,
-    "collapse": true,
-    "meta": {
-      "title": "MultiBrowseAutomation Docs",
-      "description": "Documentation for the Multi-Browser Automation Framework"
+    "source": {
+        "include": ["."],
+        "exclude": [
+            "node_modules",
+            "docs",
+            "coverage",
+            "backup",
+            "tests",
+            "test-dir",
+            ".git",
+            "screenshot",
+            "tools",
+            "data",
+            "examples",
+            "ui",
+            ".qodo",
+            ".llm-context",
+            "utils/free-api-router.js"
+        ],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
     },
-    "menu": {
-      "GitHub Repo": {
-        "href": "https://github.com/your-repo-here",
-        "target": "_blank"
-      }
+    "opts": {
+        "destination": "./docs",
+        "recurse": true,
+        "template": "node_modules/docdash",
+        "readme": "README.md"
+    },
+    "docdash": {
+        "sort": true,
+        "search": true,
+        "collapse": true,
+        "meta": {
+            "title": "MultiBrowseAutomation Docs",
+            "description": "Documentation for the Multi-Browser Automation Framework"
+        },
+        "menu": {
+            "GitHub Repo": {
+                "href": "https://github.com/your-repo-here",
+                "target": "_blank"
+            }
+        }
     }
-  }
 }

@@ -91,7 +91,7 @@ export async function initPage(page, options = {}) {
                         'quantserve.com',
                         'scorecardresearch.com',
                         'crashlytics.com',
-                        'hotjar.com'
+                        'hotjar.com',
                     ];
 
                     await page.route('**/*', (route) => {
@@ -100,20 +100,34 @@ export async function initPage(page, options = {}) {
                         const url = request.url();
 
                         // Block images, media, fonts, and stylesheets to save max RAM/bandwidth
-                        if (['image', 'media', 'font', 'stylesheet', 'texttrack', 'manifest'].includes(type)) {
+                        if (
+                            [
+                                'image',
+                                'media',
+                                'font',
+                                'stylesheet',
+                                'texttrack',
+                                'manifest',
+                            ].includes(type)
+                        ) {
                             return route.abort().catch((e) => safeEmitError(e, 'lite-route-abort'));
                         }
 
                         // Aggressive script blocking for tracking/ads
                         if (type === 'script' || type === 'xhr' || type === 'fetch') {
-                            if (blocklist.some(domain => url.includes(domain))) {
-                                return route.abort().catch((e) => safeEmitError(e, 'lite-script-abort'));
+                            if (blocklist.some((domain) => url.includes(domain))) {
+                                return route
+                                    .abort()
+                                    .catch((e) => safeEmitError(e, 'lite-script-abort'));
                             }
                         }
 
                         route.continue().catch((e) => safeEmitError(e, 'lite-route-continue'));
                     });
-                    if (logger) logger.info('Ultra-Lite mode enabled: media, styles, and tracking scripts blocked');
+                    if (logger)
+                        logger.info(
+                            'Ultra-Lite mode enabled: media, styles, and tracking scripts blocked'
+                        );
                 } catch (e) {
                     safeEmitError(e, 'lite-mode-route');
                 }
@@ -122,7 +136,11 @@ export async function initPage(page, options = {}) {
             if (blockNotifications) {
                 try {
                     const context = page.context();
-                    await context.grantPermissions([], { origin: page.url().split('/').slice(0, 3).join('/') }).catch((e) => safeEmitError(e, 'grantPermissions'));
+                    await context
+                        .grantPermissions([], {
+                            origin: page.url().split('/').slice(0, 3).join('/'),
+                        })
+                        .catch((e) => safeEmitError(e, 'grantPermissions'));
                 } catch (e) {
                     safeEmitError(e, 'blockNotifications');
                 }
@@ -130,7 +148,10 @@ export async function initPage(page, options = {}) {
 
             if (blockDialogs) {
                 page.on('dialog', async (dialog) => {
-                    if (logger) logger.debug(`[Dialog] Automatically dismissing ${dialog.type()}: ${dialog.message()}`);
+                    if (logger)
+                        logger.debug(
+                            `[Dialog] Automatically dismissing ${dialog.type()}: ${dialog.message()}`
+                        );
                     await dialog.dismiss().catch((e) => safeEmitError(e, 'dialogDismiss'));
                 });
             }
@@ -148,7 +169,9 @@ export async function initPage(page, options = {}) {
             loadBuiltinPlugins();
             try {
                 getPluginManager().evaluateUrl(page.url());
-            } catch (_e) { /* ignore */ }
+            } catch (_e) {
+                /* ignore */
+            }
 
             if (persona) {
                 setPersona(persona, personaOverrides || {});
@@ -186,7 +209,6 @@ export async function initPage(page, options = {}) {
                 await injectSensors();
                 startFidgeting();
             }
-
 
             patchedPages.add(page);
         });

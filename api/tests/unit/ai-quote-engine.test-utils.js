@@ -4,14 +4,16 @@ export const createPageMock = (overrides = {}) => {
     const locator = {
         count: vi.fn().mockResolvedValue(1),
         click: vi.fn().mockResolvedValue(true),
-        first: function () { return this; },
+        first: function () {
+            return this;
+        },
         textContent: vi.fn().mockResolvedValue('default text'),
         isVisible: vi.fn().mockResolvedValue(true),
         getAttribute: vi.fn().mockResolvedValue(''),
         scrollIntoViewIfNeeded: vi.fn().mockResolvedValue(),
         all: vi.fn().mockResolvedValue([]),
         fill: vi.fn().mockResolvedValue(),
-        press: vi.fn().mockResolvedValue()
+        press: vi.fn().mockResolvedValue(),
     };
     locator.all = vi.fn().mockResolvedValue([locator]);
 
@@ -19,11 +21,11 @@ export const createPageMock = (overrides = {}) => {
         evaluate: vi.fn((fn, arg) => fn(arg)),
         keyboard: {
             press: vi.fn().mockResolvedValue(),
-            type: vi.fn().mockResolvedValue()
+            type: vi.fn().mockResolvedValue(),
         },
         mouse: {
             click: vi.fn().mockResolvedValue(),
-            move: vi.fn().mockResolvedValue()
+            move: vi.fn().mockResolvedValue(),
         },
         locator: vi.fn(() => locator),
         waitVisible: vi.fn().mockResolvedValue(),
@@ -31,7 +33,7 @@ export const createPageMock = (overrides = {}) => {
         waitForTimeout: vi.fn().mockResolvedValue(),
         url: vi.fn().mockReturnValue('https://x.com/status/1'),
         content: vi.fn().mockResolvedValue('<html></html>'),
-        ...overrides
+        ...overrides,
     };
 
     return { page, locator };
@@ -39,7 +41,9 @@ export const createPageMock = (overrides = {}) => {
 
 export const createHumanMock = (overrides = {}) => ({
     logStep: vi.fn(),
-    verifyComposerOpen: vi.fn().mockResolvedValue({ open: true, selector: '[data-testid="tweetTextarea_0"]' }),
+    verifyComposerOpen: vi
+        .fn()
+        .mockResolvedValue({ open: true, selector: '[data-testid="tweetTextarea_0"]' }),
     typeText: vi.fn(),
     postTweet: vi.fn().mockResolvedValue({ success: true, reason: 'posted' }),
     safeHumanClick: vi.fn().mockResolvedValue(true),
@@ -48,7 +52,7 @@ export const createHumanMock = (overrides = {}) => ({
     hesitation: vi.fn(),
     ensureFocus: vi.fn().mockResolvedValue(true),
     selectMethod: vi.fn((methods) => methods[0]),
-    ...overrides
+    ...overrides,
 });
 
 export const baseSentiment = {
@@ -59,7 +63,7 @@ export const baseSentiment = {
         label: 'neutral',
         engagementStyle: 'neutral',
         riskLevel: 'low',
-        conversationType: 'general'
+        conversationType: 'general',
     },
     dimensions: {
         valence: { valence: 0.1 },
@@ -67,17 +71,17 @@ export const baseSentiment = {
         dominance: { dominance: 0.1 },
         sarcasm: { sarcasm: 0.1 },
         toxicity: { toxicity: 0.1 },
-        intent: { label: 'observation' }
-    }
+        intent: { label: 'observation' },
+    },
 };
 
 export const sampleReplies = [
     { text: 'Great point!', author: 'user1' },
-    { text: 'I disagree completely.', author: 'user2' }
+    { text: 'I disagree completely.', author: 'user2' },
 ];
 
 export const sampleTweet = {
     text: 'This is a sample tweet for testing.',
     author: 'mainuser',
-    url: 'https://x.com/mainuser/status/123'
+    url: 'https://x.com/mainuser/status/123',
 };

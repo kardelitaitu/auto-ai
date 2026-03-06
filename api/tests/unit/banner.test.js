@@ -10,8 +10,8 @@ vi.mock('../../core/logger.js', () => ({
     createLogger: vi.fn().mockReturnValue({
         info: vi.fn(),
         error: vi.fn(),
-        warn: vi.fn()
-    })
+        warn: vi.fn(),
+    }),
 }));
 
 describe('utils/banner', () => {
@@ -21,7 +21,7 @@ describe('utils/banner', () => {
     beforeEach(async () => {
         vi.clearAllMocks();
         consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-        
+
         const module = await import('../../utils/banner.js');
         showBanner = module.showBanner;
     });
@@ -32,9 +32,9 @@ describe('utils/banner', () => {
 
     it('should print banner and log initialization message', () => {
         const loggerInstance = createLogger('banner');
-        
+
         showBanner();
-        
+
         expect(consoleSpy).toHaveBeenCalled();
         // Note: logger.info is commented out in banner.js line 30
     });

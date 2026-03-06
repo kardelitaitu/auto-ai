@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MetricsCollector } from '@api/utils/metrics.js';
 
@@ -8,14 +7,14 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 // Mock fs/promises for generateJsonReport
 const mockWriteFile = vi.fn();
 vi.mock('fs/promises', () => ({
-    writeFile: mockWriteFile
+    writeFile: mockWriteFile,
 }));
 
 describe('MetricsCollector', () => {
@@ -227,7 +226,7 @@ describe('MetricsCollector', () => {
             collector.recordError('test_error', 'Test message 4');
             collector.recordError('test_error', 'Test message 5');
             collector.recordError('test_error', 'Test message 6'); // Should be ignored
-            
+
             const twitterStats = collector.getTwitterEngagementMetrics();
             expect(twitterStats.errors.test_error.count).toBe(6);
             expect(twitterStats.errors.test_error.messages.length).toBe(5); // Max 5 messages
@@ -239,7 +238,7 @@ describe('MetricsCollector', () => {
             collector.recordTaskExecution('task1', 100, true, 's1');
             collector.recordTaskExecution('task1', 200, false, 's1');
             collector.recordTaskExecution('task2', 150, true, 's1');
-            
+
             const breakdown = collector.getTaskBreakdown();
             expect(breakdown.task1.executions).toBe(2);
             expect(breakdown.task1.successes).toBe(1);
@@ -253,7 +252,7 @@ describe('MetricsCollector', () => {
             for (let i = 0; i < 15; i++) {
                 collector.recordTaskExecution(`task${i}`, 100, true, 's1');
             }
-            
+
             const recent = collector.getRecentTasks(5);
             expect(recent.length).toBe(5);
             expect(recent[0].taskName).toBe('task14');
@@ -265,7 +264,7 @@ describe('MetricsCollector', () => {
             collector.recordTwitterEngagement('invalid', 1);
             collector.recordTwitterEngagement('reply', -1);
             collector.recordTwitterEngagement('reply', NaN);
-            
+
             const stats = collector.getTwitterEngagementMetrics();
             expect(stats.actions.replies).toBe(0);
             expect(stats.errors).toBeDefined();
@@ -276,7 +275,7 @@ describe('MetricsCollector', () => {
         it('should handle invalid action type', () => {
             collector.recordSocialAction(123, 1);
             collector.recordSocialAction('like', 0);
-            
+
             const stats = collector.getStats();
             expect(stats.social.likes).toBe(0);
         });
@@ -289,7 +288,7 @@ describe('MetricsCollector', () => {
             collector.recordTaskExecution('t1', 30, true, 's1');
             collector.recordTaskExecution('t1', 40, true, 's1');
             collector.recordTaskExecution('t1', 50, true, 's1');
-            
+
             const stats = collector.getStats();
             expect(stats.tasks.durationPercentiles.p50).toBe(30);
             expect(stats.tasks.durationPercentiles.p95).toBe(50);

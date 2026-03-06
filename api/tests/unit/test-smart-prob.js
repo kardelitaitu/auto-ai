@@ -11,13 +11,13 @@ const mockAgent = {
     config: {
         twitter: {
             actions: {
-                reply: { probability: 0.60, enabled: true },
-                quote: { probability: 0.20, enabled: true },
+                reply: { probability: 0.6, enabled: true },
+                quote: { probability: 0.2, enabled: true },
                 like: { probability: 0.15, enabled: true },
                 bookmark: { probability: 0.05, enabled: true },
-                goHome: { enabled: true }
-            }
-        }
+                goHome: { enabled: true },
+            },
+        },
     },
     diveQueue: {
         canEngage: (type) => {
@@ -25,17 +25,17 @@ const mockAgent = {
                 replies: 3,
                 quotes: 1,
                 likes: 5,
-                bookmarks: 2
+                bookmarks: 2,
             };
             const used = {
                 replies: 0,
                 quotes: 1,
                 likes: 0,
-                bookmarks: 0
+                bookmarks: 0,
             };
             return used[type] < limits[type];
-        }
-    }
+        },
+    },
 };
 
 const runner = new ActionRunner(mockAgent);
@@ -43,7 +43,7 @@ const runner = new ActionRunner(mockAgent);
 console.log('Base probabilities (from config):');
 console.log('  reply: 60%');
 console.log('  quote: 20%');
-console.log('  like: 15%')
+console.log('  like: 15%');
 console.log('  bookmark: 5%');
 console.log('  Total: 100%');
 console.log('');

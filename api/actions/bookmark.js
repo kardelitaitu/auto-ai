@@ -32,7 +32,11 @@ export async function bookmarkWithAPI(options = {}) {
     try {
         // Already bookmarked guard
         const alreadyBookmarked = tweetElement
-            ? await tweetElement.locator(removeBookmarkSel).first().isVisible().catch(() => false)
+            ? await tweetElement
+                  .locator(removeBookmarkSel)
+                  .first()
+                  .isVisible()
+                  .catch(() => false)
             : await visible(removeBookmarkSel);
 
         if (alreadyBookmarked) {
@@ -42,7 +46,7 @@ export async function bookmarkWithAPI(options = {}) {
 
         // Scroll into view
         if (tweetElement) {
-            await tweetElement.scrollIntoViewIfNeeded().catch(() => { });
+            await tweetElement.scrollIntoViewIfNeeded().catch(() => {});
         }
         await wait(mathUtils.randomInRange(300, 700));
 
@@ -58,7 +62,11 @@ export async function bookmarkWithAPI(options = {}) {
         const toastSel = '[data-testid="toast"]';
         const toastVisible = await visible(toastSel);
         const nowRemovable = tweetElement
-            ? await tweetElement.locator(removeBookmarkSel).first().isVisible().catch(() => false)
+            ? await tweetElement
+                  .locator(removeBookmarkSel)
+                  .first()
+                  .isVisible()
+                  .catch(() => false)
             : await visible(removeBookmarkSel);
 
         if (toastVisible || nowRemovable) {
@@ -68,7 +76,6 @@ export async function bookmarkWithAPI(options = {}) {
 
         logger.warn(`❌ api.bookmarkWithAPI: no confirmation signal detected`);
         return { success: false, reason: 'verification_failed', method: 'bookmarkAPI' };
-
     } catch (error) {
         logger.error(`api.bookmarkWithAPI error: ${error.message}`);
         return { success: false, reason: error.message, method: 'bookmarkAPI' };

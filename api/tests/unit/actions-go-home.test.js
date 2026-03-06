@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GoHomeAction } from '@api/actions/ai-twitter-go-home.js';
 
@@ -8,8 +7,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('GoHomeAction', () => {
@@ -23,14 +22,14 @@ describe('GoHomeAction', () => {
             twitterConfig: {
                 actions: {
                     goHome: {
-                        enabled: true
-                    }
-                }
+                        enabled: true,
+                    },
+                },
             },
             navigateHome: vi.fn().mockResolvedValue(undefined),
             page: {
-                url: vi.fn().mockReturnValue('http://twitter.com/home')
-            }
+                url: vi.fn().mockReturnValue('http://twitter.com/home'),
+            },
         };
 
         goHomeAction = new GoHomeAction(mockAgent);
@@ -65,7 +64,7 @@ describe('GoHomeAction', () => {
     describe('execute', () => {
         it('should navigate home successfully', async () => {
             const result = await goHomeAction.execute();
-            
+
             expect(mockAgent.navigateHome).toHaveBeenCalled();
             expect(result.success).toBe(true);
             expect(goHomeAction.stats.successes).toBe(1);
@@ -73,9 +72,9 @@ describe('GoHomeAction', () => {
 
         it('should handle navigation failure', async () => {
             mockAgent.navigateHome.mockRejectedValue(new Error('Nav failed'));
-            
+
             const result = await goHomeAction.execute();
-            
+
             expect(result.success).toBe(false);
             expect(result.reason).toBe('exception');
             expect(goHomeAction.stats.failures).toBe(1);
@@ -98,7 +97,7 @@ describe('GoHomeAction', () => {
     describe('stats', () => {
         it('should track stats correctly', async () => {
             await goHomeAction.execute();
-            
+
             const stats = goHomeAction.getStats();
             expect(stats.attempts).toBe(1);
             expect(stats.successes).toBe(1);
@@ -108,7 +107,7 @@ describe('GoHomeAction', () => {
         it('should reset stats', async () => {
             await goHomeAction.execute();
             goHomeAction.resetStats();
-            
+
             const stats = goHomeAction.getStats();
             expect(stats.attempts).toBe(0);
             expect(stats.successes).toBe(0);

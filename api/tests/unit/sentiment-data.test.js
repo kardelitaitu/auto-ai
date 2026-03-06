@@ -12,13 +12,12 @@ import {
     ACTION_GATES,
     PERSONALITY_PROFILES,
     TOPIC_KEYWORDS,
-    SENTIMENT_THRESHOLDS
+    SENTIMENT_THRESHOLDS,
 } from '@api/utils/sentiment-data.js';
 
 import sentimentDataDefault from '@api/utils/sentiment-data.js';
 
 describe('sentiment-data.js', () => {
-
     describe('Named Exports', () => {
         it('should export POSITIVE_LEXICON', () => {
             expect(POSITIVE_LEXICON).toBeDefined();
@@ -109,7 +108,7 @@ describe('sentiment-data.js', () => {
             for (const [_category, words] of Object.entries(POSITIVE_LEXICON)) {
                 expect(Array.isArray(words)).toBe(true);
                 expect(words.length).toBeGreaterThan(0);
-                words.forEach(word => {
+                words.forEach((word) => {
                     expect(typeof word).toBe('string');
                 });
             }
@@ -150,7 +149,7 @@ describe('sentiment-data.js', () => {
             for (const [_category, words] of Object.entries(NEGATIVE_LEXICON)) {
                 expect(Array.isArray(words)).toBe(true);
                 expect(words.length).toBeGreaterThan(0);
-                words.forEach(word => {
+                words.forEach((word) => {
                     expect(typeof word).toBe('string');
                 });
             }
@@ -194,13 +193,13 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have markers containing strings', () => {
-            AROUSAL_MARKERS.high.markers.forEach(marker => {
+            AROUSAL_MARKERS.high.markers.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
-            AROUSAL_MARKERS.moderate.markers.forEach(marker => {
+            AROUSAL_MARKERS.moderate.markers.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
-            AROUSAL_MARKERS.low.markers.forEach(marker => {
+            AROUSAL_MARKERS.low.markers.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
         });
@@ -242,27 +241,27 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have words containing strings', () => {
-            DOMINANCE_MARKERS.assertive.words.forEach(word => {
+            DOMINANCE_MARKERS.assertive.words.forEach((word) => {
                 expect(typeof word).toBe('string');
             });
-            DOMINANCE_MARKERS.submissive.words.forEach(word => {
+            DOMINANCE_MARKERS.submissive.words.forEach((word) => {
                 expect(typeof word).toBe('string');
             });
-            DOMINANCE_MARKERS.neutral.words.forEach(word => {
+            DOMINANCE_MARKERS.neutral.words.forEach((word) => {
                 expect(typeof word).toBe('string');
             });
         });
 
         it('should have patterns in assertive category', () => {
             expect(Array.isArray(DOMINANCE_MARKERS.assertive.patterns)).toBe(true);
-            DOMINANCE_MARKERS.assertive.patterns.forEach(pattern => {
+            DOMINANCE_MARKERS.assertive.patterns.forEach((pattern) => {
                 expect(pattern instanceof RegExp).toBe(true);
             });
         });
 
         it('should have patterns in submissive category', () => {
             expect(Array.isArray(DOMINANCE_MARKERS.submissive.patterns)).toBe(true);
-            DOMINANCE_MARKERS.submissive.patterns.forEach(pattern => {
+            DOMINANCE_MARKERS.submissive.patterns.forEach((pattern) => {
                 expect(pattern instanceof RegExp).toBe(true);
             });
         });
@@ -293,7 +292,7 @@ describe('sentiment-data.js', () => {
         it('should have markers array in explicit category', () => {
             expect(Array.isArray(SARCASM_MARKERS.explicit.markers)).toBe(true);
             expect(SARCASM_MARKERS.explicit.markers.length).toBeGreaterThan(0);
-            SARCASM_MARKERS.explicit.markers.forEach(marker => {
+            SARCASM_MARKERS.explicit.markers.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
         });
@@ -304,14 +303,14 @@ describe('sentiment-data.js', () => {
 
         it('should have patterns in contradiction category', () => {
             expect(Array.isArray(SARCASM_MARKERS.contradiction.patterns)).toBe(true);
-            SARCASM_MARKERS.contradiction.patterns.forEach(pattern => {
+            SARCASM_MARKERS.contradiction.patterns.forEach((pattern) => {
                 expect(pattern instanceof RegExp).toBe(true);
             });
         });
 
         it('should have examples in context_inversion category', () => {
             expect(Array.isArray(SARCASM_MARKERS.context_inversion.examples)).toBe(true);
-            SARCASM_MARKERS.context_inversion.examples.forEach(example => {
+            SARCASM_MARKERS.context_inversion.examples.forEach((example) => {
                 expect(example).toHaveProperty('pattern');
                 expect(example).toHaveProperty('confidence');
                 expect(typeof example.confidence).toBe('number');
@@ -322,7 +321,7 @@ describe('sentiment-data.js', () => {
 
         it('should have markers in dry_humor category', () => {
             expect(Array.isArray(SARCASM_MARKERS.dry_humor.markers)).toBe(true);
-            SARCASM_MARKERS.dry_humor.markers.forEach(marker => {
+            SARCASM_MARKERS.dry_humor.markers.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
         });
@@ -339,22 +338,22 @@ describe('sentiment-data.js', () => {
         it('should have arrays containing strings', () => {
             expect(Array.isArray(URGENCY_MARKERS.urgent)).toBe(true);
             expect(URGENCY_MARKERS.urgent.length).toBeGreaterThan(0);
-            URGENCY_MARKERS.urgent.forEach(marker => {
+            URGENCY_MARKERS.urgent.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
 
             expect(Array.isArray(URGENCY_MARKERS.timeSensitive)).toBe(true);
-            URGENCY_MARKERS.timeSensitive.forEach(marker => {
+            URGENCY_MARKERS.timeSensitive.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
 
             expect(Array.isArray(URGENCY_MARKERS.scheduled)).toBe(true);
-            URGENCY_MARKERS.scheduled.forEach(marker => {
+            URGENCY_MARKERS.scheduled.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
 
             expect(Array.isArray(URGENCY_MARKERS.relaxed)).toBe(true);
-            URGENCY_MARKERS.relaxed.forEach(marker => {
+            URGENCY_MARKERS.relaxed.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
         });
@@ -385,7 +384,7 @@ describe('sentiment-data.js', () => {
         it('should have slurs_insults as array of strings', () => {
             expect(Array.isArray(TOXICITY_MARKERS.slurs_insults)).toBe(true);
             expect(TOXICITY_MARKERS.slurs_insults.length).toBeGreaterThan(0);
-            TOXICITY_MARKERS.slurs_insults.forEach(marker => {
+            TOXICITY_MARKERS.slurs_insults.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
         });
@@ -393,7 +392,7 @@ describe('sentiment-data.js', () => {
         it('should have hostility as array of strings', () => {
             expect(Array.isArray(TOXICITY_MARKERS.hostility)).toBe(true);
             expect(TOXICITY_MARKERS.hostility.length).toBeGreaterThan(0);
-            TOXICITY_MARKERS.hostility.forEach(marker => {
+            TOXICITY_MARKERS.hostility.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
         });
@@ -401,14 +400,14 @@ describe('sentiment-data.js', () => {
         it('should have personalAttacks as array of regex', () => {
             expect(Array.isArray(TOXICITY_MARKERS.personalAttacks)).toBe(true);
             expect(TOXICITY_MARKERS.personalAttacks.length).toBeGreaterThan(0);
-            TOXICITY_MARKERS.personalAttacks.forEach(pattern => {
+            TOXICITY_MARKERS.personalAttacks.forEach((pattern) => {
                 expect(pattern instanceof RegExp).toBe(true);
             });
         });
 
         it('should have aggression with markers array and intensity', () => {
             expect(Array.isArray(TOXICITY_MARKERS.aggression.markers)).toBe(true);
-            TOXICITY_MARKERS.aggression.markers.forEach(marker => {
+            TOXICITY_MARKERS.aggression.markers.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
             expect(typeof TOXICITY_MARKERS.aggression.intensity).toBe('number');
@@ -418,7 +417,7 @@ describe('sentiment-data.js', () => {
         it('should have dehumanization as array of strings', () => {
             expect(Array.isArray(TOXICITY_MARKERS.dehumanization)).toBe(true);
             expect(TOXICITY_MARKERS.dehumanization.length).toBeGreaterThan(0);
-            TOXICITY_MARKERS.dehumanization.forEach(marker => {
+            TOXICITY_MARKERS.dehumanization.forEach((marker) => {
                 expect(typeof marker).toBe('string');
             });
         });
@@ -516,7 +515,7 @@ describe('sentiment-data.js', () => {
                 arousal: 0.4,
                 dominance: 0.5,
                 urgency: 0.5,
-                toxicity: 0.1
+                toxicity: 0.1,
             };
 
             for (const [_name, pattern] of Object.entries(CONTEXTUAL_PATTERNS)) {
@@ -611,11 +610,11 @@ describe('sentiment-data.js', () => {
                 'dominancePreference',
                 'arousalThreshold',
                 'negativeBias',
-                'description'
+                'description',
             ];
 
             for (const [_name, profile] of Object.entries(PERSONALITY_PROFILES)) {
-                requiredProps.forEach(prop => {
+                requiredProps.forEach((prop) => {
                     expect(profile).toHaveProperty(prop);
                 });
             }
@@ -653,7 +652,7 @@ describe('sentiment-data.js', () => {
             for (const [_name, profile] of Object.entries(PERSONALITY_PROFILES)) {
                 expect(Array.isArray(profile.preferredTones)).toBe(true);
                 expect(profile.preferredTones.length).toBeGreaterThan(0);
-                profile.preferredTones.forEach(tone => {
+                profile.preferredTones.forEach((tone) => {
                     expect(typeof tone).toBe('string');
                 });
             }
@@ -667,9 +666,15 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have distinct characteristics for each profile', () => {
-            expect(PERSONALITY_PROFILES.enthusiast.replyProbability).toBeGreaterThan(PERSONALITY_PROFILES.observer.replyProbability);
-            expect(PERSONALITY_PROFILES.enthusiast.negativeBias).toBeGreaterThan(PERSONALITY_PROFILES.empath.negativeBias);
-            expect(PERSONALITY_PROFILES.empath.toxicityTolerance).toBeLessThan(PERSONALITY_PROFILES.joker.toxicityTolerance);
+            expect(PERSONALITY_PROFILES.enthusiast.replyProbability).toBeGreaterThan(
+                PERSONALITY_PROFILES.observer.replyProbability
+            );
+            expect(PERSONALITY_PROFILES.enthusiast.negativeBias).toBeGreaterThan(
+                PERSONALITY_PROFILES.empath.negativeBias
+            );
+            expect(PERSONALITY_PROFILES.empath.toxicityTolerance).toBeLessThan(
+                PERSONALITY_PROFILES.joker.toxicityTolerance
+            );
         });
     });
 
@@ -687,7 +692,7 @@ describe('sentiment-data.js', () => {
             for (const [_topic, words] of Object.entries(TOPIC_KEYWORDS)) {
                 expect(Array.isArray(words)).toBe(true);
                 expect(words.length).toBeGreaterThan(0);
-                words.forEach(word => {
+                words.forEach((word) => {
                     expect(typeof word).toBe('string');
                 });
             }
@@ -783,19 +788,27 @@ describe('sentiment-data.js', () => {
         });
 
         it('should have consistent scoring ranges in thresholds', () => {
-            expect(SENTIMENT_THRESHOLDS.toxicityRedLine).toBeGreaterThan(SENTIMENT_THRESHOLDS.skipReply);
+            expect(SENTIMENT_THRESHOLDS.toxicityRedLine).toBeGreaterThan(
+                SENTIMENT_THRESHOLDS.skipReply
+            );
             expect(SENTIMENT_THRESHOLDS.spamConfidence).toBeGreaterThan(0.5);
         });
 
         it('should have personality profiles with complementary traits', () => {
-            expect(PERSONALITY_PROFILES.empath.toxicityTolerance).toBeLessThan(PERSONALITY_PROFILES.joker.toxicityTolerance);
-            expect(PERSONALITY_PROFILES.enthusiast.replyProbability).toBeGreaterThan(PERSONALITY_PROFILES.observer.replyProbability);
+            expect(PERSONALITY_PROFILES.empath.toxicityTolerance).toBeLessThan(
+                PERSONALITY_PROFILES.joker.toxicityTolerance
+            );
+            expect(PERSONALITY_PROFILES.enthusiast.replyProbability).toBeGreaterThan(
+                PERSONALITY_PROFILES.observer.replyProbability
+            );
         });
 
         it('should have action gates with appropriate risk levels', () => {
             expect(ACTION_GATES.retweet.minValence).toBeGreaterThan(ACTION_GATES.reply.minValence);
             expect(ACTION_GATES.retweet.maxToxicity).toBeLessThan(ACTION_GATES.reply.maxToxicity);
-            expect(ACTION_GATES.bookmark.maxToxicity).toBeGreaterThan(ACTION_GATES.retweet.maxToxicity);
+            expect(ACTION_GATES.bookmark.maxToxicity).toBeGreaterThan(
+                ACTION_GATES.retweet.maxToxicity
+            );
         });
     });
 });

@@ -22,13 +22,13 @@ class AITools {
     constructor(config = {}) {
         this.connector = new AgentConnector();
         this.config = {
-            timeout: config.timeout || 30000
+            timeout: config.timeout || 30000,
         };
         this.stats = {
             totalRequests: 0,
             successfulRequests: 0,
             failedRequests: 0,
-            avgResponseTime: 0
+            avgResponseTime: 0,
         };
         logger.info('[AITools] Initialized');
     }
@@ -45,7 +45,7 @@ class AITools {
         });
 
         const requestPromise = this.connector.processRequest(request);
-        
+
         try {
             const response = await Promise.race([requestPromise, timeoutPromise]);
             if (this.timeoutId) {
@@ -70,14 +70,14 @@ class AITools {
     async processRequest(request) {
         const startTime = Date.now();
         this.stats.totalRequests++;
-        
+
         try {
             const response = await this.sendWithTimeout(request);
-            
+
             const duration = Date.now() - startTime;
             this.stats.successfulRequests++;
             this.updateAvgResponseTime(duration);
-            
+
             return {
                 success: true,
                 data: response.data || response.content,
@@ -85,15 +85,15 @@ class AITools {
                 metadata: {
                     provider: response.metadata?.routedTo || 'unknown',
                     model: response.metadata?.model,
-                    duration
-                }
+                    duration,
+                },
             };
         } catch (error) {
             this.stats.failedRequests++;
             return {
                 success: false,
                 error: error.message,
-                metadata: { duration: Date.now() - startTime }
+                metadata: { duration: Date.now() - startTime },
             };
         }
     }
@@ -117,15 +117,15 @@ class AITools {
     async generateReply(tweet, user, options = {}) {
         const systemPrompt = options.systemPrompt || 'You are a neutral, casual Twitter user';
         const userPrompt = `Tweet from @${user}: "${tweet}"`;
-        
+
         return this.queueRequest({
             action: 'generate_reply',
             payload: {
                 systemPrompt,
                 userPrompt,
                 maxTokens: options.maxTokens || 100,
-                temperature: options.temperature || 0.7
-            }
+                temperature: options.temperature || 0.7,
+            },
         });
     }
 
@@ -143,9 +143,9 @@ class AITools {
                 user,
                 context: {
                     textLength: tweet.length,
-                    timestamp: Date.now()
-                }
-            }
+                    timestamp: Date.now(),
+                },
+            },
         });
     }
 
@@ -159,8 +159,8 @@ class AITools {
             action: 'classify_content',
             payload: {
                 text: tweet,
-                categories: ['spam', 'promotional', 'organic', 'toxic']
-            }
+                categories: ['spam', 'promotional', 'organic', 'toxic'],
+            },
         });
     }
 
@@ -172,15 +172,15 @@ class AITools {
      */
     async generateConversationReply(history, options = {}) {
         const systemPrompt = options.systemPrompt || 'You are a friendly conversationalist';
-        
+
         return this.queueRequest({
             action: 'generate_conversation',
             payload: {
                 systemPrompt,
                 history,
                 maxTokens: options.maxTokens || 100,
-                temperature: options.temperature || 0.7
-            }
+                temperature: options.temperature || 0.7,
+            },
         });
     }
 
@@ -204,9 +204,7 @@ class AITools {
         } else {
             const oldAvg = this.stats.avgResponseTime;
             const count = this.stats.successfulRequests;
-            this.stats.avgResponseTime = Math.round(
-                (oldAvg * (count - 1) + duration) / count
-            );
+            this.stats.avgResponseTime = Math.round((oldAvg * (count - 1) + duration) / count);
         }
     }
 
@@ -216,15 +214,17 @@ class AITools {
      */
     getStats() {
         const { totalRequests, successfulRequests, failedRequests, avgResponseTime } = this.stats;
-        const successRate = totalRequests > 0 ? 
-            ((successfulRequests / totalRequests) * 100).toFixed(1) + '%' : '0%';
-        
+        const successRate =
+            totalRequests > 0
+                ? ((successfulRequests / totalRequests) * 100).toFixed(1) + '%'
+                : '0%';
+
         return {
             totalRequests,
             successfulRequests,
             failedRequests,
             successRate,
-            avgResponseTime: `${Math.round(avgResponseTime)}ms`
+            avgResponseTime: `${Math.round(avgResponseTime)}ms`,
         };
     }
 
@@ -260,7 +260,7 @@ class AITools {
             totalRequests: 0,
             successfulRequests: 0,
             failedRequests: 0,
-            avgResponseTime: 0
+            avgResponseTime: 0,
         };
     }
 }

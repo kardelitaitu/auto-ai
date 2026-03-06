@@ -7,7 +7,7 @@ const ACTION_ROUTINES = {
     PROFILE_DIVE: 'PROFILE_DIVE',
     NOTIFICATION_CHECK: 'NOTIFICATION_CHECK',
     REFRESH: 'REFRESH',
-    IDLE: 'IDLE'
+    IDLE: 'IDLE',
 };
 
 class ActionOrchestrator {
@@ -21,7 +21,7 @@ class ActionOrchestrator {
             PROFILE_DIVE: 0.15,
             NOTIFICATION_CHECK: 0.05,
             REFRESH: 0.05,
-            IDLE: 0.05
+            IDLE: 0.05,
         };
     }
 
@@ -70,7 +70,7 @@ describe('action-orchestrator', () => {
             ACTION_ROUTINES.PROFILE_DIVE,
             ACTION_ROUTINES.TWEET_DIVE,
             ACTION_ROUTINES.TWEET_DIVE,
-            ACTION_ROUTINES.TWEET_DIVE
+            ACTION_ROUTINES.TWEET_DIVE,
         ];
         const repeatedBlocked = orchestrator.getConstraintBlockedRoutines();
         expect(repeatedBlocked).toContain(ACTION_ROUTINES.TWEET_DIVE);
@@ -78,7 +78,7 @@ describe('action-orchestrator', () => {
         orchestrator.history = [
             ACTION_ROUTINES.PROFILE_DIVE,
             ACTION_ROUTINES.NOTIFICATION_CHECK,
-            ACTION_ROUTINES.TIMELINE_BROWSE
+            ACTION_ROUTINES.TIMELINE_BROWSE,
         ];
         const notificationBlocked = orchestrator.getConstraintBlockedRoutines();
         expect(notificationBlocked).toContain(ACTION_ROUTINES.NOTIFICATION_CHECK);
@@ -92,7 +92,7 @@ describe('action-orchestrator', () => {
             [ACTION_ROUTINES.PROFILE_DIVE]: 0,
             [ACTION_ROUTINES.NOTIFICATION_CHECK]: 0,
             [ACTION_ROUTINES.REFRESH]: 0,
-            [ACTION_ROUTINES.IDLE]: 0
+            [ACTION_ROUTINES.IDLE]: 0,
         };
         const next = orchestrator.getNextRoutine();
         expect(next).toBe(ACTION_ROUTINES.TIMELINE_BROWSE);
@@ -106,7 +106,7 @@ describe('action-orchestrator', () => {
             [ACTION_ROUTINES.PROFILE_DIVE]: 0,
             [ACTION_ROUTINES.NOTIFICATION_CHECK]: 0,
             [ACTION_ROUTINES.REFRESH]: 0,
-            [ACTION_ROUTINES.IDLE]: 0
+            [ACTION_ROUTINES.IDLE]: 0,
         };
         const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.1);
         const next = orchestrator.getNextRoutine();
@@ -131,7 +131,7 @@ describe('action-orchestrator', () => {
             [ACTION_ROUTINES.PROFILE_DIVE]: 0,
             [ACTION_ROUTINES.NOTIFICATION_CHECK]: 0,
             [ACTION_ROUTINES.REFRESH]: 0,
-            [ACTION_ROUTINES.IDLE]: 0
+            [ACTION_ROUTINES.IDLE]: 0,
         };
         const next = orchestrator.getNextRoutine();
         expect(next).toBe(ACTION_ROUTINES.TIMELINE_BROWSE);

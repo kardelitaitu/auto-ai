@@ -11,18 +11,18 @@ import BaseDiscover from '../baseDiscover.js';
  * @description Discovers local Vivaldi browser instances
  */
 class LocalVivaldiDiscover extends BaseDiscover {
-  constructor() {
-    super();
-    this.browserType = 'localVivaldi';
-  }
+    constructor() {
+        super();
+        this.browserType = 'localVivaldi';
+    }
 
-  /**
-   * Discovers local Vivaldi browser instances
-   * @returns {Promise<Array>} Array of browser endpoints
-   */
-  async discover() {
-    return [];
-  }
+    /**
+     * Discovers local Vivaldi browser instances
+     * @returns {Promise<Array>} Array of browser endpoints
+     */
+    async discover() {
+        return [];
+    }
 }
 
 export default LocalVivaldiDiscover;

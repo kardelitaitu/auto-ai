@@ -10,8 +10,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 vi.mock('../../core/local-client.js', () => ({
@@ -22,7 +22,7 @@ vi.mock('../../core/local-client.js', () => ({
         async sendRequest() {
             return { success: false, error: 'mock' };
         }
-    }
+    },
 }));
 
 vi.mock('../../core/cloud-client.js', () => ({
@@ -33,11 +33,11 @@ vi.mock('../../core/cloud-client.js', () => ({
         async sendRequest() {
             return { success: false, error: 'mock' };
         }
-    }
+    },
 }));
 
 vi.mock('../../core/vision-interpreter.js', () => ({
-    default: class {}
+    default: class {},
 }));
 
 import AgentConnector from '@api/core/agent-connector.js';
@@ -92,7 +92,7 @@ describe('AgentConnector Health Monitoring', () => {
 
             const stats = connector.getStats();
 
-            expect(stats.requests.successRate).toBe(80.00);
+            expect(stats.requests.successRate).toBe(80.0);
         });
 
         it('should handle zero requests for success rate', () => {

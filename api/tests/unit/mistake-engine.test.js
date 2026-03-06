@@ -8,48 +8,69 @@ const mistakeEngine = {
             delay: { probability: 0.05, action: 'pause' },
             doubleKey: { probability: 0.03, action: 'duplicateKey' },
             wrongKey: { probability: 0.02, action: 'nearestKey' },
-            backtrack: { probability: 0.08, action: 'deleteAndRetype' }
+            backtrack: { probability: 0.08, action: 'deleteAndRetype' },
         };
-        
+
         const mistake = mistakes[type] || mistakes.typo;
         if (Math.random() < mistake.probability) {
             return { triggered: true, action: mistake.action };
         }
         return { triggered: false };
     },
-    
+
     shouldMakeMistake: (probability = 0.1) => {
         return Math.random() < probability;
     },
-    
+
     insertRandomChar: (text) => {
         const chars = 'abcdefghijklmnopqrstuvwxyz';
         const pos = Math.floor(Math.random() * text.length);
         const char = chars[Math.floor(Math.random() * chars.length)];
         return text.slice(0, pos) + char + text.slice(pos);
     },
-    
+
     duplicateKey: (text) => {
         const pos = Math.floor(Math.random() * text.length);
         return text.slice(0, pos) + text[pos] + text.slice(pos);
     },
-    
+
     nearestKey: (key) => {
         const keyboard = {
-            'a': 'sq', 'b': 'vn', 'c': 'xv', 'd': 'sf', 'e': 'wr',
-            'f': 'dg', 'g': 'fh', 'h': 'gj', 'i': 'uo', 'j': 'hk',
-            'k': 'jl', 'l': 'ko', 'm': 'n', 'n': 'bm', 'o': 'ip',
-            'p': 'ol', 'q': 'wa', 'r': 'et', 's': 'ad', 't': 'ry',
-            'u': 'yi', 'v': 'cb', 'w': 'qe', 'x': 'zc', 'y': 'tu', 'z': 'x'
+            a: 'sq',
+            b: 'vn',
+            c: 'xv',
+            d: 'sf',
+            e: 'wr',
+            f: 'dg',
+            g: 'fh',
+            h: 'gj',
+            i: 'uo',
+            j: 'hk',
+            k: 'jl',
+            l: 'ko',
+            m: 'n',
+            n: 'bm',
+            o: 'ip',
+            p: 'ol',
+            q: 'wa',
+            r: 'et',
+            s: 'ad',
+            t: 'ry',
+            u: 'yi',
+            v: 'cb',
+            w: 'qe',
+            x: 'zc',
+            y: 'tu',
+            z: 'x',
         };
         const alternatives = keyboard[key.toLowerCase()] || '';
         return alternatives[Math.floor(Math.random() * alternatives.length)] || key;
     },
-    
+
     deleteAndRetype: (text) => {
         const pos = Math.floor(Math.random() * Math.min(3, text.length));
         return text.slice(0, -pos - 1) + text.slice(-pos - 1);
-    }
+    },
 };
 
 vi.mock('../../../api/index.js', () => ({
@@ -62,12 +83,12 @@ vi.mock('../../../api/index.js', () => ({
         scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
-            read: vi.fn().mockResolvedValue(undefined)
+            read: vi.fn().mockResolvedValue(undefined),
         }),
         visible: vi.fn().mockResolvedValue(true),
         exists: vi.fn().mockResolvedValue(true),
-        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
-    }
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home'),
+    },
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -75,8 +96,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         debug: vi.fn(),
         warn: vi.fn(),
-        error: vi.fn()
-    }))
+        error: vi.fn(),
+    })),
 }));
 
 describe('mistake-engine', () => {

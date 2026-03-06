@@ -20,7 +20,7 @@ export class FollowAction {
             attempts: 0,
             successes: 0,
             failures: 0,
-            skipped: 0
+            skipped: 0,
         };
 
         this.loadConfig();
@@ -35,7 +35,9 @@ export class FollowAction {
             this.probability = 0.1;
             this.enabled = true;
         }
-        this.logger.info(`[FollowAction] Initialized (enabled: ${this.enabled}, probability: ${(this.probability * 100).toFixed(0)}%)`);
+        this.logger.info(
+            `[FollowAction] Initialized (enabled: ${this.enabled}, probability: ${(this.probability * 100).toFixed(0)}%)`
+        );
     }
 
     async canExecute(_context = {}) {
@@ -62,7 +64,7 @@ export class FollowAction {
             success: false,
             executed: false,
             reason: 'executor_not_wired',
-            engagementType: this.engagementType
+            engagementType: this.engagementType,
         };
     }
 
@@ -74,7 +76,7 @@ export class FollowAction {
                 success: false,
                 executed: false,
                 reason: can.reason,
-                engagementType: this.engagementType
+                engagementType: this.engagementType,
             };
         }
 
@@ -84,7 +86,7 @@ export class FollowAction {
                 success: false,
                 executed: false,
                 reason: 'probability',
-                engagementType: this.engagementType
+                engagementType: this.engagementType,
             };
         }
 
@@ -93,7 +95,7 @@ export class FollowAction {
 
     getStats() {
         const total = this.stats.attempts;
-        const successRate = total > 0 ? (this.stats.successes / total * 100).toFixed(1) : '0.0';
+        const successRate = total > 0 ? ((this.stats.successes / total) * 100).toFixed(1) : '0.0';
 
         return {
             attempts: this.stats.attempts,
@@ -101,7 +103,7 @@ export class FollowAction {
             failures: this.stats.failures,
             skipped: this.stats.skipped,
             successRate: `${successRate}%`,
-            engagementType: this.engagementType
+            engagementType: this.engagementType,
         };
     }
 
@@ -110,7 +112,7 @@ export class FollowAction {
             attempts: 0,
             successes: 0,
             failures: 0,
-            skipped: 0
+            skipped: 0,
         };
     }
 }

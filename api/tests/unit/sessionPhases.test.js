@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi } from 'vitest';
 import { sessionPhases } from '@api/twitter/session-phases.js';
 
@@ -38,7 +37,7 @@ describe('sessionPhases', () => {
         it('should return 1.0 for unknown actions', () => {
             expect(sessionPhases.getPhaseModifier('unknown', 'active')).toBe(1.0);
         });
-        
+
         it('should fallback to active modifiers for unknown phase', () => {
             // Mock console.warn to keep output clean
             const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -72,7 +71,7 @@ describe('sessionPhases', () => {
             expect(stats.modifiers.like).toBe(0.4);
         });
     });
-    
+
     describe('Time Helpers', () => {
         it('should calculate remaining time', () => {
             expect(sessionPhases.calculateRemainingTime(40, 100)).toBe(60);

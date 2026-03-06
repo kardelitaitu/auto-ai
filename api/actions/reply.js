@@ -13,13 +13,13 @@ const logger = createLogger('api/reply.js');
 
 /**
  * Automate Replying with AI Context
- * 
+ *
  * Performs:
  * 1. Context extraction (tweet text + nearby replies)
  * 2. AI reply generation
  * 3. Execution via Reply Icon (Strategy A)
  * 4. Success verification
- * 
+ *
  * @param {object} [options]
  * @param {string} [options.fallback] - Fallback reply if AI fails
  * @param {number} [options.contextSteps=5] - How many scrolls to collect context
@@ -27,10 +27,7 @@ const logger = createLogger('api/reply.js');
  */
 export async function replyWithAI(options = {}) {
     const page = getPage();
-    const {
-        fallback = "Interesting perspective! Thanks for sharing.",
-        contextSteps = 5
-    } = options;
+    const { fallback = 'Interesting perspective! Thanks for sharing.', contextSteps = 5 } = options;
 
     logger.info(`Starting high-level api.replyWithAI()...`);
 
@@ -113,7 +110,7 @@ async function extractMainTweetText() {
     const selectors = [
         'article[data-testid="tweet"] div[data-testid="tweetText"]',
         'article[data-testid="tweet"] [data-testid="tweetText"]',
-        'article[data-testid="tweet"] [dir="auto"]'
+        'article[data-testid="tweet"] [dir="auto"]',
     ];
 
     for (const selector of selectors) {
@@ -150,7 +147,7 @@ async function extractElasticContext(steps) {
             const selectors = ['[data-testid="tweetText"]', 'article [dir="auto"]'];
             for (const selector of selectors) {
                 const elements = document.querySelectorAll(selector);
-                elements.forEach(el => {
+                elements.forEach((el) => {
                     const txt = el instanceof HTMLElement ? el.innerText.trim() : '';
                     if (txt && txt.length > 3 && txt.length < 300) {
                         found.push(txt.substring(0, 100));
@@ -181,7 +178,7 @@ async function findComposer(page) {
     const composerSelectors = [
         '[data-testid="tweetTextarea_0"]',
         '[data-testid="tweetTextarea"]',
-        '[contenteditable="true"][role="textbox"]'
+        '[contenteditable="true"][role="textbox"]',
     ];
     for (const sel of composerSelectors) {
         if (await visible(sel)) return sel;
@@ -194,7 +191,7 @@ async function postReply(page, methodName) {
         '[data-testid="tweetButton"]',
         '[data-testid="tweetButtonInline"]',
         '[aria-label="Post"]',
-        '[aria-label="Reply"]'
+        '[aria-label="Reply"]',
     ];
 
     let foundSelector = null;
@@ -205,7 +202,8 @@ async function postReply(page, methodName) {
         }
     }
 
-    if (!foundSelector) return { success: false, reason: 'post_button_not_found', method: methodName };
+    if (!foundSelector)
+        return { success: false, reason: 'post_button_not_found', method: methodName };
 
     logger.info(`[replyWithAI] Clicking post button (ghost cursor)...`);
     await click(foundSelector);

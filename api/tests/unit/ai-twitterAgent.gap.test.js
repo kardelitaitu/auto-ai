@@ -13,17 +13,17 @@ vi.mock('../../utils/async-queue.js', () => {
                 retweets: { current: 1, limit: 10, remaining: 9, percentUsed: 10 },
                 quotes: { current: 1, limit: 10, remaining: 9, percentUsed: 10 },
                 follows: { current: 1, limit: 10, remaining: 9, percentUsed: 10 },
-                bookmarks: { current: 1, limit: 10, remaining: 9, percentUsed: 10 }
+                bookmarks: { current: 1, limit: 10, remaining: 9, percentUsed: 10 },
             }),
             disableQuickMode: vi.fn(),
             resetEngagement: vi.fn(),
             enqueue: vi.fn(),
-            on: vi.fn()
+            on: vi.fn(),
         };
     });
     return {
         DiveQueue: mockDiveQueue,
-        default: vi.fn()
+        default: vi.fn(),
     };
 });
 
@@ -33,28 +33,30 @@ vi.mock('../../utils/engagement-limits.js', () => {
         record: vi.fn().mockReturnValue(true),
         getProgress: vi.fn().mockReturnValue('1/10'),
         getStatus: vi.fn().mockReturnValue({
-            likes: { current: 1, limit: 10, remaining: 9, percentage: '10%' }
+            likes: { current: 1, limit: 10, remaining: 9, percentage: '10%' },
         }),
         getSummary: vi.fn().mockReturnValue('likes: 1/10'),
-        getUsageRate: vi.fn().mockReturnValue(0.1)
+        getUsageRate: vi.fn().mockReturnValue(0.1),
     };
     const mockCreate = vi.fn().mockReturnValue(mockTracker);
     const engagementLimits = {
         createEngagementTracker: mockCreate,
         defaults: {},
-        thresholds: {}
+        thresholds: {},
     };
     return {
         engagementLimits,
-        default: engagementLimits
+        default: engagementLimits,
     };
 });
 
 vi.mock('../../core/agent-connector.js', () => {
-    const mockConnector = vi.fn().mockImplementation(function () { return {}; });
+    const mockConnector = vi.fn().mockImplementation(function () {
+        return {};
+    });
     return {
         AgentConnector: mockConnector,
-        default: mockConnector
+        default: mockConnector,
     };
 });
 
@@ -63,9 +65,9 @@ vi.mock('../../utils/ai-reply-engine.js', () => ({
         return {
             getStats: vi.fn().mockReturnValue({}),
             updateConfig: vi.fn(),
-            config: { REPLY_PROBABILITY: 0.5 }
+            config: { REPLY_PROBABILITY: 0.5 },
         };
-    })
+    }),
 }));
 
 vi.mock('../../utils/ai-quote-engine.js', () => ({
@@ -73,54 +75,56 @@ vi.mock('../../utils/ai-quote-engine.js', () => ({
         return {
             getStats: vi.fn().mockReturnValue({}),
             updateConfig: vi.fn(),
-            config: { QUOTE_PROBABILITY: 0.5 }
+            config: { QUOTE_PROBABILITY: 0.5 },
         };
-    })
+    }),
 }));
 
 vi.mock('../../utils/ai-context-engine.js', () => ({
-    AIContextEngine: vi.fn().mockImplementation(function () { return {}; })
+    AIContextEngine: vi.fn().mockImplementation(function () {
+        return {};
+    }),
 }));
 
 vi.mock('../../utils/micro-interactions.js', () => {
     const microInteractions = {
         createMicroInteractionHandler: vi.fn().mockImplementation(() => ({})),
-        defaults: {}
+        defaults: {},
     };
     return {
         microInteractions,
-        default: microInteractions
+        default: microInteractions,
     };
 });
 
 vi.mock('../../utils/motor-control.js', () => {
     const motorControl = {
         createMotorController: vi.fn().mockImplementation(() => ({})),
-        defaults: {}
+        defaults: {},
     };
     return {
         motorControl,
-        default: motorControl
+        default: motorControl,
     };
 });
 
 vi.mock('../../utils/entropyController.js', () => ({
-    entropy: {}
+    entropy: {},
 }));
 
 vi.mock('../../utils/session-phases.js', () => ({
-    sessionPhases: {}
+    sessionPhases: {},
 }));
 
 vi.mock('../../utils/sentiment-service.js', () => ({
-    sentimentService: {}
+    sentimentService: {},
 }));
 
 vi.mock('../../utils/math.js', () => ({
     mathUtils: {
         randomInRange: vi.fn().mockReturnValue(100),
-        getRandomItem: vi.fn().mockImplementation(arr => arr[0])
-    }
+        getRandomItem: vi.fn().mockImplementation((arr) => arr[0]),
+    },
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -128,15 +132,15 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         debug: vi.fn(),
         warn: vi.fn(),
-        error: vi.fn()
+        error: vi.fn(),
     }),
     createBufferedLogger: vi.fn().mockReturnValue({
         info: vi.fn(),
         debug: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        shutdown: vi.fn().mockResolvedValue(true)
-    })
+        shutdown: vi.fn().mockResolvedValue(true),
+    }),
 }));
 
 // Mock browser-agent/twitterAgent since AITwitterAgent extends it
@@ -150,33 +154,59 @@ vi.mock('../../utils/twitterAgent.js', () => ({
             this.logWarn = vi.fn();
             this.logError = vi.fn();
         }
-        navigateHome() { return Promise.resolve(); }
-        shutdown() { }
-    }
+        navigateHome() {
+            return Promise.resolve();
+        }
+        shutdown() {}
+    },
 }));
 
 // Mock Actions
-vi.mock('../../utils/actions/ai-twitter-reply.js', () => ({ AIReplyAction: vi.fn().mockImplementation(function () { return { getStats: vi.fn().mockReturnValue({}) }; }) }));
-vi.mock('../../utils/actions/ai-twitter-quote.js', () => ({ AIQuoteAction: vi.fn().mockImplementation(function () { return { getStats: vi.fn().mockReturnValue({}) }; }) }));
-vi.mock('../../utils/actions/ai-twitter-like.js', () => ({ LikeAction: vi.fn().mockImplementation(function () { return { getStats: vi.fn().mockReturnValue({}) }; }) }));
-vi.mock('../../utils/actions/ai-twitter-bookmark.js', () => ({ BookmarkAction: vi.fn().mockImplementation(function () { return { getStats: vi.fn().mockReturnValue({}) }; }) }));
-vi.mock('../../utils/actions/ai-twitter-retweet.js', () => ({ RetweetAction: vi.fn().mockImplementation(function () { return { getStats: vi.fn().mockReturnValue({}) }; }) }));
-vi.mock('../../utils/actions/ai-twitter-go-home.js', () => ({ GoHomeAction: vi.fn().mockImplementation(function () { return { getStats: vi.fn().mockReturnValue({}) }; }) }));
+vi.mock('../../utils/actions/ai-twitter-reply.js', () => ({
+    AIReplyAction: vi.fn().mockImplementation(function () {
+        return { getStats: vi.fn().mockReturnValue({}) };
+    }),
+}));
+vi.mock('../../utils/actions/ai-twitter-quote.js', () => ({
+    AIQuoteAction: vi.fn().mockImplementation(function () {
+        return { getStats: vi.fn().mockReturnValue({}) };
+    }),
+}));
+vi.mock('../../utils/actions/ai-twitter-like.js', () => ({
+    LikeAction: vi.fn().mockImplementation(function () {
+        return { getStats: vi.fn().mockReturnValue({}) };
+    }),
+}));
+vi.mock('../../utils/actions/ai-twitter-bookmark.js', () => ({
+    BookmarkAction: vi.fn().mockImplementation(function () {
+        return { getStats: vi.fn().mockReturnValue({}) };
+    }),
+}));
+vi.mock('../../utils/actions/ai-twitter-retweet.js', () => ({
+    RetweetAction: vi.fn().mockImplementation(function () {
+        return { getStats: vi.fn().mockReturnValue({}) };
+    }),
+}));
+vi.mock('../../utils/actions/ai-twitter-go-home.js', () => ({
+    GoHomeAction: vi.fn().mockImplementation(function () {
+        return { getStats: vi.fn().mockReturnValue({}) };
+    }),
+}));
 vi.mock('../../utils/actions/index.js', () => ({
     ActionRunner: vi.fn().mockImplementation(function () {
         return {
-            getStats: vi.fn().mockReturnValue({})
+            getStats: vi.fn().mockReturnValue({}),
         };
-    })
+    }),
 }));
 
 vi.mock('../../utils/scroll-helper.js', () => ({
     scrollDown: vi.fn(),
-    scrollRandom: vi.fn()
+    scrollRandom: vi.fn(),
 }));
 
 vi.mock('../../utils/human-interaction.js', () => ({
-    HumanInteraction: vi.fn()
+    HumanInteraction: vi.fn(),
 }));
 
 describe('AITwitterAgent Gaps', () => {
@@ -187,34 +217,36 @@ describe('AITwitterAgent Gaps', () => {
 
     beforeEach(() => {
         mockBrowser = {
-            isConnected: vi.fn().mockReturnValue(true)
+            isConnected: vi.fn().mockReturnValue(true),
         };
         mockContext = {
-            browser: vi.fn().mockReturnValue(mockBrowser)
+            browser: vi.fn().mockReturnValue(mockBrowser),
         };
         mockPage = {
             context: vi.fn().mockReturnValue(mockContext),
-            evaluate: vi.fn().mockResolvedValue({ readyState: 'complete', title: 'X', hasBody: true }),
+            evaluate: vi
+                .fn()
+                .mockResolvedValue({ readyState: 'complete', title: 'X', hasBody: true }),
             url: vi.fn().mockReturnValue('https://x.com/home'),
             on: vi.fn(),
             waitForTimeout: vi.fn().mockResolvedValue(true),
             locator: vi.fn().mockReturnValue({
                 isVisible: vi.fn().mockResolvedValue(false),
-                catch: vi.fn().mockImplementation(fn => fn())
+                catch: vi.fn().mockImplementation((fn) => fn()),
             }),
             keyboard: {
-                press: vi.fn().mockResolvedValue(true)
+                press: vi.fn().mockResolvedValue(true),
             },
             mouse: {
-                move: vi.fn().mockResolvedValue(true)
-            }
+                move: vi.fn().mockResolvedValue(true),
+            },
         };
 
         const mockLogger = {
             info: vi.fn(),
             debug: vi.fn(),
             warn: vi.fn(),
-            error: vi.fn()
+            error: vi.fn(),
         };
 
         agent = new AITwitterAgent(mockPage, { name: 'test', description: 'test' }, mockLogger, {
@@ -224,8 +256,8 @@ describe('AITwitterAgent Gaps', () => {
                 quotes: 5,
                 likes: 5,
                 follows: 5,
-                bookmarks: 5
-            }
+                bookmarks: 5,
+            },
         });
     });
 
@@ -243,7 +275,11 @@ describe('AITwitterAgent Gaps', () => {
         });
 
         it('should return unhealthy if page is not ready', async () => {
-            mockPage.evaluate.mockResolvedValue({ readyState: 'loading', title: 'X', hasBody: true });
+            mockPage.evaluate.mockResolvedValue({
+                readyState: 'loading',
+                title: 'X',
+                hasBody: true,
+            });
             const result = await agent.performHealthCheck();
             expect(result.healthy).toBe(false);
             expect(result.reason).toBe('page_not_ready');
@@ -266,7 +302,9 @@ describe('AITwitterAgent Gaps', () => {
         });
 
         it('should handle general errors in health check', async () => {
-            mockPage.context.mockImplementation(() => { throw new Error('Context failed'); });
+            mockPage.context.mockImplementation(() => {
+                throw new Error('Context failed');
+            });
             const result = await agent.performHealthCheck();
             expect(result.healthy).toBe(false);
             expect(result.reason).toBe('Context failed');

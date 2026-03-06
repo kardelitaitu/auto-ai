@@ -6,8 +6,8 @@ vi.mock('@api/core/logger.js', () => ({
         info: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('api/agent/actionEngine.js', () => {
@@ -15,29 +15,29 @@ describe('api/agent/actionEngine.js', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        
+
         mockPage = {
             bringToFront: vi.fn().mockResolvedValue(undefined),
             locator: vi.fn().mockReturnValue({
                 first: vi.fn().mockResolvedValue(undefined),
                 click: vi.fn().mockResolvedValue(undefined),
                 fill: vi.fn().mockResolvedValue(undefined),
-                waitFor: vi.fn().mockResolvedValue(undefined)
+                waitFor: vi.fn().mockResolvedValue(undefined),
             }),
             getByRole: vi.fn().mockReturnValue({
-                first: vi.fn().mockResolvedValue(undefined)
+                first: vi.fn().mockResolvedValue(undefined),
             }),
             getByText: vi.fn().mockReturnValue({
-                first: vi.fn().mockResolvedValue(undefined)
+                first: vi.fn().mockResolvedValue(undefined),
             }),
             keyboard: {
                 press: vi.fn().mockResolvedValue(undefined),
-                type: vi.fn().mockResolvedValue(undefined)
+                type: vi.fn().mockResolvedValue(undefined),
             },
             evaluate: vi.fn().mockResolvedValue(undefined),
             goto: vi.fn().mockResolvedValue(undefined),
             waitForTimeout: vi.fn().mockResolvedValue(undefined),
-            screenshot: vi.fn().mockResolvedValue('buffer')
+            screenshot: vi.fn().mockResolvedValue('buffer'),
         };
     });
 
@@ -72,18 +72,27 @@ describe('api/agent/actionEngine.js', () => {
 
         it('should execute scroll action', async () => {
             mockPage.evaluate = vi.fn().mockResolvedValue(undefined);
-            
-            const result = await actionEngine.execute(mockPage, { action: 'scroll', value: 'down' });
+
+            const result = await actionEngine.execute(mockPage, {
+                action: 'scroll',
+                value: 'down',
+            });
             expect(result.success).toBe(true);
         });
 
         it('should execute navigate action', async () => {
-            const result = await actionEngine.execute(mockPage, { action: 'navigate', value: 'https://example.com' });
+            const result = await actionEngine.execute(mockPage, {
+                action: 'navigate',
+                value: 'https://example.com',
+            });
             expect(result.success).toBe(true);
         });
 
         it('should execute goto action (alias for navigate)', async () => {
-            const result = await actionEngine.execute(mockPage, { action: 'goto', value: 'https://example.com' });
+            const result = await actionEngine.execute(mockPage, {
+                action: 'goto',
+                value: 'https://example.com',
+            });
             expect(result.success).toBe(true);
         });
 
@@ -98,7 +107,11 @@ describe('api/agent/actionEngine.js', () => {
         });
 
         it('should execute screenshot action', async () => {
-            const result = await actionEngine.execute(mockPage, { action: 'screenshot' }, 'test-session');
+            const result = await actionEngine.execute(
+                mockPage,
+                { action: 'screenshot' },
+                'test-session'
+            );
             expect(result.success).toBe(true);
         });
 
@@ -149,9 +162,12 @@ describe('api/agent/actionEngine.js', () => {
     describe('error handling', () => {
         it('should handle page errors', async () => {
             mockPage.goto = vi.fn().mockRejectedValue(new Error('Navigation error'));
-            
-            const result = await actionEngine.execute(mockPage, { action: 'navigate', value: 'https://fail.com' });
-            
+
+            const result = await actionEngine.execute(mockPage, {
+                action: 'navigate',
+                value: 'https://fail.com',
+            });
+
             expect(result.success).toBe(false);
         });
 
@@ -159,14 +175,20 @@ describe('api/agent/actionEngine.js', () => {
             mockPage.locator = vi.fn().mockImplementation(() => {
                 throw new Error('Locator error');
             });
-            
-            const result = await actionEngine.execute(mockPage, { action: 'click', selector: '#btn' });
-            
+
+            const result = await actionEngine.execute(mockPage, {
+                action: 'click',
+                selector: '#btn',
+            });
+
             expect(result.success).toBe(false);
         });
 
         it('should handle scroll action with down value', async () => {
-            const result = await actionEngine.execute(mockPage, { action: 'scroll', value: 'down' });
+            const result = await actionEngine.execute(mockPage, {
+                action: 'scroll',
+                value: 'down',
+            });
             expect(result.success).toBe(true);
         });
 
@@ -176,7 +198,10 @@ describe('api/agent/actionEngine.js', () => {
         });
 
         it('should handle goto action (alias for navigate)', async () => {
-            const result = await actionEngine.execute(mockPage, { action: 'goto', value: 'https://test.com' });
+            const result = await actionEngine.execute(mockPage, {
+                action: 'goto',
+                value: 'https://test.com',
+            });
             expect(result.success).toBe(true);
         });
     });
@@ -198,7 +223,9 @@ describe('api/agent/actionEngine.js', () => {
         });
 
         it('should throw for non-string selector', () => {
-            expect(() => actionEngine.getLocator(mockPage, 123)).toThrow('Selector must be a string');
+            expect(() => actionEngine.getLocator(mockPage, 123)).toThrow(
+                'Selector must be a string'
+            );
         });
     });
 });

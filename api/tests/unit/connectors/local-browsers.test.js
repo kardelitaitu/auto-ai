@@ -5,93 +5,92 @@ import LocalEdgeDiscover from '../../../connectors/discovery/localEdge.js';
 import LocalVivaldiDiscover from '../../../connectors/discovery/localVivaldi.js';
 
 vi.mock('../../../core/logger.js', () => ({
-  createLogger: vi.fn(() => ({
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
-  })),
+    createLogger: vi.fn(() => ({
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
+    })),
 }));
 
 // Mock global fetch to prevent actual network requests during discovery tests
 
-
 describe('LocalChromeDiscover', () => {
-  let discover;
+    let discover;
 
-  beforeEach(() => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
-    
-    vi.clearAllMocks();
-    discover = new LocalChromeDiscover();
-  });
+    beforeEach(() => {
+        global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
 
-  it('should initialize with correct browser type', () => {
-    expect(discover.browserType).toBe('localChrome');
-  });
+        vi.clearAllMocks();
+        discover = new LocalChromeDiscover();
+    });
 
-  it('should return empty array as placeholder', async () => {
-    const result = await discover.discover();
-    expect(result).toEqual([]);
-  });
+    it('should initialize with correct browser type', () => {
+        expect(discover.browserType).toBe('localChrome');
+    });
+
+    it('should return empty array as placeholder', async () => {
+        const result = await discover.discover();
+        expect(result).toEqual([]);
+    });
 });
 
 describe('LocalBraveDiscover', () => {
-  let discover;
+    let discover;
 
-  beforeEach(() => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
-    
-    vi.clearAllMocks();
-    discover = new LocalBraveDiscover();
-  });
+    beforeEach(() => {
+        global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
 
-  it('should initialize with correct browser type', () => {
-    expect(discover.browserType).toBe('localBrave');
-  });
+        vi.clearAllMocks();
+        discover = new LocalBraveDiscover();
+    });
 
-  it('should return empty array as placeholder', async () => {
-    const result = await discover.discover();
-    expect(result).toEqual([]);
-  });
+    it('should initialize with correct browser type', () => {
+        expect(discover.browserType).toBe('localBrave');
+    });
+
+    it('should return empty array as placeholder', async () => {
+        const result = await discover.discover();
+        expect(result).toEqual([]);
+    });
 });
 
 describe('LocalEdgeDiscover', () => {
-  let discover;
+    let discover;
 
-  beforeEach(() => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
-    
-    vi.clearAllMocks();
-    discover = new LocalEdgeDiscover();
-  });
+    beforeEach(() => {
+        global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
 
-  it('should initialize with correct browser type', () => {
-    expect(discover.browserType).toBe('localEdge');
-  });
+        vi.clearAllMocks();
+        discover = new LocalEdgeDiscover();
+    });
 
-  it('should return empty array as placeholder', async () => {
-    const result = await discover.discover();
-    expect(result).toEqual([]);
-  });
+    it('should initialize with correct browser type', () => {
+        expect(discover.browserType).toBe('localEdge');
+    });
+
+    it('should return empty array as placeholder', async () => {
+        const result = await discover.discover();
+        expect(result).toEqual([]);
+    });
 });
 
 describe('LocalVivaldiDiscover', () => {
-  let discover;
+    let discover;
 
-  beforeEach(() => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
-    
-    vi.clearAllMocks();
-    discover = new LocalVivaldiDiscover();
-  });
+    beforeEach(() => {
+        global.fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'));
 
-  it('should initialize with correct browser type', () => {
-    expect(discover.browserType).toBe('localVivaldi');
-  });
+        vi.clearAllMocks();
+        discover = new LocalVivaldiDiscover();
+    });
 
-  it('should return empty array as placeholder', async () => {
-    const result = await discover.discover();
-    expect(result).toEqual([]);
-  });
+    it('should initialize with correct browser type', () => {
+        expect(discover.browserType).toBe('localVivaldi');
+    });
+
+    it('should return empty array as placeholder', async () => {
+        const result = await discover.discover();
+        expect(result).toEqual([]);
+    });
 });

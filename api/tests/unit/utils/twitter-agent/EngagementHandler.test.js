@@ -24,9 +24,9 @@ vi.mock('@api/index.js', () => {
         scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
-            focus: vi.fn().mockResolvedValue(undefined)
+            focus: vi.fn().mockResolvedValue(undefined),
         }),
-        count: vi.fn().mockResolvedValue(1)
+        count: vi.fn().mockResolvedValue(1),
     };
     return { api, default: api };
 });
@@ -47,7 +47,7 @@ describe('EngagementHandler', () => {
 
         mathUtils.randomInRange = vi.fn((min, max) => min);
         mathUtils.roll = vi.fn(() => true);
-        
+
         const mockLocator = {
             first: vi.fn().mockReturnThis(),
             count: vi.fn().mockImplementation(async () => 1),
@@ -57,24 +57,33 @@ describe('EngagementHandler', () => {
             all: vi.fn().mockResolvedValue([]),
             textContent: vi.fn().mockResolvedValue('follow'),
             getAttribute: vi.fn().mockResolvedValue('mock attr'),
-            evaluate: vi.fn().mockResolvedValue(undefined)
+            evaluate: vi.fn().mockResolvedValue(undefined),
         };
 
         mockPage = {
             locator: vi.fn().mockImplementation((sel) => {
                 // Return different visibility based on selector to avoid "Already following"
-                const isUnfollow = sel.includes('unfollow') || sel.includes('Following') || sel.includes('Pending');
+                const isUnfollow =
+                    sel.includes('unfollow') ||
+                    sel.includes('Following') ||
+                    sel.includes('Pending');
                 return {
                     ...mockLocator,
                     count: vi.fn().mockResolvedValue(isUnfollow ? 0 : 1),
-                    isVisible: vi.fn().mockResolvedValue(!isUnfollow)
+                    isVisible: vi.fn().mockResolvedValue(!isUnfollow),
                 };
             }),
             url: vi.fn().mockReturnValue('https://x.com/home'),
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) }),
+            context: vi
+                .fn()
+                .mockReturnValue({
+                    browser: vi
+                        .fn()
+                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+                }),
             evaluate: vi.fn().mockResolvedValue(undefined),
-            goBack: vi.fn().mockResolvedValue(undefined)
+            goBack: vi.fn().mockResolvedValue(undefined),
         };
 
         api.withPage.mockImplementation((callback) => callback(mockPage));
@@ -84,12 +93,12 @@ describe('EngagementHandler', () => {
             info: vi.fn(),
             warn: vi.fn(),
             error: vi.fn(),
-            log: vi.fn()
+            log: vi.fn(),
         };
 
         mockGhost = {
             click: vi.fn().mockResolvedValue({ success: true, x: 50, y: 50 }),
-            move: vi.fn().mockResolvedValue(undefined)
+            move: vi.fn().mockResolvedValue(undefined),
         };
 
         mockAgent = {
@@ -105,12 +114,12 @@ describe('EngagementHandler', () => {
                 think: vi.fn().mockResolvedValue(undefined),
                 recoverFromError: vi.fn().mockResolvedValue(undefined),
                 consumeContent: vi.fn().mockResolvedValue(undefined),
-                scroll: vi.fn().mockResolvedValue(undefined)
+                scroll: vi.fn().mockResolvedValue(undefined),
             },
             mathUtils: mathUtils,
             twitterConfig: {},
             sessionStart: Date.now(),
-            fatigueThreshold: 1000000
+            fatigueThreshold: 1000000,
         };
 
         handler = new EngagementHandler(mockAgent);
@@ -124,8 +133,8 @@ describe('EngagementHandler', () => {
                 first: vi.fn().mockReturnThis(),
                 isVisible: vi.fn().mockResolvedValue(true),
                 click: vi.fn().mockResolvedValue(undefined),
-                evaluate: vi.fn().mockResolvedValue(undefined)
-            })
+                evaluate: vi.fn().mockResolvedValue(undefined),
+            }),
         };
         const result = await handler.likeTweet(mockTweet);
         expect(result).toBe(true);

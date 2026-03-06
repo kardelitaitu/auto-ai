@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { applyHumanizationPatch } from '@api/utils/browserPatch.js';
 
@@ -8,10 +7,10 @@ describe('browserPatch', () => {
 
     beforeEach(() => {
         page = {
-            addInitScript: vi.fn()
+            addInitScript: vi.fn(),
         };
         logger = {
-            info: vi.fn()
+            info: vi.fn(),
         };
     });
 
@@ -27,30 +26,37 @@ describe('browserPatch', () => {
         beforeEach(async () => {
             await applyHumanizationPatch(page, logger);
             injectedCallback = page.addInitScript.mock.calls[0][0];
-            
+
             // Setup global browser mocks for the callback execution
             global.window = {
                 location: {
-                    hostname: 'example.com'
-                }
+                    hostname: 'example.com',
+                },
             };
             global.navigator = {
-                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                userAgent:
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 platform: 'Linux armv81', // Wrong platform to test override
-                webdriver: true
+                webdriver: true,
             };
-            
+
             global.document = {
                 hidden: true,
                 visibilityState: 'hidden',
-                addEventListener: vi.fn()
+                addEventListener: vi.fn(),
             };
 
             global.HTMLCanvasElement = class {
-                getContext() { return { fillStyle: '', fillRect: vi.fn() }; }
-                toDataURL() { return 'data:image/png;base64,...'; }
+                getContext() {
+                    return { fillStyle: '', fillRect: vi.fn() };
+                }
+                toDataURL() {
+                    return 'data:image/png;base64,...';
+                }
             };
-            global.HTMLCanvasElement.prototype.toDataURL = function() { return 'original'; };
+            global.HTMLCanvasElement.prototype.toDataURL = function () {
+                return 'original';
+            };
         });
 
         afterEach(() => {
@@ -83,7 +89,9 @@ describe('browserPatch', () => {
             const result = canvas.toDataURL(); // Should trigger patched version
             expect(result).toBe('original'); // Mock implementation returns original
             // Logic check: verify function replacement
-            expect(HTMLCanvasElement.prototype.toDataURL).not.toBe(global.HTMLCanvasElement.prototype.toDataURL_ORIGINAL);
+            expect(HTMLCanvasElement.prototype.toDataURL).not.toBe(
+                global.HTMLCanvasElement.prototype.toDataURL_ORIGINAL
+            );
         });
     });
 
@@ -93,8 +101,8 @@ describe('browserPatch', () => {
         beforeEach(() => {
             global.window = {
                 location: {
-                    hostname: 'example.com'
-                }
+                    hostname: 'example.com',
+                },
             };
         });
 
@@ -111,25 +119,29 @@ describe('browserPatch', () => {
             it('should add noise when canvas has valid dimensions', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 global.navigator = { userAgent: 'Chrome/91.0', webdriver: false };
                 global.document = { hidden: false, addEventListener: vi.fn() };
-                
+
                 let ctxFillRectCalled = false;
                 global.HTMLCanvasElement = class {
                     constructor() {
                         this.width = 100;
                         this.height = 100;
                     }
-                    getContext() { 
-                        return { 
-                            fillStyle: '', 
-                            fillRect: () => { ctxFillRectCalled = true; } 
-                        }; 
+                    getContext() {
+                        return {
+                            fillStyle: '',
+                            fillRect: () => {
+                                ctxFillRectCalled = true;
+                            },
+                        };
                     }
-                    toDataURL() { return 'original'; }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
                 const canvas = new HTMLCanvasElement();
                 canvas.toDataURL();
@@ -139,25 +151,29 @@ describe('browserPatch', () => {
             it('should not add noise when canvas width is 0', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 global.navigator = { userAgent: 'Chrome/91.0', webdriver: false };
                 global.document = { hidden: false, addEventListener: vi.fn() };
-                
+
                 let ctxFillRectCalled = false;
                 global.HTMLCanvasElement = class {
                     constructor() {
                         this.width = 0;
                         this.height = 100;
                     }
-                    getContext() { 
-                        return { 
-                            fillStyle: '', 
-                            fillRect: () => { ctxFillRectCalled = true; } 
-                        }; 
+                    getContext() {
+                        return {
+                            fillStyle: '',
+                            fillRect: () => {
+                                ctxFillRectCalled = true;
+                            },
+                        };
                     }
-                    toDataURL() { return 'original'; }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
                 const canvas = new HTMLCanvasElement();
                 canvas.toDataURL();
@@ -167,25 +183,29 @@ describe('browserPatch', () => {
             it('should not add noise when canvas height is 0', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 global.navigator = { userAgent: 'Chrome/91.0', webdriver: false };
                 global.document = { hidden: false, addEventListener: vi.fn() };
-                
+
                 let ctxFillRectCalled = false;
                 global.HTMLCanvasElement = class {
                     constructor() {
                         this.width = 100;
                         this.height = 0;
                     }
-                    getContext() { 
-                        return { 
-                            fillStyle: '', 
-                            fillRect: () => { ctxFillRectCalled = true; } 
-                        }; 
+                    getContext() {
+                        return {
+                            fillStyle: '',
+                            fillRect: () => {
+                                ctxFillRectCalled = true;
+                            },
+                        };
                     }
-                    toDataURL() { return 'original'; }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
                 const canvas = new HTMLCanvasElement();
                 canvas.toDataURL();
@@ -195,19 +215,23 @@ describe('browserPatch', () => {
             it('should not add noise when getContext returns null', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 global.navigator = { userAgent: 'Chrome/91.0', webdriver: false };
                 global.document = { hidden: false, addEventListener: vi.fn() };
-                
+
                 global.HTMLCanvasElement = class {
                     constructor() {
                         this.width = 100;
                         this.height = 100;
                     }
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
                 const canvas = new HTMLCanvasElement();
                 const result = canvas.toDataURL();
@@ -219,18 +243,22 @@ describe('browserPatch', () => {
             it('should set platform to MacIntel for Mac UA', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
-                global.navigator = { 
-                    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', 
+
+                global.navigator = {
+                    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
                     platform: 'Linux',
-                    webdriver: false 
+                    webdriver: false,
                 };
                 global.document = { hidden: false, addEventListener: vi.fn() };
                 global.HTMLCanvasElement = class {
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
                 expect(navigator.platform).toBe('MacIntel');
             });
@@ -238,18 +266,22 @@ describe('browserPatch', () => {
             it('should set platform to Linux x86_64 for Linux UA', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
-                global.navigator = { 
-                    userAgent: 'Mozilla/5.0 (X11; Linux x86_64)', 
+
+                global.navigator = {
+                    userAgent: 'Mozilla/5.0 (X11; Linux x86_64)',
                     platform: 'Win32',
-                    webdriver: false 
+                    webdriver: false,
                 };
                 global.document = { hidden: false, addEventListener: vi.fn() };
                 global.HTMLCanvasElement = class {
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
                 expect(navigator.platform).toBe('Linux x86_64');
             });
@@ -257,18 +289,22 @@ describe('browserPatch', () => {
             it('should default to Win32 for unknown UA', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
-                global.navigator = { 
-                    userAgent: 'Unknown Browser', 
+
+                global.navigator = {
+                    userAgent: 'Unknown Browser',
                     platform: 'MacIntel',
-                    webdriver: false 
+                    webdriver: false,
                 };
                 global.document = { hidden: false, addEventListener: vi.fn() };
                 global.HTMLCanvasElement = class {
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
                 expect(navigator.platform).toBe('Win32');
             });
@@ -278,37 +314,47 @@ describe('browserPatch', () => {
             it('should handle missing navigator gracefully', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 // Delete or override global navigator to trigger catch
                 const originalNavigator = global.navigator;
                 global.navigator = undefined;
-                
+
                 global.document = { hidden: false, addEventListener: vi.fn() };
                 global.HTMLCanvasElement = class {
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 // Should not throw
                 expect(() => injectedCallback()).not.toThrow();
-                
+
                 global.navigator = originalNavigator;
             });
 
             it('should handle document.addEventListener errors gracefully', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 global.navigator = { userAgent: 'Chrome/91.0', webdriver: false };
                 global.document = {
                     hidden: false,
-                    addEventListener: () => { throw new Error('addEventListener blocked'); }
+                    addEventListener: () => {
+                        throw new Error('addEventListener blocked');
+                    },
                 };
                 global.HTMLCanvasElement = class {
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 // Should not throw
                 expect(() => injectedCallback()).not.toThrow();
             });
@@ -318,55 +364,59 @@ describe('browserPatch', () => {
             beforeEach(async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 global.navigator = { userAgent: 'Chrome/91.0', webdriver: false };
                 global.HTMLCanvasElement = class {
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
             });
 
             it('should wrap document.addEventListener', () => {
                 const originalMock = vi.fn(() => true);
-                global.document = { 
-                    hidden: false, 
-                    addEventListener: originalMock
+                global.document = {
+                    hidden: false,
+                    addEventListener: originalMock,
                 };
-                
+
                 injectedCallback();
-                
+
                 // After patching, calling addEventListener should invoke the original
                 const listener = () => {};
                 document.addEventListener('visibilitychange', listener);
-                
+
                 expect(originalMock).toHaveBeenCalled();
             });
 
             it('should pass through visibilitychange event listener', () => {
                 const originalMock = vi.fn(() => true);
                 const listener = () => {};
-                global.document = { 
-                    hidden: false, 
-                    addEventListener: originalMock 
+                global.document = {
+                    hidden: false,
+                    addEventListener: originalMock,
                 };
-                
+
                 injectedCallback();
                 document.addEventListener('visibilitychange', listener);
-                
+
                 expect(originalMock).toHaveBeenCalledWith('visibilitychange', listener, undefined);
             });
 
             it('should handle other event types normally', () => {
                 const originalMock = vi.fn(() => true);
                 const listener = () => {};
-                global.document = { 
-                    hidden: false, 
-                    addEventListener: originalMock 
+                global.document = {
+                    hidden: false,
+                    addEventListener: originalMock,
                 };
-                
+
                 injectedCallback();
                 document.addEventListener('click', listener);
-                
+
                 expect(originalMock).toHaveBeenCalledWith('click', listener, undefined);
             });
         });
@@ -381,7 +431,9 @@ describe('browserPatch', () => {
             it('should log completion message', async () => {
                 const loggerMock = { info: vi.fn() };
                 await applyHumanizationPatch(page, loggerMock);
-                expect(loggerMock.info).toHaveBeenCalledWith('[HumanizationPatch] Scripts injected.');
+                expect(loggerMock.info).toHaveBeenCalledWith(
+                    '[HumanizationPatch] Scripts injected.'
+                );
             });
         });
 
@@ -389,42 +441,54 @@ describe('browserPatch', () => {
             it('should make document.hidden configurable', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 global.navigator = { userAgent: 'Chrome/91.0', webdriver: false };
-                global.document = { 
-                    hidden: true, 
+                global.document = {
+                    hidden: true,
                     visibilityState: 'hidden',
-                    addEventListener: vi.fn() 
+                    addEventListener: vi.fn(),
                 };
                 global.HTMLCanvasElement = class {
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
-                
+
                 // Should be configurable so it can be redefined
-                expect(Object.getOwnPropertyDescriptor(document, 'hidden')?.configurable).toBe(true);
+                expect(Object.getOwnPropertyDescriptor(document, 'hidden')?.configurable).toBe(
+                    true
+                );
             });
 
             it('should make document.visibilityState configurable', async () => {
                 await applyHumanizationPatch(page, logger);
                 injectedCallback = page.addInitScript.mock.calls[0][0];
-                
+
                 global.navigator = { userAgent: 'Chrome/91.0', webdriver: false };
-                global.document = { 
-                    hidden: true, 
+                global.document = {
+                    hidden: true,
                     visibilityState: 'hidden',
-                    addEventListener: vi.fn() 
+                    addEventListener: vi.fn(),
                 };
                 global.HTMLCanvasElement = class {
-                    getContext() { return null; }
-                    toDataURL() { return 'original'; }
+                    getContext() {
+                        return null;
+                    }
+                    toDataURL() {
+                        return 'original';
+                    }
                 };
-                
+
                 injectedCallback();
-                
-                expect(Object.getOwnPropertyDescriptor(document, 'visibilityState')?.configurable).toBe(true);
+
+                expect(
+                    Object.getOwnPropertyDescriptor(document, 'visibilityState')?.configurable
+                ).toBe(true);
             });
         });
 
@@ -432,10 +496,10 @@ describe('browserPatch', () => {
             it('should handle multiple patch applications', async () => {
                 const pageMulti = { addInitScript: vi.fn() };
                 const loggerMulti = { info: vi.fn() };
-                
+
                 await applyHumanizationPatch(pageMulti, loggerMulti);
                 await applyHumanizationPatch(pageMulti, loggerMulti);
-                
+
                 expect(pageMulti.addInitScript).toHaveBeenCalledTimes(2);
             });
         });

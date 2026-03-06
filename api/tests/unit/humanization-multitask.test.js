@@ -13,12 +13,12 @@ vi.mock('@api/index.js', () => ({
         scroll: Object.assign(vi.fn().mockResolvedValue(undefined), {
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
-            read: vi.fn().mockResolvedValue(undefined)
+            read: vi.fn().mockResolvedValue(undefined),
         }),
         visible: vi.fn().mockResolvedValue(true),
         exists: vi.fn().mockResolvedValue(true),
-        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home')
-    }
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/home'),
+    },
 }));
 import { api } from '@api/index.js';
 
@@ -27,11 +27,11 @@ vi.mock('@api/utils/math.js', () => ({
         roll: vi.fn(),
         randomInRange: vi.fn(),
         gaussian: vi.fn(),
-        sample: vi.fn()
-    }
+        sample: vi.fn(),
+    },
 }));
 vi.mock('@api/behaviors/scroll-helper.js', () => ({
-    scrollRandom: vi.fn().mockResolvedValue(undefined)
+    scrollRandom: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('MultitaskEngine', () => {
@@ -40,7 +40,10 @@ describe('MultitaskEngine', () => {
     let mockLogger;
 
     beforeEach(() => {
-        const mockPageForApi = { isClosed: () => false, context: () => ({ browser: () => ({ isConnected: () => true }) }) };
+        const mockPageForApi = {
+            isClosed: () => false,
+            context: () => ({ browser: () => ({ isConnected: () => true }) }),
+        };
         if (typeof api !== 'undefined' && api.getPage) api.getPage.mockReturnValue(mockPageForApi);
         mockPage = {
             mouse: {
@@ -73,7 +76,10 @@ describe('MultitaskEngine', () => {
     describe('execute', () => {
         it('should execute notifications activity', async () => {
             vi.spyOn(multitaskEngine, '_weightedRandom').mockReturnValue({ name: 'notifications' });
-            vi.spyOn(multitaskEngine, 'checkNotifications').mockResolvedValue({ success: true, activity: 'notifications' });
+            vi.spyOn(multitaskEngine, 'checkNotifications').mockResolvedValue({
+                success: true,
+                activity: 'notifications',
+            });
 
             const result = await multitaskEngine.execute();
 
@@ -83,7 +89,10 @@ describe('MultitaskEngine', () => {
 
         it('should execute trending activity', async () => {
             vi.spyOn(multitaskEngine, '_weightedRandom').mockReturnValue({ name: 'trending' });
-            vi.spyOn(multitaskEngine, 'glanceTrending').mockResolvedValue({ success: true, activity: 'trending' });
+            vi.spyOn(multitaskEngine, 'glanceTrending').mockResolvedValue({
+                success: true,
+                activity: 'trending',
+            });
 
             const result = await multitaskEngine.execute();
 
@@ -93,7 +102,10 @@ describe('MultitaskEngine', () => {
 
         it('should execute position activity', async () => {
             vi.spyOn(multitaskEngine, '_weightedRandom').mockReturnValue({ name: 'position' });
-            vi.spyOn(multitaskEngine, 'shiftPosition').mockResolvedValue({ success: true, activity: 'position_shift' });
+            vi.spyOn(multitaskEngine, 'shiftPosition').mockResolvedValue({
+                success: true,
+                activity: 'position_shift',
+            });
 
             const result = await multitaskEngine.execute();
 
@@ -103,7 +115,10 @@ describe('MultitaskEngine', () => {
 
         it('should execute mentions activity', async () => {
             vi.spyOn(multitaskEngine, '_weightedRandom').mockReturnValue({ name: 'mentions' });
-            vi.spyOn(multitaskEngine, 'glanceMentions').mockResolvedValue({ success: true, activity: 'mentions' });
+            vi.spyOn(multitaskEngine, 'glanceMentions').mockResolvedValue({
+                success: true,
+                activity: 'mentions',
+            });
 
             const result = await multitaskEngine.execute();
 
@@ -113,7 +128,10 @@ describe('MultitaskEngine', () => {
 
         it('should execute idle activity', async () => {
             vi.spyOn(multitaskEngine, '_weightedRandom').mockReturnValue({ name: 'idle' });
-            vi.spyOn(multitaskEngine, 'pureIdle').mockResolvedValue({ success: true, activity: 'idle' });
+            vi.spyOn(multitaskEngine, 'pureIdle').mockResolvedValue({
+                success: true,
+                activity: 'idle',
+            });
 
             const result = await multitaskEngine.execute();
 
@@ -123,7 +141,10 @@ describe('MultitaskEngine', () => {
 
         it('should default to shiftPosition for unknown activity', async () => {
             vi.spyOn(multitaskEngine, '_weightedRandom').mockReturnValue({ name: 'unknown' });
-            vi.spyOn(multitaskEngine, 'shiftPosition').mockResolvedValue({ success: true, activity: 'position_shift' });
+            vi.spyOn(multitaskEngine, 'shiftPosition').mockResolvedValue({
+                success: true,
+                activity: 'position_shift',
+            });
 
             const result = await multitaskEngine.execute();
 
@@ -194,7 +215,11 @@ describe('MultitaskEngine', () => {
             const result = await multitaskEngine.simulateNotification();
 
             expect(multitaskEngine.checkNotifications).toHaveBeenCalled();
-            expect(result).toEqual({ success: true, activity: 'notification_check', sawNotification: true });
+            expect(result).toEqual({
+                success: true,
+                activity: 'notification_check',
+                sawNotification: true,
+            });
         });
     });
 

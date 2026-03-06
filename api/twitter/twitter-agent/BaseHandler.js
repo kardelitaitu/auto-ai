@@ -114,7 +114,9 @@ export class BaseHandler {
             // Check if error is visible (fast check)
             if (await api.visible(softError).catch(() => false)) {
                 this.state.consecutiveSoftErrors = (this.state.consecutiveSoftErrors || 0) + 1;
-                this.log(`⚠️ Soft Error detected: 'Something went wrong'. (Attempt ${this.state.consecutiveSoftErrors}/3)`);
+                this.log(
+                    `⚠️ Soft Error detected: 'Something went wrong'. (Attempt ${this.state.consecutiveSoftErrors}/3)`
+                );
 
                 if (this.state.consecutiveSoftErrors >= 3) {
                     this.log(`[SoftError] Maximum retries reached. potential twitter logged out`);
@@ -124,10 +126,12 @@ export class BaseHandler {
                 // Strategy 1: Try clicking explicit "Retry" button if available
                 // LIMIT: Only try this 1x (on the first error detection)
                 if (this.state.consecutiveSoftErrors === 1) {
-                    const retryBtn = this.page.locator('[role="button"][name="Retry"], button:has-text("Retry")').first();
+                    const retryBtn = this.page
+                        .locator('[role="button"][name="Retry"], button:has-text("Retry")')
+                        .first();
                     if (await api.visible(retryBtn).catch(() => false)) {
                         this.log(`[SoftError] Found Retry button. Clicking...`);
-                        await retryBtn.click().catch(() => { });
+                        await retryBtn.click().catch(() => {});
                         await api.wait(3000);
                         return true;
                     }
@@ -139,10 +143,13 @@ export class BaseHandler {
                     // Reduce chance of infinite reloading the same bad state by waiting a bit
                     await api.wait(2000);
 
-                    const targetUrl = reloadUrl || await api.getCurrentUrl();
+                    const targetUrl = reloadUrl || (await api.getCurrentUrl());
                     if (targetUrl.startsWith('http')) {
                         this.log(`[SoftError] Simulating Refresh by re-entering URL: ${targetUrl}`);
-                        await api.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+                        await api.goto(targetUrl, {
+                            waitUntil: 'domcontentloaded',
+                            timeout: 45000,
+                        });
                     } else {
                         // Fallback if URL is weird (e.g. about:blank)
                         await api.reload({ waitUntil: 'domcontentloaded', timeout: 45000 });
@@ -151,7 +158,11 @@ export class BaseHandler {
                     await api.wait(5000); // Post-refresh wait
 
                     // VERIFICATION: Did the refresh fix it?
-                    if (!await api.visible(this.page.locator('text=/Something went wrong/i')).catch(() => false)) {
+                    if (
+                        !(await api
+                            .visible(this.page.locator('text=/Something went wrong/i'))
+                            .catch(() => false))
+                    ) {
                         this.log(`[SoftError] Refresh successful. Error cleared. Resuming task...`);
                         this.state.consecutiveSoftErrors = 0;
                     }
@@ -182,7 +193,7 @@ export class BaseHandler {
         const merged = { ...this.config.probabilities, ...p };
 
         // Ensure probabilities are valid numbers
-        Object.keys(merged).forEach(key => {
+        Object.keys(merged).forEach((key) => {
             if (typeof merged[key] === 'number') {
                 merged[key] = Math.max(0, Math.min(1, merged[key]));
             }
@@ -217,22 +228,28 @@ export class BaseHandler {
         try {
             // 1. Check Network Vital Signs
             const timeSinceLastActivity = Date.now() - this.lastNetworkActivity;
-            if (timeSinceLastActivity > 30000) { // 30s Threshold
-                return { healthy: false, reason: `network_inactivity_${Math.round(timeSinceLastActivity / 1000)}s` };
+            if (timeSinceLastActivity > 30000) {
+                // 30s Threshold
+                return {
+                    healthy: false,
+                    reason: `network_inactivity_${Math.round(timeSinceLastActivity / 1000)}s`,
+                };
             }
 
             // 2. Check for Critical Error Pages
             // Simple text content scan is usually enough for these standard chrome error pages
             const content = await api.eval(() => document.documentElement.outerHTML);
-            if (content.includes('ERR_TOO_MANY_REDIRECTS') ||
+            if (
+                content.includes('ERR_TOO_MANY_REDIRECTS') ||
                 content.includes('This page isn’t working') ||
-                content.includes('redirected you too many times')) {
+                content.includes('redirected you too many times')
+            ) {
                 return { healthy: false, reason: 'critical_error_page_redirects' };
             }
 
             return { healthy: true, reason: '' };
         } catch {
-            // If we can't check, assume something is very wrong if network is also silent, 
+            // If we can't check, assume something is very wrong if network is also silent,
             // but let's be conservative and return healthy if just the check fails but page is alive.
             return { healthy: true, reason: 'check_failed' };
         }
@@ -250,13 +267,13 @@ export class BaseHandler {
         await this.human.think(description);
 
         try {
-            await target.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
+            await target.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'center' }));
             const fixationDelay = this.mathUtils.randomInRange(200, 500);
             await api.wait(fixationDelay);
             await api.wait(this.mathUtils.randomInRange(300, 600));
             const ghostResult = await this.ghost.click(target, {
                 label: description,
-                hoverBeforeClick: true
+                hoverBeforeClick: true,
             });
             if (ghostResult?.success && ghostResult?.x != null && ghostResult?.y != null) {
                 const x = Math.round(ghostResult.x);
@@ -265,7 +282,6 @@ export class BaseHandler {
             } else if (ghostResult?.success === false) {
                 throw new Error('ghost_click_failed');
             }
-
         } catch (e) {
             this.log(`[Interaction] humanClick failed on ${description}: ${e.message}`);
 
@@ -291,9 +307,13 @@ export class BaseHandler {
                 return true;
             } catch (error) {
                 attemptLogs.push(`Attempt ${attempt}: ${error.message}`);
-                this.log(`[Interaction] [${description}] Attempt ${attempt}/${retries} failed: ${error.message}`);
+                this.log(
+                    `[Interaction] [${description}] Attempt ${attempt}/${retries} failed: ${error.message}`
+                );
                 if (attempt === retries) {
-                    this.log(`[Interaction] [${description}] All ${retries} attempts failed: ${attemptLogs.join('; ')}`);
+                    this.log(
+                        `[Interaction] [${description}] All ${retries} attempts failed: ${attemptLogs.join('; ')}`
+                    );
                     return false;
                 }
                 await api.wait(this.mathUtils.randomInRange(1000, 2000));
@@ -320,15 +340,24 @@ export class BaseHandler {
                 const centerY = rect.top + rect.height / 2;
 
                 // Check if center is in viewport
-                if (centerX < 0 || centerX > window.innerWidth ||
-                    centerY < 0 || centerY > window.innerHeight) {
+                if (
+                    centerX < 0 ||
+                    centerX > window.innerWidth ||
+                    centerY < 0 ||
+                    centerY > window.innerHeight
+                ) {
                     return false;
                 }
 
                 // Check if element is visible and not disabled
                 const style = window.getComputedStyle(el);
-                if (style.visibility === 'hidden' || style.display === 'none' ||
-                    style.opacity === '0' || el.disabled || el.hidden) {
+                if (
+                    style.visibility === 'hidden' ||
+                    style.display === 'none' ||
+                    style.opacity === '0' ||
+                    el.disabled ||
+                    el.hidden
+                ) {
                     return false;
                 }
 
@@ -446,7 +475,9 @@ export class BaseHandler {
 
             // 15% chance to type something
             if (this.mathUtils.roll(0.15)) {
-                await this.page.keyboard.type(' ', { delay: this.mathUtils.randomInRange(50, 150) });
+                await this.page.keyboard.type(' ', {
+                    delay: this.mathUtils.randomInRange(50, 150),
+                });
                 await api.wait(this.mathUtils.randomInRange(50, 140));
             }
 

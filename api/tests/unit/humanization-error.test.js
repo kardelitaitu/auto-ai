@@ -17,7 +17,7 @@ vi.mock('@api/index.js', () => ({
             toTop: vi.fn().mockResolvedValue(undefined),
             back: vi.fn().mockResolvedValue(undefined),
             read: vi.fn().mockResolvedValue(undefined),
-            focus: vi.fn().mockResolvedValue(undefined)
+            focus: vi.fn().mockResolvedValue(undefined),
         }),
         visible: vi.fn().mockImplementation(async (el) => {
             if (el && typeof el.isVisible === 'function') return await el.isVisible();
@@ -34,20 +34,20 @@ vi.mock('@api/index.js', () => ({
         eval: vi.fn().mockResolvedValue('mock result'),
         text: vi.fn().mockResolvedValue('mock text'),
         click: vi.fn().mockResolvedValue(undefined),
-        type: vi.fn().mockResolvedValue(undefined)
-    }
+        type: vi.fn().mockResolvedValue(undefined),
+    },
 }));
 
 vi.mock('@api/utils/math.js', () => ({
     mathUtils: {
         randomInRange: vi.fn(),
         roll: vi.fn(),
-        gaussian: vi.fn()
-    }
+        gaussian: vi.fn(),
+    },
 }));
 
 vi.mock('@api/behaviors/scroll-helper.js', () => ({
-    scrollRandom: vi.fn().mockResolvedValue(undefined)
+    scrollRandom: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('ErrorRecovery', () => {
@@ -57,7 +57,7 @@ describe('ErrorRecovery', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        
+
         mockPage = {
             waitForTimeout: vi.fn().mockResolvedValue(undefined),
             reload: vi.fn().mockResolvedValue(undefined),
@@ -69,7 +69,13 @@ describe('ErrorRecovery', () => {
             $$: vi.fn().mockResolvedValue([]),
             $: vi.fn().mockResolvedValue(null),
             isClosed: vi.fn().mockReturnValue(false),
-            context: vi.fn().mockReturnValue({ browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }) })
+            context: vi
+                .fn()
+                .mockReturnValue({
+                    browser: vi
+                        .fn()
+                        .mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
+                }),
         };
 
         api.getPage.mockReturnValue(mockPage);
@@ -84,7 +90,7 @@ describe('ErrorRecovery', () => {
             error: vi.fn(),
             warn: vi.fn(),
             debug: vi.fn(),
-            info: vi.fn()
+            info: vi.fn(),
         };
 
         errorRecovery = new ErrorRecovery(mockPage, mockLogger);
@@ -93,7 +99,9 @@ describe('ErrorRecovery', () => {
     describe('handle', () => {
         it('should handle element_not_found with scroll strategy', async () => {
             const mockLocator = { count: vi.fn().mockResolvedValue(1) };
-            const result = await errorRecovery.handle('element_not_found', { locator: mockLocator });
+            const result = await errorRecovery.handle('element_not_found', {
+                locator: mockLocator,
+            });
             expect(result.success).toBe(true);
             expect(result.strategy).toBe('scroll');
         });
@@ -101,9 +109,11 @@ describe('ErrorRecovery', () => {
         it('should give up if all fail', async () => {
             scrollHelper.scrollRandom.mockRejectedValueOnce(new Error('fail'));
             api.reload.mockRejectedValueOnce(new Error('fail'));
-            
-            const result = await errorRecovery.handle('element_not_found', { locator: { count: vi.fn().mockResolvedValue(0) } });
-            
+
+            const result = await errorRecovery.handle('element_not_found', {
+                locator: { count: vi.fn().mockResolvedValue(0) },
+            });
+
             expect(result.strategy).toBe('gave_up');
         });
 
@@ -122,7 +132,9 @@ describe('ErrorRecovery', () => {
         });
 
         it('should handle navigation failed with retry navigation', async () => {
-            const result = await errorRecovery.handle('navigation_failed', { url: 'https://x.com' });
+            const result = await errorRecovery.handle('navigation_failed', {
+                url: 'https://x.com',
+            });
             expect(api.goto).toHaveBeenCalledWith('https://x.com', expect.any(Object));
             expect(result.success).toBe(true);
             expect(result.strategy).toBe('navigation_retry');

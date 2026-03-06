@@ -44,11 +44,13 @@ export class HumanInteraction {
         this.logDebug(`[humanClick] Starting human-like click on ${description}`);
 
         try {
-            await element.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
+            await element.evaluate((el) =>
+                el.scrollIntoView({ block: 'center', inline: 'center' })
+            );
             await api.wait(mathUtils.randomInRange(300, 600));
             const ghostResult = await this.ghost.click(element, {
                 label: description,
-                hoverBeforeClick: true
+                hoverBeforeClick: true,
             });
             if (!ghostResult?.success) {
                 throw new Error('ghost_click_failed');
@@ -73,18 +75,26 @@ export class HumanInteraction {
         for (let attempt = 1; attempt <= retries; attempt++) {
             try {
                 await this.humanClick(element, description);
-                this.logDebug(`[safeHumanClick] [${description}] Success on attempt ${attempt}/${retries}`);
+                this.logDebug(
+                    `[safeHumanClick] [${description}] Success on attempt ${attempt}/${retries}`
+                );
                 return true;
             } catch (error) {
                 attemptLogs.push(`Attempt ${attempt}: ${error.message}`);
-                this.logWarn(`[safeHumanClick] [${description}] Attempt ${attempt}/${retries} failed: ${error.message}`);
+                this.logWarn(
+                    `[safeHumanClick] [${description}] Attempt ${attempt}/${retries} failed: ${error.message}`
+                );
                 if (attempt === retries) {
-                    this.logWarn(`[safeHumanClick] [${description}] All retries exhausted. Errors: ${attemptLogs.join('; ')}`);
+                    this.logWarn(
+                        `[safeHumanClick] [${description}] All retries exhausted. Errors: ${attemptLogs.join('; ')}`
+                    );
                     return false;
                 }
                 // Exponential backoff: 1s, 2s, 3s...
                 const delay = 1000 * attempt;
-                this.logDebug(`[safeHumanClick] [${description}] Waiting ${delay}ms before retry ${attempt + 1}...`);
+                this.logDebug(
+                    `[safeHumanClick] [${description}] Waiting ${delay}ms before retry ${attempt + 1}...`
+                );
                 await api.wait(delay);
             }
         }
@@ -101,7 +111,9 @@ export class HumanInteraction {
         for (const method of methods) {
             cumulative += method.weight;
             if (roll <= cumulative) {
-                this.logDebug(`[MethodSelect] Selected: ${method.name} (roll: ${roll.toFixed(1)}, threshold: ${cumulative.toFixed(1)})`);
+                this.logDebug(
+                    `[MethodSelect] Selected: ${method.name} (roll: ${roll.toFixed(1)}, threshold: ${cumulative.toFixed(1)})`
+                );
                 return method;
             }
         }
@@ -114,13 +126,15 @@ export class HumanInteraction {
      */
     async hesitation(min = null, max = null) {
         const persona = api.getPersona();
-        const baseDelay = typeof persona.hesitationDelay === 'number' ? persona.hesitationDelay : 400;
+        const baseDelay =
+            typeof persona.hesitationDelay === 'number' ? persona.hesitationDelay : 400;
         const hesitation = typeof persona.hesitation === 'number' ? persona.hesitation : 0.15;
         const useDefaultRange = typeof min !== 'number' && typeof max !== 'number';
         const minDelay = typeof min === 'number' ? min : Math.max(300, Math.round(baseDelay * 0.5));
-        let maxDelay = typeof max === 'number'
-            ? max
-            : Math.round(baseDelay * (1 + Math.max(0.1, hesitation) * 3));
+        let maxDelay =
+            typeof max === 'number'
+                ? max
+                : Math.round(baseDelay * (1 + Math.max(0.1, hesitation) * 3));
         if (useDefaultRange) {
             maxDelay = Math.min(1500, Math.max(minDelay + 50, maxDelay));
         } else {
@@ -137,8 +151,18 @@ export class HumanInteraction {
      */
     async readingTime(min = null, max = null) {
         const persona = api.getPersona();
-        const minDelay = typeof min === 'number' ? min : (typeof persona.hoverMin === 'number' ? persona.hoverMin * 2 : 5000);
-        const maxDelay = typeof max === 'number' ? max : (typeof persona.hoverMax === 'number' ? persona.hoverMax * 3 : 15000);
+        const minDelay =
+            typeof min === 'number'
+                ? min
+                : typeof persona.hoverMin === 'number'
+                  ? persona.hoverMin * 2
+                  : 5000;
+        const maxDelay =
+            typeof max === 'number'
+                ? max
+                : typeof persona.hoverMax === 'number'
+                  ? persona.hoverMax * 3
+                  : 15000;
         const time = mathUtils.randomInRange(minDelay, Math.max(minDelay + 100, maxDelay));
         this.logDebug(`[Reading] Reading for ${time}ms...`);
         await api.wait(time);
@@ -174,8 +198,18 @@ export class HumanInteraction {
      */
     async fixation(min = null, max = null) {
         const persona = api.getPersona();
-        const minDelay = typeof min === 'number' ? min : (typeof persona.hoverMin === 'number' ? persona.hoverMin : 200);
-        const maxDelay = typeof max === 'number' ? max : (typeof persona.hoverMax === 'number' ? persona.hoverMax : 800);
+        const minDelay =
+            typeof min === 'number'
+                ? min
+                : typeof persona.hoverMin === 'number'
+                  ? persona.hoverMin
+                  : 200;
+        const maxDelay =
+            typeof max === 'number'
+                ? max
+                : typeof persona.hoverMax === 'number'
+                  ? persona.hoverMax
+                  : 800;
         const time = mathUtils.randomInRange(minDelay, Math.max(minDelay + 50, maxDelay));
         this.logDebug(`[Fixation] Fixating for ${time}ms...`);
         await api.wait(time);
@@ -235,7 +269,7 @@ export class HumanInteraction {
             '[class*="composer"] textarea',
             'textarea[placeholder*="Post your reply"]',
             'textarea[placeholder*="What\'s happening"]',
-            '[role="textbox"][contenteditable="true"]'
+            '[role="textbox"][contenteditable="true"]',
         ];
 
         this.logDebug(`[Verify] Checking if composer is open...`);
@@ -248,14 +282,18 @@ export class HumanInteraction {
                     const isVisible = await api.visible(el);
                     const box = await el.boundingBox();
 
-                    this.logDebug(`[Verify] Selector "${selector}": visible=${isVisible}, box=${box ? 'found' : 'none'}`);
+                    this.logDebug(
+                        `[Verify] Selector "${selector}": visible=${isVisible}, box=${box ? 'found' : 'none'}`
+                    );
 
                     if (isVisible && box && box.width > 50 && box.height > 20) {
                         this.logDebug(`[Verify] Composer open with: ${selector}`);
 
                         // Double check it's not a stale element
                         const textContent = await el.inputValue().catch(() => '');
-                        this.logDebug(`[Verify] Element has value: ${textContent.length > 0 ? 'yes' : 'empty'}`);
+                        this.logDebug(
+                            `[Verify] Element has value: ${textContent.length > 0 ? 'yes' : 'empty'}`
+                        );
 
                         return { open: true, selector, locator: el };
                     }
@@ -271,7 +309,7 @@ export class HumanInteraction {
         for (const selector of composerSelectors) {
             try {
                 const el = page.locator(selector).first();
-                if (await api.exists(el) && await api.visible(el)) {
+                if ((await api.exists(el)) && (await api.visible(el))) {
                     this.logDebug(`[Verify] Late detection: ${selector}`);
                     return { open: true, selector, locator: el };
                 }
@@ -296,19 +334,31 @@ export class HumanInteraction {
         const checks = [
             // Positive indicators (Success)
             { selector: '[data-testid="toast"]', label: 'toast notification', type: 'positive' },
-            { selector: 'span:has-text("Your post was sent")', label: 'sent text', type: 'positive' },
-            { selector: 'span:has-text("Your Tweet was sent")', label: 'sent text (old)', type: 'positive' },
+            {
+                selector: 'span:has-text("Your post was sent")',
+                label: 'sent text',
+                type: 'positive',
+            },
+            {
+                selector: 'span:has-text("Your Tweet was sent")',
+                label: 'sent text (old)',
+                type: 'positive',
+            },
 
             // Negative indicators (Success if GONE)
             { selector: '[data-testid="tweetTextarea_0"]', label: 'composer', type: 'negative' },
             { selector: '[data-testid="tweetButton"]', label: 'post button', type: 'negative' },
-            { selector: '[data-testid="tweetButtonInline"]', label: 'inline post button', type: 'negative' }
+            {
+                selector: '[data-testid="tweetButtonInline"]',
+                label: 'inline post button',
+                type: 'negative',
+            },
         ];
 
         this.logDebug(`[Verify] Checking if post was sent...`);
 
         // Check positive indicators first
-        for (const check of checks.filter(c => c.type === 'positive')) {
+        for (const check of checks.filter((c) => c.type === 'positive')) {
             try {
                 const el = page.locator(check.selector).first();
                 if (await api.visible(el).catch(() => false)) {
@@ -318,7 +368,12 @@ export class HumanInteraction {
                     // Verify it's not an error toast
                     if (check.label === 'toast notification') {
                         const lowerText = text.toLowerCase();
-                        if (lowerText.includes('fail') || lowerText.includes('error') || lowerText.includes('wrong') || lowerText.includes('retry')) {
+                        if (
+                            lowerText.includes('fail') ||
+                            lowerText.includes('error') ||
+                            lowerText.includes('wrong') ||
+                            lowerText.includes('retry')
+                        ) {
                             this.logWarn(`[Verify] Toast indicates failure: "${text}"`);
                             continue;
                         }
@@ -326,7 +381,9 @@ export class HumanInteraction {
 
                     return { sent: true, method: check.label };
                 }
-            } catch { /* ignore */ }
+            } catch {
+                /* ignore */
+            }
         }
 
         // Check negative indicators (must be GONE)
@@ -337,7 +394,7 @@ export class HumanInteraction {
         if (!isComposerVisible) {
             // Double check it's not just a loading glitch
             await api.wait(500);
-            if (!await api.visible(composer).catch(() => false)) {
+            if (!(await api.visible(composer).catch(() => false))) {
                 this.logDebug(`[Verify] Composer is no longer visible (confirmed)`);
                 return { sent: true, method: 'composer_closed' };
             }
@@ -356,7 +413,9 @@ export class HumanInteraction {
         await api.wait(1500);
 
         // Final check: composer should be closed
-        const composerVisibleFinal = await api.visible(page.locator('[data-testid="tweetTextarea_0"]')).catch(() => false);
+        const composerVisibleFinal = await api
+            .visible(page.locator('[data-testid="tweetTextarea_0"]'))
+            .catch(() => false);
         if (!composerVisibleFinal) {
             this.logDebug(`[Verify] Composer closed after wait: confirmed`);
             return { sent: true, method: 'composer_closed_delayed' };
@@ -369,7 +428,9 @@ export class HumanInteraction {
             return { sent: true, method: 'composer_cleared' };
         }
 
-        this.logDebug(`[Verify] Composer still visible with content (${inputValue.length} chars). Post failed.`);
+        this.logDebug(
+            `[Verify] Composer still visible with content (${inputValue.length} chars). Post failed.`
+        );
         return { sent: false, method: null };
     }
 
@@ -381,20 +442,31 @@ export class HumanInteraction {
         this.logDebug(`[Verify] Prioritizing popup notification for reply verification...`);
         try {
             // Wait up to 3.5 seconds for the toast/popup to appear
-            const toastSelector = '[data-testid="toast"], span:has-text("Your post was sent"), span:has-text("Your reply was sent")';
-            const toast = await page.waitForSelector(toastSelector, { state: 'visible', timeout: 3500 });
+            const toastSelector =
+                '[data-testid="toast"], span:has-text("Your post was sent"), span:has-text("Your reply was sent")';
+            const toast = await page.waitForSelector(toastSelector, {
+                state: 'visible',
+                timeout: 3500,
+            });
             if (toast) {
                 const text = await toast.innerText().catch(() => '');
                 this.logDebug(`[Verify] Popup found: "${text.substring(0, 30)}"`);
                 const lowerText = text.toLowerCase();
-                if (lowerText.includes('fail') || lowerText.includes('error') || lowerText.includes('wrong') || lowerText.includes('retry')) {
+                if (
+                    lowerText.includes('fail') ||
+                    lowerText.includes('error') ||
+                    lowerText.includes('wrong') ||
+                    lowerText.includes('retry')
+                ) {
                     this.logWarn(`[Verify] Popup indicates failure: "${text}"`);
                 } else {
                     return { sent: true, method: 'popup_toast' };
                 }
             }
         } catch (_e) {
-            this.logDebug(`[Verify] Popup notification not found within timeout. Falling back to composer state check...`);
+            this.logDebug(
+                `[Verify] Popup notification not found within timeout. Falling back to composer state check...`
+            );
         }
 
         // Check negative indicators (Success if GONE)
@@ -405,7 +477,7 @@ export class HumanInteraction {
         if (!isComposerVisible) {
             // Double check it's not just a loading glitch
             await api.wait(500);
-            if (!await api.visible(composer).catch(() => false)) {
+            if (!(await api.visible(composer).catch(() => false))) {
                 this.logDebug(`[Verify] Reply Composer is no longer visible (confirmed)`);
                 return { sent: true, method: 'composer_closed' };
             }
@@ -416,7 +488,9 @@ export class HumanInteraction {
         await api.wait(1500);
 
         // Final check: composer should be closed
-        const composerVisibleFinal = await api.visible(page.locator('[data-testid="tweetTextarea_0"]')).catch(() => false);
+        const composerVisibleFinal = await api
+            .visible(page.locator('[data-testid="tweetTextarea_0"]'))
+            .catch(() => false);
         if (!composerVisibleFinal) {
             this.logDebug(`[Verify] Reply Composer closed after wait: confirmed`);
             return { sent: true, method: 'composer_closed_delayed' };
@@ -441,19 +515,29 @@ export class HumanInteraction {
         try {
             // Wait up to 5 seconds for the toast/popup to appear
             const toastSelector = '[data-testid="toast"], span:has-text("Your post was sent")';
-            const toast = await page.waitForSelector(toastSelector, { state: 'visible', timeout: 5000 });
+            const toast = await page.waitForSelector(toastSelector, {
+                state: 'visible',
+                timeout: 5000,
+            });
             if (toast) {
                 const text = await toast.innerText().catch(() => '');
                 this.logDebug(`[Verify] Popup found: "${text.substring(0, 30)}"`);
                 const lowerText = text.toLowerCase();
-                if (lowerText.includes('fail') || lowerText.includes('error') || lowerText.includes('wrong') || lowerText.includes('retry')) {
+                if (
+                    lowerText.includes('fail') ||
+                    lowerText.includes('error') ||
+                    lowerText.includes('wrong') ||
+                    lowerText.includes('retry')
+                ) {
                     this.logWarn(`[Verify] Popup indicates failure: "${text}"`);
                 } else {
                     return { sent: true, method: 'popup_toast' };
                 }
             }
         } catch (_e) {
-            this.logDebug(`[Verify] Popup notification not found within timeout. Falling back to composer state check...`);
+            this.logDebug(
+                `[Verify] Popup notification not found within timeout. Falling back to composer state check...`
+            );
         }
 
         // Check negative indicators (Success if GONE)
@@ -464,7 +548,7 @@ export class HumanInteraction {
         if (!isComposerVisible) {
             // Double check it's not just a loading glitch
             await api.wait(500);
-            if (!await api.visible(composer).catch(() => false)) {
+            if (!(await api.visible(composer).catch(() => false))) {
                 this.logDebug(`[Verify] Quote Composer is no longer visible (confirmed)`);
                 return { sent: true, method: 'composer_closed' };
             }
@@ -475,7 +559,9 @@ export class HumanInteraction {
         await api.wait(1500);
 
         // Final check: composer should be closed
-        const composerVisibleFinal = await api.visible(page.locator('[data-testid="tweetTextarea_0"]')).catch(() => false);
+        const composerVisibleFinal = await api
+            .visible(page.locator('[data-testid="tweetTextarea_0"]'))
+            .catch(() => false);
         if (!composerVisibleFinal) {
             this.logDebug(`[Verify] Quote Composer closed after wait: confirmed`);
             return { sent: true, method: 'composer_closed_delayed' };
@@ -527,15 +613,21 @@ export class HumanInteraction {
             return {
                 tagName: el?.tagName,
                 isContentEditable: el?.getAttribute('contenteditable') === 'true',
-                hasFocus: el === document.querySelector('[data-testid="tweetTextarea_0"]') ||
-                    el === document.querySelector('[contenteditable="true"]')
+                hasFocus:
+                    el === document.querySelector('[data-testid="tweetTextarea_0"]') ||
+                    el === document.querySelector('[contenteditable="true"]'),
             };
         });
 
-        this.logDebug(`[Type] Active element: ${activeCheck.tagName}, contentEditable: ${activeCheck.isContentEditable}`);
+        this.logDebug(
+            `[Type] Active element: ${activeCheck.tagName}, contentEditable: ${activeCheck.isContentEditable}`
+        );
 
         // If still not focused, try force clicking as last resort
-        if (!activeCheck.isContentEditable && !activeCheck.tagName?.toLowerCase().includes('textarea')) {
+        if (
+            !activeCheck.isContentEditable &&
+            !activeCheck.tagName?.toLowerCase().includes('textarea')
+        ) {
             this.logDebug(`[Type] Not focused correctly, trying force click fallback...`);
             try {
                 await inputEl.click({ force: true });
@@ -625,9 +717,11 @@ export class HumanInteraction {
                     // Verify focus worked
                     const isFocused = await page.evaluate(() => {
                         const el = document.activeElement;
-                        return (el?.getAttribute('contenteditable') === 'true') ||
+                        return (
+                            el?.getAttribute('contenteditable') === 'true' ||
                             el?.tagName === 'TEXTAREA' ||
-                            el?.tagName === 'INPUT';
+                            el?.tagName === 'INPUT'
+                        );
                     });
 
                     if (isFocused) {
@@ -668,7 +762,7 @@ export class HumanInteraction {
             '[aria-label="Post"]',
             '[aria-label="Reply"]',
             '[role="button"][data-testid*="tweetButton"]',
-            'button[type="submit"]'
+            'button[type="submit"]',
         ];
 
         try {
@@ -676,23 +770,33 @@ export class HumanInteraction {
             if (await api.exists(focused)) {
                 // Try to find button in the same container (modal, inline box, etc)
                 // We search for common composer containers that house both the textarea and the button
-                const containerSelectors = ['[role="dialog"]', '[data-testid="inlineComposer"]', '.DraftEditor-root', '[data-testid="tweetTextarea_0"]'];
+                const containerSelectors = [
+                    '[role="dialog"]',
+                    '[data-testid="inlineComposer"]',
+                    '.DraftEditor-root',
+                    '[data-testid="tweetTextarea_0"]',
+                ];
 
                 for (const contSelector of containerSelectors) {
                     const container = page.locator(contSelector).first();
                     if (await api.exists(container)) {
                         // Check if the button is within this container or its parent
-                        const parent = contSelector === '[data-testid="tweetTextarea_0"]'
-                            ? page.locator('[role="dialog"], [data-testid="inlineComposer"]').first()
-                            : container;
+                        const parent =
+                            contSelector === '[data-testid="tweetTextarea_0"]'
+                                ? page
+                                      .locator('[role="dialog"], [data-testid="inlineComposer"]')
+                                      .first()
+                                : container;
 
                         if (await api.exists(parent)) {
                             for (const selector of postSelectors) {
                                 const btn = parent.locator(selector).first();
-                                if (await api.exists(btn) && await api.visible(btn)) {
+                                if ((await api.exists(btn)) && (await api.visible(btn))) {
                                     targetBtn = btn;
                                     targetSelector = `container:${selector}`;
-                                    this.logDebug(`[Post] Found button in container ${contSelector}: ${selector}`);
+                                    this.logDebug(
+                                        `[Post] Found button in container ${contSelector}: ${selector}`
+                                    );
                                     break;
                                 }
                             }
@@ -710,7 +814,7 @@ export class HumanInteraction {
             for (const selector of postSelectors) {
                 try {
                     const btn = page.locator(selector).first();
-                    if (await api.exists(btn) && await api.visible(btn)) {
+                    if ((await api.exists(btn)) && (await api.visible(btn))) {
                         targetBtn = btn;
                         targetSelector = selector;
                         this.logDebug(`[Post] Found button with global selector: ${selector}`);
@@ -728,7 +832,9 @@ export class HumanInteraction {
         }
 
         // Handle disabled button (wait for it to enable)
-        let isDisabled = await targetBtn.evaluate(e => e.disabled || e.getAttribute('aria-disabled') === 'true');
+        let isDisabled = await targetBtn.evaluate(
+            (e) => e.disabled || e.getAttribute('aria-disabled') === 'true'
+        );
         if (isDisabled) {
             this.logDebug(`[Post] Button is disabled, waiting for it to enable...`);
 
@@ -749,7 +855,9 @@ export class HumanInteraction {
             const startTime = Date.now();
             while (isDisabled && Date.now() - startTime < 3000) {
                 await api.wait(500);
-                isDisabled = await targetBtn.evaluate(e => e.disabled || e.getAttribute('aria-disabled') === 'true');
+                isDisabled = await targetBtn.evaluate(
+                    (e) => e.disabled || e.getAttribute('aria-disabled') === 'true'
+                );
             }
 
             if (isDisabled) {
@@ -762,7 +870,7 @@ export class HumanInteraction {
         // STEP 2: Attempt submit — JS click first (keeps textarea focused, avoids React blur)
         this.logDebug(`[Post] Submitting via JS click (no focus loss): ${targetSelector}`);
         try {
-            await targetBtn.evaluate(el => el.click());
+            await targetBtn.evaluate((el) => el.click());
         } catch (e) {
             this.logDebug(`[Post] JS click failed: ${e.message}`);
         }
@@ -777,7 +885,9 @@ export class HumanInteraction {
         }
 
         // Fallback: ghost cursor click (original behavior)
-        this.logDebug(`[Post] JS click not confirmed, falling back to ghost cursor: ${targetSelector}`);
+        this.logDebug(
+            `[Post] JS click not confirmed, falling back to ghost cursor: ${targetSelector}`
+        );
         try {
             await this.humanClick(targetBtn, 'Post Button', { precision: 'high' });
         } catch (e) {
@@ -841,22 +951,31 @@ export class HumanInteraction {
                 // Check if element exists
                 const count = await element.count();
                 if (count === 0) {
-                    this.logDebug(`[Fallback] Selector ${i + 1}/${selectors.length} not found: ${selector}`);
+                    this.logDebug(
+                        `[Fallback] Selector ${i + 1}/${selectors.length} not found: ${selector}`
+                    );
                     continue;
                 }
 
                 // Check visibility if required
                 if (visible) {
-                    const isVisible = await api.visible(element).catch(() => false); if (!isVisible) {
-                        this.logDebug(`[Fallback] Selector ${i + 1}/${selectors.length} not visible: ${selector}`);
+                    const isVisible = await api.visible(element).catch(() => false);
+                    if (!isVisible) {
+                        this.logDebug(
+                            `[Fallback] Selector ${i + 1}/${selectors.length} not visible: ${selector}`
+                        );
                         continue;
                     }
                 }
 
-                this.logDebug(`[Fallback] Found element with selector ${i + 1}/${selectors.length}: ${selector}`);
+                this.logDebug(
+                    `[Fallback] Found element with selector ${i + 1}/${selectors.length}: ${selector}`
+                );
                 return { element, selector, index: i };
             } catch (error) {
-                this.logDebug(`[Fallback] Error with selector ${i + 1}/${selectors.length} (${selector}): ${error.message}`);
+                this.logDebug(
+                    `[Fallback] Error with selector ${i + 1}/${selectors.length} (${selector}): ${error.message}`
+                );
                 continue;
             }
         }
@@ -896,7 +1015,9 @@ export class HumanInteraction {
                     }
 
                     if (results.length > 0) {
-                        this.logDebug(`[Fallback] Found ${results.length} visible elements with: ${selector}`);
+                        this.logDebug(
+                            `[Fallback] Found ${results.length} visible elements with: ${selector}`
+                        );
                         return results;
                     }
                 }
@@ -926,12 +1047,16 @@ export class HumanInteraction {
                 const count = await element.count();
 
                 if (count === 0) {
-                    this.logDebug(`[ClickFallback] Selector ${i + 1}/${selectors.length} not found: ${selector}`);
+                    this.logDebug(
+                        `[ClickFallback] Selector ${i + 1}/${selectors.length} not found: ${selector}`
+                    );
                     continue;
                 }
 
-                if (!await api.visible(element).catch(() => false)) {
-                    this.logDebug(`[ClickFallback] Selector ${i + 1}/${selectors.length} not visible: ${selector}`);
+                if (!(await api.visible(element).catch(() => false))) {
+                    this.logDebug(
+                        `[ClickFallback] Selector ${i + 1}/${selectors.length} not visible: ${selector}`
+                    );
                     continue;
                 }
 
@@ -939,7 +1064,9 @@ export class HumanInteraction {
                 await this.humanClick(element, description);
                 return true;
             } catch (error) {
-                this.logDebug(`[ClickFallback] Error with selector ${i + 1}/${selectors.length} (${selector}): ${error.message}`);
+                this.logDebug(
+                    `[ClickFallback] Error with selector ${i + 1}/${selectors.length} (${selector}): ${error.message}`
+                );
                 continue;
             }
         }

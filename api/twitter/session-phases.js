@@ -2,14 +2,14 @@
  * Session Phase Detection Module
  * Manages session phase transitions (warmup/active/cooldown)
  * and provides action modifiers based on current phase.
- * 
+ *
  * @module utils/session-phases
  */
 
 const SESSION_PHASES = {
-    warmup: { start: 0, end: 0.10 },
-    active: { start: 0.10, end: 0.80 },
-    cooldown: { start: 0.80, end: 1.0 }
+    warmup: { start: 0, end: 0.1 },
+    active: { start: 0.1, end: 0.8 },
+    cooldown: { start: 0.8, end: 1.0 },
 };
 
 const PHASE_MODIFIERS = {
@@ -21,7 +21,7 @@ const PHASE_MODIFIERS = {
         follow: 0.2,
         bookmark: 0.4,
         dive: 0.7,
-        overall: 0.6
+        overall: 0.6,
     },
     active: {
         reply: 1.0,
@@ -31,7 +31,7 @@ const PHASE_MODIFIERS = {
         follow: 1.0,
         bookmark: 1.0,
         dive: 1.0,
-        overall: 1.0
+        overall: 1.0,
     },
     cooldown: {
         reply: 0.6,
@@ -41,13 +41,13 @@ const PHASE_MODIFIERS = {
         follow: 0.3,
         bookmark: 0.6,
         dive: 0.8,
-        overall: 0.4
-    }
+        overall: 0.4,
+    },
 };
 
 function getSessionPhase(elapsedMs, totalMs) {
     const progress = elapsedMs / totalMs;
-    
+
     if (progress < SESSION_PHASES.warmup.end) {
         return 'warmup';
     } else if (progress < SESSION_PHASES.cooldown.start) {
@@ -78,7 +78,7 @@ function getPhaseDescription(phase) {
     const descriptions = {
         warmup: 'Warming up - slower actions, more reading',
         active: 'Peak engagement - all actions available',
-        cooldown: 'Slowing down - more reading, fewer actions'
+        cooldown: 'Slowing down - more reading, fewer actions',
     };
     return descriptions[phase] || 'Unknown phase';
 }
@@ -91,7 +91,7 @@ function getPhaseStats(phase) {
     return {
         phase,
         description: getPhaseDescription(phase),
-        modifiers: { ...modifiers }
+        modifiers: { ...modifiers },
     };
 }
 
@@ -110,7 +110,7 @@ function isNearStart(elapsedMs, totalMs, threshold = 0.1) {
 export const sessionPhases = {
     phases: SESSION_PHASES,
     modifiers: PHASE_MODIFIERS,
-    
+
     getSessionPhase,
     getPhaseModifier,
     getOverallModifier,
@@ -118,7 +118,7 @@ export const sessionPhases = {
     getPhaseStats,
     calculateRemainingTime,
     isNearEnd,
-    isNearStart
+    isNearStart,
 };
 
 export default sessionPhases;

@@ -15,7 +15,7 @@ import { createLogger } from '../api/core/logger.js';
 export default async function twitterscroll(page, payload) {
     const startTime = process.hrtime.bigint();
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    const browserInfo = payload.browserInfo || "unknown_profile";
+    const browserInfo = payload.browserInfo || 'unknown_profile';
     const logger = createLogger(`twitterscroll.js [${browserInfo}]`);
     logger.info(`Starting task...`);
 
@@ -30,7 +30,7 @@ export default async function twitterscroll(page, payload) {
         logger.info(`[TwitterScroll] Navigating to https://x.com/home`);
         await page.goto('https://x.com/home', {
             waitUntil: 'domcontentloaded',
-            timeout: 60000 // 60 seconds
+            timeout: 60000, // 60 seconds
         });
 
         // Wait random 5-20 seconds
@@ -39,12 +39,13 @@ export default async function twitterscroll(page, payload) {
         await delay(waitTime * 1000);
 
         // Random scrolling 10-600 seconds
-        const scrollDuration = (Math.random() * 590) + 10; // 10-600 seconds
-        logger.info(`[TwitterScroll] Starting random scrolling for ${scrollDuration.toFixed(2)} seconds`);
+        const scrollDuration = Math.random() * 590 + 10; // 10-600 seconds
+        logger.info(
+            `[TwitterScroll] Starting random scrolling for ${scrollDuration.toFixed(2)} seconds`
+        );
         await randomScrolling(scrollDuration);
 
         logger.info(`[TwitterScroll] Task completed successfully`);
-
     } catch (error) {
         if (error.message.includes('Target page, context or browser has been closed')) {
             logger.warn(`[TwitterScroll] Task interrupted: Browser/Page closed (likely Ctrl+C).`);
@@ -62,10 +63,7 @@ export default async function twitterscroll(page, payload) {
                 logger.debug(`Page was already closed or not created.`);
             }
         } catch (closeError) {
-            logger.error(
-                `### CRITICAL ERROR trying to close page:`,
-                closeError
-            );
+            logger.error(`### CRITICAL ERROR trying to close page:`, closeError);
         }
         const endTime = process.hrtime.bigint();
         const durationInSeconds = (Number(endTime - startTime) / 1_000_000_000).toFixed(2);

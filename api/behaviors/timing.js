@@ -1,7 +1,7 @@
 /**
  * @fileoverview Timing & Delay Helpers
  * Persona-aware delays wrapping human-timing.js and mathUtils.js.
- * 
+ *
  * @module api/timing
  */
 
@@ -49,7 +49,7 @@ export async function think(ms) {
                         void i;
                     }
                     return Date.now() - start;
-                })()
+                })(),
             };
         });
 
@@ -64,9 +64,8 @@ export async function think(ms) {
 
     const adjusted = Math.round((base * performanceMultiplier) / persona.speed);
     const jittered = humanTiming.humanDelay(adjusted, { jitter: 0.2 });
-    await new Promise(r => setTimeout(r, jittered));
+    await new Promise((r) => setTimeout(r, jittered));
 }
-
 
 /**
  * Humanized delay with Gaussian jitter.
@@ -79,7 +78,7 @@ export async function delay(ms) {
         throw new ValidationError(`delay() requires a positive number, got: ${ms}`);
     }
     const jittered = humanTiming.humanDelay(ms);
-    await new Promise(r => setTimeout(r, jittered));
+    await new Promise((r) => setTimeout(r, jittered));
 }
 
 /**

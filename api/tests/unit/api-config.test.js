@@ -5,8 +5,8 @@ import path from 'path';
 
 vi.mock('fs/promises', () => ({
     default: {
-        readFile: vi.fn()
-    }
+        readFile: vi.fn(),
+    },
 }));
 
 describe('api/utils/config.js', () => {
@@ -44,7 +44,7 @@ describe('api/utils/config.js', () => {
             expect(fs.readFile).toHaveBeenCalled();
         });
 
-        it('should return empty object if file doesn\'t exist', async () => {
+        it("should return empty object if file doesn't exist", async () => {
             const error = new Error('File not found');
             error.code = 'ENOENT';
             fs.readFile.mockRejectedValue(error);
@@ -82,9 +82,9 @@ describe('api/utils/config.js', () => {
             const mockData = {
                 twitter: {
                     timing: {
-                        scrollDelay: 500
-                    }
-                }
+                        scrollDelay: 500,
+                    },
+                },
             };
             fs.readFile.mockResolvedValue(JSON.stringify(mockData));
 
@@ -110,10 +110,7 @@ describe('api/utils/config.js', () => {
 
             await getSettings();
 
-            expect(fs.readFile).toHaveBeenCalledWith(
-                expectedSettingsPath,
-                'utf8'
-            );
+            expect(fs.readFile).toHaveBeenCalledWith(expectedSettingsPath, 'utf8');
         });
 
         it('should handle large JSON files correctly', async () => {
@@ -133,11 +130,11 @@ describe('api/utils/config.js', () => {
 
             await getSettings();
             clearSettingsCache();
-            
+
             // After clearing, next call should read from file again
             fs.readFile.mockResolvedValue(JSON.stringify({ version: 2 }));
             const result = await getSettings();
-            
+
             expect(result.version).toBe(2);
             expect(fs.readFile).toHaveBeenCalledTimes(2);
         });
@@ -154,14 +151,14 @@ describe('api/utils/config.js', () => {
         it('should clear cache so next call reads from file', async () => {
             const mockData1 = { version: 1 };
             const mockData2 = { version: 2 };
-            
+
             fs.readFile.mockResolvedValue(JSON.stringify(mockData1));
-            
+
             const result1 = await getSettings();
             expect(result1).toEqual(mockData1);
-            
+
             clearSettingsCache();
-            
+
             fs.readFile.mockResolvedValue(JSON.stringify(mockData2));
             const result2 = await getSettings();
             expect(result2).toEqual(mockData2);

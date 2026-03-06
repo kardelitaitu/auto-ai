@@ -30,7 +30,7 @@ export function injectAnnotations(doc, map) {
     container.style.zIndex = '999999';
     doc.body.appendChild(container);
 
-    map.forEach(el => {
+    map.forEach((el) => {
         const target = doc.querySelector(`[data-agent-id="${el.id}"]`);
         if (!target) return;
 
@@ -80,14 +80,19 @@ export function buildPrompt(context) {
     const { goal, semanticTree } = context;
     const elements = (semanticTree || []).slice(0, 30);
 
-    let elementsList = elements.length === 0
-        ? "No interactive elements detected (Blind Mode)."
-        : elements.map((el, i) => {
-            const name = el.name || el.text || el.accessibilityId || 'Unknown';
-            const role = el.role || 'element';
-            const coords = el.coordinates ? `(${el.coordinates.x},${el.coordinates.y})` : '(0,0)';
-            return `${el.id || i}. [${role}] "${name}" @ ${coords}`;
-        }).join('\n');
+    let elementsList =
+        elements.length === 0
+            ? 'No interactive elements detected (Blind Mode).'
+            : elements
+                  .map((el, i) => {
+                      const name = el.name || el.text || el.accessibilityId || 'Unknown';
+                      const role = el.role || 'element';
+                      const coords = el.coordinates
+                          ? `(${el.coordinates.x},${el.coordinates.y})`
+                          : '(0,0)';
+                      return `${el.id || i}. [${role}] "${name}" @ ${coords}`;
+                  })
+                  .join('\n');
 
     return `You are an intelligent browser automation agent.
 Analyze the image and the elements to achieve the Goal: "${goal}"
@@ -111,19 +116,19 @@ Now, generate the JSON plan.`;
  * Parse LLM vision response.
  */
 export function parseResponse(rawText) {
-    if (!rawText) return { success: false, error: "Empty response" };
+    if (!rawText) return { success: false, error: 'Empty response' };
 
     const jsonRegex = /\{[\s\S]*\}/;
     const match = rawText.match(jsonRegex);
 
-    if (!match) return { success: false, error: "No JSON found", raw: rawText };
+    if (!match) return { success: false, error: 'No JSON found', raw: rawText };
 
     try {
         const data = JSON.parse(match[0]);
         if (!Array.isArray(data.actions)) throw new Error("Missing 'actions' array");
         return { success: true, data };
     } catch (e) {
-        return { success: false, error: "JSON parse error: " + e.message, raw: rawText };
+        return { success: false, error: 'JSON parse error: ' + e.message, raw: rawText };
     }
 }
 
@@ -133,7 +138,14 @@ export function parseResponse(rawText) {
  * @returns {Promise<string|null>} Base64 image string.
  */
 export async function screenshot(options = {}) {
-    const { annotate = false, fullPage = false, useROI = true, quality = 60, targetSizeKB: _targetSizeKB = 50, path } = options;
+    const {
+        annotate = false,
+        fullPage = false,
+        useROI = true,
+        quality = 60,
+        targetSizeKB: _targetSizeKB = 50,
+        path,
+    } = options;
     const page = getPage();
     const elementMap = getStateAgentElementMap();
 
@@ -167,15 +179,14 @@ export async function screenshot(options = {}) {
             compressed = compressed.resize(1280, null, { fit: 'inside' });
         }
 
-        const finalBuffer = await compressed
-            .jpeg({ quality, mozjpeg: true })
-            .toBuffer();
+        const finalBuffer = await compressed.jpeg({ quality, mozjpeg: true }).toBuffer();
 
         const sizeKB = finalBuffer.length / 1024;
-        logger.info(`Screenshot captured. ROI: ${roi ? 'Yes' : 'No'}, Final Size: ${sizeKB.toFixed(2)}KB`);
+        logger.info(
+            `Screenshot captured. ROI: ${roi ? 'Yes' : 'No'}, Final Size: ${sizeKB.toFixed(2)}KB`
+        );
 
         return finalBuffer.toString('base64');
-
     } catch (error) {
         logger.error(`Vision capture failed: ${error.message}`);
         return null;
@@ -189,7 +200,7 @@ export default {
     injectAnnotations,
     removeAnnotations,
     captureAXTree,
-    captureState
+    captureState,
 };
 
 /**
@@ -200,14 +211,14 @@ export default {
 export async function captureAXTree(options = {}) {
     const page = getPage();
     const { simplified = true } = options;
-    
+
     try {
         const tree = await page.accessibility.snapshot();
-        
+
         if (simplified && tree) {
             return JSON.stringify(_simplifyAXTree(tree), null, 2);
         }
-        
+
         return JSON.stringify(tree, null, 2);
     } catch (error) {
         logger.error(`AXTree capture failed: ${error.message}`);
@@ -222,19 +233,19 @@ export async function captureAXTree(options = {}) {
 function _simplifyAXTree(node, depth = 0) {
     if (!node) return null;
     if (depth > 5) return { role: node.role, name: node.name };
-    
+
     const simplified = {
         role: node.role,
-        name: node.name
+        name: node.name,
     };
-    
+
     if (node.children) {
         simplified.children = node.children
             .slice(0, 10)
-            .map(child => _simplifyAXTree(child, depth + 1))
+            .map((child) => _simplifyAXTree(child, depth + 1))
             .filter(Boolean);
     }
-    
+
     return simplified;
 }
 
@@ -246,13 +257,13 @@ function _simplifyAXTree(node, depth = 0) {
 export async function captureState(options = {}) {
     const page = getPage();
     const { screenshot: doScreenshot = true, axTree: doAXTree = true, quality = 40 } = options;
-    
+
     const state = {
         screenshot: '',
         axTree: '',
-        url: page.url()
+        url: page.url(),
     };
-    
+
     if (doScreenshot) {
         try {
             const buffer = await page.screenshot({
@@ -261,17 +272,17 @@ export async function captureState(options = {}) {
                 scale: 'css',
                 timeout: 10000,
                 animations: 'disabled',
-                caret: 'hide'
+                caret: 'hide',
             });
             state.screenshot = buffer.toString('base64');
         } catch (e) {
             logger.warn('Screenshot capture failed:', e.message);
         }
     }
-    
+
     if (doAXTree) {
         state.axTree = await captureAXTree();
     }
-    
+
     return state;
 }

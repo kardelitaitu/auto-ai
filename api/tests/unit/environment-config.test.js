@@ -157,8 +157,12 @@ describe('EnvironmentConfig', () => {
 
     describe('validateEnvValues', () => {
         it('should return valid for empty env vars', () => {
-            Object.keys(process.env).forEach(key => {
-                if (key.startsWith('TWITTER_') || key.startsWith('GLOBAL_') || key.startsWith('AI_')) {
+            Object.keys(process.env).forEach((key) => {
+                if (
+                    key.startsWith('TWITTER_') ||
+                    key.startsWith('GLOBAL_') ||
+                    key.startsWith('AI_')
+                ) {
                     delete process.env[key];
                 }
             });

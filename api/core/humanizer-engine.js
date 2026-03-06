@@ -8,12 +8,12 @@ export default class HumanizerEngine {
             points: [{ x: end.x, y: end.y }],
             metadata: {
                 distance: Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2)),
-                overshoot: false
-            }
+                overshoot: false,
+            },
         };
     }
     generateKeystrokeTiming(text, typoChance = 0) {
-        return text.split('').map(char => ({ char, delay: 50 }));
+        return text.split('').map((char) => ({ char, delay: 50 }));
     }
     generatePause(options = {}) {
         return options.min || 500;

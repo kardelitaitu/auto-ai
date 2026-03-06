@@ -10,7 +10,7 @@ const defaultConfig = {
     maxTokens: 2000,
     timeoutMs: 60000,
     useVision: false,
-    bypassHealthCheck: false
+    bypassHealthCheck: false,
 };
 
 vi.mock('../../../../core/config.js', () => ({
@@ -25,12 +25,12 @@ vi.mock('../../../../core/config.js', () => ({
             maxTokens: 2000,
             timeoutMs: 60000,
             useVision: false,
-            bypassHealthCheck: false
+            bypassHealthCheck: false,
         }),
         _getDefaults: vi.fn().mockReturnValue({
-            agent: { llm: { baseUrl: 'http://localhost:11434', model: 'llama2' } }
-        })
-    }
+            agent: { llm: { baseUrl: 'http://localhost:11434', model: 'llama2' } },
+        }),
+    },
 }));
 
 describe('LLMClient', () => {
@@ -39,7 +39,7 @@ describe('LLMClient', () => {
     beforeEach(async () => {
         llmClient.config = null;
         originalFetch = global.fetch;
-        
+
         const { configManager } = await import('../../../../core/config.js');
         configManager.get.mockReturnValue({ ...defaultConfig });
     });
@@ -53,7 +53,7 @@ describe('LLMClient', () => {
         it('should return true when response.ok is true', async () => {
             const mockResponse = {
                 ok: true,
-                json: vi.fn().mockResolvedValue({ data: [{ name: 'llama2' }] })
+                json: vi.fn().mockResolvedValue({ data: [{ name: 'llama2' }] }),
             };
             global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
@@ -70,7 +70,7 @@ describe('LLMClient', () => {
             const mockResponse = {
                 ok: false,
                 status: 500,
-                text: vi.fn().mockResolvedValue('Internal Server Error')
+                text: vi.fn().mockResolvedValue('Internal Server Error'),
             };
             global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
@@ -89,7 +89,7 @@ describe('LLMClient', () => {
                 maxTokens: 2000,
                 timeoutMs: 60000,
                 useVision: false,
-                bypassHealthCheck: true
+                bypassHealthCheck: true,
             };
 
             const { configManager } = await import('../../../../core/config.js');
@@ -110,8 +110,8 @@ describe('LLMClient', () => {
                 ok: true,
                 json: vi.fn().mockResolvedValue({
                     choices: [{ message: { content: '{"result": "test"}' } }],
-                    usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 }
-                })
+                    usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
+                }),
             };
             global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
@@ -123,7 +123,7 @@ describe('LLMClient', () => {
                 expect.objectContaining({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: expect.stringContaining('"model":"llama2"')
+                    body: expect.stringContaining('"model":"llama2"'),
                 })
             );
             expect(result).toEqual({ result: 'test' });
@@ -139,7 +139,7 @@ describe('LLMClient', () => {
                 maxTokens: 2000,
                 timeoutMs: 60000,
                 useVision: false,
-                bypassHealthCheck: false
+                bypassHealthCheck: false,
             };
 
             const { configManager } = await import('../../../../core/config.js');
@@ -151,8 +151,8 @@ describe('LLMClient', () => {
                 ok: true,
                 json: vi.fn().mockResolvedValue({
                     choices: [{ message: { content: '{"response": "ok"}' } }],
-                    usage: { prompt_tokens: 20, completion_tokens: 10, total_tokens: 30 }
-                })
+                    usage: { prompt_tokens: 20, completion_tokens: 10, total_tokens: 30 },
+                }),
             };
             global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
@@ -164,7 +164,7 @@ describe('LLMClient', () => {
                 expect.objectContaining({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: expect.stringContaining('"model":"gpt-4"')
+                    body: expect.stringContaining('"model":"gpt-4"'),
                 })
             );
             expect(result).toEqual({ response: 'ok' });
@@ -181,7 +181,7 @@ describe('LLMClient', () => {
                 model: 'llama2',
                 baseUrl: 'http://localhost:11434',
                 useVision: false,
-                isRestarting: false
+                isRestarting: false,
             });
         });
 
@@ -209,13 +209,13 @@ describe('LLMClient', () => {
             const mockResponse = {
                 ok: true,
                 json: vi.fn().mockResolvedValue({
-                    choices: [{ message: { content: 'invalid json' } }]
-                })
+                    choices: [{ message: { content: 'invalid json' } }],
+                }),
             };
             global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
             const messages = [{ role: 'user', content: 'Hello' }];
-            
+
             await expect(llmClient.generateCompletion(messages)).rejects.toThrow();
         });
     });

@@ -10,7 +10,7 @@ const NAV_STATES = {
     TRENDING: 'TRENDING',
     BOOKMARKS: 'BOOKMARKS',
     LISTS: 'LISTS',
-    SETTINGS: 'SETTINGS'
+    SETTINGS: 'SETTINGS',
 };
 
 const navigationDiversity = {
@@ -24,7 +24,7 @@ const navigationDiversity = {
             minDepth: options.minDepth ?? 1,
             exitProbability: options.exitProbability ?? 0.2,
             stayProbability: options.stayProbability ?? 0.8,
-            states: Object.values(NAV_STATES)
+            states: Object.values(NAV_STATES),
         };
 
         return {
@@ -48,115 +48,115 @@ const navigationDiversity = {
                 return Math.random() < state.rabbitHoleChance;
             },
             getNextState: () => {
-                const otherStates = state.states.filter(s => s !== state.currentState);
+                const otherStates = state.states.filter((s) => s !== state.currentState);
                 return otherStates[Math.floor(Math.random() * otherStates.length)];
             },
             reset: () => {
                 state.currentState = NAV_STATES.FEED;
                 state.history = [];
                 state.depth = 0;
-            }
+            },
         };
     },
-    
-    NAV_STATES
+
+    NAV_STATES,
 };
 
 describe('NavigationDiversity', () => {
-  let manager;
-  let mockPage;
+    let manager;
+    let mockPage;
 
-  beforeEach(() => {
-    manager = navigationDiversity.createNavigationManager({
-      rabbitHoleChance: 1, // Always enter rabbit hole for testing
-      maxDepth: 3,
-      minDepth: 1,
-      exitProbability: 0.5,
-      stayProbability: 0.5
+    beforeEach(() => {
+        manager = navigationDiversity.createNavigationManager({
+            rabbitHoleChance: 1, // Always enter rabbit hole for testing
+            maxDepth: 3,
+            minDepth: 1,
+            exitProbability: 0.5,
+            stayProbability: 0.5,
+        });
+
+        mockPage = {
+            waitForTimeout: vi.fn().mockResolvedValue(undefined),
+        };
     });
 
-    mockPage = {
-      waitForTimeout: vi.fn().mockResolvedValue(undefined)
-    };
-  });
-
-  it('should initialize with default state', () => {
-    expect(manager.getCurrentState()).toBe(NAV_STATES.FEED);
-  });
-
-  it('should set state and record history', () => {
-    manager.setState(NAV_STATES.PROFILE, 'test-reason');
-    expect(manager.getCurrentState()).toBe(NAV_STATES.PROFILE);
-    const history = manager.getStateHistory();
-    expect(history.length).toBe(1);
-    expect(history[0].reason).toBe('test-reason');
-  });
-
-  it('should track state history', () => {
-    manager.setState(NAV_STATES.PROFILE);
-    manager.setState(NAV_STATES.SEARCH);
-    manager.setState(NAV_STATES.NOTIFICATIONS);
-    
-    const history = manager.getStateHistory();
-    expect(history.length).toBe(3);
-  });
-
-  it('should determine when to exit rabbit hole based on depth', () => {
-    const shallowManager = navigationDiversity.createNavigationManager({
-      rabbitHoleChance: 1,
-      maxDepth: 2,
-      minDepth: 1,
-      exitProbability: 0
+    it('should initialize with default state', () => {
+        expect(manager.getCurrentState()).toBe(NAV_STATES.FEED);
     });
-    
-    shallowManager.setState(NAV_STATES.PROFILE);
-    shallowManager.setState(NAV_STATES.SEARCH);
-    
-    expect(shallowManager.shouldExitRabbitHole()).toBe(true);
-  });
 
-  it('should determine when to stay in rabbit hole', () => {
-    const stayManager = navigationDiversity.createNavigationManager({
-      rabbitHoleChance: 1,
-      maxDepth: 10,
-      minDepth: 1,
-      exitProbability: 0
+    it('should set state and record history', () => {
+        manager.setState(NAV_STATES.PROFILE, 'test-reason');
+        expect(manager.getCurrentState()).toBe(NAV_STATES.PROFILE);
+        const history = manager.getStateHistory();
+        expect(history.length).toBe(1);
+        expect(history[0].reason).toBe('test-reason');
     });
-    
-    stayManager.setState(NAV_STATES.PROFILE);
-    
-    expect(stayManager.shouldExitRabbitHole()).toBe(false);
-  });
 
-  it('should get next state different from current', () => {
-    const nextState = manager.getNextState();
-    expect(nextState).not.toBe(NAV_STATES.FEED);
-  });
+    it('should track state history', () => {
+        manager.setState(NAV_STATES.PROFILE);
+        manager.setState(NAV_STATES.SEARCH);
+        manager.setState(NAV_STATES.NOTIFICATIONS);
 
-  it('should reset state and history', () => {
-    manager.setState(NAV_STATES.PROFILE);
-    manager.setState(NAV_STATES.SEARCH);
-    
-    manager.reset();
-    
-    expect(manager.getCurrentState()).toBe(NAV_STATES.FEED);
-    expect(manager.getStateHistory().length).toBe(0);
-  });
+        const history = manager.getStateHistory();
+        expect(history.length).toBe(3);
+    });
 
-  it('should export NAV_STATES constants', () => {
-    expect(NAV_STATES.FEED).toBe('FEED');
-    expect(NAV_STATES.PROFILE).toBe('PROFILE');
-    expect(NAV_STATES.SEARCH).toBe('SEARCH');
-    expect(NAV_STATES.NOTIFICATIONS).toBe('NOTIFICATIONS');
-  });
+    it('should determine when to exit rabbit hole based on depth', () => {
+        const shallowManager = navigationDiversity.createNavigationManager({
+            rabbitHoleChance: 1,
+            maxDepth: 2,
+            minDepth: 1,
+            exitProbability: 0,
+        });
 
-  it('should increment depth when entering non-FEED states', () => {
-    expect(manager.getCurrentState()).toBe(NAV_STATES.FEED);
-    
-    manager.setState(NAV_STATES.PROFILE);
-    expect(manager.getStateHistory().length).toBe(1);
-    
-    manager.setState(NAV_STATES.FEED);
-    expect(manager.getCurrentState()).toBe(NAV_STATES.FEED);
-  });
+        shallowManager.setState(NAV_STATES.PROFILE);
+        shallowManager.setState(NAV_STATES.SEARCH);
+
+        expect(shallowManager.shouldExitRabbitHole()).toBe(true);
+    });
+
+    it('should determine when to stay in rabbit hole', () => {
+        const stayManager = navigationDiversity.createNavigationManager({
+            rabbitHoleChance: 1,
+            maxDepth: 10,
+            minDepth: 1,
+            exitProbability: 0,
+        });
+
+        stayManager.setState(NAV_STATES.PROFILE);
+
+        expect(stayManager.shouldExitRabbitHole()).toBe(false);
+    });
+
+    it('should get next state different from current', () => {
+        const nextState = manager.getNextState();
+        expect(nextState).not.toBe(NAV_STATES.FEED);
+    });
+
+    it('should reset state and history', () => {
+        manager.setState(NAV_STATES.PROFILE);
+        manager.setState(NAV_STATES.SEARCH);
+
+        manager.reset();
+
+        expect(manager.getCurrentState()).toBe(NAV_STATES.FEED);
+        expect(manager.getStateHistory().length).toBe(0);
+    });
+
+    it('should export NAV_STATES constants', () => {
+        expect(NAV_STATES.FEED).toBe('FEED');
+        expect(NAV_STATES.PROFILE).toBe('PROFILE');
+        expect(NAV_STATES.SEARCH).toBe('SEARCH');
+        expect(NAV_STATES.NOTIFICATIONS).toBe('NOTIFICATIONS');
+    });
+
+    it('should increment depth when entering non-FEED states', () => {
+        expect(manager.getCurrentState()).toBe(NAV_STATES.FEED);
+
+        manager.setState(NAV_STATES.PROFILE);
+        expect(manager.getStateHistory().length).toBe(1);
+
+        manager.setState(NAV_STATES.FEED);
+        expect(manager.getCurrentState()).toBe(NAV_STATES.FEED);
+    });
 });

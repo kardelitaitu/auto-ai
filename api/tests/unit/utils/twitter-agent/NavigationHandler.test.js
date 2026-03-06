@@ -6,7 +6,7 @@ vi.mock('../../../../index.js', () => ({
         goto: vi.fn().mockResolvedValue(undefined),
         wait: vi.fn().mockResolvedValue(undefined),
         waitForURL: vi.fn().mockResolvedValue(undefined),
-    }
+    },
 }));
 
 vi.mock('../../../../twitter/twitter-agent/BaseHandler.js', () => ({
@@ -21,15 +21,15 @@ vi.mock('../../../../twitter/twitter-agent/BaseHandler.js', () => ({
             this.mathUtils = agent.mathUtils;
             this.safeHumanClick = vi.fn().mockResolvedValue(undefined);
         }
-        
+
         log(msg) {
             this.logger.info(msg);
         }
-    }
+    },
 }));
 
 vi.mock('../../../../behaviors/scroll-helper.js', () => ({
-    scrollRandom: vi.fn().mockResolvedValue()
+    scrollRandom: vi.fn().mockResolvedValue(),
 }));
 
 import { api } from '../../../../index.js';
@@ -50,7 +50,7 @@ describe('NavigationHandler', () => {
         mockMathUtils = {
             roll: vi.fn().mockReturnValue(false),
             randomInRange: vi.fn().mockImplementation((min, max) => Math.floor((min + max) / 2)),
-            random: vi.fn().mockReturnValue(0.5)
+            random: vi.fn().mockReturnValue(0.5),
         };
 
         mockPage = {
@@ -67,27 +67,27 @@ describe('NavigationHandler', () => {
                     getAttribute: vi.fn().mockResolvedValue(null),
                     click: vi.fn().mockResolvedValue(undefined),
                     evaluate: vi.fn().mockResolvedValue(undefined),
-                    boundingBox: vi.fn().mockResolvedValue(null)
-                })
+                    boundingBox: vi.fn().mockResolvedValue(null),
+                }),
             }),
             $$eval: vi.fn(),
-            evaluate: vi.fn().mockResolvedValue(undefined)
+            evaluate: vi.fn().mockResolvedValue(undefined),
         };
 
         mockLogger = {
             info: vi.fn(),
             warn: vi.fn(),
-            error: vi.fn()
+            error: vi.fn(),
         };
 
         mockHuman = {
             think: vi.fn().mockResolvedValue(),
-            recoverFromError: vi.fn().mockResolvedValue()
+            recoverFromError: vi.fn().mockResolvedValue(),
         };
 
         mockGhost = {
             click: vi.fn().mockResolvedValue({ success: true }),
-            move: vi.fn().mockResolvedValue()
+            move: vi.fn().mockResolvedValue(),
         };
 
         mockAgent = {
@@ -97,7 +97,7 @@ describe('NavigationHandler', () => {
             state: {},
             human: mockHuman,
             ghost: mockGhost,
-            mathUtils: mockMathUtils
+            mathUtils: mockMathUtils,
         };
 
         handler = new NavigationHandler(mockAgent);
@@ -120,7 +120,7 @@ describe('NavigationHandler', () => {
         it('should navigate via direct URL when 10% chance hits', async () => {
             mockMathUtils.roll.mockReturnValue(true);
             mockPage.waitForSelector.mockResolvedValue(true);
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     locator: vi.fn().mockReturnValue({
@@ -128,10 +128,10 @@ describe('NavigationHandler', () => {
                         nth: vi.fn().mockReturnValue({
                             isVisible: vi.fn().mockResolvedValue(true),
                             textContent: vi.fn().mockResolvedValue('For you'),
-                            getAttribute: vi.fn().mockResolvedValue('true')
-                        })
-                    })
-                })
+                            getAttribute: vi.fn().mockResolvedValue('true'),
+                        }),
+                    }),
+                }),
             });
 
             await handler.navigateHome();
@@ -143,36 +143,46 @@ describe('NavigationHandler', () => {
             mockMathUtils.roll.mockReturnValue(true);
             api.goto.mockRejectedValueOnce(new Error('Network error'));
             mockPage.waitForURL.mockResolvedValue(undefined);
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
-                    isVisible: vi.fn().mockResolvedValue(true)
-                })
+                    isVisible: vi.fn().mockResolvedValue(true),
+                }),
             });
 
             await handler.navigateHome();
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Direct URL failed'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('Direct URL failed')
+            );
         });
 
         it.skip('should navigate via Home Icon click (80% chance)', async () => {
             mockMathUtils.roll.mockReturnValue(false);
             mockMathUtils.random.mockReturnValue(0.5);
             mockMathUtils.randomInRange.mockReturnValue(1000);
-            
+
             const homeBtn = {
                 first: vi.fn().mockReturnValue({
-                    isVisible: vi.fn().mockResolvedValue(true)
-                })
+                    isVisible: vi.fn().mockResolvedValue(true),
+                }),
             };
-            
+
             mockPage.locator
                 .mockImplementationOnce((selector) => {
                     if (selector.includes('Home')) return homeBtn;
-                    return { first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }) };
+                    return {
+                        first: vi
+                            .fn()
+                            .mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }),
+                    };
                 })
                 .mockImplementationOnce((selector) => {
-                    return { first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }) };
+                    return {
+                        first: vi
+                            .fn()
+                            .mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }),
+                    };
                 })
                 .mockReturnValue({
                     first: vi.fn().mockReturnValue({
@@ -181,12 +191,12 @@ describe('NavigationHandler', () => {
                             nth: vi.fn().mockReturnValue({
                                 isVisible: vi.fn().mockResolvedValue(true),
                                 textContent: vi.fn().mockResolvedValue('For you'),
-                                getAttribute: vi.fn().mockResolvedValue('true')
-                            })
-                        })
-                    })
+                                getAttribute: vi.fn().mockResolvedValue('true'),
+                            }),
+                        }),
+                    }),
                 });
-            
+
             mockPage.waitForURL.mockResolvedValue(undefined);
             mockPage.waitForSelector.mockResolvedValue(true);
 
@@ -200,19 +210,35 @@ describe('NavigationHandler', () => {
             mockMathUtils.roll.mockReturnValue(false);
             mockMathUtils.random.mockReturnValue(0.9);
             mockMathUtils.randomInRange.mockReturnValue(1000);
-            
+
             mockPage.locator
                 .mockImplementationOnce((selector) => {
                     if (selector.includes('Home')) {
-                        return { first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }) };
+                        return {
+                            first: vi
+                                .fn()
+                                .mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }),
+                        };
                     }
                     if (selector.includes('aria-label="X"')) {
-                        return { first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }) };
+                        return {
+                            first: vi
+                                .fn()
+                                .mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }),
+                        };
                     }
-                    return { first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }) };
+                    return {
+                        first: vi
+                            .fn()
+                            .mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }),
+                    };
                 })
                 .mockImplementationOnce(() => {
-                    return { first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }) };
+                    return {
+                        first: vi
+                            .fn()
+                            .mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }),
+                    };
                 })
                 .mockReturnValue({
                     first: vi.fn().mockReturnValue({
@@ -221,12 +247,12 @@ describe('NavigationHandler', () => {
                             nth: vi.fn().mockReturnValue({
                                 isVisible: vi.fn().mockResolvedValue(true),
                                 textContent: vi.fn().mockResolvedValue('For you'),
-                                getAttribute: vi.fn().mockResolvedValue('true')
-                            })
-                        })
-                    })
+                                getAttribute: vi.fn().mockResolvedValue('true'),
+                            }),
+                        }),
+                    }),
                 });
-            
+
             mockPage.waitForURL.mockResolvedValue(undefined);
             mockPage.waitForSelector.mockResolvedValue(true);
 
@@ -238,28 +264,30 @@ describe('NavigationHandler', () => {
         it('should catch and handle locator errors', async () => {
             mockMathUtils.roll.mockReturnValue(false);
             mockMathUtils.random.mockReturnValue(0.5);
-            
+
             mockPage.locator.mockImplementation(() => {
                 throw new Error('Locator exploded');
             });
 
             await handler.navigateHome();
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Interaction failed'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('Interaction failed')
+            );
             expect(api.goto).toHaveBeenCalledWith('https://x.com/home');
         });
-        
+
         it('should not call safeHumanClick when target is not visible', async () => {
             mockMathUtils.roll.mockReturnValue(false);
             mockMathUtils.random.mockReturnValue(0.5);
             mockMathUtils.randomInRange.mockReturnValue(1000);
-            
+
             mockPage.locator
                 .mockImplementationOnce(() => ({
-                    first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) })
+                    first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }),
                 }))
                 .mockImplementationOnce(() => ({
-                    first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) })
+                    first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }),
                 }))
                 .mockReturnValue({
                     first: vi.fn().mockReturnValue({
@@ -268,12 +296,12 @@ describe('NavigationHandler', () => {
                             nth: vi.fn().mockReturnValue({
                                 isVisible: vi.fn().mockResolvedValue(true),
                                 textContent: vi.fn().mockResolvedValue('For you'),
-                                getAttribute: vi.fn().mockResolvedValue('true')
-                            })
-                        })
-                    })
+                                getAttribute: vi.fn().mockResolvedValue('true'),
+                            }),
+                        }),
+                    }),
                 });
-            
+
             mockPage.waitForSelector.mockResolvedValue(true);
 
             await handler.navigateHome();
@@ -286,20 +314,20 @@ describe('NavigationHandler', () => {
     describe('ensureForYouTab', () => {
         it.skip('should select For you tab via text match', async () => {
             mockPage.waitForSelector.mockResolvedValue(true);
-            
+
             const mockTab = {
                 isVisible: vi.fn().mockResolvedValue(true),
                 textContent: vi.fn().mockResolvedValue('For you'),
-                getAttribute: vi.fn().mockResolvedValue('false')
+                getAttribute: vi.fn().mockResolvedValue('false'),
             };
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     locator: vi.fn().mockReturnValue({
                         count: vi.fn().mockResolvedValue(2),
-                        nth: vi.fn().mockReturnValue(mockTab)
-                    })
-                })
+                        nth: vi.fn().mockReturnValue(mockTab),
+                    }),
+                }),
             });
 
             await handler.ensureForYouTab();
@@ -309,49 +337,53 @@ describe('NavigationHandler', () => {
 
         it('should not click if already selected', async () => {
             mockPage.waitForSelector.mockResolvedValue(true);
-            
+
             const mockTab = {
                 isVisible: vi.fn().mockResolvedValue(true),
                 textContent: vi.fn().mockResolvedValue('For you'),
-                getAttribute: vi.fn().mockResolvedValue('true')
+                getAttribute: vi.fn().mockResolvedValue('true'),
             };
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     locator: vi.fn().mockReturnValue({
                         count: vi.fn().mockResolvedValue(2),
-                        nth: vi.fn().mockReturnValue(mockTab)
-                    })
-                })
+                        nth: vi.fn().mockReturnValue(mockTab),
+                    }),
+                }),
             });
 
             await handler.ensureForYouTab();
 
             expect(handler.safeHumanClick).not.toHaveBeenCalled();
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('already selected'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('already selected')
+            );
         });
 
         it.skip('should fallback to index 0 when text not found', async () => {
             mockPage.waitForSelector.mockResolvedValue(true);
-            
+
             const mockTab = {
                 isVisible: vi.fn().mockResolvedValue(true),
                 textContent: vi.fn().mockResolvedValue('Following'),
-                getAttribute: vi.fn().mockResolvedValue('false')
+                getAttribute: vi.fn().mockResolvedValue('false'),
             };
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     locator: vi.fn().mockReturnValue({
                         count: vi.fn().mockResolvedValue(2),
-                        nth: vi.fn().mockReturnValue(mockTab)
-                    })
-                })
+                        nth: vi.fn().mockReturnValue(mockTab),
+                    }),
+                }),
             });
 
             await handler.ensureForYouTab();
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Fallback to index'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('Fallback to index')
+            );
             expect(handler.safeHumanClick).toHaveBeenCalled();
         });
 
@@ -360,52 +392,56 @@ describe('NavigationHandler', () => {
 
             await handler.ensureForYouTab();
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Tablist not found'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('Tablist not found')
+            );
         });
 
         it.skip('should fallback to native click when safeHumanClick fails', async () => {
             mockPage.waitForSelector.mockResolvedValue(true);
-            
+
             const mockTab = {
                 isVisible: vi.fn().mockResolvedValue(true),
                 textContent: vi.fn().mockResolvedValue('For you'),
                 getAttribute: vi.fn().mockResolvedValue('false'),
-                click: vi.fn().mockResolvedValue(undefined)
+                click: vi.fn().mockResolvedValue(undefined),
             };
-            
+
             handler.safeHumanClick = vi.fn().mockRejectedValue(new Error('Click failed'));
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     locator: vi.fn().mockReturnValue({
                         count: vi.fn().mockResolvedValue(2),
-                        nth: vi.fn().mockReturnValue(mockTab)
-                    })
-                })
+                        nth: vi.fn().mockReturnValue(mockTab),
+                    }),
+                }),
             });
 
             await handler.ensureForYouTab();
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Ghost click failed'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('Ghost click failed')
+            );
             expect(mockTab.click).toHaveBeenCalled();
         });
 
         it('should not click if target tab is not visible', async () => {
             mockPage.waitForSelector.mockResolvedValue(true);
-            
+
             const mockTab = {
                 isVisible: vi.fn().mockResolvedValue(false),
                 textContent: vi.fn().mockResolvedValue('For you'),
-                getAttribute: vi.fn().mockResolvedValue('false')
+                getAttribute: vi.fn().mockResolvedValue('false'),
             };
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     locator: vi.fn().mockReturnValue({
                         count: vi.fn().mockResolvedValue(2),
-                        nth: vi.fn().mockReturnValue(mockTab)
-                    })
-                })
+                        nth: vi.fn().mockReturnValue(mockTab),
+                    }),
+                }),
             });
 
             await handler.ensureForYouTab();
@@ -415,19 +451,21 @@ describe('NavigationHandler', () => {
 
         it.skip('should handle error when no tabs found', async () => {
             mockPage.waitForSelector.mockResolvedValue(true);
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     locator: vi.fn().mockReturnValue({
                         count: vi.fn().mockResolvedValue(0),
-                        nth: vi.fn().mockReturnValue(null)
-                    })
-                })
+                        nth: vi.fn().mockReturnValue(null),
+                    }),
+                }),
             });
 
             await handler.ensureForYouTab();
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('not be found via text or index'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('not be found via text or index')
+            );
         });
 
         it.skip('should handle errors gracefully', async () => {
@@ -437,24 +475,26 @@ describe('NavigationHandler', () => {
 
             await handler.ensureForYouTab();
 
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Failed to ensure timeline tab'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to ensure timeline tab')
+            );
         });
     });
 
     describe('checkAndClickShowPostsButton', () => {
         it.skip('should click button when found', async () => {
             api.wait.mockResolvedValue(undefined);
-            
+
             const mockBtn = {
                 count: vi.fn().mockResolvedValue(1),
                 isVisible: vi.fn().mockResolvedValue(true),
                 textContent: vi.fn().mockResolvedValue('Show 5 posts'),
                 evaluate: vi.fn().mockResolvedValue(undefined),
-                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 200, width: 120, height: 40 })
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 200, width: 120, height: 40 }),
             };
-            
+
             mockPage.locator.mockReturnValue({
-                first: vi.fn().mockReturnValue(mockBtn)
+                first: vi.fn().mockReturnValue(mockBtn),
             });
 
             const result = await handler.checkAndClickShowPostsButton();
@@ -466,29 +506,31 @@ describe('NavigationHandler', () => {
 
         it('should return false when button not found', async () => {
             api.wait.mockResolvedValue(undefined);
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     count: vi.fn().mockResolvedValue(0),
-                    isVisible: vi.fn().mockResolvedValue(false)
-                })
+                    isVisible: vi.fn().mockResolvedValue(false),
+                }),
             });
 
             const result = await handler.checkAndClickShowPostsButton();
 
             expect(result).toBe(false);
-            expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('No "Show X posts" button found'));
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                expect.stringContaining('No "Show X posts" button found')
+            );
         });
 
         it('should skip button if text does not match pattern', async () => {
             api.wait.mockResolvedValue(undefined);
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     count: vi.fn().mockResolvedValue(1),
                     isVisible: vi.fn().mockResolvedValue(true),
-                    textContent: vi.fn().mockResolvedValue('Show random stuff')
-                })
+                    textContent: vi.fn().mockResolvedValue('Show random stuff'),
+                }),
             });
 
             const result = await handler.checkAndClickShowPostsButton();
@@ -507,15 +549,15 @@ describe('NavigationHandler', () => {
 
         it.skip('should handle null boundingBox', async () => {
             api.wait.mockResolvedValue(undefined);
-            
+
             mockPage.locator.mockReturnValue({
                 first: vi.fn().mockReturnValue({
                     count: vi.fn().mockResolvedValue(1),
                     isVisible: vi.fn().mockResolvedValue(true),
                     textContent: vi.fn().mockResolvedValue('Show 5 posts'),
                     evaluate: vi.fn().mockResolvedValue(undefined),
-                    boundingBox: vi.fn().mockResolvedValue(null)
-                })
+                    boundingBox: vi.fn().mockResolvedValue(null),
+                }),
             });
 
             const result = await handler.checkAndClickShowPostsButton();
@@ -526,7 +568,7 @@ describe('NavigationHandler', () => {
 
         it('should handle errors from locator gracefully', async () => {
             api.wait.mockResolvedValue(undefined);
-            
+
             mockPage.locator.mockImplementation(() => {
                 throw new Error('Selector error');
             });
@@ -538,19 +580,17 @@ describe('NavigationHandler', () => {
 
         it.skip('should try multiple selectors until one works', async () => {
             api.wait.mockResolvedValue(undefined);
-            
+
             const mockBtn = {
-                count: vi.fn()
-                    .mockResolvedValueOnce(0)
-                    .mockResolvedValueOnce(1),
+                count: vi.fn().mockResolvedValueOnce(0).mockResolvedValueOnce(1),
                 isVisible: vi.fn().mockResolvedValue(true),
                 textContent: vi.fn().mockResolvedValue('Show 10 posts'),
                 evaluate: vi.fn().mockResolvedValue(undefined),
-                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 200, width: 120, height: 40 })
+                boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 200, width: 120, height: 40 }),
             };
-            
+
             mockPage.locator.mockReturnValue({
-                first: vi.fn().mockReturnValue(mockBtn)
+                first: vi.fn().mockReturnValue(mockBtn),
             });
 
             const result = await handler.checkAndClickShowPostsButton();

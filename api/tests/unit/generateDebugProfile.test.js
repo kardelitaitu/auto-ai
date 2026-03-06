@@ -8,7 +8,7 @@ const DebugProfileFactory = {
         timings: {
             readingPhase: { min: 1000, max: 2000 },
             scrollPause: { min: 500, max: 1500 },
-            actionSpecific: { min: 200, max: 800 }
+            actionSpecific: { min: 200, max: 800 },
         },
         probabilities: {
             refresh: 0.05,
@@ -17,13 +17,13 @@ const DebugProfileFactory = {
             likeTweetafterDive: 0.3,
             bookmarkAfterDive: 0.05,
             followOnProfile: 0.1,
-            idle: 0.1
+            idle: 0.1,
         },
         inputMethods: ['keyboard', 'mouse'],
         maxLike: 10,
         maxFollow: 5,
-        theme: 'dark'
-    })
+        theme: 'dark',
+    }),
 };
 
 const generateDebugProfile = { DebugProfileFactory };
@@ -51,7 +51,7 @@ describe('generateDebugProfile', () => {
             default: { writeFileSync },
             writeFileSync: (path, data) => {
                 writeFileSync(path, data);
-            }
+            },
         }));
 
         // Use the mock directly since module doesn't exist
@@ -94,13 +94,13 @@ describe('generateDebugProfile', () => {
         const mockWrite = () => {
             throw new Error('disk full');
         };
-        
+
         try {
             mockWrite();
         } catch (e) {
             consoleError(e);
         }
-        
+
         expect(consoleError).toHaveBeenCalled();
     });
 });

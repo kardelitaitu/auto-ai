@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AIQuoteAction } from '@api/actions/ai-twitter-quote.js';
 
@@ -8,8 +7,8 @@ vi.mock('../../core/logger.js', () => ({
         info: vi.fn(),
         error: vi.fn(),
         warn: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('AIQuoteAction', () => {
@@ -24,22 +23,22 @@ describe('AIQuoteAction', () => {
                 actions: {
                     quote: {
                         enabled: true,
-                        probability: 0.5
-                    }
-                }
+                        probability: 0.5,
+                    },
+                },
             },
             contextEngine: {
-                extractEnhancedContext: vi.fn().mockResolvedValue({ replies: [], sentiment: {} })
+                extractEnhancedContext: vi.fn().mockResolvedValue({ replies: [], sentiment: {} }),
             },
             quoteEngine: {
-                generateQuote: vi.fn().mockResolvedValue({ success: true, quote: 'Nice quote!' })
+                generateQuote: vi.fn().mockResolvedValue({ success: true, quote: 'Nice quote!' }),
             },
             executeAIQuote: vi.fn().mockResolvedValue(true),
             diveQueue: {
                 canEngage: vi.fn().mockReturnValue(true),
-                recordEngagement: vi.fn()
+                recordEngagement: vi.fn(),
             },
-            page: {}
+            page: {},
         };
 
         quoteAction = new AIQuoteAction(mockAgent);
@@ -140,7 +139,7 @@ describe('AIQuoteAction', () => {
                 tweetText: 'text',
                 username: 'user',
                 tweetUrl: 'url',
-                enhancedContext: { replies: [{ id: 1 }], sentiment: { overall: 'positive' } }
+                enhancedContext: { replies: [{ id: 1 }], sentiment: { overall: 'positive' } },
             };
 
             const result = await quoteAction.execute(contextWithContext);
@@ -150,7 +149,10 @@ describe('AIQuoteAction', () => {
         });
 
         it('should handle AI generation failure', async () => {
-            mockAgent.quoteEngine.generateQuote.mockResolvedValue({ success: false, reason: 'Too boring' });
+            mockAgent.quoteEngine.generateQuote.mockResolvedValue({
+                success: false,
+                reason: 'Too boring',
+            });
 
             const result = await quoteAction.execute(context);
 
@@ -160,7 +162,9 @@ describe('AIQuoteAction', () => {
         });
 
         it('should handle exception', async () => {
-            mockAgent.contextEngine.extractEnhancedContext.mockRejectedValue(new Error('Context failed'));
+            mockAgent.contextEngine.extractEnhancedContext.mockRejectedValue(
+                new Error('Context failed')
+            );
 
             const result = await quoteAction.execute(context);
 

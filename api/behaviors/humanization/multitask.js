@@ -2,7 +2,7 @@ import { api } from '../../index.js';
 /**
  * Multitask Engine
  * Background activity simulation during "reading" or "idle" periods
- * 
+ *
  * Background Activities:
  * 1. Check notifications (30%)
  * 2. Glance trending sidebar (25%)
@@ -19,11 +19,11 @@ export class MultitaskEngine {
         this.page = page;
         this.logger = logger;
         this.activities = [
-            { name: 'notifications', weight: 0.30 },
+            { name: 'notifications', weight: 0.3 },
             { name: 'trending', weight: 0.25 },
-            { name: 'position', weight: 0.20 },
+            { name: 'position', weight: 0.2 },
             { name: 'mentions', weight: 0.15 },
-            { name: 'idle', weight: 0.10 }
+            { name: 'idle', weight: 0.1 },
         ];
     }
 
@@ -160,7 +160,11 @@ export class MultitaskEngine {
         await this.checkNotifications();
 
         // Log as if we saw a notification
-        return { success: true, activity: 'notification_check', sawNotification: mathUtils.roll(0.4) };
+        return {
+            success: true,
+            activity: 'notification_check',
+            sawNotification: mathUtils.roll(0.4),
+        };
     }
 
     // ==========================================

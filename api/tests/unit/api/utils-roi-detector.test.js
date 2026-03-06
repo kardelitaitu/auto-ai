@@ -9,7 +9,7 @@ describe('api/utils/roi-detector.js', () => {
             isClosed: vi.fn(),
             $: vi.fn(),
             boundingBox: vi.fn(),
-            viewportSize: vi.fn()
+            viewportSize: vi.fn(),
         };
     });
 
@@ -40,9 +40,7 @@ describe('api/utils/roi-detector.js', () => {
 
         it('should return null for elements too small', async () => {
             mockPage.isClosed.mockReturnValue(false);
-            mockPage.$
-                .mockResolvedValueOnce({})
-                .mockResolvedValue(null); 
+            mockPage.$.mockResolvedValueOnce({}).mockResolvedValue(null);
             mockPage.boundingBox.mockResolvedValue({ x: 100, y: 100, width: 30, height: 30 });
             mockPage.viewportSize.mockReturnValue({ width: 1280, height: 720 });
 

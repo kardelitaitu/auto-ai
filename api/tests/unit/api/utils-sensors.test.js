@@ -2,14 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as contextModule from '@api/core/context.js';
 
 vi.mock('@api/core/context.js', () => ({
-    getPage: vi.fn()
+    getPage: vi.fn(),
 }));
 
 vi.mock('@api/utils/math.js', () => ({
     mathUtils: {
         gaussian: vi.fn().mockReturnValue(0.85),
-        randomInRange: vi.fn().mockReturnValue(50)
-    }
+        randomInRange: vi.fn().mockReturnValue(50),
+    },
 }));
 
 import { injectSensors } from '@api/utils/sensors.js';
@@ -19,7 +19,7 @@ describe('api/utils/sensors.js', () => {
 
     beforeEach(() => {
         mockPage = {
-            addInitScript: vi.fn().mockResolvedValue(undefined)
+            addInitScript: vi.fn().mockResolvedValue(undefined),
         };
         contextModule.getPage.mockReturnValue(mockPage);
     });
@@ -33,7 +33,7 @@ describe('api/utils/sensors.js', () => {
             await injectSensors();
 
             expect(mockPage.addInitScript).toHaveBeenCalledTimes(1);
-            
+
             const callArgs = mockPage.addInitScript.mock.calls[0];
             const scriptFn = callArgs[0];
             const scriptOptions = callArgs[1];

@@ -3,33 +3,33 @@ import { followWithAPI } from '@api/actions/follow.js';
 
 // Mock dependencies
 vi.mock('@api/core/context.js', () => ({
-    getPage: vi.fn()
+    getPage: vi.fn(),
 }));
 
 vi.mock('@api/core/logger.js', () => ({
     createLogger: vi.fn(() => ({
         info: vi.fn(),
         warn: vi.fn(),
-        error: vi.fn()
-    }))
+        error: vi.fn(),
+    })),
 }));
 
 vi.mock('@api/utils/math.js', () => ({
     mathUtils: {
-        randomInRange: vi.fn((min, max) => (min + max) / 2)
-    }
+        randomInRange: vi.fn((min, max) => (min + max) / 2),
+    },
 }));
 
 vi.mock('@api/interactions/wait.js', () => ({
-    wait: vi.fn().mockResolvedValue(undefined)
+    wait: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@api/interactions/queries.js', () => ({
-    visible: vi.fn()
+    visible: vi.fn(),
 }));
 
 vi.mock('@api/interactions/actions.js', () => ({
-    click: vi.fn().mockResolvedValue(undefined)
+    click: vi.fn().mockResolvedValue(undefined),
 }));
 
 import { getPage } from '@api/core/context.js';
@@ -46,7 +46,7 @@ describe('api/actions/follow.js', () => {
             url: vi.fn().mockReturnValue('https://x.com/user'),
             locator: vi.fn().mockReturnThis(),
             first: vi.fn().mockReturnThis(),
-            textContent: vi.fn().mockResolvedValue('Follow')
+            textContent: vi.fn().mockResolvedValue('Follow'),
         };
 
         getPage.mockReturnValue(mockPage);

@@ -42,7 +42,9 @@ describe('api/utils/fingerprint.js', () => {
 
         it('matchUserAgent should work with string', async () => {
             const { fingerprintManager } = await import('@api/utils/fingerprint.js');
-            const result = fingerprintManager.matchUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+            const result = fingerprintManager.matchUserAgent(
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+            );
             expect(typeof result === 'object' || result === undefined).toBe(true);
         });
 

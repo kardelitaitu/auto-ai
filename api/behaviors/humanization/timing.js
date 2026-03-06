@@ -2,7 +2,7 @@ import { api } from '../../index.js';
 /**
  * Human Timing Engine
  * Natural timing patterns for human-like behavior
- * 
+ *
  * Features:
  * - Thinking pauses before actions
  * - Variable delays with gaussian distribution
@@ -25,7 +25,7 @@ export class HumanTiming {
 
     /**
      * Get thinking time before an action
-     * 
+     *
      * @param {string} actionType - Type of action
      * @param {object} context - Additional context
      * @returns {number} Milliseconds to wait
@@ -62,7 +62,7 @@ export class HumanTiming {
 
             // General/Default
             general: { min: 500, max: 2000, gaussian: 1000 },
-            default: { min: 300, max: 1000, gaussian: 500 }
+            default: { min: 300, max: 1000, gaussian: 500 },
         };
 
         const config = baseTimes[actionType] || baseTimes.default;
@@ -127,7 +127,7 @@ export class HumanTiming {
             extended: { min: 1000, max: 2000, gaussian: 1400 },
 
             // Default
-            default: { min: 200, max: 600, gaussian: 350 }
+            default: { min: 200, max: 600, gaussian: 350 },
         };
 
         const config = pauses[context] || pauses.default;
@@ -208,7 +208,7 @@ export class HumanTiming {
             follow: { min: 800, max: 2000, gaussian: 1200 },
             profile: { min: 400, max: 1000, gaussian: 600 },
             link: { min: 300, max: 700, gaussian: 400 },
-            general: { min: 200, max: 600, gaussian: 350 }
+            general: { min: 200, max: 600, gaussian: 350 },
         };
 
         const config = hoverTimes[actionType] || hoverTimes.general;
@@ -225,11 +225,11 @@ export class HumanTiming {
         const baseMs = minutes * 60 * 1000;
 
         const multipliers = {
-            tweet: 0.5,      // Tweets: skim faster
-            thread: 1.5,     // Threads: read slower
-            article: 2.0,    // Articles: read slowest
-            media: 0.3,      // Media: quick glance
-            default: 1.0
+            tweet: 0.5, // Tweets: skim faster
+            thread: 1.5, // Threads: read slower
+            article: 2.0, // Articles: read slowest
+            media: 0.3, // Media: quick glance
+            default: 1.0,
         };
 
         const multiplier = multipliers[type] || multipliers.default;

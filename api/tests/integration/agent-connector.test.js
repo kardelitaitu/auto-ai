@@ -8,12 +8,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
     getSettings: vi.fn(),
-    getTimeoutValue: vi.fn().mockResolvedValue({})
+    getTimeoutValue: vi.fn().mockResolvedValue({}),
 }));
 
 vi.mock('../../utils/configLoader.js', () => ({
     getSettings: mocks.getSettings,
-    getTimeoutValue: mocks.getTimeoutValue
+    getTimeoutValue: mocks.getTimeoutValue,
 }));
 
 vi.mock('../../utils/free-openrouter-helper.js', () => ({
@@ -21,9 +21,9 @@ vi.mock('../../utils/free-openrouter-helper.js', () => ({
         getInstance: vi.fn(() => ({
             testAllModelsInBackground: vi.fn(),
             getOptimizedModelList: vi.fn(() => ({ primary: 'test-model', fallbacks: [] })),
-            getResults: vi.fn(() => ({ working: [], failed: [] }))
-        }))
-    }
+            getResults: vi.fn(() => ({ working: [], failed: [] })),
+        })),
+    },
 }));
 
 vi.mock('../../core/logger.js', () => ({
@@ -32,8 +32,8 @@ vi.mock('../../core/logger.js', () => ({
         success: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    }))
+        debug: vi.fn(),
+    })),
 }));
 
 describe('AgentConnector Integration', () => {
@@ -48,12 +48,12 @@ describe('AgentConnector Integration', () => {
                 cloud: {
                     enabled: true,
                     providers: [],
-                    timeout: 60000
-                }
+                    timeout: 60000,
+                },
             },
             open_router_free_api: {
-                enabled: false
-            }
+                enabled: false,
+            },
         });
 
         const module = await import('../../core/agent-connector.js');
@@ -299,7 +299,9 @@ describe('AgentConnector Session Flow', () => {
             const connector = new AgentConnector();
             const initialUptime = connector.getStats().uptime;
 
-            await new Promise(function(resolve) { return setTimeout(resolve, 50); });
+            await new Promise(function (resolve) {
+                return setTimeout(resolve, 50);
+            });
 
             const laterUptime = connector.getStats().uptime;
             expect(laterUptime).toBeGreaterThan(initialUptime);

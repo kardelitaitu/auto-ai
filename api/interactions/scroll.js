@@ -8,7 +8,7 @@
  * await api.scroll.read(500);
  * await api.scroll.read(500, { pauses: 10, scrollAmount: 1000, variableSpeed: false, backScroll: true });
  * await api.scroll.toTop(3000); // scroll to top in 3s
- * 
+ *
  * @module api/scroll
  */
 
@@ -43,18 +43,25 @@ async function _getScrollMultiplier() {
  * @returns {Promise<void>}
  */
 export async function read(target, options = {}) {
-    if (options.pauses !== undefined && (typeof options.pauses !== 'number' || Number.isNaN(options.pauses) || options.pauses < 0)) {
-        throw new ValidationError(`read() options.pauses must be a non-negative number, got: ${options.pauses}`);
+    if (
+        options.pauses !== undefined &&
+        (typeof options.pauses !== 'number' || Number.isNaN(options.pauses) || options.pauses < 0)
+    ) {
+        throw new ValidationError(
+            `read() options.pauses must be a non-negative number, got: ${options.pauses}`
+        );
     }
     const page = getPage();
     const persona = getPersona();
 
-    const isLocatorInput = typeof target === 'string' || (target && typeof target === 'object' && !Array.isArray(target) && target.waitFor);
+    const isLocatorInput =
+        typeof target === 'string' ||
+        (target && typeof target === 'object' && !Array.isArray(target) && target.waitFor);
     const {
         pauses = mathUtils.randomInRange(2, 5),
         scrollAmount = mathUtils.randomInRange(400, 800),
         variableSpeed = true,
-        backScroll = Math.random() > 0.7
+        backScroll = Math.random() > 0.7,
     } = options;
 
     // If target provided, scroll to it first
@@ -69,9 +76,9 @@ export async function read(target, options = {}) {
     const scrollMultiplier = await _getScrollMultiplier();
     for (let i = 0; i < pauses; i++) {
         // Variable speed scroll with global multiplier
-        const amount = (variableSpeed
-            ? scrollAmount * (0.7 + Math.random() * 0.6)
-            : scrollAmount) * scrollMultiplier;
+        const amount =
+            (variableSpeed ? scrollAmount * (0.7 + Math.random() * 0.6) : scrollAmount) *
+            scrollMultiplier;
 
         // Weighted sub-steps: 70% chance for 1 fluid flick, 30% for 2-3 smaller flicks
         const subSteps = Math.random() < 0.7 ? 1 : mathUtils.randomInRange(2, 3);
@@ -86,7 +93,8 @@ export async function read(target, options = {}) {
 
             try {
                 // Slightly faster flicks for sub-steps to simulate quick finger motions
-                const burstDuration = mathUtils.randomInRange(300, 600) / (persona.scrollSpeed || 1);
+                const burstDuration =
+                    mathUtils.randomInRange(300, 600) / (persona.scrollSpeed || 1);
                 await _smoothScroll(page, stepAmount, burstDuration, 'expo');
             } catch (_e) {
                 await page.evaluate((a) => window.scrollBy(0, a), stepAmount);
@@ -94,15 +102,17 @@ export async function read(target, options = {}) {
 
             // Tiny pause between human-like multi-flicks
             if (subSteps > 1 && s < subSteps - 1) {
-                await new Promise(r => setTimeout(r, mathUtils.randomInRange(100, 250)));
+                await new Promise((r) => setTimeout(r, mathUtils.randomInRange(100, 250)));
             }
         }
 
         // Phase 3: Content-Aware Pause Weighting
         const density = await _getViewportDensity(page);
         let pauseMultiplier = 1.0;
-        if (density.textLength > 800 || density.pCount > 8) pauseMultiplier = 1.6; // Text heavy
-        else if (density.imgCount > 1) pauseMultiplier = 1.3; // Visual content
+        if (density.textLength > 800 || density.pCount > 8)
+            pauseMultiplier = 1.6; // Text heavy
+        else if (density.imgCount > 1)
+            pauseMultiplier = 1.3; // Visual content
         else if (density.textLength < 100) pauseMultiplier = 0.5; // Navigation zones
 
         // Reading pause
@@ -111,7 +121,10 @@ export async function read(target, options = {}) {
         // Phase 3: Reading Anchor (Eye Focus)
         if (Math.random() < 0.3) {
             const cursor = getCursor();
-            const viewport = await page.evaluate(() => ({ w: window.innerWidth, h: window.innerHeight }));
+            const viewport = await page.evaluate(() => ({
+                w: window.innerWidth,
+                h: window.innerHeight,
+            }));
             // Focus on 40% of viewport (off-center towards top-left)
             await cursor.move(
                 viewport.w * 0.4 + (Math.random() - 0.5) * 50,
@@ -119,7 +132,7 @@ export async function read(target, options = {}) {
             );
         }
 
-        await new Promise(r => setTimeout(r, readTime));
+        await new Promise((r) => setTimeout(r, readTime));
 
         // Occasional back-scroll to re-read (2% chance)
         if (backScroll && i < pauses - 1 && Math.random() > 0.98) {
@@ -132,8 +145,8 @@ export async function read(target, options = {}) {
             // Significant re-reading pause with micro-jitter (human settling back)
             const reReadTime = mathUtils.randomInRange(2000, 5000);
             const driftPromise = _microDrift(page, reReadTime);
-            await new Promise(r => setTimeout(r, reReadTime));
-            await driftPromise.catch(() => { });
+            await new Promise((r) => setTimeout(r, reReadTime));
+            await driftPromise.catch(() => {});
         }
     }
 }
@@ -159,7 +172,7 @@ export async function back(distance = 100) {
             await page.evaluate((d) => window.scrollBy(0, -d), scaledDistance / steps);
         }
         const pause = mathUtils.randomInRange(30, 60) / scrollSpeed;
-        await new Promise(r => setTimeout(r, pause));
+        await new Promise((r) => setTimeout(r, pause));
     }
 }
 
@@ -185,22 +198,24 @@ export async function focus(selector, options = {}) {
 
     const getClientRect = async () => {
         if (typeof locator.evaluate === 'function') {
-            return await locator.evaluate((el) => {
-                const rect = el.getBoundingClientRect();
-                return {
-                    x: rect.left,
-                    y: rect.top,
-                    width: rect.width,
-                    height: rect.height,
-                };
-            }).catch(() => null);
+            return await locator
+                .evaluate((el) => {
+                    const rect = el.getBoundingClientRect();
+                    return {
+                        x: rect.left,
+                        y: rect.top,
+                        width: rect.width,
+                        height: rect.height,
+                    };
+                })
+                .catch(() => null);
         }
         return null;
     };
 
     let box = await getClientRect();
     if (!box) {
-        await new Promise(r => setTimeout(r, mathUtils.randomInRange(50, 150)));
+        await new Promise((r) => setTimeout(r, mathUtils.randomInRange(50, 150)));
         box = await getClientRect();
     }
     if (!box) {
@@ -213,7 +228,7 @@ export async function focus(selector, options = {}) {
     if (!viewport) {
         viewport = await page.evaluate(() => ({
             width: window.innerWidth,
-            height: window.innerHeight
+            height: window.innerHeight,
         }));
     }
 
@@ -223,11 +238,11 @@ export async function focus(selector, options = {}) {
     }
 
     // Golden View math: center element vertically with entropy
-    const yOffset = (viewport.height * randomness * (Math.random() - 0.5));
+    const yOffset = viewport.height * randomness * (Math.random() - 0.5);
 
     // box.y is viewport-relative (client rect). Convert to document scroll target.
     const currentScrollY = await page.evaluate(() => window.scrollY);
-    const targetScrollY = currentScrollY + box.y - (viewport.height / 2) + (box.height / 2) + yOffset;
+    const targetScrollY = currentScrollY + box.y - viewport.height / 2 + box.height / 2 + yOffset;
     const deltaY = targetScrollY - currentScrollY;
 
     // Calculate distance and determine scroll strategy
@@ -235,7 +250,7 @@ export async function focus(selector, options = {}) {
     const isFarScroll = distance > 500; // Far = needs fast scroll
 
     // Skip if already comfortably in view
-    const isCurrentlyVisible = box.y > 20 && (box.y + box.height) < (viewport.height - 20);
+    const isCurrentlyVisible = box.y > 20 && box.y + box.height < viewport.height - 20;
     if (isCurrentlyVisible && Math.abs(deltaY) < 150) {
         await _moveCursorToBox(cursor, box);
         return;
@@ -248,7 +263,7 @@ export async function focus(selector, options = {}) {
     for (let i = 0; i < steps; i++) {
         const progress = (i + 1) / steps;
         const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
-        const stepDelta = (deltaY * eased) - (i > 0 ? deltaY * (1 - Math.pow(1 - (i / steps), 3)) : 0);
+        const stepDelta = deltaY * eased - (i > 0 ? deltaY * (1 - Math.pow(1 - i / steps, 3)) : 0);
 
         const duration = isFarScroll
             ? mathUtils.randomInRange(500, 1000)
@@ -266,12 +281,12 @@ export async function focus(selector, options = {}) {
 
         // Add tiny realistic mouse pause between continuous drags if multi-step
         if (steps > 1 && i < steps - 1) {
-            await new Promise(r => setTimeout(r, mathUtils.randomInRange(20, 50)));
+            await new Promise((r) => setTimeout(r, mathUtils.randomInRange(20, 50)));
         }
     }
 
     // Brief settle time
-    await new Promise(r => setTimeout(r, mathUtils.randomInRange(100, 300)));
+    await new Promise((r) => setTimeout(r, mathUtils.randomInRange(100, 300)));
 
     // Refresh bounding box after scroll and move cursor
     const newBox = await getClientRect();
@@ -302,7 +317,7 @@ export async function scroll(distance) {
     } catch (_e) {
         await page.evaluate((d) => window.scrollBy(0, d), scaledDistance);
     }
-    await new Promise(r => setTimeout(r, mathUtils.randomInRange(100, 200)));
+    await new Promise((r) => setTimeout(r, mathUtils.randomInRange(100, 200)));
 }
 
 /**
@@ -314,7 +329,7 @@ export async function toTop(duration) {
     const page = getPage();
     const finalDuration = duration || mathUtils.randomInRange(800, 1500);
     await _smoothScrollToY(page, 0, finalDuration);
-    await new Promise(r => setTimeout(r, mathUtils.randomInRange(300, 600)));
+    await new Promise((r) => setTimeout(r, mathUtils.randomInRange(300, 600)));
 }
 
 /**
@@ -325,7 +340,7 @@ export async function toBottom() {
     const page = getPage();
     const bottom = await page.evaluate(() => document.body.scrollHeight);
     await _smoothScrollToY(page, bottom, mathUtils.randomInRange(800, 1500));
-    await new Promise(r => setTimeout(r, mathUtils.randomInRange(300, 600)));
+    await new Promise((r) => setTimeout(r, mathUtils.randomInRange(300, 600)));
 }
 
 // ─── Internal ────────────────────────────────────────────────────────────────
@@ -360,53 +375,59 @@ async function _moveCursorToBox(cursor, box) {
  */
 async function _smoothScroll(page, deltaY, duration, easing = 'quart') {
     if (deltaY === 0) return;
-    return page.evaluate(async ({ deltaY, duration, easing }) => {
-        const startY = window.scrollY;
-        const startX = window.scrollX;
-        const targetY = startY + deltaY;
-        const startTime = performance.now();
-        // Phase 3: Lateral Sway factor
-        const lateralSway = (Math.random() - 0.5) * 5;
+    return page.evaluate(
+        async ({ deltaY, duration, easing }) => {
+            const startY = window.scrollY;
+            const startX = window.scrollX;
+            const targetY = startY + deltaY;
+            const startTime = performance.now();
+            // Phase 3: Lateral Sway factor
+            const lateralSway = (Math.random() - 0.5) * 5;
 
-        return new Promise(resolve => {
-            function step(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                // Easing selection
-                let eased;
-                if (easing === 'expo') {
-                    // easeOutExpo
-                    eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-                } else {
-                    // easeOutQuart
-                    eased = 1 - Math.pow(1 - progress, 4);
+            return new Promise((resolve) => {
+                function step(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    // Easing selection
+                    let eased;
+                    if (easing === 'expo') {
+                        // easeOutExpo
+                        eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                    } else {
+                        // easeOutQuart
+                        eased = 1 - Math.pow(1 - progress, 4);
+                    }
+
+                    // Phase 3: XY Scroll with Lateral Sway
+                    const currentSway = Math.sin(progress * Math.PI) * lateralSway;
+                    window.scrollTo(startX + currentSway, startY + deltaY * eased);
+
+                    // Random micro-stutter (hesitation) during long scrolls
+                    if (Math.abs(deltaY) > 500 && Math.random() > 0.99) {
+                        setTimeout(
+                            () => window.requestAnimationFrame(step),
+                            20 + Math.random() * 30
+                        );
+                        return;
+                    }
+
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        resolve();
+                    }
                 }
+                window.requestAnimationFrame(step);
 
-                // Phase 3: XY Scroll with Lateral Sway
-                const currentSway = Math.sin(progress * Math.PI) * lateralSway;
-                window.scrollTo(startX + currentSway, startY + (deltaY * eased));
-
-                // Random micro-stutter (hesitation) during long scrolls
-                if (Math.abs(deltaY) > 500 && Math.random() > 0.99) {
-                    setTimeout(() => window.requestAnimationFrame(step), 20 + Math.random() * 30);
-                    return;
-                }
-
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
+                // Fallback timeout in case RAF is severely throttled
+                setTimeout(() => {
+                    window.scrollTo(0, targetY);
                     resolve();
-                }
-            }
-            window.requestAnimationFrame(step);
-
-            // Fallback timeout in case RAF is severely throttled
-            setTimeout(() => {
-                window.scrollTo(0, targetY);
-                resolve();
-            }, duration + 500);
-        });
-    }, { deltaY, duration: Math.max(duration, 50), easing });
+                }, duration + 500);
+            });
+        },
+        { deltaY, duration: Math.max(duration, 50), easing }
+    );
 }
 
 /**
@@ -417,53 +438,59 @@ async function _smoothScroll(page, deltaY, duration, easing = 'quart') {
  * @param {'quart'|'expo'} [easing='quart']
  */
 async function _smoothScrollToY(page, targetY, duration, easing = 'quart') {
-    return page.evaluate(async ({ targetY, duration, easing }) => {
-        const startY = window.scrollY;
-        const deltaY = targetY - startY;
-        if (deltaY === 0) return;
+    return page.evaluate(
+        async ({ targetY, duration, easing }) => {
+            const startY = window.scrollY;
+            const deltaY = targetY - startY;
+            if (deltaY === 0) return;
 
-        const startTime = performance.now();
-        const startX = window.scrollX;
-        // Phase 3: Lateral Sway factor
-        const lateralSway = (Math.random() - 0.5) * 5;
+            const startTime = performance.now();
+            const startX = window.scrollX;
+            // Phase 3: Lateral Sway factor
+            const lateralSway = (Math.random() - 0.5) * 5;
 
-        return new Promise(resolve => {
-            function step(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                // Easing selection
-                let eased;
-                if (easing === 'expo') {
-                    eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-                } else {
-                    eased = 1 - Math.pow(1 - progress, 4);
+            return new Promise((resolve) => {
+                function step(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    // Easing selection
+                    let eased;
+                    if (easing === 'expo') {
+                        eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                    } else {
+                        eased = 1 - Math.pow(1 - progress, 4);
+                    }
+
+                    // Phase 3: XY Scroll with Lateral Sway
+                    const currentSway = Math.sin(progress * Math.PI) * lateralSway;
+                    window.scrollTo(startX + currentSway, startY + deltaY * eased);
+
+                    // Random micro-stutter (hesitation) during long scrolls
+                    if (Math.abs(deltaY) > 500 && Math.random() > 0.99) {
+                        setTimeout(
+                            () => window.requestAnimationFrame(step),
+                            20 + Math.random() * 30
+                        );
+                        return;
+                    }
+
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        resolve();
+                    }
                 }
+                window.requestAnimationFrame(step);
 
-                // Phase 3: XY Scroll with Lateral Sway
-                const currentSway = Math.sin(progress * Math.PI) * lateralSway;
-                window.scrollTo(startX + currentSway, startY + (deltaY * eased));
-
-                // Random micro-stutter (hesitation) during long scrolls
-                if (Math.abs(deltaY) > 500 && Math.random() > 0.99) {
-                    setTimeout(() => window.requestAnimationFrame(step), 20 + Math.random() * 30);
-                    return;
-                }
-
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
+                // Fallback timeout in case RAF is severely throttled
+                setTimeout(() => {
+                    window.scrollTo(0, targetY);
                     resolve();
-                }
-            }
-            window.requestAnimationFrame(step);
-
-            // Fallback timeout in case RAF is severely throttled
-            setTimeout(() => {
-                window.scrollTo(0, targetY);
-                resolve();
-            }, duration + 500);
-        });
-    }, { targetY, duration: Math.max(duration, 50), easing });
+                }, duration + 500);
+            });
+        },
+        { targetY, duration: Math.max(duration, 50), easing }
+    );
 }
 
 /**
@@ -475,32 +502,35 @@ async function _smoothScrollToY(page, targetY, duration, easing = 'quart') {
  */
 async function _microDrift(page, duration, limit = 10) {
     if (duration < 100) return;
-    return page.evaluate(async ({ duration, limit }) => {
-        const driftAmount = (Math.random() - 0.5) * (limit * 2);
-        if (Math.abs(driftAmount) < 0.5) return;
+    return page.evaluate(
+        async ({ duration, limit }) => {
+            const driftAmount = (Math.random() - 0.5) * (limit * 2);
+            if (Math.abs(driftAmount) < 0.5) return;
 
-        const startY = window.scrollY;
-        const startTime = performance.now();
+            const startY = window.scrollY;
+            const startTime = performance.now();
 
-        return new Promise(resolve => {
-            function step(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
+            return new Promise((resolve) => {
+                function step(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
 
-                // Sinusoidal drift for "breathing" feel
-                const eased = Math.sin((progress * Math.PI) / 2);
-                window.scrollTo(0, startY + (driftAmount * eased));
+                    // Sinusoidal drift for "breathing" feel
+                    const eased = Math.sin((progress * Math.PI) / 2);
+                    window.scrollTo(0, startY + driftAmount * eased);
 
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
-                    resolve();
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        resolve();
+                    }
                 }
-            }
-            window.requestAnimationFrame(step);
-            setTimeout(resolve, duration + 100);
-        });
-    }, { duration, limit });
+                window.requestAnimationFrame(step);
+                setTimeout(resolve, duration + 100);
+            });
+        },
+        { duration, limit }
+    );
 }
 
 /**
@@ -511,14 +541,18 @@ async function _microDrift(page, duration, limit = 10) {
 async function _getViewportDensity(page) {
     return await page.evaluate(() => {
         const vH = window.innerHeight;
-        const paragraphs = Array.from(document.querySelectorAll('p, h1, h2, h3, h4, h5, li, span, code')).filter(el => {
+        const paragraphs = Array.from(
+            document.querySelectorAll('p, h1, h2, h3, h4, h5, li, span, code')
+        ).filter((el) => {
             const rect = el.getBoundingClientRect();
             return rect.top >= 0 && rect.top <= vH;
         });
-        const images = Array.from(document.querySelectorAll('img, video, iframe, canvas')).filter(el => {
-            const rect = el.getBoundingClientRect();
-            return rect.top >= 0 && rect.top <= vH;
-        });
+        const images = Array.from(document.querySelectorAll('img, video, iframe, canvas')).filter(
+            (el) => {
+                const rect = el.getBoundingClientRect();
+                return rect.top >= 0 && rect.top <= vH;
+            }
+        );
         const textLength = paragraphs.reduce((sum, el) => sum + (el.innerText?.length || 0), 0);
         return { pCount: paragraphs.length, imgCount: images.length, textLength };
     });

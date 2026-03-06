@@ -7,12 +7,12 @@ vi.mock('@api/core/logger.js', () => ({
         debug: vi.fn(),
         warn: vi.fn(),
         error: vi.fn(),
-        info: vi.fn()
-    })
+        info: vi.fn(),
+    }),
 }));
 
 vi.mock('@api/interactions/queries.js', () => ({
-    visible: vi.fn().mockResolvedValue(true)
+    visible: vi.fn().mockResolvedValue(true),
 }));
 
 describe('api/utils/ghostCursor.js', () => {
@@ -26,14 +26,14 @@ describe('api/utils/ghostCursor.js', () => {
             mouse: {
                 move: vi.fn().mockResolvedValue(),
                 down: vi.fn().mockResolvedValue(),
-                up: vi.fn().mockResolvedValue()
+                up: vi.fn().mockResolvedValue(),
             },
             locator: vi.fn().mockReturnValue({
                 boundingBox: vi.fn().mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }),
                 isVisible: true,
-                click: vi.fn().mockResolvedValue()
+                click: vi.fn().mockResolvedValue(),
             }),
-            viewportSize: vi.fn().mockReturnValue({ width: 1920, height: 1080 })
+            viewportSize: vi.fn().mockReturnValue({ width: 1920, height: 1080 }),
         };
 
         ghostCursor = new GhostCursor(mockPage);
@@ -110,19 +110,37 @@ describe('api/utils/ghostCursor.js', () => {
 
     describe('bezier', () => {
         it('should calculate bezier point at t=0', () => {
-            const result = ghostCursor.bezier(0, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 });
+            const result = ghostCursor.bezier(
+                0,
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+                { x: 2, y: 2 },
+                { x: 3, y: 3 }
+            );
             expect(result.x).toBeCloseTo(0);
             expect(result.y).toBeCloseTo(0);
         });
 
         it('should calculate bezier point at t=1', () => {
-            const result = ghostCursor.bezier(1, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 });
+            const result = ghostCursor.bezier(
+                1,
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+                { x: 2, y: 2 },
+                { x: 3, y: 3 }
+            );
             expect(result.x).toBeCloseTo(3);
             expect(result.y).toBeCloseTo(3);
         });
 
         it('should calculate bezier point at t=0.5', () => {
-            const result = ghostCursor.bezier(0.5, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 });
+            const result = ghostCursor.bezier(
+                0.5,
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+                { x: 2, y: 2 },
+                { x: 3, y: 3 }
+            );
             expect(result.x).toBeCloseTo(1.5);
             expect(result.y).toBeCloseTo(1.5);
         });
@@ -146,19 +164,27 @@ describe('api/utils/ghostCursor.js', () => {
 
     describe('performMove', () => {
         it('should handle invalid start position', async () => {
-            await expect(ghostCursor.performMove(null, { x: 100, y: 100 }, 100)).resolves.toBeUndefined();
+            await expect(
+                ghostCursor.performMove(null, { x: 100, y: 100 }, 100)
+            ).resolves.toBeUndefined();
         });
 
         it('should handle invalid end position', async () => {
-            await expect(ghostCursor.performMove({ x: 0, y: 0 }, null, 100)).resolves.toBeUndefined();
+            await expect(
+                ghostCursor.performMove({ x: 0, y: 0 }, null, 100)
+            ).resolves.toBeUndefined();
         });
 
         it('should handle NaN coordinates', async () => {
-            await expect(ghostCursor.performMove({ x: NaN, y: 0 }, { x: 100, y: 100 }, 100)).resolves.toBeUndefined();
+            await expect(
+                ghostCursor.performMove({ x: NaN, y: 0 }, { x: 100, y: 100 }, 100)
+            ).resolves.toBeUndefined();
         });
 
         it('should handle Infinity coordinates', async () => {
-            await expect(ghostCursor.performMove({ x: Infinity, y: 0 }, { x: 100, y: 100 }, 100)).resolves.toBeUndefined();
+            await expect(
+                ghostCursor.performMove({ x: Infinity, y: 0 }, { x: 100, y: 100 }, 100)
+            ).resolves.toBeUndefined();
         });
     });
 
@@ -186,7 +212,7 @@ describe('api/utils/ghostCursor.js', () => {
     describe('click', () => {
         it('should return success false when no bounding box and no fallback', async () => {
             const mockLocator = {
-                boundingBox: vi.fn().mockResolvedValue(null)
+                boundingBox: vi.fn().mockResolvedValue(null),
             };
 
             const result = await ghostCursor.click(mockLocator, { allowNativeFallback: false });
@@ -196,7 +222,7 @@ describe('api/utils/ghostCursor.js', () => {
         it('should use native fallback when allowed and no bbox', async () => {
             const mockLocator = {
                 boundingBox: vi.fn().mockResolvedValue(null),
-                click: vi.fn().mockResolvedValue()
+                click: vi.fn().mockResolvedValue(),
             };
 
             const result = await ghostCursor.click(mockLocator, { allowNativeFallback: true });
