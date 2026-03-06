@@ -316,6 +316,25 @@ const cursorFn = Object.assign((selector) => move(selector), {
     stopFidgeting,
 });
 
+// Agent: api.agent('goal') + api.agent.see()
+const agentFn = Object.assign(async (goal, config) => {
+    return await agentRunner.run(goal, config);
+}, {
+    see,
+    do: doAction,
+    find: agentFind,
+    vision: agentVision,
+    screenshot: agentVision.screenshot,
+    captureAXTree,
+    captureState,
+    run: (goal, config) => agentRunner.run(goal, config),
+    stop: () => agentRunner.stop(),
+    isRunning: () => agentRunner.isRunning,
+    engine: actionEngine,
+    llm: llmClient,
+    getStats: () => agentRunner.getUsageStats(),
+});
+
 async function init(page, options = {}) {
     return initPage(page, options);
 }
@@ -472,26 +491,12 @@ export const api = {
     /**
      * Agent Interaction Layer (LLM-friendly)
      * @example
+     * await api.agent('Find the login button and click it'); // Run full agent loop
      * const view = await api.agent.see(); // Get semantic map
      * await api.agent.do('click', 'Login'); // Click by label
      * await api.agent.do('type', 1, 'username'); // Type by ID
      */
-    agent: {
-        see,
-        do: doAction,
-        find: agentFind,
-        vision: agentVision,
-        screenshot: agentVision.screenshot,
-        captureAXTree,
-        captureState,
-        // LLM-driven agent
-        run: (goal, config) => agentRunner.run(goal, config),
-        stop: () => agentRunner.stop(),
-        isRunning: () => agentRunner.isRunning,
-        engine: actionEngine,
-        llm: llmClient,
-        getStats: () => agentRunner.getUsageStats(),
-    },
+    agent: agentFn,
 
     // ── Events & Plugins ────────────────────────────────────────
     get events() {

@@ -266,3 +266,9 @@ Explicitly separated the configuration and roles of the "Browser Control LLM" an
 
 1.  **`config/settings.json`**:
     - **Fix**: Added a new `"agent"` block with `llm` and `runner` configurations explicitly defining the browser control agent. This separates it from the `llm.local` block which is now solely used for the text generation LLM.
+
+2.  **`api/index.js`**:
+    - **Refactor**: Transformed `api.agent` into a unified dual-callable layer. It can now be used as a function for high-level autonomous orchestration (`api.agent("prompt")`) while retaining its sub-properties for granular control (`api.agent.see()`, `api.agent.do()`).
+
+3.  **`agentictask.md`**:
+    - **Feature**: Created markdown documentation file explaining the new `api.agent` architecture, providing code examples for high-level orchestration vs low-level API usage.

@@ -4,6 +4,9 @@
 
 - **Explicit LLM Configuration**: Distinctly separated the Browser Control LLM (`agent.llm`) from the Text Generation LLM (`llm.local`) in `settings.json`.
 - **Visibility & Control**: Exposed previously hidden runner configurations (`maxSteps`, `stepDelay`) to the `settings.json` file for user orchestration control.
+- **Unified Agent Interface**: Transformed `api.agent` into a dual-callable API. It can now be used as a function for high-level autonomous orchestration (`api.agent("prompt")`) while retaining its sub-properties for granular control (`api.agent.see()`, `api.agent.do()`).
+- **Documentation**: Created `agentictask.md` explaining the new `api.agent` usage.
+
 
 (06 March 2026) VS Code Testing Enhancements
 
