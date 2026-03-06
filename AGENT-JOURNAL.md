@@ -251,3 +251,18 @@ Added "Vitest Coverage" and "Vitest (Current File)" configurations to `.vscode/l
 1.  **`.vscode/launch.json`**:
     - **New Configuration**: `Vitest Coverage` - Runs vitest with coverage reporting using the centralized config.
     - **New Configuration**: `Vitest (Current File)` - Runs vitest on the currently active file in the editor.
+
+## Gemini CLI Agent Session: 2026-03-07
+
+### Objective:
+
+Differentiate LLM Roles for Text Generation and Browser Control.
+
+### Summary of Changes:
+
+Explicitly separated the configuration and roles of the "Browser Control LLM" and the "Text Generation LLM" to give full visibility and control in `settings.json`.
+
+### Detailed Changes by File:
+
+1.  **`config/settings.json`**:
+    - **Fix**: Added a new `"agent"` block with `llm` and `runner` configurations explicitly defining the browser control agent. This separates it from the `llm.local` block which is now solely used for the text generation LLM.

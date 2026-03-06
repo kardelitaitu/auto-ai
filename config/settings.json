@@ -98,6 +98,23 @@
       "colorScheme": "dark"
     }
   },
+  "agent": {
+    "llm": {
+      "serverType": "ollama",
+      "baseUrl": "http://localhost:11434",
+      "model": "qwen2.5:7b",
+      "temperature": 0.5,
+      "maxTokens": 2048,
+      "contextLength": 4096,
+      "useVision": true,
+      "bypassHealthCheck": false
+    },
+    "runner": {
+      "maxSteps": 20,
+      "stepDelay": 2000,
+      "adaptiveDelay": true
+    }
+  },
   "llm": {
     "vllm": {
       "enabled": false,
