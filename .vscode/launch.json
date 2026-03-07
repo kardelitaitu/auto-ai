@@ -5,52 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Main",
-            "request": "launch",
-            "runtimeArgs": [
-                "run",
-                "start"
-            ],
-            "runtimeExecutable": "npm",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "node",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Debug Main (inspect)",
-            "request": "launch",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run",
-                "start"
-            ],
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "node",
-            "console": "integratedTerminal"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Vitest Coverage",
-            "autoAttachChildProcesses": true,
-            "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
-            "args": [
-                "run",
-                "-c",
-                "config/vitest.config.js",
-                "--coverage"
-            ],
-            "smartStep": true,
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "console": "integratedTerminal"
-        },
-        {
             "type": "node",
             "request": "launch",
             "name": "Vitest: Run All Tests",
@@ -124,6 +78,24 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Vitest Coverage",
+            "autoAttachChildProcesses": true,
+            "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+            "args": [
+                "run",
+                "-c",
+                "config/vitest.config.js",
+                "--coverage"
+            ],
+            "smartStep": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Vitest Watch Mode",
             "autoAttachChildProcesses": true,
             "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
@@ -139,9 +111,37 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "Launch Main",
+            "request": "launch",
+            "runtimeArgs": [
+                "run",
+                "start"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Main (inspect)",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "start"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "console": "integratedTerminal"
+        },
+        {
             "type": "node",
             "request": "launch",
-            "name": "Run Specific Task",
+            "name": "Run Custom NPM Script",
             "runtimeArgs": [
                 "run"
             ],
