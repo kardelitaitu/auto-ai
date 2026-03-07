@@ -1,102 +1,102 @@
-[18:54:18] [INFO] [EntropyController] [session-1772798058921-7xwps1kvb] Session initialized with paceMultiplier=0.89
-[18:54:18] [INFO] [EntropyController] [session-1772798058921-7xwps1kvb] Fatigue scheduled for T+4.2m
-[18:54:18] [INFO] [main.js] MultiBrowseAutomation - Starting up...
-[18:54:18] [INFO] [main.js] Checking Docker LLM status...
-[18:54:19] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
-[18:54:19] [DEBUG] [configLoader.js] Loaded configuration from settings.json
-[18:54:19] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
-[18:54:19] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
-[18:54:19] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
-[18:54:19] [INFO] [sessionManager.js] [SessionManager] Database initialized at C:\My Script\auto-ai\data\sessions.db
-[18:54:19] [INFO] [main.js] Attempting to discover and connect to available browsers...
-[18:54:19] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=50
-[18:54:19] [INFO] [dashboard.js] Dashboard server starting on port 3001 (2000ms broadcast)
-[18:54:19] [INFO] [dashboard.js] Broadcast interval set to 2000ms
-[18:54:19] [INFO] [dashboard.js] Dashboard server listening on port 3001
-[18:54:19] [INFO] [orchestrator.js] [Orchestrator] Dashboard started on port 3001
-[18:54:19] [INFO] [orchestrator.js] [Orchestrator] Starting browser discovery...
-[18:54:19] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=50
-[18:54:19] [INFO] [discovery.js] Loading 8 discovery connectors...
-[18:54:19] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
-[18:54:19] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[18:54:19] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
-[18:54:19] [INFO] [discovery.js] Loaded connector: ixbrowser
-[18:54:19] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
-[18:54:19] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[18:54:19] [INFO] [localBrave.js] Initialized LocalBraveDiscover
-[18:54:19] [INFO] [discovery.js] Loaded connector: localBrave
-[18:54:19] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
-[18:54:19] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[18:54:19] [INFO] [discovery.js] Loaded connector: localChrome
-[18:54:19] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
-[18:54:19] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[18:54:19] [INFO] [discovery.js] Loaded connector: localEdge
-[18:54:19] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
-[18:54:19] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[18:54:19] [INFO] [discovery.js] Loaded connector: localVivaldi
-[18:54:19] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
-[18:54:19] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[18:54:19] [INFO] [discovery.js] Loaded connector: morelogin
-[18:54:19] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
-[18:54:19] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[18:54:19] [INFO] [roxybrowser.js] Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/
-[18:54:19] [INFO] [discovery.js] Loaded connector: roxybrowser
-[18:54:19] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
-[18:54:19] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[18:54:19] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
-[18:54:19] [INFO] [discovery.js] Loaded connector: undetectable
-[18:54:19] [INFO] [discovery.js] Successfully loaded 8 connectors
-[18:54:19] [INFO] [discovery.js] Starting browser discovery with 8 connectors in parallel...
-[18:54:19] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
-[18:54:19] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
-[18:54:19] [INFO] [localBrave.js] Discovering localBrave instances
-[18:54:19] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
-[18:54:19] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
-[18:54:19] [INFO] [roxybrowser.js] Discovering roxybrowser instances from: http://127.0.0.1:50000/
-[18:54:19] [INFO] [undetectable.js] Starting discovery for undetectable browser type
-[18:54:19] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
-[18:54:19] [INFO] [localBrave.js] No running localBrave instances found.
-[18:54:19] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[18:54:19] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[18:54:19] [INFO] [roxybrowser.js] Received profile info with code: 0, message: Success
-[18:54:19] [INFO] [roxybrowser.js] Processing 1 profiles from API response
-[18:54:19] [INFO] [roxybrowser.js] Found connectable profile: 0001 (ws: ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8)
-[18:54:19] [INFO] [roxybrowser.js] Discovery complete. Found 1 roxybrowser profiles.
-[18:54:20] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
-[18:54:20] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
-[18:54:20] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
-[18:54:20] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
-[18:54:20] [INFO] [discovery.js] Connector ixbrowser found no endpoints
-[18:54:20] [INFO] [discovery.js] Connector localBrave found no endpoints
-[18:54:20] [INFO] [discovery.js] Connector localChrome found no endpoints
-[18:54:20] [INFO] [discovery.js] Connector localEdge found no endpoints
-[18:54:20] [INFO] [discovery.js] Connector localVivaldi found no endpoints
-[18:54:20] [INFO] [discovery.js] Connector morelogin found no endpoints
-[18:54:20] [INFO] [discovery.js] Connector roxybrowser found 1 endpoints
-[18:54:20] [INFO] [discovery.js] Connector undetectable found no endpoints
-[18:54:20] [INFO] [discovery.js] Discovery complete. Found 1 total endpoints
-[18:54:20] [INFO] [orchestrator.js] Found 1 browser endpoints. Connecting...
-[18:54:20] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8
-[18:54:20] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8
-[18:54:20] [INFO] [sessionManager.js] [SessionManager] Session added: roxy:0001 (50 workers)
-[18:54:20] [INFO] [orchestrator.js] [Orchestrator] Connected: roxy:0001
-[18:54:20] [INFO] [orchestrator.js] [Orchestrator] Discovery complete. Connected to 1 browsers.
-[18:54:20] [DEBUG] [metrics.js] Browser discovery: 1 discovered, 1 connected, 0 failed
-[18:54:20] [INFO] [main.js] Successfully connected to 1 browser(s). Ready for automation.
-[18:54:20] [INFO] [main.js] No tasks specified. System initialized in idle mode.
-[18:54:20] [INFO] [main.js] MultiBrowseAutomation - Shutting down...
-[18:54:20] [INFO] [orchestrator.js] [Orchestrator] Queue empty, resolving immediately
-[18:54:20] [INFO] [sessionManager.js] [SessionManager] SessionManager shutting down...
-[18:54:20] [INFO] [automator.js] Started health check monitoring (interval: 30000ms)
-[18:54:20] [INFO] [sessionManager.js] [SessionManager] SessionManager shutdown complete
-[18:54:20] [INFO] [dashboard.js] Socket.io closed
-[18:54:20] [INFO] [dashboard.js] Dashboard server stopped
-[18:54:20] [INFO] [automator.js] Automator shutting down...
-[18:54:20] [INFO] [automator.js] Closing 1 browser connections
-[18:54:20] [INFO] [automator.js] Stopped health check monitoring
-[18:54:20] [DEBUG] [automator.js] Closed connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8
-[18:54:20] [INFO] [automator.js] All connections closed
-[18:54:20] [INFO] [automator.js] Automator shutdown complete
-[18:54:20] [INFO] [metrics.js] Generating JSON summary report...
-[18:54:20] [INFO] [metrics.js] Successfully generated JSON report at C:\My Script\auto-ai\run-summary.json
-[18:54:20] [INFO] [orchestrator.js] [Orchestrator] Orchestrator shutdown complete
+[13:54:55] [INFO] [EntropyController] [session-1772866495012-9mv7sr6mo] Session initialized with paceMultiplier=0.94
+[13:54:55] [INFO] [EntropyController] [session-1772866495012-9mv7sr6mo] Fatigue scheduled for T+4.5m
+[13:54:55] [INFO] [main.js] MultiBrowseAutomation - Starting up...
+[13:54:55] [INFO] [main.js] Checking Docker LLM status...
+[13:54:55] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[13:54:55] [DEBUG] [configLoader.js] Loaded configuration from settings.json
+[13:54:55] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
+[13:54:55] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
+[13:54:55] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
+[13:54:55] [INFO] [sessionManager.js] [SessionManager] Database initialized at C:\My Script\auto-ai\data\sessions.db
+[13:54:55] [INFO] [main.js] Attempting to discover and connect to available browsers...
+[13:54:55] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=50
+[13:54:55] [INFO] [dashboard.js] Dashboard server starting on port 3001 (2000ms broadcast)
+[13:54:55] [INFO] [dashboard.js] Broadcast interval set to 2000ms
+[13:54:55] [INFO] [dashboard.js] Dashboard server listening on port 3001
+[13:54:55] [INFO] [orchestrator.js] [Orchestrator] Dashboard started on port 3001
+[13:54:55] [INFO] [orchestrator.js] [Orchestrator] Starting browser discovery...
+[13:54:55] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=50
+[13:54:55] [INFO] [discovery.js] Loading 8 discovery connectors...
+[13:54:55] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
+[13:54:55] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[13:54:55] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
+[13:54:55] [INFO] [discovery.js] Loaded connector: ixbrowser
+[13:54:55] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
+[13:54:55] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[13:54:55] [INFO] [localBrave.js] Initialized LocalBraveDiscover
+[13:54:55] [INFO] [discovery.js] Loaded connector: localBrave
+[13:54:55] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
+[13:54:55] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[13:54:55] [INFO] [discovery.js] Loaded connector: localChrome
+[13:54:55] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
+[13:54:55] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[13:54:55] [INFO] [discovery.js] Loaded connector: localEdge
+[13:54:55] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
+[13:54:55] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[13:54:55] [INFO] [discovery.js] Loaded connector: localVivaldi
+[13:54:55] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
+[13:54:55] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[13:54:55] [INFO] [discovery.js] Loaded connector: morelogin
+[13:54:55] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
+[13:54:55] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[13:54:55] [INFO] [roxybrowser.js] Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/
+[13:54:55] [INFO] [discovery.js] Loaded connector: roxybrowser
+[13:54:55] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
+[13:54:55] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[13:54:55] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
+[13:54:55] [INFO] [discovery.js] Loaded connector: undetectable
+[13:54:55] [INFO] [discovery.js] Successfully loaded 8 connectors
+[13:54:55] [INFO] [discovery.js] Starting browser discovery with 8 connectors in parallel...
+[13:54:55] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
+[13:54:55] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
+[13:54:55] [INFO] [localBrave.js] Discovering localBrave instances
+[13:54:55] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
+[13:54:55] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
+[13:54:55] [INFO] [roxybrowser.js] Discovering roxybrowser instances from: http://127.0.0.1:50000/
+[13:54:55] [INFO] [undetectable.js] Starting discovery for undetectable browser type
+[13:54:55] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
+[13:54:55] [INFO] [localBrave.js] No running localBrave instances found.
+[13:54:55] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[13:54:55] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[13:54:55] [INFO] [roxybrowser.js] Received profile info with code: 0, message: Success
+[13:54:55] [INFO] [roxybrowser.js] Processing 1 profiles from API response
+[13:54:55] [INFO] [roxybrowser.js] Found connectable profile: 0001 (ws: ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8)
+[13:54:55] [INFO] [roxybrowser.js] Discovery complete. Found 1 roxybrowser profiles.
+[13:54:56] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
+[13:54:56] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
+[13:54:56] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
+[13:54:56] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
+[13:54:56] [INFO] [discovery.js] Connector ixbrowser found no endpoints
+[13:54:56] [INFO] [discovery.js] Connector localBrave found no endpoints
+[13:54:56] [INFO] [discovery.js] Connector localChrome found no endpoints
+[13:54:56] [INFO] [discovery.js] Connector localEdge found no endpoints
+[13:54:56] [INFO] [discovery.js] Connector localVivaldi found no endpoints
+[13:54:56] [INFO] [discovery.js] Connector morelogin found no endpoints
+[13:54:56] [INFO] [discovery.js] Connector roxybrowser found 1 endpoints
+[13:54:56] [INFO] [discovery.js] Connector undetectable found no endpoints
+[13:54:56] [INFO] [discovery.js] Discovery complete. Found 1 total endpoints
+[13:54:56] [INFO] [orchestrator.js] Found 1 browser endpoints. Connecting...
+[13:54:56] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8
+[13:54:56] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8
+[13:54:56] [INFO] [sessionManager.js] [SessionManager] Session added: roxy:0001 (50 workers)
+[13:54:56] [INFO] [orchestrator.js] [Orchestrator] Connected: roxy:0001
+[13:54:56] [INFO] [orchestrator.js] [Orchestrator] Discovery complete. Connected to 1 browsers.
+[13:54:56] [DEBUG] [metrics.js] Browser discovery: 1 discovered, 1 connected, 0 failed
+[13:54:56] [INFO] [main.js] Successfully connected to 1 browser(s). Ready for automation.
+[13:54:56] [INFO] [main.js] No tasks specified. System initialized in idle mode.
+[13:54:56] [INFO] [main.js] MultiBrowseAutomation - Shutting down...
+[13:54:56] [INFO] [orchestrator.js] [Orchestrator] Queue empty, resolving immediately
+[13:54:56] [INFO] [sessionManager.js] [SessionManager] SessionManager shutting down...
+[13:54:56] [INFO] [automator.js] Started health check monitoring (interval: 30000ms)
+[13:54:56] [INFO] [sessionManager.js] [SessionManager] SessionManager shutdown complete
+[13:54:56] [INFO] [dashboard.js] Socket.io closed
+[13:54:56] [INFO] [dashboard.js] Dashboard server stopped
+[13:54:56] [INFO] [automator.js] Automator shutting down...
+[13:54:56] [INFO] [automator.js] Closing 1 browser connections
+[13:54:56] [INFO] [automator.js] Stopped health check monitoring
+[13:54:56] [DEBUG] [automator.js] Closed connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8
+[13:54:56] [INFO] [automator.js] All connections closed
+[13:54:56] [INFO] [automator.js] Automator shutdown complete
+[13:54:56] [INFO] [metrics.js] Generating JSON summary report...
+[13:54:56] [INFO] [metrics.js] Successfully generated JSON report at C:\My Script\auto-ai\run-summary.json
+[13:54:56] [INFO] [orchestrator.js] [Orchestrator] Orchestrator shutdown complete

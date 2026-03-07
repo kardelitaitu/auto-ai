@@ -1,102 +1,102 @@
-{"timestamp":"2026-03-06T11:54:18.941Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772798058921-7xwps1kvb] Session initialized with paceMultiplier=0.89"}
-{"timestamp":"2026-03-06T11:54:18.942Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772798058921-7xwps1kvb] Fatigue scheduled for T+4.2m"}
-{"timestamp":"2026-03-06T11:54:18.997Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
-{"timestamp":"2026-03-06T11:54:18.998Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
-{"timestamp":"2026-03-06T11:54:19.000Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
-{"timestamp":"2026-03-06T11:54:19.001Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
-{"timestamp":"2026-03-06T11:54:19.001Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
-{"timestamp":"2026-03-06T11:54:19.002Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
-{"timestamp":"2026-03-06T11:54:19.054Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
-{"timestamp":"2026-03-06T11:54:19.064Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Database initialized at C:\\My Script\\auto-ai\\data\\sessions.db"}
-{"timestamp":"2026-03-06T11:54:19.065Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
-{"timestamp":"2026-03-06T11:54:19.066Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Configured: session=1800000ms, concurrency=50"}
-{"timestamp":"2026-03-06T11:54:19.333Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
-{"timestamp":"2026-03-06T11:54:19.335Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
-{"timestamp":"2026-03-06T11:54:19.338Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
-{"timestamp":"2026-03-06T11:54:19.339Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Dashboard started on port 3001"}
-{"timestamp":"2026-03-06T11:54:19.339Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Starting browser discovery..."}
-{"timestamp":"2026-03-06T11:54:19.340Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Configured: session=1800000ms, concurrency=50"}
-{"timestamp":"2026-03-06T11:54:19.341Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
-{"timestamp":"2026-03-06T11:54:19.342Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
-{"timestamp":"2026-03-06T11:54:19.348Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-06T11:54:19.348Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
-{"timestamp":"2026-03-06T11:54:19.349Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
-{"timestamp":"2026-03-06T11:54:19.349Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
-{"timestamp":"2026-03-06T11:54:19.352Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-06T11:54:19.352Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
-{"timestamp":"2026-03-06T11:54:19.352Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
-{"timestamp":"2026-03-06T11:54:19.353Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
-{"timestamp":"2026-03-06T11:54:19.355Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-06T11:54:19.356Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
-{"timestamp":"2026-03-06T11:54:19.356Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
-{"timestamp":"2026-03-06T11:54:19.359Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-06T11:54:19.360Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
-{"timestamp":"2026-03-06T11:54:19.360Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
-{"timestamp":"2026-03-06T11:54:19.363Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-06T11:54:19.363Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
-{"timestamp":"2026-03-06T11:54:19.364Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
-{"timestamp":"2026-03-06T11:54:19.367Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-06T11:54:19.367Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
-{"timestamp":"2026-03-06T11:54:19.368Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
-{"timestamp":"2026-03-06T11:54:19.372Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-06T11:54:19.372Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
-{"timestamp":"2026-03-06T11:54:19.372Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
-{"timestamp":"2026-03-06T11:54:19.373Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
-{"timestamp":"2026-03-06T11:54:19.377Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
-{"timestamp":"2026-03-06T11:54:19.377Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
-{"timestamp":"2026-03-06T11:54:19.377Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
-{"timestamp":"2026-03-06T11:54:19.378Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
-{"timestamp":"2026-03-06T11:54:19.378Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
-{"timestamp":"2026-03-06T11:54:19.379Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
-{"timestamp":"2026-03-06T11:54:19.379Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
-{"timestamp":"2026-03-06T11:54:19.383Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
-{"timestamp":"2026-03-06T11:54:19.383Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
-{"timestamp":"2026-03-06T11:54:19.436Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
-{"timestamp":"2026-03-06T11:54:19.436Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
-{"timestamp":"2026-03-06T11:54:19.438Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
-{"timestamp":"2026-03-06T11:54:19.439Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
-{"timestamp":"2026-03-06T11:54:19.478Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
-{"timestamp":"2026-03-06T11:54:19.479Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
-{"timestamp":"2026-03-06T11:54:19.481Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
-{"timestamp":"2026-03-06T11:54:19.487Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
-{"timestamp":"2026-03-06T11:54:19.487Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
-{"timestamp":"2026-03-06T11:54:19.487Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: 0001 (ws: ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8)"}
-{"timestamp":"2026-03-06T11:54:19.488Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
-{"timestamp":"2026-03-06T11:54:20.491Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
-{"timestamp":"2026-03-06T11:54:20.491Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
-{"timestamp":"2026-03-06T11:54:20.492Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
-{"timestamp":"2026-03-06T11:54:20.492Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
-{"timestamp":"2026-03-06T11:54:20.493Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
-{"timestamp":"2026-03-06T11:54:20.493Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
-{"timestamp":"2026-03-06T11:54:20.493Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
-{"timestamp":"2026-03-06T11:54:20.493Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
-{"timestamp":"2026-03-06T11:54:20.494Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
-{"timestamp":"2026-03-06T11:54:20.494Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
-{"timestamp":"2026-03-06T11:54:20.494Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
-{"timestamp":"2026-03-06T11:54:20.494Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
-{"timestamp":"2026-03-06T11:54:20.494Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
-{"timestamp":"2026-03-06T11:54:20.495Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Found 1 browser endpoints. Connecting..."}
-{"timestamp":"2026-03-06T11:54:20.495Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
-{"timestamp":"2026-03-06T11:54:20.649Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
-{"timestamp":"2026-03-06T11:54:20.650Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Session added: roxy:0001 (50 workers)"}
-{"timestamp":"2026-03-06T11:54:20.657Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Connected: roxy:0001"}
-{"timestamp":"2026-03-06T11:54:20.657Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Discovery complete. Connected to 1 browsers."}
-{"timestamp":"2026-03-06T11:54:20.657Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
-{"timestamp":"2026-03-06T11:54:20.658Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to 1 browser(s). Ready for automation."}
-{"timestamp":"2026-03-06T11:54:20.659Z","level":"INFO","module":"main.js","sessionId":null,"message":"No tasks specified. System initialized in idle mode."}
-{"timestamp":"2026-03-06T11:54:20.659Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Shutting down..."}
-{"timestamp":"2026-03-06T11:54:20.659Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Queue empty, resolving immediately"}
-{"timestamp":"2026-03-06T11:54:20.660Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] SessionManager shutting down..."}
-{"timestamp":"2026-03-06T11:54:20.661Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
-{"timestamp":"2026-03-06T11:54:20.681Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] SessionManager shutdown complete"}
-{"timestamp":"2026-03-06T11:54:20.681Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Socket.io closed"}
-{"timestamp":"2026-03-06T11:54:20.683Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server stopped"}
-{"timestamp":"2026-03-06T11:54:20.683Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutting down..."}
-{"timestamp":"2026-03-06T11:54:20.684Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Closing 1 browser connections"}
-{"timestamp":"2026-03-06T11:54:20.684Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Stopped health check monitoring"}
-{"timestamp":"2026-03-06T11:54:20.687Z","level":"DEBUG","module":"automator.js","sessionId":null,"message":"Closed connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
-{"timestamp":"2026-03-06T11:54:20.687Z","level":"INFO","module":"automator.js","sessionId":null,"message":"All connections closed"}
-{"timestamp":"2026-03-06T11:54:20.688Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutdown complete"}
-{"timestamp":"2026-03-06T11:54:20.689Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Generating JSON summary report..."}
-{"timestamp":"2026-03-06T11:54:20.693Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Successfully generated JSON report at C:\\My Script\\auto-ai\\run-summary.json"}
-{"timestamp":"2026-03-06T11:54:20.693Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Orchestrator shutdown complete"}
+{"timestamp":"2026-03-07T06:54:55.031Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772866495012-9mv7sr6mo] Session initialized with paceMultiplier=0.94"}
+{"timestamp":"2026-03-07T06:54:55.032Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1772866495012-9mv7sr6mo] Fatigue scheduled for T+4.5m"}
+{"timestamp":"2026-03-07T06:54:55.082Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Starting up..."}
+{"timestamp":"2026-03-07T06:54:55.082Z","level":"INFO","module":"main.js","sessionId":null,"message":"Checking Docker LLM status..."}
+{"timestamp":"2026-03-07T06:54:55.084Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from timeouts.json"}
+{"timestamp":"2026-03-07T06:54:55.085Z","level":"DEBUG","module":"configLoader.js","sessionId":null,"message":"Loaded configuration from settings.json"}
+{"timestamp":"2026-03-07T06:54:55.085Z","level":"INFO","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking local LLM status..."}
+{"timestamp":"2026-03-07T06:54:55.086Z","level":"DEBUG","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] Checking API at http://localhost:11434..."}
+{"timestamp":"2026-03-07T06:54:55.132Z","level":"SUCCESS","module":"localLLM.js","sessionId":null,"message":"[LocalLLM] ✓ Service is ready at http://localhost:11434"}
+{"timestamp":"2026-03-07T06:54:55.140Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Database initialized at C:\\My Script\\auto-ai\\data\\sessions.db"}
+{"timestamp":"2026-03-07T06:54:55.141Z","level":"INFO","module":"main.js","sessionId":null,"message":"Attempting to discover and connect to available browsers..."}
+{"timestamp":"2026-03-07T06:54:55.142Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Configured: session=1800000ms, concurrency=50"}
+{"timestamp":"2026-03-07T06:54:55.347Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server starting on port 3001 (2000ms broadcast)"}
+{"timestamp":"2026-03-07T06:54:55.349Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Broadcast interval set to 2000ms"}
+{"timestamp":"2026-03-07T06:54:55.352Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server listening on port 3001"}
+{"timestamp":"2026-03-07T06:54:55.353Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Dashboard started on port 3001"}
+{"timestamp":"2026-03-07T06:54:55.353Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Starting browser discovery..."}
+{"timestamp":"2026-03-07T06:54:55.354Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Configured: session=1800000ms, concurrency=50"}
+{"timestamp":"2026-03-07T06:54:55.355Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loading 8 discovery connectors..."}
+{"timestamp":"2026-03-07T06:54:55.356Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: ixbrowser"}
+{"timestamp":"2026-03-07T06:54:55.365Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-07T06:54:55.365Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200"}
+{"timestamp":"2026-03-07T06:54:55.366Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: ixbrowser"}
+{"timestamp":"2026-03-07T06:54:55.366Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localBrave"}
+{"timestamp":"2026-03-07T06:54:55.369Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-07T06:54:55.369Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Initialized LocalBraveDiscover"}
+{"timestamp":"2026-03-07T06:54:55.369Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localBrave"}
+{"timestamp":"2026-03-07T06:54:55.370Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localChrome"}
+{"timestamp":"2026-03-07T06:54:55.372Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-07T06:54:55.372Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localChrome"}
+{"timestamp":"2026-03-07T06:54:55.373Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localEdge"}
+{"timestamp":"2026-03-07T06:54:55.375Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-07T06:54:55.376Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localEdge"}
+{"timestamp":"2026-03-07T06:54:55.376Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: localVivaldi"}
+{"timestamp":"2026-03-07T06:54:55.378Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-07T06:54:55.379Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: localVivaldi"}
+{"timestamp":"2026-03-07T06:54:55.379Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: morelogin"}
+{"timestamp":"2026-03-07T06:54:55.381Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-07T06:54:55.382Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: morelogin"}
+{"timestamp":"2026-03-07T06:54:55.382Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: roxybrowser"}
+{"timestamp":"2026-03-07T06:54:55.386Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-07T06:54:55.386Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/"}
+{"timestamp":"2026-03-07T06:54:55.387Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: roxybrowser"}
+{"timestamp":"2026-03-07T06:54:55.387Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"[DISCOVERY DEBUG] Loading connector: undetectable"}
+{"timestamp":"2026-03-07T06:54:55.390Z","level":"INFO","module":"baseDiscover.js","sessionId":null,"message":"BaseDiscover initialized for type: base"}
+{"timestamp":"2026-03-07T06:54:55.391Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/"}
+{"timestamp":"2026-03-07T06:54:55.391Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Loaded connector: undetectable"}
+{"timestamp":"2026-03-07T06:54:55.391Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Successfully loaded 8 connectors"}
+{"timestamp":"2026-03-07T06:54:55.392Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Starting browser discovery with 8 connectors in parallel..."}
+{"timestamp":"2026-03-07T06:54:55.392Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Starting discovery for ixbrowser browser type"}
+{"timestamp":"2026-03-07T06:54:55.393Z","level":"INFO","module":"ixbrowser.js","sessionId":null,"message":"Discovering ixbrowser instances from: http://127.0.0.1:53200"}
+{"timestamp":"2026-03-07T06:54:55.396Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"Discovering localBrave instances"}
+{"timestamp":"2026-03-07T06:54:55.397Z","level":"DEBUG","module":"localBrave.js","sessionId":null,"message":"Scanning 50 ports for Brave instances"}
+{"timestamp":"2026-03-07T06:54:55.432Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Starting discovery for roxybrowser browser type"}
+{"timestamp":"2026-03-07T06:54:55.432Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovering roxybrowser instances from: http://127.0.0.1:50000/"}
+{"timestamp":"2026-03-07T06:54:55.434Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Starting discovery for undetectable browser type"}
+{"timestamp":"2026-03-07T06:54:55.434Z","level":"INFO","module":"undetectable.js","sessionId":null,"message":"Discovering undetectable instances from: http://127.0.0.1:25325/"}
+{"timestamp":"2026-03-07T06:54:55.464Z","level":"INFO","module":"localBrave.js","sessionId":null,"message":"No running localBrave instances found."}
+{"timestamp":"2026-03-07T06:54:55.466Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-03-07T06:54:55.467Z","level":"WARN","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms..."}
+{"timestamp":"2026-03-07T06:54:55.472Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Received profile info with code: 0, message: Success"}
+{"timestamp":"2026-03-07T06:54:55.473Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Processing 1 profiles from API response"}
+{"timestamp":"2026-03-07T06:54:55.473Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Found connectable profile: 0001 (ws: ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8)"}
+{"timestamp":"2026-03-07T06:54:55.474Z","level":"INFO","module":"roxybrowser.js","sessionId":null,"message":"Discovery complete. Found 1 roxybrowser profiles."}
+{"timestamp":"2026-03-07T06:54:56.482Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-03-07T06:54:56.482Z","level":"ERROR","module":"undetectable.js","sessionId":null,"message":"Error during undetectable discovery: fetch failed"}
+{"timestamp":"2026-03-07T06:54:56.483Z","level":"ERROR","module":"retry.js","sessionId":null,"message":"[API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed"}
+{"timestamp":"2026-03-07T06:54:56.484Z","level":"ERROR","module":"ixbrowser.js","sessionId":null,"message":"Error during ixbrowser discovery: fetch failed"}
+{"timestamp":"2026-03-07T06:54:56.484Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector ixbrowser found no endpoints"}
+{"timestamp":"2026-03-07T06:54:56.485Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localBrave found no endpoints"}
+{"timestamp":"2026-03-07T06:54:56.485Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localChrome found no endpoints"}
+{"timestamp":"2026-03-07T06:54:56.485Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localEdge found no endpoints"}
+{"timestamp":"2026-03-07T06:54:56.486Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector localVivaldi found no endpoints"}
+{"timestamp":"2026-03-07T06:54:56.486Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector morelogin found no endpoints"}
+{"timestamp":"2026-03-07T06:54:56.487Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector roxybrowser found 1 endpoints"}
+{"timestamp":"2026-03-07T06:54:56.487Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Connector undetectable found no endpoints"}
+{"timestamp":"2026-03-07T06:54:56.488Z","level":"INFO","module":"discovery.js","sessionId":null,"message":"Discovery complete. Found 1 total endpoints"}
+{"timestamp":"2026-03-07T06:54:56.488Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"Found 1 browser endpoints. Connecting..."}
+{"timestamp":"2026-03-07T06:54:56.489Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Attempting connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
+{"timestamp":"2026-03-07T06:54:56.576Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Successfully connected to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
+{"timestamp":"2026-03-07T06:54:56.577Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] Session added: roxy:0001 (50 workers)"}
+{"timestamp":"2026-03-07T06:54:56.581Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Connected: roxy:0001"}
+{"timestamp":"2026-03-07T06:54:56.582Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Discovery complete. Connected to 1 browsers."}
+{"timestamp":"2026-03-07T06:54:56.582Z","level":"DEBUG","module":"metrics.js","sessionId":null,"message":"Browser discovery: 1 discovered, 1 connected, 0 failed"}
+{"timestamp":"2026-03-07T06:54:56.583Z","level":"INFO","module":"main.js","sessionId":null,"message":"Successfully connected to 1 browser(s). Ready for automation."}
+{"timestamp":"2026-03-07T06:54:56.584Z","level":"INFO","module":"main.js","sessionId":null,"message":"No tasks specified. System initialized in idle mode."}
+{"timestamp":"2026-03-07T06:54:56.584Z","level":"INFO","module":"main.js","sessionId":null,"message":"MultiBrowseAutomation - Shutting down..."}
+{"timestamp":"2026-03-07T06:54:56.585Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Queue empty, resolving immediately"}
+{"timestamp":"2026-03-07T06:54:56.585Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] SessionManager shutting down..."}
+{"timestamp":"2026-03-07T06:54:56.586Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Started health check monitoring (interval: 30000ms)"}
+{"timestamp":"2026-03-07T06:54:56.638Z","level":"INFO","module":"sessionManager.js","sessionId":null,"message":"[SessionManager] SessionManager shutdown complete"}
+{"timestamp":"2026-03-07T06:54:56.639Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Socket.io closed"}
+{"timestamp":"2026-03-07T06:54:56.641Z","level":"INFO","module":"dashboard.js","sessionId":null,"message":"Dashboard server stopped"}
+{"timestamp":"2026-03-07T06:54:56.641Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutting down..."}
+{"timestamp":"2026-03-07T06:54:56.642Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Closing 1 browser connections"}
+{"timestamp":"2026-03-07T06:54:56.642Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Stopped health check monitoring"}
+{"timestamp":"2026-03-07T06:54:56.644Z","level":"DEBUG","module":"automator.js","sessionId":null,"message":"Closed connection to ws://127.0.0.1:1810/devtools/browser/a79c5cf6-1827-4f47-9b34-4dcdd73508a8"}
+{"timestamp":"2026-03-07T06:54:56.644Z","level":"INFO","module":"automator.js","sessionId":null,"message":"All connections closed"}
+{"timestamp":"2026-03-07T06:54:56.645Z","level":"INFO","module":"automator.js","sessionId":null,"message":"Automator shutdown complete"}
+{"timestamp":"2026-03-07T06:54:56.647Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Generating JSON summary report..."}
+{"timestamp":"2026-03-07T06:54:56.650Z","level":"INFO","module":"metrics.js","sessionId":null,"message":"Successfully generated JSON report at C:\\My Script\\auto-ai\\run-summary.json"}
+{"timestamp":"2026-03-07T06:54:56.651Z","level":"INFO","module":"orchestrator.js","sessionId":null,"message":"[Orchestrator] Orchestrator shutdown complete"}
