@@ -5,17 +5,32 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch via NPM",
+            "name": "Launch Main",
             "request": "launch",
             "runtimeArgs": [
-                "run-script",
-                "debug"
+                "run",
+                "start"
             ],
             "runtimeExecutable": "npm",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "node"
+            "type": "node",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Main (inspect)",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "start"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "console": "integratedTerminal"
         },
         {
             "type": "node",
@@ -48,6 +63,39 @@
                 "${relativeFile}"
             ],
             "smartStep": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Vitest Watch Mode",
+            "autoAttachChildProcesses": true,
+            "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+            "args": [
+                "watch",
+                "-c",
+                "config/vitest.config.js"
+            ],
+            "smartStep": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run Specific Task",
+            "runtimeArgs": [
+                "run"
+            ],
+            "runtimeExecutable": "npm",
+            "args": [
+                "taskName"
+            ],
             "skipFiles": [
                 "<node_internals>/**"
             ],
