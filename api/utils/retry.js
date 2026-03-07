@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview A utility for retrying an async operation with exponential backoff.
  * @module utils/retry
  */

@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Unit tests for utils/config-service.js (real module)
  * @module tests/unit/utils-config-service.test
  */

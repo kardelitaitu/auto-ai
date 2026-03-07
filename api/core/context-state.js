@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Context-Aware State Management
  * Moves module-level globals into AsyncLocalStorage for session isolation.
  * Enables concurrent multi-session usage without state pollution.

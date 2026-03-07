@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { mathUtils } from '@api/utils/math.js';
 

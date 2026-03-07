@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Error Recovery Behavior
  * Human-like error handling and recovery for automation actions.
  *

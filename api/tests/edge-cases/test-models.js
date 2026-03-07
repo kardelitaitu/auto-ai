@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Quick model test script
  * Tests a few models to see which ones return content
  */

@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview AI-Enhanced Twitter Agent
  * Extends TwitterAgent with AI reply capability when diving into tweets
  * @module utils/ai-twitterAgent

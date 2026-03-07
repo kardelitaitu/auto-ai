@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Twitter Tweet Task using Unified API
  * Full feature parity with twitterTweet.js using api/ modules.
  * @module tasks/api-twitterTweet

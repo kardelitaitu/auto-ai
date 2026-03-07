@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * API Key Timeout Tracker
  * Tracks response times per API key for quick timeout management
  * @module utils/api-key-timeout-tracker

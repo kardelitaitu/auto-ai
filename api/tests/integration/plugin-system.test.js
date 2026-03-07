@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect } from 'vitest';
 import { withPage, getPlugins, getEvents } from '@api/core/context.js';
 import { BasePlugin } from '@api/core/plugins/base.js';

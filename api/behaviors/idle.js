@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Idle Simulation
  * Simulates human presence during idle periods - mouse wiggle, occasional scrolling.
  * Uses context-aware state for session isolation.

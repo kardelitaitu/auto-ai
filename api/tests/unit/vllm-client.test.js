@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import VLLMClient from '@api/core/vllm-client.js';
 

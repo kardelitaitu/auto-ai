@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { goto, reload, back, forward, setExtraHTTPHeaders } from '@api/interactions/navigation.js';
 

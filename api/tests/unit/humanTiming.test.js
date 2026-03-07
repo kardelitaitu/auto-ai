@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect, vi } from 'vitest';
 import { humanTiming } from '@api/behaviors/human-timing.js';
 

@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Session Phase Detection Module
  * Manages session phase transitions (warmup/active/cooldown)
  * and provides action modifiers based on current phase.

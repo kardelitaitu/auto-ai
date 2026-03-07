@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Agent Connector Integration Tests
  * Tests the AgentConnector module for AI request routing and orchestration
  * @module tests/integration/agent-connector.test

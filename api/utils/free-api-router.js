@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Free API Router for OpenRouter
  * Handles API key rotation, model cascading fallbacks, and proxy routing
  * With: Config Validation, Circuit Breaker, Rate Limit Tracking, Request Deduplication, Model Performance Tracking, Quick Timeout

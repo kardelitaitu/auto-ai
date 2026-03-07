@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Vision Interpreter - Bridges the gap between raw LLM vision output and executable actions.
  * Converts unstructured text descriptions into structured JSON actions using Semantic Tree context.
  * @module core/vision-interpreter

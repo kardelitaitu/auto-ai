@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * AI Quote Tweet Engine
  * Handles AI quote generation, safety filtering, and posting
  * @module utils/ai-quote-engine

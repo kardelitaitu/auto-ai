@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { getPage, withPage, getEvents } from './context.js';
 import { setAutoBanners, setMuteAudio } from './context-state.js';
 import { setPersona, getPersona, getPersonaName } from '../behaviors/persona.js';

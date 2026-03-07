@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Comprehensive Sentiment Analysis Data & Lexicons
  * Extensive word lists, patterns, emotions, and contextual markers
  * @module utils/sentiment-data

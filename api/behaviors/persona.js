@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Behavioral Persona System
  * 16 pre-defined profiles controlling speed, typo rate, hover, hesitation, etc.
  * Persona-aware modules read from getPersona() to calibrate their behavior.

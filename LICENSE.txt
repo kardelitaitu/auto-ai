@@ -1,0 +1,145 @@
+================================================================================
+                     AUTO-AI FRAMEWORK - PROPRIETARY LICENSE
+================================================================================
+
+                          Copyright (c) 2025 gantengmaksimal
+                               All Rights Reserved
+
+================================================================================
+
+IMPORTANT: BY ACCESSING, DOWNLOADING, INSTALLING, OR USING THIS SOFTWARE, YOU
+AGREE TO BE BOUND BY THE TERMS OF THIS LICENSE. IF YOU DO NOT AGREE TO THESE
+TERMS, DO NOT USE THIS SOFTWARE.
+
+================================================================================
+
+1. LICENSE GRANT
+================================================================================
+
+Subject to the terms and conditions of this License, gantengmaksimal ("Licensor")
+grants you a limited, non-exclusive, non-transferable, revocable license to:
+
+   a) Use the Auto-AI Framework software ("Software") for your personal or
+      internal business purposes only;
+
+   b) Install and run the Software on a reasonable number of machines necessary
+      for your authorized use;
+
+   c) Make backup copies of the Software solely for archival purposes.
+
+================================================================================
+
+2. RESTRICTIONS
+================================================================================
+
+You MAY NOT:
+
+   a) Redistribute, publish, sublicense, sell, rent, lend, or otherwise
+      transfer any part of the Software to third parties;
+
+   b) Copy, modify, adapt, translate, reverse engineer, decompile, disassemble,
+      or create derivative works based on the Software;
+
+   c) Remove, alter, or obscure any proprietary notices, labels, or marks
+      on the Software;
+
+   d) Use the Software to provide services to third parties (e.g., SaaS,
+      outsourcing, or service bureau purposes);
+
+   e) Distribute, publish, or make available any software that incorporates
+      or is derived from the Software;
+
+   f) Use the Software for any unlawful purpose or in violation of any
+      applicable laws or regulations;
+
+   g) Attempt to circumvent, disable, or hack any licensing, authentication,
+      or security mechanisms in the Software;
+
+   h) Share, transfer, or allow unauthorized access to your license key or
+      activation credentials.
+
+================================================================================
+
+3. OWNERSHIP AND INTELLECTUAL PROPERTY
+================================================================================
+
+The Software and all copies thereof are proprietary to gantengmaksimal and
+title thereto remains exclusively with gantengmaksimal. All rights not expressly
+granted herein are reserved by Licensor.
+
+The Software includes, but is not limited to:
+
+   - Multi-browser automation orchestration algorithms
+   - Human-like behavior simulation systems (ghost cursor, motor control)
+   - AI routing and decision-making engines
+   - Anti-detection and fingerprint randomization mechanisms
+   - Browser connector integrations
+   - All associated documentation, designs, and trade secrets
+
+You acknowledge that the Software contains valuable trade secrets and confidential
+information of Licensor.
+
+================================================================================
+
+4. TERMINATION
+================================================================================
+
+This License is effective until terminated. This License will terminate
+automatically without notice if you fail to comply with any provision of this
+License.
+
+Upon termination, you must:
+
+   a) Immediately cease all use of the Software;
+
+   b) Destroy all copies of the Software in your possession or control;
+
+   c) Remove the Software from any installed systems or devices.
+
+The provisions of this License relating to ownership, intellectual property,
+disclaimer of warranty, and limitation of liability shall survive termination.
+
+================================================================================
+
+5. DISCLAIMER OF WARRANTY
+================================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+LICENSOR DOES NOT WARRANT THAT THE SOFTWARE WILL BE ERROR-FREE OR UNINTERRUPTED.
+YOU ASSUME FULL RESPONSIBILITY FOR THE SELECTION AND USE OF THE SOFTWARE.
+
+================================================================================
+
+6. LIMITATION OF LIABILITY
+================================================================================
+
+IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OR INABILITY TO USE THE SOFTWARE.
+
+================================================================================
+
+7. GOVERNING LAW
+================================================================================
+
+This License shall be governed by and construed in accordance with applicable
+laws. Any disputes arising from this License shall be subject to the exclusive
+jurisdiction of the courts.
+
+================================================================================
+
+8. CONTACT INFORMATION
+================================================================================
+
+For licensing inquiries, please contact: gantengmaksimal
+
+================================================================================
+
+                              END OF LICENSE
+================================================================================

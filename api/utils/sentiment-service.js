@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Unified Sentiment Service
  * Bridges sentiment-guard (basic safety) with sentiment-analyzers (advanced dimensions)
  * Provides a single interface for all sentiment analysis needs

@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Human Timing Module
  * Provides Gaussian (bell curve) timing distribution with jitter
  * Simulates natural human behavior patterns.

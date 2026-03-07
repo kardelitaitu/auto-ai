@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Cloud Client Twitter Prompt Test
  * Tests that Twitter-style prompts (systemPrompt + userPrompt) are passed correctly
  */

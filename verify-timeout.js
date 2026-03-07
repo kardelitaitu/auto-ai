@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import Orchestrator from './api/core/orchestrator.js';
 import { createLogger } from './api/core/logger.js';
 import { getSettings } from './api/utils/configLoader.js';

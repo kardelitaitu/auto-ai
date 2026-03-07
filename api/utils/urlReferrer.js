@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview High-End Anti-Detect Referrer Engine (2025 Standard) - Naturalized
  * @module strategies/EntropyReferrer
  * @description

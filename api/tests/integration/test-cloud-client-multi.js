@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Cloud Client Multi-Key Integration Test
  * Tests that cloud-client.js properly uses multi-api.js for fallback
  */

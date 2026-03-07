@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Agent Connector - Main entry point for AI services in the DAO architecture.
  * Routes high-level intent to appropriate AI provider (Local or Cloud).
  * @module core/agent-connector

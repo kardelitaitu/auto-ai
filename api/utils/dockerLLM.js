@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview LLM Service Manager - Checks and starts Local LLM service.
  * Supports: 'docker model' (legacy) and 'ollama' (standard).
  * @module utils/dockerLLM

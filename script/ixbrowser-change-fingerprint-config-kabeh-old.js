@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 const APILocalUpdate = 'http://127.0.0.1:53200/api/v2/profile-update';
 const APILocalList = 'http://127.0.0.1:53200/api/v2/profile-list';
 

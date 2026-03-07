@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Comprehensive Unit Tests for AITwitterAgent - Real Implementation
  * Tests the actual AITwitterAgent class with proper dependency mocking
  * @module tests/unit/ai-twitterAgent-real.test

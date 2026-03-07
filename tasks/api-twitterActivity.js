@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * AI-Enhanced Twitter Activity Task using Unified API
  * Full feature parity with ai-twitterActivity.js using api/ modules
  * @module tasks/api-twitterActivity

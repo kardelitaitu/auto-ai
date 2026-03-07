@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { InteractionHandler } from '../../../../twitter/twitter-agent/InteractionHandler.js';
 import { mathUtils } from '../../../../utils/math.js';

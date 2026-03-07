@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Agent Runner - Main Agent Logic (The Brain)
  * Orchestrates the Perception-Action loop with LLM
  * Merged from local-agent/core/agent.js

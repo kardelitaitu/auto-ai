@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { GhostCursor } from '@api/utils/ghostCursor.js';
 import { mathUtils } from '@api/utils/math.js';

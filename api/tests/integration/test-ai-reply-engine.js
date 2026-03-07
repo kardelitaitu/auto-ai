@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * AI Reply Engine Tester - DEBUG VERSION
  * Standalone script to test the LLM mechanism with real config
  * Logs ALL requests and responses in JSON format for debugging

@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Unit tests for utils/apiHandler.js
  * Tests HTTP request handling with retry logic
  * @module tests/unit/apiHandler.test

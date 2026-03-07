@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { recover, goBack, urlChanged } from '@api/behaviors/recover.js';
 import * as context from '@api/core/context.js';

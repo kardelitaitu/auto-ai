@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Local Ollama Manager - Dedicated utility to manage Ollama service.
  * Handles checking status and starting the Ollama server and models.
  * @module utils/local-ollama-manager

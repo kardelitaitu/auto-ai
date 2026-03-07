@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Proxy Agent for HTTP/HTTPS requests
  * Handles CONNECT tunneling for HTTPS through HTTP proxies
  * @module utils/proxy-agent

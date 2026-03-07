@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { GhostCursor } from '../utils/ghostCursor.js';
 import { getDefaultState, setContextStore } from './context-state.js';

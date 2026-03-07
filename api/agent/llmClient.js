@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview HTTP Client for Local LLM (OpenAI-compatible) with Vision Support.
  * Merged from local-agent/network/llmClient.js
  * @module api/agent/llmClient

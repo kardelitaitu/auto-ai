@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 export const TWITTER_CLICK_PROFILES = {
     like: { hoverMin: 800, hoverMax: 2000, holdMs: 150, hesitation: true, microMove: true },
     reply: { hoverMin: 1500, hoverMax: 3000, holdMs: 200, hesitation: true, microMove: true },

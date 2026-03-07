@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Individual Sentiment Dimension Analyzers (Phase 2)
  * Each analyzer is independently testable, cacheable, and unit-testable
  * @module utils/sentiment-analyzers

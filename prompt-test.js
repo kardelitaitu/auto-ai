@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * prompt-test.js
  * Standalone test: logs exactly what gets sent to the LLM and what comes back.
  * Run: node prompt-test.js

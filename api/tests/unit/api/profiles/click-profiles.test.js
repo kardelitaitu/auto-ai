@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect } from 'vitest';
 import { TWITTER_CLICK_PROFILES } from '@api/profiles/click-profiles.js';
 

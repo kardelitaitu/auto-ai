@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Scroll Operations — Golden View & Generic
  * Implements the Golden View principle: center element in viewport with entropy,
  * then move cursor to target before any kinetic action.

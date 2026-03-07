@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Async Queue Manager for AI Operations
  * Handles race conditions and provides timeout/fallback mechanisms
  * @module utils/async-queue

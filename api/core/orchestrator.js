@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Robust Orchestrator for the multi-browser automation framework.
  * Features: Task/group timeouts, abort signal propagation, worker health monitoring.
  * @module core/orchestrator

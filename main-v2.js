@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Main entry point V2 - Robust orchestrator with timeout handling.
  * Usage: node main-v2.js pageview=cookiebot then api-twitteractivity
  * Flags: --task-timeout=600000 --group-timeout=600000 --force-shutdown

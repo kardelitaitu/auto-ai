@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Twitter Reply Prompt Templates
  * AI prompts for generating consensus-based, human-like replies
  * @module utils/twitter-reply-prompt

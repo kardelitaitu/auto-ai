@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import LocalChromeDiscover from '../../../connectors/discovery/localChrome.js';
 import LocalBraveDiscover from '../../../connectors/discovery/localBrave.js';

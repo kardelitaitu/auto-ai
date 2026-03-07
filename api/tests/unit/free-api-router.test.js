@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Unit Tests for FreeApiRouter
  * Tests the free API router with API key rotation, model cascading, and proxy routing
  * @module tests/unit/free-api-router.test

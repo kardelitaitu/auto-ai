@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview The main entry point for the multi-browser automation framework.
  * This file initializes the orchestrator, discovers browsers, and runs automation tasks.
  * @module main

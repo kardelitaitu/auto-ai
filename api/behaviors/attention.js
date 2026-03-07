@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Attention Modeling
  * Simulates human attention and focus patterns - gaze, distractions, exit intent.
  * Uses context-aware state for session isolation.

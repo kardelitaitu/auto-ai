@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Fingerprint Manager for api/ module.
  * Internal copy for api/ independence from utils/fingerprintManager.js.
  * Loads fingerprint profiles from data/fingerprints.json.

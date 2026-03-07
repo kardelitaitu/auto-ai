@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Human Timing Utilities for api/ module.
  * Internal copy for api/ independence from utils/human-timing.js.
  * Provides Gaussian (bell curve) timing distribution with jitter.

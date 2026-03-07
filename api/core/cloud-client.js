@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Cloud Client - Interfaces with OpenRouter API for complex reasoning.
  * Part of the Distributed Agentic Orchestration (DAO) architecture.
  * @module core/cloud-client

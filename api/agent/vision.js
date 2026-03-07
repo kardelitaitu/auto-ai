@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Agent Vision (Screenshots & Interpretation)
  * Provides visual context for LLMs, including ROI detection, compression, and prompt building.
  * Returns Base64 data by default to avoid filesystem clutter.

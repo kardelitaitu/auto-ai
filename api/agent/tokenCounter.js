@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Token estimation utility for context tracking.
  * Merged from local-agent/utils/tokenCounter.js
  * @module api/agent/tokenCounter

@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Low-Level Cursor Control
  * Thin wrapper around GhostCursor's move() for direct spatial manipulation.
  * Includes trajectory sophistication for advanced path patterns.

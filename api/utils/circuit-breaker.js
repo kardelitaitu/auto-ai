@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Circuit Breaker - Re-export from core/circuit-breaker
  * @module utils/circuit-breaker
  * @deprecated Use core/circuit-breaker.js instead

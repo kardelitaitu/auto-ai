@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Ollama Client - Native integration with Ollama API.
  * Handles text and vision requests to standard Ollama endpoints.
  * @module core/ollama-client

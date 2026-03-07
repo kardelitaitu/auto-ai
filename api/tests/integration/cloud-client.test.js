@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Cloud Client Integration Tests
  * Tests the CloudClient module for OpenRouter API integration
  * @module tests/integration/cloud-client.test

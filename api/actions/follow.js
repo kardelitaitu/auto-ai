@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { getPage } from '../core/context.js';
 import { createLogger } from '../core/logger.js';
 import { mathUtils } from '../utils/math.js';

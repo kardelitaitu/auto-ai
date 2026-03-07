@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 /* eslint-disable no-control-regex */
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 

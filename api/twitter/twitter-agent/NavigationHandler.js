@@ -1,3 +1,9 @@
+/**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
 import { api } from '../../index.js';
 import { BaseHandler } from './BaseHandler.js';
 import { scrollRandom } from '../../behaviors/scroll-helper.js';

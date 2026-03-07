@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Advanced Ghost Cursor (api/-internal)
  * Moved from utils/ghostCursor.js to break the circular dependency:
  *   utils/ghostCursor.js → api/index.js → core/context.js → utils/ghostCursor.js

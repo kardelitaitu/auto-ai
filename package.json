@@ -34,8 +34,8 @@
         "anti-detect",
         "orchestration"
     ],
-    "author": "",
-    "license": "MIT",
+    "author": "gantengmaksimal",
+    "license": "PROPRIETARY",
     "type": "module",
     "engines": {
         "node": ">=16.0.0"

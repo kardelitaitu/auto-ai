@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Twitter Agent - Core automation class for Twitter/X browser interactions
  * Handles scrolling, clicking, navigation, and human-like behavior simulation
  * @module utils/twitterAgent

@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Sentiment Guard Module
  * Analyzes tweet content sentiment to avoid inappropriate bot interactions
  * Skips likes/retweets on negative/tragic content

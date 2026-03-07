@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview AI Reply Engine - Main Entry Point
  * Combines all modules into the AIReplyEngine class
  * @module utils/ai-reply-engine

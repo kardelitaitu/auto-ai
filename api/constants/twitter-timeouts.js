@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Twitter Timeout Constants
  * Centralized timeout values for Twitter automation tasks
  * @module constants/twitter-timeouts

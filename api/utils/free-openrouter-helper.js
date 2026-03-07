@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * Free OpenRouter Helper - Singleton for shared model testing
  * All CloudClient instances share the same helper to avoid redundant tests
  * @module utils/free-openrouter-helper

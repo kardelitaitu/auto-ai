@@ -1,4 +1,10 @@
 /**
+ * Auto-AI Framework - Proprietary Software
+ * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
+ * Unauthorized copying, distribution, or modification prohibited
+ */
+
+/**
  * @fileoverview Centralized Entropy Controller
  * Manages all stochastic behavior across the automation system.
  * Provides human-realistic timing distributions and session-wide consistency.
