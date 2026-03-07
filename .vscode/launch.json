@@ -53,14 +53,67 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Vitest (Current File)",
+            "name": "Vitest: Run All Tests",
+            "autoAttachChildProcesses": true,
+            "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+            "args": [
+                "run",
+                "-c",
+                "config/vitest.config.js"
+            ],
+            "smartStep": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Vitest: Unit Tests",
             "autoAttachChildProcesses": true,
             "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
             "args": [
                 "run",
                 "-c",
                 "config/vitest.config.js",
-                "${relativeFile}"
+                "api/tests/unit"
+            ],
+            "smartStep": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Vitest: Integration Tests",
+            "autoAttachChildProcesses": true,
+            "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+            "args": [
+                "run",
+                "-c",
+                "config/vitest.config.js",
+                "api/tests/integration"
+            ],
+            "smartStep": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Vitest: Current Test File",
+            "autoAttachChildProcesses": true,
+            "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+            "args": [
+                "run",
+                "-c",
+                "config/vitest.config.js",
+                "${file}"
             ],
             "smartStep": true,
             "skipFiles": [
