@@ -34,7 +34,7 @@ export async function takeScreenshot(page, sessionName = 'default', suffix = '')
         }
 
         // Sanitize session name
-        const sanitizedSession = sessionName.replace(/[:\/<>|?*]/g, '-');
+        const sanitizedSession = sessionName.replace(/[:/<>|?*]/g, '-');
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const filename = `${sanitizedSession}${suffix}-${timestamp}.jpg`;
         const filePath = path.join(SCREENSHOT_DIR, filename);

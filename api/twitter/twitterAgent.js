@@ -22,9 +22,6 @@ import { NavigationHandler } from './twitter-agent/NavigationHandler.js';
 import { EngagementHandler } from './twitter-agent/EngagementHandler.js';
 import { SessionHandler } from './twitter-agent/SessionHandler.js';
 
-import { TWITTER_TIMEOUTS } from '../constants/twitter-timeouts.js';
-import { createLogger } from '../core/logger.js';
-import { ReferrerEngine } from '../utils/urlReferrer.js';
 import { api } from '../index.js';
 export class TwitterAgent {
     /**

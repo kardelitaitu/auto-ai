@@ -143,7 +143,7 @@ class CircuitBreaker {
         return states;
     }
 
-    reset(model = null, apiKey = null) {
+    reset(model = null, _apiKey = null) {
         if (model) {
             if (this.breakers.has(model)) {
                 this.breakers.set(model, this._createBreaker());

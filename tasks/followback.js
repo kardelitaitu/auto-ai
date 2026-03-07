@@ -253,7 +253,7 @@ export default async function followbackTask(page, payload) {
                                     // Human-like scroll to button (Golden View focus)
                                     try {
                                         await api.scroll.focus(btn);
-                                    } catch (scrollErr) {
+                                    } catch (_scrollErr) {
                                         logger.warn(
                                             `scroll.focus failed for ${targetUser}, using fallback`
                                         );

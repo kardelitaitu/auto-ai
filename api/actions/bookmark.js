@@ -26,7 +26,7 @@ const logger = createLogger('api/bookmark.js');
  * @returns {Promise<{success: boolean, reason: string, method: string}>}
  */
 export async function bookmarkWithAPI(options = {}) {
-    const page = getPage();
+    getPage(); // Ensure context is set
     const { tweetElement } = options;
 
     logger.info(`Starting api.bookmarkWithAPI()...`);

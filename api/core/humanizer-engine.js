@@ -9,7 +9,7 @@ export default class HumanizerEngine {
         this.minDuration = 100;
         this.maxDuration = 2000;
     }
-    generateMousePath(start, end, options = {}) {
+    generateMousePath(start, end, _options = {}) {
         return {
             points: [{ x: end.x, y: end.y }],
             metadata: {
@@ -18,7 +18,7 @@ export default class HumanizerEngine {
             },
         };
     }
-    generateKeystrokeTiming(text, typoChance = 0) {
+    generateKeystrokeTiming(text, _typoChance = 0) {
         return text.split('').map((char) => ({ char, delay: 50 }));
     }
     generatePause(options = {}) {
@@ -30,16 +30,16 @@ export default class HumanizerEngine {
     _calculateDuration(distance) {
         return Math.min(this.maxDuration, Math.max(this.minDuration, distance * 10));
     }
-    _cubicBezier(p0, p1, p2, p3, t) {
+    _cubicBezier(p0, p1, p2, p3, _t) {
         return { x: p3.x, y: p3.y };
     }
-    _generateControlPoint(start, end, factor) {
+    _generateControlPoint(start, end, _factor) {
         return { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 + 10 };
     }
     _gaussianRandom() {
         return 100;
     }
-    _generateKeyDelay(key) {
+    _generateKeyDelay(_key) {
         return 100;
     }
     getStats() {

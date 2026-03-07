@@ -11,7 +11,6 @@
  * @module utils/sentiment-service
  */
 
-import { createLogger } from '../core/logger.js';
 import { sentimentGuard } from './sentiment-guard.js';
 import {
     ValenceAnalyzer,

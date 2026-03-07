@@ -18,7 +18,7 @@ import { mathUtils } from './math.js';
  * @param {object} page - Playwright page instance (ignored, uses api context)
  * @returns {function(number): Promise<void>} A function that performs random scrolling for a duration in seconds.
  */
-export function createRandomScroller(page) {
+export function createRandomScroller(_page) {
     /**
      * Performs random scrolling for a specified duration.
      * @param {number} durationSeconds - Duration to scroll in seconds.

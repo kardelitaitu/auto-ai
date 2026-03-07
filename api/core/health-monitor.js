@@ -35,7 +35,7 @@ export default class HealthMonitor {
             if (context) {
                 try {
                     await context.close();
-                } catch (closeError) {
+                } catch (_closeError) {
                     // Handle close errors gracefully
                 }
             }

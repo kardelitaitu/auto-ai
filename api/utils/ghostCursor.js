@@ -17,7 +17,6 @@
 
 import { mathUtils } from './math.js';
 import { createLogger } from '../core/logger.js';
-import { visible } from '../interactions/queries.js';
 import { TWITTER_CLICK_PROFILES } from '../constants/engagement.js';
 
 export class GhostCursor {

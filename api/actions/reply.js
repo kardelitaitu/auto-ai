@@ -9,7 +9,6 @@ import { createLogger } from '../core/logger.js';
 import { mathUtils } from '../utils/math.js';
 import AgentConnector from '../core/agent-connector.js';
 import AIReplyEngine from '../agent/ai-reply-engine/index.js';
-import { HumanInteraction } from '../behaviors/human-interaction.js';
 import { scroll, focus } from '../interactions/scroll.js';
 import { wait } from '../interactions/wait.js';
 import { text, exists, visible } from '../interactions/queries.js';
@@ -59,7 +58,6 @@ export async function replyWithAI(options = {}) {
     // 3. AI Generation
     const agentConnector = new AgentConnector();
     const replyEngine = new AIReplyEngine(agentConnector, { replyProbability: 1, maxRetries: 1 });
-    const human = new HumanInteraction(page);
 
     const context = { replies, url };
     const generation = await replyEngine.generateReply(tweetText, username, context);
@@ -180,7 +178,7 @@ async function extractElasticContext(steps) {
     return replies;
 }
 
-async function findComposer(page) {
+async function findComposer(_page) {
     const composerSelectors = [
         '[data-testid="tweetTextarea_0"]',
         '[data-testid="tweetTextarea"]',

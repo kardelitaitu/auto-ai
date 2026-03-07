@@ -7,7 +7,6 @@
 import { getPage } from '../core/context.js';
 import { createLogger } from '../core/logger.js';
 import { mathUtils } from '../utils/math.js';
-import { scroll } from '../interactions/scroll.js';
 import { wait } from '../interactions/wait.js';
 import { visible } from '../interactions/queries.js';
 import { click } from '../interactions/actions.js';
@@ -27,16 +26,13 @@ const logger = createLogger('api/like.js');
  * @returns {Promise<{success: boolean, reason: string, method: string}>}
  */
 export async function likeWithAPI(options = {}) {
-    const page = getPage();
+    getPage(); // Ensure context is set
     const { tweetElement } = options;
 
     logger.info(`Starting api.likeWithAPI()...`);
 
     const likeSel = '[data-testid="like"]';
     const unlikeSel = '[data-testid="unlike"]';
-
-    // Scope to element if provided, otherwise page-level
-    const scope = tweetElement ?? page;
 
     try {
         // Already liked guard

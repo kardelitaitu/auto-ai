@@ -326,7 +326,7 @@ async function updateProfile(profileId, config) {
     }
 }
 
-async function getTotalProfiles() {
+async function _getTotalProfiles() {
     try {
         const response = await fetch(APILocalList, {
             method: 'POST',

@@ -46,7 +46,7 @@ export async function waitFor(selectorOrPredicate, options = {}) {
         while (Date.now() - startTime < timeout) {
             try {
                 if (await selectorOrPredicate()) return;
-            } catch (e) {
+            } catch (_e) {
                 // Ignore errors during polling (e.g. page crashes, temporary disconnects)
             }
             await new Promise((r) => setTimeout(r, polling));

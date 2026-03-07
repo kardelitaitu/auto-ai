@@ -15,7 +15,7 @@ import { ensureOllama } from './utils/local-ollama-manager.js';
 import openrouterFetch, {
     loadPrimaryModel as loadOpenRouterModel,
 } from './utils/openrouter-key-manager.js';
-import apifreellmFetch, { loadApiFreeLLMConfig } from './utils/apifreellm-manager.js';
+import apifreellmFetch from './utils/apifreellm-manager.js';
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
 
