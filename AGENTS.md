@@ -291,6 +291,20 @@ The `api/` directory follows a modular, middleware-driven architecture designed 
 ↓ `api.interactions.*`: Performs the high-level action (scroll, click, type).
 ↓ `api.verify()`: Confirms the action had the intended effect on the DOM.
 
+### Pattern: Dual-Callable Agent Interface
+
+The `api.agent` module provides a unified interface for the Browser Control LLM (configured via `agent.llm` and `agent.runner` in `settings.json`):
+
+1. **High-Level Orchestration**: Call it as a function to start an autonomous reasoning loop.
+   ```javascript
+   await api.agent("Find and click the login button");
+   ```
+2. **Low-Level Granular Control**: Access its properties for manual perception and decision-making.
+   ```javascript
+   const view = await api.agent.see(); // Get semantic accessibility map
+   await api.agent.do('type', 1, 'username'); // Execute a specific action
+   ```
+
 ### Pattern: Execution with Recovery
 
 All high-level actions use `executeWithRecovery` to automatically handle:
