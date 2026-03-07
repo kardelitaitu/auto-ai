@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { api } from '@api/index.js';
+import { api } from '../../../api/index.js';
 import { createHumanMock, baseSentiment, sampleReplies } from './ai-quote-engine.test-utils.js';
 
 vi.mock('../../../api/index.js', () => ({

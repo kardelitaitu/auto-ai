@@ -1,5 +1,19 @@
 ### ✅ version 0.7.7
 
+(07 March 2026) Twitter Intent URL Helpers
+
+- **Intent Helper API**: Introduced `api.twitter.intent` module to perform interactions via Twitter's intent URLs, bypassing standard timeline navigation overhead.
+- **Dedicated Actions**: Added four dedicated actionable modules (`intent-like.js`, `intent-quote.js`, `intent-retweet.js`, `intent-follow.js`) that automatically handle URL parsing, navigation, waiting, and clicking the confirmation buttons.
+- **Functional Testing Task**: Created `tasks/twitter-intents-test.js` to enable automated functional testing of all intent methods in sequential order.
+- **Comprehensive Testing**: Added `twitter-intent.test.js` offering 100% logic and mocking coverage (21 tests) for the new intent functions.
+- **Automatic Navigation Return**: Implemented `api.back()` in a `finally` block to automatically restore the browser state after any intent action, regardless of success, failure, or timeout.
+
+(07 March 2026) AI Quote Engine Test Coverage & Refactoring
+
+- **Refactored AI Quote Engine Tests**: Separated monolithic test file into `ai-quote-engine-execution.test.js` and `ai-quote-engine-logic.test.js` for better maintainability and clearer test boundaries.
+- **Fixed Quote Engine Test Fallbacks**: Corrected test mocks for fallback scenarios (manual URL typing and missing retweet menus) to accurately reflect engine behavior and resolve test failures.
+- **Verified Coverage**: Verified all tests pass deterministically and improved overall quote engine test coverage.
+
 (07 March 2026) LLM Role Differentiation
 
 - **Explicit LLM Configuration**: Distinctly separated the Browser Control LLM (`agent.llm`) from the Text Generation LLM (`llm.local`) in `settings.json`.

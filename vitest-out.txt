@@ -1,0 +1,1058 @@
+
+ RUN  v4.0.18 C:/My Script/auto-ai
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > skips when probability roll fails
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > skips when probability roll fails
+[DEBUG][ai-quote-engine.js] [AI-Quote] Probability check: 50.0% threshold, rolled 73.3%
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > proceeds when probability roll passes
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > proceeds when probability roll passes
+[DEBUG][ai-quote-engine.js] [AI-Quote] Probability check: 50.0% threshold, rolled 23.3%
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > rejects negative sentiment content
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > rejects negative sentiment content
+[WARN][ai-quote-engine.js] [AIQuote] Skipping negative content (score: 0.60)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > rejects negative sentiment content
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEGATIVE (score: 0.60)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > rejects high risk conversations
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > rejects high risk conversations
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: high
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > rejects high risk conversations
+[WARN][ai-quote-engine.js] [AIQuote] Skipping high-risk conversation
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > extracts and cleans quotes
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > extracts and cleans quotes
+[DEBUG][ai-quote-engine.js] [extractReplyFromResponse] Processing content: "Great insight here...." (length: 19)
+[DEBUG][ai-quote-engine.js] [extractReplyFromResponse] Γ£ô Direct content used
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > validates generic responses as invalid
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > updates configuration and detects languages
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns guidance and stats
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > provides length and style guidance
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > builds enhanced prompt with guidance and replies
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > builds enhanced prompt with guidance and replies
+[DEBUG][ai-quote-engine.js] [AIQuote] Detected language: English
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > generates a quote successfully
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > generates a quote successfully
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+[INFO][ai-quote-engine.js] [AIQuote] Reply selection strategy: mixed (pos: 1, neg: 0, sarcastic: 0)
+[INFO][ai-quote-engine.js] [AIQuote] Selected 1 replies for LLM context (filtered from 1)
+[DEBUG][ai-quote-engine.js] [AIQuote] Detected language: en
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[INFO][ai-quote-engine.js] [DEBUG] Author: @user
+[INFO][ai-quote-engine.js] [DEBUG] URL: 
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Text: "tweet text"
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Length: 10 chars
+[INFO][ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: general
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (1 selected from 1):
+[INFO][ai-quote-engine.js] [DEBUG] [1] Reply1: "@a: nice"
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[INFO][ai-quote-engine.js] [DEBUG] Language: en
+[INFO][ai-quote-engine.js] [DEBUG] System Prompt Length: 2030 chars
+[INFO][ai-quote-engine.js] [DEBUG] User Prompt Length: 741 chars
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [AI-Quote] Generating en quote tweet (attempt 1/1)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > generates a quote successfully
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
+[INFO][ai-quote-engine.js] [DEBUG] {"success":true,"data":{"content":"Great take here."}}
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] Extracted content: "Great take here...." (length: 16)
+[DEBUG][ai-quote-engine.js] [DEBUG] Raw content length: 16 chars
+[DEBUG][ai-quote-engine.js] [extractReplyFromResponse] Processing content: "Great take here...." (length: 16)
+[DEBUG][ai-quote-engine.js] [extractReplyFromResponse] Γ£ô Direct content used
+[DEBUG][ai-quote-engine.js] [DEBUG] Extracted reply: "Great take here...."
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Γ£¿ Cleaned quote: "Great take here" (15 chars)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles empty LLM content
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles empty LLM content
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+[DEBUG][ai-quote-engine.js] [AIQuote] Detected language: English
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[INFO][ai-quote-engine.js] [DEBUG] Author: @user
+[INFO][ai-quote-engine.js] [DEBUG] URL: 
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Text: "tweet text"
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Length: 10 chars
+[INFO][ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: general
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (0 selected from 0):
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[INFO][ai-quote-engine.js] [DEBUG] Language: English
+[INFO][ai-quote-engine.js] [DEBUG] System Prompt Length: 2030 chars
+[INFO][ai-quote-engine.js] [DEBUG] User Prompt Length: 699 chars
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [AI-Quote] Generating English quote tweet (attempt 1/1)...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles empty LLM content
+[ERROR][ai-quote-engine.js] [AIQuoteEngine] Γ¥î LLM returned empty content (attempt 1/1) 
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles empty LLM content
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
+[INFO][ai-quote-engine.js] [DEBUG] {"success":true,"data":{"content":""}}
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] Extracted content: "..." (length: 0)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when LLM result is null
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when LLM result is null
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+[DEBUG][ai-quote-engine.js] [AIQuote] Detected language: English
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[INFO][ai-quote-engine.js] [DEBUG] Author: @user
+[INFO][ai-quote-engine.js] [DEBUG] URL: 
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Text: "tweet text"
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Length: 10 chars
+[INFO][ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: general
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (0 selected from 0):
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[INFO][ai-quote-engine.js] [DEBUG] Language: English
+[INFO][ai-quote-engine.js] [DEBUG] System Prompt Length: 2030 chars
+[INFO][ai-quote-engine.js] [DEBUG] User Prompt Length: 682 chars
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [AI-Quote] Generating English quote tweet (attempt 1/1)...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when LLM result is null
+[ERROR][ai-quote-engine.js] [AIQuoteEngine] Γ¥î LLM result is null/undefined (attempt 1) 
+[ERROR][ai-quote-engine.js] [AIQuoteEngine] Γ¥î All 1 attempts failed. Last error: llm_result_null 
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when LLM result is null
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
+[INFO][ai-quote-engine.js] [DEBUG] result is null/undefined
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when LLM request fails
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when LLM request fails
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+[DEBUG][ai-quote-engine.js] [AIQuote] Detected language: English
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[INFO][ai-quote-engine.js] [DEBUG] Author: @user
+[INFO][ai-quote-engine.js] [DEBUG] URL: 
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Text: "tweet text"
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Length: 10 chars
+[INFO][ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: general
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (0 selected from 0):
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[INFO][ai-quote-engine.js] [DEBUG] Language: English
+[INFO][ai-quote-engine.js] [DEBUG] System Prompt Length: 2030 chars
+[INFO][ai-quote-engine.js] [DEBUG] User Prompt Length: 691 chars
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [AI-Quote] Generating English quote tweet (attempt 1/1)...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when LLM request fails
+[ERROR][ai-quote-engine.js] [AIQuoteEngine] Γ¥î LLM request failed: bad_request (attempt 1) 
+[ERROR][ai-quote-engine.js] [AIQuoteEngine] Γ¥î All 1 attempts failed. Last error: llm_failed: bad_request 
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when LLM request fails
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
+[INFO][ai-quote-engine.js] [DEBUG] {"success":false,"error":"bad_request"}
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > uses raw content fallback when reply extraction fails
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > uses raw content fallback when reply extraction fails
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+[DEBUG][ai-quote-engine.js] [AIQuote] Detected language: English
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[INFO][ai-quote-engine.js] [DEBUG] Author: @user
+[INFO][ai-quote-engine.js] [DEBUG] URL: 
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Text: "tweet text"
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Length: 10 chars
+[INFO][ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: general
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (0 selected from 0):
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[INFO][ai-quote-engine.js] [DEBUG] Language: English
+[INFO][ai-quote-engine.js] [DEBUG] System Prompt Length: 2030 chars
+[INFO][ai-quote-engine.js] [DEBUG] User Prompt Length: 695 chars
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [AI-Quote] Generating English quote tweet (attempt 1/1)...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > uses raw content fallback when reply extraction fails
+[WARN][ai-quote-engine.js] [AIQuoteEngine] ΓÜá∩╕Å Could not extract reply from LLM response patterns (attempt 1)
+[WARN][ai-quote-engine.js] [DEBUG] Full raw content:
+Fallback content that is long enough.
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > uses raw content fallback when reply extraction fails
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
+[INFO][ai-quote-engine.js] [DEBUG] {"success":true,"content":"Fallback content that is long enough."}
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] Extracted content: "Fallback content that is long enough...." (length: 37)
+[DEBUG][ai-quote-engine.js] [DEBUG] Raw content length: 37 chars
+[DEBUG][ai-quote-engine.js] [DEBUG] Extracted reply: "undefined..."
+[INFO][ai-quote-engine.js] [AIQuoteEngine] ≡ƒöä Using raw content as fallback: "Fallback content that is long enough...."
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when cleaned quote is too short
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when cleaned quote is too short
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+[DEBUG][ai-quote-engine.js] [AIQuote] Detected language: English
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[INFO][ai-quote-engine.js] [DEBUG] Author: @user
+[INFO][ai-quote-engine.js] [DEBUG] URL: 
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Text: "tweet text"
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Length: 10 chars
+[INFO][ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: general
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (0 selected from 0):
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[INFO][ai-quote-engine.js] [DEBUG] Language: English
+[INFO][ai-quote-engine.js] [DEBUG] System Prompt Length: 2030 chars
+[INFO][ai-quote-engine.js] [DEBUG] User Prompt Length: 670 chars
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [AI-Quote] Generating English quote tweet (attempt 1/1)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when cleaned quote is too short
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
+[INFO][ai-quote-engine.js] [DEBUG] {"success":true,"content":"short"}
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] Extracted content: "short..." (length: 5)
+[DEBUG][ai-quote-engine.js] [DEBUG] Raw content length: 5 chars
+[DEBUG][ai-quote-engine.js] [DEBUG] Extracted reply: "short..."
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Γ£¿ Cleaned quote: "short" (5 chars)
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when cleaned quote is too short
+[ERROR][ai-quote-engine.js] [AIQuoteEngine] Γ¥î Quote too short: 5 chars (min: 10) (attempt 1) 
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when validation fails
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when validation fails
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[INFO][ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[INFO][ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[INFO][ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Arousal: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Dominance: N/A
+[INFO][ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[INFO][ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[INFO][ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[INFO][ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+[DEBUG][ai-quote-engine.js] [AIQuote] Detected language: English
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[INFO][ai-quote-engine.js] [DEBUG] Author: @user
+[INFO][ai-quote-engine.js] [DEBUG] URL: 
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Text: "tweet text"
+[INFO][ai-quote-engine.js] [DEBUG] Tweet Length: 10 chars
+[INFO][ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: general
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (0 selected from 0):
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[INFO][ai-quote-engine.js] [DEBUG] Language: English
+[INFO][ai-quote-engine.js] [DEBUG] System Prompt Length: 2030 chars
+[INFO][ai-quote-engine.js] [DEBUG] User Prompt Length: 687 chars
+[INFO][ai-quote-engine.js] [DEBUG] ============================================
+[INFO][ai-quote-engine.js] [AI-Quote] Generating English quote tweet (attempt 1/1)...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when validation fails
+[WARN][ai-quote-engine.js] [AIQuoteEngine] Γ¥î Quote validation failed (excluded_keyword:politics): "politics are bad today" (attempt 1)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when validation fails
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
+[INFO][ai-quote-engine.js] [DEBUG] {"success":true,"content":"politics are bad today"}
+[INFO][ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[INFO][ai-quote-engine.js] [DEBUG] Extracted content: "politics are bad today..." (length: 22)
+[DEBUG][ai-quote-engine.js] [DEBUG] Raw content length: 22 chars
+[DEBUG][ai-quote-engine.js] [DEBUG] Extracted reply: "politics are bad today..."
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Γ£¿ Cleaned quote: "politics are bad today" (22 chars)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodC] Starting new post + paste URL method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodC] Current URL: https://x.com/status/1
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodC] Typing comment (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodC] Pasting tweet URL...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [AIQuote] Executing quote (14 chars)...
+[INFO][ai-quote-engine.js] [AIQuote] Selected strategy: broken
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[ERROR][ai-quote-engine.js] [AIQuote] Method broken failed: fail 
+[WARN][ai-quote-engine.js] [AIQuote] Trying fallback: retweet_menu
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > executes quote methods and fallback
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (14 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to retweet method when selected method throws
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to retweet method when selected method throws
+[INFO][ai-quote-engine.js] [AIQuote] Executing quote (10 chars)...
+[INFO][ai-quote-engine.js] [AIQuote] Selected strategy: keyboard_compose
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to retweet method when selected method throws
+[ERROR][ai-quote-engine.js] [AIQuote] Method keyboard_compose failed: fail 
+[WARN][ai-quote-engine.js] [AIQuote] Trying fallback: retweet_menu
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > cleans quotes with random tweaks
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > extracts quotes with various formats
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > extracts quotes with various formats
+[DEBUG][ai-quote-engine.js] [extractReplyFromResponse] Processing content: "Some quote text..." (length: 15)
+[DEBUG][ai-quote-engine.js] [extractReplyFromResponse] Γ£ô Direct content used
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > validates quotes with different patterns
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > provides tone guidance for different styles
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > retries paste when URL not found initially - triggers lines 1521-1526
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > retries paste when URL not found initially - triggers lines 1521-1526
+[INFO][ai-quote-engine.js] [QuoteMethodC] Starting new post + paste URL method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > retries paste when URL not found initially - triggers lines 1521-1526
+[INFO][ai-quote-engine.js] [QuoteMethodC] Current URL: https://x.com/status/1
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > retries paste when URL not found initially - triggers lines 1521-1526
+[INFO][ai-quote-engine.js] [QuoteMethodC] Typing comment (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > retries paste when URL not found initially - triggers lines 1521-1526
+[INFO][ai-quote-engine.js] [QuoteMethodC] Pasting tweet URL...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to manual URL typing when URL never pastes - triggers lines 1529-1533
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to manual URL typing when URL never pastes - triggers lines 1529-1533
+[INFO][ai-quote-engine.js] [QuoteMethodC] Starting new post + paste URL method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to manual URL typing when URL never pastes - triggers lines 1529-1533
+[INFO][ai-quote-engine.js] [QuoteMethodC] Current URL: https://x.com/status/1
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to manual URL typing when URL never pastes - triggers lines 1529-1533
+[INFO][ai-quote-engine.js] [QuoteMethodC] Typing comment (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to manual URL typing when URL never pastes - triggers lines 1529-1533
+[INFO][ai-quote-engine.js] [QuoteMethodC] Pasting tweet URL...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when composer fails to open - triggers lines 1461-1463
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when composer fails to open - triggers lines 1461-1463
+[INFO][ai-quote-engine.js] [QuoteMethodC] Starting new post + paste URL method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when composer fails to open - triggers lines 1461-1463
+[INFO][ai-quote-engine.js] [QuoteMethodC] Current URL: https://x.com/status/1
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when composer fails to open - triggers lines 1461-1463
+[WARN][ai-quote-engine.js] [QuoteMethodC] Composer did not open
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles textContent error gracefully in URL paste verification - triggers line 1513 catch branch
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles textContent error gracefully in URL paste verification - triggers line 1513 catch branch
+[INFO][ai-quote-engine.js] [QuoteMethodC] Starting new post + paste URL method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles textContent error gracefully in URL paste verification - triggers line 1513 catch branch
+[INFO][ai-quote-engine.js] [QuoteMethodC] Current URL: https://x.com/status/1
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles textContent error gracefully in URL paste verification - triggers line 1513 catch branch
+[INFO][ai-quote-engine.js] [QuoteMethodC] Typing comment (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > handles textContent error gracefully in URL paste verification - triggers line 1513 catch branch
+[INFO][ai-quote-engine.js] [QuoteMethodC] Pasting tweet URL...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when compose button not found - triggers lines 1438-1440
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when compose button not found - triggers lines 1438-1440
+[INFO][ai-quote-engine.js] [QuoteMethodC] Starting new post + paste URL method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when compose button not found - triggers lines 1438-1440
+[INFO][ai-quote-engine.js] [QuoteMethodC] Current URL: https://x.com/status/1
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > returns failure when compose button not found - triggers lines 1438-1440
+[WARN][ai-quote-engine.js] [QuoteMethodC] Compose button not found
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > continues to verifyComposerOpen when composer wait times out - triggers line 1456
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > continues to verifyComposerOpen when composer wait times out - triggers line 1456
+[INFO][ai-quote-engine.js] [QuoteMethodC] Starting new post + paste URL method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > continues to verifyComposerOpen when composer wait times out - triggers line 1456
+[INFO][ai-quote-engine.js] [QuoteMethodC] Current URL: https://x.com/status/1
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > continues to verifyComposerOpen when composer wait times out - triggers line 1456
+[INFO][ai-quote-engine.js] [QuoteMethodC] Typing comment (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > continues to verifyComposerOpen when composer wait times out - triggers line 1456
+[INFO][ai-quote-engine.js] [QuoteMethodC] Pasting tweet URL...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with duplicate reason
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with duplicate reason
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with duplicate reason
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with duplicate reason
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with duplicate reason
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with undefined reason
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with undefined reason
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with undefined reason
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with undefined reason
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns failure when postTweet returns success: false with undefined reason
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns success with quotePreview true when hasQuotePreview is true
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns success with quotePreview true when hasQuotePreview is true
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns success with quotePreview true when hasQuotePreview is true
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns success with quotePreview true when hasQuotePreview is true
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet post result handling > returns success with quotePreview true when hasQuotePreview is true
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection strategies > logs WARNING when hasQuotePreview is false (line 1359)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection strategies > logs WARNING when hasQuotePreview is false (line 1359)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection strategies > logs DETECTION_ERROR when strategy throws (line 1354)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > returns failure when postTweet returns success: false in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > returns failure when postTweet returns success: false in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > returns failure when postTweet returns success: false in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > returns failure when postTweet returns success: false in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > returns success when postTweet returns success: true in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > returns success when postTweet returns success: true in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > returns success when postTweet returns success: true in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > returns success when postTweet returns success: true in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > handles postTweet with undefined reason in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > handles postTweet with undefined reason in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > handles postTweet with undefined reason in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodA_Keyboard post result handling > handles postTweet with undefined reason in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection edge cases > quote detection strategies - isolated tests > catches textContent error in second strategy and returns false (line 1331)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection edge cases > quote detection strategies - isolated tests > logs DETECTION_ERROR when strategy throws uncaught error (line 1344)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection edge cases > quote detection strategies - isolated tests > logs WARNING when hasQuotePreview remains false after all strategies (line 1349)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection edge cases > quote detection strategies - isolated tests > handles empty textContent in second strategy as no quote preview
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection edge cases > quote detection strategies - isolated tests > detects quote preview when textContent is longer than 50 chars
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection edge cases > quote detection strategies - isolated tests > detects quote preview with exactly 50 characters (boundary test)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet quote detection edge cases > quote detection strategies - isolated tests > continues to second strategy when first strategy returns false
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodA_Keyboard executes full keyboard flow
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodA_Keyboard executes full keyboard flow
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodA_Keyboard executes full keyboard flow
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodA_Keyboard executes full keyboard flow
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet catches textContent error in second strategy (line 1331)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet catches textContent error in second strategy (line 1331)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet catches textContent error in second strategy (line 1331)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet catches textContent error in second strategy (line 1331)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet catches textContent error in second strategy (line 1331)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs DETECTION_ERROR when strategy throws (line 1344)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs DETECTION_ERROR when strategy throws (line 1344)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs DETECTION_ERROR when strategy throws (line 1344)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs DETECTION_ERROR when strategy throws (line 1344)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs DETECTION_ERROR when strategy throws (line 1344)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs WARNING when no quote preview detected (line 1349)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs WARNING when no quote preview detected (line 1349)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs WARNING when no quote preview detected (line 1349)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs WARNING when no quote preview detected (line 1349)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Direct method calls for coverage > quoteMethodB_Retweet logs WARNING when no quote preview detected (line 1349)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out (line 1298)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out (line 1298)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out (line 1298)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out (line 1298)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out (line 1298)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when verifyComposerOpen returns open: false (lines 1305-1306)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when verifyComposerOpen returns open: false (lines 1305-1306)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when verifyComposerOpen returns open: false (lines 1305-1306)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when verifyComposerOpen returns open: false (lines 1305-1306)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when verifyComposerOpen returns open: false (lines 1305-1306)
+[WARN][ai-quote-engine.js] [QuoteMethodB] Composer did not open
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > quoteMethodA_Keyboard fallback and timeout paths > falls back to quoteMethodB_Retweet when hasQuotePreview is false (lines 1105-1108)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > quoteMethodA_Keyboard fallback and timeout paths > falls back to quoteMethodB_Retweet when hasQuotePreview is false (lines 1105-1108)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > quoteMethodA_Keyboard fallback and timeout paths > falls back to quoteMethodB_Retweet when hasQuotePreview is false (lines 1105-1108)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > quoteMethodA_Keyboard fallback and timeout paths > falls back to quoteMethodB_Retweet when hasQuotePreview is false (lines 1105-1108)
+[WARN][ai-quote-engine.js] [QuoteMethodA] Quote preview visibility timeout
+[WARN][ai-quote-engine.js] [QuoteMethodA] Quote preview not detected, falling back to retweet menu
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > quoteMethodA_Keyboard fallback and timeout paths > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out in quoteMethodA_Keyboard (line 1117)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > quoteMethodA_Keyboard fallback and timeout paths > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out in quoteMethodA_Keyboard (line 1117)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > quoteMethodA_Keyboard fallback and timeout paths > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out in quoteMethodA_Keyboard (line 1117)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > quoteMethodA_Keyboard fallback and timeout paths > logs QUOTE_WAIT_TIMEOUT when waitForSelector times out in quoteMethodA_Keyboard (line 1117)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when retweet menu does not open (line 1231)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when retweet menu does not open (line 1231)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when retweet menu does not open (line 1231)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when retweet menu does not open (line 1231)
+[WARN][ai-quote-engine.js] [QuoteMethodB] Retweet menu did not open, checking if already open or if click failed...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when retweet menu does not open (line 1231)
+[WARN][ai-quote-engine.js] [QuoteMethodB] Retrying click on retweet button...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when clicking Quote option fails (lines 1286-1287)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when clicking Quote option fails (lines 1286-1287)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when clicking Quote option fails (lines 1286-1287)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when clicking Quote option fails (lines 1286-1287)
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > quoteMethodB_Retweet error handling for coverage > returns failure when clicking Quote option fails (lines 1286-1287)
+[WARN][ai-quote-engine.js] [QuoteMethodB] Failed to click Quote option
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1130: QUOTE_WARN - quote preview may not be loaded > logs QUOTE_WARN when quote preview count() returns 0 in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1130: QUOTE_WARN - quote preview may not be loaded > logs QUOTE_WARN when quote preview count() returns 0 in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1130: QUOTE_WARN - quote preview may not be loaded > logs QUOTE_WARN when quote preview count() returns 0 in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1130: QUOTE_WARN - quote preview may not be loaded > logs QUOTE_WARN when quote preview count() returns 0 in quoteMethodA_Keyboard
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Lines 1190-1191: FIND_FAILED - retweet button not found > returns failure when retweet button not found in quoteMethodB_Retweet
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Lines 1190-1191: FIND_FAILED - retweet button not found > returns failure when retweet button not found in quoteMethodB_Retweet
+[INFO][ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Lines 1190-1191: FIND_FAILED - retweet button not found > returns failure when retweet button not found in quoteMethodB_Retweet
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: #mock-selector
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Lines 1190-1191: FIND_FAILED - retweet button not found > returns failure when retweet button not found in quoteMethodB_Retweet
+[INFO][ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Lines 1190-1191: FIND_FAILED - retweet button not found > returns failure when retweet button not found in quoteMethodB_Retweet
+[INFO][ai-quote-engine.js] [QuoteMethodB] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > logs QUOTE_DETECTED when composer text length > 50
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > logs QUOTE_DETECTED when composer text length > 50
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > logs QUOTE_DETECTED when composer text length > 50
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > logs QUOTE_DETECTED when composer text length > 50
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > logs QUOTE_DETECTED via composer_content when quote is detected via composer HTML (line 1072)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > logs QUOTE_DETECTED via composer_content when quote is detected via composer HTML (line 1072)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > logs QUOTE_DETECTED via composer_content when quote is detected via composer HTML (line 1072)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > logs QUOTE_DETECTED via composer_content when quote is detected via composer HTML (line 1072)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > returns false from strategy 3 when textContent throws (line 1087)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > returns false from strategy 3 when textContent throws (line 1087)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > returns false from strategy 3 when textContent throws (line 1087)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > returns false from strategy 3 when textContent throws (line 1087)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > returns failure when verifyComposerOpen returns open: false in quoteMethodA_Keyboard (lines 1014-1015)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > returns failure when verifyComposerOpen returns open: false in quoteMethodA_Keyboard (lines 1014-1015)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > returns failure when verifyComposerOpen returns open: false in quoteMethodA_Keyboard (lines 1014-1015)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stderr | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1083: QUOTE_DETECTED via composer text in quoteMethodA_Keyboard > returns failure when verifyComposerOpen returns open: false in quoteMethodA_Keyboard (lines 1014-1015)
+[ERROR][ai-quote-engine.js] [QuoteMethodA] Composer did not open with T 
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1003: CLICK_TWEET error handling > logs CLICK_TWEET with error message when clicking tweet element throws an error
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1003: CLICK_TWEET error handling > logs CLICK_TWEET with error message when clicking tweet element throws an error
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1003: CLICK_TWEET error handling > logs CLICK_TWEET with error message when clicking tweet element throws an error
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1003: CLICK_TWEET error handling > logs CLICK_TWEET with error message when clicking tweet element throws an error
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1100: DETECTION_ERROR in quoteMethodA_Keyboard > logs DETECTION_ERROR when a quote detection strategy throws an error (line 1100)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.5)
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1100: DETECTION_ERROR in quoteMethodA_Keyboard > logs DETECTION_ERROR when a quote detection strategy throws an error (line 1100)
+[INFO][ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Starting keyboard compose method
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1100: DETECTION_ERROR in quoteMethodA_Keyboard > logs DETECTION_ERROR when a quote detection strategy throws an error (line 1100)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Tweet text focused
+
+stdout | api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Line 1100: DETECTION_ERROR in quoteMethodA_Keyboard > logs DETECTION_ERROR when a quote detection strategy throws an error (line 1100)
+[INFO][ai-quote-engine.js] [QuoteMethodA] Quote preview confirmed
+[INFO][ai-quote-engine.js] [QuoteMethodA] Typing quote (10 chars, ghost cursor)...
+
+ Γ¥» api/tests/unit/ai-quote-engine.test.js (63 tests | 2 failed) 410ms
+     Γ£ô skips when probability roll fails 270ms
+     Γ£ô proceeds when probability roll passes 1ms
+     Γ£ô rejects negative sentiment content 2ms
+     Γ£ô rejects high risk conversations 1ms
+     Γ£ô extracts and cleans quotes 2ms
+     Γ£ô validates generic responses as invalid 1ms
+     Γ£ô updates configuration and detects languages 3ms
+     Γ£ô returns guidance and stats 1ms
+     Γ£ô provides length and style guidance 1ms
+     Γ£ô builds enhanced prompt with guidance and replies 1ms
+     Γ£ô generates a quote successfully 2ms
+     Γ£ô handles empty LLM content 1ms
+     Γ£ô returns failure when LLM result is null 2ms
+     Γ£ô returns failure when LLM request fails 1ms
+     Γ£ô uses raw content fallback when reply extraction fails 1ms
+     Γ£ô returns failure when cleaned quote is too short 1ms
+     Γ£ô returns failure when validation fails 1ms
+     Γ£ô executes quote methods and fallback 4ms
+     Γ£ô falls back to retweet method when selected method throws 2ms
+     Γ£ô cleans quotes with random tweaks 1ms
+     Γ£ô extracts quotes with various formats 1ms
+     Γ£ô validates quotes with different patterns 1ms
+     Γ£ô provides tone guidance for different styles 1ms
+     Γ£ô retries paste when URL not found initially - triggers lines 1521-1526 1ms
+     ├ù falls back to manual URL typing when URL never pastes - triggers lines 1529-1533 28ms
+     Γ£ô returns failure when composer fails to open - triggers lines 1461-1463 2ms
+     Γ£ô handles textContent error gracefully in URL paste verification - triggers line 1513 catch branch 2ms
+     Γ£ô returns failure when compose button not found - triggers lines 1438-1440 1ms
+     Γ£ô continues to verifyComposerOpen when composer wait times out - triggers line 1456 1ms
+       Γ£ô returns failure when postTweet returns success: false 2ms
+       Γ£ô returns failure when postTweet returns success: false with duplicate reason 1ms
+       Γ£ô returns failure when postTweet returns success: false with undefined reason 1ms
+       Γ£ô returns success with quotePreview true when hasQuotePreview is true 1ms
+       Γ£ô logs WARNING when hasQuotePreview is false (line 1359) 1ms
+       Γ£ô logs DETECTION_ERROR when strategy throws (line 1354) 1ms
+       Γ£ô returns failure when postTweet returns success: false in quoteMethodA_Keyboard 2ms
+       Γ£ô returns success when postTweet returns success: true in quoteMethodA_Keyboard 1ms
+       Γ£ô handles postTweet with undefined reason in quoteMethodA_Keyboard 2ms
+         Γ£ô catches textContent error in second strategy and returns false (line 1331) 3ms
+         Γ£ô logs DETECTION_ERROR when strategy throws uncaught error (line 1344) 1ms
+         Γ£ô logs WARNING when hasQuotePreview remains false after all strategies (line 1349) 1ms
+         Γ£ô handles empty textContent in second strategy as no quote preview 1ms
+         Γ£ô detects quote preview when textContent is longer than 50 chars 1ms
+         Γ£ô detects quote preview with exactly 50 characters (boundary test) 1ms
+         Γ£ô continues to second strategy when first strategy returns false 1ms
+       Γ£ô quoteMethodA_Keyboard executes full keyboard flow 1ms
+       Γ£ô quoteMethodB_Retweet catches textContent error in second strategy (line 1331) 5ms
+       Γ£ô quoteMethodB_Retweet logs DETECTION_ERROR when strategy throws (line 1344) 2ms
+       Γ£ô quoteMethodB_Retweet logs WARNING when no quote preview detected (line 1349) 2ms
+       Γ£ô logs QUOTE_WAIT_TIMEOUT when waitForSelector times out (line 1298) 2ms
+       Γ£ô returns failure when verifyComposerOpen returns open: false (lines 1305-1306) 2ms
+         Γ£ô falls back to quoteMethodB_Retweet when hasQuotePreview is false (lines 1105-1108) 3ms
+         Γ£ô logs QUOTE_WAIT_TIMEOUT when waitForSelector times out in quoteMethodA_Keyboard (line 1117) 2ms
+       Γ£ô returns failure when retweet menu does not open (line 1231) 2ms
+       Γ£ô returns failure when clicking Quote option fails (lines 1286-1287) 2ms
+       Γ£ô logs QUOTE_WARN when quote preview count() returns 0 in quoteMethodA_Keyboard 2ms
+       ├ù returns failure when retweet button not found in quoteMethodB_Retweet 5ms
+       Γ£ô logs QUOTE_DETECTED when composer text length > 50 2ms
+       Γ£ô logs QUOTE_DETECTED via composer_content when quote is detected via composer HTML (line 1072) 2ms
+       Γ£ô returns false from strategy 3 when textContent throws (line 1087) 2ms
+       Γ£ô returns failure when verifyComposerOpen returns open: false in quoteMethodA_Keyboard (lines 1014-1015) 2ms
+       Γ£ô logs CLICK_TWEET with error message when clicking tweet element throws an error 2ms
+       Γ£ô logs DETECTION_ERROR when a quote detection strategy throws an error (line 1100) 4ms
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 2 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > falls back to manual URL typing when URL never pastes - triggers lines 1529-1533
+AssertionError: expected "vi.fn()" to be called at least once
+ Γ¥» api/tests/unit/ai-quote-engine.test.js:819:36
+    817|         expect(result.success).toBe(true);
+    818|         expect(result.method).toBe('new_post');
+    819|         expect(page.keyboard.type).toHaveBeenCalled();
+       |                                    ^
+    820|         // Removed outdated logStep expectation
+    821|         // Removed outdated logStep expectation
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/2]ΓÄ»
+
+ FAIL  api/tests/unit/ai-quote-engine.test.js > ai-quote-engine > Lines 1190-1191: FIND_FAILED - retweet button not found > returns failure when retweet button not found in quoteMethodB_Retweet
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ Γ¥» api/tests/unit/ai-quote-engine.test.js:3488:36
+    3486|             const result = await engine.quoteMethodB_Retweet(page, 'TeΓÇª
+    3487| 
+    3488|             expect(result.success).toBe(false);
+       |                                    ^
+    3489|             expect(result.reason).toBe('retweet_button_not_found');
+    3490|             expect(result.method).toBe('retweet_menu');
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/2]ΓÄ»
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 61 passed (63)
+   Start at  16:09:03
+   Duration  1.03s (transform 453ms, setup 0ms, import 428ms, tests 410ms, environment 0ms)
+

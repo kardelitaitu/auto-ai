@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 2046,
-      "uptimeFormatted": "2s",
-      "timeSinceReset": 2046,
-      "timeSinceResetFormatted": "2s"
+      "uptime": 601831,
+      "uptimeFormatted": "10m 1s",
+      "timeSinceReset": 601831,
+      "timeSinceResetFormatted": "10m 1s"
     },
     "tasks": {
-      "executed": 0,
-      "failed": 0,
+      "executed": 1,
+      "failed": 1,
       "succeeded": 0,
       "successRate": 0,
-      "avgDuration": 0,
-      "totalDuration": 0,
+      "avgDuration": 597887,
+      "totalDuration": 597887,
       "durationPercentiles": {
-        "p50": 0,
-        "p95": 0,
-        "p99": 0
+        "p50": 597887,
+        "p95": 597887,
+        "p99": 597887
       }
     },
     "browsers": {
@@ -61,7 +61,17 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-07T06:54:56.648Z"
+    "runEndTime": "2026-03-07T12:20:46.306Z"
   },
-  "tasks": []
+  "tasks": [
+    {
+      "taskName": "api-twitteractivity",
+      "duration": 597887,
+      "success": false,
+      "sessionId": "roxy:0001",
+      "error": "Task cancelled",
+      "startTime": "2026-03-07T12:10:48.362Z",
+      "timestamp": 1772886046249
+    }
+  ]
 }

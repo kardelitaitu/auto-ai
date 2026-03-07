@@ -300,6 +300,13 @@ import {
 // ─── Memory ─────────────────────────────────────────────────────
 import { memory } from './utils/memory-profiler.js';
 
+// ─── Twitter Intents ───────────────────────────────────────────
+import { like as intentLike } from './twitter/intent-like.js';
+import { quote as intentQuote } from './twitter/intent-quote.js';
+import { retweet as intentRetweet } from './twitter/intent-retweet.js';
+import { follow as intentFollow } from './twitter/intent-follow.js';
+import { post as intentPost } from './twitter/intent-post.js';
+
 // ─── Build Dual-Callable APIs ──────────────────────────────────
 
 // Scroll: api.scroll(300) + api.scroll.focus('.el')
@@ -532,6 +539,17 @@ export const api = {
 
     // ── Memory ─────────────────────────────────────────────────────
     memory,
+
+    // ── Twitter Intents ────────────────────────────────────────────
+    twitter: {
+        intent: {
+            like: intentLike,
+            quote: intentQuote,
+            retweet: intentRetweet,
+            follow: intentFollow,
+            post: intentPost,
+        }
+    },
 };
 
 export default api;

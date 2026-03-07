@@ -69,7 +69,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-import { api } from '@api/index.js';
+import { api } from '../../../api/index.js';
 
 vi.mock('../../core/logger.js', () => ({
     createLogger: vi.fn((name) => ({
@@ -743,7 +743,7 @@ describe('ai-quote-engine', () => {
         timeoutSpy.mockRestore();
     });
 
-    it.skip('falls back to manual URL typing when URL never pastes - triggers lines 1529-1533', async () => {
+    it('falls back to manual URL typing when URL never pastes - triggers lines 1529-1533', async () => {
         const timeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((cb) => {
             cb();
             return 0;
@@ -812,6 +812,7 @@ describe('ai-quote-engine', () => {
         };
 
         api.getPage.mockReturnValue(page);
+        api.text.mockResolvedValue('Some text without any URL');
         const result = await engine.quoteMethodC_Url(page, 'Test quote', human);
 
         expect(result.success).toBe(true);
@@ -1071,234 +1072,6 @@ describe('ai-quote-engine', () => {
         timeoutSpy.mockRestore();
     });
 
-    describe('quoteMethodB_Retweet platform-dependent modifier key', () => {
-        const createRetweetPageMock = () => {
-            const quoteLocator = {
-                count: vi.fn().mockResolvedValue(1),
-                click: vi.fn().mockResolvedValue(),
-                first: function () {
-                    return this;
-                },
-                textContent: vi.fn().mockResolvedValue('quoted tweet'),
-                isVisible: vi.fn().mockResolvedValue(true),
-                getAttribute: vi.fn().mockResolvedValue('Quote'),
-                scrollIntoViewIfNeeded: vi.fn().mockResolvedValue(),
-                innerText: vi.fn().mockResolvedValue('Quote'),
-            };
-            quoteLocator.all = vi.fn().mockResolvedValue([quoteLocator]);
-
-            const retweetLocator = {
-                count: vi.fn().mockResolvedValue(1),
-                click: vi.fn().mockResolvedValue(),
-                first: function () {
-                    return this;
-                },
-                textContent: vi.fn().mockResolvedValue('Retweet'),
-                isVisible: vi.fn().mockResolvedValue(true),
-                getAttribute: vi.fn().mockResolvedValue('Retweet'),
-                scrollIntoViewIfNeeded: vi.fn().mockResolvedValue(),
-                innerText: vi.fn().mockResolvedValue('Retweet'),
-            };
-            retweetLocator.all = vi.fn().mockResolvedValue([retweetLocator]);
-
-            const page = {
-                _document: {
-                    querySelector: () => ({ innerHTML: '<div data-testid="quotedTweet"></div>' }),
-                },
-                _window: { scrollTo: vi.fn(), innerHeight: 800 },
-                _navigator: { clipboard: { writeText: vi.fn() } },
-                evaluate: vi.fn((fn, arg) => {
-                    const prevDocument = global.document;
-                    const prevWindow = global.window;
-                    const prevNavigator = global.navigator;
-                    global.document = global.document || {
-                        querySelector: () => ({ innerHTML: '' }),
-                    };
-                    global.window = global.window || { scrollTo: vi.fn(), innerHeight: 800 };
-                    global.navigator = global.navigator || { clipboard: { writeText: vi.fn() } };
-                    let result;
-                    try {
-                        result = fn(arg);
-                    } finally {
-                        global.document = prevDocument;
-                        global.window = prevWindow;
-                        global.navigator = prevNavigator;
-                    }
-                    return result;
-                }),
-                keyboard: { press: vi.fn().mockResolvedValue(), type: vi.fn().mockResolvedValue() },
-                mouse: { click: vi.fn().mockResolvedValue(), move: vi.fn().mockResolvedValue() },
-                locator: vi.fn((selector) => {
-                    if (selector.includes('quotedTweet') || selector.includes('tweetTextarea')) {
-                        return quoteLocator;
-                    }
-                    if (selector.includes('menu')) {
-                        return {
-                            first: () => quoteLocator,
-                            all: vi.fn().mockResolvedValue([quoteLocator]),
-                            isVisible: vi.fn().mockResolvedValue(true),
-                        };
-                    }
-                    return retweetLocator;
-                }),
-                waitForSelector: vi.fn().mockResolvedValue(),
-                waitForTimeout: vi.fn().mockResolvedValue(),
-                url: vi.fn().mockReturnValue('https://x.com/status/1'),
-            };
-
-            api.getPage.mockReturnValue(page);
-
-            return {
-                quoteLocator,
-                retweetLocator,
-                page,
-            };
-        };
-
-        it.skip('uses Meta modifier on macOS (darwin)', async () => {
-            const originalPlatform = process.platform;
-            Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
-            const timeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((cb) => {
-                cb();
-                return 0;
-            });
-
-            const { page } = createRetweetPageMock();
-
-            const human = {
-                logStep: vi.fn(),
-                verifyComposerOpen: () => ({
-                    open: true,
-                    selector: '[data-testid="tweetTextarea_0"]',
-                }),
-                typeText: vi.fn(),
-                postTweet: vi.fn().mockResolvedValue({ success: true, reason: 'posted' }),
-                safeHumanClick: vi.fn().mockResolvedValue(true),
-                fixation: vi.fn(),
-                microMove: vi.fn(),
-                hesitation: vi.fn(),
-                findElement: vi.fn().mockResolvedValue({
-                    element: {
-                        boundingBox: () => Promise.resolve({ y: 100 }),
-                        scrollIntoViewIfNeeded: () => Promise.resolve(),
-                        click: () => Promise.resolve(),
-                    },
-                    selector: '[data-testid="retweet"]',
-                }),
-            };
-
-            const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
-
-            expect(result.success).toBe(true);
-            expect(api.type).toHaveBeenCalledWith(
-                expect.anything(),
-                'Test quote',
-                expect.objectContaining({ clearFirst: true })
-            );
-
-            Object.defineProperty(process, 'platform', {
-                value: originalPlatform,
-                configurable: true,
-            });
-            timeoutSpy.mockRestore();
-        });
-
-        it.skip('uses Control modifier on Windows (win32)', async () => {
-            const originalPlatform = process.platform;
-            Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
-            const timeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((cb) => {
-                cb();
-                return 0;
-            });
-
-            const { page } = createRetweetPageMock();
-
-            const human = {
-                logStep: vi.fn(),
-                verifyComposerOpen: () => ({
-                    open: true,
-                    selector: '[data-testid="tweetTextarea_0"]',
-                }),
-                typeText: vi.fn(),
-                postTweet: vi.fn().mockResolvedValue({ success: true, reason: 'posted' }),
-                safeHumanClick: vi.fn().mockResolvedValue(true),
-                fixation: vi.fn(),
-                microMove: vi.fn(),
-                hesitation: vi.fn(),
-                findElement: vi.fn().mockResolvedValue({
-                    element: {
-                        boundingBox: () => Promise.resolve({ y: 100 }),
-                        scrollIntoViewIfNeeded: () => Promise.resolve(),
-                        click: () => Promise.resolve(),
-                    },
-                    selector: '[data-testid="retweet"]',
-                }),
-            };
-
-            const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
-
-            expect(result.success).toBe(true);
-            expect(api.type).toHaveBeenCalledWith(
-                expect.anything(),
-                'Test quote',
-                expect.objectContaining({ clearFirst: true })
-            );
-
-            Object.defineProperty(process, 'platform', {
-                value: originalPlatform,
-                configurable: true,
-            });
-            timeoutSpy.mockRestore();
-        });
-
-        it.skip('uses Control modifier on Linux', async () => {
-            const originalPlatform = process.platform;
-            Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
-            const timeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((cb) => {
-                cb();
-                return 0;
-            });
-
-            const { page } = createRetweetPageMock();
-
-            const human = {
-                logStep: vi.fn(),
-                verifyComposerOpen: () => ({
-                    open: true,
-                    selector: '[data-testid="tweetTextarea_0"]',
-                }),
-                typeText: vi.fn(),
-                postTweet: vi.fn().mockResolvedValue({ success: true, reason: 'posted' }),
-                safeHumanClick: vi.fn().mockResolvedValue(true),
-                fixation: vi.fn(),
-                microMove: vi.fn(),
-                hesitation: vi.fn(),
-                findElement: vi.fn().mockResolvedValue({
-                    element: {
-                        boundingBox: () => Promise.resolve({ y: 100 }),
-                        scrollIntoViewIfNeeded: () => Promise.resolve(),
-                        click: () => Promise.resolve(),
-                    },
-                    selector: '[data-testid="retweet"]',
-                }),
-            };
-
-            const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
-
-            expect(result.success).toBe(true);
-            expect(api.type).toHaveBeenCalledWith(
-                expect.anything(),
-                'Test quote',
-                expect.objectContaining({ clearFirst: true })
-            );
-
-            Object.defineProperty(process, 'platform', {
-                value: originalPlatform,
-                configurable: true,
-            });
-            timeoutSpy.mockRestore();
-        });
-    });
 
     describe('quoteMethodB_Retweet post result handling', () => {
         const createPostTestPage = (postResult) => {
@@ -3648,7 +3421,7 @@ describe('ai-quote-engine', () => {
         });
     });
 
-    describe.skip('Lines 1190-1191: FIND_FAILED - retweet button not found', () => {
+    describe('Lines 1190-1191: FIND_FAILED - retweet button not found', () => {
         it('returns failure when retweet button not found in quoteMethodB_Retweet', async () => {
             const timeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((cb) => {
                 cb();
@@ -3711,6 +3484,7 @@ describe('ai-quote-engine', () => {
                 findElement: vi.fn(),
             };
 
+            api.findElement.mockResolvedValue(null);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result.success).toBe(false);
