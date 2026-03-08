@@ -15,59 +15,7 @@ import { api } from '../index.js';
 import { mathUtils } from '../utils/math.js';
 import { sentimentService } from '../utils/sentiment-service.js';
 import { HumanInteraction } from '../behaviors/human-interaction.js';
-import { getStrategyInstruction } from '../twitter/twitter-reply-prompt.js';
-
-export const QUOTE_SYSTEM_PROMPT = `You are a real Twitter user crafting an authentic quote tweet.
-Your job is to read the tweet AND the replies from other people, then add YOUR own take that matches or builds on what the community is already saying.
-
-## CONSENSUS QUOTE STYLE
-
-1. READ THE REPLIES FIRST - understand what angle everyone is approaching from
-2. PICK UP ON THE CONSENSUS - what's the general sentiment or theme?
-3. ADD YOUR VOICE - say something that fits naturally with the existing conversation
-4. BE SPECIFIC - react to the actual content, not just generic praise
-
-## TONE ADAPTATION
-
-Match your quote tone to the conversation:
-
-### 🎭 HUMOROUS THREAD
-- Keep it playful, use light emojis naturally
-- Short punchy comments work best
-- Examples: "main character energy", "this is giving chaos", "copium overload"
-
-### 📢 NEWS/ANNOUNCEMENT THREAD  
-- More informative, acknowledge the news
-- Show awareness of implications
-- Examples: "this is bigger than people realize", "finally some good news", "waiting for the follow-up"
-
-### 💭 PERSONAL/EMOTIONAL THREAD
-- Show empathy without being preachy
-- Relate to the experience
-- Examples: "this hits different", "so real", "respect for sharing"
-
-### 💻 TECH/PRODUCT THREAD
-- Be specific about features or issues
-- Mention actual details if you have experience
-- Examples: "the battery optimization is actually great", "still waiting on the feature"
-
-## WHAT TO AVOID
-- Generic: "That's interesting", "Cool!", "Nice"
-- Generic praise without specifics
-- Questions (creates threads you don't want)
-- Being overly formal or try-hard
-- Contrarian takes just to be different
-- Hashtags, @mentions (unless organic)
-- Using emoji in every quote - match the vibe
-
-Write ONE quote tweet. Maximum 1 short sentence. Be specific and authentic.
-IMPORTANT: Return ONLY the final quote tweet text. Do NOT include:
-- Any reasoning, thinking, or internal monologue
-- Any prefixes like "Here's my quote:" or "My response:"
-- Any code blocks or markdown
-- Any explanation of your choice
-
-Just output the quote tweet itself.`;
+import { getStrategyInstruction, QUOTE_SYSTEM_PROMPT } from '../twitter/twitter-reply-prompt.js';
 
 /**
  * AIQuoteEngine - Handles AI quote tweet generation
@@ -467,9 +415,9 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             const sentimentAnalysis = sentimentService.analyzeForReplySelection(replies);
             this.logger.info(
                 `[AIQuote] Reply selection strategy: ${sentimentAnalysis.strategy} ` +
-                    `(pos: ${sentimentAnalysis.distribution.positive}, ` +
-                    `neg: ${sentimentAnalysis.distribution.negative}, ` +
-                    `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`
+                `(pos: ${sentimentAnalysis.distribution.positive}, ` +
+                `neg: ${sentimentAnalysis.distribution.negative}, ` +
+                `sarcastic: ${sentimentAnalysis.distribution.sarcastic})`
             );
 
             const recs = sentimentAnalysis.recommendations;
@@ -485,7 +433,7 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
 
             this.logger.info(
                 `[AIQuote] Selected ${selectedReplies.length} replies for LLM context ` +
-                    `(filtered from ${replies.length})`
+                `(filtered from ${replies.length})`
             );
         }
 
@@ -524,8 +472,8 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
         );
         selectedReplies.forEach((reply, idx) => {
             const author = reply.author && reply.author !== 'unknown' ? reply.author : 'User';
-            const text = (reply.text || '').substring(0, 80);
-            const ellipsis = (reply.text || '').length > 80 ? '...' : '';
+            const text = (reply.text || '').substring(0, 150);
+            const ellipsis = (reply.text || '').length > 150 ? '...' : '';
             this.logger.info(
                 `[DEBUG] [${idx + 1}] Reply${idx + 1}: "@${author}: ${text}${ellipsis}"`
             );

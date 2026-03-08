@@ -1,5 +1,12 @@
 # AGENT-JOURNAL.md
 
+## 2026-03-07: AI Prompt Refactor & Constraint Relaxation
+
+- **Prompt Centralization**: Moved `QUOTE_SYSTEM_PROMPT` into `api/twitter/twitter-reply-prompt.js` from `ai-quote-engine.js` for centralized prompt management.
+- **Improved Context Parsing**: Increased the extraction length for contextual replies from 80 characters to 150 characters inside `buildEnhancedPrompt` and `buildReplyPrompt`, giving the LLM more background context.
+- **Natural Constraints**: Softened character/word limits across all reply strategies (e.g., "Keep it to 1 very short sentence" instead of "MAX 6 WORDS") and added explicit instructions against "AI-cliche" language to ensure generation is more human-like.
+- **Test Integrity**: Updated `ai-quote-engine.test.js` and `twitter-reply-prompt.test.js` to validate the new constraint text lengths. Also fixed a broken test in `twitter-intent.test.js` caught during regression testing caused by prior parameter changes to Twitter intents.
+
 ## 2026-03-07: Fix Twitter Quote Intent
 
 - **Bug**: The quote intent was not correctly populating the tweet URL in the composer because it used a non-standard `quoted_tweet_id` parameter.

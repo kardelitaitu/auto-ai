@@ -26,7 +26,7 @@ describe('twitter-reply-prompt', () => {
             expect(REPLY_SYSTEM_PROMPT).toContain('NO @mentions');
             expect(REPLY_SYSTEM_PROMPT).toContain('NO #hashtags');
             expect(REPLY_SYSTEM_PROMPT).toContain('NO emojis');
-            expect(REPLY_SYSTEM_PROMPT).toContain('MAX 10 WORDS');
+            expect(REPLY_SYSTEM_PROMPT).toContain('KEEP IT SHORT');
         });
 
         it('should contain banned words section', () => {
@@ -121,7 +121,7 @@ describe('twitter-reply-prompt', () => {
 
             const replyLine = prompt.split('\n').find((line) => line.startsWith('1. @user2:'));
             const replyText = replyLine.replace('1. @user2: ', '');
-            expect(replyText.length).toBe(80);
+            expect(replyText.length).toBe(150);
         });
 
         it('should include strategy instruction in prompt', () => {

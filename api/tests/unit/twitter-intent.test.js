@@ -130,7 +130,7 @@ describe('Twitter Intent Helpers', () => {
             const res = await quote(url, text);
 
             expect(res.success).toBe(true);
-            expect(goto).toHaveBeenCalledWith('https://x.com/intent/tweet?quoted_tweet_id=123456&text=Check%20this%20out!');
+            expect(goto).toHaveBeenCalledWith('https://x.com/intent/tweet?url=https%3A%2F%2Fx.com%2Fuser%2Fstatus%2F123456&text=Check%20this%20out!');
             expect(click).toHaveBeenCalledWith('[data-testid="tweetButton"]');
             expect(back).toHaveBeenCalled();
         });

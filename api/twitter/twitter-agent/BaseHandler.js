@@ -284,7 +284,7 @@ export class BaseHandler {
             if (ghostResult?.success && ghostResult?.x != null && ghostResult?.y != null) {
                 const x = Math.round(ghostResult.x);
                 const y = Math.round(ghostResult.y);
-                this.log(`[ai-twitterActivity][GhostClick] Clicked x=${x} y=${y}`);
+                this.log(`[ai-twitterActivity][api.click] Clicked x=${x} y=${y}`);
             } else if (ghostResult?.success === false) {
                 throw new Error('ghost_click_failed');
             }
