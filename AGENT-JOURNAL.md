@@ -1,5 +1,11 @@
 # AGENT-JOURNAL.md
 
+## 2026-03-08: Analyze and Fix ixBrowser Close Script
+- **Analyzed `browser-close.bat`**: Investigated why the script occasionally hangs. 
+- **Fix Applied**: 
+  - Added `-TimeoutSec 5` to API calls so the script doesn't hang indefinitely on a dead port.
+  - Refactored the core logic so the script infinitely loops over **both** attempting to close the profile via the API and forcefully killing `chrome.exe`. It will only exit when `tasklist` confirms 100% that no `chrome.exe` processes remain.
+
 ## 2026-03-07: AI Prompt Refactor & Constraint Relaxation
 
 - **Prompt Centralization**: Moved `QUOTE_SYSTEM_PROMPT` into `api/twitter/twitter-reply-prompt.js` from `ai-quote-engine.js` for centralized prompt management.
