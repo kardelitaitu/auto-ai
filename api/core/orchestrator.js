@@ -51,6 +51,7 @@ class Orchestrator extends EventEmitter {
         this.currentGroupStartTime = null;
         this.activeTasks = new Map();
         this.taskAbortControllers = new Map();
+        this.taskModuleCache = new Map();
 
         this.globalActiveTasks = 0;
         this.maxGlobalConcurrency = 20; // Default global limit
@@ -317,7 +318,7 @@ class Orchestrator extends EventEmitter {
 
                     // Global Concurrency Throttling
                     while (this.globalActiveTasks >= this.maxGlobalConcurrency) {
-                        await this._sleep(1000);
+                        await new Promise(resolve => this.once('workerFreed', resolve));
                         if (this.isShuttingDown) break;
                     }
                     if (this.isShuttingDown) break;
@@ -336,20 +337,14 @@ class Orchestrator extends EventEmitter {
 
                     this.globalActiveTasks++;
                     // Stagger task starts to prevent network spikes
-                    await this._sleep(this.taskStaggerDelayMs);
+                    // await this._sleep(this.taskStaggerDelayMs); // Disabled: Causes massive queue artificial latency
 
                     let page = null;
                     try {
                         page = await this.sessionManager.acquirePage(session.id, sharedContext);
 
-                        const pageHealth = await this.automator.checkPageResponsive(page);
-                        if (!pageHealth.healthy) {
-                            logger.warn(
-                                `[Orchestrator][${session.id}] Page unresponsive. Re-creating.`
-                            );
-                            await page.close().catch(() => {});
-                            page = await this.sessionManager.acquirePage(session.id, sharedContext);
-                        }
+                        // Optimization: Removed aggressive checkPageResponsive before EVERY task.
+                        // We rely on task failure natural retries to rotate dead pages instead of a proactive CDP round-trip.
 
                         logger.info(
                             `[Orchestrator][${session.id}][Worker ${allocatedWorker.id}] Starting '${task.taskName}'`
@@ -378,6 +373,7 @@ class Orchestrator extends EventEmitter {
                         }
                     } finally {
                         this.globalActiveTasks = Math.max(0, this.globalActiveTasks - 1);
+                        this.emit('workerFreed'); // Wake up any throttled loops
                         if (page) await this.sessionManager.releasePage(session.id, page);
                         await this.sessionManager.releaseWorker(session.id, allocatedWorker.id);
                     }
@@ -517,6 +513,10 @@ class Orchestrator extends EventEmitter {
     }
 
     async _importTaskModule(taskName) {
+        if (this.taskModuleCache.has(taskName)) {
+            return this.taskModuleCache.get(taskName);
+        }
+
         const baseName = taskName.replace('.js', '').split('/').pop();
         const possiblePaths = [
             `../tasks/${baseName}.js`,
@@ -527,7 +527,9 @@ class Orchestrator extends EventEmitter {
 
         for (const path of possiblePaths) {
             try {
-                return await import(path);
+                const mod = await import(path);
+                this.taskModuleCache.set(taskName, mod);
+                return mod;
             } catch (_e) {
                 /* ignore */
             }
@@ -547,10 +549,12 @@ class Orchestrator extends EventEmitter {
             if (match) {
                 const resolvedPath = join(tasksDir, match);
                 const fileUrl = pathToFileURL(resolvedPath).href;
-                logger.info(
+                logger.debug(
                     `[Orchestrator] Task '${taskName}' resolved via case-insensitive lookup → ${match}`
                 );
-                return await import(fileUrl);
+                const mod = await import(fileUrl);
+                this.taskModuleCache.set(taskName, mod);
+                return mod;
             }
         } catch (_e) {
             logger.warn(

@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 124049,
-      "uptimeFormatted": "2m 4s",
-      "timeSinceReset": 124049,
-      "timeSinceResetFormatted": "2m 4s"
+      "uptime": 703082,
+      "uptimeFormatted": "11m 43s",
+      "timeSinceReset": 703082,
+      "timeSinceResetFormatted": "11m 43s"
     },
     "tasks": {
-      "executed": 2,
+      "executed": 3,
       "failed": 0,
-      "succeeded": 2,
+      "succeeded": 3,
       "successRate": 100,
-      "avgDuration": 120073.5,
-      "totalDuration": 240147,
+      "avgDuration": 250352.33,
+      "totalDuration": 751057,
       "durationPercentiles": {
-        "p50": 120061,
-        "p95": 120086,
-        "p99": 120086
+        "p50": 198084,
+        "p95": 502887,
+        "p99": 502887
       }
     },
     "browsers": {
@@ -45,13 +45,13 @@
     "twitter": {
       "actions": {
         "likes": 0,
-        "replies": 0,
+        "replies": 3,
         "quotes": 0,
         "retweets": 0,
         "bookmarks": 0,
         "follows": 0,
         "tweets": 0,
-        "total": 0
+        "total": 3
       },
       "performance": {
         "avgDiveDuration": 0,
@@ -61,26 +61,35 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-08T05:26:24.261Z"
+    "runEndTime": "2026-03-09T06:59:06.760Z"
   },
   "tasks": [
     {
-      "taskName": "cookiebot",
-      "duration": 120061,
+      "taskName": "pageview",
+      "duration": 50086,
       "success": true,
       "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-08T05:24:24.149Z",
-      "timestamp": 1772947584210
+      "startTime": "2026-03-09T06:47:25.602Z",
+      "timestamp": 1773038895688
     },
     {
       "taskName": "cookiebot",
-      "duration": 120086,
+      "duration": 198084,
       "success": true,
       "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-08T05:24:24.145Z",
-      "timestamp": 1772947584231
+      "startTime": "2026-03-09T06:47:25.583Z",
+      "timestamp": 1773039043667
+    },
+    {
+      "taskName": "api-twitteractivity",
+      "duration": 502887,
+      "success": true,
+      "sessionId": "roxy:0001",
+      "error": null,
+      "startTime": "2026-03-09T06:50:43.782Z",
+      "timestamp": 1773039546669
     }
   ]
 }

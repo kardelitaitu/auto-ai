@@ -1,0 +1,14 @@
+Testing Page Pool Reuse Leak...
+Initial listeners on 'dialog': 0
+Initial routes blocked: 0
+TypeError: store.page.context(...).browser(...)?.isConnected is not a function
+    at checkSession (file:///C:/My%20Script/auto-ai/api/core/context.js:174:41)
+    at getEvents (file:///C:/My%20Script/auto-ai/api/core/context.js:210:5)
+    at withErrorHook (file:///C:/My%20Script/auto-ai/api/core/hooks.js:59:20)
+    at file:///C:/My%20Script/auto-ai/api/core/init.js:60:16
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at file:///C:/My%20Script/auto-ai/api/core/context.js:151:45
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at runWithLogger (file:///C:/My%20Script/auto-ai/api/core/context.js:142:49)
+    at withPage (file:///C:/My%20Script/auto-ai/api/core/context.js:151:12)
+    at initPage (file:///C:/My%20Script/auto-ai/api/core/init.js:59:12)

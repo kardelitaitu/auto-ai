@@ -57,6 +57,7 @@ describe('Automator', () => {
     describe('connectToBrowser', () => {
         it('should connect and test the browser', async () => {
             const mockBrowser = {
+            on: vi.fn(),
                 isConnected: vi.fn().mockReturnValue(true),
                 close: vi.fn().mockResolvedValue(),
             };
@@ -72,7 +73,8 @@ describe('Automator', () => {
         });
 
         it('should store connection info with correct metadata', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             chromium.connectOverCDP.mockResolvedValue(mockBrowser);
             getTimeoutValue.mockResolvedValue(5000);
 
@@ -91,13 +93,15 @@ describe('Automator', () => {
 
     describe('testConnection', () => {
         it('should return true when browser is connected', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const result = await automator.testConnection(mockBrowser);
             expect(result).toBe(true);
         });
 
         it('should throw when browser is disconnected', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(false) };
             await expect(automator.testConnection(mockBrowser)).rejects.toThrow(
                 'Browser is not connected'
             );
@@ -107,10 +111,12 @@ describe('Automator', () => {
     describe('reconnect', () => {
         it('should close old and open new connection', async () => {
             const oldBrowser = {
+            on: vi.fn(),
                 close: vi.fn().mockResolvedValue(),
                 isConnected: vi.fn().mockReturnValue(true),
             };
-            const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const newBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const wsEndpoint = 'ws://localhost:1234';
 
             automator.connections.set(wsEndpoint, { browser: oldBrowser });
@@ -125,10 +131,12 @@ describe('Automator', () => {
 
         it('should handle error when closing old connection', async () => {
             const oldBrowser = {
+            on: vi.fn(),
                 close: vi.fn().mockRejectedValue(new Error('Already closed')),
                 isConnected: vi.fn().mockReturnValue(true),
             };
-            const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const newBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const wsEndpoint = 'ws://localhost:1234';
 
             automator.connections.set(wsEndpoint, { browser: oldBrowser });
@@ -139,7 +147,8 @@ describe('Automator', () => {
         });
 
         it('should reconnect when no existing connection', async () => {
-            const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const newBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const wsEndpoint = 'ws://localhost:1234';
 
             // No connection set
@@ -150,63 +159,17 @@ describe('Automator', () => {
         });
     });
 
-    describe('startHealthChecks', () => {
-        it('should start health check monitoring', async () => {
-            getTimeoutValue.mockResolvedValue(1000);
-            await automator.startHealthChecks();
-            expect(automator.healthCheckInterval).not.toBeNull();
-        });
-
-        it('should not start if already running', async () => {
-            getTimeoutValue.mockResolvedValue(1000);
-            await automator.startHealthChecks();
-            await automator.startHealthChecks(); // Should not start again
-            // healthCheckInterval should still be the same (not null)
-            expect(automator.healthCheckInterval).not.toBeNull();
-        });
-
-        it('should periodically check healthy connections', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
-            const wsEndpoint = 'ws://localhost:1234';
-            automator.connections.set(wsEndpoint, {
-                browser: mockBrowser,
-                lastHealthCheck: Date.now() - 20000,
-                healthy: true,
-            });
-
-            getTimeoutValue.mockResolvedValue(1000);
-            await automator.startHealthChecks(1000);
-
-            vi.advanceTimersByTime(1500);
-            expect(mockBrowser.isConnected).toHaveBeenCalled();
-        });
-
-        it('should skip check if recently checked', async () => {
-            const mockBrowser = { isConnected: vi.fn() };
-            const wsEndpoint = 'ws://localhost:1234';
-            automator.connections.set(wsEndpoint, {
-                browser: mockBrowser,
-                lastHealthCheck: Date.now(), // Just checked
-                healthy: true,
-            });
-
-            getTimeoutValue.mockResolvedValue(1000);
-            await automator.startHealthChecks(1000);
-
-            vi.advanceTimersByTime(1500);
-            expect(mockBrowser.isConnected).not.toHaveBeenCalled();
-        });
-    });
-
     describe('attemptBackgroundReconnect', () => {
         it('should attempt reconnection', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(false) };
             const wsEndpoint = 'ws://localhost:1234';
             automator.connections.set(wsEndpoint, {
                 browser: mockBrowser,
                 reconnectAttempts: 0,
             });
-            const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const newBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             chromium.connectOverCDP.mockResolvedValue(newBrowser);
 
             await automator.attemptBackgroundReconnect(
@@ -217,7 +180,8 @@ describe('Automator', () => {
         });
 
         it('should handle reconnection failure gracefully', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(false) };
             const wsEndpoint = 'ws://localhost:1234';
             automator.connections.set(wsEndpoint, {
                 browser: mockBrowser,
@@ -233,25 +197,10 @@ describe('Automator', () => {
         });
     });
 
-    describe('stopHealthChecks', () => {
-        it('should stop running health checks', async () => {
-            getTimeoutValue.mockResolvedValue(1000);
-            await automator.startHealthChecks();
-            expect(automator.healthCheckInterval).not.toBeNull();
-
-            automator.stopHealthChecks();
-            expect(automator.healthCheckInterval).toBeNull();
-        });
-
-        it('should do nothing if not running', () => {
-            automator.stopHealthChecks();
-            expect(automator.healthCheckInterval).toBeNull();
-        });
-    });
-
     describe('getBrowser', () => {
         it('should return browser for existing endpoint', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const wsEndpoint = 'ws://localhost:1234';
             automator.connections.set(wsEndpoint, { browser: mockBrowser });
 
@@ -315,7 +264,8 @@ describe('Automator', () => {
 
     describe('closeAll', () => {
         it('should close all browsers and clear connections', async () => {
-            const mockBrowser = { close: vi.fn().mockResolvedValue() };
+            const mockBrowser = {
+            on: vi.fn(), close: vi.fn().mockResolvedValue() };
             automator.connections.set('ws1', { browser: mockBrowser, endpoint: 'ws1' });
             automator.connections.set('ws2', { browser: mockBrowser, endpoint: 'ws2' });
 
@@ -336,6 +286,7 @@ describe('Automator', () => {
 
         it('should handle close error', async () => {
             const mockBrowser = {
+            on: vi.fn(),
                 close: vi.fn().mockRejectedValue(new Error('Close failed')),
                 isConnected: vi.fn().mockReturnValue(true),
             };
@@ -400,7 +351,8 @@ describe('Automator', () => {
 
     describe('checkConnectionHealth', () => {
         it('should return health status for existing connection', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const wsEndpoint = 'ws://localhost:1234';
             automator.connections.set(wsEndpoint, {
                 browser: mockBrowser,
@@ -419,7 +371,8 @@ describe('Automator', () => {
         });
 
         it('should check page when provided', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const mockPage = {
                 isClosed: vi.fn().mockReturnValue(false),
                 evaluate: vi.fn().mockResolvedValue({
@@ -443,7 +396,8 @@ describe('Automator', () => {
 
     describe('recoverConnection', () => {
         it('should recover when browser is connected', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const wsEndpoint = 'ws://localhost:1234';
             automator.connections.set(wsEndpoint, { browser: mockBrowser });
 
@@ -455,8 +409,10 @@ describe('Automator', () => {
         });
 
         it('should reconnect when browser disconnected', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(false) };
-            const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(false) };
+            const newBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const wsEndpoint = 'ws://localhost:1234';
             automator.connections.set(wsEndpoint, { browser: mockBrowser });
             chromium.connectOverCDP.mockResolvedValue(newBrowser);
@@ -466,7 +422,8 @@ describe('Automator', () => {
         });
 
         it('should recover with page reload', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const mockPage = {
                 isClosed: vi.fn().mockReturnValue(false),
                 reload: vi.fn().mockResolvedValue(),
@@ -487,9 +444,11 @@ describe('Automator', () => {
 
         it('should handle isConnected error gracefully', async () => {
             const mockBrowser = {
+            on: vi.fn(),
                 isConnected: vi.fn().mockRejectedValue(new Error('Connection error')),
             };
-            const newBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const newBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const wsEndpoint = 'ws://localhost:1234';
             automator.connections.set(wsEndpoint, { browser: mockBrowser });
             chromium.connectOverCDP.mockResolvedValue(newBrowser);
@@ -499,7 +458,8 @@ describe('Automator', () => {
         });
 
         it('should handle page reload error in recovery', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const mockPage = {
                 isClosed: vi.fn().mockReturnValue(false),
                 reload: vi.fn().mockRejectedValue(new Error('Reload failed')),
@@ -515,7 +475,8 @@ describe('Automator', () => {
         });
 
         it('should try navigate home on page reload failure', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             const mockPage = {
                 isClosed: vi.fn().mockReturnValue(false),
                 reload: vi.fn().mockRejectedValue(new Error('Reload failed')),
@@ -533,7 +494,8 @@ describe('Automator', () => {
 
     describe('getHealthSummary', () => {
         it('should return health summary for connections', async () => {
-            const mockBrowser = { isConnected: vi.fn().mockReturnValue(true) };
+            const mockBrowser = {
+            on: vi.fn(), isConnected: vi.fn().mockReturnValue(true) };
             automator.connections.set('ws1', {
                 browser: mockBrowser,
                 healthy: true,
@@ -567,7 +529,8 @@ describe('Automator', () => {
 
     describe('shutdown', () => {
         it('should shutdown gracefully', async () => {
-            const mockBrowser = { close: vi.fn().mockResolvedValue() };
+            const mockBrowser = {
+            on: vi.fn(), close: vi.fn().mockResolvedValue() };
             automator.connections.set('ws1', { browser: mockBrowser, endpoint: 'ws1' });
 
             await automator.shutdown();

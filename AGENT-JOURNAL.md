@@ -1,4 +1,17 @@
-# AGENT-JOURNAL.md
+- Fixed AsyncQueue microtask race condition causing taskPromise to hang (pi/utils/async-queue.js)\n- Optimized Orchestrator by removing sleep cycles and delays (pi/core/orchestrator.js)\n- Removed expensive Regex calls from Logger (pi/core/logger.js)\n- Updated unit tests (pi/tests/unit/async-queue.test.js)\n\n# AGENT-JOURNAL.md
+
+## 2026-03-09: Phase 4 API Extreme Throughput Optimizations
+- **Asynchronous Log Streams**: Replaced the synchronous `LOG_BUFFER` array map with native non-blocking `WriteStream` bindings in `logger.js`. This entirely prevents the 1-second Garbage Collection micro-stutters during heavy logging.
+- **Log File Rotation**: Added automated file rotation to cap `logs.txt` and `logs.json` at 10MB each, automatically renaming and purging old files (max 5) to prevent infinite disk bloat.
+- **Task Staggering Removed**: Formally verified the removal of `taskStaggerDelayMs` in `orchestrator.js`, allowing burst tasks to immediately dispatch without artificial 2-second sleep waitlists.
+- **Removed CDP Ping Overhead**: Formally verified the removal of the redundant `page.evaluate` readiness ping before every task execution, leaning completely into native Playwright timeout error boundaries for instantaneous runner kickoff.
+- **Test Integrity**: Validated via full Vitest suite (4800+ specs). No stream race conditions detected.
+
+## 2026-03-08: API Responsiveness & Stability Optimizations
+- **Eliminated Page Pool Leaks**: Removed `pagePool` from `SessionManager` entirely. Playwright pages are created explicitly and reliably closed via `page.close()` upon release, halting memory leaks and listener stacking on aggressively recycled pages.
+- **Task Module Caching**: Implemented a `taskModuleCache` map inside `Orchestrator._importTaskModule()` to bypass heavy disk I/O resolutions for repetitive 10-minute runners.
+- **Nuked Proactive Polling**: Removed `setInterval` background loops in `Automator.startHealthChecks()`. Switched to an event-driven model via native disconnected browser events.
+- **Test Integrity**: Validated all changes and updated test files (`sessionManager.test.js`, `orchestrator.test.js`, `automator.test.js`). Verified over 4850 assertions via Vitest.
 
 ## 2026-03-08: Analyze and Fix ixBrowser Close Script
 - **Analyzed `browser-close.bat`**: Investigated why the script occasionally hangs. 

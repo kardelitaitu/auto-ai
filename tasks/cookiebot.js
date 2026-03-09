@@ -20,7 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONFIG = {
     sitesFile: '../config/popularsite.txt',
 
-    taskTimeoutMs: 120000,
+    taskTimeoutMs: 240000,
     navigationTimeout: 60000,
     responsivenessTimeout: 15000,
 

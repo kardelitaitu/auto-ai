@@ -82,11 +82,6 @@ class SessionManager {
         this.stuckWorkerThresholdMs = options.stuckWorkerThresholdMs || 600000;
         this.concurrencyPerBrowser = 10; // Default lowered from 50 to protect PC resources
 
-        this.pagePoolMaxPerSession = options.pagePoolMaxPerSession || null;
-        this.pagePoolIdleTimeoutMs = options.pagePoolIdleTimeoutMs || 5 * 60 * 1000;
-        this.pagePoolHealthCheckIntervalMs = options.pagePoolHealthCheckIntervalMs || 30000;
-        this.pagePoolHealthCheckTimeoutMs = options.pagePoolHealthCheckTimeoutMs || 5000;
-
         this.workerSemaphores = new Map();
         this.workerOccupancy = new Map();
         this.workerHealthCheckInterval = null;
@@ -185,10 +180,6 @@ class SessionManager {
             this.workerWaitTimeoutMs = orchConfig.workerWaitTimeoutMs ?? this.workerWaitTimeoutMs;
             this.stuckWorkerThresholdMs =
                 orchConfig.workerStuckThresholdMs ?? this.stuckWorkerThresholdMs;
-            this.pagePoolMaxPerSession =
-                orchConfig.pagePoolMaxPerSession ?? this.pagePoolMaxPerSession;
-            this.pagePoolIdleTimeoutMs =
-                orchConfig.pagePoolIdleTimeoutMs ?? this.pagePoolIdleTimeoutMs;
             this.concurrencyPerBrowser =
                 settings.concurrencyPerBrowser || this.concurrencyPerBrowser;
 
@@ -243,7 +234,6 @@ class SessionManager {
             createdAt: now,
             lastActivity: now,
             managedPages: new Set(),
-            pagePool: [],
             sharedContext: null,
         };
 
@@ -279,8 +269,8 @@ class SessionManager {
         const index = this.sessions.findIndex((s) => s.id === sessionId);
         if (index !== -1) {
             const session = this.sessions[index];
-            this.closeManagedPages(session).catch(() => {});
-            this.closeSessionBrowser(session).catch(() => {});
+            this.closeManagedPages(session).catch(() => { });
+            this.closeSessionBrowser(session).catch(() => { });
             this.workerSemaphores.delete(sessionId);
             this.sessions.splice(index, 1);
             this.saveSessionState();
@@ -301,61 +291,9 @@ class SessionManager {
         if (session) session.managedPages.delete(page);
     }
 
-    _normalizePoolEntry(entry, now) {
-        if (entry && typeof entry === 'object' && 'page' in entry) return entry;
-        return { page: entry, lastUsedAt: now, lastHealthCheckAt: 0 };
-    }
-
-    async _isPageHealthy(page) {
-        if (!page || (typeof page.isClosed === 'function' && page.isClosed())) return false;
-        try {
-            const result = await Promise.race([
-                page.evaluate(() => ({
-                    ready: document.readyState === 'complete',
-                    body: !!document.body,
-                })),
-                new Promise((_, r) =>
-                    setTimeout(() => r(new Error('timeout')), this.pagePoolHealthCheckTimeoutMs)
-                ),
-            ]);
-            return result?.ready || result?.body;
-        } catch {
-            return false;
-        }
-    }
-
-    _closePooledPage(sessionId, page) {
-        if (!page) return;
-        if (typeof page.close === 'function') Promise.resolve(page.close()).catch(() => {});
-        this.unregisterPage(sessionId, page);
-    }
-
     async acquirePage(sessionId, context) {
         const session = this.sessions.find((s) => s.id === sessionId);
         if (!session || !context) return null;
-
-        const now = Date.now();
-        while (session.pagePool.length > 0) {
-            const entry = this._normalizePoolEntry(session.pagePool.pop(), now);
-            if (!entry.page || (entry.page.isClosed && entry.page.isClosed())) continue;
-
-            if (this.pagePoolIdleTimeoutMs && now - entry.lastUsedAt > this.pagePoolIdleTimeoutMs) {
-                this._closePooledPage(sessionId, entry.page);
-                continue;
-            }
-
-            if (now - entry.lastHealthCheckAt > this.pagePoolHealthCheckIntervalMs) {
-                const healthy = await this._isPageHealthy(entry.page);
-                if (!healthy) {
-                    this._closePooledPage(sessionId, entry.page);
-                    continue;
-                }
-                entry.lastHealthCheckAt = now;
-            }
-
-            this.registerPage(sessionId, entry.page);
-            return entry.page;
-        }
 
         const page = await context.newPage();
         this.registerPage(sessionId, page);
@@ -366,19 +304,10 @@ class SessionManager {
         const session = this.sessions.find((s) => s.id === sessionId);
         if (!session) return;
 
-        if (!page || (page.isClosed && page.isClosed())) return;
+        if (!page || (typeof page.isClosed === 'function' && page.isClosed())) return;
 
-        if (this.pagePoolMaxPerSession && session.pagePool.length >= this.pagePoolMaxPerSession) {
-            await page.close().catch(() => {});
-            this.unregisterPage(sessionId, page);
-            return;
-        }
-
-        if (await this._isPageHealthy(page)) {
-            session.pagePool.push({ page, lastUsedAt: Date.now(), lastHealthCheckAt: Date.now() });
-        } else {
-            this._closePooledPage(sessionId, page);
-        }
+        await page.close().catch(() => { });
+        this.unregisterPage(sessionId, page);
     }
 
     async acquireWorker(sessionId, options = {}) {

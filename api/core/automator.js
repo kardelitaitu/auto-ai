@@ -63,6 +63,16 @@ class Automator {
             reconnectAttempts: 0,
         });
 
+        browser.on('disconnected', async () => {
+            if (this.isShuttingDown) return;
+            logger.warn(`[Automator] Native disconnect event fired for: ${wsEndpoint}`);
+            const conn = this.connections.get(wsEndpoint);
+            if (conn) {
+                conn.healthy = false;
+                await this.attemptBackgroundReconnect(wsEndpoint, conn);
+            }
+        });
+
         logger.info(`Successfully connected to ${wsEndpoint}`);
         return browser;
     }
@@ -117,60 +127,7 @@ class Automator {
      * @param {number} [interval=null] - The health check interval in milliseconds. Defaults to the value from the configuration.
      */
     async startHealthChecks(interval = null) {
-        if (this.healthCheckInterval) {
-            logger.warn('Health checks already running');
-            return;
-        }
-
-        const checkInterval =
-            interval || (await getTimeoutValue('browser.healthCheckIntervalMs', 30000));
-
-        this.healthCheckInterval = setInterval(async () => {
-            if (this.isShuttingDown) return;
-
-            // Removed repetitive debug log - only log failures/changes
-
-            for (const [endpoint, connectionInfo] of this.connections.entries()) {
-                try {
-                    const timeSinceLastCheck = Date.now() - connectionInfo.lastHealthCheck;
-                    if (timeSinceLastCheck < 10000) {
-                        continue;
-                    }
-
-                    await this.testConnection(connectionInfo.browser);
-
-                    // Deep Health Check: Verify page responsiveness if we have active sessions
-                    // We can't easily get the page here without deeper integration,
-                    // so we'll rely on the orchestrator to pass pages to checkConnectionHealth
-                    // but we can at least check network connectivity periodically
-                    if (Math.random() < 0.1) {
-                        // 10% chance per interval
-                        const netHealth = await this.checkNetworkConnectivity();
-                        if (!netHealth.healthy) {
-                            //logger.debug(`Network connectivity issues detected: ${netHealth.error}`);
-                        }
-                    }
-
-                    // Only log if status changed from unhealthy to healthy
-                    const wasUnhealthy = !connectionInfo.healthy;
-
-                    connectionInfo.lastHealthCheck = Date.now();
-                    connectionInfo.healthy = true;
-                    connectionInfo.reconnectAttempts = 0;
-
-                    if (wasUnhealthy) {
-                        logger.info(`Health check recovered for ${endpoint}`);
-                    }
-                } catch (error) {
-                    logger.error(`Health check failed for ${endpoint}:`, error.message);
-                    connectionInfo.healthy = false;
-
-                    await this.attemptBackgroundReconnect(endpoint, connectionInfo);
-                }
-            }
-        }, checkInterval);
-
-        logger.info(`Started health check monitoring (interval: ${checkInterval}ms)`);
+        logger.info('[Automator] Proactive background health polling is DISABLED in Phase 2 for maximum CPU responsiveness. Relying exclusively on native socket disconnect events.');
     }
 
     /**
@@ -214,11 +171,7 @@ class Automator {
      * Stops the health check monitoring.
      */
     stopHealthChecks() {
-        if (this.healthCheckInterval) {
-            clearInterval(this.healthCheckInterval);
-            this.healthCheckInterval = null;
-            logger.info('Stopped health check monitoring');
-        }
+        logger.info('[Automator] Proactive health checks natively disabled.');
     }
 
     /**

@@ -1,0 +1,555 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/My Script/auto-ai[39m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mAsyncQueue[2m > [22m[2mInitialization[2m > [22m[2mshould initialize with correct values
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mAsyncQueue[2m > [22m[2mInitialization[2m > [22m[2mshould use default values when not provided
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mAsyncQueue[2m > [22m[2mInitialization[2m > [22m[2mshould use default values when not provided
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 3, maxQueueSize: 50, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mAsyncQueue[2m > [22m[2madd[2m > [22m[2mshould add item to queue
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mAsyncQueue[2m > [22m[2madd[2m > [22m[2mshould track statistics
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mAsyncQueue[2m > [22m[2mgetStatus[2m > [22m[2mshould return current queue status
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mInitialization[2m > [22m[2mshould initialize with engagement counters
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mInitialization[2m > [22m[2mshould initialize quickMode to false
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2maddDive[2m > [22m[2mshould add dive with fallback support
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2maddDive[2m > [22m[2mshould add dive with fallback support
+[22m[39m[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m addDive called: dive_1773005623128, timeout: 5000ms[0m
+[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: dive_1773005623128 [95m(queue: 0, active: 0/1)[0m[0m[0m
+[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Starting dive function: dive_1773005623128[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2maddDive[2m > [22m[2mshould add dive with fallback support
+[22m[39m[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Dive function completed: dive_1773005623128[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2maddDive[2m > [22m[2mshould add dive with fallback support
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: dive_1773005623128 in 2ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mquickMode[2m > [22m[2mshould enable quick mode
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mquickMode[2m > [22m[2mshould enable quick mode
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Quick mode enabled [95m(timeout: 15000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mquickMode[2m > [22m[2mshould disable quick mode
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mquickMode[2m > [22m[2mshould disable quick mode
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Quick mode enabled [95m(timeout: 15000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Quick mode disabled [95m(timeout: 20000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mengagement tracking[2m > [22m[2mshould record likes
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mengagement tracking[2m > [22m[2mshould record likes
+[22m[39m[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: likes [95m(1/5)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mengagement tracking[2m > [22m[2mshould not exceed limit
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mengagement tracking[2m > [22m[2mshould not exceed limit
+[22m[39m[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m ΓÜá Engagement limit reached: likes [95m(5/5)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mcanEngage[2m > [22m[2mshould return true when under limit
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mcanEngage[2m > [22m[2mshould return false when at limit
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mgetFullStatus[2m > [22m[2mshould include engagement metrics
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mDiveQueue[2m > [22m[2mgetFullStatus[2m > [22m[2mshould include engagement metrics
+[22m[39m[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: likes [95m(1/5)[0m[0m[0m
+[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: replies [95m(1/3)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould reject task when queue is full
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 2, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould reject task when queue is full
+[22m[39m[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task1 [95m(queue: 0, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould reject task when queue is full
+[22m[39m[2m04:33:43[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m Queue full, rejecting task: task3 [95m(current: 2, max: 2)[0m[33m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould handle priority correctly - higher priority first
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 2, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould handle priority correctly - higher priority first
+[22m[39m[2m04:33:43[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: low [95m(queue: 0, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould handle priority correctly - higher priority first
+[22m[39m[2m04:33:43[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: low in 0ms[0m
+
+[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould handle priority correctly - higher priority first
+[22m[39m[2m04:33:44[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timeout reached: 1000ms for task1[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould handle priority correctly - higher priority first
+[22m[39m[2m04:33:44[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timed out: task1 after 1003ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould handle priority correctly - higher priority first
+[22m[39m[2m04:33:44[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task2 [95m(queue: 0, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould handle priority correctly - higher priority first
+[22m[39m[2m04:33:45[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timeout reached: 1000ms for task2[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould handle priority correctly - higher priority first
+[22m[39m[2m04:33:45[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timed out: task2 after 1015ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould use custom timeout from options
+[22m[39m[2m04:33:53[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 2, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould use custom timeout from options
+[22m[39m[2m04:33:53[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: timeout-test [95m(queue: 0, active: 0/1)[0m[0m[0m
+
+[33m[39m[31mx[39m[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould use custom timeout from options
+[22m[39m[2m04:33:53[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timeout reached: 100ms for timeout-test[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould use custom timeout from options
+[22m[39m[2m04:33:53[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timed out: timeout-test after 113ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould track totalAdded in stats
+[22m[39m[2m04:33:53[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 2, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould track totalAdded in stats
+[22m[39m[2m04:33:53[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task1 [95m(queue: 0, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - add() method[2m > [22m[2mshould track totalAdded in stats
+[22m[39m[2m04:33:53[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task1 in 0ms[0m
+
+[33m[39m[32m┬╖[39m[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items concurrently up to maxConcurrent
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items concurrently up to maxConcurrent
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task1 [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items concurrently up to maxConcurrent
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task1 in 59ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items concurrently up to maxConcurrent
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task2 [95m(queue: 1, active: 0/2)[0m[0m[0m
+[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task3 [95m(queue: 0, active: 1/2)[0m[0m[0m
+
+[33m[39m[31mx[39m[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items concurrently up to maxConcurrent
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task2 in 58ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items concurrently up to maxConcurrent
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task3 in 59ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould handle task errors gracefully
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould handle task errors gracefully
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: error-task [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould handle task errors gracefully
+[22m[39m[2m04:34:03[0m [31m≡ƒö┤[0m [0m[33m[async-queue][0m[31m[0m[33m[AsyncQueue][0m[31m Γ£ù Task failed: error-task - Task failed[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould handle timeout errors
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould handle timeout errors
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: timeout-task [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould handle timeout errors
+[22m[39m[2m04:34:03[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timeout reached: 50ms for timeout-task[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould handle timeout errors
+[22m[39m[2m04:34:03[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timed out: timeout-task after 57ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items in priority order
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items in priority order
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: p10 [95m(queue: 2, active: 0/2)[0m[0m[0m
+[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: p5 [95m(queue: 1, active: 1/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items in priority order
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: p10 in 1ms[0m
+[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: p5 in 1ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items in priority order
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: p1 [95m(queue: 0, active: 1/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - _processQueue() and _processItems()[2m > [22m[2mshould process items in priority order
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: p1 in 1ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track averageProcessingTime
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track averageProcessingTime
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task1 [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track averageProcessingTime
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task1 in 11ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track averageProcessingTime
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task2 [95m(queue: 0, active: 1/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track averageProcessingTime
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task2 in 16ms[0m
+
+[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould update processedCount and failedCount
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould update processedCount and failedCount
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: success [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould update processedCount and failedCount
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: success in 0ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould update processedCount and failedCount
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: fail [95m(queue: 0, active: 1/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould update processedCount and failedCount
+[22m[39m[2m04:34:03[0m [31m≡ƒö┤[0m [0m[33m[async-queue][0m[31m[0m[33m[AsyncQueue][0m[31m Γ£ù Task failed: fail - fail[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track timedOutCount
+[22m[39m[2m04:34:03[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track timedOutCount
+[22m[39m[2m04:34:03[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: timeout1 [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track timedOutCount
+[22m[39m[2m04:34:03[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timeout reached: 50ms for timeout1[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Statistics tracking[2m > [22m[2mshould track timedOutCount
+[22m[39m[2m04:34:03[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timed out: timeout1 after 59ms[0m
+
+[33m[39m[32m┬╖[39m[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - getStatus() and getStats()[2m > [22m[2mshould return correct status during processing
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - getStatus() and getStats()[2m > [22m[2mshould return correct status during processing
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task1 [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - getStatus() and getStats()[2m > [22m[2mshould return utilizationPercent in getStats()
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - getStatus() and getStats()[2m > [22m[2mshould return utilizationPercent in getStats()
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task1 [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - clear() and health methods[2m > [22m[2mshould clear queue and return dropped count
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - clear() and health methods[2m > [22m[2mshould clear queue and return dropped count
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task1 [95m(queue: 0, active: 0/2)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - clear() and health methods[2m > [22m[2mshould clear queue and return dropped count
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Cleared queue [95m(dropped 1 tasks)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - clear() and health methods[2m > [22m[2mshould report healthy when within limits
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - clear() and health methods[2m > [22m[2mshould report unhealthy when failed count exceeds limit
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - clear() and health methods[2m > [22m[2mshould report unhealthy when timeout count exceeds limit
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - clear() and health methods[2m > [22m[2mshould return health status
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 2, maxQueueSize: 10, defaultTimeout: 5000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle timeout in primary function
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle timeout in primary function
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m addDive called: timeout-dive, timeout: 50ms[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: timeout-dive [95m(queue: 0, active: 0/1)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Starting dive function: timeout-dive[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle timeout in primary function
+[22m[39m[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timeout reached: 50ms for timeout-dive[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle timeout in primary function
+[22m[39m[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m ΓÜá Task timed out: timeout-dive after 57ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle timeout in primary function
+[22m[39m[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[DiveQueue][0m[33m Dive timeout reached: 50ms for timeout-dive[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle timeout in primary function
+[22m[39m[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[DiveQueue][0m[33m Dive failed: dive_timeout, checking fallback...[0m
+
+[33m[39m[31mx[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle timeout in primary function
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task1 in 106ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle timeout in primary function
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task1 in 106ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould use fallback when primary function rejects
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould use fallback when primary function rejects
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m addDive called: error-dive, timeout: 10000ms[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: error-dive [95m(queue: 0, active: 0/1)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Starting dive function: error-dive[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould use fallback when primary function rejects
+[22m[39m[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[DiveQueue][0m[33m Dive failed: Primary failed, checking fallback...[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould use fallback when primary function rejects
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: error-dive in 1ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould not use fallback when fallbackEngagement is false
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould not use fallback when fallbackEngagement is false
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 30, defaultTimeout: 120000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m addDive called: no-fallback-dive, timeout: 120000ms[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: no-fallback-dive [95m(queue: 0, active: 0/1)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Starting dive function: no-fallback-dive[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould not use fallback when fallbackEngagement is false
+[22m[39m[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[DiveQueue][0m[33m Dive failed: Primary failed, checking fallback...[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould not use fallback when fallbackEngagement is false
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: no-fallback-dive in 1ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle both primary and fallback failing
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle both primary and fallback failing
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m addDive called: both-fail-dive, timeout: 10000ms[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: both-fail-dive [95m(queue: 0, active: 0/1)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Starting dive function: both-fail-dive[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle both primary and fallback failing
+[22m[39m[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[DiveQueue][0m[33m Dive failed: Primary failed, checking fallback...[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle both primary and fallback failing
+[22m[39m[2m04:34:13[0m [31m≡ƒö┤[0m [0m[33m[async-queue][0m[31m[0m[33m[DiveQueue][0m[31m Fallback also failed: Fallback also failed[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle both primary and fallback failing
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: both-fail-dive in 2ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle successful dive
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle successful dive
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m addDive called: success-dive, timeout: 10000ms[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: success-dive [95m(queue: 0, active: 0/1)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Starting dive function: success-dive[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle successful dive
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Dive function completed: success-dive[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - addDive() with fallback[2m > [22m[2mshould handle successful dive
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: success-dive in 1ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould track all engagement types
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:2,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:3,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould track all engagement types
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: likes [95m(1/3)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: likes [95m(2/3)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: replies [95m(1/2)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: retweets [95m(1/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould return correct progress for all engagement types
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:2,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:3,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould return correct progress for all engagement types
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: likes [95m(1/3)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: likes [95m(2/3)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould handle unknown engagement action in canEngage
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:2,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:3,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould handle unknown engagement action in recordEngagement
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:2,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:3,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould update engagement limits at runtime
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:2,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:3,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould update engagement limits at runtime
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Updated engagement limits: {[93m"replies"[0m[0m:5,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:10,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould reset engagement counters
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 10000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:2,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:3,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Engagement tracking[2m > [22m[2mshould reset engagement counters
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: likes [95m(1/3)[0m[0m[0m
+[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Γ£ô Engagement recorded: replies [95m(1/2)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Engagement counters reset[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - quickMode[2m > [22m[2mshould change defaultTimeout when enabling quickMode
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 20000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - quickMode[2m > [22m[2mshould change defaultTimeout when enabling quickMode
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Quick mode enabled [95m(timeout: 15000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - quickMode[2m > [22m[2mshould restore defaultTimeout when disabling quickMode
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 20000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - quickMode[2m > [22m[2mshould restore defaultTimeout when disabling quickMode
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Quick mode enabled [95m(timeout: 15000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Quick mode disabled [95m(timeout: 20000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - quickMode[2m > [22m[2mshould include quickMode in getFullStatus()
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 10, defaultTimeout: 20000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:3,[93m"retweets"[0m[0m:1,[93m"quotes"[0m[0m:1,[93m"likes"[0m[0m:5,[93m"follows"[0m[0m:2,[93m"bookmarks"[0m[0m:2}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - quickMode[2m > [22m[2mshould include quickMode in getFullStatus()
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Quick mode enabled [95m(timeout: 15000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 5, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task0 [95m(queue: 0, active: 0/1)[0m[0m[0m
+[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m Queue full, rejecting task: task5 [95m(current: 5, max: 5)[0m[33m[0m
+[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m Queue full, rejecting task: task6 [95m(current: 5, max: 5)[0m[33m[0m
+[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m Queue full, rejecting task: task7 [95m(current: 5, max: 5)[0m[33m[0m
+[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m Queue full, rejecting task: task8 [95m(current: 5, max: 5)[0m[33m[0m
+[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m Queue full, rejecting task: task9 [95m(current: 5, max: 5)[0m[33m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task0 in 2ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task1 [95m(queue: 3, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task1 in 1ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task2 [95m(queue: 2, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task2 in 0ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task3 [95m(queue: 1, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task3 in 1ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: task4 [95m(queue: 0, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle multiple rapid additions
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: task4 in 0ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle empty queue gracefully
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 5, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mEdge cases and error handling[2m > [22m[2mshould handle getStats on empty queue
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 5, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mDiveQueue - Custom engagement limits[2m > [22m[2mshould use custom engagement limits from constructor
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 30, defaultTimeout: 120000ms)[0m[0m[0m
+[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[DiveQueue][0m[0m Initialized with engagement limits: {[93m"replies"[0m[0m:10,[93m"retweets"[0m[0m:5,[93m"quotes"[0m[0m:2,[93m"likes"[0m[0m:20,[93m"follows"[0m[0m:3,[93m"bookmarks"[0m[0m:4}[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould cover _createTimeout method - immediate
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 5, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould cover _createTimeout method - immediate
+[22m[39m[2m04:34:13[0m [33m≡ƒƒí[0m [0m[33m[async-queue][0m[33m[0m[33m[AsyncQueue][0m[33m Task timeout reached: 10ms for test-timeout[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould cover _createTimeout method - resolve before timeout
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 5, defaultTimeout: 1000ms)[0m[0m[0m
+
+[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould call _createTimeout for items
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 5, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould call _createTimeout for items
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: test-task [95m(queue: 0, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould call _createTimeout for items
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Γ£ô Completed task: test-task in 1ms[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould handle queue processing errors gracefully
+[22m[39m[2m04:34:13[0m [36m≡ƒö╡[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Initialized [95m(maxConcurrent: 1, maxQueueSize: 5, defaultTimeout: 1000ms)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould handle queue processing errors gracefully
+[22m[39m[2m04:34:13[0m [90mΓÜ¬[0m [0m[33m[async-queue][0m[0m[0m[33m[AsyncQueue][0m[0m Starting task: error-task [95m(queue: 0, active: 0/1)[0m[0m[0m
+
+[90mstdout[2m | api/tests/unit/async-queue.test.js[2m > [22m[2mCoverage Gap Tests[2m > [22m[2mAsyncQueue - Internal methods[2m > [22m[2mshould handle queue processing errors gracefully
+[22m[39m[2m04:34:13[0m [31m≡ƒö┤[0m [0m[33m[async-queue][0m[31m[0m[33m[AsyncQueue][0m[31m Γ£ù Task failed: error-task - Processing error[0m
+
+[33m[39m[32m┬╖[39m[33m[39m[32m┬╖[39m
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 3 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  api/tests/unit/async-queue.test.js > Coverage Gap Tests > AsyncQueue - add() method > should handle priority correctly - higher priority first
+Error: Test timed out in 10000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ Γ¥» api/tests/unit/async-queue.test.js:206:11
+    204|         });
+    205| 
+    206|         it('should handle priority correctly - higher priority first',ΓÇª
+       |           ^
+    207|             const results = [];
+    208|             const task1 = vi.fn().mockImplementation(() => {
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/3]ΓÄ»
+
+ FAIL  api/tests/unit/async-queue.test.js > Coverage Gap Tests > AsyncQueue - add() method > should track totalAdded in stats
+Error: Test timed out in 10000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ Γ¥» api/tests/unit/async-queue.test.js:235:11
+    233|         });
+    234| 
+    235|         it('should track totalAdded in stats', async () => {
+       |           ^
+    236|             const task = vi.fn().mockResolvedValue('result');
+    237| 
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/3]ΓÄ»
+
+ FAIL  api/tests/unit/async-queue.test.js > Coverage Gap Tests > AsyncQueue - Statistics tracking > should track timedOutCount
+Error: Test timed out in 10000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ Γ¥» api/tests/unit/async-queue.test.js:382:11
+    380|         });
+    381| 
+    382|         it('should track timedOutCount', async () => {
+       |           ^
+    383|             const slowTask = vi.fn().mockImplementation(() => new PromΓÇª
+    384| 
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/3]ΓÄ»
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m52 passed[39m[22m[90m (55)[39m
+[2m   Start at [22m 04:33:42
+[2m   Duration [22m 31.01s[2m (transform 89ms, setup 27ms, import 158ms, tests 30.64s, environment 0ms)[22m
+

@@ -242,7 +242,7 @@ describe('Coverage Gap Tests', () => {
         });
     });
 
-    describe('AsyncQueue - _processQueue() and _processItems()', () => {
+    describe('AsyncQueue - _processQueue() manually', () => {
         let queue;
 
         beforeEach(() => {
@@ -286,7 +286,7 @@ describe('Coverage Gap Tests', () => {
         });
 
         it('should handle timeout errors', async () => {
-            const slowTask = vi.fn().mockImplementation(() => new Promise(() => {}));
+            const slowTask = vi.fn().mockImplementation(() => new Promise(() => { }));
 
             const result = await queue.add(slowTask, { timeout: 50, name: 'timeout-task' });
 
@@ -316,8 +316,8 @@ describe('Coverage Gap Tests', () => {
                 taskFn: task1,
                 priority: 1,
                 taskName: 'p1',
-                resolve: () => {},
-                reject: () => {},
+                resolve: () => { },
+                reject: () => { },
                 enqueueTime: Date.now(),
             });
             queue.queue.push({
@@ -325,8 +325,8 @@ describe('Coverage Gap Tests', () => {
                 taskFn: task2,
                 priority: 5,
                 taskName: 'p5',
-                resolve: () => {},
-                reject: () => {},
+                resolve: () => { },
+                reject: () => { },
                 enqueueTime: Date.now(),
             });
             queue.queue.push({
@@ -334,12 +334,13 @@ describe('Coverage Gap Tests', () => {
                 taskFn: task3,
                 priority: 10,
                 taskName: 'p10',
-                resolve: () => {},
-                reject: () => {},
+                resolve: () => { },
+                reject: () => { },
                 enqueueTime: Date.now(),
             });
 
-            await queue._processItems();
+            queue._processQueue();
+            await new Promise(resolve => setTimeout(resolve, 10));
 
             expect(results[0]).toBe('p10');
         });
@@ -380,7 +381,7 @@ describe('Coverage Gap Tests', () => {
         });
 
         it('should track timedOutCount', async () => {
-            const slowTask = vi.fn().mockImplementation(() => new Promise(() => {}));
+            const slowTask = vi.fn().mockImplementation(() => new Promise(() => { }));
 
             await queue.add(slowTask, { timeout: 50, name: 'timeout1' });
             await queue.add(slowTask, { timeout: 50, name: 'timeout2' });
@@ -797,7 +798,8 @@ describe('Coverage Gap Tests', () => {
                 enqueueTime: Date.now(),
             });
 
-            await queue._processItems();
+            queue._processQueue();
+            await new Promise(resolve => setTimeout(resolve, 10));
         });
     });
 });
