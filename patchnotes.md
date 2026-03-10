@@ -1,3 +1,12 @@
+### ✅ version 0.7.8
+
+(10 March 2026) Robust Dashboard Merge
+
+- **Restored Robust Base**: Re-implemented the stable `orchestrator.js` and `sessionManager.js` logic to ensure 100% reliability in resource cleanup and timeout management.
+- **Persistent Dashboard Integration**: Successfully merged the advanced IPC/Socket.IO dashboard model into the robust base, enabling persistent monitoring without sacrificing stability.
+- **Simplified IPC Pipeline**: Integrated `getRecentTasks` and `getTaskBreakdown` directly into the stable Orchestrator to satisfy forked dashboard requirements.
+- **Resource Safety Refined**: Verified 5-second safety timeouts for context/page closures are active and correctly handled in the merged version.
+
 ### ✅ version 0.7.7
 
 (09 March 2026) UI Dashboard IPC Decoupling

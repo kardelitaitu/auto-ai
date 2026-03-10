@@ -53,6 +53,10 @@ class Orchestrator extends EventEmitter {
         this.taskAbortControllers = new Map();
         this.taskModuleCache = new Map();
 
+        this.dashboardProcess = null;
+        this.dashboardSocket = null;
+        this.dashboardInterval = null;
+
         this.globalActiveTasks = 0;
         this.maxGlobalConcurrency = 20; // Default global limit
         this.taskStaggerDelayMs = 2000; // Delay between task starts
@@ -384,7 +388,12 @@ class Orchestrator extends EventEmitter {
         } finally {
             if (!this.isShuttingDown && createdNewContext) {
                 try {
-                    if (sharedContext) await sharedContext.close();
+                    if (sharedContext) {
+                        await Promise.race([
+                            sharedContext.close(),
+                            new Promise(r => setTimeout(r, 5000))
+                        ]);
+                    }
                 } catch (e) {
                     logger.warn(`[Orchestrator][${session.id}] Error closing context:`, e.message);
                 }
@@ -421,8 +430,6 @@ class Orchestrator extends EventEmitter {
                 abortSignal: abortController.signal,
                 taskId: taskId,
             };
-
-            const effectiveTimeout = task.effectiveTimeout ?? this.taskTimeoutMs;
 
             await api.withPage(page, async () => {
                 await api.init(page, {
@@ -644,7 +651,7 @@ class Orchestrator extends EventEmitter {
         }
 
         if (this.sessionManager) await this.sessionManager.shutdown();
-        if (this.dashboardServer) await this.stopDashboard();
+        await this.stopDashboard();
         await this.automator.shutdown();
 
         this.logMetrics();
@@ -758,7 +765,7 @@ class Orchestrator extends EventEmitter {
                 id: session.id,
                 name: session.displayName || session.id,
                 status: session.browser?.isConnected() ? 'online' : 'offline',
-                activeWorkers: (session.workers || []).filter((w) => w?.isActive).length,
+                activeWorkers: (session.workers || []).filter((w) => w?.status === 'busy').length,
                 totalWorkers: (session.workers || []).length,
                 completedTasks: session.completedTaskCount || 0,
                 taskName: session.currentTaskName || null,
@@ -809,11 +816,11 @@ class Orchestrator extends EventEmitter {
     }
 
     getRecentTasks(limit = 10) {
-        return metricsCollector.getRecentTasks(limit);
+        return metricsCollector.getRecentTasks ? metricsCollector.getRecentTasks(limit) : [];
     }
 
     getTaskBreakdown() {
-        return metricsCollector.getTaskBreakdown();
+        return metricsCollector.getTaskBreakdown ? metricsCollector.getTaskBreakdown() : {};
     }
 
     logMetrics() {

@@ -306,7 +306,10 @@ class SessionManager {
 
         if (!page || (typeof page.isClosed === 'function' && page.isClosed())) return;
 
-        await page.close().catch(() => { });
+        await Promise.race([
+            page.close().catch(() => { }),
+            new Promise(r => setTimeout(r, 5000))
+        ]);
         this.unregisterPage(sessionId, page);
     }
 
@@ -457,7 +460,12 @@ class SessionManager {
         if (!session?.managedPages) return;
         for (const page of session.managedPages) {
             try {
-                await page.close();
+                if (!page.isClosed()) {
+                    await Promise.race([
+                        page.close(),
+                        new Promise(r => setTimeout(r, 5000))
+                    ]);
+                }
             } catch (_e) {
                 /* ignore close error */
             }
@@ -466,9 +474,12 @@ class SessionManager {
     }
 
     async closeSessionBrowser(session) {
-        if (session?.browser) {
+        if (session?.browser && session.browser.isConnected()) {
             try {
-                await session.browser.close();
+                await Promise.race([
+                    session.browser.close(),
+                    new Promise(r => setTimeout(r, 5000))
+                ]);
             } catch (_e) {
                 /* ignore close error */
             }

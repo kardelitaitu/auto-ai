@@ -1,4 +1,10 @@
 - Fixed AsyncQueue microtask race condition causing taskPromise to hang (pi/utils/async-queue.js)\n- Optimized Orchestrator by removing sleep cycles and delays (pi/core/orchestrator.js)\n- Removed expensive Regex calls from Logger (pi/core/logger.js)\n- Updated unit tests (pi/tests/unit/async-queue.test.js)\n\n# AGENT-JOURNAL.md
+## 2026-03-10: Dashboard Merged into Robust Base
+- **Core Restoration**: Restored `orchestrator.js` and `sessionManager.js` to their stable, robust "old" versions to ensure 100% working resource safety (timeouts, context closure).
+- **Persistent Dashboard Port**: Successfully ported the forked dashboard process and Socket.IO metrics pipeline from the experimental version into the robust base.
+- **Metrics Integrity**: Added `getRecentTasks` and `getTaskBreakdown` to the robust Orchestrator to satisfy the new dashboard's data requirements.
+- **Cleanup**: Removed redundant `effectiveTimeout` shadowing in `executeTask` and refined `shutdown()` to handle the persistent dashboard model gracefully.
+
 ## 2025-03-09: Stuck Browser Analysis
 - **Zombie Tasks Identified**: Discovered that `Promise.race()` timeouts in `orchestrator.js` and `cookiebot.js` do not cancel underlying async operations, leading to "zombie" tasks that keep workers busy.
 - **Cleanup Deadlock**: Found that `await page.close()` in `finally` blocks can hang infinitely if the browser or protocol is deadlocked, blocking the worker from ever being released.
