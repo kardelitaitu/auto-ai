@@ -46,7 +46,7 @@ export async function quote(url, text) {
                 logger.error('Invalid tweet URL format');
                 return { success: false, reason: 'invalid_tweet_url' };
             }
-            const tweetId = match[1];
+            const _tweetId = match[1];
 
             const intentUrl = `https://x.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
             logger.info(`Navigating to intent: ${intentUrl}`);

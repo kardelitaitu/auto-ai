@@ -1,6 +1,11 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const fs = require('fs');
+import { app, BrowserWindow } from 'electron';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { startStandaloneServer } from './dashboard.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.commandLine.appendSwitch('disable-gpu');
 app.commandLine.appendSwitch('disable-software-rasterizer');
@@ -32,8 +37,15 @@ function saveWindowBounds() {
     }
 }
 
-function createWindow() {
+async function createWindow() {
     const config = loadWindowBounds();
+
+    // Start the dashboard server standalone
+    try {
+        await startStandaloneServer(3001);
+    } catch (err) {
+        console.error('Failed to start dashboard server:', err);
+    }
 
     const windowOptions = {
         width: config?.bounds?.width || 1200,
@@ -68,7 +80,7 @@ function createWindow() {
         // Fallback: show error page
         mainWindow.loadURL(
             'data:text/html;charset=utf-8,' +
-                encodeURIComponent(`
+            encodeURIComponent(`
        <html><body style="background:#000;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;">
          <div style="text-align:center;">
            <h1>Dashboard Build Missing</h1>

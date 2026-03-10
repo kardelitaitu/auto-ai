@@ -126,7 +126,7 @@ class Automator {
      * Starts health check monitoring for all connections.
      * @param {number} [interval=null] - The health check interval in milliseconds. Defaults to the value from the configuration.
      */
-    async startHealthChecks(interval = null) {
+    async startHealthChecks(_interval = null) {
         logger.info('[Automator] Proactive background health polling is DISABLED in Phase 2 for maximum CPU responsiveness. Relying exclusively on native socket disconnect events.');
     }
 

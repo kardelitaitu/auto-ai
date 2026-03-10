@@ -323,8 +323,24 @@ export class DashboardServer {
 }
 
 
+// Helper to start the server standalone (e.g., from Electron main process)
+export async function startStandaloneServer(port = 3001) {
+    const server = new DashboardServer(port);
+    try {
+        await server.start();
+        logger.info(`Standalone Dashboard Server started on port ${port}`);
+        return server;
+    } catch (err) {
+        if (err.code === 'EADDRINUSE') {
+            logger.warn(`Port ${port} already in use. Dashboard server likely already running.`);
+            return null;
+        }
+        throw err;
+    }
+}
+
 // If started as an IPC child process from the Orchestrator
-if (process.send) {
+if (process.send && !process.env.ELECTRON_RUN_AS_NODE) {
     const port = parseInt(process.env.PORT) || 3001;
     const interval = parseInt(process.env.BROADCAST_MS) || 2000;
 
@@ -346,7 +362,11 @@ if (process.send) {
     process.on('disconnect', () => {
         logger.info('Orchestrator disconnected, but dashboard server will persist.');
         // Clear activity-dependent metrics so they show as 0/idle until reconnect
-        server.latestMetrics.sessions = [];
-        server.latestMetrics.queue.queueLength = 0;
+        if (server.latestMetrics) {
+            server.latestMetrics.sessions = [];
+            if (server.latestMetrics.queue) {
+                server.latestMetrics.queue.queueLength = 0;
+            }
+        }
     });
 }

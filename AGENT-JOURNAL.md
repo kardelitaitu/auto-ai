@@ -1,4 +1,10 @@
 - Fixed AsyncQueue microtask race condition causing taskPromise to hang (pi/utils/async-queue.js)\n- Optimized Orchestrator by removing sleep cycles and delays (pi/core/orchestrator.js)\n- Removed expensive Regex calls from Logger (pi/core/logger.js)\n- Updated unit tests (pi/tests/unit/async-queue.test.js)\n\n# AGENT-JOURNAL.md
+## 2026-03-10: Independent Portable Dashboard
+- **Standalone Mode**: Converted Electron dashboard to ESM and added `startStandaloneServer` to `dashboard.js` to allow the `.exe` to own the port/server.
+- **Build Pipeline**: Configured `electron-builder` for portable Windows builds. Generated `Auto-AI Dashboard 1.0.0.exe` in `dist-exe/`.
+- **Workflow Decoupling**: Orchestrator now gracefully yields to the standalone `.exe` if it's already running, connecting via Socket.IO automatically.
+- **Portability**: The dashboard can now be run before or after the main codebase without conflicts.
+
 ## 2026-03-10: Dashboard Merged into Robust Base
 - **Core Restoration**: Restored `orchestrator.js` and `sessionManager.js` to their stable, robust "old" versions to ensure 100% working resource safety (timeouts, context closure).
 - **Persistent Dashboard Port**: Successfully ported the forked dashboard process and Socket.IO metrics pipeline from the experimental version into the robust base.
@@ -101,3 +107,9 @@ Create a helper function for Twitter intent URLs to be used as a utility through
   - Moved `navigated = true` to before `goto()` to ensure `back()` is called even if navigation fails after start.
   - Ensured consistent `logger.info('Returning to previous page')` and `await back().catch(() => { })`.
 - **Verification**: All 5 intents successfully verified with `tasks/twitter-intents-test.js`.
+
+## 2026-03-10: Dashboard Test Data Generator
+- Created `api/tests/dashboard-data-generator.js` that generates realistic test data for dashboard panels
+- Generates: sessions (online/offline/idle), queue length, Twitter actions (likes, retweets, replies, quotes, follows, bookmarks), API metrics (calls, failures, success rate), browser stats, recent tasks
+- Supports configurable PORT and DURATION environment variables
+- Usage: `node api/tests/dashboard-data-generator.js` or `PORT=3003 DURATION=30 node api/tests/dashboard-data-generator.js`

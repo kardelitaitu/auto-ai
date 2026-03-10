@@ -2,14 +2,41 @@
     "name": "auto-ai-dashboard",
     "version": "1.0.0",
     "description": "Monitoring dashboard for Auto-AI browser automation",
-    "main": "main.cjs",
+    "main": "main.js",
     "type": "module",
     "scripts": {
         "start": "electron .",
-        "dev": "electron ."
+        "dev": "electron .",
+        "build:renderer": "cd renderer && npm run build",
+        "dist": "npm run build:renderer && electron-builder --win portable"
     },
     "dependencies": {
-        "electron": "^28.0.0"
+        "electron-is-dev": "^2.0.0",
+        "express": "^4.18.2",
+        "socket.io": "^4.7.2",
+        "socket.io-client": "^4.7.2"
+    },
+    "devDependencies": {
+        "electron": "^28.0.0",
+        "electron-builder": "^24.6.4"
+    },
+    "build": {
+        "appId": "com.autoai.dashboard",
+        "productName": "Auto-AI Dashboard",
+        "win": {
+            "target": "portable",
+            "icon": "icon.ico"
+        },
+        "files": [
+            "**/*",
+            "!renderer/node_modules",
+            "!renderer/src",
+            "renderer/dist/**/*"
+        ],
+        "directories": {
+            "output": "dist-exe"
+        },
+        "asar": true
     },
     "engines": {
         "node": ">=16.0.0"

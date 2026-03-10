@@ -1,3 +1,12 @@
+### ✅ version 0.7.9
+
+(10 March 2026) Independent Portable Dashboard
+
+- **Portable EXE Build**: Added Electron Builder configuration to generate a standalone, portable Windows executable for the dashboard.
+- **ESM Conversion**: Converted the dashboard's Electron main process (`main.js`) to full ESM for modern consistency.
+- **Standalone Server Integration**: Integrated `startStandaloneServer` directly into the Electron lifecycle, ensuring the dashboard can run independently of the main Orchestrator.
+- **Automated Workflow**: Orchestrator now automatically connects to the standalone dashboard if it's already running, otherwise it forks a background instance as before.
+
 ### ✅ version 0.7.8
 
 (10 March 2026) Robust Dashboard Merge

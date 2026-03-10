@@ -729,7 +729,7 @@ class Orchestrator extends EventEmitter {
 
                 // Push via IPC if we are the parent
                 if (this.dashboardProcess && this.dashboardProcess.connected) {
-                    try { this.dashboardProcess.send({ type: 'metrics_tick', payload }); } catch (e) { }
+                    try { this.dashboardProcess.send({ type: 'metrics_tick', payload }); } catch (_e) { /* ignore */ }
                 }
 
                 // Push via Socket if we are a secondary orchestrator or if IPC failed
