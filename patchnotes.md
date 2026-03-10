@@ -1,5 +1,11 @@
 ### ✅ version 0.7.7
 
+(09 March 2026) UI Dashboard IPC Decoupling
+
+- **Process Isolation**: Extracted the UI `dashboard.js` into an independent child process (`child_process.fork()`) to remove its Event Loop impact on the `Orchestrator`.
+- **IPC Pipeline**: Established a robust IPC pipeline `this.dashboardProcess.send()` transmitting socket payloads every broadcast interval.
+- **Frontend Crash Fixes**: Patched the `DashboardServer` constructor to initialize complex metric objects (`system.cpu`, etc.), resolving silent frontend React crashes when establishing a WebSocket connection before backend initialization.
+
 (07 March 2026) Twitter Intent URL Helpers
 
 - **Intent Helper API**: Introduced `api.twitter.intent` module to perform interactions via Twitter's intent URLs, bypassing standard timeline navigation overhead.

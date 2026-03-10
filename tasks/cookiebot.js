@@ -111,9 +111,9 @@ export default async function cookieBotRandom(page, payload) {
                                 url
                             )
                         ) {
-                            return route.abort().catch(() => {});
+                            return route.abort().catch(() => { });
                         }
-                        return route.fallback().catch(() => {});
+                        return route.fallback().catch(() => { });
                     });
                     // ───────────────────────────────────────────────────────────────
 
@@ -235,7 +235,10 @@ export default async function cookieBotRandom(page, payload) {
     } finally {
         try {
             if (page && !page.isClosed()) {
-                await page.close();
+                await Promise.race([
+                    page.close(),
+                    new Promise(r => setTimeout(r, 5000))
+                ]);
                 logger.debug(`Page closed successfully.`);
             }
         } catch (closeError) {

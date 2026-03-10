@@ -21,11 +21,32 @@ export class DashboardServer {
         this.port = port;
         this.server = null;
         this.io = null;
-        this.orchestrator = null;
+        this.latestMetrics = {
+            sessions: [],
+            queue: { queueLength: 0, maxQueueSize: 500 },
+            metrics: { system: { uptime: 0 } },
+            recentTasks: [],
+            taskBreakdown: {},
+            system: {
+                cpu: { usage: 0, cores: 0 },
+                memory: { total: 0, used: 0, free: 0, percent: 0 },
+                platform: 'Unknown',
+                hostname: 'Unknown',
+                uptime: 0
+            }
+        };
+        this.cumulativeMetrics = {
+            engineUptimeMs: 0,
+            sessionUptimeMs: 0,  // Time since dashboard server started
+            clientConnectTime: 0,  // Time when Electron first connected
+            totalTasksCompleted: 0,
+            startTime: Date.now()
+        };
         this.broadcastInterval = null;
         this.BROADCAST_MS = broadcastIntervalMs;
         this.isShuttingDown = false;
         this.lastCpuInfo = null;
+        this.lastActiveCheck = Date.now();
     }
 
     getSystemMetrics() {
@@ -56,10 +77,10 @@ export class DashboardServer {
                 os.platform() === 'win32'
                     ? 'Windows'
                     : os.platform() === 'darwin'
-                      ? 'macOS'
-                      : os.platform() === 'linux'
-                        ? 'Linux'
-                        : os.platform();
+                        ? 'macOS'
+                        : os.platform() === 'linux'
+                            ? 'Linux'
+                            : os.platform();
 
             return {
                 cpu: {
@@ -97,8 +118,21 @@ export class DashboardServer {
         return Math.round((1 - idle / total) * 100);
     }
 
-    async start(orchestrator) {
-        this.orchestrator = orchestrator;
+    updateMetrics(payload) {
+        if (!payload) return;
+
+        const oldRecentLen = this.latestMetrics?.recentTasks?.length || 0;
+        const newRecentLen = payload.recentTasks?.length || 0;
+
+        // If new tasks were added, increment total counter
+        if (newRecentLen > oldRecentLen) {
+            this.cumulativeMetrics.totalTasksCompleted += (newRecentLen - oldRecentLen);
+        }
+
+        this.latestMetrics = payload;
+    }
+
+    async start() {
 
         try {
             const expressApp = express();
@@ -124,90 +158,15 @@ export class DashboardServer {
                 });
             });
 
-            // Status endpoint - tells dashboard if orchestrator is ready
+            // Status endpoint
             expressApp.get('/api/status', (req, res) => {
-                try {
-                    const hasOrchestrator = !!this.orchestrator;
-                    let sessionCount = 0;
-                    let queueLength = 0;
-
-                    if (hasOrchestrator && this.orchestrator.sessionManager) {
-                        sessionCount = this.orchestrator.sessionManager.getAllSessions().length;
-                        queueLength = this.orchestrator.taskQueue?.length || 0;
-                    }
-
-                    res.json({
-                        ready: hasOrchestrator,
-                        sessions: sessionCount,
-                        queue: queueLength,
-                        timestamp: Date.now(),
-                    });
-                } catch (error) {
-                    res.status(500).json({ error: error.message });
-                }
+                res.json({ ready: true, sessions: this.latestMetrics?.sessions?.length || 0, queue: this.latestMetrics?.queue?.queueLength || 0, timestamp: Date.now() });
             });
-
-            // REST API endpoints
-            expressApp.get('/api/sessions', (req, res) => {
-                try {
-                    if (!this.orchestrator) {
-                        return res.status(503).json({ error: 'Orchestrator not ready' });
-                    }
-                    res.json(this.orchestrator.getSessionMetrics());
-                } catch (error) {
-                    logger.error('Error fetching sessions:', error);
-                    res.status(500).json({ error: error.message });
-                }
-            });
-
-            expressApp.get('/api/queue', (req, res) => {
-                try {
-                    if (!this.orchestrator) {
-                        return res.status(503).json({ error: 'Orchestrator not ready' });
-                    }
-                    res.json(this.orchestrator.getQueueStatus());
-                } catch (error) {
-                    logger.error('Error fetching queue:', error);
-                    res.status(500).json({ error: error.message });
-                }
-            });
-
-            expressApp.get('/api/metrics', (req, res) => {
-                try {
-                    if (!this.orchestrator) {
-                        return res.status(503).json({ error: 'Orchestrator not ready' });
-                    }
-                    res.json(this.orchestrator.getMetrics());
-                } catch (error) {
-                    logger.error('Error fetching metrics:', error);
-                    res.status(500).json({ error: error.message });
-                }
-            });
-
-            expressApp.get('/api/tasks/recent', (req, res) => {
-                try {
-                    if (!this.orchestrator) {
-                        return res.status(503).json({ error: 'Orchestrator not ready' });
-                    }
-                    const limit = parseInt(req.query.limit) || 20;
-                    res.json(this.orchestrator.getRecentTasks(limit));
-                } catch (error) {
-                    logger.error('Error fetching recent tasks:', error);
-                    res.status(500).json({ error: error.message });
-                }
-            });
-
-            expressApp.get('/api/tasks/breakdown', (req, res) => {
-                try {
-                    if (!this.orchestrator) {
-                        return res.status(503).json({ error: 'Orchestrator not ready' });
-                    }
-                    res.json(this.orchestrator.getTaskBreakdown());
-                } catch (error) {
-                    logger.error('Error fetching task breakdown:', error);
-                    res.status(500).json({ error: error.message });
-                }
-            });
+            expressApp.get('/api/sessions', (req, res) => res.json(this.latestMetrics?.sessions || []));
+            expressApp.get('/api/queue', (req, res) => res.json(this.latestMetrics?.queue || {}));
+            expressApp.get('/api/metrics', (req, res) => res.json(this.latestMetrics?.metrics || {}));
+            expressApp.get('/api/tasks/recent', (req, res) => res.json(this.latestMetrics?.recentTasks || []));
+            expressApp.get('/api/tasks/breakdown', (req, res) => res.json(this.latestMetrics?.taskBreakdown || {}));
 
             // Serve static React build if exists
             const rendererPath = path.join(__dirname, 'renderer');
@@ -222,6 +181,12 @@ export class DashboardServer {
 
             // Socket.io for real-time updates
             this.io.on('connection', (socket) => {
+                // Reset session uptime when Electron first connects
+                if (!this.firstClientConnected) {
+                    this.firstClientConnected = true;
+                    this.cumulativeMetrics.sessionUptimeMs = 0;
+                    logger.info("Dashboard session started (Electron connected)");
+                }
                 logger.info(
                     `Dashboard client connected (total: ${this.io?.sockets?.sockets?.size || 0})`
                 );
@@ -237,6 +202,11 @@ export class DashboardServer {
 
                 socket.on('requestUpdate', () => {
                     this.sendMetrics(socket);
+                });
+
+                // Support metrics push from Orchestrator via Socket
+                socket.on('push_metrics', (payload) => {
+                    this.updateMetrics(payload);
                 });
             });
 
@@ -273,29 +243,27 @@ export class DashboardServer {
 
         logger.info(`Broadcast interval set to ${this.BROADCAST_MS}ms`);
     }
-
     collectMetrics() {
         try {
-            if (!this.orchestrator) {
-                return {
-                    error: 'Orchestrator not ready',
-                    timestamp: Date.now(),
-                    sessions: [],
-                    queue: { queueLength: 0, isProcessing: false, maxQueueSize: 500 },
-                    metrics: {},
-                    recentTasks: [],
-                    taskBreakdown: {},
-                    system: this.getSystemMetrics(),
-                };
+            const now = Date.now();
+            const elapsed = now - this.lastActiveCheck;
+            this.lastActiveCheck = now;
+
+            // Only increment uptime if there's an active session or queue
+            // Only count online sessions (not offline/idle)
+            const hasOnlineSession = this.latestMetrics?.sessions?.some(s => s?.status === 'online') || false;
+            const hasActivity = hasOnlineSession ||
+                (this.latestMetrics?.queue?.queueLength > 0);
+
+            if (hasActivity) {
+                this.cumulativeMetrics.engineUptimeMs += elapsed;
+            this.cumulativeMetrics.sessionUptimeMs += elapsed;  // Always track session time
             }
 
             return {
-                timestamp: Date.now(),
-                sessions: this.orchestrator.getSessionMetrics(),
-                queue: this.orchestrator.getQueueStatus(),
-                metrics: this.orchestrator.getMetrics(),
-                recentTasks: this.orchestrator.getRecentTasks(20),
-                taskBreakdown: this.orchestrator.getTaskBreakdown(),
+                timestamp: now,
+                ...this.latestMetrics,
+                cumulative: this.cumulativeMetrics,
                 system: this.getSystemMetrics(),
             };
         } catch (error) {
@@ -352,4 +320,33 @@ export class DashboardServer {
             this.server = null;
         }
     }
+}
+
+
+// If started as an IPC child process from the Orchestrator
+if (process.send) {
+    const port = parseInt(process.env.PORT) || 3001;
+    const interval = parseInt(process.env.BROADCAST_MS) || 2000;
+
+    const server = new DashboardServer(port, interval);
+    server.start().catch(err => {
+        console.error('Fatal error starting IPC dashboard server:', err);
+        process.exit(1);
+    });
+
+    process.on('message', msg => {
+        if (msg && msg.type === 'metrics_tick') {
+            server.updateMetrics(msg.payload);
+        } else if (msg && msg.type === 'shutdown') {
+            server.stop().then(() => process.exit(0));
+        }
+    });
+
+    // DO NOT exit on disconnect - this allows the dashboard to persist when Orchestrator restarts
+    process.on('disconnect', () => {
+        logger.info('Orchestrator disconnected, but dashboard server will persist.');
+        // Clear activity-dependent metrics so they show as 0/idle until reconnect
+        server.latestMetrics.sessions = [];
+        server.latestMetrics.queue.queueLength = 0;
+    });
 }

@@ -160,7 +160,7 @@ const App = () => {
     const sessionMetrics = safeObject(metrics.sessions);
     const taskMetrics = safeObject(metrics.tasks);
 
-    const uptimeSeconds = safeGet(data, 'cumulative.sessionUptimeMs', 0) / 1000;
+    const uptimeSeconds = safeGet(data, 'cumulative.engineUptimeMs', 0) / 1000;
     const queueLength = safeGet(data, 'queue.queueLength', 0);
     const maxQueueSize = safeGet(data, 'queue.maxQueueSize', 500);
     const queuePercent = maxQueueSize > 0 ? Math.round((queueLength / maxQueueSize) * 100) : 0;
@@ -608,11 +608,11 @@ const App = () => {
                     </div>
                 ) : (
                     recentTasks.slice(0, 6).map((task, index) => {
-                        const isSuccess = task?.success === true;
-                        const isError = task?.success === false;
+                        const isSuccess = task?.status === 'completed';
+                        const isError = task?.status === 'failed';
                         return (
                             <div
-                                key={task?.timestamp || index}
+                                key={task?.id || index}
                                 style={{
                                     ...styles.listItem,
                                     ...(index === Math.min(recentTasks.length - 1, 5)
@@ -631,10 +631,10 @@ const App = () => {
                                     }}
                                 ></div>
                                 <span style={styles.taskName}>
-                                    {task?.taskName || 'Unknown'}
+                                    {safeGet(task, 'name', 'Unknown')}
                                 </span>
                                 <span style={styles.taskDuration}>
-                                    {(task?.duration >= 1000 ? (task.duration/1000).toFixed(1) + 's' : task?.duration + 'ms')}
+                                    {safeGet(task, 'duration', '0s')}
                                 </span>
                                 <span style={styles.taskStatusIcon}>
                                     {isSuccess ? '✓' : isError ? '✗' : '○'}
@@ -679,10 +679,10 @@ const App = () => {
                                     {safeGet(session, 'name', 'Unknown')}
                                 </span>
                                 <span style={styles.workerCount}>
-                                    {(session?.activeWorkers || 0)}/{(session?.totalWorkers || 0)}w
+                                    {safeGet(session, 'workers', 0)}w
                                 </span>
                                 <span style={styles.currentTask}>
-                                    {session?.taskName || '-'}
+                                    {safeGet(session, 'currentTask', '-')}
                                 </span>
                                 <span
                                     style={{

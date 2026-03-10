@@ -1,4 +1,31 @@
 - Fixed AsyncQueue microtask race condition causing taskPromise to hang (pi/utils/async-queue.js)\n- Optimized Orchestrator by removing sleep cycles and delays (pi/core/orchestrator.js)\n- Removed expensive Regex calls from Logger (pi/core/logger.js)\n- Updated unit tests (pi/tests/unit/async-queue.test.js)\n\n# AGENT-JOURNAL.md
+## 2025-03-09: Stuck Browser Analysis
+- **Zombie Tasks Identified**: Discovered that `Promise.race()` timeouts in `orchestrator.js` and `cookiebot.js` do not cancel underlying async operations, leading to "zombie" tasks that keep workers busy.
+- **Cleanup Deadlock**: Found that `await page.close()` in `finally` blocks can hang infinitely if the browser or protocol is deadlocked, blocking the worker from ever being released.
+- **Timeout Layering**: Identified a mismatch between `cookiebot` (4m) and `orchestrator` (10m) timeouts that masks the initial hang.
+- **Stuck Worker Detection**: Verified that `SessionManager`'s stuck detection is purely memory-based and does not terminate hanging promises or CDP connections.
+
+## 2026-03-09: Persistent Dashboard Metrics Implementation
+- **Singleton Architecture**: Orchestrator now checks for an existing dashboard server on port 3001 and connects via Socket.io instead of forcing a new fork.
+- **Detached Lifecycle**: Forked dashboard processes are now detached (`unref`), allowing them to survive Orchestrator shutdowns.
+- **Cumulative Uptime**: Dashboard server now tracks `engineUptimeMs` cumulatively, resetting ONLY when the dashboard process itself starts.
+- **State Persistence**: On Orchestrator disconnect, the dashboard clears session/queue lists but retains the cumulative counters.
+
+## 2026-03-09: Dashboard UPTIME & QUEUE Fixes
+- **Uptime Corrected**: Fixed `App.jsx` to divide `system.uptime` by 1000, ensuring it displays in seconds rather than milliseconds.
+- **Queue Percent Restored**: Added `maxQueueSize` to `Orchestrator.js` queue metrics, allowing the dashboard to calculate and display the queue percentage correctly.
+
+## 2026-03-09: IPC Method Fix
+- **Undefined Methods Resolved**: Added `getRecentTasks` and `getTaskBreakdown` to the `Orchestrator` class to fix the `this.getRecentTasks is not a function` error during IPC metrics pushing.
+
+## 2026-03-09: Automated UI Dashboard Startup
+- **Shorted Script**: Created `.start-darshboard.bat` in the root directory to automate the build-then-launch procedure (Phase 5 follow-up).
+
+## 2026-03-09: Phase 5 UI Dashboard IPC Decoupling
+- **Process Isolation**: Extracted `dashboard.js` (Express + Socket.io) into an independent child process (`child_process.fork()`). This eliminates the Event Loop Tax in the main Orchestrator process caused by WebSocket broadcast serialization.
+- **IPC Data Pipeline**: Implemented a lightweight IPC channel `this.dashboardProcess.send()` inside the Orchestrator, pushing a serialized `{ type: 'metrics_tick', payload }` every 2 seconds.
+- **Frontend Payload Hardening**: Hardcoded accurate structured defaults (e.g., `system.cpu.usage`) inside the `DashboardServer` constructor to prevent the React UI `App.jsx` from crashing when mapping fields before the first async metrics tick arrives.
+- **Test Integrity**: Verified via Vitest unit tests verifying correct fork mapping and default property initialization schemas. Zero regressions.
 
 ## 2026-03-09: Phase 4 API Extreme Throughput Optimizations
 - **Asynchronous Log Streams**: Replaced the synchronous `LOG_BUFFER` array map with native non-blocking `WriteStream` bindings in `logger.js`. This entirely prevents the 1-second Garbage Collection micro-stutters during heavy logging.

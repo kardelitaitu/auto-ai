@@ -153,7 +153,7 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                     );
                     const entryReadStart = Date.now();
                     while (Date.now() - entryReadStart < entryReadMs) {
-                        await api.scroll.read('body', { pauses: 1 }).catch(() => {});
+                        await api.scroll.read('body', { pauses: 1 }).catch(() => { });
                         await api.think(mathUtils.randomInRange(1500, 3000));
                     }
 
@@ -261,7 +261,7 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                     // Attempt 1: exact href match
                     const profileLinkCount = await page.locator(profileLinkSel).count();
                     if (profileLinkCount > 0) {
-                        await api.click(profileLinkSel, { recovery: false }).catch(() => {});
+                        await api.click(profileLinkSel, { recovery: false }).catch(() => { });
                         await api.think(3000);
                         navigatedToProfile = !page.url().includes('/status/');
                     }
@@ -271,7 +271,7 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                         logger.warn(
                             `[api-twitterFollowLikeRetweet] Exact link not found, trying fallback...`
                         );
-                        await api.click(fallbackLinkSel, { recovery: false }).catch(() => {});
+                        await api.click(fallbackLinkSel, { recovery: false }).catch(() => { });
                         await api.think(3000);
                         navigatedToProfile = !page.url().includes('/status/');
                     }
@@ -295,7 +295,7 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                     const profileReadMs = mathUtils.randomInRange(10000, 15000);
                     const readStart = Date.now();
                     while (Date.now() - readStart < profileReadMs) {
-                        await api.scroll.read('body', { pauses: 1 }).catch(() => {});
+                        await api.scroll.read('body', { pauses: 1 }).catch(() => { });
                         await api.think(mathUtils.randomInRange(2000, 4000));
                     }
 
@@ -303,7 +303,7 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                     logger.info(
                         `[api-twitterFollowLikeRetweet] Scrolling to top to find follow button...`
                     );
-                    await api.scroll.toTop().catch(() => {});
+                    await api.scroll.toTop().catch(() => { });
                     await api.think(mathUtils.randomInRange(800, 1500));
 
                     // Focus the follow button into view
@@ -363,7 +363,7 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                     );
                     const cooldownStart = Date.now();
                     while (Date.now() - cooldownStart < cooldownMs) {
-                        await api.scroll.read('body', { pauses: 1 }).catch(() => {});
+                        await api.scroll.read('body', { pauses: 1 }).catch(() => { });
                         await api.think(mathUtils.randomInRange(2000, 4000));
                     }
 
@@ -388,7 +388,12 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
         }
     } finally {
         try {
-            if (page && !page.isClosed()) await page.close();
+            if (page && !page.isClosed()) {
+                await Promise.race([
+                    page.close(),
+                    new Promise(r => setTimeout(r, 5000))
+                ]);
+            }
         } catch (_e) {
             // Ignore page close errors
         }

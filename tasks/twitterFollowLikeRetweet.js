@@ -513,7 +513,12 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
 
         // Proper page closing
         try {
-            if (page && !page.isClosed()) await page.close();
+            if (page && !page.isClosed()) {
+                await Promise.race([
+                    page.close(),
+                    new Promise(r => setTimeout(r, 5000))
+                ]);
+            }
         } catch (closeError) {
             logger.warn(`[followLikeRetweet] Failed to close page: ${closeError.message}`);
         }

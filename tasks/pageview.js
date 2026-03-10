@@ -171,7 +171,10 @@ export default async function pageview(page, payload) {
             } finally {
                 try {
                     if (page && !page.isClosed()) {
-                        await page.close();
+                        await Promise.race([
+                            page.close(),
+                            new Promise(r => setTimeout(r, 5000))
+                        ]);
                         logger.debug(`Page closed successfully.`);
                     }
                 } catch (closeError) {
