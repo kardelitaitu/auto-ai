@@ -6,15 +6,17 @@
 
 import { Server } from 'socket.io';
 import express from 'express';
-import { createLogger } from '../../core/logger.js';
+import { createLogger } from './lib/logger.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import os from 'os';
+import { HistoryManager } from './lib/history-manager.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logger = createLogger('dashboard.js');
+const HISTORY_FILE = path.join(__dirname, 'data', 'dashboard-history.json');
 
 export class DashboardServer {
     constructor(port = 3001, broadcastIntervalMs = 2000) {
@@ -35,13 +37,56 @@ export class DashboardServer {
                 uptime: 0
             }
         };
+
+        this.historyManager = new HistoryManager(HISTORY_FILE, 9999);
+
+        // Independent dashboard data stores (persist across orchestrator restarts)
+        this.dashboardData = {
+            sessions: [],
+            sessionHistory: [],
+            tasks: this.historyManager.getTasks(),
+            queue: { queueLength: 0, activeTaskCount: 0 },
+            metrics: {},
+            recentTasks: this.historyManager.getTasks().slice(-40),
+            twitterActions: this.historyManager.getTwitterActions(),
+            apiMetrics: this.historyManager.getApiMetrics(),
+            browserMetrics: { discovered: 0, connected: 0 },
+            queueHistory: [],
+            errors: [],
+            firstDataTime: Date.now()
+        };
+
+        // Initialize latestMetrics with loaded history data
+        this.latestMetrics = {
+            sessions: [],
+            queue: { queueLength: 0, maxQueueSize: 500 },
+            metrics: { system: { uptime: 0 } },
+            recentTasks: this.historyManager.getTasks().slice(-40),
+            taskBreakdown: {},
+            system: {
+                cpu: { usage: 0, cores: 0 },
+                memory: { total: 0, used: 0, free: 0, percent: 0 },
+                platform: 'Unknown',
+                hostname: 'Unknown',
+                uptime: 0
+            }
+        };
+
         this.cumulativeMetrics = {
             engineUptimeMs: 0,
             sessionUptimeMs: 0,  // Time since dashboard server started
             clientConnectTime: 0,  // Time when Electron first connected
-            totalTasksCompleted: 0,
+            completedTasks: this.historyManager.getCompletedTasksCount(),
             startTime: Date.now()
         };
+
+        // Track last seen metrics to calculate deltas from cumulative engine data
+        this.lastSeenMetrics = {
+            twitter: { actions: {} },
+            api: { calls: 0, failures: 0 },
+            tasks: { executed: 0, failed: 0 }
+        };
+
         this.broadcastInterval = null;
         this.BROADCAST_MS = broadcastIntervalMs;
         this.isShuttingDown = false;
@@ -121,22 +166,149 @@ export class DashboardServer {
     updateMetrics(payload) {
         if (!payload) return;
 
-        const oldRecentLen = this.latestMetrics?.recentTasks?.length || 0;
-        const newRecentLen = payload.recentTasks?.length || 0;
+        // Merge with independent dashboard data store
+        this.mergeDashboardData(payload);
 
-        // If new tasks were added, increment total counter
-        if (newRecentLen > oldRecentLen) {
-            this.cumulativeMetrics.totalTasksCompleted += (newRecentLen - oldRecentLen);
+        // Debug: log recentTasks count
+        logger.info(`[updateMetrics] dashboardData.tasks count: ${this.dashboardData.tasks.length}, recentTasks: ${payload.recentTasks?.length}`);
+
+        this.latestMetrics = {
+            ...payload,
+            recentTasks: this.dashboardData.tasks.slice(-40),
+            metrics: {
+                ...payload.metrics,
+                // Use incoming Twitter metrics directly, don't overwrite with stored data
+                // The stored dashboardData.twitterActions is for persistence only
+                twitter: payload.metrics?.twitter || { actions: this.dashboardData.twitterActions },
+                api: this.dashboardData.apiMetrics,
+                browsers: this.dashboardData.browserMetrics
+            }
+        };
+    }
+
+    mergeTaskData(task) {
+        this.dashboardData.tasks = this.historyManager.addOrUpdateTask(task);
+    }
+
+    mergeDashboardData(payload) {
+        // Merge sessions
+        if (payload.sessions?.length > 0) {
+            for (const session of payload.sessions) {
+                const existing = this.dashboardData.sessions.find(s => s.id === session.id);
+                if (!existing) {
+                    this.dashboardData.sessions.push({ ...session, firstSeen: Date.now() });
+                } else {
+                    Object.assign(existing, session);
+                }
+            }
         }
 
-        this.latestMetrics = payload;
+        // Merge tasks - append and persist
+        if (payload.recentTasks?.length > 0) {
+            for (const task of payload.recentTasks) {
+                this.mergeTaskData(task);
+            }
+        }
+
+        // Merge Twitter actions (accumulate via deltas)
+        if (payload.metrics?.twitter?.actions) {
+            const actions = payload.metrics.twitter.actions;
+            const last = this.lastSeenMetrics.twitter.actions;
+
+            const getDelta = (curr, prev) => {
+                const c = curr || 0;
+                const p = prev || 0;
+                return c >= p ? c - p : c;
+            };
+
+            const deltaLikes = getDelta(actions.likes, last.likes);
+            const deltaRetweets = getDelta(actions.retweets, last.retweets);
+            const deltaReplies = getDelta(actions.replies, last.replies);
+            const deltaQuotes = getDelta(actions.quotes, last.quotes);
+            const deltaFollows = getDelta(actions.follows, last.follows);
+            const deltaBookmarks = getDelta(actions.bookmarks, last.bookmarks);
+
+            this.dashboardData.twitterActions.likes += deltaLikes;
+            this.dashboardData.twitterActions.retweets += deltaRetweets;
+            this.dashboardData.twitterActions.replies += deltaReplies;
+            this.dashboardData.twitterActions.quotes += deltaQuotes;
+            this.dashboardData.twitterActions.follows += deltaFollows;
+            this.dashboardData.twitterActions.bookmarks += deltaBookmarks;
+
+            this.dashboardData.twitterActions.total =
+                this.dashboardData.twitterActions.likes +
+                this.dashboardData.twitterActions.retweets +
+                this.dashboardData.twitterActions.replies +
+                this.dashboardData.twitterActions.quotes +
+                this.dashboardData.twitterActions.follows +
+                this.dashboardData.twitterActions.bookmarks;
+
+            // Persist
+            this.historyManager.setTwitterActions(this.dashboardData.twitterActions);
+
+            // Store for next tick
+            this.lastSeenMetrics.twitter.actions = { ...actions };
+        }
+
+        // Merge API metrics (accumulate via deltas)
+        if (payload.metrics?.api) {
+            const api = payload.metrics.api;
+            const last = this.lastSeenMetrics.api;
+
+            const getDelta = (curr, prev) => {
+                const c = curr || 0;
+                const p = prev || 0;
+                return c >= p ? c - p : c;
+            };
+
+            const deltaCalls = getDelta(api.calls, last.calls);
+            const deltaFailures = getDelta(api.failures, last.failures);
+
+            this.dashboardData.apiMetrics.calls += deltaCalls;
+            this.dashboardData.apiMetrics.failures += deltaFailures;
+            
+            // Recalculate success rate
+            const total = this.dashboardData.apiMetrics.calls;
+            const fails = this.dashboardData.apiMetrics.failures;
+            this.dashboardData.apiMetrics.successRate = total > 0 ? Math.round(((total - fails) / total) * 100) : 100;
+
+            this.dashboardData.apiMetrics.avgResponseTime = api.avgResponseTime || 0;
+
+            // Persist
+            this.historyManager.setApiMetrics(this.dashboardData.apiMetrics);
+
+            // Store for next tick
+            this.lastSeenMetrics.api = { calls: api.calls, failures: api.failures };
+        }
+
+        // Browser metrics
+        if (payload.metrics?.browsers) {
+            this.dashboardData.browserMetrics = { ...payload.metrics.browsers };
+        }
+
+        // Errors
+        if (payload.errors?.length > 0) {
+            this.dashboardData.errors.push(...payload.errors);
+        }
     }
 
     async start() {
+        // Check if port is available
+        const net = await import("net");
+        const isPortAvailable = await new Promise((resolve) => {
+            const testServer = net.createServer();
+            testServer.once("error", () => resolve(false));
+            testServer.once("listening", () => { testServer.close(); resolve(true); });
+            testServer.listen(this.port);
+        });
+        if (!isPortAvailable) {
+            const err = new Error("Port already in use");
+            err.code = "EADDRINUSE";
+            throw err;
+        }
 
         try {
             const expressApp = express();
-
             this.server = createServer(expressApp);
             this.io = new Server(this.server, {
                 cors: { origin: '*' },
@@ -167,6 +339,7 @@ export class DashboardServer {
             expressApp.get('/api/metrics', (req, res) => res.json(this.latestMetrics?.metrics || {}));
             expressApp.get('/api/tasks/recent', (req, res) => res.json(this.latestMetrics?.recentTasks || []));
             expressApp.get('/api/tasks/breakdown', (req, res) => res.json(this.latestMetrics?.taskBreakdown || {}));
+            expressApp.get('/api/dashboard/data', (req, res) => res.json(this.dashboardData || {}));
 
             // Serve static React build if exists
             const rendererPath = path.join(__dirname, 'renderer');
@@ -208,6 +381,44 @@ export class DashboardServer {
                 socket.on('push_metrics', (payload) => {
                     this.updateMetrics(payload);
                 });
+
+                socket.on('task-update', (data) => {
+                    this.mergeTaskData(data);
+                    // Update latestMetrics with fresh task data before broadcasting
+                    this.latestMetrics.recentTasks = this.dashboardData.tasks.slice(-40);
+                    // Broadcast immediately to all clients
+                    this.io.emit('metrics', this.collectMetrics());
+                });
+
+                socket.on('clear-history', () => {
+                    logger.info('Clearing dashboard history per client request');
+                    this.historyManager.clearHistory();
+                    
+                    // Reset all data stores to zeros
+                    this.dashboardData.tasks = [];
+                    this.dashboardData.twitterActions = { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0, total: 0 };
+                    this.dashboardData.apiMetrics = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
+                    this.dashboardData.errors = [];
+                    this.cumulativeMetrics.completedTasks = 0;
+                    
+                    // Also reset latestMetrics to show zeros
+                    this.latestMetrics.recentTasks = [];
+                    if (this.latestMetrics.metrics) {
+                        this.latestMetrics.metrics.twitter = { actions: { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0, total: 0 }};
+                        this.latestMetrics.metrics.api = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
+                    }
+                    
+                    // Reset lastSeenMetrics so new incoming data starts from zero
+                    this.lastSeenMetrics = {
+                        twitter: { actions: { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0 }},
+                        api: { calls: 0, failures: 0 },
+                        tasks: { executed: 0, failed: 0 }
+                    };
+                    
+                    logger.info('History cleared, broadcasting zeros...');
+                    // Broadcast cleared data immediately
+                    this.io.emit('metrics', this.collectMetrics());
+                });
             });
 
             this.startBroadcast();
@@ -243,6 +454,7 @@ export class DashboardServer {
 
         logger.info(`Broadcast interval set to ${this.BROADCAST_MS}ms`);
     }
+
     collectMetrics() {
         try {
             const now = Date.now();
@@ -257,15 +469,20 @@ export class DashboardServer {
 
             if (hasActivity) {
                 this.cumulativeMetrics.engineUptimeMs += elapsed;
-            this.cumulativeMetrics.sessionUptimeMs += elapsed;  // Always track session time
+                this.cumulativeMetrics.sessionUptimeMs += elapsed;  // Always track session time
             }
 
-            return {
+            const result = {
                 timestamp: now,
                 ...this.latestMetrics,
-                cumulative: this.cumulativeMetrics,
+                cumulative: {
+                    ...this.cumulativeMetrics,
+                    completedTasks: this.historyManager.getCompletedTasksCount()
+                },
                 system: this.getSystemMetrics(),
             };
+            
+            return result;
         } catch (error) {
             logger.error('Error collecting metrics:', error);
             return { error: error.message, timestamp: Date.now() };
@@ -322,7 +539,6 @@ export class DashboardServer {
     }
 }
 
-
 // Helper to start the server standalone (e.g., from Electron main process)
 export async function startStandaloneServer(port = 3001) {
     const server = new DashboardServer(port);
@@ -342,7 +558,7 @@ export async function startStandaloneServer(port = 3001) {
 // If started as an IPC child process from the Orchestrator
 if (process.send && !process.env.ELECTRON_RUN_AS_NODE) {
     const port = parseInt(process.env.PORT) || 3001;
-    const interval = parseInt(process.env.BROADCAST_MS) || 2000;
+    const interval = parseInt(process.env.BROADCAST_MS) || 5000;
 
     const server = new DashboardServer(port, interval);
     server.start().catch(err => {
@@ -353,8 +569,15 @@ if (process.send && !process.env.ELECTRON_RUN_AS_NODE) {
     process.on('message', msg => {
         if (msg && msg.type === 'metrics_tick') {
             server.updateMetrics(msg.payload);
+        } else if (msg && msg.type === 'task-update') {
+            server.mergeTaskData(msg.payload);
+            // Update latestMetrics with fresh task data before broadcasting
+            if (server.latestMetrics) server.latestMetrics.recentTasks = server.historyManager.getTasks().slice(-40);
+            server.io.emit('metrics', server.collectMetrics());
         } else if (msg && msg.type === 'shutdown') {
-            server.stop().then(() => process.exit(0));
+            server.stop().then(() => {
+                process.exit(0);
+            });
         }
     });
 

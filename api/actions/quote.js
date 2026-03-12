@@ -13,6 +13,7 @@ import { HumanInteraction } from '../behaviors/human-interaction.js';
 import { scroll, focus } from '../interactions/scroll.js';
 import { wait } from '../interactions/wait.js';
 import { text, exists } from '../interactions/queries.js';
+import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('api/quote.js');
 
@@ -84,6 +85,7 @@ export async function quoteWithAI(options = {}) {
 
     if (result.success) {
         logger.info(`✅ api.quoteWithAI successful!`);
+        metricsCollector.recordTwitterEngagement('quote', 1);
         result.quote = finalQuoteText;
     } else {
         logger.error(`❌ api.quoteWithAI failed: ${result.reason}`);

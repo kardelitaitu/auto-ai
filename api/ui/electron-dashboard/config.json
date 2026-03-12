@@ -1,0 +1,15 @@
+{
+    "server": {
+        "port": 3001,
+        "host": "localhost"
+    },
+    "ui": {
+        "defaultCompact": false,
+        "defaultAlwaysOnTop": false
+    },
+    "connect": {
+        "autoConnect": true,
+        "remoteHost": "",
+        "remotePort": 3001
+    }
+}

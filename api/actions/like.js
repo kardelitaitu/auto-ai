@@ -10,6 +10,7 @@ import { mathUtils } from '../utils/math.js';
 import { wait } from '../interactions/wait.js';
 import { visible } from '../interactions/queries.js';
 import { click } from '../interactions/actions.js';
+import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('api/like.js');
 
@@ -76,6 +77,7 @@ export async function likeWithAPI(options = {}) {
 
         if (toastVisible || nowUnliked) {
             logger.info(`✅ api.likeWithAPI successful!`);
+            metricsCollector.recordSocialAction('like', 1);
             return { success: true, reason: 'success', method: 'likeAPI' };
         }
 

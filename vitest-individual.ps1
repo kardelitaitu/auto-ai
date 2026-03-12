@@ -1,6 +1,6 @@
 # --- Configuration ---
 $ParallelFactor = 16 # Single input for both MaxParallel and BufferSize
-$targetDirs = @("api", "tests") # Modular array for multi-directory scanning
+$targetDirs = @("api") # Modular array for multi-directory scanning
 $logFile = "vitest-individual.txt"
 $projectRoot = $PSScriptRoot
 
@@ -70,12 +70,13 @@ foreach ($file in $testFiles) {
 
     # Spawn Job with Root Context
     Start-Job -Name $file.Name -ScriptBlock {
-        param($path, $name, $root)
+        param($path, $name, $root, $configPath)
         Set-Location -Path $root
         $env:FORCE_COLOR = 0
+        $env:NODE_PATH = Join-Path $root "node_modules"
         
-        # Execute Vitest with absolute pathing
-        $out = npx vitest run "$path" --reporter=default --no-color 2>&1 | Out-String
+        # Execute Vitest with config path and proper module resolution
+        $out = npx vitest run "$path" --reporter=default --no-color --config "$configPath" 2>&1 | Out-String
         
         # Enhanced Regex for Vitest Summary
         $f = if ($out -match "Test Files\s+(.+passed.*)") { $Matches[1].Trim() } else { "FAIL" }
@@ -88,7 +89,7 @@ foreach ($file in $testFiles) {
             return "{0,-45} | Files: {1,-15} | Tests: {2,-15} | Time: {3}" -f $name, "FAIL", $err, $d
         }
         return "{0,-45} | Files: {1,-15} | Tests: {2,-15} | Time: {3}" -f $name, $f, $t, $d
-    } -ArgumentList $file.FullName, $file.Name, $projectRoot | Out-Null
+    } -ArgumentList $file.FullName, $file.Name, $projectRoot, (Join-Path $projectRoot "config/vitest.config.js") | Out-Null
 }
 
 # Final Sweep for remaining jobs

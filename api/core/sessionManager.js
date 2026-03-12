@@ -80,7 +80,7 @@ class SessionManager {
         this.cleanupIntervalMs = options.cleanupIntervalMs || 5 * 60 * 1000;
         this.workerWaitTimeoutMs = options.workerWaitTimeoutMs || 30000;
         this.stuckWorkerThresholdMs = options.stuckWorkerThresholdMs || 600000;
-        this.concurrencyPerBrowser = 10; // Default lowered from 50 to protect PC resources
+        this.concurrencyPerBrowser = 5; // Default lowered from 10 to match user preference for resource efficiency
 
         this.workerSemaphores = new Map();
         this.workerOccupancy = new Map();

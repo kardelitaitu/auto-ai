@@ -10,6 +10,7 @@ import { mathUtils } from '../utils/math.js';
 import { wait } from '../interactions/wait.js';
 import { visible } from '../interactions/queries.js';
 import { click } from '../interactions/actions.js';
+import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('api/follow.js');
 
@@ -80,6 +81,7 @@ export async function followWithAPI(options = {}) {
 
             if (verified) {
                 logger.info(`✅ api.followWithAPI: successfully followed @${username}!`);
+                metricsCollector.recordSocialAction('follow', 1);
                 return { success: true, reason: 'success', method: 'followAPI' };
             }
 

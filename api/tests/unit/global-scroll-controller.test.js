@@ -11,7 +11,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-vi.mock('../../../api/index.js', () => ({
+vi.mock('@api/index.js', () => ({
     api: {
         setPage: vi.fn(),
         getPage: vi.fn(),

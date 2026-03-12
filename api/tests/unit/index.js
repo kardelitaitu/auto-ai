@@ -19,13 +19,14 @@ import asyncQueue from './async-queue.test.js';
 import configService from './config-service.test.js';
 import engagementLimits from './engagement-limits.test.js';
 import humanInteraction from './human-interaction.test.js';
-import smartProb from './test-smart-prob.js';
-import actionConfig from './test-action-config.js';
-import actions from './test-actions.js';
-import simpleDive from './test-simple-dive.js';
-import humanMethods from './test-human-methods.js';
-import modularMethods from './test-modular-methods.js';
-import replyMethod from './test-reply-method.js';
+// These are manual/debug scripts, not vitest tests:
+// import smartProb from './test-smart-prob.manual.js';
+// import actionConfig from './test-action-config.manual.js';
+// import actions from './test-actions.manual.js';
+// import simpleDive from './test-simple-dive.manual.js';
+// import humanMethods from './test-human-methods.manual.js';
+// import modularMethods from './test-modular-methods.manual.js';
+// import replyMethod from './test-reply-method.manual.js';
 
 export {
     aiTwitterActivity,
@@ -34,13 +35,13 @@ export {
     configService,
     engagementLimits,
     humanInteraction,
-    smartProb,
-    actionConfig,
-    actions,
-    simpleDive,
-    humanMethods,
-    modularMethods,
-    replyMethod,
+    // smartProb,
+    // actionConfig,
+    // actions,
+    // simpleDive,
+    // humanMethods,
+    // modularMethods,
+    // replyMethod,
 };
 
 /**
@@ -60,13 +61,14 @@ export async function runAllUnitTests() {
         { name: 'config-service', module: configService },
         { name: 'engagement-limits', module: engagementLimits },
         { name: 'human-interaction', module: humanInteraction },
-        { name: 'smart-prob', module: smartProb },
-        { name: 'action-config', module: actionConfig },
-        { name: 'actions', module: actions },
-        { name: 'simple-dive', module: simpleDive },
-        { name: 'human-methods', module: humanMethods },
-        { name: 'modular-methods', module: modularMethods },
-        { name: 'reply-method', module: replyMethod },
+        // Manual/debug scripts - not vitest tests:
+        // { name: 'smart-prob', module: smartProb },
+        // { name: 'action-config', module: actionConfig },
+        // { name: 'actions', module: actions },
+        // { name: 'simple-dive', module: simpleDive },
+        // { name: 'human-methods', module: humanMethods },
+        // { name: 'modular-methods', module: modularMethods },
+        // { name: 'reply-method', module: replyMethod },
     ];
 
     for (const { name, module: _module } of testModules) {

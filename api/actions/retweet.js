@@ -10,6 +10,7 @@ import { mathUtils } from '../utils/math.js';
 import { wait } from '../interactions/wait.js';
 import { visible } from '../interactions/queries.js';
 import { click } from '../interactions/actions.js';
+import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('api/retweet.js');
 
@@ -87,6 +88,7 @@ export async function retweetWithAPI(options = {}) {
 
         if (nowUnretweetable) {
             logger.info(`✅ api.retweetWithAPI successful!`);
+            metricsCollector.recordSocialAction('retweet', 1);
             return { success: true, reason: 'success', method: 'retweetAPI' };
         }
 

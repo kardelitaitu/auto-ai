@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 108739,
-      "uptimeFormatted": "1m 48s",
-      "timeSinceReset": 108739,
-      "timeSinceResetFormatted": "1m 48s"
+      "uptime": 558013,
+      "uptimeFormatted": "9m 18s",
+      "timeSinceReset": 558013,
+      "timeSinceResetFormatted": "9m 18s"
     },
     "tasks": {
-      "executed": 4,
+      "executed": 8,
       "failed": 0,
-      "succeeded": 4,
+      "succeeded": 8,
       "successRate": 100,
-      "avgDuration": 50092,
-      "totalDuration": 200368,
+      "avgDuration": 132978.5,
+      "totalDuration": 1063828,
       "durationPercentiles": {
-        "p50": 50077,
-        "p95": 50142,
-        "p99": 50142
+        "p50": 51073,
+        "p95": 240304,
+        "p99": 240304
       }
     },
     "browsers": {
@@ -61,44 +61,80 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-10T09:25:13.553Z"
+    "runEndTime": "2026-03-11T13:36:11.417Z"
   },
   "tasks": [
     {
       "taskName": "pageview",
-      "duration": 50142,
+      "duration": 50280,
       "success": true,
       "sessionId": "roxy:0002",
       "error": null,
-      "startTime": "2026-03-10T09:23:33.170Z",
-      "timestamp": 1773134663312
+      "startTime": "2026-03-11T13:26:55.242Z",
+      "timestamp": 1773235665522
     },
     {
       "taskName": "pageview",
-      "duration": 50081,
+      "duration": 50846,
       "success": true,
       "sessionId": "roxy:0001",
       "error": null,
-      "startTime": "2026-03-10T09:23:33.233Z",
-      "timestamp": 1773134663314
+      "startTime": "2026-03-11T13:26:56.134Z",
+      "timestamp": 1773235666980
     },
     {
-      "taskName": "pageview",
-      "duration": 50068,
-      "success": true,
-      "sessionId": "roxy:0001",
-      "error": null,
-      "startTime": "2026-03-10T09:24:23.444Z",
-      "timestamp": 1773134713512
-    },
-    {
-      "taskName": "pageview",
-      "duration": 50077,
+      "taskName": "cookiebot",
+      "duration": 240304,
       "success": true,
       "sessionId": "roxy:0002",
       "error": null,
-      "startTime": "2026-03-10T09:24:23.439Z",
-      "timestamp": 1773134713516
+      "startTime": "2026-03-11T13:27:47.095Z",
+      "timestamp": 1773235907399
+    },
+    {
+      "taskName": "cookiebot",
+      "duration": 240084,
+      "success": true,
+      "sessionId": "roxy:0001",
+      "error": null,
+      "startTime": "2026-03-11T13:27:47.904Z",
+      "timestamp": 1773235907988
+    },
+    {
+      "taskName": "pageview",
+      "duration": 50274,
+      "success": true,
+      "sessionId": "roxy:0002",
+      "error": null,
+      "startTime": "2026-03-11T13:31:48.155Z",
+      "timestamp": 1773235958429
+    },
+    {
+      "taskName": "pageview",
+      "duration": 51073,
+      "success": true,
+      "sessionId": "roxy:0001",
+      "error": null,
+      "startTime": "2026-03-11T13:31:49.926Z",
+      "timestamp": 1773235960999
+    },
+    {
+      "taskName": "cookiebot",
+      "duration": 171769,
+      "success": true,
+      "sessionId": "roxy:0002",
+      "error": null,
+      "startTime": "2026-03-11T13:32:41.125Z",
+      "timestamp": 1773236132894
+    },
+    {
+      "taskName": "cookiebot",
+      "duration": 209198,
+      "success": true,
+      "sessionId": "roxy:0001",
+      "error": null,
+      "startTime": "2026-03-11T13:32:42.170Z",
+      "timestamp": 1773236171368
     }
   ]
 }

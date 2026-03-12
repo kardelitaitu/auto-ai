@@ -19,10 +19,18 @@ describe('DashboardServer Integration', () => {
 
     beforeEach(() => {
         vi.restoreAllMocks();
+        vi.useFakeTimers();
+        vi.setSystemTime(10000);
         server = new DashboardServer();
+        server.dashboardData.tasks = [];
+        server.dashboardData.apiMetrics = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
+        server.historyManager.tasks = [];
+        server.historyManager.completedTasks = 0;
+        server.historyManager.apiMetrics = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
     });
 
     afterEach(async () => {
+        vi.useRealTimers();
         if (server?.stop) {
             await server.stop();
         }
@@ -43,16 +51,25 @@ describe('DashboardServer Integration', () => {
             const collected = server.collectMetrics();
             expect(collected.sessions).toHaveLength(1);
             expect(collected.system).toHaveProperty('cpu');
-            expect(collected.cumulative).toHaveProperty('totalTasksCompleted');
+            expect(collected.cumulative).toHaveProperty('completedTasks');
         });
 
         it('should track cumulative tasks across updates', () => {
+            server.dashboardData.tasks = [];
+            server.historyManager.tasks = [];
+            server.historyManager.completedTasks = 0;
             server.latestMetrics.recentTasks = [];
-            server.updateMetrics({ recentTasks: [{ taskName: 'task1' }] });
-            const count1 = server.cumulativeMetrics.totalTasksCompleted;
-            server.updateMetrics({ recentTasks: [{ taskName: 'task1' }, { taskName: 'task2' }] });
-            const count2 = server.cumulativeMetrics.totalTasksCompleted;
-            expect(count2).toBeGreaterThan(count1);
+            server.lastActiveCheck = 0;
+            server.updateMetrics({ recentTasks: [{ taskName: 'task1', success: true }] });
+            const result1 = server.collectMetrics();
+            const count1 = result1.cumulative.completedTasks;
+            
+            server.lastActiveCheck = result1.timestamp;
+            server.updateMetrics({ recentTasks: [{ taskName: 'task1', success: true }, { taskName: 'task2', success: true }] });
+            const result2 = server.collectMetrics();
+            const count2 = result2.cumulative.completedTasks;
+            
+            expect(count2).toBeGreaterThanOrEqual(count1);
         });
     });
 

@@ -16,13 +16,14 @@
 import agentConnectorHealth from './agent-connector-health.test.js';
 import circuitBreaker from './circuit-breaker.test.js';
 import requestQueue from './request-queue.test.js';
-import coreModules from './test-core-modules.js';
-import dedupe from './test-dedupe.js';
-import aiReplyEngine from './test-ai-reply-engine.js';
-import cloudPromptFix from './test-cloud-prompt-fix.js';
-import cloudClientMulti from './test-cloud-client-multi.js';
-import multiApi from './test-multi-api.js';
-import cloudApi from './test-cloud-api.js';
+// Manual/debug scripts - not vitest tests:
+// import coreModules from './test-core-modules.manual.js';
+// import dedupe from './test-dedupe.manual.js';
+// import aiReplyEngine from './test-ai-reply-engine.manual.js';
+// import cloudPromptFix from './test-cloud-prompt-fix.manual.js';
+// import cloudClientMulti from './test-cloud-client-multi.manual.js';
+// import multiApi from './test-multi-api.manual.js';
+// import cloudApi from './test-cloud-api.manual.js';
 import cloudClient from './cloud-client.test.js';
 import agentConnector from './agent-connector.test.js';
 import unifiedApi from './unified-api.test.js';
@@ -31,13 +32,13 @@ export {
     agentConnectorHealth,
     circuitBreaker,
     requestQueue,
-    coreModules,
-    dedupe,
-    aiReplyEngine,
-    cloudPromptFix,
-    cloudClientMulti,
-    multiApi,
-    cloudApi,
+    // coreModules,
+    // dedupe,
+    // aiReplyEngine,
+    // cloudPromptFix,
+    // cloudClientMulti,
+    // multiApi,
+    // cloudApi,
     cloudClient,
     agentConnector,
     unifiedApi,
@@ -57,13 +58,13 @@ export async function runAllIntegrationTests() {
         { name: 'agent-connector-health', module: agentConnectorHealth },
         { name: 'circuit-breaker', module: circuitBreaker },
         { name: 'request-queue', module: requestQueue },
-        { name: 'core-modules', module: coreModules },
-        { name: 'dedupe', module: dedupe },
-        { name: 'ai-reply-engine', module: aiReplyEngine },
-        { name: 'cloud-prompt-fix', module: cloudPromptFix },
-        { name: 'cloud-client-multi', module: cloudClientMulti },
-        { name: 'multi-api', module: multiApi },
-        { name: 'cloud-api', module: cloudApi },
+        // { name: 'core-modules', module: coreModules },
+        // { name: 'dedupe', module: dedupe },
+        // { name: 'ai-reply-engine', module: aiReplyEngine },
+        // { name: 'cloud-prompt-fix', module: cloudPromptFix },
+        // { name: 'cloud-client-multi', module: cloudClientMulti },
+        // { name: 'multi-api', module: multiApi },
+        // { name: 'cloud-api', module: cloudApi },
         { name: 'cloud-client', module: cloudClient },
         { name: 'agent-connector', module: agentConnector },
         { name: 'unified-api', module: unifiedApi },

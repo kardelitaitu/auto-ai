@@ -72,14 +72,14 @@ describe('SessionManager', () => {
     });
 
     it('should add a session', () => {
-        const browser = { close: vi.fn(), contexts: () => [] };
+        const browser = { close: vi.fn(), contexts: () => [], isConnected: vi.fn().mockReturnValue(true) };
         const id = manager.addSession(browser, 'test-profile');
         expect(id).toBe('test-profile');
         expect(manager.sessions.length).toBe(1);
     });
 
     it('should remove a session', () => {
-        const browser = { close: vi.fn(), contexts: () => [] };
+        const browser = { close: vi.fn(), contexts: () => [], isConnected: vi.fn().mockReturnValue(true) };
         const id = manager.addSession(browser, 'test-profile');
         manager.removeSession(id);
         expect(manager.sessions.length).toBe(0);
@@ -89,6 +89,7 @@ describe('SessionManager', () => {
         const browser = {
             close: vi.fn(),
             contexts: () => [],
+            isConnected: vi.fn().mockReturnValue(true),
             newContext: vi.fn().mockResolvedValue({
                 newPage: vi.fn().mockResolvedValue({ on: vi.fn(), close: vi.fn() }),
             }),
@@ -103,7 +104,7 @@ describe('SessionManager', () => {
     });
 
     it('should handle session timeout', async () => {
-        const browser = { close: vi.fn(), contexts: () => [] };
+        const browser = { close: vi.fn(), contexts: () => [], isConnected: vi.fn().mockReturnValue(true) };
         manager.sessionTimeoutMs = 10;
         const id = manager.addSession(browser, 'test-profile');
 
@@ -143,7 +144,7 @@ describe('SessionManager', () => {
 
     describe('Advanced functionality', () => {
         it('should shutdown all sessions', async () => {
-            const browser = { close: vi.fn(), contexts: () => [] };
+            const browser = { close: vi.fn(), contexts: () => [], isConnected: vi.fn().mockReturnValue(true) };
             manager.addSession(browser, 's1');
             manager.addSession(browser, 's2');
 

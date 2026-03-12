@@ -1,3 +1,39 @@
+
+
+### ✅ version 1.0.4 - 2026-03-12
+### Test Execution Improvements
+- **Flexible Test Filtering**: Removed hardcoded paths from `package.json` test scripts, enabling file-specific filtering via CLI arguments (e.g., `npm run test -- filename.test.js`).
+- **Single-File Coverage Support**: Verified and documented the usage of `npm run test:coverage -- filename.test.js` for isolated coverage analysis.
+
+### ✅ version 1.0.3 - 2026-03-11
+### Visual Chart Update
+- **Modern Bar Charts**: Replaced line-style sparklines with high-density vertical bar charts for CPU and RAM monitoring.
+- **Adaptive Spacing**: Implemented dynamic bar width and spacing logic for consistent quality across different data resolutions.
+- **Premium Styling**: Refined aesthetics with subtle corner rounding and optimized opacity for the glassmorphism dashboard.
+
+### ✅ version 1.0.2 - 2026-03-10
+### Modular History & Real-time Fixes
+- **Independent History Module**: Extracted `HistoryManager` into a standalone module to ensure robust data persistence and cleaner dashboard server logic.
+- **Real-Time Task Emissions**: Orchestrator now emits `task-update` events immediately upon completion, bypassing the 5s broadcast delay.
+- **Improved Data Integrity**: Standardized task field mapping (taskName/name/command) and enforced a strict 40-item history cap.
+- **Reliability**: Dashboard now handles task updates via both IPC and Socket.io, preventing data loss during Orchestrator restarts or disconnects.
+
+### ✅ version 1.0.1 - 2026-03-10
+### Dashboard Overhaul
+- **Modular Refactor**: Completely rewritten React frontend with component-based architecture.
+- **Premium UI**: Modern glassmorphism aesthetic with curated design tokens.
+- **Smart Windows**: Added "Always on Top" and "Compact Mode" toggles for non-intrusive monitoring.
+- **Reliability**: Added React Error Boundaries and Socket.io reconnection heartbeat.
+- **UX**: Added entry animations and polished typography (Inter font).
+
+
+### ✅ version 0.8.0
+
+(10 March 2026) Module Resolution Fix
+
+- **Localized Dependencies**: Resolved `ERR_MODULE_NOT_FOUND` in the packaged Electron app by localizing the `logger.js` dependency within the dashboard build root.
+- **Import Path Hardening**: Updated `dashboard.js` to reliably resolve the logger module from the internal `lib/` directory in production environments.
+
 ### ✅ version 0.7.9
 
 (10 March 2026) Independent Portable Dashboard
@@ -295,6 +331,7 @@
 - **Responsiveness Guard**: Added a 5-second JS responsiveness check after navigation to detect and skip "dead" or extremely heavy pages before interaction attempts.
 - **Graceful Error Recovery**: Enhanced loop logic to log and skip failed/timed-out URLs, preventing task stalls.
 
+
 ### ✅ version 0.4.1
 
 (27 February 2026) Global Test Stabilization (100% Pass Rate)
@@ -490,3 +527,32 @@
 - ✨ **New Core Modules** (11 Total)
 - ✅ **Retained Components**
 - 📚 **Documentation & Examples**
+summarized
+patch
+notes:
+Dashboard
+Metrics
+Fix.
+Renamed
+Total Tasks
+to
+Completed Tasks
+implemented
+persistent
+success-based
+counting
+via
+HistoryManager
+and
+updated
+Active Queue
+to
+include
+both
+pending
+and
+active
+tasks
+for
+better
+visibility.

@@ -5,25 +5,27 @@ An optional, non-intrusive Electron-based dashboard for monitoring Auto-AI brows
 ## Features
 
 - **Real-time monitoring** of browser sessions
-- **Compact design** (500x400px, resizable window)
+- **Compact design** (resizable window)
 - **Individual session boxes** with status indicators
 - **WebSocket communication** for live updates
 - **Self-contained** in `/ui` folder
 - **Optional integration** - core system continues if dashboard fails
+- **Standalone mode** - run independently from orchestrator
+- **Remote server support** - connect to dashboard server on different machine
 
 ## Setup
 
 ### Prerequisites
 
 - Node.js 16+ (for Electron)
-- Auto-AI framework running
+- Auto-AI framework running (optional - dashboard works standalone)
 
 ### Installation
 
 1. Navigate to the dashboard folder:
 
     ```bash
-    cd ui/electron-dashboard
+    cd api/ui/electron-dashboard
     ```
 
 2. Install dependencies:
@@ -37,40 +39,109 @@ An optional, non-intrusive Electron-based dashboard for monitoring Auto-AI brows
     npm start
     ```
 
+### Standalone Server Mode
+
+The dashboard can run the WebSocket server embedded, or you can run it separately:
+
+```bash
+# Run server only (no Electron UI)
+node start-server.js
+
+# Run full Electron app (includes server)
+npm start
+```
+
 ### Configuration
 
-Enable dashboard in your Auto-AI `config/settings.json`:
+Edit `config.json` in the dashboard folder:
 
 ```json
 {
+    "server": {
+        "port": 3001,
+        "host": "localhost"
+    },
     "ui": {
-        "dashboard": {
-            "enabled": true,
-            "port": 3001
-        }
+        "defaultCompact": false,
+        "defaultAlwaysOnTop": false
+    },
+    "connect": {
+        "autoConnect": true,
+        "remoteHost": "",
+        "remotePort": 3001
+    }
+}
+```
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `server.port` | WebSocket server port | 3001 |
+| `server.host` | Server host | localhost |
+| `ui.defaultCompact` | Start in compact mode | false |
+| `ui.defaultAlwaysOnTop` | Always on top window | false |
+| `connect.remoteHost` | Connect to remote server (leave empty for local) | "" |
+| `connect.remotePort` | Remote server port | 3001 |
+
+### Remote Server Connection
+
+To connect to a dashboard server running on a different machine:
+
+1. Set `connect.remoteHost` to the remote IP/hostname
+2. Set `connect.remotePort` to the remote port
+3. Leave `server.port` as is (won't be used)
+
+Example for connecting to remote server at 192.168.1.100:3001:
+```json
+{
+    "connect": {
+        "remoteHost": "192.168.1.100",
+        "remotePort": 3001
     }
 }
 ```
 
 ## Usage
 
-1. Start your Auto-AI automation:
+### Option 1: Full Dashboard (Server + UI)
 
-    ```bash
-    npm run start
-    ```
+```bash
+cd api/ui/electron-dashboard
+npm start
+```
 
-2. Start the dashboard:
+The Electron app will:
+1. Start the WebSocket server on port 3001
+2. Open the dashboard UI
+3. Connect to itself via Socket.io
 
-    ```bash
-    cd ui/electron-dashboard && npm start
-    ```
+### Option 2: Server Only (for remote connections)
 
-3. The dashboard will connect automatically and display:
-    - Online/offline status of each browser session
-    - Worker utilization
-    - Current tasks and progress
-    - Real-time updates every 2 seconds
+```bash
+cd api/ui/electron-dashboard
+node start-server.js
+```
+
+Then run the Electron app on another machine with remote config:
+
+```json
+{
+    "connect": {
+        "remoteHost": "192.168.1.100",
+        "remotePort": 3001
+    }
+}
+```
+
+### Option 3: Connect to Auto-AI Orchestrator
+
+If you want the dashboard to receive metrics from the Auto-AI orchestrator:
+
+1. Start the dashboard server:
+   ```bash
+   node start-server.js
+   ```
+
+2. Ensure your orchestrator pushes metrics to the dashboard. The orchestrator will automatically detect the running dashboard server and connect to it.
 
 ## Architecture
 

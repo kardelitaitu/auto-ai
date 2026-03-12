@@ -16,7 +16,6 @@ import { AITwitterAgent } from '../api/twitter/ai-twitterAgent.js';
 import { profileManager } from '../api/utils/profileManager.js';
 import { mathUtils } from '../api/utils/math.js';
 import { ReferrerEngine } from '../api/utils/urlReferrer.js';
-import metricsCollector from '../api/utils/metrics.js';
 import { getLoggingConfig, formatEngagementSummary } from '../api/utils/logging-config.js';
 
 import { loadAiTwitterActivityConfig } from '../api/utils/task-config-loader.js';
@@ -187,7 +186,6 @@ export default async function apiTwitterActivityTask(page, payload) {
 
             let agent;
             let hasAgent = false;
-            let agentState = { follows: 0, likes: 0, retweets: 0, tweets: 0 };
             let getAIStats = () => null;
             let getQueueStats = () => null;
             let getEngagementProgress = () => null;
@@ -352,7 +350,6 @@ export default async function apiTwitterActivityTask(page, payload) {
                                     // ─────────────────────────────────────────────────────────────────
 
                                     hasAgent = true;
-                                    agentState = agent.state;
                                     getAIStats = agent.getAIStats.bind(agent);
                                     getQueueStats = () => agent.diveQueue?.getFullStatus?.();
                                     getEngagementProgress = () =>
@@ -659,28 +656,8 @@ export default async function apiTwitterActivityTask(page, payload) {
                 }
 
                 if (hasAgent) {
-                    const agentStateSnapshot = { ...agentState };
-                    if (agentStateSnapshot.follows > 0)
-                        metricsCollector.recordSocialAction('follow', agentStateSnapshot.follows);
-                    if (agentStateSnapshot.likes > 0)
-                        metricsCollector.recordSocialAction('like', agentStateSnapshot.likes);
-                    if (agentStateSnapshot.retweets > 0)
-                        metricsCollector.recordSocialAction('retweet', agentStateSnapshot.retweets);
-                    if (agentStateSnapshot.tweets > 0)
-                        metricsCollector.recordSocialAction('tweet', agentStateSnapshot.tweets);
-
-                    const engagementProgressSnapshot = getEngagementProgress
-                        ? getEngagementProgress()
-                        : null;
-                    const completedReplies = engagementProgressSnapshot?.replies?.current ?? 0;
-                    const completedQuotes = engagementProgressSnapshot?.quotes?.current ?? 0;
-                    const completedBookmarks = engagementProgressSnapshot?.bookmarks?.current ?? 0;
-                    if (completedReplies > 0)
-                        metricsCollector.recordTwitterEngagement('reply', completedReplies);
-                    if (completedQuotes > 0)
-                        metricsCollector.recordTwitterEngagement('quote', completedQuotes);
-                    if (completedBookmarks > 0)
-                        metricsCollector.recordTwitterEngagement('bookmark', completedBookmarks);
+                    // Metrics are now recorded in real-time by each api/actions/* handler
+                    // (like.js, retweet.js, follow.js, bookmark.js, reply.js, quote.js)
 
                     const aiStatsSnapshot = getAIStats ? getAIStats() : null;
                     if (aiStatsSnapshot) {
@@ -749,6 +726,6 @@ export default async function apiTwitterActivityTask(page, payload) {
                 logger.info(`Done in ${duration}s`);
             }
         },
-        { taskName: 'twitterActivity', sessionId: browserInfo }
+        { sessionId: browserInfo }
     );
 }

@@ -6,11 +6,11 @@
     "scripts": {
         "start": "node main.js",
         "debug": "node --inspect-brk main.js",
-        "test": "npx vitest run -c config/vitest.config.js api/tests",
+        "test": "npx vitest run -c config/vitest.config.js",
         "test:unit": "npx vitest run -c config/vitest.config.js api/tests/unit",
         "test:integration": "npx vitest run -c config/vitest.config.js api/tests/integration",
         "test:edge-cases": "npx vitest run -c config/vitest.config.js api/tests/edge-cases",
-        "test:all": "npx vitest run -c config/vitest.config.js api/tests/",
+        "test:all": "npx vitest run -c config/vitest.config.js api/tests",
         "test:watch": "npx vitest -c config/vitest.config.js",
         "test:coverage": "npx vitest run -c config/vitest.config.js --coverage --silent --reporter=dot",
         "test:ci": "vitest run -c config/vitest.config.js --coverage --silent",

@@ -60,6 +60,16 @@ describe('api/utils/memory-profiler.js', () => {
                 const snapshots = profiler.getSnapshots();
                 expect(snapshots.length).toBeLessThanOrEqual(10);
             });
+
+            it('should keep exactly 10 snapshots at limit', () => {
+                for (let i = 0; i < 10; i++) {
+                    profiler.getSnapshot();
+                }
+                expect(profiler.getSnapshots().length).toBe(10);
+                
+                profiler.getSnapshot();
+                expect(profiler.getSnapshots().length).toBe(10);
+            });
         });
 
         describe('startTracking', () => {
@@ -120,6 +130,13 @@ describe('api/utils/memory-profiler.js', () => {
             it('should reset baseline without throwing', () => {
                 profiler.getSnapshot();
                 expect(() => profiler.resetBaseline()).not.toThrow();
+            });
+
+            it('should update baseline after reset', () => {
+                const before = profiler.getSnapshot();
+                profiler.resetBaseline();
+                const after = profiler.getSnapshot();
+                expect(after.delta.heapUsed).toBe(0);
             });
         });
 
@@ -186,6 +203,31 @@ describe('api/utils/memory-profiler.js', () => {
                 const result = profiler.detectLeaks(50);
                 expect(result.hasLeak).toBe(false);
             });
+
+            it('should return growthMB in non-leak case', () => {
+                vi.spyOn(profiler, 'getUsage')
+                    .mockReturnValueOnce({
+                        heapUsed: 100,
+                        heapTotal: 200,
+                        external: 50,
+                        rss: 300,
+                        timestamp: Date.now(),
+                    })
+                    .mockReturnValueOnce({
+                        heapUsed: 120,
+                        heapTotal: 200,
+                        external: 50,
+                        rss: 300,
+                        timestamp: Date.now(),
+                    });
+
+                profiler.getSnapshot();
+                profiler.getSnapshot();
+
+                const result = profiler.detectLeaks(50);
+                expect(result.hasLeak).toBe(false);
+                expect(result.growthMB).toBe(20);
+            });
         });
 
         describe('dispose', () => {
@@ -213,6 +255,38 @@ describe('api/utils/memory-profiler.js', () => {
 
         it('should have isTracking getter', () => {
             expect(memory.isTracking).toBeDefined();
+        });
+
+        it('should start and stop global tracking', () => {
+            memory.startTracking(50);
+            expect(memory.isTracking).toBe(true);
+            memory.stopTracking();
+            expect(memory.isTracking).toBe(false);
+        });
+
+        it('should get global snapshots', () => {
+            memory.getSnapshot();
+            const snapshots = memory.getSnapshots();
+            expect(Array.isArray(snapshots)).toBe(true);
+            expect(snapshots.length).toBeGreaterThan(0);
+        });
+
+        it('should reset global baseline', () => {
+            memory.getSnapshot();
+            expect(() => memory.resetBaseline()).not.toThrow();
+        });
+
+        it('should detect leaks globally', () => {
+            const result = memory.detectLeaks(100);
+            expect(result).toHaveProperty('hasLeak');
+        });
+
+        it('should dispose global profiler', () => {
+            memory.startTracking(50);
+            memory.getSnapshot();
+            memory.dispose();
+            expect(memory.isTracking).toBe(false);
+            expect(memory.getSnapshots().length).toBe(0);
         });
     });
 });

@@ -20,9 +20,11 @@ describe('DashboardServer', () => {
 
     beforeEach(() => {
         vi.restoreAllMocks();
+        vi.useFakeTimers();
     });
 
     afterEach(() => {
+        vi.useRealTimers();
         if (server?.stop) {
             server.stop();
         }
@@ -45,6 +47,7 @@ describe('DashboardServer', () => {
             server = new DashboardServer();
             expect(server.latestMetrics.sessions).toEqual([]);
             expect(server.latestMetrics.queue.queueLength).toBe(0);
+            expect(server.cumulativeMetrics.completedTasks).toBeDefined();
         });
     });
 
@@ -94,12 +97,18 @@ describe('DashboardServer', () => {
             expect(() => server.updateMetrics(undefined)).not.toThrow();
         });
 
-        it('should increment task counter on new tasks', () => {
-            server.latestMetrics.recentTasks = [];
+        it('should increment task counter on new successful tasks', () => {
+            server.dashboardData.tasks = [];
+            server.historyManager.completedTasks = 0;
+            server.historyManager.tasks = [];
             server.updateMetrics({
-                recentTasks: [{ taskName: 'task1' }, { taskName: 'task2' }]
+                recentTasks: [
+                    { id: 't1', taskName: 'task1', success: true },
+                    { id: 't2', taskName: 'task2', success: false }
+                ]
             });
-            expect(server.cumulativeMetrics.totalTasksCompleted).toBe(2);
+            const metrics = server.collectMetrics();
+            expect(metrics.cumulative.completedTasks).toBe(1);
         });
     });
 

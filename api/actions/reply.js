@@ -13,6 +13,7 @@ import { scroll, focus } from '../interactions/scroll.js';
 import { wait } from '../interactions/wait.js';
 import { text, exists, visible } from '../interactions/queries.js';
 import { click, type } from '../interactions/actions.js';
+import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('api/reply.js');
 
@@ -100,6 +101,7 @@ export async function replyWithAI(options = {}) {
 
     if (result.success) {
         logger.info(`✅ api.replyWithAI successful!`);
+        metricsCollector.recordTwitterEngagement('reply', 1);
         result.reply = finalReplyText;
     } else {
         logger.error(`❌ api.replyWithAI failed: ${result.reason}`);

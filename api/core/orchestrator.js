@@ -488,6 +488,23 @@ class Orchestrator extends EventEmitter {
                 session.id,
                 error
             );
+
+            // Immediate task-update emission to Dashboard
+            const taskUpdate = {
+                taskName: task.taskName,
+                duration: Date.now() - startTime,
+                success,
+                sessionId: session.id,
+                error: error ? error.message : null,
+                timestamp: Date.now()
+            };
+
+            if (this.dashboardProcess && this.dashboardProcess.connected) {
+                try { this.dashboardProcess.send({ type: 'task-update', payload: taskUpdate }); } catch (_e) { /* ignore */ }
+            }
+            if (this.dashboardSocket && this.dashboardSocket.connected) {
+                this.dashboardSocket.emit('task-update', taskUpdate);
+            }
         }
     }
 
@@ -678,7 +695,7 @@ class Orchestrator extends EventEmitter {
             );
 
             const settings = await getSettings();
-            const broadcastIntervalMs = settings?.ui?.dashboard?.broadcastIntervalMs || 2000;
+            const broadcastIntervalMs = settings?.ui?.dashboard?.broadcastIntervalMs || 5000;
 
             // 1. Check if dashboard is already running
             const isPortBusy = await new Promise((resolve) => {
@@ -694,6 +711,12 @@ class Orchestrator extends EventEmitter {
             if (isPortBusy) {
                 logger.debug(`[Orchestrator] Dashboard port ${port} busy. Attempting Socket.io connection...`);
                 this.dashboardSocket = io(`http://localhost:${port}`, { reconnection: true });
+                this.dashboardSocket.on('connect', () => {
+                    logger.info('[Orchestrator] Connected to dashboard via Socket.io');
+                });
+                this.dashboardSocket.on('disconnect', () => {
+                    logger.warn('[Orchestrator] Disconnected from dashboard');
+                });
             } else if (fs.existsSync(uiPath)) {
                 this.dashboardProcess = fork(uiPath, [], {
                     env: { ...process.env, PORT: port, BROADCAST_MS: broadcastIntervalMs },

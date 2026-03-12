@@ -94,7 +94,7 @@
     "dashboard": {
       "enabled": true,
       "port": 3001,
-      "broadcastIntervalMs": 2000,
+      "broadcastIntervalMs": 5000,
       "colorScheme": "dark"
     }
   },
@@ -245,7 +245,7 @@
     "sessionTimeoutMs": 1800000,
     "cleanupIntervalMs": 300000
   },
-  "concurrencyPerBrowser": 50,
+  "concurrencyPerBrowser": 5,
   "open_router_free_api": {
     "enabled": false,
     "reasoning": {

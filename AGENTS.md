@@ -31,7 +31,7 @@ This file provides guidance to agents when working with code in this repository.
 - **Test Individual Files**:
 
 ```powershell
-npm run test:coverage -- file1.test.js file2.test.js | Select-String -Pattern "%|file1|file2"
+npm run test:coverage -- api-math.test.js
 ```
 
 ```bash
@@ -163,9 +163,9 @@ C:\My Script\auto-ai\
 │   └── discovery/                # Specific adapters (ixbrowser, morelogin, etc.)
 │
 ├── tasks/                     # Modular Automation Tasks
-│   ├── ai-twitterActivity.js     # Main AI driving loop for Twitter
-│   ├── twitterFollow.js          # Isolated following task
-│   └── twitterTweet.js           # Isolated tweeting task
+│   ├── api-twitterActivity.js     # Main AI driving loop for Twitter
+│   ├── pageview.js
+│   └── cookiebot.js
 │
 ├── utils/                     # Legacy/Shared Utilities
 │   ├── async-queue.js            # Per-session execution serialization

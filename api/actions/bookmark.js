@@ -10,6 +10,7 @@ import { mathUtils } from '../utils/math.js';
 import { wait } from '../interactions/wait.js';
 import { visible } from '../interactions/queries.js';
 import { click } from '../interactions/actions.js';
+import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('api/bookmark.js');
 
@@ -77,6 +78,7 @@ export async function bookmarkWithAPI(options = {}) {
 
         if (toastVisible || nowRemovable) {
             logger.info(`✅ api.bookmarkWithAPI successful!`);
+            metricsCollector.recordTwitterEngagement('bookmark', 1);
             return { success: true, reason: 'success', method: 'bookmarkAPI' };
         }
 

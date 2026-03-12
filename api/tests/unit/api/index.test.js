@@ -5,16 +5,16 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import api from '@api/index.js';
+import api from '../../index.js';
 
 // Mock the modules that index.js calls
-vi.mock('@api/core/init.js', () => ({
+vi.mock('../../core/init.js', () => ({
     initPage: vi.fn().mockResolvedValue('init-result'),
     diagnosePage: vi.fn().mockResolvedValue('diagnose-result'),
     clearLiteMode: vi.fn().mockResolvedValue('clear-lite-result'),
 }));
 
-vi.mock('@api/core/context.js', () => ({
+vi.mock('../../core/context.js', () => ({
     withPage: vi.fn(),
     clearContext: vi.fn(),
     isSessionActive: vi.fn(),
@@ -30,7 +30,7 @@ vi.mock('@api/core/context.js', () => ({
     updateStateSection: vi.fn(),
 }));
 
-vi.mock('@api/interactions/cursor.js', () => ({
+vi.mock('../../interactions/cursor.js', () => ({
     move: vi.fn().mockResolvedValue('move-result'),
     up: vi.fn(),
     down: vi.fn(),
@@ -150,7 +150,7 @@ describe('api/index.js', () => {
         expect(typeof api.cursor.move).toBe('function');
 
         // Call the function part
-        const { move } = await import('@api/interactions/cursor.js');
+        const { move } = await import('../../interactions/cursor.js');
         await api.cursor('#target');
         expect(move).toHaveBeenCalledWith('#target');
     });
@@ -161,21 +161,21 @@ describe('api/index.js', () => {
     });
 
     it('should call initPage when api.init is called', async () => {
-        const { initPage } = await import('@api/core/init.js');
+        const { initPage } = await import('../../core/init.js');
         const result = await api.init('page', { opt: 1 });
         expect(initPage).toHaveBeenCalledWith('page', { opt: 1 });
         expect(result).toBe('init-result');
     });
 
     it('should call diagnosePage when api.diagnose is called', async () => {
-        const { diagnosePage } = await import('@api/core/init.js');
+        const { diagnosePage } = await import('../../core/init.js');
         const result = await api.diagnose('page');
         expect(diagnosePage).toHaveBeenCalledWith('page');
         expect(result).toBe('diagnose-result');
     });
 
     it('should call page.emulateMedia when api.emulateMedia is called', async () => {
-        const { getPage } = await import('@api/core/context.js');
+        const { getPage } = await import('../../core/context.js');
         getPage.mockReturnValue(mockPage);
         const result = await api.emulateMedia({ colorScheme: 'dark' });
         expect(mockPage.emulateMedia).toHaveBeenCalledWith({ colorScheme: 'dark' });
@@ -183,7 +183,7 @@ describe('api/index.js', () => {
     });
 
     it('should expose events getter', async () => {
-        const { getEvents } = await import('@api/core/context.js');
+        const { getEvents } = await import('../../core/context.js');
         getEvents.mockReturnValue('mock-events');
         expect(api.events).toBe('mock-events');
     });
