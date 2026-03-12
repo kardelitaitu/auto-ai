@@ -4,6 +4,22 @@
 - Added Clear History button and modal in App.jsx
 
 
+
+## 2026-03-12: Electron Dashboard Audit Fixes
+- **Status**: Completed
+- **Changes**:
+  - Deleted broken run.js (legacy entry point - referenced non-existent preload.js)
+  - Auto-create data/ directory on server start in history-manager.js load()
+  - Fixed logger path to use api/ui/electron-dashboard/logs/ instead of project root
+  - Unified Socket.io versions to ^4.7.5 in both root and renderer package.json
+  - Added corrupted JSON handling with automatic backup in history-manager.js
+  - Added broadcast interval stop when no clients connected (startBroadcast/stopBroadcast methods)
+  - Deleted unused renderer/script.js (legacy vanilla JS)
+  - Deleted unused renderer/src/App.jsx.bak (backup file)
+  - Removed unused electron-is-dev and socket.io-client from root package.json
+  - Added .npmrc with node_modules=true to prevent hoisting to parent
+
+
 # AGENT-JOURNAL.md
 
 ## 2026-03-11: Bar-Style Chart Update
@@ -219,3 +235,10 @@ Create a helper function for Twitter intent URLs to be used as a utility through
 12-03-2026--00:00 > api/core/orchestrator.js > Added /* ignore */ to empty catch block for lint resolution
 12-03-2026--00:00 > tasks/api-twitterActivity.js > Removed unused agentState variable and assignment for lint resolution
 12-03-2026--03:26 > package.json > Improved test scripts to support single-file filtering and coverage. Removed hardcoded paths.
+12-03-2026--15-30 > electron-dashboard > Added input validation for Socket.io payloads (validateTask, validateSession, validateMetrics, validatePayload functions)
+12-03-2026--15-35 > electron-dashboard > Batched history saves to reduce disk I/O (5s debounce instead of write on every update)
+12-03-2026--15-40 > electron-dashboard > Converted preload.cjs to preload.mjs for consistent ESM module system
+12-03-2026--15-45 > electron-dashboard > Externalized hardcoded config values to config.json (broadcast, client, history, devServer settings)
+12-03-2026--23-50 > electron-dashboard > Added unit tests with vitest (51 tests passing: 31 validation tests, 20 history-manager tests)
+12-03-2026--23-00 > electron-dashboard > Added security (CORS, rate limiting, input sanitization), performance (session TTL cleanup, metrics throttling), features (export JSON/CSV, notifications, theme config), and integration tests (6 API endpoint tests)
+13-03-2026--02-01 > api/behaviors/persona.js > Halved speed and typoRate for all personas

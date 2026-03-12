@@ -11,5 +11,37 @@
         "autoConnect": true,
         "remoteHost": "",
         "remotePort": 3001
+    },
+    "broadcast": {
+        "intervalMs": 2000,
+        "pingTimeout": 60000,
+        "pingInterval": 25000
+    },
+    "client": {
+        "reconnectionAttempts": 10,
+        "reconnectionDelay": 2000
+    },
+    "history": {
+        "maxItems": 9999,
+        "saveDebounceMs": 5000
+    },
+    "devServer": {
+        "port": 5173
+    },
+    "security": {
+        "cors": {
+            "enabled": true,
+            "origins": ["http://localhost:5173", "http://localhost:3001"]
+        },
+        "rateLimit": {
+            "enabled": true,
+            "windowMs": 60000,
+            "maxRequests": 100
+        },
+        "sessionTTL": 300000
+    },
+    "ui": {
+        "themes": ["dark", "light"],
+        "defaultTheme": "dark"
     }
 }

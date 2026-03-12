@@ -17,9 +17,113 @@ import { HistoryManager } from './lib/history-manager.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logger = createLogger('dashboard.js');
 const HISTORY_FILE = path.join(__dirname, 'data', 'dashboard-history.json');
+const CONFIG_FILE = path.join(__dirname, 'config.json');
+
+function loadConfig() {
+    try {
+        if (fs.existsSync(CONFIG_FILE)) {
+            const data = fs.readFileSync(CONFIG_FILE, 'utf8');
+            return JSON.parse(data);
+        }
+    } catch (err) {
+        console.warn('[Dashboard] Failed to load config:', err.message);
+    }
+    return {};
+}
+
+const config = loadConfig();
+const DEFAULT_BROADCAST_MS = config?.broadcast?.intervalMs || 2000;
+const DEFAULT_PING_TIMEOUT = config?.broadcast?.pingTimeout || 60000;
+const DEFAULT_PING_INTERVAL = config?.broadcast?.pingInterval || 25000;
+const DEFAULT_HISTORY_MAX_ITEMS = config?.history?.maxItems || 9999;
+const DEFAULT_HISTORY_SAVE_DEBOUNCE = config?.history?.saveDebounceMs || 5000;
+
+const CORS_ENABLED = config?.security?.cors?.enabled ?? true;
+const CORS_ORIGINS = config?.security?.cors?.origins || ['http://localhost:5173', 'http://localhost:3001'];
+const RATE_LIMIT_ENABLED = config?.security?.rateLimit?.enabled ?? true;
+const RATE_LIMIT_WINDOW_MS = config?.security?.rateLimit?.windowMs || 60000;
+const RATE_LIMIT_MAX_REQUESTS = config?.security?.rateLimit?.maxRequests || 100;
+const SESSION_TTL_MS = config?.security?.sessionTTL || 300000;
+
+function sanitizeLogString(str) {
+    if (typeof str !== 'string') return str;
+    return str
+        .replace(/[\x00-\x1F\x7F]/g, '')
+        .slice(0, 1000);
+}
+
+function sanitizeObject(obj) {
+    if (!obj || typeof obj !== 'object') return obj;
+    const sanitized = {};
+    for (const [key, value] of Object.entries(obj)) {
+        if (typeof value === 'string') {
+            sanitized[key] = sanitizeLogString(value);
+        } else if (typeof value === 'object' && value !== null) {
+            sanitized[key] = sanitizeObject(value);
+        } else {
+            sanitized[key] = value;
+        }
+    }
+    return sanitized;
+}
+
+const VALID_TASK_FIELDS = ['id', 'taskName', 'name', 'command', 'sessionId', 'session', 'timestamp', 'status', 'success', 'error', 'duration'];
+const VALID_SESSION_FIELDS = ['id', 'status', 'browser', 'profile', 'port', 'ws', 'lastSeen', 'firstSeen'];
+const VALID_METRIC_FIELDS = ['twitter', 'api', 'browsers'];
+
+function validateTask(task) {
+    if (!task || typeof task !== 'object') return null;
+    const validated = {};
+    for (const key of VALID_TASK_FIELDS) {
+        if (task[key] !== undefined) validated[key] = task[key];
+    }
+    return Object.keys(validated).length > 0 ? validated : null;
+}
+
+function validateSession(session) {
+    if (!session || typeof session !== 'object') return null;
+    const validated = {};
+    for (const key of VALID_SESSION_FIELDS) {
+        if (session[key] !== undefined) validated[key] = session[key];
+    }
+    return Object.keys(validated).length > 0 ? validated : null;
+}
+
+function validateMetrics(metrics) {
+    if (!metrics || typeof metrics !== 'object') return null;
+    const validated = {};
+    if (metrics.twitter && typeof metrics.twitter === 'object') {
+        validated.twitter = metrics.twitter;
+    }
+    if (metrics.api && typeof metrics.api === 'object') {
+        validated.api = metrics.api;
+    }
+    if (metrics.browsers && typeof metrics.browsers === 'object') {
+        validated.browsers = metrics.browsers;
+    }
+    return Object.keys(validated).length > 0 ? validated : null;
+}
+
+function validatePayload(payload) {
+    if (!payload || typeof payload !== 'object') return null;
+    const validated = {};
+    if (Array.isArray(payload.sessions) && payload.sessions.length > 0) {
+        validated.sessions = payload.sessions.map(validateSession).filter(Boolean);
+    }
+    if (Array.isArray(payload.recentTasks) && payload.recentTasks.length > 0) {
+        validated.recentTasks = payload.recentTasks.map(validateTask).filter(Boolean);
+    }
+    if (payload.metrics) {
+        validated.metrics = validateMetrics(payload.metrics);
+    }
+    if (Array.isArray(payload.errors) && payload.errors.length > 0) {
+        validated.errors = payload.errors.filter(e => typeof e === 'string');
+    }
+    return Object.keys(validated).length > 0 ? validated : null;
+}
 
 export class DashboardServer {
-    constructor(port = 3001, broadcastIntervalMs = 2000) {
+    constructor(port = 3001, broadcastIntervalMs = DEFAULT_BROADCAST_MS) {
         this.port = port;
         this.server = null;
         this.io = null;
@@ -38,7 +142,7 @@ export class DashboardServer {
             }
         };
 
-        this.historyManager = new HistoryManager(HISTORY_FILE, 9999);
+        this.historyManager = new HistoryManager(HISTORY_FILE, DEFAULT_HISTORY_MAX_ITEMS, DEFAULT_HISTORY_SAVE_DEBOUNCE);
 
         // Independent dashboard data stores (persist across orchestrator restarts)
         this.dashboardData = {
@@ -309,12 +413,41 @@ export class DashboardServer {
 
         try {
             const expressApp = express();
+
+            if (RATE_LIMIT_ENABLED) {
+                const rateLimit = (() => {
+                    const requests = new Map();
+                    return (req, res, next) => {
+                        const key = req.ip || req.connection.remoteAddress;
+                        const now = Date.now();
+                        const windowStart = now - RATE_LIMIT_WINDOW_MS;
+                        
+                        let clientRequests = requests.get(key) || [];
+                        clientRequests = clientRequests.filter(t => t > windowStart);
+                        
+                        if (clientRequests.length >= RATE_LIMIT_MAX_REQUESTS) {
+                            logger.warn(`Rate limit exceeded for ${key}`);
+                            return res.status(429).json({ error: 'Too many requests' });
+                        }
+                        
+                        clientRequests.push(now);
+                        requests.set(key, clientRequests);
+                        next();
+                    };
+                })();
+                expressApp.use(rateLimit);
+            }
+
             this.server = createServer(expressApp);
+            const corsOrigin = CORS_ENABLED ? CORS_ORIGINS : '*';
             this.io = new Server(this.server, {
-                cors: { origin: '*' },
+                cors: { 
+                    origin: corsOrigin,
+                    methods: ['GET', 'POST']
+                },
                 maxHttpBufferSize: 1e6,
-                pingTimeout: 60000,
-                pingInterval: 25000,
+                pingTimeout: DEFAULT_PING_TIMEOUT,
+                pingInterval: DEFAULT_PING_INTERVAL,
             });
 
             logger.info(
@@ -341,6 +474,39 @@ export class DashboardServer {
             expressApp.get('/api/tasks/breakdown', (req, res) => res.json(this.latestMetrics?.taskBreakdown || {}));
             expressApp.get('/api/dashboard/data', (req, res) => res.json(this.dashboardData || {}));
 
+            // Export endpoints
+            expressApp.get('/api/export/json', (req, res) => {
+                const data = {
+                    sessions: this.dashboardData.sessions,
+                    tasks: this.dashboardData.tasks,
+                    twitterActions: this.dashboardData.twitterActions,
+                    apiMetrics: this.dashboardData.apiMetrics,
+                    exportedAt: new Date().toISOString()
+                };
+                res.setHeader('Content-Type', 'application/json');
+                res.setHeader('Content-Disposition', 'attachment; filename=dashboard-export.json');
+                res.json(data);
+            });
+
+            expressApp.get('/api/export/csv', (req, res) => {
+                const tasks = this.dashboardData.tasks || [];
+                const headers = ['id', 'taskName', 'sessionId', 'timestamp', 'status', 'success', 'duration'];
+                const csvRows = [headers.join(',')];
+                
+                for (const task of tasks) {
+                    const row = headers.map(h => {
+                        const val = task[h] ?? '';
+                        const str = String(val).replace(/"/g, '""');
+                        return `"${str}"`;
+                    });
+                    csvRows.push(row.join(','));
+                }
+                
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=tasks-export.csv');
+                res.send(csvRows.join('\n'));
+            });
+
             // Serve static React build if exists
             const rendererPath = path.join(__dirname, 'renderer');
             const distPath = path.join(rendererPath, 'dist');
@@ -360,6 +526,12 @@ export class DashboardServer {
                     this.cumulativeMetrics.sessionUptimeMs = 0;
                     logger.info("Dashboard session started (Electron connected)");
                 }
+
+                // Start broadcast if this is the first client
+                if (!this.broadcastInterval) {
+                    this.startBroadcast();
+                }
+
                 logger.info(
                     `Dashboard client connected (total: ${this.io?.sockets?.sockets?.size || 0})`
                 );
@@ -368,9 +540,14 @@ export class DashboardServer {
                 this.sendMetrics(socket);
 
                 socket.on('disconnect', () => {
+                    const remainingClients = (this.io?.sockets?.sockets?.size || 0) - 1;
                     logger.info(
-                        `Dashboard client disconnected (remaining: ${this.io?.sockets?.sockets?.size || 0})`
+                        `Dashboard client disconnected (remaining: ${remainingClients})`
                     );
+                    // Stop broadcast if no clients remain
+                    if (remainingClients <= 0) {
+                        this.stopBroadcast();
+                    }
                 });
 
                 socket.on('requestUpdate', () => {
@@ -379,15 +556,25 @@ export class DashboardServer {
 
                 // Support metrics push from Orchestrator via Socket
                 socket.on('push_metrics', (payload) => {
-                    this.updateMetrics(payload);
+                    const sanitized = sanitizeObject(payload);
+                    const validated = validatePayload(sanitized);
+                    if (validated) {
+                        this.updateMetrics(validated);
+                    } else {
+                        logger.warn('Received invalid metrics payload, ignoring');
+                    }
                 });
 
                 socket.on('task-update', (data) => {
-                    this.mergeTaskData(data);
-                    // Update latestMetrics with fresh task data before broadcasting
-                    this.latestMetrics.recentTasks = this.dashboardData.tasks.slice(-40);
-                    // Broadcast immediately to all clients
-                    this.io.emit('metrics', this.collectMetrics());
+                    const sanitized = sanitizeObject(data);
+                    const validated = validateTask(sanitized);
+                    if (validated) {
+                        this.mergeTaskData(validated);
+                        this.latestMetrics.recentTasks = this.dashboardData.tasks.slice(-40);
+                        this.io.emit('metrics', this.collectMetrics());
+                    } else {
+                        logger.warn('Received invalid task-update payload, ignoring');
+                    }
                 });
 
                 socket.on('clear-history', () => {
@@ -419,6 +606,19 @@ export class DashboardServer {
                     // Broadcast cleared data immediately
                     this.io.emit('metrics', this.collectMetrics());
                 });
+
+                // Notification API - send notification to all clients
+                socket.on('send-notification', (data) => {
+                    if (data && data.message) {
+                        const notification = {
+                            type: data.type || 'info',
+                            title: data.title || 'Dashboard',
+                            message: sanitizeLogString(data.message),
+                            timestamp: Date.now()
+                        };
+                        this.io.emit('notification', notification);
+                    }
+                });
             });
 
             this.startBroadcast();
@@ -445,19 +645,55 @@ export class DashboardServer {
             clearInterval(this.broadcastInterval);
         }
 
+        this.lastBroadcastMetrics = null;
         this.broadcastInterval = setInterval(() => {
-            if (this.io?.sockets?.sockets?.size > 0) {
+            const clientCount = this.io?.sockets?.sockets?.size || 0;
+            if (clientCount > 0) {
                 const metrics = this.collectMetrics();
-                this.io.emit('metrics', metrics);
+                
+                const hasChanged = !this.lastBroadcastMetrics || (
+                    JSON.stringify(metrics.sessions) !== JSON.stringify(this.lastBroadcastMetrics.sessions) ||
+                    JSON.stringify(metrics.queue) !== JSON.stringify(this.lastBroadcastMetrics.queue) ||
+                    JSON.stringify(metrics.recentTasks) !== JSON.stringify(this.lastBroadcastMetrics.recentTasks)
+                );
+                
+                if (hasChanged) {
+                    this.io.emit('metrics', metrics);
+                    this.lastBroadcastMetrics = metrics;
+                }
+            } else {
+                clearInterval(this.broadcastInterval);
+                this.broadcastInterval = null;
             }
         }, this.BROADCAST_MS);
 
         logger.info(`Broadcast interval set to ${this.BROADCAST_MS}ms`);
     }
 
+    stopBroadcast() {
+        if (this.broadcastInterval) {
+            clearInterval(this.broadcastInterval);
+            this.broadcastInterval = null;
+            logger.info('Broadcast stopped (no clients connected)');
+        }
+    }
+
     collectMetrics() {
         try {
             const now = Date.now();
+            
+            if (SESSION_TTL_MS > 0 && this.dashboardData.sessions.length > 0) {
+                const cutoff = now - SESSION_TTL_MS;
+                const beforeCount = this.dashboardData.sessions.length;
+                this.dashboardData.sessions = this.dashboardData.sessions.filter(s => {
+                    const lastSeen = s.lastSeen || s.firstSeen || 0;
+                    return lastSeen > cutoff;
+                });
+                if (this.dashboardData.sessions.length < beforeCount) {
+                    logger.debug(`Cleaned up ${beforeCount - this.dashboardData.sessions.length} stale sessions`);
+                }
+            }
+
             const elapsed = now - this.lastActiveCheck;
             this.lastActiveCheck = now;
 
@@ -557,8 +793,8 @@ export async function startStandaloneServer(port = 3001) {
 
 // If started as an IPC child process from the Orchestrator
 if (process.send && !process.env.ELECTRON_RUN_AS_NODE) {
-    const port = parseInt(process.env.PORT) || 3001;
-    const interval = parseInt(process.env.BROADCAST_MS) || 5000;
+    const port = parseInt(process.env.PORT) || config?.server?.port || 3001;
+    const interval = parseInt(process.env.BROADCAST_MS) || DEFAULT_BROADCAST_MS;
 
     const server = new DashboardServer(port, interval);
     server.start().catch(err => {
@@ -568,12 +804,17 @@ if (process.send && !process.env.ELECTRON_RUN_AS_NODE) {
 
     process.on('message', msg => {
         if (msg && msg.type === 'metrics_tick') {
-            server.updateMetrics(msg.payload);
+            const validated = validatePayload(msg.payload);
+            if (validated) {
+                server.updateMetrics(validated);
+            }
         } else if (msg && msg.type === 'task-update') {
-            server.mergeTaskData(msg.payload);
-            // Update latestMetrics with fresh task data before broadcasting
-            if (server.latestMetrics) server.latestMetrics.recentTasks = server.historyManager.getTasks().slice(-40);
-            server.io.emit('metrics', server.collectMetrics());
+            const validated = validateTask(msg.payload);
+            if (validated) {
+                server.mergeTaskData(validated);
+                if (server.latestMetrics) server.latestMetrics.recentTasks = server.historyManager.getTasks().slice(-40);
+                server.io.emit('metrics', server.collectMetrics());
+            }
         } else if (msg && msg.type === 'shutdown') {
             server.stop().then(() => {
                 process.exit(0);

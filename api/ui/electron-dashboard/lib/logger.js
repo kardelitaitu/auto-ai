@@ -23,8 +23,9 @@ export function runWithContext(context, fn) {
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const LOG_FILE = path.join(__dirname, '../../logs.txt');
-const LOG_FILE_JSON = path.join(__dirname, '../../logs.json');
+const LOG_DIR = path.join(__dirname, '..', 'logs');
+const LOG_FILE = path.join(LOG_DIR, 'dashboard.log');
+const LOG_FILE_JSON = path.join(LOG_DIR, 'dashboard.json');
 export const logEmitter = new EventEmitter();
 
 // Rich ANSI Color Codes (Neon/Bright variants)
@@ -133,6 +134,9 @@ function initLogFile() {
     if (process.env.NODE_ENV === 'test' || process.env.VITEST) return;
     if (!logFileInitialized) {
         try {
+            if (!fs.existsSync(LOG_DIR)) {
+                fs.mkdirSync(LOG_DIR, { recursive: true });
+            }
             fs.writeFileSync(LOG_FILE, '', 'utf8');
             fs.writeFileSync(LOG_FILE_JSON, '', 'utf8');
             logFileInitialized = true;

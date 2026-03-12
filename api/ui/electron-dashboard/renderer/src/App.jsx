@@ -52,9 +52,14 @@ function App() {
     const [showClearConfirm, setShowClearConfirm] = useState(false);
 
     useEffect(() => {
-        // Get server URL from query params or electron API
         const initSocket = async () => {
             let url = 'http://localhost:3001';
+
+            if (window.electronAPI?.onConfigLoaded) {
+                window.electronAPI.onConfigLoaded((config) => {
+                    window.__DASHBOARD_CONFIG__ = config;
+                });
+            }
 
             const params = new URLSearchParams(window.location.search);
             const urlParam = params.get('server');
@@ -77,8 +82,8 @@ function App() {
             const socket = io(url, {
                 transports: ['websocket'],
                 reconnection: true,
-                reconnectionAttempts: 10,
-                reconnectionDelay: 2000
+                reconnectionAttempts: window.__DASHBOARD_CONFIG__?.client?.reconnectionAttempts || 10,
+                reconnectionDelay: window.__DASHBOARD_CONFIG__?.client?.reconnectionDelay || 2000
             });
 
             socket.on('connect', () => setStatus('online'));

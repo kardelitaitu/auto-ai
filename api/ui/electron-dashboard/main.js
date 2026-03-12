@@ -104,7 +104,7 @@ async function createWindow() {
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-            preload: path.join(__dirname, 'preload.cjs'),
+            preload: path.join(__dirname, 'preload.mjs'),
         },
         resizable: true,
         title: 'Auto-AI Dashboard',
@@ -124,12 +124,13 @@ async function createWindow() {
 
     // Pass server URL to renderer via query params
     const serverParam = encodeURIComponent(serverUrl);
+    const devServerPort = dashboardConfig?.devServer?.port || 5173;
 
     // Load the app
     if (!app.isPackaged) {
         // Dev mode: Load from Vite dev server
-        mainWindow.loadURL(`http://localhost:5173?server=${serverParam}`).catch(() => {
-            console.log('[Dashboard] Dev server not found at :5173, falling back to dist');
+        mainWindow.loadURL(`http://localhost:${devServerPort}?server=${serverParam}`).catch(() => {
+            console.log(`[Dashboard] Dev server not found at :${devServerPort}, falling back to dist`);
             const reactPath = path.join(__dirname, 'renderer', 'dist', 'index.html');
             mainWindow.loadFile(reactPath, { query: { server: serverUrl } });
         });

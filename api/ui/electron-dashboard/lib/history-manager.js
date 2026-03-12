@@ -10,17 +10,63 @@ import { createLogger } from './logger.js';
 const logger = createLogger('history-manager.js');
 
 export class HistoryManager {
-    constructor(historyFilePath, maxItems = 40) {
+    constructor(historyFilePath, maxItems = 40, saveDebounceMs = 5000) {
         this.historyFilePath = historyFilePath;
         this.maxItems = maxItems;
+        this.saveDebounceMs = saveDebounceMs;
         this.tasks = [];
+        this.pendingSave = false;
+        this.saveTimeout = null;
         this.load();
+    }
+
+    scheduleSave() {
+        if (this.saveTimeout) return;
+        this.pendingSave = true;
+        this.saveTimeout = setTimeout(() => {
+            this.save();
+            this.saveTimeout = null;
+            if (this.pendingSave) {
+                this.scheduleSave();
+            }
+        }, this.saveDebounceMs);
+    }
+
+    flushSave() {
+        if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+            this.saveTimeout = null;
+        }
+        this.save();
     }
 
     load() {
         try {
+            const dataDir = path.dirname(this.historyFilePath);
+            if (!fs.existsSync(dataDir)) {
+                fs.mkdirSync(dataDir, { recursive: true });
+                logger.info(`Created data directory: ${dataDir}`);
+                return;
+            }
+
             if (fs.existsSync(this.historyFilePath)) {
-                const data = JSON.parse(fs.readFileSync(this.historyFilePath, 'utf8'));
+                const rawData = fs.readFileSync(this.historyFilePath, 'utf8');
+                
+                let data;
+                try {
+                    data = JSON.parse(rawData);
+                } catch (parseErr) {
+                    logger.warn(`Corrupted history file detected, backing up and resetting: ${parseErr.message}`);
+                    const backupPath = this.historyFilePath + '.backup.' + Date.now();
+                    fs.renameSync(this.historyFilePath, backupPath);
+                    this.tasks = [];
+                    this.completedTasks = 0;
+                    this.twitterActions = { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0, total: 0 };
+                    this.apiMetrics = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
+                    this.save();
+                    return;
+                }
+
                 this.tasks = data.tasks || [];
                 this.completedTasks = data.completedTasks || 0;
                 this.twitterActions = data.twitterActions || { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0, total: 0 };
@@ -30,6 +76,9 @@ export class HistoryManager {
         } catch (err) {
             logger.error('Failed to load dashboard history:', err);
             this.tasks = [];
+            this.completedTasks = 0;
+            this.twitterActions = { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0, total: 0 };
+            this.apiMetrics = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
         }
     }
 
@@ -107,7 +156,7 @@ export class HistoryManager {
             };
         }
 
-        this.save();
+        this.scheduleSave();
         return this.tasks;
     }
 
@@ -134,7 +183,7 @@ export class HistoryManager {
 
     setTwitterActions(actions) {
         this.twitterActions = actions;
-        this.save();
+        this.scheduleSave();
     }
 
     getApiMetrics() {
@@ -143,11 +192,15 @@ export class HistoryManager {
 
     setApiMetrics(metrics) {
         this.apiMetrics = metrics;
-        this.save();
+        this.scheduleSave();
     }
 
     clearHistory() {
         try {
+            if (this.saveTimeout) {
+                clearTimeout(this.saveTimeout);
+                this.saveTimeout = null;
+            }
             if (fs.existsSync(this.historyFilePath)) {
                 fs.unlinkSync(this.historyFilePath);
                 logger.info('Dashboard history file deleted');
