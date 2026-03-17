@@ -77,6 +77,7 @@ export class RetweetAction {
                 success: false,
                 executed: false,
                 reason: 'missing_element',
+                newEngagement: false,
                 data: { tweetUrl },
                 engagementType: this.engagementType,
             };
@@ -93,6 +94,7 @@ export class RetweetAction {
                     success: true,
                     executed: true,
                     reason: 'success',
+                    newEngagement: result.newEngagement ?? true,
                     data: { tweetUrl },
                     engagementType: this.engagementType,
                 };
@@ -104,6 +106,7 @@ export class RetweetAction {
                     success: false,
                     executed: true,
                     reason: result.reason,
+                    newEngagement: false,
                     data: { tweetUrl },
                     engagementType: this.engagementType,
                 };
@@ -116,6 +119,7 @@ export class RetweetAction {
                 success: false,
                 executed: true,
                 reason: 'exception',
+                newEngagement: false,
                 data: { error: error.message },
                 engagementType: this.engagementType,
             };
@@ -130,6 +134,7 @@ export class RetweetAction {
                 success: false,
                 executed: false,
                 reason: can.reason,
+                newEngagement: false,
                 engagementType: this.engagementType,
             };
         }
@@ -140,6 +145,7 @@ export class RetweetAction {
                 success: false,
                 executed: false,
                 reason: 'probability',
+                newEngagement: false,
                 engagementType: this.engagementType,
             };
         }
@@ -191,7 +197,7 @@ export class RetweetAction {
                 this.logger.info(
                     '[RetweetAction] Checker: Tweet is already retweeted (unretweet button visible)'
                 );
-                return { success: true, reason: 'already_retweeted' };
+                return { success: true, reason: 'already_retweeted', newEngagement: false };
             }
 
             // Check 2: Reposted label
@@ -200,7 +206,7 @@ export class RetweetAction {
                 this.logger.info(
                     '[RetweetAction] Checker: Tweet is already retweeted (aria-label match)'
                 );
-                return { success: true, reason: 'already_retweeted' };
+                return { success: true, reason: 'already_retweeted', newEngagement: false };
             }
         } catch (err) {
             this.logger.warn(`[RetweetAction] Pre-check failed: ${err.message}`);
@@ -288,14 +294,14 @@ export class RetweetAction {
                     this.logger.info(`[RetweetAction] Tracked tweet ${tweetIdMatch[1]} for mutual exclusion`);
                 }
 
-                return { success: true, reason: 'retweet_keyboard_success' };
+                return { success: true, reason: 'retweet_keyboard_success', newEngagement: true };
             } catch (e) {
                 this.logger.warn(`[RetweetAction] Keyboard verification failed: ${e.message}`);
-                return { success: false, reason: 'retweet_verification_failed' };
+                return { success: false, reason: 'retweet_verification_failed', newEngagement: false };
             }
         } catch (error) {
             this.logger.error(`[RetweetAction] Keyboard Strategy Error: ${error.message}`);
-            return { success: false, reason: `keyboard_error: ${error.message}` };
+            return { success: false, reason: `keyboard_error: ${error.message}`, newEngagement: false };
         }
     }
 
@@ -318,7 +324,7 @@ export class RetweetAction {
                     this.logger.info('[RetweetAction] Found button via aria-label fallback');
                     retweetBtn = ariaRepost;
                 } else {
-                    return { success: false, reason: 'retweet_button_not_found' };
+                    return { success: false, reason: 'retweet_button_not_found', newEngagement: false };
                 }
             }
 
@@ -356,7 +362,7 @@ export class RetweetAction {
                     `[RetweetAction] Retweet menu did not appear: ${menuError.message}`
                 );
                 await page.keyboard.press('Escape');
-                return { success: false, reason: 'retweet_menu_failed' };
+                return { success: false, reason: 'retweet_menu_failed', newEngagement: false };
             }
 
             // Verification
@@ -379,14 +385,14 @@ export class RetweetAction {
                     this.logger.info(`[RetweetAction] Tracked tweet ${tweetIdMatch[1]} for mutual exclusion`);
                 }
 
-                return { success: true, reason: 'retweet_successful' };
+                return { success: true, reason: 'retweet_successful', newEngagement: true };
             } catch (_verifyError) {
                 this.logger.warn('[RetweetAction] Verification failed');
-                return { success: false, reason: 'retweet_verification_failed' };
+                return { success: false, reason: 'retweet_verification_failed', newEngagement: false };
             }
         } catch (error) {
             this.logger.error(`[RetweetAction] Click Strategy Error: ${error.message}`);
-            return { success: false, reason: `click_error: ${error.message}` };
+            return { success: false, reason: `click_error: ${error.message}`, newEngagement: false };
         }
     }
 

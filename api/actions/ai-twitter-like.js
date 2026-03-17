@@ -78,6 +78,7 @@ export class LikeAction {
                 success: true,
                 executed: true,
                 reason: 'success',
+                newEngagement: true,
                 data: { tweetUrl },
                 engagementType: this.engagementType,
             };
@@ -89,6 +90,7 @@ export class LikeAction {
                 success: false,
                 executed: true,
                 reason: 'exception',
+                newEngagement: false,
                 data: { error: error.message },
                 engagementType: this.engagementType,
             };
@@ -103,6 +105,7 @@ export class LikeAction {
                 success: false,
                 executed: false,
                 reason: can.reason,
+                newEngagement: false,
                 engagementType: this.engagementType,
             };
         }
@@ -113,6 +116,7 @@ export class LikeAction {
                 success: false,
                 executed: false,
                 reason: 'probability',
+                newEngagement: false,
                 engagementType: this.engagementType,
             };
         }

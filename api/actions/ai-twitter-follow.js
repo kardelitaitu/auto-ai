@@ -70,6 +70,7 @@ export class FollowAction {
             success: false,
             executed: false,
             reason: 'executor_not_wired',
+            newEngagement: false,
             engagementType: this.engagementType,
         };
     }
@@ -82,6 +83,7 @@ export class FollowAction {
                 success: false,
                 executed: false,
                 reason: can.reason,
+                newEngagement: false,
                 engagementType: this.engagementType,
             };
         }
@@ -92,6 +94,7 @@ export class FollowAction {
                 success: false,
                 executed: false,
                 reason: 'probability',
+                newEngagement: false,
                 engagementType: this.engagementType,
             };
         }

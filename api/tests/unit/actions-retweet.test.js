@@ -16,6 +16,7 @@ vi.mock('../../../api/index.js', () => ({
             if (el && typeof el.isVisible === 'function') return await el.isVisible();
             return false;
         }),
+        getCurrentUrl: vi.fn().mockResolvedValue('https://x.com/testuser/status/123456789'),
     },
 }));
 import { api } from '@api/index.js';

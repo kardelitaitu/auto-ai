@@ -131,6 +131,7 @@ export class AIReplyAction {
                         success: true,
                         executed: true,
                         reason: 'success',
+                        newEngagement: true,
                         data: {
                             reply: result.reply,
                             username,
@@ -145,6 +146,7 @@ export class AIReplyAction {
                         success: false,
                         executed: true,
                         reason: 'ui_post_failed',
+                        newEngagement: false,
                         data: { error: 'Failed to post reply in UI' },
                         engagementType: this.engagementType,
                     };
@@ -159,6 +161,7 @@ export class AIReplyAction {
                     success: false,
                     executed: true,
                     reason,
+                    newEngagement: false,
                     data: { error: result.reason },
                     engagementType: this.engagementType,
                 };
@@ -171,6 +174,7 @@ export class AIReplyAction {
                 success: false,
                 executed: true,
                 reason: 'exception',
+                newEngagement: false,
                 data: { error: error.message },
                 engagementType: this.engagementType,
             };
@@ -185,6 +189,7 @@ export class AIReplyAction {
                 success: false,
                 executed: false,
                 reason: can.reason,
+                newEngagement: false,
                 engagementType: this.engagementType,
             };
         }
@@ -195,6 +200,7 @@ export class AIReplyAction {
                 success: false,
                 executed: false,
                 reason: 'probability',
+                newEngagement: false,
                 engagementType: this.engagementType,
             };
         }

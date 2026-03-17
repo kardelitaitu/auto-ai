@@ -1400,33 +1400,25 @@ export class TwitterAgent {
             }
 
             if (await target.isVisible()) {
-                // First click
-                this.log(`[Navigation] Clicking '${targetName}' (1st click for reload)...`);
-                await this.safeHumanClick(target, targetName, 3);
-                await api.wait(mathUtils.randomInRange(800, 1500));
+                this.log(`[Navigation] Clicking '${targetName}' to navigate home...`);
+                const clicked = await api.click(targetSelector);
 
-                // Second click to ensure fresh content
-                this.log(`[Navigation] Clicking '${targetName}' again (2nd click to reload)...`);
-                await this.safeHumanClick(target, targetName, 3);
-                await api.wait(mathUtils.randomInRange(500, 1000));
-
-                // Note: "Show X posts" button check is now handled in ensureForYouTab()
-                // which is called below after URL navigation completes
-
-                try {
-                    await this.page.waitForURL('**/home**', { timeout: 5000 });
-                    this.log('[Navigation] Navigate to /home Success.');
-                    await this.ensureForYouTab();
-                    return;
-                } catch {
-                    this.log('[Navigation] Ghost click did not trigger nav. Trying native...');
-                    await target.click();
+                if (clicked) {
                     await api.wait(mathUtils.randomInRange(800, 1500));
-                    await target.click();
-                    await this.page.waitForURL('**/home**', { timeout: 5000 });
-                    this.log('[Navigation] Native Click navigated to home.');
-                    await this.ensureForYouTab();
-                    return;
+
+                    // Note: "Show X posts" button check is now handled in ensureForYouTab()
+                    // which is called below after URL navigation completes
+
+                    try {
+                        await this.page.waitForURL('**/home**', { timeout: 5000 });
+                        this.log('[Navigation] Navigate to /home Success.');
+                        await this.ensureForYouTab();
+                        return;
+                    } catch {
+                        this.log('[Navigation] api.click() did not trigger navigation.');
+                    }
+                } else {
+                    this.log(`[Navigation] api.click() failed for '${targetName}'.`);
                 }
             }
         } catch (e) {

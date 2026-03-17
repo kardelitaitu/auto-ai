@@ -34,7 +34,8 @@ export async function followWithAPI(options = {}) {
     logger.info(`Starting api.followWithAPI() for @${username}...`);
 
     // X.com selectors: follow button uses data-testid ending in "-follow"
-    const followSel = 'div[role="button"][data-testid$="-follow"]';
+    // Note: Button can be either <div role="button"> or <button role="button">
+    const followSel = '[role="button"][data-testid$="-follow"]';
     const unfollowSel = '[data-testid$="-unfollow"]';
 
     try {
