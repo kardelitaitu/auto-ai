@@ -3,6 +3,7 @@ node_modules
 .qodo
 *.log
 *.zip
+*.exe
 screenshot
 examples
 local-agent
