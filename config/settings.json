@@ -11,7 +11,12 @@
       "maxQuotes": 1,
       "maxLikes": 5,
       "maxFollows": 1,
-      "maxBookmarks": 2
+      "maxBookmarks": 2,
+      "mutualExclusion": {
+        "enabled": true,
+        "preventQuoteAfterRetweet": true,
+        "preventRetweetAfterQuote": true
+      }
     },
     "reply": {
       "probability": 0.16,

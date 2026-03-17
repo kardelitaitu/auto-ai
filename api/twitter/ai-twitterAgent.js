@@ -299,6 +299,18 @@ export class AITwitterAgent extends TwitterAgent {
         // Track processed tweets to avoid re-diving
         this._processedTweetIds = new Set();
 
+        // Track tweet IDs for mutual exclusion (quote vs retweet)
+        this._quotedTweetIds = new Set();
+        this._retweetedTweetIds = new Set();
+
+        // Mutual exclusion config
+        const engagementConfig = this.twitterConfig?.engagement || {};
+        this._mutualExclusionConfig = {
+            enabled: engagementConfig.mutualExclusion?.enabled ?? true,
+            preventQuoteAfterRetweet: engagementConfig.mutualExclusion?.preventQuoteAfterRetweet ?? true,
+            preventRetweetAfterQuote: engagementConfig.mutualExclusion?.preventRetweetAfterQuote ?? true,
+        };
+
         // Scroll tracking for exploration (fixes: re-diving same area, insufficient scroll)
         this._lastScrollY = 0;
         this._lastScrollTime = 0;
@@ -1214,6 +1226,10 @@ export class AITwitterAgent extends TwitterAgent {
             let selectedAction = null;
             let actionSuccess = false;
             let enhancedContext = {};
+
+            // Set current tweet ID for mutual exclusion checks
+            const tweetId = tweetIdMatch ? tweetIdMatch[1] : null;
+            this.actionRunner.setCurrentTweetId(tweetId);
 
             // 1. Select Action (Fast, probability based) - OUTSIDE QUEUE
             // This prevents holding the queue lock just to decide what to do

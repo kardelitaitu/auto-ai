@@ -33,10 +33,25 @@ export class ActionRunner {
     constructor(agent, actions = {}) {
         this.agent = agent;
         this.actions = actions;
+        this.currentTweetId = null;
 
         this.logger = this.agent?.logger || createLogger('actions/index.js');
 
         this.loadConfig();
+    }
+
+    /**
+     * Set the current tweet ID being processed (for mutual exclusion checks)
+     */
+    setCurrentTweetId(tweetId) {
+        this.currentTweetId = tweetId;
+    }
+
+    /**
+     * Get the current tweet ID being processed
+     */
+    getCurrentTweetId() {
+        return this.currentTweetId;
     }
 
     loadConfig() {
@@ -76,9 +91,9 @@ export class ActionRunner {
     }
 
     /**
-     * Check if an action can be executed (not at limit, enabled)
+     * Check if an action can be executed (not at limit, enabled, mutual exclusion)
      */
-    isActionAvailable(actionName) {
+    isActionAvailable(actionName, tweetId = null) {
         const actionConfig = this.config[actionName];
         if (!actionConfig || !actionConfig.enabled) {
             return false;
@@ -90,6 +105,26 @@ export class ActionRunner {
             if (!canEngage) {
                 this.logger.debug(`[ActionRunner] ${actionName} at limit (${engagementType})`);
                 return false;
+            }
+        }
+
+        // Check mutual exclusion for quote/retweet
+        const effectiveTweetId = tweetId || this.currentTweetId;
+        if (effectiveTweetId && this.agent._mutualExclusionConfig?.enabled) {
+            const meConfig = this.agent._mutualExclusionConfig;
+
+            if (actionName === 'quote' && meConfig.preventQuoteAfterRetweet) {
+                if (this.agent._retweetedTweetIds?.has(effectiveTweetId)) {
+                    this.logger.info(`[ActionRunner] Quote blocked: tweet ${effectiveTweetId} already retweeted (mutual exclusion)`);
+                    return false;
+                }
+            }
+
+            if (actionName === 'retweet' && meConfig.preventRetweetAfterQuote) {
+                if (this.agent._quotedTweetIds?.has(effectiveTweetId)) {
+                    this.logger.info(`[ActionRunner] Retweet blocked: tweet ${effectiveTweetId} already quoted (mutual exclusion)`);
+                    return false;
+                }
             }
         }
 
