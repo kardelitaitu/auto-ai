@@ -93,62 +93,15 @@ async function ollamaFetch(path, body, endpoint) {
     return json;
 }
 
-// ─── Internal vLLM Fetch Utility ──────────────────────────────────────────
-async function vllmFetch(path, body, endpoint) {
-    const url = `${endpoint.replace(/\/$/, '')}${path}`;
-    
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`vLLM error (${response.status}): ${errText}`);
-    }
-
-    const json = await response.json();
-    
-    // Normalize vLLM response to expected format
-    const message = json.choices?.[0]?.message;
-    const content = message?.content || '';
-    
-    // vLLM with --enable-thinking returns thinking in reasoning_content field
-    // Qwen models may also use <thinking> tags within content
-    let reasoning = message?.reasoning_content || null;
-    
-    return {
-        choices: [
-            {
-                message: {
-                    content: content,
-                    reasoning: reasoning,
-                },
-            },
-        ],
-        usage: {
-            prompt_tokens: json.usage?.prompt_tokens || 0,
-            completion_tokens: json.usage?.completion_tokens || 0,
-            total_tokens: json.usage?.total_tokens || 0,
-        },
-        _raw: json
-    };
-}
-
 async function getActiveLLM() {
-    // ─── HARDCODED vLLM CONFIGURATION ──────────────────────────────────
-    const endpoint = 'http://localhost:8000/v1';
-    const model = 'Qwen/Qwen2.5-1.5B-Instruct';
+    const endpoint = 'http://localhost:11434';
+    const model = 'gemma3:1b';
     
     return {
-        name: 'vLLM',
+        name: 'Ollama',
         model: model,
         endpoint: endpoint,
-        thinkingEnabled: true,
-        fetch: async (path, body) => vllmFetch(path, body, endpoint),
+        fetch: async (path, body) => ollamaFetch(path, body, endpoint),
     };
 }
 
@@ -1022,7 +975,7 @@ function countTokensApprox(text) {
 async function callLLM(systemPrompt, userPrompt) {
     const startMs = Date.now();
     
-    const requestBody = {
+    const data = await activeLLM.fetch('/v1/chat/completions', {
         model: LLM_MODEL,
         messages: [
             { role: 'system', content: systemPrompt },
@@ -1031,16 +984,7 @@ async function callLLM(systemPrompt, userPrompt) {
         temperature: 0.8,
         max_tokens: 4096,
         stream: false,
-    };
-    
-    // Add thinking parameter for vLLM with thinking enabled
-    if (activeLLM.thinkingEnabled) {
-        requestBody.chat_template_kwargs = {
-            enable_thinking: true,
-        };
-    }
-    
-    const data = await activeLLM.fetch('/v1/chat/completions', requestBody);
+    });
 
     const elapsedMs = Date.now() - startMs;
     const messageObj = data.choices?.[0]?.message;
@@ -1156,25 +1100,17 @@ async function runTest({ label, author, tweet, replies }) {
 
 console.log(`\nPrompt Test — Provider: ${LLM_PROVIDER || 'unknown'}\n`);
 
-if (LLM_PROVIDER === 'vLLM') {
-    console.log(`⏳ Preloading model '${LLM_MODEL}' into VRAM...`);
+if (LLM_PROVIDER === 'Ollama') {
+    const baseUrl = (LLM_ENDPOINT || 'http://localhost:11434')
+        .replace(/\/$/, '');
+    console.log(`⏳ Preloading model '${LLM_MODEL}'...`);
     try {
-        // vLLM warmup - send a simple request to load model
-        const warmupResponse = await fetch(`${LLM_ENDPOINT}/chat/completions`, {
+        await fetch(`${baseUrl}/api/generate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: LLM_MODEL,
-                messages: [{ role: 'user', content: 'Hi' }],
-                max_tokens: 1,
-                temperature: 0,
-            }),
+            body: JSON.stringify({ model: LLM_MODEL, keep_alive: '10m' }),
         });
-        if (warmupResponse.ok) {
-            console.log(`✅ Model loaded.`);
-        } else {
-            console.log(`⚠️ Warmup returned ${warmupResponse.status}`);
-        }
+        console.log(`✅ Model loaded.`);
     } catch (e) {
         console.error(`⚠️ Failed to preload model: ${e.message}`);
     }

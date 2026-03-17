@@ -1,406 +1,737 @@
-[02:21:20] [INFO] [EntropyController] [session-1773602480928-2bszeqsto] Session initialized with paceMultiplier=0.91
-[02:21:20] [INFO] [EntropyController] [session-1773602480928-2bszeqsto] Fatigue scheduled for T+3.7m
-[02:21:20] [INFO] [agent-main.js] OWB Agent Runner - Starting...
-[02:21:20] [INFO] [agent-main.js] [DEBUG] Debug mode enabled - visual overlay will be active
-[02:21:20] [INFO] [agent-main.js] Mode: state
-[02:21:20] [INFO] [agent-main.js] Strategy: defend
-[02:21:20] [INFO] [agent-main.js] Model: gemma3:4b
-[02:21:20] [INFO] [api/agent/visualDiff.js] Sharp module loaded successfully
-[02:21:21] [INFO] [api/agent/sessionStore.js] [SessionStore] Database initialized successfully
-[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from settings.json
-[02:21:21] [INFO] [agent-main.js] LLM model set to: gemma3:4b (from owb-config: gemma3:4b)
-[02:21:21] [INFO] [agent-main.js] Checking Docker LLM status...
-[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from settings.json
-[02:21:21] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
-[02:21:21] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
-[02:21:21] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
-[02:21:21] [INFO] [sessionManager.js] [SessionManager] Database initialized at C:\My Script\auto-ai\data\sessions.db
-[02:21:21] [INFO] [agent-main.js] Discovering browsers...
-[02:21:21] [INFO] [orchestrator.js] [Orchestrator] Starting browser discovery...
-[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
-[02:21:21] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
-[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
-[02:21:21] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
-[02:21:21] [INFO] [discovery.js] Loading 8 discovery connectors...
-[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
-[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
-[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[02:21:21] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
-[02:21:21] [INFO] [discovery.js] Loaded connector: ixbrowser
-[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
-[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[02:21:21] [INFO] [localBrave.js] Initialized LocalBraveDiscover
-[02:21:21] [INFO] [discovery.js] Loaded connector: localBrave
-[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
-[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[02:21:21] [INFO] [discovery.js] Loaded connector: localChrome
-[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
-[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[02:21:21] [INFO] [discovery.js] Loaded connector: localEdge
-[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
-[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[02:21:21] [INFO] [discovery.js] Loaded connector: localVivaldi
-[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
-[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[02:21:21] [INFO] [discovery.js] Loaded connector: morelogin
-[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
-[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[02:21:21] [INFO] [roxybrowser.js] Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/
-[02:21:21] [INFO] [discovery.js] Loaded connector: roxybrowser
-[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
-[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[02:21:21] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
-[02:21:21] [INFO] [discovery.js] Loaded connector: undetectable
-[02:21:21] [INFO] [discovery.js] Successfully loaded 8 connectors
-[02:21:21] [INFO] [discovery.js] Starting browser discovery with 8 connectors in parallel...
-[02:21:21] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
-[02:21:21] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
-[02:21:21] [INFO] [localBrave.js] Discovering localBrave instances
-[02:21:21] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
-[02:21:21] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
-[02:21:21] [INFO] [roxybrowser.js] Discovering roxybrowser instances from: http://127.0.0.1:50000/
-[02:21:21] [INFO] [undetectable.js] Starting discovery for undetectable browser type
-[02:21:21] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
-[02:21:21] [WARN] [retry.js] [API request to http://127.0.0.1:50000/browser/connection_info] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[02:21:21] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[02:21:21] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[02:21:21] [DEBUG] [localBrave.js] Found 3 browser tabs from Brave on port 9001
-[02:21:21] [INFO] [localBrave.js] Found connectable Brave instance: Local Brave Browser (Port 9001)
-[02:21:21] [INFO] [localBrave.js] Discovery complete. Found 1 localBrave profiles.
-[02:21:22] [ERROR] [retry.js] [API request to http://127.0.0.1:50000/browser/connection_info] All 2 attempts failed. Last error: fetch failed
-[02:21:22] [ERROR] [roxybrowser.js] Error during roxybrowser discovery: fetch failed
-[02:21:22] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
-[02:21:22] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
-[02:21:22] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
-[02:21:22] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
-[02:21:22] [INFO] [discovery.js] Connector ixbrowser found no endpoints
-[02:21:22] [INFO] [discovery.js] Connector localBrave found 1 endpoints
-[02:21:22] [INFO] [discovery.js] Connector localChrome found no endpoints
-[02:21:22] [INFO] [discovery.js] Connector localEdge found no endpoints
-[02:21:22] [INFO] [discovery.js] Connector localVivaldi found no endpoints
-[02:21:22] [INFO] [discovery.js] Connector morelogin found no endpoints
-[02:21:22] [INFO] [discovery.js] Connector roxybrowser found no endpoints
-[02:21:22] [INFO] [discovery.js] Connector undetectable found no endpoints
-[02:21:22] [INFO] [discovery.js] Discovery complete. Found 1 total endpoints
-[02:21:22] [INFO] [orchestrator.js] Found 1 browser endpoints. Connecting...
-[02:21:22] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
-[02:21:22] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
-[02:21:22] [INFO] [sessionManager.js] [SessionManager] Session added: brave:9001 (5 workers)
-[02:21:22] [INFO] [orchestrator.js] [Orchestrator] Connected: brave:9001
-[02:21:22] [INFO] [orchestrator.js] [Orchestrator] Discovery complete. Connected to 1 browsers.
-[02:21:22] [DEBUG] [metrics.js] Browser discovery: 1 discovered, 1 connected, 0 failed
-[02:21:22] [INFO] [automator.js] [Automator] Proactive background health polling is DISABLED in Phase 2 for maximum CPU responsiveness. Relying exclusively on native socket disconnect events.
-[02:21:22] [INFO] [agent-main.js] Connected to 1 browser(s).
-[02:21:22] [INFO] [agent-main.js] Using session: brave:9001
-[02:21:22] [INFO] [agent-main.js] Using existing tab: https://clashofcoins.com/play/
-[02:21:22] [INFO] [agent-main.js] [Browser] Viewport size: undefinedxundefined
-[02:21:22] [INFO] [agent-main.js] Current URL: https://clashofcoins.com/play/
-[02:21:22] [INFO] [agent-main.js] Initializing API context...
-[02:21:22] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[02:21:22] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[02:21:22] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[02:21:22] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[02:21:22] [INFO] [agent-main.js] ========================================
-[02:21:22] [INFO] [agent-main.js] Running State: A - Grey Free land
-[02:21:22] [INFO] [agent-main.js] Repeat count: 500
-[02:21:22] [INFO] [agent-main.js] 
---- Iteration 1/500 ---
-[02:21:22] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-1-2026-03-15-02-21-22.png
-[02:21:22] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
-[02:21:22] [INFO] [api/utils/visual-debug.js] [VisualDebug] Enabled - cursor and clicks will be visualized
-[02:21:22] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
-[02:21:22] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
-[02:21:22] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
-[02:21:22] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
-[02:21:22] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
-[02:21:22] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 138.6 KB
-[02:21:22] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 138.6 KB → 30.4 KB (4.6x smaller, 161ms)
-[02:21:22] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.56x compression, 161ms
-[02:21:22] [INFO] [api/agent/vision.js] [captureState] Screenshot: 40 KB (viewport: 2196x1015)
-[02:21:22] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-21-22.png (30 KB)
-[02:21:22] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
-[02:21:22] [INFO] [owb-agents.js] [OWB] Initialized OWB-specific LLM client: model=gemma3:4b, maxTokens=4096, timeout=180000ms
-[02:21:22] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
-[02:21:31] [INFO] [api/agent/llmClient.js] Response time: 8557ms
-[02:21:31] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 260, "y": 348}, {"x": 780, "y": 348}, {"x": 880, "y": 188}]}
-[02:21:31] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":260,"y":348},{"x":780,"y":348},{"x":880,"y":188}]}
-[02:21:31] [INFO] [owb-agents.js] [State A] Found 3 target(s)
-[02:21:31] [INFO] [owb-agents.js] [State A] Coords: (260, 348) -> scaled (520, 695) -> final (520, 695)
-[02:21:31] [INFO] [owb-agents.js] [State A] Coords: (780, 348) -> scaled (1560, 695) -> final (1560, 695)
-[02:21:31] [INFO] [owb-agents.js] [State A] Coords: (880, 188) -> scaled (1760, 376) -> final (1760, 376)
-[02:21:31] [INFO] [owb-agents.js] [State A] Clicking 3 target(s)...
-[02:21:31] [INFO] [owb-agents.js] [State A] Target 1/3: (520, 695) price=?
-[02:21:31] [INFO] [api/interactions/clickAt.js] Clicking at (520, 695) with button: left
-[02:21:31] [INFO] [api/interactions/clickAt.js] ClickAt completed at (520, 695)
-[02:21:32] [INFO] [owb-agents.js] [State A] Target 2/3: (1560, 695) price=?
-[02:21:32] [INFO] [api/interactions/clickAt.js] Clicking at (1560, 695) with button: left
-[02:21:32] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1561, 696)
-[02:21:33] [INFO] [owb-agents.js] [State A] Target 3/3: (1760, 376) price=?
-[02:21:33] [INFO] [api/interactions/clickAt.js] Clicking at (1760, 376) with button: left
-[02:21:34] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1760, 376)
-[02:21:34] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
-[02:21:34] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602494695-2026-03-15-02-21-34.png (30 KB)
-[02:21:34] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 3 target(s)
-[02:21:34] [INFO] [agent-main.js] ✅ Iteration 1 completed successfully
-[02:21:35] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-1-2026-03-15-02-21-34.png
-[02:21:35] [INFO] [agent-main.js] Waiting 2s before next iteration...
-[02:21:37] [INFO] [agent-main.js] 
---- Iteration 2/500 ---
-[02:21:38] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-2-2026-03-15-02-21-37.png
-[02:21:38] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
-[02:21:38] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
-[02:21:38] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
-[02:21:38] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
-[02:21:38] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
-[02:21:38] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
-[02:21:40] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 237.5 KB
-[02:21:40] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 237.5 KB → 59.1 KB (4.0x smaller, 169ms)
-[02:21:40] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.02x compression, 169ms
-[02:21:40] [INFO] [api/agent/vision.js] [captureState] Screenshot: 79 KB (viewport: 2196x1015)
-[02:21:40] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-21-40.png (59 KB)
-[02:21:40] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
-[02:21:40] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
-[02:21:42] [INFO] [api/agent/llmClient.js] Response time: 1469ms
-[02:21:42] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 556, "y": 328, "price": "50"}], "found": true}
-[02:21:42] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":556,"y":328,"price":"50"}],"found":true}
-[02:21:42] [INFO] [owb-agents.js] [State A] Found 1 target(s)
-[02:21:42] [INFO] [owb-agents.js] [State A] Coords: (556, 328) -> scaled (1112, 655) -> final (1112, 655)
-[02:21:42] [INFO] [owb-agents.js] [State A] Clicking 1 target(s)...
-[02:21:42] [INFO] [owb-agents.js] [State A] Target 1/1: (1112, 655) price=50
-[02:21:42] [INFO] [api/interactions/clickAt.js] Clicking at (1112, 655) with button: left
-[02:21:43] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1112, 655)
-[02:21:43] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
-[02:21:43] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602503255-2026-03-15-02-21-43.png (59 KB)
-[02:21:43] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 1 target(s)
-[02:21:43] [INFO] [agent-main.js] ✅ Iteration 2 completed successfully
-[02:21:43] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-2-2026-03-15-02-21-43.png
-[02:21:43] [INFO] [agent-main.js] Waiting 2s before next iteration...
-[02:21:45] [INFO] [agent-main.js] 
---- Iteration 3/500 ---
-[02:21:46] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-3-2026-03-15-02-21-45.png
-[02:21:46] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
-[02:21:46] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
-[02:21:46] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
-[02:21:46] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
-[02:21:46] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
-[02:21:46] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
-[02:21:47] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 304.1 KB
-[02:21:47] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 304.1 KB → 79.4 KB (3.8x smaller, 204ms)
-[02:21:47] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 3.83x compression, 204ms
-[02:21:47] [INFO] [api/agent/vision.js] [captureState] Screenshot: 106 KB (viewport: 2196x1015)
-[02:21:47] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-21-47.png (79 KB)
-[02:21:47] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
-[02:21:47] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
-[02:21:49] [INFO] [api/agent/llmClient.js] Response time: 1840ms
-[02:21:49] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 480, "y": 348}, {"x": 778, "y": 348}, {"x": 778, "y": 178}], "found": true}
-[02:21:49] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":480,"y":348},{"x":778,"y":348},{"x":778,"y":178}],"found":true}
-[02:21:49] [INFO] [owb-agents.js] [State A] Found 3 target(s)
-[02:21:49] [INFO] [owb-agents.js] [State A] Coords: (480, 348) -> scaled (960, 695) -> final (960, 695)
-[02:21:49] [INFO] [owb-agents.js] [State A] Coords: (778, 348) -> scaled (1556, 695) -> final (1556, 695)
-[02:21:49] [INFO] [owb-agents.js] [State A] Coords: (778, 178) -> scaled (1556, 356) -> final (1556, 356)
-[02:21:49] [INFO] [owb-agents.js] [State A] Clicking 3 target(s)...
-[02:21:49] [INFO] [owb-agents.js] [State A] Target 1/3: (960, 695) price=?
-[02:21:49] [INFO] [api/interactions/clickAt.js] Clicking at (960, 695) with button: left
-[02:21:50] [INFO] [api/interactions/clickAt.js] ClickAt completed at (960, 695)
-[02:21:50] [INFO] [owb-agents.js] [State A] Target 2/3: (1556, 695) price=?
-[02:21:50] [INFO] [api/interactions/clickAt.js] Clicking at (1556, 695) with button: left
-[02:21:51] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1555, 695)
-[02:21:51] [INFO] [owb-agents.js] [State A] Target 3/3: (1556, 356) price=?
-[02:21:51] [INFO] [api/interactions/clickAt.js] Clicking at (1556, 356) with button: left
-[02:21:51] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1556, 357)
-[02:21:51] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
-[02:21:51] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602511978-2026-03-15-02-21-51.png (79 KB)
-[02:21:51] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 3 target(s)
-[02:21:51] [INFO] [agent-main.js] ✅ Iteration 3 completed successfully
-[02:21:52] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-3-2026-03-15-02-21-51.png
-[02:21:52] [INFO] [agent-main.js] Waiting 2s before next iteration...
-[02:21:54] [INFO] [agent-main.js] 
---- Iteration 4/500 ---
-[02:21:56] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-4-2026-03-15-02-21-54.png
-[02:21:56] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
-[02:21:56] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
-[02:21:56] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
-[02:21:56] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
-[02:21:56] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
-[02:21:56] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
-[02:21:57] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 314.2 KB
-[02:21:57] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 314.2 KB → 72.2 KB (4.4x smaller, 191ms)
-[02:21:57] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.35x compression, 191ms
-[02:21:57] [INFO] [api/agent/vision.js] [captureState] Screenshot: 96 KB (viewport: 2196x1015)
-[02:21:57] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-21-57.png (72 KB)
-[02:21:57] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
-[02:21:57] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
-[02:21:59] [INFO] [api/agent/llmClient.js] Response time: 1637ms
-[02:21:59] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 392, "y": 276}, {"x": 688, "y": 276}], "found": true}
-[02:21:59] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":392,"y":276},{"x":688,"y":276}],"found":true}
-[02:21:59] [INFO] [owb-agents.js] [State A] Found 2 target(s)
-[02:21:59] [INFO] [owb-agents.js] [State A] Coords: (392, 276) -> scaled (784, 551) -> final (784, 551)
-[02:21:59] [INFO] [owb-agents.js] [State A] Coords: (688, 276) -> scaled (1376, 551) -> final (1376, 551)
-[02:21:59] [INFO] [owb-agents.js] [State A] Clicking 2 target(s)...
-[02:21:59] [INFO] [owb-agents.js] [State A] Target 1/2: (784, 551) price=?
-[02:21:59] [INFO] [api/interactions/clickAt.js] Clicking at (784, 551) with button: left
-[02:22:00] [INFO] [api/interactions/clickAt.js] ClickAt completed at (784, 550)
-[02:22:00] [INFO] [owb-agents.js] [State A] Target 2/2: (1376, 551) price=?
-[02:22:00] [INFO] [api/interactions/clickAt.js] Clicking at (1376, 551) with button: left
-[02:22:01] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1376, 551)
-[02:22:01] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
-[02:22:01] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602521148-2026-03-15-02-22-01.png (72 KB)
-[02:22:01] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 2 target(s)
-[02:22:01] [INFO] [agent-main.js] ✅ Iteration 4 completed successfully
-[02:22:01] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-4-2026-03-15-02-22-01.png
-[02:22:01] [INFO] [agent-main.js] Waiting 2s before next iteration...
-[02:22:03] [INFO] [agent-main.js] 
---- Iteration 5/500 ---
-[02:22:04] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-5-2026-03-15-02-22-03.png
-[02:22:04] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
-[02:22:04] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
-[02:22:04] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
-[02:22:04] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
-[02:22:04] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
-[02:22:04] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
-[02:22:05] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 313.7 KB
-[02:22:06] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 313.7 KB → 72.7 KB (4.3x smaller, 208ms)
-[02:22:06] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.31x compression, 208ms
-[02:22:06] [INFO] [api/agent/vision.js] [captureState] Screenshot: 97 KB (viewport: 2196x1015)
-[02:22:06] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-22-06.png (73 KB)
-[02:22:06] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
-[02:22:06] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
-[02:22:07] [INFO] [api/agent/llmClient.js] Response time: 1367ms
-[02:22:07] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 640, "y": 336, "price": "50"}], "found": true}
-[02:22:07] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":640,"y":336,"price":"50"}],"found":true}
-[02:22:07] [INFO] [owb-agents.js] [State A] Found 1 target(s)
-[02:22:07] [INFO] [owb-agents.js] [State A] Coords: (640, 336) -> scaled (1280, 671) -> final (1280, 671)
-[02:22:07] [INFO] [owb-agents.js] [State A] Clicking 1 target(s)...
-[02:22:07] [INFO] [owb-agents.js] [State A] Target 1/1: (1280, 671) price=50
-[02:22:07] [INFO] [api/interactions/clickAt.js] Clicking at (1280, 671) with button: left
-[02:22:08] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1280, 671)
-[02:22:08] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
-[02:22:08] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602528382-2026-03-15-02-22-08.png (73 KB)
-[02:22:08] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 1 target(s)
-[02:22:08] [INFO] [agent-main.js] ✅ Iteration 5 completed successfully
-[02:22:09] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-5-2026-03-15-02-22-08.png
-[02:22:09] [INFO] [agent-main.js] Waiting 2s before next iteration...
-[02:22:11] [INFO] [agent-main.js] 
---- Iteration 6/500 ---
-[02:22:12] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-6-2026-03-15-02-22-11.png
-[02:22:12] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
-[02:22:12] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
-[02:22:12] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
-[02:22:12] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
-[02:22:12] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
-[02:22:12] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
-[02:22:12] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 314.3 KB
-[02:22:13] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 314.3 KB → 72.6 KB (4.3x smaller, 184ms)
-[02:22:13] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.33x compression, 184ms
-[02:22:13] [INFO] [api/agent/vision.js] [captureState] Screenshot: 97 KB (viewport: 2196x1015)
-[02:22:13] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-22-13.png (73 KB)
-[02:22:13] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
-[02:22:13] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
-[02:22:15] [INFO] [api/agent/llmClient.js] Response time: 1964ms
-[02:22:15] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 344, "y": 312}, {"x": 656, "y": 312}, {"x": 864, "y": 188}, {"x": 864, "y": 312}], "found": true}
-[02:22:15] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":344,"y":312},{"x":656,"y":312},{"x":864,"y":188},{"x":864,"y":312}],"found":true}
-[02:22:15] [INFO] [owb-agents.js] [State A] Found 4 target(s)
-[02:22:15] [INFO] [owb-agents.js] [State A] Coords: (344, 312) -> scaled (688, 623) -> final (688, 623)
-[02:22:15] [INFO] [owb-agents.js] [State A] Coords: (656, 312) -> scaled (1312, 623) -> final (1312, 623)
-[02:22:15] [INFO] [owb-agents.js] [State A] Coords: (864, 188) -> scaled (1728, 376) -> final (1728, 376)
-[02:22:15] [INFO] [owb-agents.js] [State A] Coords: (864, 312) -> scaled (1728, 623) -> final (1728, 623)
-[02:22:15] [INFO] [owb-agents.js] [State A] Clicking 4 target(s)...
-[02:22:15] [INFO] [owb-agents.js] [State A] Target 1/4: (688, 623) price=?
-[02:22:15] [INFO] [api/interactions/clickAt.js] Clicking at (688, 623) with button: left
-[02:22:15] [INFO] [api/interactions/clickAt.js] ClickAt completed at (688, 624)
-[02:22:15] [INFO] [owb-agents.js] [State A] Target 2/4: (1312, 623) price=?
-[02:22:15] [INFO] [api/interactions/clickAt.js] Clicking at (1312, 623) with button: left
-[02:22:16] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1312, 622)
-[02:22:16] [INFO] [owb-agents.js] [State A] Target 3/4: (1728, 376) price=?
-[02:22:16] [INFO] [api/interactions/clickAt.js] Clicking at (1728, 376) with button: left
-[02:22:17] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1728, 375)
-[02:22:18] [INFO] [owb-agents.js] [State A] Target 4/4: (1728, 623) price=?
-[02:22:18] [INFO] [api/interactions/clickAt.js] Clicking at (1728, 623) with button: left
-[02:22:18] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1729, 622)
-[02:22:18] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
-[02:22:18] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602538631-2026-03-15-02-22-18.png (73 KB)
-[02:22:18] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 4 target(s)
-[02:22:18] [INFO] [agent-main.js] ✅ Iteration 6 completed successfully
-[02:22:19] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-6-2026-03-15-02-22-18.png
-[02:22:19] [INFO] [agent-main.js] Waiting 2s before next iteration...
-[02:22:21] [INFO] [agent-main.js] 
---- Iteration 7/500 ---
-[02:22:21] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-7-2026-03-15-02-22-21.png
-[02:22:21] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
-[02:22:21] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
-[02:22:21] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
-[02:22:21] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
-[02:22:21] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
-[02:22:21] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
-[02:22:22] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 319.5 KB
-[02:22:23] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 319.5 KB → 74.5 KB (4.3x smaller, 196ms)
-[02:22:23] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.29x compression, 196ms
-[02:22:23] [INFO] [api/agent/vision.js] [captureState] Screenshot: 99 KB (viewport: 2196x1015)
-[02:22:23] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-22-23.png (74 KB)
-[02:22:23] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
-[02:22:23] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
-[02:22:24] [INFO] [api/agent/llmClient.js] Response time: 1681ms
-[02:22:24] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 278, "y": 328}, {"x": 778, "y": 328}]}
-[02:22:24] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":278,"y":328},{"x":778,"y":328}]}
-[02:22:24] [INFO] [owb-agents.js] [State A] Found 2 target(s)
-[02:22:24] [INFO] [owb-agents.js] [State A] Coords: (278, 328) -> scaled (556, 655) -> final (556, 655)
-[02:22:24] [INFO] [owb-agents.js] [State A] Coords: (778, 328) -> scaled (1556, 655) -> final (1556, 655)
-[02:22:24] [INFO] [owb-agents.js] [State A] Clicking 2 target(s)...
-[02:22:24] [INFO] [owb-agents.js] [State A] Target 1/2: (556, 655) price=?
-[02:22:24] [INFO] [api/interactions/clickAt.js] Clicking at (556, 655) with button: left
-[02:22:26] [INFO] [api/interactions/clickAt.js] ClickAt completed at (556, 655)
-[02:22:27] [INFO] [owb-agents.js] [State A] Target 2/2: (1556, 655) price=?
-[02:22:27] [INFO] [api/interactions/clickAt.js] Clicking at (1556, 655) with button: left
-[02:22:28] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1556, 654)
-[02:22:28] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
-[02:22:28] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602548229-2026-03-15-02-22-28.png (74 KB)
-[02:22:28] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 2 target(s)
-[02:22:28] [INFO] [agent-main.js] ✅ Iteration 7 completed successfully
-[02:22:29] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-7-2026-03-15-02-22-28.png
-[02:22:29] [INFO] [agent-main.js] Waiting 2s before next iteration...
-[02:22:31] [INFO] [agent-main.js] 
---- Iteration 8/500 ---
-[02:22:31] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-8-2026-03-15-02-22-31.png
-[02:22:31] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
-[02:22:31] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
-[02:22:31] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
-[02:22:31] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
-[02:22:31] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
-[02:22:31] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
-[02:22:32] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 325.1 KB
-[02:22:32] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 325.1 KB → 76.2 KB (4.3x smaller, 163ms)
-[02:22:32] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.27x compression, 163ms
-[02:22:32] [INFO] [api/agent/vision.js] [captureState] Screenshot: 102 KB (viewport: 2196x1015)
-[02:22:32] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-22-32.png (76 KB)
-[02:22:32] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
-[02:22:32] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
-[02:22:34] [INFO] [api/agent/llmClient.js] Response time: 1641ms
-[02:22:34] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 340, "y": 280}, {"x": 680, "y": 280}], "found": true}
-[02:22:34] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":340,"y":280},{"x":680,"y":280}],"found":true}
-[02:22:34] [INFO] [owb-agents.js] [State A] Found 2 target(s)
-[02:22:34] [INFO] [owb-agents.js] [State A] Coords: (340, 280) -> scaled (680, 559) -> final (680, 559)
-[02:22:34] [INFO] [owb-agents.js] [State A] Coords: (680, 280) -> scaled (1360, 559) -> final (1360, 559)
-[02:22:34] [INFO] [owb-agents.js] [State A] Clicking 2 target(s)...
-[02:22:34] [INFO] [owb-agents.js] [State A] Target 1/2: (680, 559) price=?
-[02:22:34] [INFO] [api/interactions/clickAt.js] Clicking at (680, 559) with button: left
-[02:22:35] [INFO] [agent-main.js] [Shutdown] Received SIGINT. Closing browsers and cleaning up...
-[02:22:35] [INFO] [orchestrator.js] [Orchestrator] Queue empty, resolving immediately
-[02:22:35] [INFO] [sessionManager.js] [SessionManager] SessionManager shutting down...
-[02:22:35] [WARN] [automator.js] [Automator] Native disconnect event fired for: ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
-[02:22:35] [INFO] [automator.js] Background reconnection attempt 1 for ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
-[02:22:35] [INFO] [automator.js] Attempting to reconnect to ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
-[02:22:35] [ERROR] [owb-agents.js] [State A] Failed: mouse.move: Target page, context or browser has been closed
-[02:22:35] [WARN] [agent-main.js] ❌ Iteration 8 failed - no valid action taken
-[02:22:35] [WARN] [owb-agents.js] [DEBUG] Screenshot failed: Page has been closed
-[02:22:35] [INFO] [agent-main.js] Waiting 2s before next iteration...
-[02:22:35] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
-[02:22:35] [INFO] [sessionManager.js] [SessionManager] SessionManager shutdown complete
-[02:22:35] [INFO] [automator.js] Automator shutting down...
-[02:22:35] [INFO] [automator.js] Closing 0 browser connections
-[02:22:35] [INFO] [automator.js] [Automator] Proactive health checks natively disabled.
-[02:22:35] [INFO] [automator.js] All connections closed
-[02:22:35] [INFO] [automator.js] Automator shutdown complete
-[02:22:35] [INFO] [metrics.js] Generating JSON summary report...
-[02:22:35] [INFO] [metrics.js] Successfully generated JSON report at C:\My Script\auto-ai\run-summary.json
-[02:22:35] [INFO] [orchestrator.js] [Orchestrator] Orchestrator shutdown complete
-[02:22:35] [INFO] [agent-main.js] [Shutdown] Orchestrator shutdown complete.
+[06:05:51] [INFO] [EntropyController] [session-1773702351546-kem2u76lo] Session initialized with paceMultiplier=1.07
+[06:05:51] [INFO] [EntropyController] [session-1773702351546-kem2u76lo] Fatigue scheduled for T+4.3m
+[06:05:51] [INFO] [main.js] MultiBrowseAutomation - Starting up...
+[06:05:51] [INFO] [main.js] Checking Docker LLM status...
+[06:05:51] [INFO] [api/agent/visualDiff.js] Sharp module loaded successfully
+[06:05:51] [INFO] [api/agent/sessionStore.js] [SessionStore] Database initialized successfully
+[06:05:51] [DEBUG] [configLoader.js] Loaded configuration from settings.json
+[06:05:51] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
+[06:05:51] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
+[06:05:52] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
+[06:05:52] [INFO] [sessionManager.js] [SessionManager] Database initialized at C:\My Script\auto-ai\data\sessions.db
+[06:05:52] [INFO] [main.js] Attempting to discover and connect to available browsers...
+[06:05:52] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[06:05:52] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[06:05:52] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
+[06:05:52] [INFO] [orchestrator.js] [Orchestrator] Persistent dashboard process spawned on port 3001
+[06:05:52] [INFO] [orchestrator.js] [Orchestrator] Starting browser discovery...
+[06:05:52] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
+[06:05:52] [INFO] [discovery.js] Loading 8 discovery connectors...
+[06:05:52] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
+[06:05:52] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[06:05:52] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
+[06:05:52] [INFO] [discovery.js] Loaded connector: ixbrowser
+[06:05:52] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
+[06:05:52] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[06:05:52] [INFO] [localBrave.js] Initialized LocalBraveDiscover
+[06:05:52] [INFO] [discovery.js] Loaded connector: localBrave
+[06:05:52] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
+[06:05:52] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[06:05:52] [INFO] [discovery.js] Loaded connector: localChrome
+[06:05:52] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
+[06:05:52] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[06:05:52] [INFO] [discovery.js] Loaded connector: localEdge
+[06:05:52] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
+[06:05:52] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[06:05:52] [INFO] [discovery.js] Loaded connector: localVivaldi
+[06:05:52] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
+[06:05:52] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[06:05:52] [INFO] [discovery.js] Loaded connector: morelogin
+[06:05:52] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
+[06:05:52] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[06:05:52] [INFO] [roxybrowser.js] Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/
+[06:05:52] [INFO] [discovery.js] Loaded connector: roxybrowser
+[06:05:52] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
+[06:05:52] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[06:05:52] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
+[06:05:52] [INFO] [discovery.js] Loaded connector: undetectable
+[06:05:52] [INFO] [discovery.js] Successfully loaded 8 connectors
+[06:05:52] [INFO] [discovery.js] Starting browser discovery with 8 connectors in parallel...
+[06:05:52] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
+[06:05:52] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
+[06:05:52] [INFO] [localBrave.js] Discovering localBrave instances
+[06:05:52] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
+[06:05:52] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
+[06:05:52] [INFO] [roxybrowser.js] Discovering roxybrowser instances from: http://127.0.0.1:50000/
+[06:05:52] [INFO] [undetectable.js] Starting discovery for undetectable browser type
+[06:05:52] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
+[06:05:52] [INFO] [localBrave.js] No running localBrave instances found.
+[06:05:52] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[06:05:52] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[06:05:52] [INFO] [roxybrowser.js] Received profile info with code: 0, message: Success
+[06:05:52] [INFO] [roxybrowser.js] Processing 1 profiles from API response
+[06:05:52] [INFO] [roxybrowser.js] Found connectable profile: 0001 (ws: ws://127.0.0.1:54577/devtools/browser/d02bd7ac-09a6-4ff4-aea3-96a627925162)
+[06:05:52] [INFO] [roxybrowser.js] Discovery complete. Found 1 roxybrowser profiles.
+[06:05:53] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
+[06:05:53] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
+[06:05:53] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
+[06:05:53] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
+[06:05:53] [INFO] [discovery.js] Connector ixbrowser found no endpoints
+[06:05:53] [INFO] [discovery.js] Connector localBrave found no endpoints
+[06:05:53] [INFO] [discovery.js] Connector localChrome found no endpoints
+[06:05:53] [INFO] [discovery.js] Connector localEdge found no endpoints
+[06:05:53] [INFO] [discovery.js] Connector localVivaldi found no endpoints
+[06:05:53] [INFO] [discovery.js] Connector morelogin found no endpoints
+[06:05:53] [INFO] [discovery.js] Connector roxybrowser found 1 endpoints
+[06:05:53] [INFO] [discovery.js] Connector undetectable found no endpoints
+[06:05:53] [INFO] [discovery.js] Discovery complete. Found 1 total endpoints
+[06:05:53] [INFO] [orchestrator.js] Found 1 browser endpoints. Connecting...
+[06:05:53] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:54577/devtools/browser/d02bd7ac-09a6-4ff4-aea3-96a627925162
+[06:05:53] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:54577/devtools/browser/d02bd7ac-09a6-4ff4-aea3-96a627925162
+[06:05:53] [INFO] [sessionManager.js] [SessionManager] Session added: roxy:0001 (5 workers)
+[06:05:53] [INFO] [orchestrator.js] [Orchestrator] Connected: roxy:0001
+[06:05:53] [INFO] [orchestrator.js] [Orchestrator] Discovery complete. Connected to 1 browsers.
+[06:05:53] [DEBUG] [metrics.js] Browser discovery: 1 discovered, 1 connected, 0 failed
+[06:05:53] [INFO] [automator.js] [Automator] Proactive background health polling is DISABLED in Phase 2 for maximum CPU responsiveness. Relying exclusively on native socket disconnect events.
+[06:05:53] [INFO] [main.js] Successfully connected to 1 browser(s). Ready for automation.
+[06:05:53] [INFO] [main.js] MultiBrowseAutomation - Initialized. Processing 1 sequential task groups.
+[06:05:53] [INFO] [main.js] [Queue] Processing Task Group 1/1: ["api-twitteractivity"]
+[06:05:53] [INFO] [orchestrator.js] [Orchestrator] Task 'api-twitteractivity' added (timeout: 600000ms). Queue: 1
+[06:05:53] [INFO] [main.js] [Queue] Tasks for Group 1 added. Waiting for completion...
+[06:05:53] [INFO] [orchestrator.js] [Orchestrator] Processing 1 tasks...
+[06:05:53] [INFO] [orchestrator.js] [Orchestrator][roxy:0001] Starting checklist: 1 tasks, 5 workers
+[06:05:53] [INFO] [orchestrator.js] [Orchestrator][roxy:0001][Worker 0] Starting 'api-twitteractivity'
+[06:05:53] [DEBUG] [config-cache.js] [ConfigCache] Initialized with TTL: 300000ms, maxSize: 100
+[06:05:53] [INFO] [config-cache.js] [ConfigCache] Service initialized (TTL: 300000ms)
+[06:05:53] [DEBUG] [config-cache.js] [ConfigCache] Initialized with TTL: 300000ms, maxSize: 100
+[06:05:53] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
+[06:05:53] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
+[06:05:53] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
+[06:05:53] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
+[06:05:53] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
+[06:05:53] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
+[06:05:53] [INFO] [api-twitterActivity.js] Initializing with Unified API...
+[06:05:53] [INFO] [api-twitterActivity.js] ⏳ Startup: Running parallel initialization (Jitter: 1439ms)...
+[06:05:53] [INFO] [task-config-loader.js] [ConfigLoader] Loading configuration (cache miss: {})
+[06:05:53] [INFO] [api-twitterActivity.js] Profile: 10-Balanced-undefined | Input: undefined | Dive: 11% | Like: 2% | Follow: 0%
+[06:05:53] [INFO] [config-service.js] [Config] Service initialized
+[06:05:53] [DEBUG] [environment-config.js] [EnvironmentConfig] No environment overrides found
+[06:05:53] [DEBUG] [config-cache.js] [ConfigCache] Added new entry: {}
+[06:05:53] [INFO] [task-config-loader.js] [ConfigLoader] Configuration loaded successfully in 6ms
+[06:05:53] [DEBUG] [task-config-loader.js] [ConfigLoader] Cache stats: 0 hits, 1 loads
+[06:05:55] [INFO] [humanization.js] [Humanization] Engine initialized
+[06:05:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] Initialized [Type: Balanced | Input: Mouse (89%) | Dive: 38.8% | Tweet: 5.5% | T-Dive: 11.2% Like: 1.51%]. Fatigue scheduled for T+3.8m
+[06:05:55] [INFO] [api-twitterActivity.js] [AsyncQueue] Initialized (maxConcurrent: 1, maxQueueSize: 30, defaultTimeout: 20000ms)
+[06:05:55] [INFO] [api-twitterActivity.js] [DiveQueue] Initialized with engagement limits: {"replies":2,"retweets":1,"quotes":1,"likes":5,"follows":1,"bookmarks":2}
+[06:05:55] [INFO] [ai-reply-engine.js] [AIReplyEngine] Initialized (probability: 0.16)
+[06:05:55] [INFO] [ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 0.08)
+[06:05:55] [INFO] [ai-twitter-reply.js] [AIReplyAction] Initialized (enabled: true, probability: 16%)
+[06:05:55] [INFO] [ai-twitter-quote.js] [AIQuoteAction] Initialized (enabled: true, probability: 8%)
+[06:05:55] [INFO] [ai-twitter-like.js] [LikeAction] Initialized (enabled: true, probability: 12%)
+[06:05:55] [INFO] [ai-twitter-bookmark.js] [BookmarkAction] Initialized (enabled: true, probability: 8%)
+[06:05:55] [INFO] [ai-twitter-retweet.js] [RetweetAction] Initialized (enabled: true, probability: 16%)
+[06:05:55] [INFO] [ai-twitter-follow.js] [FollowAction] Initialized (enabled: true, probability: 40%)
+[06:05:55] [INFO] [ai-twitter-go-home.js] [GoHomeAction] Initialized (enabled: true)
+[06:05:55] [INFO] [api-twitterActivity.js] [ActionRunner] Initialized: reply=0.16, quote=0.08, like=0.12, bookmark=0.08, retweet=0.16, follow=0.4 (total: 100%)
+[06:05:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AITwitterAgent] Initialized (replyProbability: 0.16)
+[06:05:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AITwitterAgent] Engagement limits: replies: 0/2, retweets: 0/1, quotes: 0/1, likes: 0/5, follows: 0/1, bookmarks: 0/2
+[06:05:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AITwitterAgent] Session phases: warmup(0-10%) → active(10-80%) → cooldown(80-100%)
+[06:05:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] State management initialized: HOME (scrolling enabled)
+[06:05:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AITwitterAgent] Action handlers initialized: reply, quote, like, bookmark, retweet, follow, goHome
+[06:05:55] [INFO] [api-twitterActivity.js] Persona: casual
+[06:05:55] [INFO] [api-twitterActivity.js] Distraction chance: 6%
+[06:05:55] [INFO] [api-twitterActivity.js] Enforcing theme: dark
+[06:05:55] [INFO] [cloud-client.js] [Cloud] Both Cloud and FreeRouter are disabled, skipping initialization.
+[06:05:55] [DEBUG] [ollama-manager.js] [OllamaManager] Ollama is already running.
+[06:05:55] [INFO] [ollama-client.js] [Ollama] Initialized: http://localhost:11434 (Model: gemma3:1b)
+[06:05:55] [INFO] [local-client.js] [Local] Ollama client initialized
+[06:05:55] [INFO] [api-twitterActivity.js] Warm-up 2.9s...
+[06:05:58] [INFO] [api-twitterActivity.js] 🎲 Rolled entry point: notifications/mentions → https://x.com/notifications/mentions
+[06:06:21] [INFO] [api-twitterActivity.js] X.com loaded (home)
+[06:06:21] [INFO] [api-twitterActivity.js] Waiting for network settlement (4000ms)...
+[06:06:25] [DEBUG] [api-twitterActivity.js] [AsyncQueue] ⚡ Background task expected timeout: page.waitForLoadState: Timeout 4000ms exceeded.
+[06:06:25] [INFO] [api-twitterActivity.js] Network idle reached.
+[06:06:25] [INFO] [api-twitterActivity.js] 📖 Simulating reading on notifications/mentions for 16.29s...
+[06:06:25] [DEBUG] [configLoader.js] Loaded configuration from settings.json
+[06:06:44] [INFO] [api-twitterActivity.js] ✅ Finished reading, navigating to home...
+[06:06:44] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] Returning to Home Feed...
+[06:06:44] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[06:06:44] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Home Icon for 486ms...
+[06:06:47] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [133, 75], clicked [133, 75] [Home Icon]
+[06:06:47] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [ai-twitterActivity][api.click] Clicked x=133 y=75
+[06:06:47] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Interaction] [Home Icon] Success on attempt 1/3
+[06:06:48] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Navigation] Clicking 'Home Icon' again (2nd click to reload)...
+[06:06:48] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Home Icon for 816ms...
+[06:06:51] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [129, 83], clicked [128, 82] [Home Icon]
+[06:06:51] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [ai-twitterActivity][api.click] Clicked x=128 y=82
+[06:06:51] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Interaction] [Home Icon] Success on attempt 1/3
+[06:06:52] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Navigation] Navigate to /home Success.
+[06:06:52] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Tab] "For you" is already selected.
+[06:06:52] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Navigation] Resetting scroll tracking for exploration...
+[06:06:52] [INFO] [api-twitterActivity.js] Checking login state...
+[06:06:52] [INFO] [api-twitterActivity.js] ✅ Logged in (check 1/3)
+[06:06:52] [INFO] [api-twitterActivity.js] Starting session (20 cycles, 540-840s)...
+[06:06:52] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AITwitterAgent] Starting AI-Enhanced Session with DiveQueue and Lock Management...
+[06:06:52] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] Starting Session on https://x.com/home
+[06:06:52] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] Session Timer Set: 598.9s
+[06:06:52] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] Enforcing theme: dark
+[06:06:52] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Session starting...
+[06:06:58] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] --- Loop 1  ---
+[06:07:01] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Idle] Reading Phase (124.7s)
+[06:07:07] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Fidget] Whitespace click at (51, 177)
+[06:07:08] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Phase] Transition: warmup → active (Peak engagement - all actions available)
+[06:07:08] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1773702428579_258cx
+[06:07:08] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)
+[06:07:08] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Scroll] New session/navigated home, performing forced exploration scroll...
+[06:07:11] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Processing feed before selecting target (thinking)...
+[06:07:11] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about scout for 648ms...
+[06:07:13] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Selected tweet candidate at index 4 (Y: -62)
+[06:07:13] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Debug] Targeting tweet permalink link (Primary).
+[06:07:13] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Attempt] api.click on Permalink...
+[06:07:18] [INFO] [api.click] Mouse Cursor moved to [555, -172], clicked [556, -172]
+[06:07:22] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Fail] api.click did not navigate. Retrying with NATIVE click...
+[06:07:22] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Success] Native Click navigated to tweet.
+[06:07:22] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Tracking new tweet 2033516630341562407
+[06:07:22] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Extracting tweet content from full page...
+[06:07:28] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] WARNING: Could not find tweet text element!
+[06:07:28] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] WARNING: Could not extract valid tweet text. Skipping AI reply.
+[06:07:28] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Idle] Reading expanded tweet for 10998ms...
+[06:07:28] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Micro] Fidget loop started
+[06:07:39] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Micro] No micro-interaction triggered (post_read)
+[06:07:39] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Scroll] Reading replies...
+[06:07:46] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] Returning to Home Feed...
+[06:07:46] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[06:07:46] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Home Icon for 584ms...
+[06:07:49] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [151, 95], clicked [150, 95] [Home Icon]
+[06:07:49] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [ai-twitterActivity][api.click] Clicked x=150 y=95
+[06:07:49] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Interaction] [Home Icon] Success on attempt 1/3
+[06:07:51] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Navigation] Clicking 'Home Icon' again (2nd click to reload)...
+[06:07:51] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Home Icon for 480ms...
+[06:07:54] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [141, 84], clicked [142, 85] [Home Icon]
+[06:07:54] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [ai-twitterActivity][api.click] Clicked x=142 y=85
+[06:07:54] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Interaction] [Home Icon] Success on attempt 1/3
+[06:07:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Navigation] Navigate to /home Success.
+[06:07:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Tab] "For you" is already selected.
+[06:07:55] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Navigation] Resetting scroll tracking for exploration...
+[06:07:56] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] Already on home page
+[06:07:57] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] ✓ Successfully returned to home
+[06:07:58] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)
+[06:08:20] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1773702500051_tss1c
+[06:08:20] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)
+[06:08:20] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Scroll] New session/navigated home, performing forced exploration scroll...
+[06:08:22] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Processing feed before selecting target (thinking)...
+[06:08:22] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about scout for 623ms...
+[06:08:23] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Selected tweet candidate at index 6 (Y: 544)
+[06:08:23] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Debug] Targeting tweet permalink link (Primary).
+[06:08:23] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Attempt] api.click on Permalink...
+[06:08:26] [INFO] [api.click] Mouse Cursor moved to [509, 564], clicked [509, 563]
+[06:08:26] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Success] Navigated to tweet page.
+[06:08:26] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Debug] Tweet URL: https://x.com/MyColleagueMio2/status/2033659514189127912
+[06:08:26] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Tracking new tweet 2033659514189127912
+[06:08:26] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Extracting tweet content from full page...
+[06:08:27] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Extracted tweet text (124 chars)
+[06:08:27] [DEBUG] [api-twitterActivity.js] [ActionRunner] Smart probabilities (total redistributed: 100.0%): {"reply":0.16,"quote":0.08,"like":0.12,"bookmark":0.08,"retweet":0.16,"follow":0.4}
+[06:08:27] [DEBUG] [api-twitterActivity.js] [ActionRunner] Selected: follow (roll: 92.2%, prob: 40.0%)
+[06:08:27] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] Selected: FOLLOW
+[06:08:27] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] follow → clicking author link to navigate to: https://x.com/MyColleagueMio2
+[06:08:27] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Author profile link for 576ms...
+[06:08:31] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [327, 74], clicked [328, 74] [Author profile link]
+[06:08:31] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [ai-twitterActivity][api.click] Clicked x=328 y=74
+[06:08:33] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] follow: arrived at profile page for @MyColleagueMio2
+[06:08:33] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1773702500051_tss1c
+[06:08:33] [DEBUG] [api-twitterActivity.js] [DiveQueue] addDive called: dive_1773702500051_tss1c, timeout: 120000ms
+[06:08:33] [DEBUG] [api-twitterActivity.js] [AsyncQueue] Starting task: dive_1773702500051_tss1c (queue: 0, active: 0/1)
+[06:08:33] [DEBUG] [api-twitterActivity.js] [DiveQueue] Starting dive function: dive_1773702500051_tss1c
+[06:08:33] [INFO] [api-twitterActivity.js] Delegating follow to api.followWithAI/API()...
+[06:08:33] [INFO] [api/follow.js] Starting api.followWithAPI() for @MyColleagueMio2...
+[06:08:33] [INFO] [api/follow.js] [followWithAPI] Checking if already following @MyColleagueMio2...
+[06:08:33] [INFO] [api/follow.js] [followWithAPI] Finding follow button...
+[06:08:33] [ERROR] [api/follow.js] [followWithAPI] Follow button not visible on page
+[06:08:33] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] ❌ follow failed: button_not_visible
+[06:08:33] [DEBUG] [api-twitterActivity.js] [DiveQueue] Dive function completed: dive_1773702500051_tss1c
+[06:08:33] [INFO] [api-twitterActivity.js] [AsyncQueue] ✓ Completed task: dive_1773702500051_tss1c in 11ms
+[06:08:33] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Action successful, skipping reading phase and returning home...
+[06:08:34] [INFO] [api-twitterActivity.js] Returning to Home Feed...
+[06:08:34] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[06:08:34] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Home Icon for 635ms...
+[06:08:37] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [125, 92], clicked [125, 92] [Home Icon]
+[06:08:37] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=125 y=92
+[06:08:37] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:08:38] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' again (2nd click to reload)...
+[06:08:38] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Home Icon for 808ms...
+[06:08:41] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [135, 87], clicked [135, 87] [Home Icon]
+[06:08:41] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=135 y=87
+[06:08:41] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:08:42] [INFO] [api-twitterActivity.js] [Navigation] Navigate to /home Success.
+[06:08:42] [INFO] [api-twitterActivity.js] [Tab] "For you" is already selected.
+[06:08:42] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] ✓ Successfully returned to home
+[06:08:44] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)
+[06:08:44] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Fidget] Random right-click at (334, 245)
+[06:09:06] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Branch] Idle (Staring at screen)
+[06:09:08] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] --- Loop 2  ---
+[06:09:08] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] 🔥 >>> ENTERING BURST MODE! High intensity for 51.5s
+[06:09:11] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Idle] Reading Phase (1.3s)
+[06:09:12] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Branch] Idle (Staring at screen)
+[06:09:21] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] --- Loop 3  ---
+[06:09:26] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Idle] Reading Phase (0.5s)
+[06:09:34] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1773702574673_isirg
+[06:09:34] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)
+[06:09:34] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Processing feed before selecting target (thinking)...
+[06:09:34] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about scout for 853ms...
+[06:09:35] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Selected tweet candidate at index 10 (Y: 101)
+[06:09:35] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Debug] Targeting tweet permalink link (Primary).
+[06:09:35] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Attempt] api.click on Permalink...
+[06:09:40] [INFO] [api.click] Mouse Cursor moved to [421, -1122], clicked [421, -1123]
+[06:09:40] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Success] Navigated to tweet page.
+[06:09:40] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Debug] Tweet URL: https://x.com/Yoda4ever/status/2033553892278190297
+[06:09:40] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Tracking new tweet 2033553892278190297
+[06:09:40] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Extracting tweet content from full page...
+[06:09:41] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Extracted tweet text (47 chars)
+[06:09:41] [DEBUG] [api-twitterActivity.js] [ActionRunner] Smart probabilities (total redistributed: 100.0%): {"reply":0.16,"quote":0.08,"like":0.12,"bookmark":0.08,"retweet":0.16,"follow":0.4}
+[06:09:41] [DEBUG] [api-twitterActivity.js] [ActionRunner] Selected: follow (roll: 83.5%, prob: 40.0%)
+[06:09:41] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] Selected: FOLLOW
+[06:09:41] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] follow → clicking author link to navigate to: https://x.com/Yoda4ever
+[06:09:41] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Author profile link for 796ms...
+[06:10:12] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Interaction] humanClick failed on Author profile link: locator.evaluate: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="User-Name"] a[href="/Yoda4ever"]').first()
+
+[06:10:12] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Error detected: click_failed, recovering...
+[06:10:12] [WARN] [humanization.js] [Error] click_failed
+[06:10:12] [DEBUG] [humanization.js] [Recovery] Trying: click_nearby
+[06:10:14] [INFO] [humanization.js] [Recovery] Recovered via: nearby_click
+[06:10:14] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] follow: click failed (locator.evaluate: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="User-Name"] a[href="/Yoda4ever"]').first()
+), skipping.
+[06:10:14] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1773702574673_isirg
+[06:10:14] [DEBUG] [api-twitterActivity.js] [DiveQueue] addDive called: dive_1773702574673_isirg, timeout: 120000ms
+[06:10:14] [DEBUG] [api-twitterActivity.js] [AsyncQueue] Starting task: dive_1773702574673_isirg (queue: 0, active: 0/1)
+[06:10:14] [DEBUG] [api-twitterActivity.js] [DiveQueue] Starting dive function: dive_1773702574673_isirg
+[06:10:14] [DEBUG] [api-twitterActivity.js] [DiveQueue] Dive function completed: dive_1773702574673_isirg
+[06:10:14] [INFO] [api-twitterActivity.js] [AsyncQueue] ✓ Completed task: dive_1773702574673_isirg in 1ms
+[06:10:14] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Action successful, skipping reading phase and returning home...
+[06:10:14] [INFO] [api-twitterActivity.js] Returning to Home Feed...
+[06:10:14] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'X Logo' (1st click for reload)...
+[06:10:14] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about X Logo for 601ms...
+[06:10:18] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [135, 25], clicked [136, 24] [X Logo]
+[06:10:18] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=136 y=24
+[06:10:18] [INFO] [api-twitterActivity.js] [Interaction] [X Logo] Success on attempt 1/3
+[06:10:19] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'X Logo' again (2nd click to reload)...
+[06:10:19] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about X Logo for 813ms...
+[06:10:22] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [144, 26], clicked [145, 25] [X Logo]
+[06:10:22] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=145 y=25
+[06:10:22] [INFO] [api-twitterActivity.js] [Interaction] [X Logo] Success on attempt 1/3
+[06:10:23] [INFO] [api-twitterActivity.js] [Navigation] Navigate to /home Success.
+[06:10:23] [INFO] [api-twitterActivity.js] [Tab] "For you" is already selected.
+[06:10:23] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] ✓ Successfully returned to home
+[06:10:25] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)
+[06:10:25] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔍 Starting SCAN phase for dive_1773702625397_2exke
+[06:10:25] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)
+[06:10:25] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Processing feed before selecting target (thinking)...
+[06:10:25] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about scout for 300ms...
+[06:10:26] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Selected tweet candidate at index 3 (Y: 863)
+[06:10:26] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Debug] Targeting tweet permalink link (Primary).
+[06:10:26] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Attempt] api.click on Permalink...
+[06:10:31] [INFO] [api.click] Mouse Cursor moved to [436, 481], clicked [436, 482]
+[06:10:31] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Success] Navigated to tweet page.
+[06:10:31] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Debug] Tweet URL: https://x.com/Sadie_NC/status/2033627800758812896
+[06:10:31] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Tracking new tweet 2033627800758812896
+[06:10:31] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Extracting tweet content from full page...
+[06:10:32] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI] Extracted tweet text (47 chars)
+[06:10:32] [DEBUG] [api-twitterActivity.js] [ActionRunner] Smart probabilities (total redistributed: 100.0%): {"reply":0.16,"quote":0.08,"like":0.12,"bookmark":0.08,"retweet":0.16,"follow":0.4}
+[06:10:32] [DEBUG] [api-twitterActivity.js] [ActionRunner] Selected: follow (roll: 77.0%, prob: 40.0%)
+[06:10:32] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] Selected: FOLLOW
+[06:10:32] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] follow → clicking author link to navigate to: https://x.com/Sadie_NC
+[06:10:32] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Author profile link for 454ms...
+[06:10:35] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [286, 78], clicked [285, 77] [Author profile link]
+[06:10:35] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [ai-twitterActivity][api.click] Clicked x=285 y=77
+[06:10:37] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] follow: arrived at profile page for @Sadie_NC
+[06:10:37] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1773702625397_2exke
+[06:10:37] [DEBUG] [api-twitterActivity.js] [DiveQueue] addDive called: dive_1773702625397_2exke, timeout: 120000ms
+[06:10:37] [DEBUG] [api-twitterActivity.js] [AsyncQueue] Starting task: dive_1773702625397_2exke (queue: 0, active: 0/1)
+[06:10:37] [DEBUG] [api-twitterActivity.js] [DiveQueue] Starting dive function: dive_1773702625397_2exke
+[06:10:37] [INFO] [api-twitterActivity.js] Delegating follow to api.followWithAI/API()...
+[06:10:37] [INFO] [api/follow.js] Starting api.followWithAPI() for @Sadie_NC...
+[06:10:37] [INFO] [api/follow.js] [followWithAPI] Checking if already following @Sadie_NC...
+[06:10:37] [INFO] [api/follow.js] [followWithAPI] Finding follow button...
+[06:10:37] [ERROR] [api/follow.js] [followWithAPI] Follow button not visible on page
+[06:10:37] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [AI-Engage] ❌ follow failed: button_not_visible
+[06:10:37] [DEBUG] [api-twitterActivity.js] [DiveQueue] Dive function completed: dive_1773702625397_2exke
+[06:10:37] [INFO] [api-twitterActivity.js] [AsyncQueue] ✓ Completed task: dive_1773702625397_2exke in 9ms
+[06:10:37] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Dive] Action successful, skipping reading phase and returning home...
+[06:10:37] [INFO] [api-twitterActivity.js] Returning to Home Feed...
+[06:10:37] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[06:10:37] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Home Icon for 651ms...
+[06:10:40] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [131, 100], clicked [131, 99] [Home Icon]
+[06:10:40] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=131 y=99
+[06:10:40] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:10:42] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' again (2nd click to reload)...
+[06:10:42] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Human] Thinking about Home Icon for 776ms...
+[06:10:44] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [124, 96], clicked [125, 97] [Home Icon]
+[06:10:44] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=125 y=97
+[06:10:44] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:10:45] [INFO] [api-twitterActivity.js] [Navigation] Navigate to /home Success.
+[06:10:45] [INFO] [api-twitterActivity.js] [Tab] "For you" is already selected.
+[06:10:46] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] ✓ Successfully returned to home
+[06:10:47] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)
+[06:10:48] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] --- Loop 4  ---
+[06:10:49] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] 📉 Burst Mode Ended. Returning to normal pace.
+[06:10:54] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] [Idle] Reading Phase (116.0s)
+[06:10:54] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] ⚠️ ENERGY DECAY TRIGGERED | Simulasi wes kesel browsing
+[06:10:54] [INFO] [api-twitterActivity.js] [Agent:10-Balanced] HOT SWAP: 10-Balanced >>> 36-Lurker
+[06:10:57] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔍 Starting SCAN phase for dive_1773702657115_lq6z2
+[06:10:57] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)
+[06:10:57] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Processing feed before selecting target (thinking)...
+[06:10:57] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about scout for 634ms...
+[06:10:58] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Selected tweet candidate at index 4 (Y: 42)
+[06:10:58] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Debug] Targeting tweet permalink link (Primary).
+[06:10:58] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Attempt] api.click on Permalink...
+[06:11:01] [INFO] [api.click] Mouse Cursor moved to [477, 242], clicked [478, 242]
+[06:11:02] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Success] Navigated to tweet page.
+[06:11:02] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Debug] Tweet URL: https://x.com/Rainmaker1973/status/2033586229833290131
+[06:11:02] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Tracking new tweet 2033586229833290131
+[06:11:02] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Extracting tweet content from full page...
+[06:11:03] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Extracted tweet text (15 chars)
+[06:11:03] [DEBUG] [api-twitterActivity.js] [ActionRunner] Smart probabilities (total redistributed: 100.0%): {"reply":0.16,"quote":0.08,"like":0.12,"bookmark":0.08,"retweet":0.16,"follow":0.4}
+[06:11:03] [DEBUG] [api-twitterActivity.js] [ActionRunner] Selected: follow (roll: 70.7%, prob: 40.0%)
+[06:11:03] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] Selected: FOLLOW
+[06:11:03] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] follow → clicking author link to navigate to: https://x.com/Rainmaker1973
+[06:11:03] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about Author profile link for 571ms...
+[06:11:06] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [285, 77], clicked [284, 78] [Author profile link]
+[06:11:06] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [ai-twitterActivity][api.click] Clicked x=284 y=78
+[06:11:08] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] follow: arrived at profile page for @Rainmaker1973
+[06:11:08] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1773702657115_lq6z2
+[06:11:08] [DEBUG] [api-twitterActivity.js] [DiveQueue] addDive called: dive_1773702657115_lq6z2, timeout: 120000ms
+[06:11:08] [DEBUG] [api-twitterActivity.js] [AsyncQueue] Starting task: dive_1773702657115_lq6z2 (queue: 0, active: 0/1)
+[06:11:08] [DEBUG] [api-twitterActivity.js] [DiveQueue] Starting dive function: dive_1773702657115_lq6z2
+[06:11:08] [INFO] [api-twitterActivity.js] Delegating follow to api.followWithAI/API()...
+[06:11:08] [INFO] [api/follow.js] Starting api.followWithAPI() for @Rainmaker1973...
+[06:11:08] [INFO] [api/follow.js] [followWithAPI] Checking if already following @Rainmaker1973...
+[06:11:08] [INFO] [api/follow.js] Already following @Rainmaker1973.
+[06:11:08] [DEBUG] [api-twitterActivity.js] [DiveQueue] ✓ Engagement recorded: follows (1/1)
+[06:11:08] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] ✅ follow executed: success
+[06:11:08] [DEBUG] [api-twitterActivity.js] [DiveQueue] Dive function completed: dive_1773702657115_lq6z2
+[06:11:08] [INFO] [api-twitterActivity.js] [AsyncQueue] ✓ Completed task: dive_1773702657115_lq6z2 in 7ms
+[06:11:08] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Action successful, skipping reading phase and returning home...
+[06:11:09] [INFO] [api-twitterActivity.js] Returning to Home Feed...
+[06:11:09] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[06:11:09] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about Home Icon for 589ms...
+[06:11:12] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [148, 80], clicked [147, 81] [Home Icon]
+[06:11:12] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=147 y=81
+[06:11:12] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:11:13] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' again (2nd click to reload)...
+[06:11:13] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about Home Icon for 693ms...
+[06:11:16] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [151, 90], clicked [152, 91] [Home Icon]
+[06:11:16] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=152 y=91
+[06:11:16] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:11:17] [INFO] [api-twitterActivity.js] [Navigation] Navigate to /home Success.
+[06:11:17] [INFO] [api-twitterActivity.js] [Tab] "For you" is already selected.
+[06:11:18] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] ✓ Successfully returned to home
+[06:11:19] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)
+[06:12:06] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔍 Starting SCAN phase for dive_1773702726920_gxxyq
+[06:12:06] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)
+[06:12:07] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Selected tweet candidate at index 4 (Y: 123)
+[06:12:07] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Debug] Targeting tweet permalink link (Primary).
+[06:12:07] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Attempt] api.click on Permalink...
+[06:12:10] [INFO] [api.click] Mouse Cursor moved to [525, -153], clicked [526, -154]
+[06:12:13] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Fail] api.click did not navigate. Retrying with NATIVE click...
+[06:12:13] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Success] Native Click navigated to tweet.
+[06:12:13] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Tracking new tweet 2033596660388086051
+[06:12:13] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Extracting tweet content from full page...
+[06:12:15] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Extracted tweet text (61 chars)
+[06:12:15] [DEBUG] [api-twitterActivity.js] [ActionRunner] follow at limit (follows)
+[06:12:15] [DEBUG] [api-twitterActivity.js] [ActionRunner] Smart probabilities (total redistributed: 100.0%): {"reply":0.266,"quote":0.133,"like":0.2,"bookmark":0.133,"retweet":0.266}
+[06:12:15] [DEBUG] [api-twitterActivity.js] [ActionRunner] Selected: quote (roll: 34.3%, prob: 13.3%)
+[06:12:15] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] Selected: QUOTE
+[06:12:15] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1773702726920_gxxyq
+[06:12:15] [DEBUG] [api-twitterActivity.js] [DiveQueue] addDive called: dive_1773702726920_gxxyq, timeout: 120000ms
+[06:12:15] [DEBUG] [api-twitterActivity.js] [AsyncQueue] Starting task: dive_1773702726920_gxxyq (queue: 0, active: 0/1)
+[06:12:15] [DEBUG] [api-twitterActivity.js] [DiveQueue] Starting dive function: dive_1773702726920_gxxyq
+[06:12:15] [INFO] [api-twitterActivity.js] Delegating quote to api.quoteWithAI/API()...
+[06:12:15] [INFO] [api/quote.js] Starting high-level api.quoteWithAI()...
+[06:12:15] [INFO] [api/quote.js] Context: Tweet by @DrClownPhD ("I don’t understand what’s happ...")
+[06:12:15] [INFO] [api/quote.js] Loading/Reading context (Elastic Scroll)...
+[06:12:15] [INFO] [api/quote.js] [Elastic] Scrolling down to load infinite content...
+[06:12:18] [INFO] [api/quote.js] [Elastic] Scrolling up while extracting context...
+[06:12:24] [INFO] [api/quote.js] Extracted 37 replies for context
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuoteEngine] Initialized (probability: 1)
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote] Sentiment Analysis:
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Overall: NEUTRAL/POSITIVE (score: 0.00)
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Valence: 0.00
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Arousal: 0.21
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Dominance: 0.45
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Sarcasm: 0.00
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Toxicity: 0.00
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Risk Level: low
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Engagement Style: neutral
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote]   - Conversation Type: general
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote] Reply selection strategy: longest (pos: 7, neg: 2, sarcastic: 0)
+[06:12:24] [INFO] [ai-quote-engine.js] [AIQuote] Selected 30 replies for LLM context (filtered from 37)
+[06:12:24] [DEBUG] [ai-quote-engine.js] [AIQuote] Detected language: English
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] ============================================
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] TWEET TO QUOTE:
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] Author: @DrClownPhD
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] URL: https://x.com/DrClownPhD/status/2033596660388086051
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] Tweet Text: "I don’t understand what’s happening… but where do I sign up? "
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] Tweet Length: 61 chars
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] Sentiment: neutral, Tone: general
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] REPLIES CONTEXT (30 selected from 37):
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [1] Reply1: "@User: We certainly would not survive for a minute in the shower room with those girls. Still want a ticket"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [2] Reply2: "@User: I just spent a solid 8 minutes staring at this without blinking and with zero thoughts going through"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [3] Reply3: "@User: Taiwan's baseball team. Fubonguardians  cheerleading 
+https://
+instagram.com/fubon_angels_o
+fficial/"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [4] Reply4: "@User: I believe they are playing Japanese Baseball Grabass for the fans. If you have never been to a baseb"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [5] Reply5: "@User: I'll translate, Announcer (losing it): 'DEFENSE ACTIVATED on jersey 32! Number 10 coming in hot with"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [6] Reply6: "@User: Taiwanese cheerleaders for the Fubon Guardians baseball team.
+
+
+https://
+instagram.com/fubon_angels_"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [7] Reply7: "@User: Telling you!! Fans goes to baseball games in Korea and China just to watch the cheerleaders"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [8] Reply8: "@User: you have to join the band for some tush and touch..
+no PhD theoratical spreadsheat..."
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [9] Reply9: "@User: Dude, they just keep on violating her  
+It’s not a violation if it’s girl on girl"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [10] Reply10: "@User: Doc... We love you but we DON'T want to see you in those shorts..."
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [11] Reply11: "@User: Yepp, I was quite bored ;D But the song is pretty good actually."
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [12] Reply12: "@User: That’s probably better that the show they are there to perform"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [13] Reply13: "@User: I don’t understand what’s happening… but where do I sign up?"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [14] Reply14: "@User: The comments remind me of Kevin Spacey in American Beauty."
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [15] Reply15: "@User: @SoveyX
+ can you explain what is going on here lol"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [16] Reply16: "@User: I'd like to know as well, asking for a friend."
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [17] Reply17: "@User: How old are they should be the first question"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [18] Reply18: "@User: Let’s work together and start a championship"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [19] Reply19: "@User: Think she had a hand warmer stuffed in there"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [20] Reply20: "@User: Is that one of those workplace harassments?"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [21] Reply21: "@User: I want in. For science purposes of course."
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [22] Reply22: "@User: cheerleading in china sure is interesting"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [23] Reply23: "@User: Very interesting team-building strategy"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [24] Reply24: "@User: The cameraman understood the assignment"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [25] Reply25: "@User: I would sign up but face the other way"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [26] Reply26: "@User: in the US you get arrested for that."
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [27] Reply27: "@User: Where can I watch this sport?"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [28] Reply28: "@User: Lesbian privilege on display."
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [29] Reply29: "@User: Click to Follow DrClownPhD"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] [30] Reply30: "@User: Wait, what’s the source?"
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] FULL PROMPT SENT TO LLM:
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] Language: English
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] System Prompt Length: 2845 chars
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] User Prompt Length: 3053 chars
+[06:12:24] [INFO] [ai-quote-engine.js] [DEBUG] ============================================
+[06:12:24] [INFO] [ai-quote-engine.js] [AI-Quote] Generating English quote tweet (attempt 1/1)...
+[06:12:24] [INFO] [agent-connector.js] [quote-engine] Processing request: generate_reply
+[06:12:24] [DEBUG] [agent-connector.js] [quote-engine] Request payload keys: systemPrompt, userPrompt, tweetText, authorUsername, engagementType, maxTokens, context
+[06:12:24] [DEBUG] [agent-connector.js] [quote-engine] Queue status before enqueue: running=0, queued=0
+[06:12:24] [DEBUG] [agent-connector.js] [quote-engine] Enqueueing request with timeout 60000ms
+[06:12:24] [DEBUG] [request-queue.js] [RequestQueue] Enqueued task req_1773702744581_g5jjlj3n6, queue size: 1, running: 0
+[06:12:24] [DEBUG] [request-queue.js] [RequestQueue] Dequeueing task req_1773702744581_g5jjlj3n6, queue now has 0 items
+[06:12:24] [DEBUG] [request-queue.js] [RequestQueue] Task req_1773702744581_g5jjlj3n6 starting (running: 1/3, queued: 0)
+[06:12:24] [INFO] [cloud-client.js] [Cloud] Both Cloud and FreeRouter are disabled, skipping initialization.
+[06:12:24] [INFO] [agent-connector.js] [quote-engine] Routing to local providers (vllm: false, ollama: true)
+[06:12:24] [INFO] [agent-connector.js] [quote-engine] Using text-only mode (fallback: true)
+[06:12:24] [DEBUG] [local-client.js] [Local] Falling back to Ollama...
+[06:12:24] [DEBUG] [ollama-manager.js] [OllamaManager] Ollama is already running.
+[06:12:24] [INFO] [ollama-client.js] [Ollama] Initialized: http://localhost:11434 (Model: gemma3:1b)
+[06:12:24] [INFO] [local-client.js] [Local] Ollama client initialized
+[06:12:24] [INFO] [ollama-client.js] [Ollama] 🔔 REQUEST #1 START: TEXT request to gemma3:1b
+[06:12:24] [INFO] [ollama-client.js] [Ollama] Warming up gemma3:1b...
+[06:12:28] [INFO] [ollama-client.js] [Ollama] Model warmup complete
+[06:12:28] [DEBUG] [ollama-client.js] [Ollama] Using generate endpoint for gemma3:1b...
+[06:12:28] [DEBUG] [ollama-client.js] [Ollama] Cleaned response: Seriously, who even cares about some Japanese cheerleaders?
+[06:12:28] [SUCCESS] [ollama-client.js] [Ollama] Generate request completed in 4309ms
+[06:12:28] [SUCCESS] [local-client.js] [Local] Ollama response in 4321ms
+[06:12:28] [SUCCESS] [agent-connector.js] [quote-engine] Text-only reply generated in 4323ms
+[06:12:28] [DEBUG] [request-queue.js] [RequestQueue] Task req_1773702744581_g5jjlj3n6 completed successfully
+[06:12:28] [DEBUG] [request-queue.js] [RequestQueue] Task req_1773702744581_g5jjlj3n6 finished, running: 0
+[06:12:28] [DEBUG] [agent-connector.js] [quote-engine] Request dequeued after 4328ms
+[06:12:28] [DEBUG] [agent-connector.js] [quote-engine] processRequest returning: success=true, contentLen=59
+[06:12:28] [INFO] [ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[06:12:28] [INFO] [ai-quote-engine.js] [DEBUG] LLM RAW RESPONSE (attempt 1):
+[06:12:28] [INFO] [ai-quote-engine.js] [DEBUG] {"success":true,"content":"Seriously, who even cares about some Japanese cheerleaders?","metadata":{"routedTo":"ollama","duration":4323,"visionEnabled":false,"replyCount":37}}
+[06:12:28] [INFO] [ai-quote-engine.js] [DEBUG] ----------------------------------------------
+[06:12:28] [INFO] [ai-quote-engine.js] [DEBUG] Extracted content: "Seriously, who even cares about some Japanese cheerleaders?..." (length: 59)
+[06:12:28] [DEBUG] [ai-quote-engine.js] [DEBUG] Raw content length: 59 chars
+[06:12:28] [DEBUG] [ai-quote-engine.js] [extractReplyFromResponse] Processing content: "Seriously, who even cares about some Japanese cheerleaders?..." (length: 59)
+[06:12:28] [DEBUG] [ai-quote-engine.js] [extractReplyFromResponse] ✓ Direct content used
+[06:12:28] [DEBUG] [ai-quote-engine.js] [DEBUG] Extracted reply: "Seriously, who even cares about some Japanese cheerleaders?..."
+[06:12:28] [INFO] [ai-quote-engine.js] [AIQuoteEngine] ✨ Cleaned quote: "Seriously, who even cares about some Japanese cheerleaders?" (59 chars)
+[06:12:28] [INFO] [api/quote.js] AI Quote: "Seriously, who even cares about some Japanese cheerleaders?"
+[06:12:28] [INFO] [api/quote.js] Focusing back on target tweet...
+[06:12:30] [INFO] [api/quote.js] Executing quoteMethodB (Retweet Menu)...
+[06:12:30] [INFO] [ai-quote-engine.js] [QuoteMethodB] Starting retweet menu method
+[06:12:31] [INFO] [ai-quote-engine.js] [QuoteMethodB] Clicking retweet button using selector: [data-testid="retweet"]
+[06:12:31] [INFO] [ai-quote-engine.js] [QuoteMethodB] Clicking retweet button (ghost cursor)...
+[06:12:34] [INFO] [api.click] Mouse Cursor moved to [361, 449], clicked [362, 450]
+[06:12:35] [INFO] [ai-quote-engine.js] [QuoteMethodB] Clicking Quote option (ghost cursor)...
+[06:12:37] [INFO] [api.click] Mouse Cursor moved to [340, 498], clicked [339, 497]
+[06:12:40] [INFO] [ai-quote-engine.js] [QuoteMethodB] Typing quote (59 chars, ghost cursor)...
+[06:13:02] [INFO] [api/quote.js] ✅ api.quoteWithAI successful!
+[06:13:02] [DEBUG] [metrics.js] [recordTwitterEngagement] Recorded 1 quote(s)
+[06:13:02] [DEBUG] [api-twitterActivity.js] [DiveQueue] ✓ Engagement recorded: quotes (1/1)
+[06:13:02] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] ✅ quote executed: success
+[06:13:02] [DEBUG] [api-twitterActivity.js] [DiveQueue] Dive function completed: dive_1773702726920_gxxyq
+[06:13:02] [INFO] [api-twitterActivity.js] [AsyncQueue] ✓ Completed task: dive_1773702726920_gxxyq in 47557ms
+[06:13:02] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Action successful, skipping reading phase and returning home...
+[06:13:03] [INFO] [api-twitterActivity.js] Returning to Home Feed...
+[06:13:03] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[06:13:03] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about Home Icon for 487ms...
+[06:13:07] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [147, 84], clicked [147, 84] [Home Icon]
+[06:13:07] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=147 y=84
+[06:13:07] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:13:08] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' again (2nd click to reload)...
+[06:13:08] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about Home Icon for 642ms...
+[06:13:11] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [142, 82], clicked [143, 81] [Home Icon]
+[06:13:11] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=143 y=81
+[06:13:11] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:13:12] [INFO] [api-twitterActivity.js] [Navigation] Navigate to /home Success.
+[06:13:12] [INFO] [api-twitterActivity.js] [Tab] "For you" is already selected.
+[06:13:12] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] ✓ Successfully returned to home
+[06:13:14] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)
+[06:13:14] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Branch] Idle (Staring at screen)
+[06:13:28] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] --- Loop 5  ---
+[06:13:34] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Idle] Reading Phase (247.1s)
+[06:13:55] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Fidget] Logo click (refresh)
+[06:14:18] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔍 Starting SCAN phase for dive_1773702858135_9e9qp
+[06:14:18] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)
+[06:14:18] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Processing feed before selecting target (thinking)...
+[06:14:18] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about scout for 478ms...
+[06:14:19] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Selected tweet candidate at index 5 (Y: 950)
+[06:14:19] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Debug] Targeting tweet permalink link (Primary).
+[06:14:19] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Attempt] api.click on Permalink...
+[06:14:25] [INFO] [api.click] Mouse Cursor moved to [535, 874], clicked [534, 874]
+[06:14:26] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Success] Navigated to tweet page.
+[06:14:26] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Debug] Tweet URL: https://x.com/kdramahotgists/status/2033508042583494801
+[06:14:26] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Tracking new tweet 2033508042583494801
+[06:14:26] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Extracting tweet content from full page...
+[06:14:27] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Extracted tweet text (129 chars)
+[06:14:27] [DEBUG] [api-twitterActivity.js] [ActionRunner] quote at limit (quotes)
+[06:14:27] [DEBUG] [api-twitterActivity.js] [ActionRunner] follow at limit (follows)
+[06:14:27] [DEBUG] [api-twitterActivity.js] [ActionRunner] Smart probabilities (total redistributed: 100.0%): {"reply":0.307,"like":0.23,"bookmark":0.153,"retweet":0.307}
+[06:14:27] [DEBUG] [api-twitterActivity.js] [ActionRunner] Selected: retweet (roll: 73.3%, prob: 30.8%)
+[06:14:27] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] Selected: RETWEET
+[06:14:27] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1773702858135_9e9qp
+[06:14:27] [DEBUG] [api-twitterActivity.js] [DiveQueue] addDive called: dive_1773702858135_9e9qp, timeout: 120000ms
+[06:14:27] [DEBUG] [api-twitterActivity.js] [AsyncQueue] Starting task: dive_1773702858135_9e9qp (queue: 0, active: 0/1)
+[06:14:27] [DEBUG] [api-twitterActivity.js] [DiveQueue] Starting dive function: dive_1773702858135_9e9qp
+[06:14:27] [INFO] [api-twitterActivity.js] Delegating retweet to api.retweetWithAI/API()...
+[06:14:27] [INFO] [api/retweet.js] Starting api.retweetWithAPI()...
+[06:14:27] [INFO] [api/retweet.js] [retweetWithAPI] Clicking retweet button (ghost cursor)...
+[06:14:31] [INFO] [api.click] Mouse Cursor moved to [373, 444], clicked [373, 445]
+[06:14:32] [INFO] [api/retweet.js] [retweetWithAPI] Clicking confirm retweet (ghost cursor)...
+[06:14:34] [INFO] [api.click] Mouse Cursor moved to [334, 428], clicked [333, 427]
+[06:14:36] [INFO] [api/retweet.js] ✅ api.retweetWithAPI successful!
+[06:14:36] [DEBUG] [api-twitterActivity.js] [DiveQueue] ✓ Engagement recorded: retweets (1/1)
+[06:14:36] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] ✅ retweet executed: success
+[06:14:36] [DEBUG] [api-twitterActivity.js] [DiveQueue] Dive function completed: dive_1773702858135_9e9qp
+[06:14:36] [INFO] [api-twitterActivity.js] [AsyncQueue] ✓ Completed task: dive_1773702858135_9e9qp in 8820ms
+[06:14:36] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Action successful, skipping reading phase and returning home...
+[06:14:36] [INFO] [api-twitterActivity.js] Returning to Home Feed...
+[06:14:36] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[06:14:36] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about Home Icon for 491ms...
+[06:14:40] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [136, 78], clicked [136, 77] [Home Icon]
+[06:14:40] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=136 y=77
+[06:14:40] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:14:42] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' again (2nd click to reload)...
+[06:14:42] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about Home Icon for 452ms...
+[06:14:44] [INFO] [api-twitterActivity.js] Mouse Cursor moved to [157, 73], clicked [158, 72] [Home Icon]
+[06:14:45] [INFO] [api-twitterActivity.js] [ai-twitterActivity][api.click] Clicked x=158 y=72
+[06:14:45] [INFO] [api-twitterActivity.js] [Interaction] [Home Icon] Success on attempt 1/3
+[06:14:45] [INFO] [api-twitterActivity.js] [Navigation] Navigate to /home Success.
+[06:14:45] [INFO] [api-twitterActivity.js] [Tab] "For you" is already selected.
+[06:14:46] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] ✓ Successfully returned to home
+[06:14:47] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔓 Dive operation ended (success: true, state: HOME)
+[06:15:11] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Phase] Transition: active → cooldown (Slowing down - more reading, fewer actions)
+[06:15:11] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveQueue] Enabling quick mode for cooldown phase
+[06:15:11] [INFO] [api-twitterActivity.js] [DiveQueue] Quick mode enabled (timeout: 15000ms)
+[06:15:11] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔍 Starting SCAN phase for dive_1773702911433_700qq
+[06:15:11] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveLock] 🔒 Dive operation started - scrolling disabled (state: DIVING)
+[06:15:11] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Processing feed before selecting target (thinking)...
+[06:15:11] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about scout for 428ms...
+[06:15:12] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Selected tweet candidate at index 5 (Y: 873)
+[06:15:12] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Debug] Targeting tweet permalink link (Primary).
+[06:15:12] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Attempt] api.click on Permalink...
+[06:15:16] [INFO] [api.click] Mouse Cursor moved to [414, 475], clicked [414, 474]
+[06:15:16] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Success] Navigated to tweet page.
+[06:15:16] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Debug] Tweet URL: https://x.com/obscria/status/2033530600603218121
+[06:15:16] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Tracking new tweet 2033530600603218121
+[06:15:16] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Extracting tweet content from full page...
+[06:15:17] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI] Extracted tweet text (37 chars)
+[06:15:17] [DEBUG] [api-twitterActivity.js] [ActionRunner] quote at limit (quotes)
+[06:15:17] [DEBUG] [api-twitterActivity.js] [ActionRunner] retweet at limit (retweets)
+[06:15:17] [DEBUG] [api-twitterActivity.js] [ActionRunner] follow at limit (follows)
+[06:15:17] [DEBUG] [api-twitterActivity.js] [ActionRunner] Smart probabilities (total redistributed: 100.0%): {"reply":0.444,"like":0.333,"bookmark":0.222}
+[06:15:17] [DEBUG] [api-twitterActivity.js] [ActionRunner] Selected: reply (roll: 42.9%, prob: 44.4%)
+[06:15:17] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] Selected: REPLY
+[06:15:17] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [DiveQueue] 🧠 Entering AI Processing Queue for dive_1773702911433_700qq
+[06:15:17] [DEBUG] [api-twitterActivity.js] [DiveQueue] addDive called: dive_1773702911433_700qq, timeout: 120000ms
+[06:15:17] [DEBUG] [api-twitterActivity.js] [AsyncQueue] Starting task: dive_1773702911433_700qq (queue: 0, active: 0/1)
+[06:15:17] [DEBUG] [api-twitterActivity.js] [DiveQueue] Starting dive function: dive_1773702911433_700qq
+[06:15:17] [INFO] [api-twitterActivity.js] Delegating reply to api.replyWithAI/API()...
+[06:15:17] [INFO] [api/reply.js] Starting high-level api.replyWithAI()...
+[06:15:17] [INFO] [api/reply.js] Context: Tweet by @obscria ("Lucia Ferrato from Italy / Ven...")
+[06:15:17] [INFO] [api/reply.js] Loading/Reading context (Elastic Scroll)...
+[06:15:17] [INFO] [api/reply.js] [Elastic] Scrolling down to load infinite content...
+[06:15:21] [INFO] [api/reply.js] [Elastic] Scrolling up while extracting context...
+[06:15:27] [INFO] [api/reply.js] Extracted 3 replies for context
+[06:15:27] [INFO] [ai-reply-engine.js] [AIReplyEngine] Initialized (probability: 1)
+[06:15:27] [INFO] [agent-connector.js] [null] Processing request: generate_reply
+[06:15:27] [DEBUG] [agent-connector.js] [null] Request payload keys: systemPrompt, userPrompt, vision, context, temperature, maxTokens
+[06:15:27] [DEBUG] [agent-connector.js] [null] Queue status before enqueue: running=0, queued=0
+[06:15:27] [DEBUG] [agent-connector.js] [null] Enqueueing request with timeout 60000ms
+[06:15:27] [DEBUG] [request-queue.js] [RequestQueue] Enqueued task req_1773702927123_rzb0epdwp, queue size: 1, running: 0
+[06:15:27] [DEBUG] [request-queue.js] [RequestQueue] Dequeueing task req_1773702927123_rzb0epdwp, queue now has 0 items
+[06:15:27] [DEBUG] [request-queue.js] [RequestQueue] Task req_1773702927123_rzb0epdwp starting (running: 1/3, queued: 0)
+[06:15:27] [INFO] [cloud-client.js] [Cloud] Both Cloud and FreeRouter are disabled, skipping initialization.
+[06:15:27] [INFO] [agent-connector.js] [null] Routing to local providers (vllm: false, ollama: true)
+[06:15:27] [INFO] [agent-connector.js] [null] Using text-only mode (fallback: true)
+[06:15:27] [DEBUG] [local-client.js] [Local] Falling back to Ollama...
+[06:15:27] [DEBUG] [ollama-manager.js] [OllamaManager] Ollama is already running.
+[06:15:27] [INFO] [ollama-client.js] [Ollama] Initialized: http://localhost:11434 (Model: gemma3:1b)
+[06:15:27] [INFO] [local-client.js] [Local] Ollama client initialized
+[06:15:27] [INFO] [ollama-client.js] [Ollama] 🔔 REQUEST #1 START: TEXT request to gemma3:1b
+[06:15:27] [INFO] [ollama-client.js] [Ollama] Warming up gemma3:1b...
+[06:15:27] [INFO] [ollama-client.js] [Ollama] Model warmup complete
+[06:15:27] [DEBUG] [ollama-client.js] [Ollama] Using generate endpoint for gemma3:1b...
+[06:15:28] [SUCCESS] [ollama-client.js] [Ollama] Generate request completed in 949ms
+[06:15:28] [SUCCESS] [local-client.js] [Local] Ollama response in 961ms
+[06:15:28] [SUCCESS] [agent-connector.js] [null] Text-only reply generated in 962ms
+[06:15:28] [DEBUG] [request-queue.js] [RequestQueue] Task req_1773702927123_rzb0epdwp completed successfully
+[06:15:28] [DEBUG] [request-queue.js] [RequestQueue] Task req_1773702927123_rzb0epdwp finished, running: 0
+[06:15:28] [DEBUG] [agent-connector.js] [null] Request dequeued after 968ms
+[06:15:28] [DEBUG] [agent-connector.js] [null] processRequest returning: success=true, contentLen=33
+[06:15:28] [INFO] [api/reply.js] AI Reply: "That smile is unsettlingly sharp."
+[06:15:28] [INFO] [api/reply.js] Focusing back on target tweet...
+[06:15:29] [INFO] [api/reply.js] Executing replyMethodA (Reply Icon)...
+[06:15:29] [INFO] [api/reply.js] [replyWithAI] Clicking reply icon (ghost cursor)...
+[06:15:31] [INFO] [api.click] Mouse Cursor moved to [227, 562], clicked [226, 561]
+[06:15:33] [INFO] [api/reply.js] [replyWithAI] Typing reply (33 chars, ghost cursor)...
+[06:15:46] [INFO] [api/reply.js] [replyWithAI] Clicking post button (ghost cursor)...
+[06:15:48] [INFO] [api.click] Mouse Cursor moved to [723, 350], clicked [722, 349]
+[06:15:51] [INFO] [api/reply.js] ✅ api.replyWithAI successful!
+[06:15:51] [DEBUG] [metrics.js] [recordTwitterEngagement] Recorded 1 reply(s)
+[06:15:51] [DEBUG] [api-twitterActivity.js] [DiveQueue] ✓ Engagement recorded: replies (1/2)
+[06:15:51] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [AI-Engage] ✅ reply executed: success
+[06:15:51] [DEBUG] [api-twitterActivity.js] [DiveQueue] Dive function completed: dive_1773702911433_700qq
+[06:15:51] [INFO] [api-twitterActivity.js] [AsyncQueue] ✓ Completed task: dive_1773702911433_700qq in 33964ms
+[06:15:51] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Dive] Action successful, skipping reading phase and returning home...
+[06:15:51] [INFO] [api-twitterActivity.js] Returning to Home Feed...
+[06:15:51] [INFO] [api-twitterActivity.js] [Navigation] Clicking 'Home Icon' (1st click for reload)...
+[06:15:51] [INFO] [api-twitterActivity.js] [Agent:36-Lurker] [Human] Thinking about Home Icon for 581ms...
+[06:15:53] [INFO] [orchestrator.js] [Orchestrator] Force cancelling all active tasks...
+[06:15:53] [WARN] [orchestrator.js] [Orchestrator] waitForTasksToComplete timed out after 600000ms
+[06:15:53] [INFO] [main.js] [Queue] Group 1 completed successfully.
+[06:15:53] [INFO] [main.js] MultiBrowseAutomation - Shutting down...
+[06:15:53] [ERROR] [orchestrator.js] [Orchestrator] Task 'api-twitteractivity' error:
+[06:15:53] [DEBUG] [metrics.js] Task 'api-twitteractivity' recorded: FAILED, duration: 599891ms
+[06:15:53] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0001 (600022ms)
+[06:15:53] [INFO] [orchestrator.js] [Orchestrator] All tasks completed
+[06:15:53] [INFO] [sessionManager.js] [SessionManager] SessionManager shutting down...
+[06:15:53] [WARN] [automator.js] [Automator] Native disconnect event fired for: ws://127.0.0.1:54577/devtools/browser/d02bd7ac-09a6-4ff4-aea3-96a627925162
+[06:15:53] [INFO] [automator.js] Background reconnection attempt 1 for ws://127.0.0.1:54577/devtools/browser/d02bd7ac-09a6-4ff4-aea3-96a627925162
+[06:15:53] [INFO] [automator.js] Attempting to reconnect to ws://127.0.0.1:54577/devtools/browser/d02bd7ac-09a6-4ff4-aea3-96a627925162
+[06:15:53] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:54577/devtools/browser/d02bd7ac-09a6-4ff4-aea3-96a627925162
+[06:15:53] [INFO] [sessionManager.js] [SessionManager] SessionManager shutdown complete
+[06:15:53] [INFO] [automator.js] Automator shutting down...
+[06:15:53] [INFO] [automator.js] Closing 0 browser connections
+[06:15:53] [INFO] [automator.js] [Automator] Proactive health checks natively disabled.
+[06:15:53] [INFO] [automator.js] All connections closed
+[06:15:53] [INFO] [automator.js] Automator shutdown complete
+[06:15:53] [INFO] [metrics.js] Generating JSON summary report...
+[06:15:53] [INFO] [metrics.js] Successfully generated JSON report at C:\My Script\auto-ai\run-summary.json
+[06:15:53] [INFO] [orchestrator.js] [Orchestrator] Orchestrator shutdown complete

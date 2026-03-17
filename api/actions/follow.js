@@ -34,8 +34,7 @@ export async function followWithAPI(options = {}) {
     logger.info(`Starting api.followWithAPI() for @${username}...`);
 
     // X.com selectors: follow button uses data-testid ending in "-follow"
-    const followSel =
-        'div[data-testid="placementTracking"] [data-testid$="-follow"], div[role="button"][data-testid$="-follow"]';
+    const followSel = 'div[role="button"][data-testid$="-follow"]';
     const unfollowSel = '[data-testid$="-unfollow"]';
 
     try {
@@ -47,9 +46,17 @@ export async function followWithAPI(options = {}) {
         }
 
         logger.info(`[followWithAPI] Finding follow button...`);
+
+        // Check if follow button is visible first (avoid 30s timeout on hidden elements)
+        if (!(await visible(followSel))) {
+            logger.error(`[followWithAPI] Follow button not visible on page`);
+            return { success: false, reason: 'button_not_visible', method: 'followAPI' };
+        }
+
         const followBtn = page.locator(followSel).first();
         logger.info(`[followWithAPI] Getting button text...`);
-        const btnText = (await followBtn.textContent().catch(() => '')).toLowerCase();
+        // Use timeout to avoid hanging on problematic elements
+        const btnText = (await followBtn.textContent({ timeout: 5000 }).catch(() => '')).toLowerCase();
         logger.info(`[followWithAPI] Button text: "${btnText}"`);
         if (btnText.includes('following') || btnText.includes('pending')) {
             logger.info(`Already following @${username} (state: ${btnText}).`);

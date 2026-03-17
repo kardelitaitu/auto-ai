@@ -1,20 +1,20 @@
 {
   "twitter": {
     "session": {
-      "minSeconds": 300,
-      "maxSeconds": 540,
+      "minSeconds": 420,
+      "maxSeconds": 840,
       "randomProfile": true
     },
     "engagement": {
-      "maxReplies": 3,
+      "maxReplies": 2,
       "maxRetweets": 1,
       "maxQuotes": 1,
-      "maxLikes": 4,
+      "maxLikes": 5,
       "maxFollows": 1,
       "maxBookmarks": 2
     },
     "reply": {
-      "probability": 0.6,
+      "probability": 0.16,
       "minChars": 10,
       "maxChars": 200,
       "emojiChance": 0.3,
@@ -25,28 +25,28 @@
           "enabled": true
         },
         "replyB": {
-          "weight": 40,
+          "weight": 49,
           "enabled": true
         },
         "replyC": {
-          "weight": 20,
+          "weight": 1,
           "enabled": true
         }
       }
     },
     "quote": {
-      "probability": 0.1,
+      "probability": 0.08,
       "methods": {
         "quoteA": {
           "weight": 40,
           "enabled": true
         },
         "quoteB": {
-          "weight": 40,
+          "weight": 49,
           "enabled": true
         },
         "quoteC": {
-          "weight": 10,
+          "weight": 1,
           "enabled": true
         }
       }
@@ -70,19 +70,19 @@
     },
     "actions": {
       "like": {
-        "probability": 0.15,
+        "probability": 0.12,
         "enabled": true
       },
       "bookmark": {
-        "probability": 0.1,
+        "probability": 0.08,
         "enabled": true
       },
       "retweet": {
-        "probability": 0.2,
+        "probability": 0.16,
         "enabled": true
       },
       "follow": {
-        "probability": 0.2,
+        "probability": 0.4,
         "enabled": true
       }
     },
@@ -127,8 +127,8 @@
       "enabled": true,
       "provider": "ollama",
       "endpoint": "http://localhost:11434",
-      "model": "gemma3:4b",
-      "textModel": "gemma3:4b",
+      "model": "gemma3:1b",
+      "textModel": "gemma3:1b",
       "timeout": 60000,
       "warmup": false,
       "vision": true

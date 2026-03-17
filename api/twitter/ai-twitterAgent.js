@@ -615,9 +615,12 @@ export class AITwitterAgent extends TwitterAgent {
      */
     updateSessionPhase() {
         this.sessionDuration = Date.now() - this.sessionStart;
+        const totalDuration = this.sessionEndTime
+            ? this.sessionEndTime - this.sessionStart
+            : this.sessionDuration * 5; // Fallback: estimate 5x current duration
         const newPhase = sessionPhases.getSessionPhase(
             this.sessionDuration,
-            this.sessionDuration * 1.25
+            totalDuration
         );
 
         if (newPhase !== this.currentPhase) {
@@ -688,8 +691,10 @@ export class AITwitterAgent extends TwitterAgent {
      */
     getSessionProgress() {
         this.sessionDuration = Date.now() - this.sessionStart;
-        const estimatedTotal = this.sessionDuration * 1.25;
-        return Math.min(100, (this.sessionDuration / estimatedTotal) * 100);
+        const totalDuration = this.sessionEndTime
+            ? this.sessionEndTime - this.sessionStart
+            : this.sessionDuration * 5; // Fallback: estimate 5x current duration
+        return Math.min(100, (this.sessionDuration / totalDuration) * 100);
     }
 
     /**
@@ -1145,7 +1150,7 @@ export class AITwitterAgent extends TwitterAgent {
             // Wait for tweet content to fully load
             await this.waitVisible('[data-testid="tweetText"]', {
                 timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE,
-            }).catch(() => {});
+            }).catch(() => { });
             await this.wait(1000);
 
             // Extract FRESH tweet text AFTER navigation
@@ -1425,7 +1430,7 @@ export class AITwitterAgent extends TwitterAgent {
     async _readExpandedTweet() {
         // Text highlighting before reading
         if (Math.random() < 0.15) {
-            await this.highlightText().catch(() => {});
+            await this.highlightText().catch(() => { });
         }
 
         const persona = api.getPersona();
@@ -1928,9 +1933,9 @@ export class AITwitterAgent extends TwitterAgent {
             const limits = status.engagementLimits;
             this.queueLogger.info(
                 `Limits: likes(${limits.likes.used}/${limits.likes.limit}) ` +
-                    `replies(${limits.replies.used}/${limits.replies.limit}) ` +
-                    `quotes(${limits.quotes.used}/${limits.quotes.limit}) ` +
-                    `bookmarks(${limits.bookmarks.used}/${limits.bookmarks.limit})`
+                `replies(${limits.replies.used}/${limits.replies.limit}) ` +
+                `quotes(${limits.quotes.used}/${limits.quotes.limit}) ` +
+                `bookmarks(${limits.bookmarks.used}/${limits.bookmarks.limit})`
             );
         }
 
@@ -1982,9 +1987,9 @@ export class AITwitterAgent extends TwitterAgent {
         // Log advanced dimensions
         this.log(
             `[Sentiment] Dimensions - Valence: ${sentimentResult.dimensions.valence.valence.toFixed(2)}, ` +
-                `Arousal: ${sentimentResult.dimensions.arousal.arousal.toFixed(2)}, ` +
-                `Dominance: ${sentimentResult.dimensions.dominance.dominance.toFixed(2)}, ` +
-                `Sarcasm: ${sentimentResult.dimensions.sarcasm.sarcasm.toFixed(2)}`
+            `Arousal: ${sentimentResult.dimensions.arousal.arousal.toFixed(2)}, ` +
+            `Dominance: ${sentimentResult.dimensions.dominance.dominance.toFixed(2)}, ` +
+            `Sarcasm: ${sentimentResult.dimensions.sarcasm.sarcasm.toFixed(2)}`
         );
 
         // Log engagement recommendations
@@ -2547,8 +2552,8 @@ export class AITwitterAgent extends TwitterAgent {
                 if (!sentimentResult.engagement.canLike) {
                     this.log(
                         `[Sentiment] 🚫 Skipping like on negative content ` +
-                            `(risk: ${sentimentResult.composite.riskLevel}, ` +
-                            `toxicity: ${sentimentResult.dimensions.toxicity.toxicity.toFixed(2)})`
+                        `(risk: ${sentimentResult.composite.riskLevel}, ` +
+                        `toxicity: ${sentimentResult.dimensions.toxicity.toxicity.toFixed(2)})`
                     );
                     return;
                 }
@@ -2915,9 +2920,9 @@ export class AITwitterAgent extends TwitterAgent {
         // Log advanced dimensions
         this.log(
             `[Sentiment] Dimensions - Valence: ${sentimentResult.dimensions.valence.valence.toFixed(2)}, ` +
-                `Arousal: ${sentimentResult.dimensions.arousal.arousal.toFixed(2)}, ` +
-                `Dominance: ${sentimentResult.dimensions.dominance.dominance.toFixed(2)}, ` +
-                `Sarcasm: ${sentimentResult.dimensions.sarcasm.sarcasm.toFixed(2)}`
+            `Arousal: ${sentimentResult.dimensions.arousal.arousal.toFixed(2)}, ` +
+            `Dominance: ${sentimentResult.dimensions.dominance.dominance.toFixed(2)}, ` +
+            `Sarcasm: ${sentimentResult.dimensions.sarcasm.sarcasm.toFixed(2)}`
         );
 
         if (sentimentResult.isNegative) {

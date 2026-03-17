@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 74714,
-      "uptimeFormatted": "1m 14s",
-      "timeSinceReset": 74714,
-      "timeSinceResetFormatted": "1m 14s"
+      "uptime": 605621,
+      "uptimeFormatted": "10m 5s",
+      "timeSinceReset": 605621,
+      "timeSinceResetFormatted": "10m 5s"
     },
     "tasks": {
-      "executed": 0,
-      "failed": 0,
+      "executed": 1,
+      "failed": 1,
       "succeeded": 0,
       "successRate": 0,
-      "avgDuration": 0,
-      "totalDuration": 0,
+      "avgDuration": 599891,
+      "totalDuration": 599891,
       "durationPercentiles": {
-        "p50": 0,
-        "p95": 0,
-        "p99": 0
+        "p50": 599891,
+        "p95": 599891,
+        "p99": 599891
       }
     },
     "browsers": {
@@ -39,19 +39,19 @@
     "social": {
       "follows": 0,
       "likes": 0,
-      "retweets": 0,
+      "retweets": 1,
       "tweets": 0
     },
     "twitter": {
       "actions": {
         "likes": 0,
-        "replies": 0,
-        "quotes": 0,
-        "retweets": 0,
+        "replies": 1,
+        "quotes": 1,
+        "retweets": 1,
         "bookmarks": 0,
         "follows": 0,
         "tweets": 0,
-        "total": 0
+        "total": 3
       },
       "performance": {
         "avgDiveDuration": 0,
@@ -61,7 +61,17 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-15T19:22:35.310Z"
+    "runEndTime": "2026-03-16T23:15:53.549Z"
   },
-  "tasks": []
+  "tasks": [
+    {
+      "taskName": "api-twitteractivity",
+      "duration": 599891,
+      "success": false,
+      "sessionId": "roxy:0001",
+      "error": "Task cancelled",
+      "startTime": "2026-03-16T23:05:53.563Z",
+      "timestamp": 1773702953454
+    }
+  ]
 }

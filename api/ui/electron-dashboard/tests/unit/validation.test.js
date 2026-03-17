@@ -4,60 +4,7 @@
  * @fileoverview Unit tests for dashboard.js validation functions
  */
 import { describe, it, expect } from 'vitest';
-
-const VALID_TASK_FIELDS = ['id', 'taskName', 'name', 'command', 'sessionId', 'session', 'timestamp', 'status', 'success', 'error', 'duration'];
-const VALID_SESSION_FIELDS = ['id', 'status', 'browser', 'profile', 'port', 'ws', 'lastSeen', 'firstSeen'];
-
-function validateTask(task) {
-    if (!task || typeof task !== 'object') return null;
-    const validated = {};
-    for (const key of VALID_TASK_FIELDS) {
-        if (task[key] !== undefined) validated[key] = task[key];
-    }
-    return Object.keys(validated).length > 0 ? validated : null;
-}
-
-function validateSession(session) {
-    if (!session || typeof session !== 'object') return null;
-    const validated = {};
-    for (const key of VALID_SESSION_FIELDS) {
-        if (session[key] !== undefined) validated[key] = session[key];
-    }
-    return Object.keys(validated).length > 0 ? validated : null;
-}
-
-function validateMetrics(metrics) {
-    if (!metrics || typeof metrics !== 'object') return null;
-    const validated = {};
-    if (metrics.twitter && typeof metrics.twitter === 'object') {
-        validated.twitter = metrics.twitter;
-    }
-    if (metrics.api && typeof metrics.api === 'object') {
-        validated.api = metrics.api;
-    }
-    if (metrics.browsers && typeof metrics.browsers === 'object') {
-        validated.browsers = metrics.browsers;
-    }
-    return validated;
-}
-
-function validatePayload(payload) {
-    if (!payload || typeof payload !== 'object') return null;
-    const validated = {};
-    if (Array.isArray(payload.sessions)) {
-        validated.sessions = payload.sessions.map(validateSession).filter(Boolean);
-    }
-    if (Array.isArray(payload.recentTasks)) {
-        validated.recentTasks = payload.recentTasks.map(validateTask).filter(Boolean);
-    }
-    if (payload.metrics) {
-        validated.metrics = validateMetrics(payload.metrics);
-    }
-    if (Array.isArray(payload.errors)) {
-        validated.errors = payload.errors.filter(e => typeof e === 'string');
-    }
-    return validated;
-}
+import { validateTask, validateSession, validateMetrics, validatePayload } from '../../dashboard.js';
 
 describe('validateTask', () => {
     it('should return null for null input', () => {
@@ -253,8 +200,8 @@ describe('validateMetrics', () => {
             browsers: 123
         };
         const result = validateMetrics(metrics);
-        expect(result).not.toBeNull();
-        expect(Object.keys(result).length).toBe(0);
+        // Returns null when all nested data is invalid
+        expect(result).toBeNull();
     });
 });
 
@@ -294,7 +241,7 @@ describe('validatePayload', () => {
             },
             errors: ['error 1', 'error 2']
         };
-        
+
         const result = validatePayload(payload);
         expect(result).not.toBeNull();
         expect(result.sessions).toHaveLength(2); // Both have valid id/status
@@ -330,9 +277,7 @@ describe('validatePayload', () => {
             errors: []
         };
         const result = validatePayload(payload);
-        expect(result).not.toBeNull();
-        expect(result.sessions).toHaveLength(0);
-        expect(result.recentTasks).toHaveLength(0);
-        expect(result.errors).toHaveLength(0);
+        // Returns null when all arrays are empty (no valid data)
+        expect(result).toBeNull();
     });
 });

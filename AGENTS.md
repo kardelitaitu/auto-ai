@@ -15,28 +15,59 @@ Quick reference guide for agents working on this repository.
 | File | Purpose |
 |------|---------|
 | `main.js` | CLI entry - starts Orchestrator with browser discovery |
-| `agent-main.js` | Agent entry - strategy game automation |
+| `agent-main.js` | Agent entry - strategy game automation (OWB) |
 | `api/index.js` | Unified API export - `import { api } from './api/index.js'` |
 
 ---
 
 ## Quick Commands
 
+### Development
 ```bash
-# Development
 npm run lint              # Check code style
 npm run lint:fix          # Auto-fix lint issues
-
-# Testing
-npm run test:coverage     # Run tests with coverage (recommended)
-npm run test:unit         # Unit tests only
-npm run test:integration  # Integration tests only
-npm run test:watch        # Watch mode for development
-
-# Running
-node main.js taskName=url     # Run automation task
-node agent-main.js owb play   # Run strategy game agent
+npm run format            # Format code with Prettier
 ```
+
+### Testing
+```bash
+npm run test:unit         # Unit tests only (api/tests/unit)
+npm run test:integration  # Integration tests only (api/tests/integration)
+npm run test:edge-cases   # Edge case tests only (api/tests/edge-cases)
+npm run test:smoke        # Smoke tests only
+npm run test:all          # All test suites
+npm run test:coverage     # Run tests with coverage report
+npm run test:ci           # CI/CD mode with coverage
+npm run test:watch        # Watch mode for development
+npm run test:verbose      # Detailed test output
+```
+
+### Running
+```bash
+# Automation tasks
+node main.js taskName=url                    # Run single task
+node main.js pageview=example.com then twitterFollow=url  # Sequential task groups
+
+# Strategy game agent
+node agent-main.js owb                       # Infinite auto-play
+node agent-main.js owb play --loops=10       # Finite loops
+node agent-main.js owb play=rush             # With strategy preset
+node agent-main.js owb state-a x20           # Run specific state 20 times
+```
+
+### Agent Modes (`agent-main.js`)
+| Mode | Description |
+|------|-------------|
+| `play` | Auto-play mode |
+| `rush` | Fast attack strategy |
+| `turtle` | Defensive strategy |
+| `economy` | Resource-focused |
+| `balanced` | Mixed strategy |
+| `build` | Construction focus |
+| `train` | Unit training focus |
+| `attack` | Aggressive combat |
+| `gather` | Resource collection |
+| `state-*` | Run specific game state |
 
 ---
 
@@ -46,6 +77,20 @@ node agent-main.js owb play   # Run strategy game agent
 2. **Lint**: Run `npm run lint` after code changes
 3. **Test**: Run `npm run test:coverage` when modifying tests or core modules
 4. **Patch Notes**: For major changes, update `patchnotes.md` with summary
+
+---
+
+## Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `config/settings.json` | Main settings (LLM, humanization, personas) |
+| `config/eslint.config.js` | ESLint configuration |
+| `config/vitest.config.js` | Vitest test configuration |
+| `config/vitest.smoke.config.js` | Smoke test configuration |
+| `config/.prettierrc` | Prettier formatting configuration |
+| `config/browserAPI.json` | Browser vendor API ports |
+| `config/timeouts.json` | Timeout values |
 
 ---
 
@@ -119,6 +164,47 @@ import { SessionDisconnectedError } from './api/core/errors.js';
 
 ---
 
+## Testing
+
+### Test Locations
+```
+api/tests/
+├── unit/           # Unit tests (160+ files)
+├── integration/    # Integration tests
+├── edge-cases/     # Edge case scenarios
+├── fixtures/       # Test fixtures
+├── mocks/          # Mock objects
+└── utils/          # Test utilities
+```
+
+### Vitest Configuration
+- **Pool**: `threads` (optimized for parallel execution)
+- **Coverage Provider**: Istanbul
+- **Coverage Thresholds**: Lines 75%, Branches 70%, Functions 80%, Statements 70%
+
+### Test Module Aliases
+| Alias | Path |
+|-------|------|
+| `@api` | `api/` |
+| `@tests` | `api/tests/` |
+| `@unit` | `api/tests/unit/` |
+| `@integration` | `api/tests/integration/` |
+| `@tasks` | `tasks/` |
+
+### Mocking Pattern
+```javascript
+vi.mock('@api/core/logger.js', () => ({
+    createLogger: vi.fn(() => ({
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn()
+    }))
+}));
+```
+
+---
+
 ## Reference Documents
 
 | Document | Description |
@@ -130,3 +216,10 @@ import { SessionDisconnectedError } from './api/core/errors.js';
 | [`.agents/TASK-AND-CONFIG.md`](.agents/TASK-AND-CONFIG.md) | Task system and configuration |
 | [`.agents/TECH-STACK.md`](.agents/TECH-STACK.md) | Technology stack details |
 | [`.agents/STEALTH-PROTOCOL.md`](.agents/STEALTH-PROTOCOL.md) | Ghost 3.0 anti-detection |
+
+### Agent Skills (`\.agents/skills/`)
+Specialized skill directories exist for agent operations including:
+- Orchestration patterns
+- Debug workflows
+- Plan/audit capabilities
+- File read/analyze utilities

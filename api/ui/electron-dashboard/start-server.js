@@ -1,5 +1,5 @@
 
-import { DashboardServer } from './dashboard.js';
+import { DashboardServer } from './server/index.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

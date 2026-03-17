@@ -4,7 +4,7 @@
     "description": "Monitoring dashboard for Auto-AI browser automation",
     "main": "main.js",
     "type": "module",
-"scripts": {
+    "scripts": {
         "start": "electron .",
         "dev": "electron .",
         "dev:ui": "cd renderer && npm run dev",
@@ -19,8 +19,8 @@
         "socket.io": "^4.7.5"
     },
     "devDependencies": {
-        "electron": "^28.0.0",
-        "electron-builder": "^24.6.4",
+        "electron": "^33.0.0",
+        "electron-builder": "^24.13.3",
         "vitest": "^1.6.1"
     },
     "build": {

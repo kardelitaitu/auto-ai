@@ -28,8 +28,8 @@ import { retweetWithAPI } from '../api/actions/retweet.js';
 import { followWithAPI } from '../api/actions/follow.js';
 
 const DEFAULT_CYCLES = 20;
-const DEFAULT_MIN_DURATION = 360;
-const DEFAULT_MAX_DURATION = 600;
+const DEFAULT_MIN_DURATION = 540;
+const DEFAULT_MAX_DURATION = 840;
 const WAIT_UNTIL = 'domcontentloaded';
 
 const MAX_RETRIES = 2;
@@ -135,7 +135,7 @@ export default async function apiTwitterActivityTask(page, payload) {
             // Initialize API context
             await api.init(page, {
                 logger,
-                patch: true,
+                patch: false,
                 humanizationPatch: true,
                 autoInitNewPages: true,
                 colorScheme: 'dark',
@@ -192,7 +192,7 @@ export default async function apiTwitterActivityTask(page, payload) {
             let sessionStart;
             let popupCloser;
             let hasPopupCloser = false;
-            let stopPopupCloser = () => {};
+            let stopPopupCloser = () => { };
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
 
@@ -273,59 +273,59 @@ export default async function apiTwitterActivityTask(page, payload) {
                                     // Factory: wraps any api-layer function as a standardised action.execute()
                                     const makeApiExecutor =
                                         (name, action, apiFn, engType) =>
-                                        async (context = {}) => {
-                                            action.stats.attempts++;
-                                            if (!agent.diveQueue?.canEngage(engType)) {
-                                                logger.info(`${name} limit reached, skipping.`);
-                                                return {
-                                                    success: false,
-                                                    executed: false,
-                                                    reason: 'engagement_limit_reached',
-                                                    engagementType: engType,
-                                                };
-                                            }
-                                            try {
-                                                logger.info(
-                                                    `Delegating ${name} to api.${name}WithAI/API()...`
-                                                );
-                                                const result = await api.withPage(page, () =>
-                                                    apiFn(context)
-                                                );
-                                                if (result.success) {
-                                                    action.stats.successes++;
-                                                    agent.diveQueue?.recordEngagement(engType);
+                                            async (context = {}) => {
+                                                action.stats.attempts++;
+                                                if (!agent.diveQueue?.canEngage(engType)) {
+                                                    logger.info(`${name} limit reached, skipping.`);
                                                     return {
-                                                        success: true,
-                                                        executed: true,
-                                                        reason: 'success',
-                                                        data: result,
+                                                        success: false,
+                                                        executed: false,
+                                                        reason: 'engagement_limit_reached',
                                                         engagementType: engType,
                                                     };
                                                 }
-                                                action.stats.failures++;
-                                                return {
-                                                    success: false,
-                                                    executed: true,
-                                                    reason: result.reason || `api_${name}_failed`,
-                                                    data: result,
-                                                    engagementType: engType,
-                                                };
-                                            } catch (error) {
-                                                action.stats.failures++;
-                                                return {
-                                                    success: false,
-                                                    executed: true,
-                                                    reason: 'exception',
-                                                    data: {
-                                                        error: error.message,
-                                                        errorType: error.constructor?.name || 'Error',
-                                                        stack: error.stack,
-                                                        code: error.code,
-                                                    },
-                                                    engagementType: engType,
-                                                };
-                                            }
-                                        };
+                                                try {
+                                                    logger.info(
+                                                        `Delegating ${name} to api.${name}WithAI/API()...`
+                                                    );
+                                                    const result = await api.withPage(page, () =>
+                                                        apiFn(context)
+                                                    );
+                                                    if (result.success) {
+                                                        action.stats.successes++;
+                                                        agent.diveQueue?.recordEngagement(engType);
+                                                        return {
+                                                            success: true,
+                                                            executed: true,
+                                                            reason: 'success',
+                                                            data: result,
+                                                            engagementType: engType,
+                                                        };
+                                                    }
+                                                    action.stats.failures++;
+                                                    return {
+                                                        success: false,
+                                                        executed: true,
+                                                        reason: result.reason || `api_${name}_failed`,
+                                                        data: result,
+                                                        engagementType: engType,
+                                                    };
+                                                } catch (error) {
+                                                    action.stats.failures++;
+                                                    return {
+                                                        success: false,
+                                                        executed: true,
+                                                        reason: 'exception',
+                                                        data: {
+                                                            error: error.message,
+                                                            errorType: error.constructor?.name || 'Error',
+                                                            stack: error.stack,
+                                                            code: error.code,
+                                                        },
+                                                        engagementType: engType,
+                                                    };
+                                                }
+                                            };
 
                                     // Map: actionName → { engagementType, apiFn }
                                     const ACTION_API_MAP = {
@@ -380,8 +380,8 @@ export default async function apiTwitterActivityTask(page, payload) {
                                             typeof persona.microMoveChance === 'number'
                                                 ? persona.microMoveChance
                                                 : typeof persona.idleChance === 'number'
-                                                  ? persona.idleChance
-                                                  : 0.2;
+                                                    ? persona.idleChance
+                                                    : 0.2;
 
                                         api.setDistractionChance(distractionChance);
                                         logger.info(
@@ -467,11 +467,8 @@ export default async function apiTwitterActivityTask(page, payload) {
                                     const ctx = referrerEngine.generateContext(entryUrl);
 
                                     await withPageLock(async () => {
-                                        await api.setExtraHTTPHeaders({
-                                            ...ctx.headers,
-                                            'Sec-Fetch-Site': 'none',
-                                            'Sec-Fetch-Mode': 'navigate',
-                                        });
+                                        // Don't override Sec-Fetch headers globally - they break media requests
+                                        // The browser will set appropriate headers per request type
 
                                         await api.goto(entryUrl, {
                                             waitUntil: WAIT_UNTIL,
@@ -489,25 +486,25 @@ export default async function apiTwitterActivityTask(page, payload) {
                                                     { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }
                                                 )
                                                 .then(() => 'home')
-                                                .catch(() => {}),
+                                                .catch(() => { }),
                                             api
                                                 .waitVisible('[data-testid="loginButton"]', {
                                                     timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE,
                                                 })
                                                 .then(() => 'login')
-                                                .catch(() => {}),
+                                                .catch(() => { }),
                                             api
                                                 .waitVisible('[role="main"]', {
                                                     timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE,
                                                 })
                                                 .then(() => 'main')
-                                                .catch(() => {}),
+                                                .catch(() => { }),
                                             api
                                                 .wait(TWITTER_TIMEOUTS.NAVIGATION)
                                                 .then(() => {
                                                     throw new Error('X.com load timeout');
                                                 })
-                                                .catch(() => {}),
+                                                .catch(() => { }),
                                         ])
                                     ).catch(() => null);
 

@@ -413,6 +413,8 @@ export function sanitizeReplyText(text) {
         .replace(/\*\*([^*]+)\*\*/g, '$1')
         // Remove *word* (single asterisk italic)
         .replace(/\*([^*]+)\*/g, '$1')
+        // Remove replacement character (�) from encoding issues
+        .replace(/\uFFFD/g, '')
         // Collapse multiple spaces left behind
         .replace(/\s{2,}/g, ' ')
         .trim();
