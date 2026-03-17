@@ -1,22 +1,22 @@
 {
   "summary": {
     "system": {
-      "uptime": 601843,
-      "uptimeFormatted": "10m 1s",
-      "timeSinceReset": 601843,
-      "timeSinceResetFormatted": "10m 1s"
+      "uptime": 51963,
+      "uptimeFormatted": "51s",
+      "timeSinceReset": 51963,
+      "timeSinceResetFormatted": "51s"
     },
     "tasks": {
       "executed": 1,
-      "failed": 1,
-      "succeeded": 0,
-      "successRate": 0,
-      "avgDuration": 599882,
-      "totalDuration": 599882,
+      "failed": 0,
+      "succeeded": 1,
+      "successRate": 100,
+      "avgDuration": 50089,
+      "totalDuration": 50089,
       "durationPercentiles": {
-        "p50": 599882,
-        "p95": 599882,
-        "p99": 599882
+        "p50": 50089,
+        "p95": 50089,
+        "p99": 50089
       }
     },
     "browsers": {
@@ -37,21 +37,21 @@
       "closed": 0
     },
     "social": {
-      "follows": 1,
-      "likes": 1,
-      "retweets": 1,
+      "follows": 0,
+      "likes": 0,
+      "retweets": 0,
       "tweets": 0
     },
     "twitter": {
       "actions": {
-        "likes": 1,
-        "replies": 1,
+        "likes": 0,
+        "replies": 0,
         "quotes": 0,
-        "retweets": 1,
+        "retweets": 0,
         "bookmarks": 0,
-        "follows": 1,
+        "follows": 0,
         "tweets": 0,
-        "total": 4
+        "total": 0
       },
       "performance": {
         "avgDiveDuration": 0,
@@ -61,17 +61,17 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-17T14:21:44.549Z"
+    "runEndTime": "2026-03-17T14:44:08.427Z"
   },
   "tasks": [
     {
-      "taskName": "api-twitteractivity",
-      "duration": 599882,
-      "success": false,
+      "taskName": "pageview",
+      "duration": 50089,
+      "success": true,
       "sessionId": "roxy:0001",
-      "error": "Task cancelled",
-      "startTime": "2026-03-17T14:11:44.558Z",
-      "timestamp": 1773757304440
+      "error": null,
+      "startTime": "2026-03-17T14:43:18.316Z",
+      "timestamp": 1773758648405
     }
   ]
 }

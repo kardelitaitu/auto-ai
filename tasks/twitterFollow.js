@@ -96,6 +96,7 @@ export default async function twitterFollowTask(page, payload) {
                     return;
                 }
 
+                // Use ReferrerEngine for natural referer (browser sets Sec-Fetch headers automatically)
                 const engine = new ReferrerEngine({ addUTM: false });
                 const ctx = engine.generateContext(targetUrl);
                 logger.info(`[twitterFollow][Anti-Sybil] Engine Strategy: ${ctx.strategy}`);
@@ -103,15 +104,13 @@ export default async function twitterFollowTask(page, payload) {
                     `[twitterFollow][Anti-Sybil] Referrer: ${ctx.referrer || '(Direct Traffic - No Referrer)'}`
                 );
 
-                // Set Headers (Referer + Sec-Fetch-*)
-                await api.setExtraHTTPHeaders(ctx.headers);
-
                 // Navigate to target
                 logger.info(`[twitterFollow] Navigating to Target Tweet: ${targetUrl}`);
                 try {
                     await api.goto(ctx.targetWithParams, {
                         waitUntil: 'domcontentloaded',
                         timeout: 90000,
+                        referer: ctx.referrer || undefined,
                     });
                 } catch (navError) {
                     logger.warn(`[twitterFollow] Navigation failed: ${navError.message}`);
@@ -121,7 +120,7 @@ export default async function twitterFollowTask(page, payload) {
                         );
                         throw new Error('Fatal: ERR_TOO_MANY_REDIRECTS', { cause: navError });
                     }
-                    logger.warn(`[twitterFollow] Retrying navigation without referrer headers...`);
+                    logger.warn(`[twitterFollow] Retrying navigation directly...`);
                     await api.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
                 }
 

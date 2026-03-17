@@ -91,10 +91,9 @@ export default async function pageview(page, payload) {
                     logger.info(`Target (Random): ${targetUrl}`);
                 }
 
-                // 3. Referrer & Headers
+                // 3. Referrer (use natural referer, browser sets Sec-Fetch headers automatically)
                 const engine = new ReferrerEngine({ addUTM: false });
                 const ctx = engine.generateContext(targetUrl);
-                await api.setExtraHTTPHeaders(ctx.headers);
                 logger.info(`Referrer: ${ctx.referrer || '(Direct)'}`);
 
                 // 4. Navigation using Unified API (handles warmup jitter & mouse movement internally)
@@ -113,6 +112,7 @@ export default async function pageview(page, payload) {
                                     warmup: true,
                                     warmupMouse: true,
                                     warmupPause: true,
+                                    referer: ctx.referrer || undefined,
                                 });
                             } catch (navError) {
                                 logger.error(`Navigation failed: ${navError.message}`);

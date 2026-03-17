@@ -21,14 +21,12 @@
 // --- CONFIGURATION ---
 const DEFAULT_TASK_TIMEOUT_MS = 6 * 60 * 1000; // 6 Minutes Hard Limit
 const TARGET_TWEET_URL = 'https://x.com/_nadiku/status/1998218314703852013';
-const MANUAL_REFERRER = ''; // e.g. 'https://www.reddit.com/r/technology/'
 
 import { api } from '../api/index.js';
 import { createLogger } from '../api/core/logger.js';
 import { profileManager } from '../api/utils/profileManager.js';
 import { mathUtils } from '../api/utils/math.js';
 import { ReferrerEngine } from '../api/utils/urlReferrer.js';
-import metricsCollector from '../api/utils/metrics.js';
 
 // Extract @username from tweet URL
 function extractUsername(tweetUrl) {
@@ -132,14 +130,10 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                         'home';
                     logger.info(`[api-twitterFollowLikeRetweet] 🎲 Entry point: ${entryName}`);
 
+                    // Use ReferrerEngine for natural referer (don't override Sec-Fetch headers globally)
                     const entryEngine = new ReferrerEngine({ addUTM: true });
                     const entryCtx = entryEngine.generateContext(entryUrl);
 
-                    await api.setExtraHTTPHeaders({
-                        ...entryCtx.headers,
-                        'Sec-Fetch-Site': 'none',
-                        'Sec-Fetch-Mode': 'navigate',
-                    });
                     await api.goto(entryUrl, {
                         waitUntil: 'domcontentloaded',
                         timeout: 60000,
@@ -158,36 +152,19 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                     }
 
                     // ── STEP 2: Navigate to tweet ───────────────────────────
+                    // Use ReferrerEngine for natural referer (browser sets Sec-Fetch headers automatically)
                     const engine = new ReferrerEngine({ addUTM: false });
-                    let ctx;
+                    const ctx = engine.generateContext(targetUrl);
+                    logger.info(
+                        `[api-twitterFollowLikeRetweet][Referrer] ${ctx.strategy} | ${ctx.referrer || '(direct)'}`
+                    );
 
-                    if (MANUAL_REFERRER && Math.random() < 0.2) {
-                        logger.info(
-                            `[api-twitterFollowLikeRetweet][Referrer] Manual: ${MANUAL_REFERRER}`
-                        );
-                        ctx = {
-                            headers: {
-                                Referer: MANUAL_REFERRER,
-                                'Sec-Fetch-Site': 'cross-site',
-                                'Sec-Fetch-Mode': 'navigate',
-                                'Sec-Fetch-User': '?1',
-                                'Sec-Fetch-Dest': 'document',
-                            },
-                            targetWithParams: targetUrl,
-                        };
-                    } else {
-                        ctx = engine.generateContext(targetUrl);
-                        logger.info(
-                            `[api-twitterFollowLikeRetweet][Referrer] ${ctx.strategy} | ${ctx.referrer || '(direct)'}`
-                        );
-                    }
-
-                    await api.setExtraHTTPHeaders(ctx.headers);
                     logger.info(`[api-twitterFollowLikeRetweet] Navigating to tweet: ${targetUrl}`);
                     await api.goto(ctx.targetWithParams, {
                         waitUntil: 'domcontentloaded',
                         timeout: 60000,
                         warmup: false,
+                        referer: ctx.referrer || undefined,
                     });
 
                     // Wait for tweet to load
@@ -217,7 +194,7 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                         logger.info(
                             `[api-twitterFollowLikeRetweet] ✅ Retweeted (${retweetResult.reason})`
                         );
-                        metricsCollector.recordSocialAction('retweet', 1);
+                        // Metrics already recorded by api.retweetWithAPI()
                     } else {
                         logger.warn(
                             `[api-twitterFollowLikeRetweet] ⚠️ Retweet: ${retweetResult.reason}`
@@ -226,24 +203,22 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
 
                     await api.think(mathUtils.randomInRange(1000, 2500));
 
-                    // ── STEP 2b: Like (30% chance) ──────────────────────────
-                    if (Math.random() < 0.3) {
-                        logger.info(`[api-twitterFollowLikeRetweet] Liking (30% roll hit)...`);
+                    // ── STEP 2b: Like (100% chance) ──────────────────────────
+                    {
+                        logger.info(`[api-twitterFollowLikeRetweet] Liking...`);
                         const likeResult = await api.likeWithAPI({ tweetElement: tweetArticle });
 
                         if (likeResult.success) {
                             logger.info(
                                 `[api-twitterFollowLikeRetweet] ✅ Liked (${likeResult.reason})`
                             );
-                            metricsCollector.recordSocialAction('like', 1);
+                            // Metrics already recorded by api.likeWithAPI()
                         } else {
                             logger.warn(
                                 `[api-twitterFollowLikeRetweet] ⚠️ Like: ${likeResult.reason}`
                             );
                         }
                         await api.think(mathUtils.randomInRange(800, 2000));
-                    } else {
-                        logger.info(`[api-twitterFollowLikeRetweet] Like skipped (50% roll miss).`);
                     }
 
                     // ── STEP 3: Click profile link from tweet article ───────
@@ -325,7 +300,7 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
                         logger.info(
                             `[api-twitterFollowLikeRetweet] ✅ Followed @${safeUsername} (${followResult.reason})`
                         );
-                        metricsCollector.recordSocialAction('follow', 1);
+                        // Metrics already recorded by api.followWithAPI()
                         await api.think(mathUtils.randomInRange(1500, 3000));
                     } else {
                         logger.warn(

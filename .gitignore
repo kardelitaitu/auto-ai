@@ -4,6 +4,7 @@ node_modules
 *.log
 *.zip
 *.exe
+*.db
 screenshot
 examples
 local-agent

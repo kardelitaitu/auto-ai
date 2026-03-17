@@ -13,10 +13,6 @@
 const DEFAULT_TASK_TIMEOUT_MS = 6 * 60 * 1000; // 6 Minutes Hard Limit (More actions = more time)
 const TARGET_TWEET_URL = 'https://x.com/_nadiku/status/1998218314703852013';
 
-// Manual Referrer Override (optional, for testing specific sources)
-// Set to '' to disable. When set, has 20% chance to be used instead of dynamic engine.
-const MANUAL_REFERRER = ''; // Example: 'https://www.reddit.com/r/technology/'
-
 import { createLogger } from '../api/core/logger.js';
 import { AITwitterAgent } from '../utils/ai-twitterAgent.js';
 import { profileManager } from '../utils/profileManager.js';
@@ -112,48 +108,20 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
                     return;
                 }
 
+                // Use ReferrerEngine for natural referer (browser sets Sec-Fetch headers automatically)
                 const engine = new ReferrerEngine({ addUTM: false });
-                let ctx;
-
-                // Manual Override Logic: 20% chance to use MANUAL_REFERRER if set
-                // (Only if MANUAL_REFERRER is defined)
-                if (
-                    typeof MANUAL_REFERRER === 'string' &&
-                    MANUAL_REFERRER !== '' &&
-                    Math.random() < 0.2
-                ) {
-                    logger.info(
-                        `[followLikeRetweet][Anti-Sybil] Using Manual Referrer (20% chance): ${MANUAL_REFERRER}`
-                    );
-                    ctx = {
-                        strategy: 'manual_override',
-                        referrer: MANUAL_REFERRER,
-                        headers: {
-                            Referer: MANUAL_REFERRER,
-                            'Sec-Fetch-Site': 'cross-site',
-                            'Sec-Fetch-Mode': 'navigate',
-                            'Sec-Fetch-User': '?1',
-                            'Sec-Fetch-Dest': 'document',
-                        },
-                        targetWithParams: targetUrl,
-                    };
-                } else {
-                    // Use Dynamic Engine
-                    ctx = engine.generateContext(targetUrl);
-                    logger.info(`[followLikeRetweet][Anti-Sybil] Engine Strategy: ${ctx.strategy}`);
-                    logger.info(
-                        `[followLikeRetweet][Anti-Sybil] Referrer: ${ctx.referrer || '(Direct Traffic - No Referrer)'}`
-                    );
-                }
-
-                // Set Headers (Referer + Sec-Fetch-*)
-                await page.setExtraHTTPHeaders(ctx.headers);
+                const ctx = engine.generateContext(targetUrl);
+                logger.info(`[followLikeRetweet][Anti-Sybil] Engine Strategy: ${ctx.strategy}`);
+                logger.info(
+                    `[followLikeRetweet][Anti-Sybil] Referrer: ${ctx.referrer || '(Direct Traffic - No Referrer)'}`
+                );
 
                 // Navigate to target
                 logger.info(`[followLikeRetweet] Navigating to Target Tweet: ${targetUrl}`);
                 await page.goto(ctx.targetWithParams, {
                     waitUntil: 'domcontentloaded',
                     timeout: 90000,
+                    referer: ctx.referrer || undefined,
                 });
 
                 // Explicitly wait for the tweet to be visible
