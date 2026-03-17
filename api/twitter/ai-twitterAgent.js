@@ -1143,15 +1143,15 @@ export class AITwitterAgent extends TwitterAgent {
 
             // Skip if already processed this tweet
             const tweetIdMatch = tweetUrl && tweetUrl.match(/status\/(\d+)/);
-            if (tweetIdMatch) {
-                const tweetId = tweetIdMatch[1];
-                if (this._processedTweetIds.has(tweetId)) {
-                    this.log(`[AI] Already processed tweet ${tweetId}, skipping...`);
+            const currentTweetId = tweetIdMatch ? tweetIdMatch[1] : null;
+            if (currentTweetId) {
+                if (this._processedTweetIds.has(currentTweetId)) {
+                    this.log(`[AI] Already processed tweet ${currentTweetId}, skipping...`);
                     await this.endDive(true, true);
                     return;
                 }
-                this._processedTweetIds.add(tweetId);
-                this.log(`[AI] Tracking new tweet ${tweetId}`);
+                this._processedTweetIds.add(currentTweetId);
+                this.log(`[AI] Tracking new tweet ${currentTweetId}`);
             }
 
             // ================================================================
@@ -1228,8 +1228,7 @@ export class AITwitterAgent extends TwitterAgent {
             let enhancedContext = {};
 
             // Set current tweet ID for mutual exclusion checks
-            const tweetId = tweetIdMatch ? tweetIdMatch[1] : null;
-            this.actionRunner.setCurrentTweetId(tweetId);
+            this.actionRunner.setCurrentTweetId(currentTweetId);
 
             // 1. Select Action (Fast, probability based) - OUTSIDE QUEUE
             // This prevents holding the queue lock just to decide what to do

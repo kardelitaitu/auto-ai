@@ -279,6 +279,15 @@ export class RetweetAction {
                 if (this.agent.diveQueue) {
                     this.agent.diveQueue.recordEngagement('retweets');
                 }
+
+                // Track tweet ID for mutual exclusion
+                const tweetUrl = await this.agent.pageOps.urlSync();
+                const tweetIdMatch = tweetUrl && tweetUrl.match(/status\/(\d+)/);
+                if (tweetIdMatch && this.agent._retweetedTweetIds) {
+                    this.agent._retweetedTweetIds.add(tweetIdMatch[1]);
+                    this.logger.info(`[RetweetAction] Tracked tweet ${tweetIdMatch[1]} for mutual exclusion`);
+                }
+
                 return { success: true, reason: 'retweet_keyboard_success' };
             } catch (e) {
                 this.logger.warn(`[RetweetAction] Keyboard verification failed: ${e.message}`);
@@ -361,6 +370,15 @@ export class RetweetAction {
                 if (this.agent.diveQueue) {
                     this.agent.diveQueue.recordEngagement('retweets');
                 }
+
+                // Track tweet ID for mutual exclusion
+                const currentUrl = await api.getCurrentUrl();
+                const tweetIdMatch = currentUrl && currentUrl.match(/status\/(\d+)/);
+                if (tweetIdMatch && this.agent._retweetedTweetIds) {
+                    this.agent._retweetedTweetIds.add(tweetIdMatch[1]);
+                    this.logger.info(`[RetweetAction] Tracked tweet ${tweetIdMatch[1]} for mutual exclusion`);
+                }
+
                 return { success: true, reason: 'retweet_successful' };
             } catch (_verifyError) {
                 this.logger.warn('[RetweetAction] Verification failed');

@@ -21,4 +21,4 @@ script/proxies.txt
 .llm-context
 backup
 api/coverage
-api/ui/electron-dashboard/dist-exe
+api/ui/electron-dashboard/dist-exe/

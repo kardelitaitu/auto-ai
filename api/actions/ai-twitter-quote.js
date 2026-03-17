@@ -119,6 +119,13 @@ export class AIQuoteAction {
                     // Record engagement so DiveQueue enforces the limit on next attempt
                     this.agent.diveQueue?.recordEngagement('quotes');
 
+                    // Track tweet ID for mutual exclusion
+                    const tweetIdMatch = tweetUrl && tweetUrl.match(/status\/(\d+)/);
+                    if (tweetIdMatch && this.agent._quotedTweetIds) {
+                        this.agent._quotedTweetIds.add(tweetIdMatch[1]);
+                        this.logger.info(`[AIQuoteAction] Tracked tweet ${tweetIdMatch[1]} for mutual exclusion`);
+                    }
+
                     this.logger.info(
                         `[AIQuoteAction] ✅ Quote posted: "${result.quote.substring(0, 30)}..."`
                     );
