@@ -1,13 +1,13 @@
 import React from 'react';
 
-const SessionItem = ({ session }) => {
+const SessionItem = React.memo(({ session }) => {
     const statusClass = session.status === 'online' ? 'online' :
         session.status === 'offline' ? 'offline' : 'unknown';
 
     const currentTask = session.taskName || session.currentTask || session.processing || null;
 
     return (
-        <div 
+        <div
             className={`session-box ${statusClass}`}
             style={{
                 padding: '8px 10px',
@@ -20,20 +20,20 @@ const SessionItem = ({ session }) => {
             }}
         >
             {/* Status Indicator */}
-            <div 
+            <div
                 style={{
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    background: statusClass === 'online' ? 'var(--accent-success)' : 
-                               statusClass === 'offline' ? 'var(--accent-error)' : 'var(--text-dim)',
+                    background: statusClass === 'online' ? 'var(--accent-success)' :
+                        statusClass === 'offline' ? 'var(--accent-error)' : 'var(--text-dim)',
                     flexShrink: 0
                 }}
             />
-            
+
             {/* Session Name */}
-            <div style={{ 
-                flex: '1', 
+            <div style={{
+                flex: '1',
                 minWidth: '0',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -69,7 +69,7 @@ const SessionItem = ({ session }) => {
                 color: 'var(--text-secondary)',
                 fontSize: '10px'
             }}>
-                <span style={{ 
+                <span style={{
                     color: session.activeWorkers > 0 ? 'var(--accent-primary)' : 'var(--text-dim)',
                     fontWeight: '400'
                 }}>
@@ -94,6 +94,6 @@ const SessionItem = ({ session }) => {
             </div>
         </div>
     );
-};
+});
 
 export default SessionItem;

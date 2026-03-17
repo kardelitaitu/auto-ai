@@ -52,6 +52,7 @@ vi.mock('@api/behaviors/timing.js', () => ({
 
 vi.mock('@api/interactions/wait.js', () => ({
     wait: vi.fn().mockResolvedValue(undefined),
+    waitWithAbort: vi.fn().mockResolvedValue(undefined),
     waitFor: vi.fn().mockResolvedValue(undefined),
     waitVisible: vi.fn().mockResolvedValue(undefined),
     waitHidden: vi.fn().mockResolvedValue(undefined),

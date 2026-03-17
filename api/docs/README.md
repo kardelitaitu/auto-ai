@@ -2,6 +2,37 @@
 
 Welcome to the Unified Browser Tool API documentation. This API provides a high-level, human-mimetic browser automation interface built on Playwright, designed to bypass bot detection through behavioral persona modeling, realistic kinetic movements, and robust error recovery.
 
+## Architecture Overview
+
+For a comprehensive architectural deep-dive, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+
+The API is organized into four main modules:
+
+```mermaid
+graph LR
+    A[API Layer<br/>api/index.js] --> B[Core<br/>Context, Config, Events]
+    A --> C[Interactions<br/>Actions, Scroll, Cursor]
+    A --> D[Behaviors<br/>Persona, Timing, Idle]
+    A --> E[Agent<br/>Observer, Executor, Vision]
+
+    B --> F[AsyncLocalStorage<br/>Session Isolation]
+    C --> G[Ghost Cursor<br/>Human-like Motion]
+    D --> H[16 Personas<br/>Biometric Profiles]
+    E --> I[LLM Client<br/>OpenRouter / Ollama]
+
+    style A fill:#4a90d9,stroke:#2c5aa0,color:#fff
+    style B fill:#7b68ee,stroke:#5a4fcf,color:#fff
+    style C fill:#50c878,stroke:#3a9a5c,color:#fff
+    style D fill:#ffa500,stroke:#cc8400,color:#fff
+    style E fill:#ff6b6b,stroke:#cc5555,color:#fff
+```
+
+**Key Design Principles:**
+- **Session Isolation**: Each browser page runs in its own `AsyncLocalStorage` context
+- **Human Mimicry**: All interactions use persona-driven timing and motion physics
+- **Semantic Agent**: LLM-powered interactions via accessibility tree mapping
+- **Recovery-First**: Every action includes automatic retry and state recovery
+
 ## Table of Contents
 
 - [Quick Start](#quick-start)
@@ -32,7 +63,7 @@ await api.withPage(page, async () => {
 
     // 3. Kinetic actions (automatically handles scroll + cursor move)
     await api.click('.login-button');
-    await api.type('#username', 'myuser', { clearFirst: false }); // true = clear field first, false = type after current value
+    await api.type('#username', 'myuser', { noClear: true }); // noClear: true preserves existing content (default clears field first)
 });
 ```
 

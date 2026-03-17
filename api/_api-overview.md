@@ -17,7 +17,7 @@ await api.withPage(page, async () => {
 
     // 3. Kinetic actions (automatically handles scroll + cursor move)
     await api.click('.login-button');
-    await api.type('#username', 'myuser', { clearFirst: true });
+    await api.type('#username', 'myuser'); // Fields are cleared by default
 });
 ```
 

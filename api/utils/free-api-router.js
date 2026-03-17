@@ -13,7 +13,7 @@
 
 import { createLogger } from '../core/logger.js';
 import { createProxyAgent } from './proxy-agent.js';
-import { CircuitBreaker } from './circuit-breaker.js';
+import CircuitBreaker from '../core/circuit-breaker.js';
 import { RateLimitTracker } from './rate-limit-tracker.js';
 import { RequestDedupe } from './request-dedupe.js';
 import { ModelPerfTracker } from './model-perf-tracker.js';
@@ -212,6 +212,16 @@ export class FreeApiRouter {
         if (!key) return 'null';
         if (key.length < 8) return '***';
         return `${key.substring(0, 6)}...${key.substring(key.length - 4)}`;
+    }
+
+    _maskProxy(proxyString) {
+        if (!proxyString) return null;
+        // Format: host:port or host:port:username:password
+        const parts = proxyString.split(':');
+        if (parts.length >= 4) {
+            return `${parts[0]}:${parts[1]}:${parts[2]}:***`;
+        }
+        return proxyString;
     }
 
     async processRequest(request) {
@@ -475,7 +485,7 @@ export class FreeApiRouter {
     async _tryModelWithKey(model, messages, maxTokens, temperature, _startTime) {
         logger.info(`[FreeRouter] _tryModelWithKey: model=${model}`);
         const proxyString = this._selectRequestProxy();
-        logger.info(`[FreeRouter] _tryModelWithKey: proxy=${proxyString}`);
+        logger.info(`[FreeRouter] _tryModelWithKey: proxy=${this._maskProxy(proxyString)}`);
         const proxy = this._parseProxy(proxyString);
 
         const payload = {

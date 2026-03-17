@@ -21,12 +21,20 @@ export class HistoryManager {
     }
 
     scheduleSave() {
-        if (this.saveTimeout) return;
-        this.pendingSave = true;
+        if (this.saveTimeout) {
+            // Already have a pending save, just mark that we need another
+            this.pendingSave = true;
+            return;
+        }
+
+        this.pendingSave = false;
         this.saveTimeout = setTimeout(() => {
-            this.save();
             this.saveTimeout = null;
+            // Save once for the current batch
+            this.save();
+            // If more changes came in during debounce, schedule another
             if (this.pendingSave) {
+                this.pendingSave = false;
                 this.scheduleSave();
             }
         }, this.saveDebounceMs);
@@ -51,7 +59,7 @@ export class HistoryManager {
 
             if (fs.existsSync(this.historyFilePath)) {
                 const rawData = fs.readFileSync(this.historyFilePath, 'utf8');
-                
+
                 let data;
                 try {
                     data = JSON.parse(rawData);
@@ -165,16 +173,13 @@ export class HistoryManager {
     }
 
     getCompletedTasksCount() {
-        return this.tasks?.filter(t => t.success)?.length || this.tasks?.length || 0;
+        if (!this.tasks || this.tasks.length === 0) return 0;
+        return this.tasks.filter(t => t.success === true).length;
     }
 
     setCompletedTasksCount(count) {
         this.completedTasks = count;
         this.save();
-    }
-
-    incrementCompletedTasks() {
-        // No longer needed - count comes from tasks array
     }
 
     getTwitterActions() {

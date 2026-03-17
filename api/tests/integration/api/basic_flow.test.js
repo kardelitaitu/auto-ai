@@ -47,6 +47,37 @@ vi.mock('@api/core/logger.js', () => ({
     })),
 }));
 
+vi.mock('@api/behaviors/timing.js', () => ({
+    delay: vi.fn().mockResolvedValue(undefined),
+    randomInRange: vi.fn().mockReturnValue(100),
+    think: vi.fn().mockResolvedValue(undefined),
+    gaussian: vi.fn().mockReturnValue(100),
+}));
+
+vi.mock('@api/behaviors/warmup.js', () => ({
+    beforeNavigate: vi.fn().mockResolvedValue(undefined),
+    randomMouse: vi.fn().mockResolvedValue(undefined),
+    fakeRead: vi.fn().mockResolvedValue(undefined),
+    pause: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('@api/core/plugins/index.js', () => ({
+    getPluginManager: vi.fn(() => ({
+        evaluateUrl: vi.fn(),
+    })),
+    loadBuiltinPlugins: vi.fn(),
+    registerPlugin: vi.fn(),
+    unregisterPlugin: vi.fn(),
+    enablePlugin: vi.fn(),
+    disablePlugin: vi.fn(),
+    listPlugins: vi.fn(),
+    listEnabledPlugins: vi.fn(),
+}));
+
+vi.mock('@api/interactions/banners.js', () => ({
+    handleBanners: vi.fn().mockResolvedValue(undefined),
+}));
+
 describe('Integration: Basic Flow (goto -> type -> click)', () => {
     let mockPage;
     let locator;

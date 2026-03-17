@@ -1,5 +1,20 @@
 
 
+### ✅ version 1.0.5 - 2026-03-13
+### Tooling Fixes
+- **Repaired Prompt Tester**: Fixed broken imports and legacy LLM provider logic in `prompt-test.js`. Aligned it with the current project structure and `settings.json` format while maintaining its standalone functionality.
+
+### OWB Agent Improvements
+- **Existing Tab Support**: Modified `agent-main.js` to reuse existing browser tabs instead of always creating new ones.
+- **Model Stability & Debugging**: Fixed a configuration bug in `agent-main.js` where model overrides failed to apply. Standardized on `qwen3.5:2b` and disabled verbose Ollama reasoning (`think: false`). Added **Raw LLM Output** logging in `llmClient.js`.
+- **JSON Output Enforcement**: Strictly enforced JSON-only responses from Ollama in `llmClient.js` using `format: 'json'` and updated system prompts in `gameRunner.js` to eliminate conversational chatter causing parsing failures.
+- **Action & Verify Fixes**: Added support for the `verify` action in `actionEngine.js` and streamlined the `gameRunner.js` execution loop to prevent redundant retries and architectural mismatches.
+- **Robust JSON Extraction**: Implemented fallback parsing in `llmClient.js` to handle model chatter outside JSON blocks.
+- **Improved Interaction**: Added `clickType` support (single/double/long) and mandatory `rationale` field in agent JSON output for better tactical transparency.
+- **Adaptive Strategy**: Implemented `analyzeMap()` in `owb-agents.js` to dynamically pivot between Rush, Defend, and Expand based on screenshot analysis.
+- **Defensive Pivot**: Refined OWB configuration to focus on Defensive buildings (cost: 200 gold) and enforced a 5,000,000 gold threshold for upgrades.
+- **Critical Fix**: Replaced broad JSON extraction with a high-accuracy brace-counting parser in `llmClient.js` to fix "Unexpected non-whitespace character" errors caused by trailing LLM chatter.
+
 ### ✅ version 1.0.4 - 2026-03-12
 ### Test Execution Improvements
 - **Flexible Test Filtering**: Removed hardcoded paths from `package.json` test scripts, enabling file-specific filtering via CLI arguments (e.g., `npm run test -- filename.test.js`).
@@ -312,6 +327,10 @@
 - **Decoupled GhostCursor**: Extracted domain-specific click profiles to `api/profiles/click-profiles.js`, making the core cursor utility domain-agnostic.
 - **Improved Observability**: Replaced silent, swallowed exceptions in patching and initialization sequences with robust warnings and event emitters.
 - **Robust Semantic Hashing**: Upgraded agent loop detection in `api/agent/runner.js` to use a semantic hash that strips dynamic temporal noise (timestamps, IDs) from AX Trees.
+- **Heuristic JSON Repair**: Enhanced `llmClient.js` with auto-complete logic for truncated model responses, preventing aborts on minor formatting issues.
+- **Expansion Prompt Optimization**: Improved OWB agent instructions to identify and click on both gray (unowned) and red (enemy) territories adjacent to blue land for aggressive territory capture.
+- **Exhaustive Defense & Max Upgrading**: Refined OWB strategy to ensure all owned hexes are filled with defensive buildings and all buildings are upgraded to their maximum level when gold exceeds 5M, using repetitive click targeting.
+- **AXTree Independence**: Optimized `gameRunner.js` to allow disabling AXTree capture and verification. Configured OWB agent to run without AXTree to avoid false-positive warnings in canvas-based environments.
 - **Navigation Safety**: Enhanced `smartClick` recovery to respect deliberate navigation via an `expectsNavigation` flag, stopping aggressive rollback.
 
 ### ✅ version 0.4.3
@@ -556,3 +575,11 @@ tasks
 for
 better
 visibility.
+- Added Phase 7 (Multi-Action Sequences) to gameRunner.js and owb-agents.js
+### ✅ version 1.0.6 - 2026-03-14
+### OWB Agent Improvements
+- **Refined Selection Prompt**: Upgraded the `executeStateA` prompt in `owb-agents.js` with structured contextual guidance, color guides, and priority rules.
+- **Enhanced LLM Logging**: Improved tactical transparency by adding `price` and `rationale` fields to the land detection response.
+- **Improved Purchase Accuracy**: Added adjacency rules and "closest to center" priority to ensure smarter expansion during the unowned land purchase phase.
+### API Error Handling
+- **Custom Error Classes**: Replaced generic `throw new Error('SessionDisconnectedError: ...')` with custom `SessionDisconnectedError` class across 8 interaction modules (`gameMenus.js`, `resourceTracker.js`, `gameState.js`, `actions.js`, `multiSelect.js`, `clickAt.js`, `drag.js`, `keys.js`). This provides consistent error codes and improved stack traces for debugging.

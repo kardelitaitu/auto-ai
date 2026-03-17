@@ -17,7 +17,7 @@ vi.mock('../../../api/index.js', () => ({
         },
     },
 }));
-import { api } from '@api/index.js';
+import { api } from '../../../api/index.js';
 
 vi.mock('../../core/logger.js', () => ({
     createLogger: vi.fn(() => ({
@@ -425,14 +425,25 @@ describe('ai-context-engine', () => {
             if (source.includes('document.body.scrollHeight')) return 1600;
             if (source.includes('window.scrollBy') || source.includes('window.scrollTo'))
                 return undefined;
-            if (source.includes('const found = []') && source.includes('selectors')) {
+            // Strategy 1 & 2: Scroll loop extraction (selectors)
+            if (source.includes('selectors') && source.includes('for (const selector')) {
                 return [];
             }
-            if (source.includes('const found = []') && source.includes('paragraphs.forEach')) {
+            // Strategy 3: Deep DOM extraction via articles.forEach
+            if (source.includes('articles.forEach')) {
                 return ['Deep reply text'];
             }
-            if (source.includes('document.querySelectorAll') && source.includes('tweetText')) {
+            // Strategy 3 fallback: paragraphs.forEach
+            if (source.includes('paragraphs.forEach')) {
+                return ['Deep reply text'];
+            }
+            // Fallback querySelectorAll for tweetText
+            if (source.includes('querySelectorAll') && source.includes('tweetText')) {
                 return [];
+            }
+            // Fallback querySelectorAll for article (non-scroll strategies)
+            if (source.includes('querySelectorAll') && source.includes('article') && !source.includes('articles.forEach')) {
+                return ['Deep reply text'];
             }
             return fn(arg);
         });

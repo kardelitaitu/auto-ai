@@ -539,6 +539,12 @@ class SessionManager {
     getSession(sessionId) {
         return this.sessions.find((s) => s.id === sessionId);
     }
+
+    getIdleSession() {
+        return this.sessions.find(
+            (s) => s.browser && s.browser.isConnected() && s.workers.some((w) => w.status === 'idle')
+        );
+    }
 }
 
 export default SessionManager;

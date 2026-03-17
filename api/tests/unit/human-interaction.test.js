@@ -10,10 +10,32 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Mock GhostCursor
+vi.mock('@api/utils/ghostCursor.js', () => ({
+    GhostCursor: vi.fn().mockImplementation((page) => ({
+        page,
+        click: vi.fn().mockResolvedValue({ success: true }),
+        move: vi.fn().mockResolvedValue(undefined),
+    })),
+}));
+
+// Import modules - the api will be the real one but we'll spy on it
 import { api } from '@api/index.js';
 import { HumanInteraction } from '@api/behaviors/human-interaction.js';
 
-vi.mock('../../../api/index.js', () => ({
+// Spy on api methods - use mockImplementation to allow per-test overrides
+vi.spyOn(api, 'wait').mockResolvedValue(undefined);
+vi.spyOn(api, 'think').mockResolvedValue(undefined);
+vi.spyOn(api, 'scroll').mockResolvedValue(undefined);
+vi.spyOn(api, 'getPersona').mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 });
+vi.spyOn(api, 'getCurrentUrl').mockReturnValue('https://x.com/home');
+vi.spyOn(api, 'setPage').mockImplementation(() => {});
+
+// visible, exists, and count will be set in beforeEach to allow test overrides
+let visibleSpy, existsSpy, countSpy, getPageSpy;
+
+vi.mock('@api/index.js', () => ({
     api: {
         setPage: vi.fn(),
         getPage: vi.fn(),
@@ -23,16 +45,28 @@ vi.mock('../../../api/index.js', () => ({
         getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
         getCurrentUrl: vi.fn().mockReturnValue('https://x.com/home'),
         visible: vi.fn().mockImplementation(async (el) => {
-            if (el && typeof el.isVisible === 'function') return await el.isVisible();
+            // Handle locator mocks that have isVisible method
+            if (el && typeof el.isVisible === 'function') {
+                const result = await el.isVisible();
+                return result !== undefined ? result : true;
+            }
+            // Handle locator mocks that have first().isVisible() chain
+            if (el && typeof el.first === 'function') {
+                const firstEl = el.first();
+                if (firstEl && typeof firstEl.isVisible === 'function') {
+                    const result = await firstEl.isVisible();
+                    return result !== undefined ? result : true;
+                }
+            }
             return true;
         }),
-        exists: vi.fn().mockImplementation(async (el) => {
-            if (el && typeof el.count === 'function') return (await el.count()) > 0;
-            return el !== null;
+        exists: vi.fn().mockImplementation((el) => {
+            if (el && typeof el.count === 'function') return el.count().then(c => c > 0);
+            return Promise.resolve(el !== null);
         }),
-        count: vi.fn().mockImplementation(async (el) => {
-            if (el && typeof el.count === 'function') return await el.count();
-            return 1;
+        count: vi.fn().mockImplementation((el) => {
+            if (el && typeof el.count === 'function') return el.count();
+            return Promise.resolve(1);
         }),
     },
 }));
@@ -43,8 +77,37 @@ describe('HumanInteraction', () => {
     beforeEach(() => {
         vi.useRealTimers();
         vi.clearAllMocks();
-        human = new HumanInteraction();
-
+        
+        // Re-apply spies after clearAllMocks
+        vi.spyOn(api, 'wait').mockResolvedValue(undefined);
+        vi.spyOn(api, 'think').mockResolvedValue(undefined);
+        vi.spyOn(api, 'scroll').mockResolvedValue(undefined);
+        vi.spyOn(api, 'getPersona').mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 });
+        vi.spyOn(api, 'getCurrentUrl').mockReturnValue('https://x.com/home');
+        vi.spyOn(api, 'setPage').mockImplementation(() => {});
+        
+        // Set up visible spy with a flexible implementation
+        visibleSpy = vi.spyOn(api, 'visible').mockImplementation(async (el) => {
+            if (el && typeof el.isVisible === 'function') {
+                return await el.isVisible();
+            }
+            return true;
+        });
+        
+        existsSpy = vi.spyOn(api, 'exists').mockImplementation(async (el) => {
+            if (el && typeof el.count === 'function') {
+                return (await el.count()) > 0;
+            }
+            return el !== null;
+        });
+        
+        countSpy = vi.spyOn(api, 'count').mockImplementation(async (el) => {
+            if (el && typeof el.count === 'function') {
+                return await el.count();
+            }
+            return 1;
+        });
+        
         const mockPage = {
             mouse: {
                 move: vi.fn().mockResolvedValue(undefined),
@@ -55,8 +118,17 @@ describe('HumanInteraction', () => {
                 browser: vi.fn().mockReturnValue({ isConnected: vi.fn().mockReturnValue(true) }),
             }),
             url: vi.fn().mockReturnValue('https://x.com/home'),
+            locator: vi.fn().mockReturnValue({
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(true),
+                    count: vi.fn().mockResolvedValue(1),
+                }),
+                all: vi.fn().mockResolvedValue([]),
+            }),
         };
-        api.getPage.mockReturnValue(mockPage);
+        getPageSpy = vi.spyOn(api, 'getPage').mockReturnValue(mockPage);
+        
+        human = new HumanInteraction();
     });
 
     describe('Initialization', () => {

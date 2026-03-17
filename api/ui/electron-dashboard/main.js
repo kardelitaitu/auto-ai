@@ -87,7 +87,7 @@ async function createWindow() {
         console.log(`[Dashboard] Remote mode: connecting to ${config.connect.remoteHost}:${config.connect.remotePort}`);
     }
 
-    const serverUrl = connectToRemote 
+    const serverUrl = connectToRemote
         ? `http://${config.connect.remoteHost}:${config.connect.remotePort}`
         : `http://${serverHost}:${serverPort}`;
 
@@ -194,6 +194,15 @@ async function createWindow() {
     });
 
     ipcMain.on('set-window-size', (event, { width, height, compact }) => {
+        // Validate width and height to prevent malicious values
+        if (typeof width !== 'number' || width < 100 || width > 5000) {
+            console.error(`[Dashboard] Invalid window width: ${width}`);
+            return;
+        }
+        if (typeof height !== 'number' || height < 100 || height > 5000) {
+            console.error(`[Dashboard] Invalid window height: ${height}`);
+            return;
+        }
         mainWindow.setSize(width, height);
         // If compact, we might want to disable some UI elements via IPC if needed
         // but for now, just resizing is enough.

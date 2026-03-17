@@ -9,7 +9,7 @@ import { ReferrerEngine } from '@api/utils/urlReferrer.js';
 import fs from 'fs';
 import path from 'path';
 
-vi.mock('../../../api/index.js', () => ({
+vi.mock('@api/index.js', () => ({
     api: {
         setPage: vi.fn(),
         goto: vi.fn(),
@@ -168,19 +168,19 @@ describe('ReferrerEngine', () => {
             api.setPage(mockPage);
         });
 
-        it.skip('should use simple goto for direct traffic', async () => {
+        it('should use simple goto for direct traffic', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.05);
 
             await engine.navigate(mockPage, 'https://target.com');
 
-            expect(mockPage.setExtraHTTPHeaders).toHaveBeenCalled();
-            expect(mockPage.goto).toHaveBeenCalledWith(
+            expect(api.setExtraHTTPHeaders).toHaveBeenCalled();
+            expect(api.goto).toHaveBeenCalledWith(
                 expect.stringContaining('https://target.com')
             );
             expect(mockPage.route).not.toHaveBeenCalled();
         });
 
-        it.skip('should use trampoline for complex traffic', async () => {
+        it('should use trampoline for complex traffic', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.2);
 
             mockPage.route.mockImplementation((pattern, handler) => {
@@ -196,20 +196,21 @@ describe('ReferrerEngine', () => {
                 expect.stringContaining('google.com'),
                 expect.any(Function)
             );
-            expect(mockPage.goto).toHaveBeenCalledWith(expect.stringContaining('google.com'), {
+            expect(api.goto).toHaveBeenCalledWith(expect.stringContaining('google.com'), {
                 waitUntil: 'commit',
             });
-            expect(mockPage.waitForURL).toHaveBeenCalled();
+            // waitForURL is called via api, not page
+            expect(api.waitForURL).toHaveBeenCalled();
         });
 
-        it.skip('should fallback to direct goto on trampoline error', async () => {
+        it('should fallback to direct goto on trampoline error', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.2);
 
             mockPage.route.mockRejectedValue(new Error('Route failed'));
 
             await engine.navigate(mockPage, 'https://target.com');
 
-            expect(mockPage.goto).toHaveBeenCalledWith(
+            expect(api.goto).toHaveBeenCalledWith(
                 expect.stringContaining('https://target.com'),
                 expect.objectContaining({ referer: expect.any(String) })
             );
@@ -362,14 +363,15 @@ describe('ReferrerEngine', () => {
             api.setPage(mockPage);
         });
 
-        it.skip('should handle click timeout gracefully', async () => {
+        it('should handle click timeout gracefully', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.2);
 
             mockPage.click.mockRejectedValue(new Error('Timeout'));
 
             await engine.trampolineNavigate(mockPage, 'https://target.com');
 
-            expect(mockPage.goto).toHaveBeenCalled();
+            // On trampoline failure, it falls back to api.goto with headers
+            expect(api.goto).toHaveBeenCalled();
         });
 
         it('should handle invalid URL in targetWithParams gracefully', async () => {

@@ -230,7 +230,7 @@ describe('api/agent/actionEngine.js', () => {
 
         it('should throw for non-string selector', () => {
             expect(() => actionEngine.getLocator(mockPage, 123)).toThrow(
-                'Selector must be a string'
+                'Selector must be a non-empty string'
             );
         });
     });

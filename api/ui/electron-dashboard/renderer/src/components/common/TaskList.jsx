@@ -12,11 +12,17 @@ const formatTimeAgo = (timestamp) => {
     return new Date(timestamp).toLocaleDateString();
 };
 
-const TaskList = ({ tasks = [] }) => {
-    // Force re-render periodically to update relative times
-    const [, setTick] = React.useState(0);
+const TaskList = React.memo(({ tasks = [] }) => {
+    // Use a ref to track the last update time for efficient re-renders
+    const lastUpdateRef = React.useRef(Date.now());
+    const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+
     React.useEffect(() => {
-        const interval = setInterval(() => setTick(t => t + 1), 30000);
+        // Only update if visible (optimization)
+        const interval = setInterval(() => {
+            lastUpdateRef.current = Date.now();
+            forceUpdate();
+        }, 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -29,10 +35,10 @@ const TaskList = ({ tasks = [] }) => {
     }
 
     return (
-        <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '4px', 
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
             overflowY: 'auto',
             overflowX: 'hidden',
             maxHeight: '100%'
@@ -87,6 +93,6 @@ const TaskList = ({ tasks = [] }) => {
             })}
         </div>
     );
-};
+});
 
 export default TaskList;

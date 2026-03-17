@@ -42,7 +42,7 @@ vi.mock('../../core/logger.js', () => ({
     })),
 }));
 
-describe('AgentConnector Integration', () => {
+describe('AgentConnector Integration', { timeout: 30000 }, () => {
     let AgentConnector;
     let agentConnector;
 

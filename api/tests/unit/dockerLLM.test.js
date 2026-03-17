@@ -20,6 +20,20 @@ vi.mock('child_process', () => ({
     }),
 }));
 
+vi.mock('../../core/logger.js', () => ({
+    createLogger: vi.fn().mockReturnValue({
+        info: vi.fn(),
+        error: vi.fn(),
+        warn: vi.fn(),
+        debug: vi.fn(),
+        success: vi.fn(),
+    }),
+}));
+
+vi.mock('../../utils/configLoader.js', () => ({
+    getSettings: vi.fn(),
+}));
+
 describe('utils/dockerLLM', () => {
     let dockerLLM;
     let fetchSpy;
@@ -32,29 +46,17 @@ describe('utils/dockerLLM', () => {
         fetchSpy = vi.fn();
         global.fetch = fetchSpy;
 
-        // Mock logger
-        vi.mock('../../core/logger.js', () => ({
-            createLogger: vi.fn().mockReturnValue({
-                info: vi.fn(),
-                error: vi.fn(),
-                warn: vi.fn(),
-                debug: vi.fn(),
-                success: vi.fn(),
-            }),
-        }));
-
-        // Mock configLoader
-        vi.mock('../../utils/configLoader.js', () => ({
-            getSettings: vi.fn().mockResolvedValue({
-                llm: {
-                    local: {
-                        endpoint: 'http://localhost:11434',
-                        provider: 'ollama',
-                        model: 'llama3.2-vision',
-                    },
+        // Setup default config mock
+        const configLoader = await import('../../utils/configLoader.js');
+        configLoader.getSettings.mockResolvedValue({
+            llm: {
+                local: {
+                    endpoint: 'http://localhost:11434',
+                    provider: 'ollama',
+                    model: 'llama3.2-vision',
                 },
-            }),
-        }));
+            },
+        });
 
         const module = await import('../../utils/dockerLLM.js');
         dockerLLM = module;

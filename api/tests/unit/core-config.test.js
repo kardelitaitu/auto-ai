@@ -54,7 +54,7 @@ describe('api/core/config', () => {
 
         const config = await configManager.init();
 
-        expect(config.agent.llm.model).toBe('qwen2.5:7b'); // Default
+        expect(config.agent.llm.model).toBe('qwen3.5:4b'); // Default
     });
 
     it('init should return cached config if already initialized', async () => {
@@ -100,11 +100,11 @@ describe('api/core/config', () => {
 
     it('getFullConfig should return DEFAULTS if not initialized', () => {
         const config = configManager.getFullConfig();
-        expect(config.agent.llm.model).toBe('qwen2.5:7b');
+        expect(config.agent.llm.model).toBe('qwen3.5:4b');
     });
 
     it('_getDefaults should return DEFAULTS', () => {
         const defaults = configManager._getDefaults();
-        expect(defaults.agent.llm.model).toBe('qwen2.5:7b');
+        expect(defaults.agent.llm.model).toBe('qwen3.5:4b');
     });
 });

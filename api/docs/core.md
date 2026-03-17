@@ -12,6 +12,7 @@ The core modules provide the foundation for the API, including context managemen
 - [Middleware](#middleware)
 - [Plugins](#plugins)
 - [Init](#init)
+- [Lite Mode](#lite-mode)
 - [Logger](#logger)
 
 ---
@@ -316,6 +317,125 @@ await api.init(page, {
     sensors: true, // Enable sensor simulation
 });
 ```
+
+---
+
+## Lite Mode
+
+Lite mode is a performance optimization feature that blocks resource-heavy requests to reduce bandwidth usage and memory consumption. It's particularly useful for low-bandwidth environments, automated testing, or when you need pages to load faster by skipping non-essential content.
+
+### What Lite Mode Blocks
+
+When enabled, lite mode intercepts and aborts the following resource types:
+
+| Resource Type   | Description                    |
+| --------------- | ------------------------------ |
+| `image`         | Images (PNG, JPG, GIF, etc.)   |
+| `media`         | Audio and video content        |
+| `font`          | Web fonts (WOFF, TTF, etc.)    |
+| `stylesheet`    | CSS stylesheets                |
+| `texttrack`     | Video subtitles/captions       |
+| `manifest`      | Web app manifests              |
+
+Additionally, it blocks scripts and network requests from known tracking/advertising domains:
+
+- `google-analytics.com`
+- `googletagmanager.com`
+- `facebook.net`
+- `doubleclick.net`
+- `amazon-adsystem.com`
+- `adnxs.com`
+- `quantserve.com`
+- `scorecardresearch.com`
+- `crashlytics.com`
+- `hotjar.com`
+
+### Enabling Lite Mode
+
+Pass `lite: true` when initializing a page:
+
+```javascript
+import { initPage } from './api/core/init.js';
+
+// Enable lite mode during initialization
+await initPage(page, {
+    lite: true,
+    persona: 'casual',
+    patch: true,
+});
+```
+
+Or via the unified API:
+
+```javascript
+import { api } from './api/index.js';
+
+await api.init(page, { lite: true });
+```
+
+### Clearing Lite Mode
+
+Use [`clearLiteMode()`](#functions-1) to remove all resource blocking routes and restore normal page behavior:
+
+```javascript
+import { clearLiteMode } from './api/core/init.js';
+
+// Clear lite mode to allow all resources
+await clearLiteMode(page);
+```
+
+Or via the unified API:
+
+```javascript
+import { api } from './api/index.js';
+
+await api.clearLiteMode();
+```
+
+### Use Cases
+
+| Scenario                  | Recommendation                           |
+| ------------------------- | ---------------------------------------- |
+| **Low-bandwidth testing** | Enable lite mode to simulate slow networks |
+| **Automated testing**     | Skip images/media for faster test runs   |
+| **Progressive loading**   | Load text first, enable resources later  |
+| **Memory-constrained**    | Reduce RAM usage on large pages          |
+| **Ad/tracker analysis**   | Block trackers to focus on core content  |
+
+### Example: Progressive Loading
+
+```javascript
+import { api } from './api/index.js';
+
+// Load page with lite mode for fast initial render
+await api.init(page, { lite: true });
+await api.goto('https://example.com');
+
+// Wait for critical content to load
+await api.wait(2000);
+
+// Clear lite mode to load images and styles
+await api.clearLiteMode();
+
+// Wait for full page render
+await api.wait(3000);
+```
+
+### Functions
+
+| Function                  | Description                                      |
+| ------------------------- | ------------------------------------------------ |
+| `clearLiteMode(page)`     | Remove all lite-mode resource blocking routes    |
+
+### Parameters
+
+| Parameter | Type                          | Required | Description                           |
+| --------- | ----------------------------- | -------- | ------------------------------------- |
+| `page`    | `import('playwright').Page`   | No       | Page instance. Uses current context if not provided |
+
+### Returns
+
+`Promise<void>` - Resolves when routes are cleared.
 
 ---
 

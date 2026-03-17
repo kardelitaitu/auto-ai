@@ -14,6 +14,7 @@ import { scroll, focus } from '../interactions/scroll.js';
 import { wait } from '../interactions/wait.js';
 import { text, exists } from '../interactions/queries.js';
 import metricsCollector from '../utils/metrics.js';
+import { sanitizeReplyText } from '../twitter/twitter-reply-prompt.js';
 
 const logger = createLogger('api/quote.js');
 
@@ -68,7 +69,7 @@ export async function quoteWithAI(options = {}) {
 
     let finalQuoteText = fallback;
     if (generation.success && generation.quote) {
-        finalQuoteText = generation.quote;
+        finalQuoteText = sanitizeReplyText(generation.quote);
         logger.info(`AI Quote: "${finalQuoteText}"`);
     } else {
         logger.warn(`AI Generation failed, using fallback`);

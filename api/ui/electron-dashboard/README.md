@@ -157,15 +157,33 @@ The dashboard is completely optional and isolated:
 ### File Structure
 
 ```
-ui/electron-dashboard/
+api/ui/electron-dashboard/
+├── dashboard.js         # WebSocket server (Express + Socket.io)
 ├── main.js              # Electron main process
-├── preload.js           # IPC bridge
-├── renderer/
-│   ├── index.html       # Dashboard UI
-│   ├── style.css        # Styling
-│   └── script.js        # Frontend logic
-├── package.json         # Electron dependencies
-└── dashboard.js         # WebSocket server
+├── preload.mjs          # IPC bridge (ES modules)
+├── start-server.js      # Standalone server entry point
+├── config.json          # Dashboard configuration
+├── package.json         # Dependencies and scripts
+├── vitest.config.js     # Test configuration
+├── lib/
+│   ├── history-manager.js  # Persistent history storage
+│   └── logger.js           # ANSI-colored logging
+├── renderer/            # React frontend
+│   ├── src/
+│   │   ├── App.jsx           # Main React component
+│   │   ├── main.jsx          # React entry point
+│   │   └── components/
+│   │       ├── common/
+│   │       │   ├── ErrorBoundary.jsx  # Error handling wrapper
+│   │       │   └── TaskList.jsx       # Task history list
+│   │       ├── layout/
+│   │       │   └── DashboardLayout.jsx # Layout wrapper
+│   │       ├── metrics/
+│   │       │   └── MetricCard.jsx     # Metric display with sparkline
+│   │       └── sessions/
+│   │           └── SessionItem.jsx    # Session status display
+│   └── dist/            # Built React app (production)
+└── tests/               # Unit tests
 ```
 
 ### Communication Flow
@@ -220,6 +238,23 @@ This creates platform-specific executables in the `dist/` folder.
 - **No external dependencies**: Self-contained Electron app
 - **No data persistence**: Real-time monitoring only
 - **Optional**: Can be disabled without affecting core functionality
+
+### Authentication Note
+
+Sensitive endpoints like `clear-history` are currently unprotected since the dashboard is designed for local use only. If exposing the dashboard to a network, consider adding authentication middleware:
+
+```javascript
+// Example: Add API key authentication
+const API_KEY = process.env.DASHBOARD_API_KEY;
+
+expressApp.use('/api', (req, res, next) => {
+    const key = req.headers['x-api-key'] || req.query.apiKey;
+    if (key !== API_KEY) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    next();
+});
+```
 
 ## License
 

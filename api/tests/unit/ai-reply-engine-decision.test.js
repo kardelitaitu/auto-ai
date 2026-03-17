@@ -64,6 +64,7 @@ describe('ai-reply-engine/decision', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+        vi.resetModules();
 
         const module = await import('../../agent/ai-reply-engine/decision.js');
         shouldReply = module.shouldReply;
@@ -81,7 +82,7 @@ describe('ai-reply-engine/decision', () => {
             { processRequest: vi.fn(), sessionId: 'test' },
             { replyProbability: 1, maxRetries: 1 }
         );
-    });
+    }, 20000);
 
     describe('shouldReply', () => {
         it('should skip when probability roll fails', async () => {

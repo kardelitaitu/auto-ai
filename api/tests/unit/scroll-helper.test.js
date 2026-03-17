@@ -11,6 +11,19 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+// Create mock scroll with all methods before vi.mock hoisting
+const mockScroll = vi.fn().mockResolvedValue(undefined);
+mockScroll.toTop = vi.fn().mockResolvedValue(undefined);
+mockScroll.toBottom = vi.fn().mockResolvedValue(undefined);
+mockScroll.focus = vi.fn().mockResolvedValue(undefined);
+
+vi.mock('../../index.js', () => ({
+    api: {
+        wait: vi.fn().mockResolvedValue(undefined),
+        scroll: mockScroll,
+    },
+}));
+
 describe('utils/scroll-helper', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -24,9 +37,6 @@ describe('utils/scroll-helper', () => {
         const { scrollWheel } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
 
-        vi.spyOn(api, 'wait').mockResolvedValue();
-        vi.spyOn(api, 'scroll').mockResolvedValue();
-
         await scrollWheel(100, { delay: 500 });
 
         expect(api.wait).toHaveBeenCalledWith(500);
@@ -36,9 +46,6 @@ describe('utils/scroll-helper', () => {
     it('scrollWheel should not wait if delay is not provided', async () => {
         const { scrollWheel } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
-
-        vi.spyOn(api, 'wait').mockResolvedValue();
-        vi.spyOn(api, 'scroll').mockResolvedValue();
 
         await scrollWheel(100);
 
@@ -50,9 +57,6 @@ describe('utils/scroll-helper', () => {
         const { scrollDown } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
 
-        vi.spyOn(api, 'wait').mockResolvedValue();
-        vi.spyOn(api, 'scroll').mockResolvedValue();
-
         await scrollDown(200, { delay: 500 });
 
         expect(api.wait).toHaveBeenCalledWith(500);
@@ -63,9 +67,6 @@ describe('utils/scroll-helper', () => {
         const { scrollUp } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
 
-        vi.spyOn(api, 'wait').mockResolvedValue();
-        vi.spyOn(api, 'scroll').mockResolvedValue();
-
         await scrollUp(200, { delay: 500 });
 
         expect(api.wait).toHaveBeenCalledWith(500);
@@ -75,9 +76,6 @@ describe('utils/scroll-helper', () => {
     it('scrollRandom should use mathUtils and scroll with delay', async () => {
         const { scrollRandom } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
-
-        vi.spyOn(api, 'wait').mockResolvedValue();
-        vi.spyOn(api, 'scroll').mockResolvedValue();
 
         const mathUtils = (await import('../../utils/math.js')).mathUtils;
         vi.spyOn(mathUtils, 'randomInRange').mockReturnValue(150);
@@ -93,8 +91,6 @@ describe('utils/scroll-helper', () => {
         const { scrollToTop } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
 
-        vi.spyOn(api.scroll, 'toTop').mockResolvedValue();
-
         await scrollToTop();
 
         expect(api.scroll.toTop).toHaveBeenCalled();
@@ -104,8 +100,6 @@ describe('utils/scroll-helper', () => {
         const { scrollToBottom } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
 
-        vi.spyOn(api.scroll, 'toBottom').mockResolvedValue();
-
         await scrollToBottom();
 
         expect(api.scroll.toBottom).toHaveBeenCalled();
@@ -114,8 +108,6 @@ describe('utils/scroll-helper', () => {
     it('scroll should call api.scroll', async () => {
         const { scroll } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
-
-        vi.spyOn(api, 'scroll').mockResolvedValue();
 
         await scroll(300);
 
@@ -130,8 +122,6 @@ describe('utils/scroll-helper', () => {
     it('scrollToElement should call api.scroll.focus', async () => {
         const { scrollToElement } = await import('../../behaviors/scroll-helper.js');
         const api = (await import('../../index.js')).api;
-
-        vi.spyOn(api.scroll, 'focus').mockResolvedValue();
 
         await scrollToElement('#test-el', { behavior: 'smooth' });
 

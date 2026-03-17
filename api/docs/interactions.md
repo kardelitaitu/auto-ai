@@ -10,6 +10,8 @@ The interactions module provides high-level user action functions that simulate 
 - [Navigation](#navigation)
 - [Wait](#wait)
 - [Queries](#queries)
+- [Screenshot](#screenshot)
+- [Emulate Media](#emulate-media)
 - [Banners](#banners)
 
 ---
@@ -45,9 +47,8 @@ Kinetic actions that follow a 3-step pipeline: **Focus (Scroll) → Move Cursor 
 ```javascript
 {
     delay: 50,              // Delay between keystrokes in ms
-    noClear: false,         // Don't clear field before typing
-    humanize: true,         // Apply human-like keystroke timing
-    clearFirst: false       // Clear field first
+    noClear: false,         // Clear field before typing (default)
+    humanize: true          // Apply human-like keystroke timing
 }
 ```
 
@@ -60,10 +61,9 @@ await api.click('.login-button', {
     maxRetries: 3,
 });
 
-// Type with humanization
+// Type with humanization (default clears field first)
 await api.type('#username', 'myuser', {
-    humanize: true,
-    clearFirst: true,
+    humanize: true
 });
 
 // Hover
@@ -309,23 +309,146 @@ const url = await api.getCurrentUrl();
 
 ---
 
-## Banners
+## Screenshot
 
-Handle and dismiss banners/modals.
+Capture screenshots of the current page.
 
 ### Functions
 
-| Function                 | Description                      |
-| ------------------------ | -------------------------------- |
-| `handleBanners(options)` | Handle common banners and modals |
+| Function                  | Description                              |
+| ------------------------- | ---------------------------------------- |
+| `screenshot(options)`     | Capture page screenshot                  |
+
+### Screenshot Options
+
+| Option     | Type    | Default  | Description                              |
+| ---------- | ------- | -------- | ---------------------------------------- |
+| `path`     | string  | -        | File path to save the screenshot         |
+| `fullPage` | boolean | `false`  | Capture full scrollable page             |
+| `type`     | string  | `'jpeg'` | Image format: `'jpeg'`, `'png'`, `'webp'` |
+| `quality`  | number  | `80`     | Image quality (0-100, JPEG only)         |
 
 ### Usage
 
 ```javascript
-// Handle banners
+// Basic screenshot (returns buffer)
+const screenshot = await api.screenshot();
+
+// Save to file
+await api.screenshot({ path: './screenshots/page.png' });
+
+// Full page screenshot
+await api.screenshot({
+    path: './screenshots/full.png',
+    fullPage: true
+});
+
+// High quality PNG
+await api.screenshot({
+    path: './screenshots/hq.png',
+    type: 'png'
+});
+
+// JPEG with custom quality
+await api.screenshot({
+    path: './screenshots/page.jpg',
+    type: 'jpeg',
+    quality: 95
+});
+```
+
+---
+
+## Emulate Media
+
+Emulate CSS media features like color scheme and print styles.
+
+### Functions
+
+| Function                    | Description                              |
+| --------------------------- | ---------------------------------------- |
+| `emulateMedia(options)`     | Emulate media features                   |
+
+### Emulate Media Options
+
+| Option        | Type   | Description                              |
+| ------------- | ------ | ---------------------------------------- |
+| `type`        | string | Media type: `'screen'`, `'print'`, `null` |
+| `colorScheme` | string | Color scheme: `'light'`, `'dark'`, `'no-preference'`, `null` |
+| `prefersReducedMotion` | string | `'reduce'`, `'no-preference'`, `null` |
+| `forcedColors` | string | `'active'`, `'none'`, `null` |
+
+### Usage
+
+```javascript
+// Enable dark mode
+await api.emulateMedia({ colorScheme: 'dark' });
+
+// Disable dark mode
+await api.emulateMedia({ colorScheme: 'light' });
+
+// Emulate print styles
+await api.emulateMedia({ type: 'print' });
+
+// Reset to screen mode
+await api.emulateMedia({ type: 'screen' });
+
+// Combine options
+await api.emulateMedia({
+    type: 'screen',
+    colorScheme: 'dark'
+});
+
+// Reset all media emulation
+await api.emulateMedia({
+    type: null,
+    colorScheme: null
+});
+```
+
+---
+
+## Banners
+
+Auto-detect and dismiss cookie consent banners, popup ads, and notification prompts.
+
+### Functions
+
+| Function                 | Description                                    |
+| ------------------------ | ---------------------------------------------- |
+| `handleBanners(options)` | Auto-detect and dismiss common banners/modals  |
+
+### Banner Options
+
+| Option                   | Type    | Default | Description                              |
+| ------------------------ | ------- | ------- | ---------------------------------------- |
+| `acceptCookies`          | boolean | `true`  | Accept cookie consent banners            |
+| `closePopups`            | boolean | `true`  | Close popup ads and overlays             |
+| `dismissNotifications`   | boolean | `true`  | Dismiss browser notification prompts     |
+| `timeout`                | number  | `5000`  | Max time to wait for banner detection (ms) |
+
+### Usage
+
+```javascript
+// Handle all banners (default options)
+await api.handleBanners();
+
+// Only accept cookies
 await api.handleBanners({
-    acceptCookies: true, // Accept cookie banners
-    closePopups: true, // Close popup ads
-    dismissNotifications: true, // Dismiss notification prompts
+    acceptCookies: true,
+    closePopups: false,
+    dismissNotifications: false,
+});
+
+// Custom timeout
+await api.handleBanners({
+    timeout: 10000, // Wait up to 10 seconds
+});
+
+// Disable all handlers
+await api.handleBanners({
+    acceptCookies: false,
+    closePopups: false,
+    dismissNotifications: false,
 });
 ```

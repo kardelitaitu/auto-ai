@@ -41,7 +41,7 @@ let typeTextImpl;
 let safeHumanClickImpl;
 let findElementImpl;
 
-vi.mock('../../utils/human-interaction.js', () => ({
+vi.mock('../../behaviors/human-interaction.js', () => ({
     HumanInteraction: class {
         constructor() {
             this.debugMode = false;
@@ -117,7 +117,7 @@ describe('ai-reply-engine', () => {
     };
 
     beforeEach(async () => {
-        vi.clearAllMocks();
+        vi.resetAllMocks();
         selectMethodImpl = null;
         verifyComposerOpenImpl = null;
         postTweetImpl = null;

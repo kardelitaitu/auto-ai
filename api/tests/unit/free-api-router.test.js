@@ -32,7 +32,7 @@ vi.mock('../../utils/proxy-agent.js', () => ({
     }),
 }));
 
-vi.mock('../../utils/circuit-breaker.js', () => {
+vi.mock('../../core/circuit-breaker.js', () => {
     class CircuitBreaker {
         constructor() {}
         check() {
@@ -41,7 +41,7 @@ vi.mock('../../utils/circuit-breaker.js', () => {
         recordSuccess() {}
         recordFailure() {}
     }
-    return { CircuitBreaker };
+    return { default: CircuitBreaker };
 });
 
 vi.mock('../../utils/rate-limit-tracker.js', () => {

@@ -77,6 +77,9 @@ export default [
 
             // Speed: Turn off strict equality checks (as per your request)
             eqeqeq: 'off',
+
+            // Warn on empty catch blocks
+            'no-empty': ['warn', { allowEmptyCatch: false }],
         },
     },
 

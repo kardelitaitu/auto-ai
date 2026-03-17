@@ -14,6 +14,7 @@ import { wait } from '../interactions/wait.js';
 import { text, exists, visible } from '../interactions/queries.js';
 import { click, type } from '../interactions/actions.js';
 import metricsCollector from '../utils/metrics.js';
+import { sanitizeReplyText } from '../twitter/twitter-reply-prompt.js';
 
 const logger = createLogger('api/reply.js');
 
@@ -65,7 +66,7 @@ export async function replyWithAI(options = {}) {
 
     let finalReplyText = fallback;
     if (generation.success && generation.reply) {
-        finalReplyText = generation.reply;
+        finalReplyText = sanitizeReplyText(generation.reply);
         logger.info(`AI Reply: "${finalReplyText}"`);
     } else {
         logger.warn(`AI Generation failed, using fallback`);

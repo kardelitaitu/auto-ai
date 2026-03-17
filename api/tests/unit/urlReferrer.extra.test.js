@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ReferrerEngine } from '@api/utils/urlReferrer.js';
 
-vi.mock('../../../api/index.js', () => ({
+vi.mock('@api/index.js', () => ({
     api: {
         setPage: vi.fn(),
         goto: vi.fn(),
@@ -224,7 +224,7 @@ describe('ReferrerEngine Extra Coverage', () => {
     });
 
     describe('Trampoline Navigation Edge Cases', () => {
-        it.skip('should continue navigation if page.click fails', async () => {
+        it('should continue navigation if page.click fails', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.2); // Trampoline strategy
 
             // Setup successful route interception
@@ -242,14 +242,14 @@ describe('ReferrerEngine Extra Coverage', () => {
             await engine.navigate(mockPage, 'https://target.com');
 
             // Should still wait for URL (meaning it didn't throw and proceeded)
-            expect(mockPage.waitForURL).toHaveBeenCalled();
-            expect(mockPage.goto).toHaveBeenCalledWith(
+            expect(api.waitForURL).toHaveBeenCalled();
+            expect(api.goto).toHaveBeenCalledWith(
                 expect.stringContaining('google.com'),
                 expect.any(Object)
             );
         });
 
-        it.skip('should fallback to direct goto if trampoline setup fails (route error)', async () => {
+        it('should fallback to direct goto if trampoline setup fails (route error)', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.2);
 
             mockPage.route.mockRejectedValue(new Error('Route failed'));
@@ -257,7 +257,7 @@ describe('ReferrerEngine Extra Coverage', () => {
             await engine.navigate(mockPage, 'https://target.com');
 
             // Should fallback to goto with headers
-            expect(mockPage.goto).toHaveBeenCalledWith(
+            expect(api.goto).toHaveBeenCalledWith(
                 expect.stringContaining('https://target.com'),
                 expect.objectContaining({
                     referer: expect.any(String),

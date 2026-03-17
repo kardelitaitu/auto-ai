@@ -9,37 +9,49 @@
  * Standalone test: logs exactly what gets sent to the LLM and what comes back.
  * Run: node prompt-test.js
  */
+import { REPLY_SYSTEM_PROMPT, buildReplyPrompt, sanitizeReplyText } from './api/twitter/twitter-reply-prompt.js';
 
-import { REPLY_SYSTEM_PROMPT, buildReplyPrompt } from './utils/twitter-reply-prompt.js';
-import { ensureOllama } from './utils/local-ollama-manager.js';
-import openrouterFetch, {
-    loadPrimaryModel as loadOpenRouterModel,
-} from './utils/openrouter-key-manager.js';
-import apifreellmFetch from './utils/apifreellm-manager.js';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
+// ─── Internal OpenRouter Fetch Utility ──────────────────────────────────────
+async function openrouterFetch(path, body, apiKey) {
+    const url = `https://openrouter.ai/api/v1${path}`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+            'HTTP-Referer': 'https://github.com/auto-ai',
+            'X-Title': 'Auto-AI Prompt Tester',
+        },
+        body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`OpenRouter error (${response.status}): ${errText}`);
+    }
+
+    return await response.json();
+}
 
 // ─── Internal Ollama Fetch Utility ──────────────────────────────────────────
 async function ollamaFetch(path, body, endpoint) {
+    // Map OpenAI paths to native Ollama chat for better control over thinking tokens
     const isChat = path === '/v1/chat/completions';
     const url = `${endpoint.replace(/\/$/, '')}${isChat ? '/api/chat' : path}`;
-
-    const isThinkingModel =
-        body.model &&
-        (body.model.toLowerCase().includes('think') ||
-            body.model.toLowerCase().includes('r1') ||
-            body.model.toLowerCase().includes('reason'));
 
     const reqBody = isChat
         ? {
               model: body.model,
               messages: body.messages,
               options: {
-                  temperature: body.temperature,
-                  num_predict: body.max_tokens,
+                  temperature: 0.1, 
+                  num_predict: 4000, // Give it room to finish AFTER thinking
+                  repeat_penalty: 1.2, 
+                  max_thinking_tokens: 32,
+                  reasoning_budget: 32,
               },
               stream: body.stream ?? false,
-              ...(isThinkingModel ? { think: true } : {}),
+              think: false,
           }
         : body;
 
@@ -57,12 +69,16 @@ async function ollamaFetch(path, body, endpoint) {
     const json = await response.json();
 
     if (isChat) {
+        // Normalize native Ollama response to the standard OpenAI-like format the test script expects
+        const message = json.message || (json.choices && json.choices[0] && json.choices[0].message);
+        
         return {
             choices: [
                 {
                     message: {
-                        content: json.message?.content || '',
-                        reasoning: json.message?.reasoning || null,
+                        content: message?.content || '',
+                        // Some Ollama versions use .thinking or .thought instead of .reasoning
+                        reasoning: message?.reasoning || message?.thinking || message?.thought || message?.reasoning_content || null,
                     },
                 },
             ],
@@ -71,53 +87,69 @@ async function ollamaFetch(path, body, endpoint) {
                 completion_tokens: json.eval_count || 0,
                 total_tokens: (json.prompt_eval_count || 0) + (json.eval_count || 0),
             },
+            _raw: json
         };
     }
     return json;
 }
 
-// ─── Config Loader ──────────────────────────────────────────────────────────
-async function getActiveLLM() {
-    const raw = await readFile(resolve(process.cwd(), 'config/settings.json'), 'utf8');
-    const settings = JSON.parse(raw);
+// ─── Internal vLLM Fetch Utility ──────────────────────────────────────────
+async function vllmFetch(path, body, endpoint) {
+    const url = `${endpoint.replace(/\/$/, '')}${path}`;
+    
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+    });
 
-    // Priority 1: Local Ollama
-    if (settings.llm?.local?.enabled) {
-        await ensureOllama();
-        const endpoint = settings.llm.local.endpoint || 'http://localhost:11434';
-        const model = settings.llm.local.model || 'hermes3:8b';
-        return {
-            name: 'Ollama',
-            model: model,
-            endpoint,
-            fetch: async (path, body) => ollamaFetch(path, body, endpoint),
-        };
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`vLLM error (${response.status}): ${errText}`);
     }
 
-    // Priority 2: OpenRouter (Free API)
-    if (settings.open_router_free_api?.enabled) {
-        const model = await loadOpenRouterModel();
-        return {
-            name: 'OpenRouter',
-            model: model,
-            fetch: async (path, body) => openrouterFetch('/chat/completions', body),
-        };
-    }
-
-    // Priority 3: ApiFreeLLM
-    if (settings.llm?.apifreellm?.enabled) {
-        return {
-            name: 'ApiFreeLLM',
-            model: 'default',
-            fetch: async (path, body) => {
-                const combined = `${body.messages.find((m) => m.role === 'system').content}\n\n${body.messages.find((m) => m.role === 'user').content}`;
-                const res = await apifreellmFetch('/chat', combined);
-                return { choices: [{ message: { content: res.response } }] };
+    const json = await response.json();
+    
+    // Normalize vLLM response to expected format
+    const message = json.choices?.[0]?.message;
+    const content = message?.content || '';
+    
+    // vLLM with --enable-thinking returns thinking in reasoning_content field
+    // Qwen models may also use <thinking> tags within content
+    let reasoning = message?.reasoning_content || null;
+    
+    return {
+        choices: [
+            {
+                message: {
+                    content: content,
+                    reasoning: reasoning,
+                },
             },
-        };
-    }
+        ],
+        usage: {
+            prompt_tokens: json.usage?.prompt_tokens || 0,
+            completion_tokens: json.usage?.completion_tokens || 0,
+            total_tokens: json.usage?.total_tokens || 0,
+        },
+        _raw: json
+    };
+}
 
-    throw new Error('No LLM provider enabled in settings.json');
+async function getActiveLLM() {
+    // ─── HARDCODED vLLM CONFIGURATION ──────────────────────────────────
+    const endpoint = 'http://localhost:8000/v1';
+    const model = 'Qwen/Qwen2.5-1.5B-Instruct';
+    
+    return {
+        name: 'vLLM',
+        model: model,
+        endpoint: endpoint,
+        thinkingEnabled: true,
+        fetch: async (path, body) => vllmFetch(path, body, endpoint),
+    };
 }
 
 const activeLLM = await getActiveLLM();
@@ -916,6 +948,67 @@ const TESTS = [
             },
         ],
     },
+    {
+    label: 'Edomae Sushi (Culinary Art)',
+    author: 'sushi_shokunin_tokyo',
+    tweet: '', // [IMAGE: A single piece of O-toro nigiri, sliced with surgical precision, glistening under soft counter lighting]
+    replies: [
+        {
+            author: 'ginza_foodie',
+            text: 'この脂の乗り、まさに芸術品ですね。口の中で溶けるのが想像できます。',
+        },
+        {
+            author: 'washoku_lover',
+            text: '切り込み（隠し包丁）の深さが完璧です。職人の技が光っています。',
+        },
+        { author: 'sake_master', text: 'これには辛口の純米大吟醸を合わせたい。' },
+        {
+            author: 'tourism_japan',
+            text: '日本の伝統的な「おもてなし」の心が、この一貫に凝縮されています。',
+        },
+    ],
+    },
+    {
+    label: 'Custom Loop Build (Hardware)',
+    author: 'seoul_tech_overflow',
+    tweet: '', // [IMAGE: A vertical-mount RTX 4090 with a custom frosted water block and 7950X setup in a Phanteks NV9]
+    replies: [
+        {
+            author: 'overclock_king',
+            text: '와... 수로 구성이 미쳤네요. 벤치마크 점수가 궁금합니다.',
+        },
+        {
+            author: 'rgb_hater',
+            text: '화이트 감성이 깔끔하긴 하네요. 선정리 난이도 극악이었을 듯.',
+        },
+        { author: 'it_explorer', text: '이 정도면 방에서 보일러 안 틀어도 되겠는데요? 발열 해소는 잘 되나요?' },
+        {
+            author: 'modular_mind',
+            text: 'DDR5 6400 클럭 유지되나요? 제 시스템은 자꾸 튕겨서 고민입니다.',
+        },
+    ],
+},  
+    {
+    label: 'Arquitectura Brutalista (Urbanismo)',
+    author: 'concreto_madrid',
+    tweet: '', // [IMAGE: A massive geometric concrete housing complex with deep shadows and repetitive modular balconies]
+    replies: [
+        {
+            author: 'urban_historia',
+            text: 'La honestidad de los materiales en este edificio es simplemente sublime.',
+        },
+        {
+            author: 'diseño_minimal',
+            text: '¿Es funcionalidad o es arte? La frontera aquí es inexistente.',
+        },
+        { author: 'arquitecto_loco', text: 'El juego de sombras a las 12:00 PM debe ser una locura matemática.' },
+        {
+            author: 'vecino_realista',
+            text: 'Se ve increíble en fotos, pero vivir ahí debe ser un laberinto frío.',
+        },
+    ],
+}
+
 ];
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -928,38 +1021,74 @@ function countTokensApprox(text) {
 
 async function callLLM(systemPrompt, userPrompt) {
     const startMs = Date.now();
-    const data = await activeLLM.fetch('/v1/chat/completions', {
+    
+    const requestBody = {
         model: LLM_MODEL,
         messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt },
         ],
         temperature: 0.8,
-        max_tokens: 2048,
+        max_tokens: 4096,
         stream: false,
-    });
+    };
+    
+    // Add thinking parameter for vLLM with thinking enabled
+    if (activeLLM.thinkingEnabled) {
+        requestBody.chat_template_kwargs = {
+            enable_thinking: true,
+        };
+    }
+    
+    const data = await activeLLM.fetch('/v1/chat/completions', requestBody);
 
     const elapsedMs = Date.now() - startMs;
     const messageObj = data.choices?.[0]?.message;
     let content = messageObj?.content ?? '';
-    let reasoning = messageObj?.reasoning ?? messageObj?.reasoning_content ?? '';
+    // Support multiple field names for reasoning output
+    let reasoning = messageObj?.reasoning || messageObj?.thinking || messageObj?.thought || messageObj?.reasoning_content || '';
 
-    // DeepSeek R1 fallback: Extract <think> from content if present
+    // Robust <think> extraction (for models that don't use dedicated reasoning field)
     if (content.includes('<think>')) {
-        const match = content.match(/<think>([\s\S]*?)<\/think>/);
-        if (match) {
-            reasoning = match[1] + '\n' + reasoning; // prepend to any existing
+        const closedMatch = content.match(/<think>([\s\S]*?)<\/think>/);
+        if (closedMatch) {
+            reasoning = closedMatch[1] + (reasoning ? '\n' + reasoning : '');
             content = content.replace(/<think>[\s\S]*?<\/think>\s*/g, '');
+        } else {
+            // Handle unclosed tags (hitting token limit)
+            const openMatch = content.match(/<think>([\s\S]*)/);
+            if (openMatch) {
+                reasoning = openMatch[1] + (reasoning ? '\n' + reasoning : '');
+                content = content.replace(/[\s\S]*/g, '');
+            }
         }
     }
 
-    // Clean up carriage returns that break terminal output
+    // Qwen </think> extraction (uses <thinking> tags)
+    if (content.includes('<thinking>')) {
+        const thinkMatch = content.match(/<thinking>([\s\S]*?)<\/thinking>/);
+        if (thinkMatch) {
+            reasoning = thinkMatch[1] + (reasoning ? '\n' + reasoning : '');
+            content = content.replace(/<thinking>[\s\S]*?<\/thinking>\s*/g, '');
+        }
+    }
+
+    // Force recovery: if content is empty but model used tokens, it might have only thought.
+    if (!content.trim() && reasoning.trim()) {
+        content = reasoning;
+        reasoning = '(moved from reasoning field due to empty content)';
+    }
+
+    // Fallback: If still empty but we have tokens, show the raw object
+    if (!content.trim() && !reasoning.trim() && data.usage?.completion_tokens > 0) {
+        content = '[REPLY FAILED] Reply failed but tokens were used. Check Ollama server logs.';
+    }
+
+    // Clean up carriage returns
     content = content.replace(/\r/g, '').trim();
     reasoning = reasoning.replace(/\r/g, '').trim();
 
-    const usage = data.usage ?? null;
-
-    return { content, reasoning, elapsedMs, usage, raw: data };
+    return { content, reasoning, elapsedMs, usage: data.usage ?? null, raw: data };
 }
 
 // ─── Main ──────────────────────────────────────────────────────────────────
@@ -997,6 +1126,8 @@ async function runTest({ label, author, tweet, replies }) {
             userPrompt
         );
 
+        const sanitizedContent = sanitizeReplyText(content);
+        
         console.log('📥 RECEIVED:');
         console.log(DIVIDER);
         if (reasoning) {
@@ -1004,7 +1135,7 @@ async function runTest({ label, author, tweet, replies }) {
             console.log(cleanOutput(reasoning));
             console.log(DIVIDER);
         }
-        console.log(cleanOutput(content) || '(empty content)');
+        console.log(cleanOutput(sanitizedContent) || '(empty content)');
 
         if (!content && !reasoning) {
             console.log('\n⚠️ RAW JSON RESPONSE:');
@@ -1025,20 +1156,27 @@ async function runTest({ label, author, tweet, replies }) {
 
 console.log(`\nPrompt Test — Provider: ${LLM_PROVIDER || 'unknown'}\n`);
 
-if (LLM_PROVIDER === 'local') {
-    const baseUrl = (LLM_ENDPOINT || 'http://localhost:11434')
-        .replace(/\/api\/.*$/, '')
-        .replace(/\/$/, '');
+if (LLM_PROVIDER === 'vLLM') {
     console.log(`⏳ Preloading model '${LLM_MODEL}' into VRAM...`);
     try {
-        await fetch(`${baseUrl}/api/generate`, {
+        // vLLM warmup - send a simple request to load model
+        const warmupResponse = await fetch(`${LLM_ENDPOINT}/chat/completions`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: LLM_MODEL, keep_alive: '10m' }),
+            body: JSON.stringify({
+                model: LLM_MODEL,
+                messages: [{ role: 'user', content: 'Hi' }],
+                max_tokens: 1,
+                temperature: 0,
+            }),
         });
-        console.log(`✅ Model loaded.`);
+        if (warmupResponse.ok) {
+            console.log(`✅ Model loaded.`);
+        } else {
+            console.log(`⚠️ Warmup returned ${warmupResponse.status}`);
+        }
     } catch (e) {
-        console.error(`❌ Failed to preload model: ${e.message}`);
+        console.error(`⚠️ Failed to preload model: ${e.message}`);
     }
 }
 

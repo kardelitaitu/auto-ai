@@ -15,9 +15,13 @@ import { getPage } from '../core/context.js';
 import { getStateAgentElementMap } from '../core/context-state.js';
 import { createLogger } from '../core/logger.js';
 import { identifyROI } from '../utils/roi-detector.js';
+import { VisionPreprocessor, VPrepPresets, processForVision as _processForVision } from '../utils/vision-preprocessor.js';
 import sharp from 'sharp';
 
 const logger = createLogger('api/agent/vision.js');
+
+// V-PREP instance for vision optimization
+const visionPreprocessor = new VisionPreprocessor();
 
 /**
  * Inject annotations into the page.
@@ -90,15 +94,15 @@ export function buildPrompt(context) {
         elements.length === 0
             ? 'No interactive elements detected (Blind Mode).'
             : elements
-                  .map((el, i) => {
-                      const name = el.name || el.text || el.accessibilityId || 'Unknown';
-                      const role = el.role || 'element';
-                      const coords = el.coordinates
-                          ? `(${el.coordinates.x},${el.coordinates.y})`
-                          : '(0,0)';
-                      return `${el.id || i}. [${role}] "${name}" @ ${coords}`;
-                  })
-                  .join('\n');
+                .map((el, i) => {
+                    const name = el.name || el.text || el.accessibilityId || 'Unknown';
+                    const role = el.role || 'element';
+                    const coords = el.coordinates
+                        ? `(${el.coordinates.x},${el.coordinates.y})`
+                        : '(0,0)';
+                    return `${el.id || i}. [${role}] "${name}" @ ${coords}`;
+                })
+                .join('\n');
 
     return `You are an intelligent browser automation agent.
 Analyze the image and the elements to achieve the Goal: "${goal}"
@@ -199,6 +203,42 @@ export async function screenshot(options = {}) {
     }
 }
 
+/**
+ * Process screenshot with V-PREP for optimal LLM consumption
+ * @param {Buffer} buffer - Raw screenshot buffer
+ * @param {object} [options] - V-PREP options
+ * @returns {Promise<object>} Processed result with base64 and stats
+ */
+export async function processWithVPrep(buffer, options = {}) {
+    const config = {
+        targetWidth: options.targetWidth || 800,
+        grayscale: options.grayscale || false,
+        contrast: options.contrast || 1.0,
+        sharpness: options.sharpness || 0,
+        edgeEnhance: options.edgeEnhance || false,
+        quality: options.quality || 75,
+        ...options,
+    };
+
+    return visionPreprocessor.process(buffer, config);
+}
+
+/**
+ * Get V-PREP presets for common use cases
+ * @returns {object} Preset configurations
+ */
+export function getVPrepPresets() {
+    return VPrepPresets;
+}
+
+/**
+ * Get V-PREP statistics
+ * @returns {object} Processing statistics
+ */
+export function getVPrepStats() {
+    return visionPreprocessor.getStats();
+}
+
 export default {
     screenshot,
     buildPrompt,
@@ -207,6 +247,10 @@ export default {
     removeAnnotations,
     captureAXTree,
     captureState,
+    processWithVPrep,
+    getVPrepPresets,
+    getVPrepStats,
+    visionPreprocessor,
 };
 
 /**
@@ -258,16 +302,34 @@ function _simplifyAXTree(node, depth = 0) {
 /**
  * Capture full page state for LLM agent
  * @param {object} [options] - Options for capture
+ * @param {boolean} [options.screenshot=true] - Capture screenshot
+ * @param {boolean} [options.axTree=true] - Capture accessibility tree
+ * @param {number} [options.quality=80] - JPEG quality
+ * @param {boolean} [options.vprep=false] - Apply V-PREP optimization
+ * @param {object} [options.vprepConfig] - V-PREP configuration options
  * @returns {Promise<object>} State object with screenshot, axTree, and url
  */
 export async function captureState(options = {}) {
     const page = getPage();
-    const { screenshot: doScreenshot = true, axTree: doAXTree = true, quality = 40 } = options;
+    const {
+        screenshot: doScreenshot = true,
+        axTree: doAXTree = true,
+        quality = 80,
+        vprep = false,
+        vprepConfig = {},
+    } = options;
+
+    let viewport = page.viewportSize();
+    if (!viewport) {
+        viewport = await page.evaluate(() => ({ width: window.innerWidth, height: window.innerHeight }));
+    }
+    logger.info(`[captureState] Viewport: ${viewport?.width}x${viewport?.height}, quality: ${quality}, vprep: ${vprep}`);
 
     const state = {
         screenshot: '',
         axTree: '',
         url: page.url(),
+        vprepStats: null,
     };
 
     if (doScreenshot) {
@@ -280,7 +342,19 @@ export async function captureState(options = {}) {
                 animations: 'disabled',
                 caret: 'hide',
             });
-            state.screenshot = buffer.toString('base64');
+
+            if (vprep) {
+                // Apply V-PREP optimization
+                const result = await processWithVPrep(buffer, vprepConfig);
+                state.screenshot = result.base64;
+                state.vprepStats = result.stats;
+                logger.info(`[captureState] V-PREP applied: ${result.stats.compressionRatio}x compression, ${result.stats.processingTime}ms`);
+            } else {
+                state.screenshot = buffer.toString('base64');
+            }
+
+            const sizeKB = Math.round(state.screenshot.length / 1024);
+            logger.info(`[captureState] Screenshot: ${sizeKB} KB (viewport: ${viewport.width}x${viewport.height})`);
         } catch (e) {
             logger.warn('Screenshot capture failed:', e.message);
         }

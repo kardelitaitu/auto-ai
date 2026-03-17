@@ -6,8 +6,14 @@
 
 /**
  * @fileoverview Settings Config Loader Bridge for api/ module.
- * Bridges to the full api/utils/configLoader.js for consistency.
- *
+ * 
+ * This module provides a simple interface to load settings from settings.json.
+ * It wraps the full ConfigLoader class for API compatibility.
+ * 
+ * Usage:
+ *   import { getSettings } from '@api/utils/config.js';
+ *   const settings = await getSettings();
+ * 
  * @module api/utils/config
  */
 

@@ -19,6 +19,33 @@ import { getSettings } from './api/utils/configLoader.js';
 
 const logger = createLogger('main.js');
 
+// Global reference for signal handlers to access
+let globalOrchestrator = null;
+let isShuttingDown = false;
+
+/**
+ * Graceful shutdown handler - closes all browsers before exit
+ */
+async function gracefulShutdown(signal) {
+    if (isShuttingDown) {
+        logger.info(`[Shutdown] Already shutting down, ignoring ${signal}...`);
+        return;
+    }
+    isShuttingDown = true;
+    logger.info(`[Shutdown] Received ${signal}. Closing browsers and cleaning up...`);
+
+    try {
+        if (globalOrchestrator) {
+            await globalOrchestrator.shutdown();
+            logger.info('[Shutdown] Orchestrator shutdown complete.');
+        }
+    } catch (error) {
+        logger.error('[Shutdown] Error during shutdown:', error.message);
+    }
+
+    process.exit(0);
+}
+
 /**
  * The main entry point of the application.
  * This is an IIFE (Immediately Invoked Function Expression) that runs asynchronously.
@@ -41,6 +68,7 @@ const logger = createLogger('main.js');
         }
 
         orchestrator = new Orchestrator();
+        globalOrchestrator = orchestrator; // Expose for signal handlers
 
         // Parse CLI arguments for options
         const args = process.argv.slice(2);
@@ -227,12 +255,5 @@ process.on('unhandledRejection', (reason, promise) => {
     process.exit(1);
 });
 
-process.on('SIGINT', async () => {
-    logger.info('Received SIGINT. Shutting down gracefully...');
-    process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-    logger.info('Received SIGTERM. Shutting down gracefully...');
-    process.exit(0);
-});
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));

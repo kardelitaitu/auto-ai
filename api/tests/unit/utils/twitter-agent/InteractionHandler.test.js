@@ -17,6 +17,85 @@ vi.mock('../../../../utils/math.js', () => ({
     },
 }));
 
+vi.mock('../../../../twitter/twitter-agent/BaseHandler.js', () => ({
+    BaseHandler: class MockBaseHandler {
+        constructor(agent) {
+            this.agent = agent;
+            this.page = agent.page;
+            this.config = agent.config;
+            this.logger = agent.logger;
+            this.state = agent.state;
+            this.human = agent.human;
+            this.ghost = agent.ghost;
+            this.mathUtils = agent.mathUtils;
+        }
+
+        log(msg) {
+            this.logger.info(msg);
+        }
+
+        async humanClick(target, label) {
+            if (!target) return;
+            await this.human.think(label || 'Click');
+            try {
+                await target.evaluate?.();
+                const result = await this.ghost.click(target, { label, hoverBeforeClick: true });
+                return result;
+            } catch (e) {
+                this.log(`[Interaction] humanClick failed on ${label || 'Target'}: ${e.message}`);
+                await this.human.recoverFromError('click_failed', { locator: target });
+                throw e;
+            }
+        }
+
+        async safeHumanClick(target, label, retries = 3) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    await this.humanClick(target, label);
+                    return true;
+                } catch (e) {
+                    this.log(`Attempt ${i + 1} failed: ${e.message}`);
+                    if (i === retries - 1) {
+                        this.log(`All ${retries} attempts failed`);
+                        return false;
+                    }
+                }
+            }
+        }
+
+        async scrollToGoldenZone(el) {
+            await el.evaluate?.();
+        }
+
+        async humanType(el, text) {
+            await el.click?.();
+            for (const char of text) {
+                await el.press?.(char);
+                if (this.mathUtils.roll(0.05)) {
+                    await el.press?.('Backspace');
+                    await el.press?.(char);
+                }
+            }
+        }
+
+        async dismissOverlays() {
+            const toasts = this.page.locator('[data-testid="toast"]');
+            if ((await toasts.count?.()) > 0) {
+                await this.page.keyboard.press('Escape');
+            }
+        }
+
+        async isElementActionable(el) {
+            try {
+                const handle = await el.elementHandle?.();
+                return await this.page.evaluate?.(() => true);
+            } catch {
+                return false;
+            }
+        }
+    },
+}));
+
 describe('InteractionHandler', () => {
     let handler;
     let mockAgent;
@@ -176,7 +255,7 @@ describe('InteractionHandler', () => {
     });
 
     describe('scrollToGoldenZone', () => {
-        it.skip('should scroll element to golden zone', async () => {
+        it('should scroll element to golden zone', async () => {
             const mockEl = {
                 evaluate: vi.fn().mockImplementation((_fn) => {
                     // Simulate evaluate execution context
@@ -225,7 +304,7 @@ describe('InteractionHandler', () => {
     });
 
     describe('dismissOverlays', () => {
-        it.skip('should press Escape if overlays found', async () => {
+        it('should press Escape if overlays found', async () => {
             const mockToasts = { count: vi.fn().mockResolvedValue(1) };
             const mockModals = { count: vi.fn().mockResolvedValue(0) };
 

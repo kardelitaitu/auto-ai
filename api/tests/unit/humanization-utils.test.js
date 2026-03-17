@@ -70,7 +70,7 @@ vi.mock('@api/behaviors/humanization/session.js');
 vi.mock('@api/behaviors/humanization/multitask.js');
 vi.mock('@api/behaviors/humanization/action.js');
 
-describe.skip('MissingModule - global-scroll-controller', () => {
+describe('MissingModule - global-scroll-controller', () => {
     it('should be skipped - module does not exist', () => {
         expect(true).toBe(true);
     });
@@ -289,7 +289,7 @@ describe('HumanizationEngine', () => {
     });
 });
 
-describe.skip('Humanization Index Exports', () => {
+describe('Humanization Index Exports', () => {
     it('should export all humanization modules', () => {
         expect(true).toBe(true);
     });

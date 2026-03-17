@@ -5,11 +5,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { read, back, focus, scroll, toTop, toBottom } from '@api/interactions/scroll.js';
 import { ValidationError } from '@api/core/errors.js';
 
-// Mocks
+// Mocks - use factory functions that return vi.fn()
 vi.mock('@api/core/context.js', () => ({
     getPage: vi.fn(),
     getCursor: vi.fn(),
@@ -21,7 +20,8 @@ vi.mock('@api/behaviors/persona.js', () => ({
 
 vi.mock('@api/utils/math.js', () => ({
     mathUtils: {
-        randomInRange: vi.fn((min, max) => min),
+        // Return the minimum value to keep tests predictable and fast
+        randomInRange: vi.fn((min) => min),
         gaussian: vi.fn(() => 0),
     },
 }));
@@ -45,9 +45,16 @@ describe('api/interactions/scroll.js', () => {
     let mockCursor;
     let mockLocator;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.clearAllMocks();
         vi.spyOn(Math, 'random').mockReturnValue(0.5);
+
+        // Import the mocked modules directly
+        const personaModule = await import('@api/behaviors/persona.js');
+        const configModule = await import('@api/utils/config.js');
+        
+        personaModule.getPersona.mockReturnValue({ scrollSpeed: 1 });
+        configModule.getSettings.mockResolvedValue({ twitter: { timing: { globalScrollMultiplier: 1 } } });
 
         mockLocator = {
             first: vi.fn().mockReturnThis(),

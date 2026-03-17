@@ -102,11 +102,12 @@
     "llm": {
       "serverType": "ollama",
       "baseUrl": "http://localhost:11434",
-      "model": "qwen2.5:7b",
+      "model": "gemma3:4b",
       "temperature": 0.5,
       "maxTokens": 2048,
       "contextLength": 4096,
       "useVision": true,
+      "think": false,
       "bypassHealthCheck": false
     },
     "runner": {
@@ -126,11 +127,11 @@
       "enabled": true,
       "provider": "ollama",
       "endpoint": "http://localhost:11434",
-      "model": "llama3.2:3b",
-      "textModel": "llama3.2:3b",
+      "model": "gemma3:4b",
+      "textModel": "gemma3:4b",
       "timeout": 60000,
       "warmup": false,
-      "vision": false
+      "vision": true
     },
     "cloud": {
       "provider": "openrouter",

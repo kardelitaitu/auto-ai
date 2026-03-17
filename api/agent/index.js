@@ -20,7 +20,16 @@ export { doAction as do } from './executor.js';
 export { find } from './finder.js';
 
 // Vision Layer
-export { screenshot, buildPrompt, parseResponse, captureAXTree, captureState } from './vision.js';
+export {
+    screenshot,
+    buildPrompt,
+    parseResponse,
+    captureAXTree,
+    captureState,
+    processWithVPrep,
+    getVPrepPresets,
+    getVPrepStats,
+} from './vision.js';
 
 // Action Engine - JSON action execution
 import { actionEngine } from './actionEngine.js';
@@ -28,7 +37,7 @@ const executeAction = actionEngine.execute.bind(actionEngine);
 export { actionEngine, executeAction };
 
 // LLM Client
-export { llmClient } from './llmClient.js';
+export { llmClient, LLMClient } from './llmClient.js';
 
 // Agent Runner
 import { agentRunner } from './runner.js';

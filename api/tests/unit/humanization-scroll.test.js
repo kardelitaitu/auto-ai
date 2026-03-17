@@ -62,12 +62,6 @@ vi.mock('@api/index.js', () => ({
 }));
 import { api } from '@api/index.js';
 
-describe.skip('GlobalScrollController', () => {
-    it('should be skipped - module does not exist', () => {
-        expect(true).toBe(true);
-    });
-});
-
 describe('HumanScroll', () => {
     let humanScroll;
     let mockPage;

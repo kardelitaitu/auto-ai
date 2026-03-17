@@ -1535,7 +1535,7 @@ describe('CloudClient', () => {
                 expect(result2.status).toBe('using_cached_results');
             });
 
-            it.skip('should use default model if provider has no model in single-key mode', async () => {
+            it('should use default model if provider has no model in single-key mode', async () => {
                 const settings = {
                     llm: {
                         cloud: {
@@ -1549,7 +1549,7 @@ describe('CloudClient', () => {
                 client = new CloudClient();
                 await new Promise((resolve) => setTimeout(resolve, 10));
 
-                expect(client.defaultModel).toBe('anthropic/claude-3.5-sonnet'); // Default
+                expect(client.defaultModel).toBe('openrouter/free'); // Default
             });
 
             it('should fallback to config models if optimized list empty', async () => {

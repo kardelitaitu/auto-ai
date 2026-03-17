@@ -6,6 +6,15 @@
 
 /**
  * @fileoverview Manages loading and caching of configuration files.
+ * 
+ * This is the core configuration loader that handles:
+ * - Loading JSON config files from disk
+ * - Caching to avoid repeated file reads
+ * - File watching for development (hot reload)
+ * - Default values fallback
+ * 
+ * Used by: core modules (orchestrator, sessionManager, automator, cloud-client, etc.)
+ * 
  * @module utils/configLoader
  */
 

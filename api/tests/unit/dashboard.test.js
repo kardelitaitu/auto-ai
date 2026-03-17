@@ -4,6 +4,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 
 // Prevent IPC code from running during tests
 vi.stubGlobal('process', {
@@ -76,7 +78,16 @@ describe('DashboardServer', () => {
     });
 
     describe('updateMetrics', () => {
-        beforeEach(() => { server = new DashboardServer(); });
+        beforeEach(() => {
+            // Delete history file to ensure clean state
+            const historyFile = path.join(__dirname, '..', '..', 'ui', 'electron-dashboard', 'data', 'dashboard-history.json');
+            try {
+                fs.unlinkSync(historyFile);
+            } catch (e) {
+                // ignore if file doesn't exist
+            }
+            server = new DashboardServer();
+        });
 
         it('should update latestMetrics with payload', () => {
             const payload = {
@@ -98,13 +109,16 @@ describe('DashboardServer', () => {
         });
 
         it('should increment task counter on new successful tasks', () => {
+            // Use real timers to avoid duplicate timestamp issues
+            vi.useRealTimers();
             server.dashboardData.tasks = [];
             server.historyManager.completedTasks = 0;
             server.historyManager.tasks = [];
+            const now = Date.now();
             server.updateMetrics({
                 recentTasks: [
-                    { id: 't1', taskName: 'task1', success: true },
-                    { id: 't2', taskName: 'task2', success: false }
+                    { id: 't1', taskName: 'task1', success: true, timestamp: now },
+                    { id: 't2', taskName: 'task2', success: false, timestamp: now + 1 }
                 ]
             });
             const metrics = server.collectMetrics();

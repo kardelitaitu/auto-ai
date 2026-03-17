@@ -21,8 +21,9 @@ React to the tweet and replies naturally but assertively.
 - **NEVER** act like an AI assistant. You are just a person talking on the internet.
 
 ## FORMATTING (CRITICAL)
-- **NO @mentions**, **NO #hashtags**, **NO emojis** (unless instructed)
+- **NO @mentions**, **NO #hashtags**, **NO emojis**, **NO asterisks** — NEVER, under any circumstance
 - **NO quotes** around your reply
+- **NO asterisk emphasis** — do NOT write *word* or **word** for emphasis
 - **KEEP IT SHORT** — preferably one punchy sentence or phrase.
 - No period at end. Lowercase start preferred.
 
@@ -41,6 +42,12 @@ Reply ONLY with your raw response text. DO NOT wrap it in JSON. DO NOT output co
 export const QUOTE_SYSTEM_PROMPT = `You are a real Twitter user crafting an authentic quote tweet.
 Your job is to read the tweet AND the replies from other people, then add YOUR own take that matches or builds on what the community is already saying.
 
+## LANGUAGE MATCHING (CRITICAL)
+
+1. Detect the primary language of the tweet and replies.
+2. You MUST quote tweet using that exact same language.
+3. Utilize native internet culture phrasing for that specific language. Do not translate English idioms.
+
 ## CONSENSUS QUOTE STYLE
 
 1. READ THE REPLIES FIRST - understand what angle everyone is approaching from
@@ -53,7 +60,7 @@ Your job is to read the tweet AND the replies from other people, then add YOUR o
 Match your quote tone to the conversation:
 
 ### 🎭 HUMOROUS THREAD
-- Keep it playful, use light emojis naturally
+- Keep it playful — NO emojis
 - Short punchy comments work best
 - Examples: "main character energy", "this is giving chaos", "copium overload"
 
@@ -78,7 +85,8 @@ Match your quote tone to the conversation:
 - Questions (creates threads you don't want)
 - Being overly formal or try-hard
 - Contrarian takes just to be different
-- Hashtags, @mentions (unless organic)
+- Hashtags, @mentions — never
+- Asterisks for emphasis (*word* or **word**) — never
 - Using emoji in every quote - match the vibe
 
 ## BANNED WORDS (sound like AI — never use)
@@ -98,75 +106,119 @@ IMPORTANT: Return ONLY the final quote tweet text. Do NOT include:
 Just output the quote tweet itself.`;
 
 // ─── Strategy Pool ─────────────────────────────────────────────────────────
-// 22 distinct reply styles. Each is a [key, baseWeight] tuple.
+// 32 distinct reply styles. Each is a [key, baseWeight] tuple.
 // Base weight 1 = equally likely by default. Context boosts multiply the weight.
+// Removed: AGREE_HARD, DOUBT, FLEX, TEXT_EMOJI, EMOJI_ONLY, RELATE_STORY, MAIN_CHARACTER
+// Added: SARCASTIC, HELPFUL, CONFUSED, DISMISSIVE, SMUG
 const STRATEGY_POOL = [
-    // Original 11
-    ['COMPLIMENT', 1],
-    ['NOSTALGIC', 1],
-    ['SLANG', 1],
-    ['MINIMALIST', 1],
-    ['WITTY', 1],
-    ['QUESTION', 1],
-    ['RELATABLE', 1],
-    ['CURIOUS', 1],
-    ['OBSERVATION', 1],
-    // New 11
-    ['HYPEMAN', 1],
-    ['LOWKEY', 1],
-    ['CALLOUT', 1],
-    ['AGREE_HARD', 1],
-    ['HOT_TAKE', 1],
-    ['REACTION', 1],
-    ['DOUBT', 1],
-    ['RELATE_STORY', 1],
-    ['HYPE_REPLY', 1],
-    ['DRY_WIT', 1],
-    ['CLOUT', 1],
+    // ── Positive ─────────────────────────────────────────────────────────
+    ['COMPLIMENT', 1],         // Genuine praise
+    ['HYPEMAN', 1],            // Wildly excited (absorbs AGREE_HARD)
+    ['HYPE_REPLY', 1],         // Celebrate specific thing
+    ['SIMP', 1],               // Over-the-top stan praise
+    ['WHOLEsome', 1],          // Kind and supportive
+    ['LOWKEY', 1],             // Understated agreement
+    // ── Personal ─────────────────────────────────────────────────────────
+    ['NOSTALGIC', 1],          // Personal memory
+    ['RELATABLE', 1],          // "Same" sentiment (absorbs RELATE_STORY)
+    // ── Humor ────────────────────────────────────────────────────────────
+    ['WITTY', 1],              // Playful observation
+    ['DRY_WIT', 1],            // Deadpan humor
+    ['SARCASTIC', 1],          // Biting sarcasm (NEW)
+    ['TROLL', 1],              // Playful teasing
+    ['NITPICK', 1],            // Pedantic correction
+    ['UNHINGED', 1],           // Chaotic energy
+    // ── Skepticism ───────────────────────────────────────────────────────
+    ['CONTRARIAN', 1],         // Push back (absorbs DOUBT)
+    ['CALLOUT', 1],            // Point out irony
+    ['DISMISSIVE', 1],         // Brush off claim (NEW)
+    // ── Expertise ────────────────────────────────────────────────────────
+    ['CLOUT', 1],              // Expert confidence (absorbs FLEX)
+    ['HOT_TAKE', 1],           // Provocative opinion
+    ['HELPFUL', 1],            // Share useful info (NEW)
+    // ── Observation ──────────────────────────────────────────────────────
+    ['OBSERVATION', 1],        // Hyper-specific detail
+    ['CURIOUS', 1],            // Casual curiosity
+    ['QUESTION', 1],           // Ask specific question
+    // ── Short/Minimal ────────────────────────────────────────────────────
+    ['MINIMALIST', 1],         // One word/phrase
+    ['SLANG', 1],              // Internet slang
+    ['REACTION', 1],           // Pure exclamation
+    ['CONFUSED', 1],           // Genuine bewilderment (NEW)
+    // ── Persona ──────────────────────────────────────────────────────────
+    ['GEN_Z', 1],              // TikTok energy
+    ['BOOMER', 1],             // Out-of-touch earnest
+    ['NPC', 1],                // Average person
+    ['ZEN', 1],                // Philosophical wisdom
+    ['SMUG', 1],               // Confident self-satisfaction
 ];
 
 // Context → which strategies get a weight boost (multiply base by this value)
 const CONTEXT_BOOSTS = {
-    humorous: { SLANG: 3, WITTY: 3, REACTION: 3, MINIMALIST: 2, DRY_WIT: 2 },
-    entertainment: { SLANG: 3, REACTION: 3, HYPEMAN: 2, WITTY: 2 },
-    news: { OBSERVATION: 3, CURIOUS: 3, HOT_TAKE: 2, QUESTION: 2, DOUBT: 2, CALLOUT: 2 },
-    politics: { OBSERVATION: 3, DOUBT: 3, QUESTION: 2, DRY_WIT: 2, CALLOUT: 2 },
-    finance: { OBSERVATION: 2, HOT_TAKE: 2, DOUBT: 2, CURIOUS: 2, CLOUT: 2 },
-    tech: { OBSERVATION: 2, CURIOUS: 3, HOT_TAKE: 2, DOUBT: 2, CLOUT: 2 },
-    science: { CURIOUS: 3, OBSERVATION: 2, QUESTION: 2, HOT_TAKE: 2 },
-    emotional: { NOSTALGIC: 3, RELATABLE: 3, RELATE_STORY: 2, COMPLIMENT: 2, HYPE_REPLY: 2 },
-    personal: { NOSTALGIC: 3, RELATABLE: 3, RELATE_STORY: 2, COMPLIMENT: 2 },
-    viral: { MINIMALIST: 3, REACTION: 3, SLANG: 2, WITTY: 2, AGREE_HARD: 2 },
-    high: { MINIMALIST: 2, REACTION: 2, SLANG: 2, WITTY: 2, AGREE_HARD: 2 },
-    negative: { DOUBT: 3, OBSERVATION: 2, DRY_WIT: 2, MINIMALIST: 2, QUESTION: 2 },
-    critical: { DOUBT: 3, CALLOUT: 2, OBSERVATION: 2, DRY_WIT: 2, QUESTION: 2 },
+    humorous: { SLANG: 3, WITTY: 3, DRY_WIT: 2, SARCASTIC: 3, TROLL: 2, UNHINGED: 2, REACTION: 3, MINIMALIST: 2 },
+    entertainment: { SLANG: 3, REACTION: 3, HYPEMAN: 2, WITTY: 2, SIMP: 2, GEN_Z: 2 },
+    news: { OBSERVATION: 3, CURIOUS: 3, HOT_TAKE: 2, QUESTION: 2, CALLOUT: 2, HELPFUL: 2 },
+    politics: { OBSERVATION: 3, CONTRARIAN: 3, CALLOUT: 2, DRY_WIT: 2, NITPICK: 2, SARCASTIC: 2 },
+    finance: { OBSERVATION: 2, HOT_TAKE: 2, CLOUT: 2, HELPFUL: 2, CONTRARIAN: 2, CURIOUS: 2 },
+    tech: { OBSERVATION: 2, CURIOUS: 3, HOT_TAKE: 2, CLOUT: 2, NITPICK: 2, HELPFUL: 2 },
+    science: { CURIOUS: 3, OBSERVATION: 2, HELPFUL: 3, NITPICK: 2, ZEN: 2, QUESTION: 2 },
+    emotional: { NOSTALGIC: 3, RELATABLE: 3, WHOLEsome: 2, HYPE_REPLY: 2, COMPLIMENT: 2 },
+    personal: { NOSTALGIC: 3, RELATABLE: 3, WHOLEsome: 2, COMPLIMENT: 2 },
+    viral: { MINIMALIST: 3, REACTION: 3, SLANG: 2, HYPEMAN: 2, GEN_Z: 2, UNHINGED: 2 },
+    high: { MINIMALIST: 2, REACTION: 2, SLANG: 2, HYPEMAN: 2 },
+    negative: { CONTRARIAN: 3, DISMISSIVE: 2, DRY_WIT: 2, SARCASTIC: 2, QUESTION: 2, OBSERVATION: 2 },
+    critical: { CALLOUT: 3, CONTRARIAN: 2, NITPICK: 2, SARCASTIC: 2, DRY_WIT: 2 },
+    wholesome: { WHOLEsome: 4, COMPLIMENT: 2, RELATABLE: 2, HYPE_REPLY: 2 },
+    chaotic: { UNHINGED: 4, TROLL: 3, CONFUSED: 2, GEN_Z: 2, REACTION: 2 },
+    debate: { CONTRARIAN: 3, CALLOUT: 2, HOT_TAKE: 2, NITPICK: 2 },
+    gaming: { UNHINGED: 2, CLOUT: 2, HYPEMAN: 2, SIMP: 2, GEN_Z: 2 },
+    food: { SIMP: 2, NITPICK: 2, RELATABLE: 2, WHOLEsome: 2, ZEN: 2 },
+    informative: { HELPFUL: 4, OBSERVATION: 2, CURIOUS: 2 },
+    sarcastic: { SARCASTIC: 4, DRY_WIT: 2, TROLL: 2 },
+    smug: { SMUG: 4, CLOUT: 2, HOT_TAKE: 2 },
 };
 
 const strategies = {
-    // ── Original ───────────────────────────────────────────────────────────
-    COMPLIMENT: `\n**CRITICAL INSTRUCTION**: You MUST write a ONE-SENTENCE genuine compliment about the tweet. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions.`,
-    NOSTALGIC: `\n**CRITICAL INSTRUCTION**: You MUST share a brief personal memory related to the tweet (e.g., "I remember when..."). NEVER write "Okay" or "Yes". Keep it to 1 sentence, around 15 words or less. No mentions.`,
-    SLANG: `\n**CRITICAL INSTRUCTION**: You MUST use extremely casual internet slang (e.g., "this is fire", "no cap"). lowercase ONLY. NEVER write "Okay" or "Yes". Keep it very brief, under 10 words. No mentions.`,
-    MINIMALIST: `\n**CRITICAL INSTRUCTION**: React with exactly ONE highly expressive word or extremely short phrase (1-3 words) (e.g., "real", "wild", "big facts"). lowercase. NEVER write "Okay" or "Yes". No mentions.`,
-    WITTY: `\n**CRITICAL INSTRUCTION**: You MUST make a witty, playful, or sarcastic observation about the tweet. NEVER write "Okay" or "Yes". Keep it to 1 punchy sentence. No mentions.`,
-    QUESTION: `\n**CRITICAL INSTRUCTION**: You MUST ask a specific, highly relevant question about the tweet. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions.`,
-    RELATABLE: `\n**CRITICAL INSTRUCTION**: You MUST fiercely validate the tweet with a "same" or "relatable" sentiment. NEVER write "Okay" or "Yes". Keep it short. No mentions.`,
-    CURIOUS: `\n**CRITICAL INSTRUCTION**: You MUST express casual, specific curiosity about a detail in the tweet (e.g., "wait where is this"). NEVER write "Okay" or "Yes". Keep it short. No mentions.`,
-    TEXT_EMOJI: `\n**CRITICAL INSTRUCTION**: You MUST write a short casual sentence containing precisely one text-based emotion. NEVER write "Okay" or "Yes". Keep it short. No mentions.`,
-    EMOJI_ONLY: `\n**CRITICAL INSTRUCTION**: React with a very short punchy phrase ONLY. No emoji. lowercase. NEVER write "Okay" or "Yes". No mentions.`,
-    OBSERVATION: `\n**CRITICAL INSTRUCTION**: You MUST make a hyper-specific, casual observation about the tweet content. Avoid formal grammar. NEVER write "Okay" or "Yes". Keep it up to 12 words. No mentions.`,
-    // ── New ───────────────────────────────────────────────────────────────
-    HYPEMAN: `\n**CRITICAL INSTRUCTION**: You MUST hype this up wildly. Sound genuinely, aggressively excited. NEVER write "Okay" or "Yes". Keep it short. lowercase. No mentions.`,
-    LOWKEY: `\n**CRITICAL INSTRUCTION**: You MUST react with highly understated, deadpan agreement (e.g., "pretty much", "yeah basically"). NEVER write "Okay" or "Yes". Very short phrase only. No mentions.`,
-    CALLOUT: `\n**CRITICAL INSTRUCTION**: You MUST point out an irony or obvious contradiction in the tweet in one short sentence. NEVER write "Okay" or "Yes". Keep it short. No mentions.`,
-    AGREE_HARD: `\n**CRITICAL INSTRUCTION**: You MUST double-down with emphatic, aggressive agreement (e.g., "literally this", "could not agree more"). NEVER write "Okay" or "Yes". Very short phrase. No mentions.`,
-    HOT_TAKE: `\n**CRITICAL INSTRUCTION**: You MUST give a confident short opinion that sounds slightly provocative or surprising regarding the tweet. NEVER write "Okay" or "Yes". 1 short sentence. No mentions.`,
-    REACTION: `\n**CRITICAL INSTRUCTION**: You MUST provide pure unfiltered reaction — one punchy exclamation (e.g., "bro", "wait what", "lmaooo"). lowercase. NEVER write "Okay" or "Yes". Under 5 words. No mentions.`,
-    DOUBT: `\n**CRITICAL INSTRUCTION**: You MUST express distinct, specific skepticism about the tweet (e.g., "idk about that one"). NEVER write "Okay" or "Yes". Keep it short. No mentions.`,
-    RELATE_STORY: `\n**CRITICAL INSTRUCTION**: You MUST drop a one-line personal angle that connects to the tweet ("same thing happened to me when..."). NEVER write "Okay" or "Yes". 1 short sentence. No mentions.`,
-    HYPE_REPLY: `\n**CRITICAL INSTRUCTION**: You MUST cheer on or celebrate the exact specific thing mentioned in the tweet. NEVER write "Okay" or "Yes". Keep it short. No mentions.`,
-    DRY_WIT: `\n**CRITICAL INSTRUCTION**: You MUST use deadpan dry humor about the tweet topic. No exclamation marks. NEVER write "Okay" or "Yes". 1 short sentence. No mentions.`,
-    CLOUT: `\n**CRITICAL INSTRUCTION**: You MUST write one short, highly confident line, acting as if you are an expert on this tweet's topic. NEVER write "Okay" or "Yes". Keep it short. No mentions.`,
+    // ── Positive ─────────────────────────────────────────────────────────
+    COMPLIMENT: `\n**CRITICAL INSTRUCTION**: You MUST write a ONE-SENTENCE genuine compliment about the tweet. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions. No Emoji.`,
+    HYPEMAN: `\n**CRITICAL INSTRUCTION**: You MUST hype this up wildly. Sound genuinely, aggressively excited. NEVER write "Okay" or "Yes". Keep it short. lowercase. No mentions. No Emoji.`,
+    HYPE_REPLY: `\n**CRITICAL INSTRUCTION**: You MUST cheer on or celebrate the exact specific thing mentioned in the tweet. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
+    SIMP: `\n**CRITICAL INSTRUCTION**: You MUST over-the-top praise one specific detail in the tweet. Sound like a genuine stan. NEVER write "Okay" or "Yes". Keep it to 1 sentence. No mentions. No Emoji.`,
+    WHOLEsome: `\n**CRITICAL INSTRUCTION**: You MUST be genuinely kind and supportive. No sarcasm. Just pure wholesome energy. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
+    LOWKEY: `\n**CRITICAL INSTRUCTION**: You MUST react with highly understated, deadpan agreement. NEVER write "Okay" or "Yes". Very short phrase only. No mentions. No Emoji.`,
+    // ── Personal ─────────────────────────────────────────────────────────
+    NOSTALGIC: `\n**CRITICAL INSTRUCTION**: You MUST share a brief personal memory related to the tweet. NEVER write "Okay" or "Yes". Keep it to 1 sentence, around 15 words or less. No mentions. No Emoji.`,
+    RELATABLE: `\n**CRITICAL INSTRUCTION**: You MUST fiercely validate the tweet with a "same" or "relatable" one-sentence personal angle. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
+    // ── Humor ────────────────────────────────────────────────────────────
+    WITTY: `\n**CRITICAL INSTRUCTION**: You MUST make a witty, playful observation about the tweet. NEVER write "Okay" or "Yes". Keep it to 1 punchy sentence. No mentions. No Emoji.`,
+    DRY_WIT: `\n**CRITICAL INSTRUCTION**: You MUST use deadpan dry humor about the tweet topic. No exclamation marks. NEVER write "Okay" or "Yes". 1 short sentence. No mentions. No Emoji.`,
+    SARCASTIC: `\n**CRITICAL INSTRUCTION**: You MUST use biting sarcasm that's more pointed than dry wit. Playfully mean, never cruel. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions. No Emoji.`,
+    TROLL: `\n**CRITICAL INSTRUCTION**: You MUST playful tease or gently roast the tweet without being mean. Light trolling only. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions. No Emoji.`,
+    NITPICK: `\n**CRITICAL INSTRUCTION**: You MUST pedantically but funnily correct or nitpick a tiny detail in the tweet. Be the ackshually person. NEVER write "Okay" or "Yes". Keep it to 1 sentence. No mentions. No Emoji.`,
+    UNHINGED: `\n**CRITICAL INSTRUCTION**: You MUST go fully unhinged — chaotic energy, absurd comparison, or wildly random take. Embrace the chaos. NEVER write "Okay" or "Yes". Keep it short. lowercase preferred. No mentions. No Emoji.`,
+    // ── Skepticism ───────────────────────────────────────────────────────
+    CONTRARIAN: `\n**CRITICAL INSTRUCTION**: You MUST respectfully push back or flip the take. Offer a different angle without being hostile. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions. No Emoji.`,
+    CALLOUT: `\n**CRITICAL INSTRUCTION**: You MUST point out an irony or obvious contradiction in the tweet in one short sentence. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
+    DISMISSIVE: `\n**CRITICAL INSTRUCTION**: You MUST brush off the tweet's claim with confident indifference. Never hostile, just unimpressed. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
+    // ── Expertise ────────────────────────────────────────────────────────
+    CLOUT: `\n**CRITICAL INSTRUCTION**: You MUST write one short, highly confident line, acting as if you are an expert on this tweet's topic. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
+    HOT_TAKE: `\n**CRITICAL INSTRUCTION**: You MUST give a confident short opinion that sounds slightly provocative or surprising regarding the tweet. NEVER write "Okay" or "Yes". 1 short sentence. No mentions. No Emoji.`,
+    HELPFUL: `\n**CRITICAL INSTRUCTION**: You MUST share a genuinely useful fact, tip, or resource related to the tweet. Sound helpful not preachy. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions. No Emoji.`,
+    // ── Observation ──────────────────────────────────────────────────────
+    OBSERVATION: `\n**CRITICAL INSTRUCTION**: You MUST make a hyper-specific, casual observation about the tweet content. Avoid formal grammar. NEVER write "Okay" or "Yes". Keep it up to 12 words. No mentions. No Emoji.`,
+    CURIOUS: `\n**CRITICAL INSTRUCTION**: You MUST express casual, specific curiosity about a detail in the tweet. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
+    QUESTION: `\n**CRITICAL INSTRUCTION**: You MUST ask a specific, highly relevant question about the tweet. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions. No Emoji.`,
+    // ── Short/Minimal ────────────────────────────────────────────────────
+    MINIMALIST: `\n**CRITICAL INSTRUCTION**: React with exactly ONE highly positive expressive word or extremely short phrase (2-4 words). lowercase. NEVER write "Okay" or "Yes". No mentions. No Emoji.`,
+    SLANG: `\n**CRITICAL INSTRUCTION**: You MUST use casual internet slang. lowercase ONLY. NEVER write "Okay" or "Yes". Keep it very brief, under 10 words. No mentions. No Emoji.`,
+    REACTION: `\n**CRITICAL INSTRUCTION**: You MUST provide pure unfiltered reaction — one punchy exclamation sentence. lowercase. NEVER write "Okay" or "Yes". Under 5 words. No mentions. No Emoji.`,
+    CONFUSED: `\n**CRITICAL INSTRUCTION**: You MUST express genuine confusion or bewilderment about the tweet's claim. NOT sarcastic — real confusion. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
+    // ── Persona ──────────────────────────────────────────────────────────
+    GEN_Z: `\n**CRITICAL INSTRUCTION**: You MUST use very online Gen Z slang and energy. Think TikTok comments section. NEVER write "Okay" or "Yes". Keep it brief, lowercase only. No mentions. No Emoji.`,
+    BOOMER: `\n**CRITICAL INSTRUCTION**: You MUST respond like a slightly out-of-touch older person trying to relate. Maybe slightly confused but earnest. NEVER write "Okay" or "Yes". Keep it to 1 sentence. No mentions. No Emoji.`,
+    NPC: `\n**CRITICAL INSTRUCTION**: You MUST respond like a totally average, default person. No strong opinions. Basic reaction. NEVER write "Okay" or "Yes". Keep it very short. No mentions. No Emoji.`,
+    ZEN: `\n**CRITICAL INSTRUCTION**: You MUST respond with calm, philosophical wisdom about the tweet topic. Sound like someone who has found inner peace. NEVER write "Okay" or "Yes". Keep it to 1 short sentence. No mentions. No Emoji.`,
+    SMUG: `\n**CRITICAL INSTRUCTION**: You MUST reply with smug self-satisfaction, like you already knew this. Confident but not aggressive. NEVER write "Okay" or "Yes". Keep it short. No mentions. No Emoji.`,
 };
 
 /**
@@ -216,7 +268,11 @@ export function buildReplyPrompt(tweetText, authorUsername, replies = [], _url =
     if (replies && replies.length > 0) {
         replies.slice(0, 20).forEach((reply, idx) => {
             const author = reply.author || 'User';
-            const text = (reply.text || '').substring(0, 150);
+            const text = (reply.text || '')
+                .substring(0, 150)
+                .replace(/#\w+/g, '')           // strip hashtags
+                .replace(/\p{Emoji_Presentation}/gu, '') // strip emojis
+                .trim();
             prompt += `${idx + 1}. @${author}: ${text}\n`;
         });
     } else {
@@ -313,7 +369,11 @@ export function buildEnhancedPrompt(context, _systemPrompt = REPLY_SYSTEM_PROMPT
         if (topReplies.length > 0) {
             prompt += '\n\nReplies:';
             topReplies.forEach((reply, idx) => {
-                const text = (reply.text || reply.content || '').substring(0, 150);
+                const text = (reply.text || reply.content || '')
+                    .substring(0, 150)
+                    .replace(/#\w+/g, '')           // strip hashtags
+                    .replace(/\p{Emoji_Presentation}/gu, '') // strip emojis
+                    .trim();
                 const replyAuthor = reply.author || 'User';
                 prompt += `\n${idx + 1}. @${replyAuthor}: ${text}`;
             });
@@ -338,4 +398,22 @@ Respond with JSON:
 
 Safe topics: technology, science, everyday life, humor, sports, food, travel, productivity
 Unsafe topics: politics, NSFW, spam, religion, controversial opinions`;
+}
+
+/**
+ * Sanitize LLM response text — removes asterisk-based emphasis.
+ * Converts *word* or **word** to plain word.
+ * @param {string} text - Raw LLM output
+ * @returns {string} Cleaned text
+ */
+export function sanitizeReplyText(text) {
+    if (!text) return text;
+    return text
+        // Remove **word** (double asterisk bold)
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        // Remove *word* (single asterisk italic)
+        .replace(/\*([^*]+)\*/g, '$1')
+        // Collapse multiple spaces left behind
+        .replace(/\s{2,}/g, ' ')
+        .trim();
 }

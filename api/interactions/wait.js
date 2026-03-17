@@ -30,6 +30,43 @@ export async function wait(ms) {
 }
 
 /**
+ * Wait for a duration with abort signal support.
+ * @param {number} ms - Base duration in milliseconds
+ * @param {AbortSignal} [signal] - Optional abort signal
+ * @returns {Promise<void>}
+ * @throws {ValidationError} If ms is not a positive number
+ * @throws {Error} If signal is aborted
+ */
+export async function waitWithAbort(ms, signal) {
+    if (typeof ms !== 'number' || Number.isNaN(ms) || ms < 0) {
+        throw new ValidationError(`waitWithAbort() requires a positive number, got: ${ms}`);
+    }
+    
+    if (signal && signal.aborted) {
+        throw signal.reason || new Error('Aborted');
+    }
+    
+    return new Promise((resolve, reject) => {
+        const abortHandler = () => {
+            clearTimeout(timeoutId);
+            reject(signal.reason || new Error('Aborted'));
+        };
+        
+        if (signal) {
+            signal.addEventListener('abort', abortHandler, { once: true });
+        }
+        
+        const jitter = ms * 0.15 * (Math.random() - 0.5) * 2;
+        const timeoutId = setTimeout(() => {
+            if (signal) {
+                signal.removeEventListener('abort', abortHandler);
+            }
+            resolve();
+        }, Math.max(0, Math.round(ms + jitter)));
+    });
+}
+
+/**
  * Wait for a selector or a predicate function.
  * @param {string|import('playwright').Locator|Function} selectorOrPredicate - CSS selector, Locator, or Predicate function
  * @param {object} [options]

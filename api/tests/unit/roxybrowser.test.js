@@ -9,7 +9,7 @@
  * @module tests/unit/roxybrowser.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 
 const mockApiHandler = {
     get: vi.fn(),
@@ -36,13 +36,33 @@ vi.mock('../../core/logger.js', () => ({
     }),
 }));
 
+vi.mock('../../connectors/baseDiscover.js', () => ({
+    default: class BaseDiscover {
+        constructor() {
+            this.browserType = 'base';
+            this.logger = {
+                info: vi.fn(),
+                warn: vi.fn(),
+                error: vi.fn(),
+                debug: vi.fn(),
+            };
+        }
+        async discover() {
+            throw new Error('Method "discover()" must be implemented by subclass');
+        }
+    },
+}));
+
 describe('connectors/discovery/roxybrowser', () => {
     let RoxybrowserDiscover;
 
-    beforeEach(async () => {
-        vi.clearAllMocks();
+    beforeAll(async () => {
         const module = await import('../../connectors/discovery/roxybrowser.js');
         RoxybrowserDiscover = module.default;
+    });
+
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
 
     afterEach(() => {

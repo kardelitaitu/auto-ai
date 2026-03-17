@@ -18,11 +18,28 @@ import { AITwitterAgent } from '@api/twitter/ai-twitterAgent.js';
 // MOCK DEPENDENCIES
 // ============================================================================
 
+// Hoisted mocks for spies
+const contextEngineMocks = vi.hoisted(() => ({
+    extractEnhancedContext: vi.fn().mockResolvedValue({
+        sentiment: { overall: 'positive' },
+        tone: { primary: 'casual' },
+        engagementLevel: 'medium',
+        replies: [],
+    }),
+}));
+
+const replyEngineMocks = vi.hoisted(() => ({
+    shouldReply: vi.fn().mockResolvedValue({ decision: 'reply', reply: 'Test reply' }),
+    generateReply: vi.fn().mockResolvedValue({ success: true, reply: 'Test reply' }),
+    executeReply: vi.fn().mockResolvedValue({ success: true, method: 'test' }),
+}));
+
 // Mock TwitterAgent parent class
-vi.mock('../../utils/twitterAgent.js', () => ({
+vi.mock('@api/twitter/twitterAgent.js', () => ({
     TwitterAgent: class {
         constructor(page, profile, logger) {
             this.page = page;
+            this.config = profile;
             this.profile = profile;
             this.logger = logger;
             this.state = {
@@ -33,7 +50,9 @@ vi.mock('../../utils/twitterAgent.js', () => ({
                 burstEndTime: 0,
                 lastRefreshAt: 0,
             };
-            this.engagement = { diveTweet: vi.fn() };
+            this.sessionStart = Date.now();
+            this.loopIndex = 0;
+            this.ghost = { click: vi.fn().mockResolvedValue({ success: true }) };
             this.human = {
                 sessionStart: vi.fn(),
                 sessionEnd: vi.fn(),
@@ -42,10 +61,15 @@ vi.mock('../../utils/twitterAgent.js', () => ({
                     shouldEndSession: vi.fn().mockReturnValue(false),
                     boredomPause: vi.fn(),
                 },
+                think: vi.fn().mockResolvedValue(),
+                recoverFromError: vi.fn().mockResolvedValue(),
             };
-        }
-        log(msg) {
-            this.logger.info(msg);
+            this.navigation = { navigateHome: vi.fn().mockResolvedValue() };
+            this.engagement = { diveTweet: vi.fn() };
+            this.session = { updatePhase: vi.fn() };
+            this.log = vi.fn().mockImplementation((msg) => {
+                if (this.logger && this.logger.info) this.logger.info(msg);
+            });
         }
         isSessionExpired() {
             return false;
@@ -70,18 +94,17 @@ vi.mock('../../utils/twitterAgent.js', () => ({
 }));
 
 // Mock Engines
-vi.mock('../../utils/ai-reply-engine.js', () => ({
-    AIReplyEngine: vi.fn(function () {
-        return {
-            config: { REPLY_PROBABILITY: 0.5 },
-            shouldReply: vi.fn().mockResolvedValue({ decision: 'reply', reply: 'Test reply' }),
-            generateReply: vi.fn().mockResolvedValue({ success: true, reply: 'Test reply' }),
-            executeReply: vi.fn().mockResolvedValue({ success: true, method: 'test' }),
-        };
-    }),
-}));
+vi.mock('../../agent/ai-reply-engine/index.js', () => {
+    const AIReplyEngine = vi.fn(function () {
+        this.config = { REPLY_PROBABILITY: 0.5 };
+        this.shouldReply = replyEngineMocks.shouldReply;
+        this.generateReply = replyEngineMocks.generateReply;
+        this.executeReply = replyEngineMocks.executeReply;
+    });
+    return { AIReplyEngine };
+});
 
-vi.mock('../../utils/ai-quote-engine.js', () => ({
+vi.mock('../../agent/ai-quote-engine.js', () => ({
     AIQuoteEngine: vi.fn(function () {
         return {
             generateQuote: vi.fn().mockResolvedValue({ success: true, quote: 'Test quote' }),
@@ -90,21 +113,15 @@ vi.mock('../../utils/ai-quote-engine.js', () => ({
     }),
 }));
 
-vi.mock('../../utils/ai-context-engine.js', () => ({
-    AIContextEngine: vi.fn(function () {
-        return {
-            extractEnhancedContext: vi.fn().mockResolvedValue({
-                sentiment: { overall: 'positive' },
-                tone: { primary: 'casual' },
-                engagementLevel: 'medium',
-                replies: [],
-            }),
-        };
-    }),
-}));
+vi.mock('../../agent/ai-context-engine.js', () => {
+    const AIContextEngine = vi.fn(function () {
+        this.extractEnhancedContext = contextEngineMocks.extractEnhancedContext;
+    });
+    return { AIContextEngine };
+});
 
 // Mock Utils
-vi.mock('../../utils/micro-interactions.js', () => ({
+vi.mock('../../behaviors/micro-interactions.js', () => ({
     microInteractions: {
         createMicroInteractionHandler: vi.fn().mockReturnValue({
             config: {},
@@ -116,7 +133,7 @@ vi.mock('../../utils/micro-interactions.js', () => ({
     },
 }));
 
-vi.mock('../../utils/motor-control.js', () => ({
+vi.mock('../../behaviors/motor-control.js', () => ({
     motorControl: {
         createMotorController: vi.fn().mockReturnValue({
             smartClick: vi.fn().mockResolvedValue({ success: true, x: 100, y: 100 }),
@@ -157,7 +174,7 @@ vi.mock('../../utils/engagement-limits.js', () => ({
     },
 }));
 
-vi.mock('../../utils/session-phases.js', () => ({
+vi.mock('../../twitter/session-phases.js', () => ({
     sessionPhases: {
         getSessionPhase: vi.fn().mockReturnValue('active'),
         getPhaseStats: vi.fn().mockReturnValue({ description: 'Active phase' }),
@@ -187,7 +204,7 @@ vi.mock('../../utils/sentiment-service.js', () => ({
     },
 }));
 
-vi.mock('../../utils/scroll-helper.js', () => ({
+vi.mock('../../behaviors/scroll-helper.js', () => ({
     scrollDown: vi.fn(),
     scrollUp: vi.fn(),
     scrollRandom: vi.fn(),
@@ -234,32 +251,32 @@ vi.mock('../../utils/async-queue.js', () => ({
 }));
 
 // Mock Actions
-vi.mock('../../utils/actions/ai-twitter-reply.js', () => ({
+vi.mock('../../actions/ai-twitter-reply.js', () => ({
     AIReplyAction: vi.fn(function () {
         return { getStats: vi.fn() };
     }),
 }));
-vi.mock('../../utils/actions/ai-twitter-quote.js', () => ({
+vi.mock('../../actions/ai-twitter-quote.js', () => ({
     AIQuoteAction: vi.fn(function () {
         return { getStats: vi.fn() };
     }),
 }));
-vi.mock('../../utils/actions/ai-twitter-like.js', () => ({
+vi.mock('../../actions/ai-twitter-like.js', () => ({
     LikeAction: vi.fn(function () {
         return { getStats: vi.fn() };
     }),
 }));
-vi.mock('../../utils/actions/ai-twitter-bookmark.js', () => ({
+vi.mock('../../actions/ai-twitter-bookmark.js', () => ({
     BookmarkAction: vi.fn(function () {
         return { getStats: vi.fn() };
     }),
 }));
-vi.mock('../../utils/actions/ai-twitter-go-home.js', () => ({
+vi.mock('../../actions/ai-twitter-go-home.js', () => ({
     GoHomeAction: vi.fn(function () {
         return { getStats: vi.fn() };
     }),
 }));
-vi.mock('../../utils/actions/index.js', () => ({
+vi.mock('../../actions/advanced-index.js', () => ({
     ActionRunner: vi.fn(function () {
         return {
             selectAction: vi.fn().mockReturnValue('reply'),
@@ -271,7 +288,7 @@ vi.mock('../../utils/actions/index.js', () => ({
     }),
 }));
 
-vi.mock('../../utils/human-interaction.js', () => ({
+vi.mock('../../behaviors/human-interaction.js', () => ({
     HumanInteraction: vi.fn(function () {
         return {
             findWithFallback: vi.fn(),
@@ -297,7 +314,7 @@ vi.mock('../../core/logger.js', () => ({
     }),
 }));
 
-vi.mock('../../../api/index.js', () => ({
+vi.mock('@api/index.js', () => ({
     api: {
         getCurrentUrl: vi.fn().mockReturnValue('https://x.com/home'),
         goto: vi.fn().mockResolvedValue(undefined),
@@ -447,7 +464,7 @@ describe('AITwitterAgent (Real Implementation)', () => {
 
     describe('AI Reply Handling', () => {
         // Skipped: test isolation issues (pass individually, fail in full suite)
-        it.skip('should skip negative sentiment tweets', async () => {
+        it('should skip negative sentiment tweets', async () => {
             // Mock negative sentiment
             const { sentimentService } = await import('../../utils/sentiment-service.js');
             sentimentService.analyze.mockReturnValueOnce({
@@ -472,7 +489,7 @@ describe('AITwitterAgent (Real Implementation)', () => {
         });
 
         // Skipped: test isolation issues (pass individually, fail in full suite)
-        it.skip('should execute reply if sentiment is positive and limits allow', async () => {
+        it('should execute reply if sentiment is positive and limits allow', async () => {
             await agent.handleAIReply('I love this', 'user');
 
             expect(agent.contextEngine.extractEnhancedContext).toHaveBeenCalled();

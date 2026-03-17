@@ -70,6 +70,7 @@ describe('api/agent/vision.js', () => {
             screenshot: vi.fn().mockResolvedValue(Buffer.from('fake-image')),
             evaluate: vi.fn().mockResolvedValue(undefined),
             url: vi.fn().mockReturnValue('https://example.com'),
+            viewportSize: vi.fn().mockReturnValue({ width: 1920, height: 1080 }),
         };
 
         getPage.mockReturnValue(mockPage);

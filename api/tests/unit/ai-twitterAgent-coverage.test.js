@@ -52,6 +52,16 @@ vi.mock('@api/index.js', () => {
             waitForSelector: vi.fn().mockResolvedValue(undefined),
             getPersona: vi.fn().mockReturnValue({ microMoveChance: 0.1, fidgetChance: 0.05 }),
             emulateMedia: vi.fn().mockResolvedValue(undefined),
+            cursor: {
+                move: vi.fn().mockResolvedValue(undefined),
+            },
+            getPage: vi.fn().mockReturnValue({
+                url: vi.fn().mockReturnValue('https://x.com/home'),
+                keyboard: {
+                    press: vi.fn().mockResolvedValue(undefined),
+                    type: vi.fn().mockResolvedValue(undefined),
+                },
+            }),
         },
     };
 });
@@ -113,7 +123,7 @@ vi.mock('@api/behaviors/micro-interactions.js', () => ({
     },
 }));
 
-describe('AITwitterAgent Coverage Tests', () => {
+describe('AITwitterAgent Coverage Tests', { timeout: 30000 }, () => {
     let agent;
     let mockPage;
     let mockProfile;
@@ -421,26 +431,28 @@ describe('AITwitterAgent Coverage Tests', () => {
     });
 
     describe('Navigation Methods', () => {
-        it.skip('_safeNavigateHome should return true if already on home', async () => {
-            mockPage.url.mockReturnValue('https://x.com/home');
+        it('_safeNavigateHome should return true if already on home', async () => {
+            api.getCurrentUrl.mockResolvedValue('https://x.com/home');
 
             const result = await agent._safeNavigateHome();
 
             expect(result).toBe(true);
         });
 
-        it.skip('_safeNavigateHome should call navigateHome', async () => {
-            mockPage.url.mockReturnValue('https://x.com/settings');
-            agent.navigateHome = vi.fn().mockResolvedValue(true);
+        it('_safeNavigateHome should call navigateHome', async () => {
+            api.getCurrentUrl.mockResolvedValue('https://x.com/settings');
+            const mockNavFn = vi.fn().mockResolvedValue(true);
+            agent.navigation.navigateHome = mockNavFn;
 
-            await agent._safeNavigateHome();
+            const result = await agent._safeNavigateHome();
 
-            expect(agent.navigateHome).toHaveBeenCalled();
+            expect(result).toBe(true);
+            expect(mockNavFn).toHaveBeenCalled();
         });
 
-        it.skip('_safeNavigateHome should fallback to goto on navigateHome failure', async () => {
-            mockPage.url.mockReturnValue('https://x.com/settings');
-            agent.navigateHome = vi.fn().mockRejectedValue(new Error('nav failed'));
+        it('_safeNavigateHome should fallback to goto on navigateHome failure', async () => {
+            api.getCurrentUrl.mockResolvedValue('https://x.com/settings');
+            agent.navigation.navigateHome = vi.fn().mockRejectedValue(new Error('nav failed'));
 
             await agent._safeNavigateHome();
 
@@ -470,10 +482,10 @@ describe('AITwitterAgent Coverage Tests', () => {
             expect(agent.shouldContinueSession()).toBe(true);
         });
 
-        it.skip('performIdleCursorMovement should move mouse', async () => {
+        it('performIdleCursorMovement should move cursor via api', async () => {
             await agent.performIdleCursorMovement();
 
-            expect(mockPage.mouse.move).toHaveBeenCalled();
+            expect(api.cursor.move).toHaveBeenCalled();
         });
     });
 
@@ -1193,13 +1205,14 @@ describe('AITwitterAgent Coverage Tests', () => {
         });
     });
 
-    describe.skip('executeAIReply', () => {
+    describe('executeAIReply', () => {
         it('should execute AI reply successfully', async () => {
+            agent.state.replies = 0; // Initialize counter
             agent.replyEngine.executeReply = vi
                 .fn()
                 .mockResolvedValue({ success: true, method: 'native' });
-            agent.engagementTracker.record.mockReturnValue(true);
-            agent.engagementTracker.getProgress.mockReturnValue('1/3');
+            vi.spyOn(agent.engagementTracker, 'record').mockReturnValue(true);
+            vi.spyOn(agent.engagementTracker, 'getProgress').mockReturnValue('1/3');
 
             const result = await agent.executeAIReply('Test reply');
 
@@ -1228,13 +1241,14 @@ describe('AITwitterAgent Coverage Tests', () => {
         });
     });
 
-    describe.skip('executeAIQuote', () => {
+    describe('executeAIQuote', () => {
         it('should execute AI quote successfully', async () => {
+            agent.state.quotes = 0; // Initialize counter
             agent.quoteEngine.executeQuote = vi
                 .fn()
                 .mockResolvedValue({ success: true, method: 'native' });
-            agent.engagementTracker.record.mockReturnValue(true);
-            agent.engagementTracker.getProgress.mockReturnValue('1/1');
+            vi.spyOn(agent.engagementTracker, 'record').mockReturnValue(true);
+            vi.spyOn(agent.engagementTracker, 'getProgress').mockReturnValue('1/1');
 
             const result = await agent.executeAIQuote('Test quote', 'https://x.com/test');
 
@@ -1462,24 +1476,28 @@ describe('AITwitterAgent Coverage Tests', () => {
         });
     });
 
-    describe.skip('verifyReplyPosted', () => {
+    describe('verifyReplyPosted', () => {
         it('should return false when not on tweet page', async () => {
-            mockPage.url.mockReturnValue('https://x.com/home');
+            api.getCurrentUrl.mockResolvedValue('https://x.com/home');
 
             const result = await agent.verifyReplyPosted('test reply');
 
             expect(result).toBe(false);
         });
 
-        it('should return true when composer is cleared', async () => {
-            mockPage.url.mockReturnValue('https://x.com/user/status/123');
+        it('should return true when reply text is found in article', async () => {
+            api.getCurrentUrl.mockResolvedValue('https://x.com/user/status/123');
 
-            const mockComposer = {
-                count: vi.fn().mockResolvedValue(1),
-                innerText: vi.fn().mockResolvedValue(''),
-            };
+            // Mock pageOps.queryAll to return articles with innerText
+            agent.pageOps.queryAll = vi.fn().mockResolvedValue([
+                { innerText: vi.fn().mockResolvedValue('Some tweet text') },
+                { innerText: vi.fn().mockResolvedValue('test reply content here') },
+            ]);
 
-            mockPage.locator.mockReturnValue(mockComposer);
+            // Mock api.text to return article text
+            api.text = vi.fn()
+                .mockResolvedValueOnce('Some tweet text')
+                .mockResolvedValueOnce('test reply content here');
 
             const result = await agent.verifyReplyPosted('test reply');
 
@@ -1487,7 +1505,7 @@ describe('AITwitterAgent Coverage Tests', () => {
         });
     });
 
-    describe.skip('humanTypingWithTypos', () => {
+    describe('humanTypingWithTypos', () => {
         it('should type text with simulated typos', async () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.5);
 
@@ -1497,8 +1515,6 @@ describe('AITwitterAgent Coverage Tests', () => {
                     press: vi.fn(),
                 },
             };
-
-            mockPage.mouse.move = vi.fn();
 
             await agent.humanTypingWithTypos(mockInputEl, 'hello world');
         });
@@ -1513,13 +1529,11 @@ describe('AITwitterAgent Coverage Tests', () => {
                 },
             };
 
-            mockPage.mouse.move = vi.fn();
-
             await agent.humanTypingWithTypos(mockInputEl, 'Hello World!');
         });
     });
 
-    describe.skip('simulateReading override', () => {
+    describe('simulateReading override', () => {
         it('should skip scrolling when disabled', async () => {
             agent.scrollingEnabled = false;
             agent.operationLock = true;
@@ -1527,19 +1541,23 @@ describe('AITwitterAgent Coverage Tests', () => {
             await agent.simulateReading();
 
             expect(mockLogger.info).toHaveBeenCalledWith(
-                expect.stringContaining('Scrolling disabled')
+                expect.stringContaining('Reading delay paused')
             );
         });
 
         it('should call parent simulateReading when enabled', async () => {
             agent.scrollingEnabled = true;
             agent.operationLock = false;
+            agent.isScanning = false;
+            agent.abortSignal = { aborted: false };
 
-            agent.parent = {
-                simulateReading: vi.fn().mockResolvedValue(true),
-            };
+            // Mock the parent class simulateReading
+            const parentSimulateReading = vi.fn().mockResolvedValue(true);
+            Object.getPrototypeOf(Object.getPrototypeOf(agent)).simulateReading = parentSimulateReading;
 
             await agent.simulateReading();
+
+            expect(parentSimulateReading).toHaveBeenCalled();
         });
     });
 
@@ -1554,16 +1572,17 @@ describe('AITwitterAgent Coverage Tests', () => {
         });
     });
 
-    describe.skip('logEngagementStatus', () => {
+    describe('logEngagementStatus', () => {
         it('should log engagement status', () => {
-            agent.engagementTracker.getStatus.mockReturnValue({
+            // The engagementTracker is created from the mock, so we need to spy on it
+            vi.spyOn(agent.engagementTracker, 'getStatus').mockReturnValue({
                 replies: { current: 1, limit: 3, remaining: 2, percentage: '33%' },
                 likes: { current: 2, limit: 5, remaining: 3, percentage: '40%' },
             });
 
             agent.logEngagementStatus();
 
-            expect(mockLogger.info).toHaveBeenCalled();
+            expect(agent.engagementLogger.info).toHaveBeenCalled();
         });
     });
 

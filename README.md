@@ -166,3 +166,62 @@ node tests/test-core-modules.js
 4. Build custom tasks in `tasks/` directory
 
 For detailed architecture information, see `walkthrough.md`.
+
+---
+
+## AI Agent - Strategy Game Automation
+
+For **autonomous vision-based AI agents** for strategy games, see [.AGENT.README.md](./.AGENT.README.md).
+
+### Quick Start - Game Agent
+
+```javascript
+import { api } from './api/index.js';
+
+await api.init(page);
+
+// Autonomous game agent
+const result = await api.gameAgent.run('Build barracks and train 5 footmen', {
+    maxSteps: 50,
+    stepDelay: 500,
+    stuckDetection: true
+});
+
+// Or use individual primitives
+await api.game.menus.build('barracks');
+await api.game.units.selectUnit('.unit-1');
+await api.game.resources.waitFor({ gold: 500 });
+```
+
+### Running Agent Tasks
+
+**Auto-Play (runs automatically with predefined rules):**
+```bash
+# Auto-play with strategy
+node agent-main.js owb
+node agent-main.js owb play
+node agent-main.js owb play=rush
+
+# Specific strategies
+node agent-main.js owb rush
+node agent-main.js owb turtle
+node agent-main.js owb economy
+node agent-main.js owb balanced
+
+# Single actions
+node agent-main.js owb build=barracks
+node agent-main.js owb train=5
+node agent-main.js owb attack
+node agent-main.js owb gather
+
+# With options
+node agent-main.js owb rush --loops=5
+node agent-main.js owb play=turtle
+```
+
+**Via API:**
+```javascript
+import { api } from './api/index.js';
+await api.init(page);
+const result = await api.gameAgent.run('Your goal here');
+```

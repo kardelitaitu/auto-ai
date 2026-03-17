@@ -10,6 +10,14 @@ import path from 'path';
 
 vi.mock('fs');
 vi.mock('path');
+vi.mock('../../index.js', () => ({
+    api: {
+        goto: vi.fn().mockResolvedValue(),
+        click: vi.fn().mockResolvedValue(),
+        waitForURL: vi.fn().mockResolvedValue(),
+        setExtraHTTPHeaders: vi.fn().mockResolvedValue(),
+    },
+}));
 
 describe('ReferrerEngine Initialization', () => {
     beforeEach(() => {

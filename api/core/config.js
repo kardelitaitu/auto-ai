@@ -20,13 +20,14 @@ const DEFAULTS = {
     agent: {
         llm: {
             baseUrl: 'http://localhost:11434',
-            model: 'qwen2.5:7b',
+            model: 'qwen3.5:4b',
             temperature: 0.7,
             maxTokens: 2048,
             contextLength: 4096,
             timeoutMs: 120000,
             useVision: true,
             serverType: 'ollama',
+            think: false,
             bypassHealthCheck: false,
         },
         runner: {

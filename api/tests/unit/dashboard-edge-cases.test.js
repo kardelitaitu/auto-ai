@@ -134,14 +134,15 @@ describe('DashboardServer Edge Cases', () => {
             expect(collected.sessions).toHaveLength(50);
         });
 
-        it.skip('should handle large task history', () => {
+        it('should handle large task history', () => {
             server.dashboardData.tasks = [];
             server.historyManager.tasks = [];
             server.latestMetrics.recentTasks = [];
             const tasks = Array.from({ length: 100 }, (_, i) => ({
                 taskName: `task-${i}`,
                 duration: 1000,
-                success: true
+                success: true,
+                timestamp: Date.now() + i
             }));
             
             server.updateMetrics({ recentTasks: tasks });

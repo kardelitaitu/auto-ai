@@ -16,6 +16,14 @@ vi.mock('@api/core/logger.js', () => ({
     }),
 }));
 
+// Mock timing functions to return immediately for faster tests
+vi.mock('@api/behaviors/timing.js', () => ({
+    think: vi.fn().mockResolvedValue(undefined),
+    delay: vi.fn().mockResolvedValue(undefined),
+    randomInRange: vi.fn((min) => min),
+    gaussian: vi.fn(() => 0),
+}));
+
 describe('api/behaviors/recover.js', () => {
     let mockPage;
 

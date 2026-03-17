@@ -6,50 +6,6 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-vi.mock('@api/core/context-state.js', () => ({
-    getStatePersona: vi.fn().mockReturnValue({
-        name: 'casual',
-        speed: 0.8,
-        microMoveChance: 0.08,
-        muscleModel: { Kp: 0.1, Ki: 0.01, Kd: 0.05 },
-    }),
-    setStatePersona: vi.fn((name) => {
-        if (
-            name !== 'custom' &&
-            ![
-                'casual',
-                'efficient',
-                'researcher',
-                'power',
-                'glitchy',
-                'elderly',
-                'teen',
-                'professional',
-                'gamer',
-                'typer',
-                'hesitant',
-                'impulsive',
-                'distracted',
-                'focused',
-                'newbie',
-                'expert',
-            ].includes(name)
-        ) {
-            throw new Error(
-                `Unknown persona "${name}". Available: casual, efficient, researcher, power, glitchy, elderly, teen, professional, gamer, typer, hesitant, impulsive, distracted, focused, newbie, expert`
-            );
-        }
-    }),
-    getStatePersonaName: vi.fn().mockReturnValue('casual'),
-    getStateSection: vi.fn().mockReturnValue({
-        sessionStartTime: Date.now() - 1000,
-    }),
-}));
-
-vi.mock('@api/core/context.js', () => ({
-    clearContext: vi.fn(),
-}));
-
 import {
     setPersona,
     getPersona,
@@ -59,9 +15,18 @@ import {
     getSessionDuration,
     PERSONAS,
 } from '@api/behaviors/persona.js';
+
 describe('api/behaviors/persona.js', () => {
+    beforeEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     describe('setPersona', () => {
-        it.skip('should set valid persona', () => {
+        it('should set valid persona', () => {
             setPersona('focused');
             expect(getPersonaName()).toBe('focused');
             expect(getPersona().speed).toBe(PERSONAS.focused.speed);
@@ -71,18 +36,18 @@ describe('api/behaviors/persona.js', () => {
             expect(() => setPersona('invalid')).toThrow('Unknown persona');
         });
 
-        it.skip('should allow "custom" persona with overrides', () => {
+        it('should allow "custom" persona with overrides', () => {
             setPersona('custom', { speed: 5.0 });
             expect(getPersonaName()).toBe('custom');
             expect(getPersona().speed).toBe(5.0);
         });
 
-        it.skip('should apply overrides', () => {
+        it('should apply overrides', () => {
             setPersona('casual', { speed: 99 });
             expect(getPersona().speed).toBe(99);
         });
 
-        it.skip('should apply biometric randomization', () => {
+        it('should apply biometric randomization', () => {
             vi.spyOn(Math, 'random').mockReturnValue(0.1);
 
             const baseKp = PERSONAS.casual.muscleModel.Kp;
@@ -95,6 +60,7 @@ describe('api/behaviors/persona.js', () => {
             vi.restoreAllMocks();
         });
     });
+
     describe('getPersona', () => {
         it('should return active persona config', () => {
             const persona = getPersona();
@@ -123,6 +89,46 @@ describe('api/behaviors/persona.js', () => {
             await new Promise((r) => setTimeout(r, 10));
             const duration = getSessionDuration();
             expect(duration).toBeGreaterThan(0);
+        });
+    });
+
+    describe('PERSONAS constant', () => {
+        it('should have all expected persona profiles', () => {
+            const expected = [
+                'casual',
+                'efficient',
+                'researcher',
+                'power',
+                'glitchy',
+                'elderly',
+                'teen',
+                'professional',
+                'gamer',
+                'typer',
+                'hesitant',
+                'impulsive',
+                'distracted',
+                'focused',
+                'newbie',
+                'expert',
+            ];
+            expect(listPersonas()).toEqual(expected);
+        });
+
+        it('should have required properties for each persona', () => {
+            for (const [name, persona] of Object.entries(PERSONAS)) {
+                expect(persona).toHaveProperty('speed');
+                expect(persona).toHaveProperty('hoverMin');
+                expect(persona).toHaveProperty('hoverMax');
+                expect(persona).toHaveProperty('typoRate');
+                expect(persona).toHaveProperty('correctionRate');
+                expect(persona).toHaveProperty('scrollSpeed');
+                expect(persona).toHaveProperty('pathStyle');
+                expect(persona).toHaveProperty('muscleModel');
+                expect(persona.muscleModel).toHaveProperty('Kp');
+                expect(persona.muscleModel).toHaveProperty('Ki');
+                expect(persona.muscleModel).toHaveProperty('Kd');
+            }
         });
     });
 });

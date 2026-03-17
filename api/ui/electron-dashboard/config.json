@@ -5,7 +5,12 @@
     },
     "ui": {
         "defaultCompact": false,
-        "defaultAlwaysOnTop": false
+        "defaultAlwaysOnTop": false,
+        "themes": [
+            "dark",
+            "light"
+        ],
+        "defaultTheme": "dark"
     },
     "connect": {
         "autoConnect": true,
@@ -31,17 +36,26 @@
     "security": {
         "cors": {
             "enabled": true,
-            "origins": ["http://localhost:5173", "http://localhost:3001"]
+            "origins": [
+                "http://localhost:5173",
+                "http://localhost:3001"
+            ]
         },
         "rateLimit": {
             "enabled": true,
             "windowMs": 60000,
             "maxRequests": 100
         },
-        "sessionTTL": 300000
-    },
-    "ui": {
-        "themes": ["dark", "light"],
-        "defaultTheme": "dark"
+        "sessionTTL": 300000,
+        "auth": {
+            "enabled": false,
+            "token": "",
+            "protectedEvents": [
+                "clear-history",
+                "send-notification",
+                "push_metrics",
+                "task-update"
+            ]
+        }
     }
 }

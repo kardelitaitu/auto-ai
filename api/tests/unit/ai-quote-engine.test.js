@@ -65,9 +65,9 @@ vi.mock('../../../api/index.js', () => {
     };
 });
 
-afterEach(() => {
-    vi.restoreAllMocks();
-});
+// afterEach(() => {
+//     vi.restoreAllMocks();
+// });
 
 import { api } from '../../../api/index.js';
 
@@ -168,7 +168,7 @@ describe('ai-quote-engine', () => {
     };
 
     beforeEach(async () => {
-        vi.clearAllMocks();
+        vi.resetAllMocks();
         ({ AIQuoteEngine } = await import('../../agent/ai-quote-engine.js'));
         ({ mathUtils } = await import('../../utils/math.js'));
         ({ sentimentService } = await import('../../utils/sentiment-service.js'));
@@ -203,10 +203,15 @@ describe('ai-quote-engine', () => {
         api.exists.mockResolvedValue(true);
         api.waitVisible.mockResolvedValue(undefined);
         api.findElement.mockResolvedValue('#mock-selector');
+        api.getCurrentUrl.mockResolvedValue('https://x.com/status/1');
+        api.eval.mockResolvedValue('<div><br></div>');
+        api.text.mockResolvedValue('https://x.com/status/1');
+        api.wait.mockResolvedValue(undefined);
+        api.type.mockResolvedValue(undefined);
     });
 
     afterEach(() => {
-        vi.restoreAllMocks();
+        vi.clearAllMocks();
     });
 
     const createPageMock = (options = {}) => {
@@ -444,7 +449,7 @@ describe('ai-quote-engine', () => {
             analyzed: [],
         });
         const agent = { processRequest: vi.fn().mockResolvedValue(null), sessionId: null };
-        engine = new AIQuoteEngine(agent, { quoteProbability: 1, maxRetries: 1 });
+        engine = new AIQuoteEngine(agent, { quoteProbability: 1, maxRetries: 2 });
         const result = await engine.generateQuote('tweet text', 'user', {});
         expect(result.success).toBe(false);
         expect(result.reason).toContain('all_attempts_failed');
@@ -1173,13 +1178,9 @@ describe('ai-quote-engine', () => {
                     fixation: vi.fn(),
                     microMove: vi.fn(),
                     hesitation: vi.fn(),
-                    findElement: vi.fn().mockResolvedValue({
-                        element: {
-                            boundingBox: () => Promise.resolve({ y: 100 }),
-                            scrollIntoViewIfNeeded: () => Promise.resolve(),
-                            click: () => Promise.resolve(),
-                        },
-                        selector: '[data-testid="retweet"]',
+                    findElement: vi.fn().mockImplementation((selectors) => {
+                        // Return the selector string (matching implementation in ai-quote-engine.js)
+                        return Promise.resolve('[data-testid="retweet"]');
                     }),
                 },
             };
@@ -1194,6 +1195,7 @@ describe('ai-quote-engine', () => {
             });
 
             const { page, human } = createPostTestPage({ success: false, reason: 'rate_limit' });
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result.success).toBe(false);
@@ -1216,6 +1218,7 @@ describe('ai-quote-engine', () => {
             });
 
             const { page, human } = createPostTestPage({ success: false, reason: 'duplicate' });
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result.success).toBe(false);
@@ -1237,6 +1240,7 @@ describe('ai-quote-engine', () => {
             });
 
             const { page, human } = createPostTestPage({ success: false });
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result.success).toBe(false);
@@ -1257,7 +1261,8 @@ describe('ai-quote-engine', () => {
                 return 0;
             });
 
-            const { page, human } = createPostTestPage({ success: true, reason: 'posted' });
+            const { page, human } = createPostTestPage({ success: true });
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result.success).toBe(true);
@@ -1544,6 +1549,7 @@ describe('ai-quote-engine', () => {
                 success: false,
                 reason: 'rate_limit',
             });
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodA_Keyboard(page, 'Test quote', human);
 
             expect(result.success).toBe(false);
@@ -1560,6 +1566,7 @@ describe('ai-quote-engine', () => {
             });
 
             const { page, human } = createKeyboardPageMock({ success: true, reason: 'posted' });
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodA_Keyboard(page, 'Test quote', human);
 
             expect(result.success).toBe(true);
@@ -1575,6 +1582,7 @@ describe('ai-quote-engine', () => {
             });
 
             const { page, human } = createKeyboardPageMock({ success: true });
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodA_Keyboard(page, 'Test quote', human);
 
             expect(result.success).toBe(true);
@@ -2348,6 +2356,7 @@ describe('ai-quote-engine', () => {
                 findElement: vi.fn(),
             };
 
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result).toBeDefined();
@@ -2457,6 +2466,7 @@ describe('ai-quote-engine', () => {
                 findElement: vi.fn(),
             };
 
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result).toBeDefined();
@@ -2566,6 +2576,7 @@ describe('ai-quote-engine', () => {
                 findElement: vi.fn(),
             };
 
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result).toBeDefined();
@@ -2703,6 +2714,7 @@ describe('ai-quote-engine', () => {
                 findElement: vi.fn(),
             };
 
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result).toBeDefined();
@@ -2837,6 +2849,7 @@ describe('ai-quote-engine', () => {
                 findElement: vi.fn(),
             };
 
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result.success).toBe(false);
@@ -3299,6 +3312,7 @@ describe('ai-quote-engine', () => {
 
             // Mock first click (retweet button) to succeed, second click (quote option) to fail
             api.click.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result.success).toBe(false);
@@ -3484,7 +3498,9 @@ describe('ai-quote-engine', () => {
                 findElement: vi.fn(),
             };
 
-            api.findElement.mockResolvedValue(null);
+            // Override the mock to return null for this test
+            api.findElement.mockReturnValue(Promise.resolve(null));
+            api.getPage.mockReturnValue(page);
             const result = await engine.quoteMethodB_Retweet(page, 'Test quote', human);
 
             expect(result.success).toBe(false);

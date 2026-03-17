@@ -945,7 +945,8 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     cleanQuote(text) {
         if (!text) return '';
 
-        let cleaned = text
+        let cleaned = this.cleanEmojis(text);
+        cleaned = cleaned
             .replace(/```[\s\S]*?```/g, '')
             .replace(/`([^`]+)`/g, '$1')
             .replace(/^\s*[-*]\s+/gm, '')
@@ -1082,6 +1083,21 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
             ironic: 'Style: Subtle humor, unexpected twist.',
         };
         return styles[sentiment] || styles.neutral;
+    }
+
+    cleanEmojis(text) {
+        if (!text) return '';
+        // 1. Unicode emojis
+        // 2. Text emoticons (XD, :), <3, ^_^, etc.)
+        // 3. Prevent breaking URLs (://)
+        const emoticonRegex = /(?<![:/])([:;=8][-^]?[)D(|\\/OpPoO0ScCxXbB]|<3|\^[-]?\^|[oO]_[oO]|T_T|[;][-][;]|:v|XD)(?![/])/gi;
+        const unicodeEmojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25B6}\u{23F8}-\u{23FA}]/gu;
+
+        return text
+            .replace(unicodeEmojiRegex, '')
+            .replace(emoticonRegex, '')
+            .replace(/\s+/g, ' ')
+            .trim();
     }
 
     /**

@@ -18,6 +18,7 @@ const mockSqlite = {
         get: vi.fn(),
     }),
     transaction: vi.fn((fn) => fn),
+    close: vi.fn(),
 };
 
 vi.mock('better-sqlite3', () => ({

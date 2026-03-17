@@ -9,7 +9,7 @@
  * @module tests/unit/ixbrowser.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 
 const mockApiHandler = {
     post: vi.fn(),
@@ -32,13 +32,33 @@ vi.mock('../../core/logger.js', () => ({
     }),
 }));
 
+vi.mock('../../connectors/baseDiscover.js', () => ({
+    default: class BaseDiscover {
+        constructor() {
+            this.browserType = 'base';
+            this.logger = {
+                info: vi.fn(),
+                warn: vi.fn(),
+                error: vi.fn(),
+                debug: vi.fn(),
+            };
+        }
+        async discover() {
+            throw new Error('Method "discover()" must be implemented by subclass');
+        }
+    },
+}));
+
 describe('connectors/discovery/ixbrowser', () => {
     let IxbrowserDiscover;
 
-    beforeEach(async () => {
-        vi.clearAllMocks();
+    beforeAll(async () => {
         const module = await import('../../connectors/discovery/ixbrowser.js');
         IxbrowserDiscover = module.default;
+    });
+
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
 
     afterEach(() => {

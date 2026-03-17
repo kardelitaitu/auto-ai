@@ -34,6 +34,10 @@ vi.mock('@api/interactions/actions.js', () => ({
     click: vi.fn().mockResolvedValue('clicked'),
     type: vi.fn().mockResolvedValue('typed'),
     hover: vi.fn().mockResolvedValue('hovered'),
+    drag: vi.fn().mockResolvedValue('dragged'),
+    clickAt: vi.fn().mockResolvedValue('clickedAt'),
+    multiSelect: vi.fn().mockResolvedValue('multiSelected'),
+    press: vi.fn().mockResolvedValue('pressed'),
 }));
 
 vi.mock('sharp', () => ({
@@ -47,7 +51,7 @@ vi.mock('sharp', () => ({
 
 import { getPage, isSessionActive } from '@api/core/context.js';
 import { getStateAgentElementMap, setStateAgentElementMap } from '@api/core/context-state.js';
-import { click, type, hover } from '@api/interactions/actions.js';
+import { click, type, hover, drag } from '@api/interactions/actions.js';
 
 describe('api/agent/observer.js', () => {
     let mockPage;
@@ -736,7 +740,20 @@ describe('api/agent/executor.js', () => {
 
             getStateAgentElementMap.mockReturnValue(mockElements);
 
-            await expect(doAction('drag', 1)).rejects.toThrow('Unsupported agent action');
+            await expect(doAction('invalidAction', 1)).rejects.toThrow('Unsupported agent action');
+        });
+
+        it('should support drag action with target', async () => {
+            const mockElements = [
+                { id: 1, role: 'button', label: 'Source', selector: '#source' },
+                { id: 2, role: 'button', label: 'Target', selector: '#target' },
+            ];
+
+            getStateAgentElementMap.mockReturnValue(mockElements);
+
+            await doAction('drag', 1, '#target');
+
+            expect(drag).toHaveBeenCalledWith('#source', '#target', {});
         });
 
         it('should handle case-insensitive action names', async () => {

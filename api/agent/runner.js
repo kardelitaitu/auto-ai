@@ -281,6 +281,10 @@ class AgentRunner {
      */
     async _captureScreenshot(page) {
         try {
+            let viewport = page.viewportSize();
+            if (!viewport) {
+                viewport = await page.evaluate(() => ({ width: window.innerWidth, height: window.innerHeight }));
+            }
             const screenshot = await page.screenshot({
                 type: 'jpeg',
                 quality: 40,
@@ -289,7 +293,10 @@ class AgentRunner {
                 animations: 'disabled',
                 caret: 'hide',
             });
-            return screenshot.toString('base64');
+            const base64 = screenshot.toString('base64');
+            const sizeKB = Math.round(base64.length / 1024);
+            logger.info(`[_captureScreenshot] Viewport: ${viewport.width}x${viewport.height}, Captured: ${sizeKB} KB`);
+            return base64;
         } catch (e) {
             logger.error('Screenshot failed:', e.message);
             return '';

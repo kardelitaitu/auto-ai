@@ -10,7 +10,7 @@
  * @module api/agent/executor
  */
 
-import { click, type, hover } from '../interactions/actions.js';
+import { click, type, hover, drag, clickAt, multiSelect, press } from '../interactions/actions.js';
 import { getStateAgentElementMap } from '../core/context-state.js';
 import { createLogger } from '../core/logger.js';
 
@@ -19,22 +19,45 @@ const logger = createLogger('api/agent/executor.js');
 /**
  * Do - Performs a semantic action on an element.
  *
- * @param {string} action - Action to perform: 'click', 'type', 'hover', 'fill'
- * @param {string|number} target - Element ID (from see()) or Label
- * @param {string} [value] - Value for 'type' or 'fill' actions
+ * @param {string} action - Action to perform: 'click', 'type', 'hover', 'fill', 'drag', 'clickAt', 'multiSelect', 'press'
+ * @param {string|number|Array} target - Element ID (from see()), Label, coordinates, or array for multiSelect
+ * @param {string|Object} [value] - Value for 'type', 'fill', or options for 'drag', 'press'
  * @returns {Promise<any>} Result of the action
  * @example
  * await api.agent.do('click', 1);
  * await api.agent.do('type', 'Search', 'Playwright');
+ * await api.agent.do('drag', 1, 2); // Drag from element 1 to element 2
+ * await api.agent.do('clickAt', {x: 100, y: 200});
+ * await api.agent.do('multiSelect', [1, 2, 3], { mode: 'add' });
+ * await api.agent.do('press', 'Enter');
  */
 export async function doAction(action, target, value) {
+    const actionLower = action.toLowerCase();
+
+    if (actionLower === 'clickat') {
+        if (typeof target === 'object' && 'x' in target && 'y' in target) {
+            return await clickAt(target.x, target.y, value);
+        }
+        throw new Error('clickAt requires {x, y} coordinates');
+    }
+
+    if (actionLower === 'press' || actionLower === 'key') {
+        return await press(target, value);
+    }
+
+    if (actionLower === 'multiselect') {
+        if (!Array.isArray(target)) {
+            throw new Error('multiSelect requires an array of element IDs');
+        }
+        return await multiSelect(target, value || {});
+    }
+
     const elementMap = getStateAgentElementMap();
     let element;
 
     if (typeof target === 'number') {
         element = elementMap.find((el) => el.id === target);
-    } else {
-        // Fuzzy search by label
+    } else if (typeof target === 'string') {
         const search = target.toLowerCase();
         element =
             elementMap.find((el) => el.label.toLowerCase() === search) ||
@@ -49,7 +72,7 @@ export async function doAction(action, target, value) {
 
     logger.info(`Agent action: ${action} on "${element.label}" (${element.id})`);
 
-    switch (action.toLowerCase()) {
+    switch (actionLower) {
         case 'click':
             return await click(element.selector);
         case 'type':
@@ -57,6 +80,11 @@ export async function doAction(action, target, value) {
             return await type(element.selector, value);
         case 'hover':
             return await hover(element.selector);
+        case 'drag':
+            if (!value) {
+                throw new Error('drag requires a target element or coordinates');
+            }
+            return await drag(element.selector, value, {});
         default:
             throw new Error(`Unsupported agent action: ${action}`);
     }

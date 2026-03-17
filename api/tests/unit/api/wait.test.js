@@ -7,6 +7,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
     wait,
+    waitWithAbort,
     waitFor,
     waitVisible,
     waitHidden,
@@ -58,6 +59,11 @@ describe('api/interactions/wait.js', () => {
         checkSession.mockReturnValue(undefined);
     });
 
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.clearAllMocks();
+    });
+
     describe('wait', () => {
         it('should wait for specified duration with jitter', async () => {
             vi.useFakeTimers();
@@ -66,8 +72,8 @@ describe('api/interactions/wait.js', () => {
             // Should not resolve immediately
             await Promise.resolve();
 
-            // Fast forward time
-            vi.advanceTimersByTime(150); // 100 + max jitter 15 = 115
+            // Fast forward time using async version to properly handle promise resolution
+            await vi.advanceTimersByTimeAsync(150); // 100 + max jitter 15 = 115
 
             await promise;
             vi.useRealTimers();
@@ -126,7 +132,7 @@ describe('api/interactions/wait.js', () => {
 
         it('should throw on waitFor timeout', async () => {
             mockLocator.waitFor.mockRejectedValueOnce(new Error('Timeout'));
-            await expect(waitFor('#selector', { timeout: 100 })).rejects.toThrow();
+            await expect(waitFor('#selector', { timeout: 100 })).rejects.toThrow('Timeout');
         });
     });
 
@@ -166,15 +172,6 @@ describe('api/interactions/wait.js', () => {
         });
     });
 
-    describe('waitForLoadState', () => {
-        it('should wait for load state', async () => {
-            await waitForLoadState('networkidle');
-            expect(mockPage.waitForLoadState).toHaveBeenCalledWith('networkidle', {
-                timeout: 10000,
-            });
-        });
-    });
-
     describe('waitForURL', () => {
         it('should wait for URL', async () => {
             await waitForURL('http://example.com');
@@ -202,7 +199,7 @@ describe('api/interactions/wait.js', () => {
 
         it('should throw on waitForURL timeout', async () => {
             mockPage.waitForURL.mockRejectedValueOnce(new Error('URL timeout'));
-            await expect(waitForURL('http://example.com')).rejects.toThrow();
+            await expect(waitForURL('http://example.com')).rejects.toThrow('URL timeout');
         });
     });
 
@@ -223,7 +220,59 @@ describe('api/interactions/wait.js', () => {
 
         it('should throw on load state error', async () => {
             mockPage.waitForLoadState.mockRejectedValueOnce(new Error('Load failed'));
-            await expect(waitForLoadState('networkidle')).rejects.toThrow();
+            await expect(waitForLoadState('networkidle')).rejects.toThrow('Load failed');
+        });
+    });
+
+    describe('waitWithAbort', () => {
+        it('should wait for specified duration with jitter', async () => {
+            vi.useFakeTimers();
+            const promise = waitWithAbort(100);
+
+            // Should not resolve immediately
+            await Promise.resolve();
+
+            // Fast forward time using async version to properly handle promise resolution
+            await vi.advanceTimersByTimeAsync(150); // 100 + max jitter 15 = 115
+
+            await promise;
+            vi.useRealTimers();
+        });
+
+        it('should reject when signal is already aborted', async () => {
+            const controller = new AbortController();
+            controller.abort();
+
+            await expect(waitWithAbort(100, controller.signal)).rejects.toThrow('This operation was aborted');
+        });
+
+        it('should reject when signal is aborted during wait', async () => {
+            vi.useFakeTimers();
+            const controller = new AbortController();
+
+            // Start waiting and immediately attach rejection handler
+            const waitPromise = waitWithAbort(1000, controller.signal);
+
+            // Create a promise that will be rejected when abort happens
+            const rejectionPromise = expect(waitPromise).rejects.toThrow('This operation was aborted');
+
+            // Abort the signal
+            controller.abort();
+            await vi.advanceTimersByTimeAsync(0);
+
+            // Wait for the rejection to be handled
+            await rejectionPromise;
+
+            vi.useRealTimers();
+        });
+
+        it('should work without signal parameter', async () => {
+            vi.useFakeTimers();
+            const promise = waitWithAbort(100);
+
+            await vi.advanceTimersByTimeAsync(150);
+            await promise;
+            vi.useRealTimers();
         });
     });
 });

@@ -8,6 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SessionHandler } from '@api/twitter/twitter-agent/SessionHandler.js';
 import { mathUtils } from '@api/utils/math.js';
 import * as scrollHelper from '@api/behaviors/scroll-helper.js';
+import { api } from '@api/index.js';
 
 // Mock dependencies
 vi.mock('@api/index.js', () => ({
@@ -17,6 +18,11 @@ vi.mock('@api/index.js', () => ({
             down: vi.fn().mockResolvedValue(),
             random: vi.fn().mockResolvedValue(),
         },
+        exists: vi.fn().mockResolvedValue(false),
+        visible: vi.fn().mockResolvedValue(false),
+        getCurrentUrl: vi.fn().mockReturnValue('https://x.com/home'),
+        goto: vi.fn().mockResolvedValue(),
+        emulateMedia: vi.fn().mockResolvedValue(),
     },
 }));
 
@@ -176,19 +182,19 @@ describe('SessionHandler', () => {
             );
         });
 
-        it.skip('should apply theme if configured', async () => {
+        it('should apply theme if configured', async () => {
             mockAgent.config.theme = 'dark';
             handler.isSessionExpired.mockReturnValue(true); // Exit loop immediately
 
             await handler.runSession();
 
-            expect(mockPage.emulateMedia).toHaveBeenCalledWith({ colorScheme: 'dark' });
+            expect(api.emulateMedia).toHaveBeenCalledWith({ colorScheme: 'dark' });
             expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Applied theme'));
         });
 
         it('should handle theme application failure', async () => {
             mockAgent.config.theme = 'dark';
-            mockPage.emulateMedia.mockRejectedValue(new Error('Theme error'));
+            api.emulateMedia.mockRejectedValue(new Error('Theme error'));
             handler.isSessionExpired.mockReturnValue(true);
 
             await handler.runSession();
@@ -228,7 +234,7 @@ describe('SessionHandler', () => {
             expect(handler.executeEngagementCycle).not.toHaveBeenCalled();
         });
 
-        it.skip('should run loop until cycles complete', async () => {
+        it('should run loop until cycles complete', async () => {
             await handler.runSession(2);
 
             // Loop runs: 0 -> check(false) -> execute -> increment -> 1 -> check(false) -> execute -> increment -> 2 -> check(stop)
@@ -353,7 +359,7 @@ describe('SessionHandler', () => {
             expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Burst mode'));
         });
 
-        it.skip('should execute reading loop with random behaviors', async () => {
+        it('should execute reading loop with random behaviors', async () => {
             mockAgent.state.activityMode = 'NORMAL';
 
             // Setup time mocking to allow loop to run once or twice
@@ -374,7 +380,7 @@ describe('SessionHandler', () => {
             );
             expect(scrollHelper.scrollDown).toHaveBeenCalled();
             expect(mockNavigation.ensureForYouTab).toHaveBeenCalled();
-            expect(mockPage.waitForTimeout).toHaveBeenCalled();
+            expect(api.wait).toHaveBeenCalled();
             expect(mockHuman.randomMouseMovement).toHaveBeenCalled();
             expect(mockEngagement.diveTweet).toHaveBeenCalled();
 
@@ -401,9 +407,12 @@ describe('SessionHandler', () => {
     });
 
     describe('simulateFidget', () => {
-        it.skip('should handle TEXT_SELECT fidget', async () => {
+        it('should handle TEXT_SELECT fidget', async () => {
             // Mock random to select TEXT_SELECT (index 0)
             vi.spyOn(Math, 'random').mockReturnValue(0.0); // 0 -> TEXT_SELECT
+
+            // Mock api.visible to return true for elements
+            api.visible.mockResolvedValue(true);
 
             // Mock text elements
             const mockElement = {
@@ -426,7 +435,7 @@ describe('SessionHandler', () => {
             expect(mockPage.mouse.up).toHaveBeenCalled();
         });
 
-        it.skip('should handle RANDOM_CLICK fidget', async () => {
+        it('should handle RANDOM_CLICK fidget', async () => {
             // Mock random to select RANDOM_CLICK (index 1)
             // 1/3 = 0.33. So 0.4 -> index 1
             vi.spyOn(Math, 'random').mockReturnValue(0.4);
@@ -439,7 +448,7 @@ describe('SessionHandler', () => {
             expect(mockPage.mouse.click).toHaveBeenCalled();
         });
 
-        it.skip('should handle SCROLL_JITTER fidget', async () => {
+        it('should handle SCROLL_JITTER fidget', async () => {
             // Mock random to select SCROLL_JITTER (index 2)
             // 2/3 = 0.66. So 0.8 -> index 2
             vi.spyOn(Math, 'random').mockReturnValue(0.8);
@@ -453,20 +462,21 @@ describe('SessionHandler', () => {
         });
     });
 
-    describe('simulateReading', () => {
+    describe('simulateReading (soft error)', () => {
         it('should break if soft error occurs', async () => {
-            vi.spyOn(handler, 'checkAndHandleSoftError').mockResolvedValue(true);
+            // Re-mock the spy for this specific test
+            const softErrorSpy = vi.spyOn(handler, 'checkAndHandleSoftError').mockResolvedValue(true);
             vi.spyOn(handler, 'performHealthCheck').mockResolvedValue({ healthy: true });
 
             await handler.simulateReading();
 
-            expect(handler.checkAndHandleSoftError).toHaveBeenCalled();
+            expect(softErrorSpy).toHaveBeenCalled();
             expect(mockLogger.info).toHaveBeenCalledWith(
                 expect.stringContaining('Reading simulation completed')
             );
         });
 
-        it.skip('should use random scroll if not WHEEL_DOWN', async () => {
+        it('should use random scroll if not WHEEL_DOWN', async () => {
             vi.spyOn(handler, 'checkAndHandleSoftError').mockResolvedValue(false);
             vi.spyOn(handler, 'performHealthCheck').mockResolvedValue({ healthy: true });
             vi.spyOn(handler, 'getScrollMethod').mockReturnValue('PAGE_DOWN');
@@ -514,7 +524,7 @@ describe('SessionHandler', () => {
     });
 
     describe('humanType', () => {
-        it.skip('should type text with delays and typos', async () => {
+        it('should type text with delays and typos', async () => {
             const mockElement = {
                 click: vi.fn().mockResolvedValue(),
                 press: vi.fn().mockResolvedValue(),
@@ -548,7 +558,7 @@ describe('SessionHandler', () => {
     });
 
     describe('postTweet', () => {
-        it.skip('should post tweet successfully via button', async () => {
+        it('should post tweet successfully via button', async () => {
             const mockComposerBtn = {
                 count: vi.fn().mockResolvedValue(1),
                 isVisible: vi.fn().mockResolvedValue(true),
@@ -569,6 +579,10 @@ describe('SessionHandler', () => {
                 };
             });
 
+            // Mock api.exists and api.visible to return true for composer and post buttons
+            api.exists.mockResolvedValue(true);
+            api.visible.mockResolvedValue(true);
+
             // Spy on humanType
             vi.spyOn(handler, 'humanType').mockResolvedValue();
 
@@ -581,7 +595,11 @@ describe('SessionHandler', () => {
             expect(mockAgent.state.tweets).toBe(1);
         });
 
-        it.skip('should use fallback URL if composer button not found', async () => {
+        it('should use fallback URL if composer button not found', async () => {
+            // Mock api.exists and api.visible to return false for composer button
+            api.exists.mockResolvedValue(false);
+            api.visible.mockResolvedValue(false);
+
             const mockComposerBtn = {
                 count: vi.fn().mockResolvedValue(0),
                 isVisible: vi.fn().mockResolvedValue(false),
@@ -601,7 +619,7 @@ describe('SessionHandler', () => {
 
             await handler.postTweet('Hello');
 
-            expect(mockPage.goto).toHaveBeenCalledWith('https://x.com/compose/tweet');
+            expect(api.goto).toHaveBeenCalledWith('https://x.com/compose/tweet');
         });
 
         it('should return false if posting fails', async () => {
@@ -617,7 +635,7 @@ describe('SessionHandler', () => {
     });
 
     describe('checkLoginState', () => {
-        it.skip('should return false if "Sign in" text is visible', async () => {
+        it('should return false if "Sign in" text is visible', async () => {
             mockPage.getByText.mockReturnValue({
                 first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(true) }),
             });
@@ -628,7 +646,7 @@ describe('SessionHandler', () => {
             expect(mockAgent.state.consecutiveLoginFailures).toBe(1);
         });
 
-        it.skip('should return false if login selectors are visible', async () => {
+        it('should return false if login selectors are visible', async () => {
             mockPage.getByText.mockReturnValue({
                 first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }),
             });
@@ -642,15 +660,25 @@ describe('SessionHandler', () => {
             expect(result).toBe(false);
         });
 
-        it.skip('should return true if no login indicators found', async () => {
+        it('should return true if no login indicators found', async () => {
             mockPage.getByText.mockReturnValue({
                 first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }),
             });
 
-            mockPage.locator.mockReturnValue({
+            // Create a mock for primaryColumn that returns true for visibility
+            const mockPrimaryColumn = {
                 first: vi.fn().mockReturnValue({ isVisible: vi.fn().mockResolvedValue(false) }),
                 count: vi.fn().mockResolvedValue(1),
-                isVisible: vi.fn().mockResolvedValue(true), // For primaryColumn
+            };
+
+            mockPage.locator.mockReturnValue(mockPrimaryColumn);
+
+            // Mock api.visible to return false for login selectors, true for primaryColumn
+            api.visible.mockImplementation((element) => {
+                if (element === mockPrimaryColumn) {
+                    return Promise.resolve(true);
+                }
+                return Promise.resolve(false);
             });
 
             const result = await handler.checkLoginState();
@@ -659,16 +687,22 @@ describe('SessionHandler', () => {
             expect(mockAgent.state.consecutiveLoginFailures).toBe(0);
         });
 
-        it.skip('should return false if primary timeline not visible on home', async () => {
+        it('should return false if primary timeline not visible on home', async () => {
             mockPage.url.mockReturnValue('https://x.com/home');
             mockPage.getByText.mockReturnValue({
                 first: () => ({ isVisible: () => Promise.resolve(false) }),
             });
-            mockPage.locator.mockReturnValue({
+
+            // Create mock for primaryColumn
+            const mockPrimaryColumn = {
                 first: () => ({ isVisible: () => Promise.resolve(false) }),
                 count: () => Promise.resolve(0),
-                isVisible: () => Promise.resolve(false),
-            });
+            };
+
+            mockPage.locator.mockReturnValue(mockPrimaryColumn);
+
+            // Mock api.visible to return false for primaryColumn (triggering the warning)
+            api.visible.mockResolvedValue(false);
 
             const result = await handler.checkLoginState();
 

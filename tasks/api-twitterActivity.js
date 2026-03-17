@@ -224,7 +224,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                         logger.info(
                                             `Retry ${attempt}/${MAX_RETRIES} in ${delay}ms...`
                                         );
-                                        await api.wait(delay);
+                                        await api.waitWithAbort(delay, abortSignal);
                                     }
 
                                     throwIfAborted();
@@ -316,7 +316,12 @@ export default async function apiTwitterActivityTask(page, payload) {
                                                     success: false,
                                                     executed: true,
                                                     reason: 'exception',
-                                                    data: { error: error.message },
+                                                    data: {
+                                                        error: error.message,
+                                                        errorType: error.constructor?.name || 'Error',
+                                                        stack: error.stack,
+                                                        code: error.code,
+                                                    },
                                                     engagementType: engType,
                                                 };
                                             }
@@ -444,7 +449,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                         max: taskConfig.timing.warmup.max,
                                     });
                                     logger.info(`Warm-up ${humanTiming.formatDuration(wakeUp)}...`);
-                                    await api.wait(wakeUp);
+                                    await api.waitWithAbort(wakeUp, abortSignal);
 
                                     throwIfAborted();
 
@@ -553,7 +558,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                                     scrollAmount: mathUtils.randomInRange(200, 600),
                                                 })
                                             );
-                                            await api.wait(mathUtils.randomInRange(200, 500));
+                                            await api.waitWithAbort(mathUtils.randomInRange(200, 500), abortSignal);
                                         }
                                         logger.info(`✅ Finished reading, navigating to home...`);
                                         await withPageLock(async () => agent.navigateHome());
@@ -577,7 +582,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                             logger.info(
                                                 `Not logged in yet, waiting ${loginCheckDelay}ms...`
                                             );
-                                            await api.wait(loginCheckDelay);
+                                            await api.waitWithAbort(loginCheckDelay, abortSignal);
                                             loginCheckDelay = Math.min(
                                                 loginCheckDelay + 1000,
                                                 5000
@@ -603,12 +608,15 @@ export default async function apiTwitterActivityTask(page, payload) {
                                         `Starting session (${cycles} cycles, ${minDuration}-${maxDuration}s)...`
                                     );
 
+                                    let sessionSuccess = false;
                                     try {
                                         await agent.runSession(cycles, minDuration, maxDuration, {
                                             abortSignal,
                                         });
+                                        sessionSuccess = true;
                                         logger.info(`Session completed successfully`);
                                     } catch (sessionError) {
+                                        sessionSuccess = false;
                                         if (abortSignal.aborted) {
                                             throw sessionError;
                                         }
@@ -627,7 +635,11 @@ export default async function apiTwitterActivityTask(page, payload) {
                                         }
                                     }
 
-                                    logger.info(`Session completed`);
+                                    if (sessionSuccess) {
+                                        logger.info(`Session completed successfully`);
+                                    } else {
+                                        logger.warn(`Session completed with errors`);
+                                    }
                                     return;
                                 } catch (innerError) {
                                     logger.warn(

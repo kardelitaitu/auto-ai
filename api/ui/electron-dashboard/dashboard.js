@@ -4,6 +4,7 @@
  * Unauthorized copying, distribution, or modification prohibited
  */
 
+import { createHash } from 'crypto';
 import { Server } from 'socket.io';
 import express from 'express';
 import { createLogger } from './lib/logger.js';
@@ -26,6 +27,7 @@ function loadConfig() {
             return JSON.parse(data);
         }
     } catch (err) {
+        // Logger not yet initialized, use console with consistent prefix
         console.warn('[Dashboard] Failed to load config:', err.message);
     }
     return {};
@@ -44,6 +46,62 @@ const RATE_LIMIT_ENABLED = config?.security?.rateLimit?.enabled ?? true;
 const RATE_LIMIT_WINDOW_MS = config?.security?.rateLimit?.windowMs || 60000;
 const RATE_LIMIT_MAX_REQUESTS = config?.security?.rateLimit?.maxRequests || 100;
 const SESSION_TTL_MS = config?.security?.sessionTTL || 300000;
+
+// Authentication configuration
+const AUTH_ENABLED = config?.security?.auth?.enabled ?? false;
+const AUTH_TOKEN = config?.security?.auth?.token || '';
+const PROTECTED_EVENTS = config?.security?.auth?.protectedEvents || ['clear-history', 'send-notification', 'push_metrics', 'task-update'];
+
+/**
+ * Authenticate a socket event handler.
+ * Returns true if auth is disabled, token matches, or no token is configured.
+ * @param {Object} data - The event payload (may contain token)
+ * @returns {boolean} - Whether the request is authenticated
+ */
+function isAuthenticated(data) {
+    if (!AUTH_ENABLED) return true;
+    if (!AUTH_TOKEN || AUTH_TOKEN.length === 0) {
+        logger.warn('Auth enabled but no token configured - blocking all requests');
+        return false;
+    }
+
+    const providedToken = data?.token || data?.authToken;
+    return providedToken === AUTH_TOKEN;
+}
+
+/**
+ * Wraps a socket event handler with authentication.
+ * @param {string} eventName - The event name for logging
+ * @param {Function} handler - The actual handler function
+ * @returns {Function} - Wrapped handler with auth check
+ */
+function withAuth(eventName, handler) {
+    return (data) => {
+        if (!isAuthenticated(data)) {
+            logger.warn(`Unauthorized ${eventName} attempt from socket`);
+            return;
+        }
+        // Strip auth fields before passing to handler
+        const { token, authToken, ...cleanData } = data || {};
+        handler(cleanData);
+    };
+}
+
+/**
+ * Generate a quick hash for change detection.
+ * Uses a simple DJB2-like hash for performance (not cryptographic).
+ * @param {any} obj - Object to hash
+ * @returns {string} - Hash string
+ */
+function quickHash(obj) {
+    const str = JSON.stringify(obj);
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) + hash) + str.charCodeAt(i);
+        hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash.toString(36);
+}
 
 function sanitizeLogString(str) {
     if (typeof str !== 'string') return str;
@@ -70,6 +128,7 @@ function sanitizeObject(obj) {
 const VALID_TASK_FIELDS = ['id', 'taskName', 'name', 'command', 'sessionId', 'session', 'timestamp', 'status', 'success', 'error', 'duration'];
 const VALID_SESSION_FIELDS = ['id', 'status', 'browser', 'profile', 'port', 'ws', 'lastSeen', 'firstSeen'];
 const VALID_METRIC_FIELDS = ['twitter', 'api', 'browsers'];
+const MAX_ERRORS = 1000; // Maximum number of errors to keep in memory
 
 function validateTask(task) {
     if (!task || typeof task !== 'object') return null;
@@ -194,8 +253,25 @@ export class DashboardServer {
         this.broadcastInterval = null;
         this.BROADCAST_MS = broadcastIntervalMs;
         this.isShuttingDown = false;
-        this.lastCpuInfo = null;
+
+        // Error tracking for broadcast circuit breaker
+        this.consecutiveErrors = 0;
+        this.maxConsecutiveErrors = 5;  // Stop broadcast after 5 consecutive errors
+        this.broadcastPaused = false;
+
+        // Initialize lastCpuInfo with current CPU state for accurate first calculation
+        const initialCpus = os.cpus();
+        let initialIdle = 0, initialTotal = 0;
+        for (const cpu of initialCpus) {
+            for (const type in cpu.times) {
+                initialTotal += cpu.times[type];
+            }
+            initialIdle += cpu.times.idle;
+        }
+        this.lastCpuInfo = { idle: initialIdle, total: initialTotal };
+
         this.lastActiveCheck = Date.now();
+        this.firstClientConnected = false;
     }
 
     getSystemMetrics() {
@@ -222,14 +298,13 @@ export class DashboardServer {
             const usedMem = totalMem - freeMem;
             const memPercent = Math.round((usedMem / totalMem) * 100);
 
-            const platformName =
-                os.platform() === 'win32'
-                    ? 'Windows'
-                    : os.platform() === 'darwin'
-                        ? 'macOS'
-                        : os.platform() === 'linux'
-                            ? 'Linux'
-                            : os.platform();
+            // Platform detection using map for better readability
+            const platformMap = {
+                'win32': 'Windows',
+                'darwin': 'macOS',
+                'linux': 'Linux'
+            };
+            const platformName = platformMap[os.platform()] || os.platform();
 
             return {
                 cpu: {
@@ -370,7 +445,7 @@ export class DashboardServer {
 
             this.dashboardData.apiMetrics.calls += deltaCalls;
             this.dashboardData.apiMetrics.failures += deltaFailures;
-            
+
             // Recalculate success rate
             const total = this.dashboardData.apiMetrics.calls;
             const fails = this.dashboardData.apiMetrics.failures;
@@ -390,9 +465,12 @@ export class DashboardServer {
             this.dashboardData.browserMetrics = { ...payload.metrics.browsers };
         }
 
-        // Errors
+        // Errors - enforce max size to prevent unbounded growth
         if (payload.errors?.length > 0) {
             this.dashboardData.errors.push(...payload.errors);
+            if (this.dashboardData.errors.length > MAX_ERRORS) {
+                this.dashboardData.errors = this.dashboardData.errors.slice(-MAX_ERRORS);
+            }
         }
     }
 
@@ -417,19 +495,38 @@ export class DashboardServer {
             if (RATE_LIMIT_ENABLED) {
                 const rateLimit = (() => {
                     const requests = new Map();
+
+                    // Periodic cleanup to prevent memory leak
+                    const cleanupInterval = setInterval(() => {
+                        const cutoff = Date.now() - RATE_LIMIT_WINDOW_MS;
+                        for (const [key, timestamps] of requests.entries()) {
+                            const filtered = timestamps.filter(t => t > cutoff);
+                            if (filtered.length === 0) {
+                                requests.delete(key);
+                            } else {
+                                requests.set(key, filtered);
+                            }
+                        }
+                    }, RATE_LIMIT_WINDOW_MS);
+
+                    // Allow cleanup interval to be cleared on process exit
+                    if (cleanupInterval.unref) {
+                        cleanupInterval.unref();
+                    }
+
                     return (req, res, next) => {
                         const key = req.ip || req.connection.remoteAddress;
                         const now = Date.now();
                         const windowStart = now - RATE_LIMIT_WINDOW_MS;
-                        
+
                         let clientRequests = requests.get(key) || [];
                         clientRequests = clientRequests.filter(t => t > windowStart);
-                        
+
                         if (clientRequests.length >= RATE_LIMIT_MAX_REQUESTS) {
                             logger.warn(`Rate limit exceeded for ${key}`);
                             return res.status(429).json({ error: 'Too many requests' });
                         }
-                        
+
                         clientRequests.push(now);
                         requests.set(key, clientRequests);
                         next();
@@ -439,9 +536,10 @@ export class DashboardServer {
             }
 
             this.server = createServer(expressApp);
-            const corsOrigin = CORS_ENABLED ? CORS_ORIGINS : '*';
+            // Always restrict origins - never use wildcard '*' for security
+            const corsOrigin = CORS_ENABLED ? CORS_ORIGINS : ['http://localhost:3001'];
             this.io = new Server(this.server, {
-                cors: { 
+                cors: {
                     origin: corsOrigin,
                     methods: ['GET', 'POST']
                 },
@@ -453,6 +551,17 @@ export class DashboardServer {
             logger.info(
                 `Dashboard server starting on port ${this.port} (${this.BROADCAST_MS}ms broadcast)`
             );
+
+            // Authentication middleware for sensitive HTTP endpoints
+            const requireAuth = (req, res, next) => {
+                if (!AUTH_ENABLED) return next();
+                const token = req.headers['x-auth-token'] || req.query.token;
+                if (!token || token !== AUTH_TOKEN) {
+                    logger.warn(`Unauthorized HTTP request to ${req.path} from ${req.ip}`);
+                    return res.status(401).json({ error: 'Unauthorized' });
+                }
+                next();
+            };
 
             // Health check - critical for dashboard-first scenario
             expressApp.get('/health', (req, res) => {
@@ -472,10 +581,11 @@ export class DashboardServer {
             expressApp.get('/api/metrics', (req, res) => res.json(this.latestMetrics?.metrics || {}));
             expressApp.get('/api/tasks/recent', (req, res) => res.json(this.latestMetrics?.recentTasks || []));
             expressApp.get('/api/tasks/breakdown', (req, res) => res.json(this.latestMetrics?.taskBreakdown || {}));
-            expressApp.get('/api/dashboard/data', (req, res) => res.json(this.dashboardData || {}));
+            // Protected endpoints - require authentication when enabled
+            expressApp.get('/api/dashboard/data', requireAuth, (req, res) => res.json(this.dashboardData || {}));
 
-            // Export endpoints
-            expressApp.get('/api/export/json', (req, res) => {
+            // Export endpoints - require authentication
+            expressApp.get('/api/export/json', requireAuth, (req, res) => {
                 const data = {
                     sessions: this.dashboardData.sessions,
                     tasks: this.dashboardData.tasks,
@@ -488,11 +598,11 @@ export class DashboardServer {
                 res.json(data);
             });
 
-            expressApp.get('/api/export/csv', (req, res) => {
+            expressApp.get('/api/export/csv', requireAuth, (req, res) => {
                 const tasks = this.dashboardData.tasks || [];
                 const headers = ['id', 'taskName', 'sessionId', 'timestamp', 'status', 'success', 'duration'];
                 const csvRows = [headers.join(',')];
-                
+
                 for (const task of tasks) {
                     const row = headers.map(h => {
                         const val = task[h] ?? '';
@@ -501,7 +611,7 @@ export class DashboardServer {
                     });
                     csvRows.push(row.join(','));
                 }
-                
+
                 res.setHeader('Content-Type', 'text/csv');
                 res.setHeader('Content-Disposition', 'attachment; filename=tasks-export.csv');
                 res.send(csvRows.join('\n'));
@@ -526,6 +636,9 @@ export class DashboardServer {
                     this.cumulativeMetrics.sessionUptimeMs = 0;
                     logger.info("Dashboard session started (Electron connected)");
                 }
+
+                // Resume broadcast if it was paused due to errors
+                this.resumeBroadcast();
 
                 // Start broadcast if this is the first client
                 if (!this.broadcastInterval) {
@@ -554,8 +667,8 @@ export class DashboardServer {
                     this.sendMetrics(socket);
                 });
 
-                // Support metrics push from Orchestrator via Socket
-                socket.on('push_metrics', (payload) => {
+                // Support metrics push from Orchestrator via Socket (protected)
+                socket.on('push_metrics', withAuth('push_metrics', (payload) => {
                     const sanitized = sanitizeObject(payload);
                     const validated = validatePayload(sanitized);
                     if (validated) {
@@ -563,9 +676,10 @@ export class DashboardServer {
                     } else {
                         logger.warn('Received invalid metrics payload, ignoring');
                     }
-                });
+                }));
 
-                socket.on('task-update', (data) => {
+                // Task updates (protected)
+                socket.on('task-update', withAuth('task-update', (data) => {
                     const sanitized = sanitizeObject(data);
                     const validated = validateTask(sanitized);
                     if (validated) {
@@ -575,40 +689,41 @@ export class DashboardServer {
                     } else {
                         logger.warn('Received invalid task-update payload, ignoring');
                     }
-                });
+                }));
 
-                socket.on('clear-history', () => {
+                // Clear history (protected - requires auth when enabled)
+                socket.on('clear-history', withAuth('clear-history', () => {
                     logger.info('Clearing dashboard history per client request');
                     this.historyManager.clearHistory();
-                    
+
                     // Reset all data stores to zeros
                     this.dashboardData.tasks = [];
                     this.dashboardData.twitterActions = { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0, total: 0 };
                     this.dashboardData.apiMetrics = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
                     this.dashboardData.errors = [];
                     this.cumulativeMetrics.completedTasks = 0;
-                    
+
                     // Also reset latestMetrics to show zeros
                     this.latestMetrics.recentTasks = [];
                     if (this.latestMetrics.metrics) {
-                        this.latestMetrics.metrics.twitter = { actions: { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0, total: 0 }};
+                        this.latestMetrics.metrics.twitter = { actions: { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0, total: 0 } };
                         this.latestMetrics.metrics.api = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
                     }
-                    
+
                     // Reset lastSeenMetrics so new incoming data starts from zero
                     this.lastSeenMetrics = {
-                        twitter: { actions: { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0 }},
+                        twitter: { actions: { likes: 0, retweets: 0, replies: 0, quotes: 0, follows: 0, bookmarks: 0 } },
                         api: { calls: 0, failures: 0 },
                         tasks: { executed: 0, failed: 0 }
                     };
-                    
+
                     logger.info('History cleared, broadcasting zeros...');
                     // Broadcast cleared data immediately
                     this.io.emit('metrics', this.collectMetrics());
-                });
+                }));
 
-                // Notification API - send notification to all clients
-                socket.on('send-notification', (data) => {
+                // Notification API - send notification to all clients (protected)
+                socket.on('send-notification', withAuth('send-notification', (data) => {
                     if (data && data.message) {
                         const notification = {
                             type: data.type || 'info',
@@ -618,7 +733,7 @@ export class DashboardServer {
                         };
                         this.io.emit('notification', notification);
                     }
-                });
+                }));
             });
 
             this.startBroadcast();
@@ -645,21 +760,62 @@ export class DashboardServer {
             clearInterval(this.broadcastInterval);
         }
 
-        this.lastBroadcastMetrics = null;
+        // Reset error tracking on fresh start
+        this.consecutiveErrors = 0;
+        this.broadcastPaused = false;
+        this.lastBroadcastHashes = null;
+
         this.broadcastInterval = setInterval(() => {
+            // Circuit breaker: stop if too many consecutive errors
+            if (this.broadcastPaused) {
+                return;
+            }
+
             const clientCount = this.io?.sockets?.sockets?.size || 0;
             if (clientCount > 0) {
-                const metrics = this.collectMetrics();
-                
-                const hasChanged = !this.lastBroadcastMetrics || (
-                    JSON.stringify(metrics.sessions) !== JSON.stringify(this.lastBroadcastMetrics.sessions) ||
-                    JSON.stringify(metrics.queue) !== JSON.stringify(this.lastBroadcastMetrics.queue) ||
-                    JSON.stringify(metrics.recentTasks) !== JSON.stringify(this.lastBroadcastMetrics.recentTasks)
-                );
-                
-                if (hasChanged) {
-                    this.io.emit('metrics', metrics);
-                    this.lastBroadcastMetrics = metrics;
+                try {
+                    const metrics = this.collectMetrics();
+
+                    // Check for error in metrics
+                    if (metrics.error) {
+                        this.consecutiveErrors++;
+                        logger.warn(`Broadcast error (${this.consecutiveErrors}/${this.maxConsecutiveErrors}): ${metrics.error}`);
+
+                        if (this.consecutiveErrors >= this.maxConsecutiveErrors) {
+                            this.broadcastPaused = true;
+                            logger.error('Broadcast paused due to repeated errors. Will resume on next client connection.');
+                        }
+                        return;
+                    }
+
+                    // Reset error counter on success
+                    this.consecutiveErrors = 0;
+
+                    // Efficient change detection using hashes
+                    const currentHash = {
+                        sessions: quickHash(metrics.sessions),
+                        queue: quickHash(metrics.queue),
+                        recentTasks: quickHash(metrics.recentTasks)
+                    };
+
+                    const hasChanged = !this.lastBroadcastHashes || (
+                        currentHash.sessions !== this.lastBroadcastHashes.sessions ||
+                        currentHash.queue !== this.lastBroadcastHashes.queue ||
+                        currentHash.recentTasks !== this.lastBroadcastHashes.recentTasks
+                    );
+
+                    if (hasChanged) {
+                        this.io.emit('metrics', metrics);
+                        this.lastBroadcastHashes = currentHash;
+                    }
+                } catch (err) {
+                    this.consecutiveErrors++;
+                    logger.error(`Broadcast exception (${this.consecutiveErrors}/${this.maxConsecutiveErrors}):`, err.message);
+
+                    if (this.consecutiveErrors >= this.maxConsecutiveErrors) {
+                        this.broadcastPaused = true;
+                        logger.error('Broadcast paused due to repeated exceptions.');
+                    }
                 }
             } else {
                 clearInterval(this.broadcastInterval);
@@ -668,6 +824,18 @@ export class DashboardServer {
         }, this.BROADCAST_MS);
 
         logger.info(`Broadcast interval set to ${this.BROADCAST_MS}ms`);
+    }
+
+    /**
+     * Resume broadcast after it was paused due to errors.
+     * Called when a new client connects.
+     */
+    resumeBroadcast() {
+        if (this.broadcastPaused) {
+            this.broadcastPaused = false;
+            this.consecutiveErrors = 0;
+            logger.info('Broadcast resumed after error recovery');
+        }
     }
 
     stopBroadcast() {
@@ -681,7 +849,7 @@ export class DashboardServer {
     collectMetrics() {
         try {
             const now = Date.now();
-            
+
             if (SESSION_TTL_MS > 0 && this.dashboardData.sessions.length > 0) {
                 const cutoff = now - SESSION_TTL_MS;
                 const beforeCount = this.dashboardData.sessions.length;
@@ -717,7 +885,7 @@ export class DashboardServer {
                 },
                 system: this.getSystemMetrics(),
             };
-            
+
             return result;
         } catch (error) {
             logger.error('Error collecting metrics:', error);
@@ -798,27 +966,38 @@ if (process.send && !process.env.ELECTRON_RUN_AS_NODE) {
 
     const server = new DashboardServer(port, interval);
     server.start().catch(err => {
-        console.error('Fatal error starting IPC dashboard server:', err);
+        logger.error('Fatal error starting IPC dashboard server:', err);
         process.exit(1);
     });
 
     process.on('message', msg => {
-        if (msg && msg.type === 'metrics_tick') {
-            const validated = validatePayload(msg.payload);
-            if (validated) {
-                server.updateMetrics(validated);
-            }
-        } else if (msg && msg.type === 'task-update') {
-            const validated = validateTask(msg.payload);
-            if (validated) {
-                server.mergeTaskData(validated);
-                if (server.latestMetrics) server.latestMetrics.recentTasks = server.historyManager.getTasks().slice(-40);
-                server.io.emit('metrics', server.collectMetrics());
-            }
-        } else if (msg && msg.type === 'shutdown') {
-            server.stop().then(() => {
-                process.exit(0);
-            });
+        if (!msg || !msg.type) {
+            logger.warn('Received invalid IPC message (missing type):', msg);
+            return;
+        }
+
+        switch (msg.type) {
+            case 'metrics_tick':
+                const validated = validatePayload(msg.payload);
+                if (validated) {
+                    server.updateMetrics(validated);
+                }
+                break;
+            case 'task-update':
+                const validatedTask = validateTask(msg.payload);
+                if (validatedTask) {
+                    server.mergeTaskData(validatedTask);
+                    if (server.latestMetrics) server.latestMetrics.recentTasks = server.historyManager.getTasks().slice(-40);
+                    server.io.emit('metrics', server.collectMetrics());
+                }
+                break;
+            case 'shutdown':
+                server.stop().then(() => {
+                    process.exit(0);
+                });
+                break;
+            default:
+                logger.debug('Received unknown IPC message type:', msg.type);
         }
     });
 

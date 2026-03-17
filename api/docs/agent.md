@@ -26,6 +26,37 @@ The agent system enables semantic interactions with web pages using natural lang
 
 ---
 
+## Agent Flow
+
+The agent operates in a continuous perception-action loop, enabling LLMs to interact with pages semantically:
+
+```mermaid
+sequenceDiagram
+    participant U as User / Task
+    participant A as Agent
+    participant L as LLM (OpenRouter/Ollama)
+    participant P as Page (Browser)
+
+    U->>A: 1. "Find and click login"
+    A->>P: 2. Capture accessibility tree
+    P-->>A: 3. Semantic map (IDs, Labels)
+    A->>L: 4. Send prompt + semantic map
+    L-->>A: 5. Action plan (click "Login")
+    A->>P: 6. Execute action
+    P-->>A: 7. Result / new state
+    A->>L: 8. Verify success
+    L-->>A: 9. Continue or retry
+    A-->>U: 10. Task complete
+```
+
+**Loop Phases:**
+1. **Perception**: Capture page state via accessibility tree (`api.agent.see()`)
+2. **Reasoning**: LLM analyzes state and plans next action
+3. **Execution**: Perform action via `api.agent.do()`
+4. **Verification**: Confirm action succeeded before next step
+
+---
+
 ## Observer
 
 Gets a semantic map of interactive elements on the page.

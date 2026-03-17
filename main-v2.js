@@ -24,6 +24,33 @@ const DEFAULT_TASK_TIMEOUT = 600000; // 10 min per task
 const DEFAULT_GROUP_TIMEOUT = 600000; // 10 min per group
 const MAX_PROCESS_TIMEOUT = 1800000; // 30 min max for entire process
 
+// Global reference for signal handlers to access
+let globalOrchestrator = null;
+let isShuttingDown = false;
+
+/**
+ * Graceful shutdown handler - closes all browsers before exit
+ */
+async function gracefulShutdown(signal) {
+    if (isShuttingDown) {
+        logger.info(`[V2][Shutdown] Already shutting down, ignoring ${signal}...`);
+        return;
+    }
+    isShuttingDown = true;
+    logger.info(`[V2][Shutdown] Received ${signal}. Closing browsers and cleaning up...`);
+
+    try {
+        if (globalOrchestrator) {
+            await globalOrchestrator.shutdown(true);
+            logger.info('[V2][Shutdown] Orchestrator shutdown complete.');
+        }
+    } catch (error) {
+        logger.error('[V2][Shutdown] Error during shutdown:', error.message);
+    }
+
+    process.exit(0);
+}
+
 (async () => {
     showBanner();
     logger.info('[V2] MultiBrowseAutomation - Starting (Robust Mode)...');
@@ -65,6 +92,7 @@ const MAX_PROCESS_TIMEOUT = 1800000; // 30 min max for entire process
             groupTimeoutMs,
             workerWaitTimeoutMs: 30000,
         });
+        globalOrchestrator = orchestrator; // Expose for signal handlers
 
         const browsersArg = parsedArgs.find((arg) => arg.startsWith('--browsers='));
         const browserList = browsersArg ? browsersArg.split('=')[1].split(',') : [];
@@ -241,12 +269,5 @@ process.on('unhandledRejection', (reason, _promise) => {
     process.exit(1);
 });
 
-process.on('SIGINT', async () => {
-    logger.info('[V2] Received SIGINT, shutting down...');
-    process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-    logger.info('[V2] Received SIGTERM, shutting down...');
-    process.exit(0);
-});
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));

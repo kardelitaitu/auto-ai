@@ -1,376 +1,406 @@
-[20:26:53] [INFO] [EntropyController] [session-1773235613732-t45bslo5z] Session initialized with paceMultiplier=0.82
-[20:26:53] [INFO] [EntropyController] [session-1773235613732-t45bslo5z] Fatigue scheduled for T+3.9m
-[20:26:53] [INFO] [main.js] MultiBrowseAutomation - Starting up...
-[20:26:53] [INFO] [main.js] Checking Docker LLM status...
-[20:26:53] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
-[20:26:53] [DEBUG] [configLoader.js] Loaded configuration from settings.json
-[20:26:53] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
-[20:26:53] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
-[20:26:53] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
-[20:26:53] [INFO] [sessionManager.js] [SessionManager] Database initialized at C:\My Script\auto-ai\data\sessions.db
-[20:26:53] [INFO] [main.js] Attempting to discover and connect to available browsers...
-[20:26:53] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
-[20:26:53] [DEBUG] [orchestrator.js] [Orchestrator] Dashboard port 3001 busy. Attempting Socket.io connection...
-[20:26:53] [INFO] [orchestrator.js] [Orchestrator] Starting browser discovery...
-[20:26:53] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
-[20:26:53] [INFO] [discovery.js] Loading 8 discovery connectors...
-[20:26:53] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
-[20:26:53] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[20:26:53] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
-[20:26:53] [INFO] [discovery.js] Loaded connector: ixbrowser
-[20:26:53] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
-[20:26:53] [INFO] [orchestrator.js] [Orchestrator] Connected to dashboard via Socket.io
-[20:26:53] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[20:26:53] [INFO] [localBrave.js] Initialized LocalBraveDiscover
-[20:26:53] [INFO] [discovery.js] Loaded connector: localBrave
-[20:26:53] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
-[20:26:53] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[20:26:53] [INFO] [discovery.js] Loaded connector: localChrome
-[20:26:53] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
-[20:26:53] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[20:26:53] [INFO] [discovery.js] Loaded connector: localEdge
-[20:26:53] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
-[20:26:53] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[20:26:53] [INFO] [discovery.js] Loaded connector: localVivaldi
-[20:26:53] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
-[20:26:53] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[20:26:53] [INFO] [discovery.js] Loaded connector: morelogin
-[20:26:53] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
-[20:26:53] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[20:26:53] [INFO] [roxybrowser.js] Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/
-[20:26:53] [INFO] [discovery.js] Loaded connector: roxybrowser
-[20:26:53] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
-[20:26:53] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
-[20:26:53] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
-[20:26:53] [INFO] [discovery.js] Loaded connector: undetectable
-[20:26:53] [INFO] [discovery.js] Successfully loaded 8 connectors
-[20:26:53] [INFO] [discovery.js] Starting browser discovery with 8 connectors in parallel...
-[20:26:53] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
-[20:26:53] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
-[20:26:53] [INFO] [localBrave.js] Discovering localBrave instances
-[20:26:53] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
-[20:26:53] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
-[20:26:53] [INFO] [roxybrowser.js] Discovering roxybrowser instances from: http://127.0.0.1:50000/
-[20:26:53] [INFO] [undetectable.js] Starting discovery for undetectable browser type
-[20:26:53] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
-[20:26:54] [INFO] [localBrave.js] No running localBrave instances found.
-[20:26:54] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[20:26:54] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
-[20:26:54] [INFO] [roxybrowser.js] Received profile info with code: 0, message: Success
-[20:26:54] [INFO] [roxybrowser.js] Processing 2 profiles from API response
-[20:26:54] [INFO] [roxybrowser.js] Found connectable profile: 0001 (ws: ws://127.0.0.1:54668/devtools/browser/67e2d3e2-ba74-4a35-b709-a9ffd34332e3)
-[20:26:54] [INFO] [roxybrowser.js] Found connectable profile: 0002 (ws: ws://127.0.0.1:41789/devtools/browser/70505871-b4f2-4752-8eb6-7e2798ba0910)
-[20:26:54] [INFO] [roxybrowser.js] Discovery complete. Found 2 roxybrowser profiles.
-[20:26:55] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
-[20:26:55] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
-[20:26:55] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
-[20:26:55] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
-[20:26:55] [INFO] [discovery.js] Connector ixbrowser found no endpoints
-[20:26:55] [INFO] [discovery.js] Connector localBrave found no endpoints
-[20:26:55] [INFO] [discovery.js] Connector localChrome found no endpoints
-[20:26:55] [INFO] [discovery.js] Connector localEdge found no endpoints
-[20:26:55] [INFO] [discovery.js] Connector localVivaldi found no endpoints
-[20:26:55] [INFO] [discovery.js] Connector morelogin found no endpoints
-[20:26:55] [INFO] [discovery.js] Connector roxybrowser found 2 endpoints
-[20:26:55] [INFO] [discovery.js] Connector undetectable found no endpoints
-[20:26:55] [INFO] [discovery.js] Discovery complete. Found 2 total endpoints
-[20:26:55] [INFO] [orchestrator.js] Found 2 browser endpoints. Connecting...
-[20:26:55] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:54668/devtools/browser/67e2d3e2-ba74-4a35-b709-a9ffd34332e3
-[20:26:55] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:41789/devtools/browser/70505871-b4f2-4752-8eb6-7e2798ba0910
-[20:26:55] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:41789/devtools/browser/70505871-b4f2-4752-8eb6-7e2798ba0910
-[20:26:55] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:54668/devtools/browser/67e2d3e2-ba74-4a35-b709-a9ffd34332e3
-[20:26:55] [INFO] [sessionManager.js] [SessionManager] Session added: roxy:0001 (5 workers)
-[20:26:55] [INFO] [orchestrator.js] [Orchestrator] Connected: roxy:0001
-[20:26:55] [INFO] [sessionManager.js] [SessionManager] Session added: roxy:0002 (5 workers)
-[20:26:55] [INFO] [orchestrator.js] [Orchestrator] Connected: roxy:0002
-[20:26:55] [INFO] [orchestrator.js] [Orchestrator] Discovery complete. Connected to 2 browsers.
-[20:26:55] [DEBUG] [metrics.js] Browser discovery: 2 discovered, 2 connected, 0 failed
-[20:26:55] [INFO] [automator.js] [Automator] Proactive background health polling is DISABLED in Phase 2 for maximum CPU responsiveness. Relying exclusively on native socket disconnect events.
-[20:26:55] [INFO] [main.js] Successfully connected to 2 browser(s). Ready for automation.
-[20:26:55] [INFO] [main.js] MultiBrowseAutomation - Initialized. Processing 4 sequential task groups.
-[20:26:55] [INFO] [main.js] [Queue] Processing Task Group 1/4: ["pageview"]
-[20:26:55] [INFO] [orchestrator.js] [Orchestrator] Task 'pageview' added (timeout: 600000ms). Queue: 1
-[20:26:55] [INFO] [main.js] [Queue] Tasks for Group 1 added. Waiting for completion...
-[20:26:55] [INFO] [orchestrator.js] [Orchestrator] Processing 1 tasks...
-[20:26:55] [INFO] [orchestrator.js] [Orchestrator][roxy:0001] Starting checklist: 1 tasks, 5 workers
-[20:26:55] [INFO] [orchestrator.js] [Orchestrator][roxy:0002] Starting checklist: 1 tasks, 5 workers
-[20:26:55] [INFO] [orchestrator.js] [Orchestrator][roxy:0002][Worker 0] Starting 'pageview'
-[20:26:55] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[20:26:55] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[20:26:55] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[20:26:55] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[20:26:55] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:26:55] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:26:55] [INFO] [pageview.js] Starting migrated pageview task...
-[20:26:55] [INFO] [pageview.js] Initialized with profile: 26-Balanced (Persona: casual)
-[20:26:55] [INFO] [pageview.js] Target (Random): https://x.com/gilenha/with_replies
-[20:26:55] [INFO] [pageview.js] Referrer: https://www.reddit.com/
-[20:26:55] [INFO] [pageview.js] Navigating...
-[20:26:56] [INFO] [orchestrator.js] [Orchestrator][roxy:0001][Worker 0] Starting 'pageview'
-[20:26:56] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[20:26:56] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[20:26:56] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[20:26:56] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[20:26:56] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:26:56] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:26:56] [INFO] [pageview.js] Starting migrated pageview task...
-[20:26:56] [INFO] [pageview.js] Initialized with profile: 08-Balanced (Persona: casual)
-[20:26:56] [INFO] [pageview.js] Target (Random): https://x.com/yosiffia/with_replies
-[20:26:56] [INFO] [pageview.js] Referrer: (Direct)
-[20:26:56] [INFO] [pageview.js] Navigating...
-[20:27:05] [INFO] [pageview.js] Simulating reading for ~45.00s (20 cycles)
-[20:27:05] [DEBUG] [configLoader.js] Loaded configuration from settings.json
-[20:27:06] [INFO] [pageview.js] Simulating reading for ~45.00s (20 cycles)
-[20:27:45] [WARN] [pageview.js] Task forced to stop: Pageview task exceeded 50s limit
-[20:27:45] [DEBUG] [pageview.js] Page closed successfully.
-[20:27:45] [INFO] [pageview.js] Total task duration: 50.05 seconds
-[20:27:45] [DEBUG] [metrics.js] Task 'pageview' recorded: SUCCESS, duration: 50280ms
-[20:27:45] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0002 (50376ms)
-[20:27:46] [WARN] [pageview.js] Task forced to stop: Pageview task exceeded 50s limit
-[20:27:46] [DEBUG] [pageview.js] Page closed successfully.
-[20:27:46] [INFO] [pageview.js] Total task duration: 50.04 seconds
-[20:27:46] [DEBUG] [metrics.js] Task 'pageview' recorded: SUCCESS, duration: 50846ms
-[20:27:46] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0001 (51834ms)
-[20:27:46] [INFO] [orchestrator.js] [Orchestrator] All tasks completed
-[20:27:46] [INFO] [main.js] [Queue] Group 1 completed successfully.
-[20:27:46] [INFO] [main.js] [Queue] Processing Task Group 2/4: ["cookiebot"]
-[20:27:46] [INFO] [orchestrator.js] [Orchestrator] Task 'cookiebot' added (timeout: 600000ms). Queue: 1
-[20:27:46] [INFO] [main.js] [Queue] Tasks for Group 2 added. Waiting for completion...
-[20:27:47] [INFO] [orchestrator.js] [Orchestrator] Processing 1 tasks...
-[20:27:47] [INFO] [orchestrator.js] [Orchestrator][roxy:0001] Starting checklist: 1 tasks, 5 workers
-[20:27:47] [INFO] [orchestrator.js] [Orchestrator][roxy:0002] Starting checklist: 1 tasks, 5 workers
-[20:27:47] [INFO] [orchestrator.js] [Orchestrator][roxy:0002][Worker 0] Starting 'cookiebot'
-[20:27:47] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[20:27:47] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[20:27:47] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[20:27:47] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[20:27:47] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:27:47] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:27:47] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:27:47] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:27:47] [INFO] [cookiebot.js] Ultra-Lite mode enabled: media, styles, and tracking scripts blocked
-[20:27:47] [INFO] [cookiebot.js] URL list size: 1287
-[20:27:47] [INFO] [cookiebot.js] Starting random visits loop for 10 times.
-[20:27:47] [INFO] [cookiebot.js] (1 of 10) Navigating to: https://www.zillow.com
-[20:27:47] [INFO] [orchestrator.js] [Orchestrator][roxy:0001][Worker 0] Starting 'cookiebot'
-[20:27:47] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[20:27:47] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[20:27:47] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[20:27:47] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[20:27:47] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:27:47] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:27:47] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:27:47] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:27:47] [INFO] [cookiebot.js] Ultra-Lite mode enabled: media, styles, and tracking scripts blocked
-[20:27:47] [INFO] [cookiebot.js] URL list size: 1287
-[20:27:47] [INFO] [cookiebot.js] Starting random visits loop for 7 times.
-[20:27:47] [INFO] [cookiebot.js] (1 of 7) Navigating to: https://www.rockstargames.com
-[20:27:54] [INFO] [cookiebot.js] www.zillow.com init scrolling
-[20:27:55] [INFO] [cookiebot.js] www.rockstargames.com init scrolling
-[20:28:08] [INFO] [cookiebot.js] www.rockstargames.com scrolled for 13.1s
-[20:28:10] [INFO] [cookiebot.js] www.rockstargames.com init simulate reading for 5.8 s
-[20:28:14] [INFO] [cookiebot.js] (2 of 7) Navigating to: https://tv.youtube.com
-[20:28:15] [INFO] [cookiebot.js] www.zillow.com scrolled for 21.7s
-[20:28:16] [INFO] [cookiebot.js] www.zillow.com init simulate reading for 6.0 s
-[20:28:17] [WARN] [cookiebot.js] Network error visiting https://tv.youtube.com
-[20:28:17] [INFO] [cookiebot.js] (3 of 7) Navigating to: https://www.self.com
-[20:28:22] [INFO] [cookiebot.js] (2 of 10) Navigating to: https://www.max.com
-[20:28:25] [INFO] [cookiebot.js] www.self.com init scrolling
-[20:28:30] [INFO] [cookiebot.js] www.max.com init scrolling
-[20:28:44] [INFO] [cookiebot.js] www.self.com scrolled for 19.3s
-[20:28:45] [INFO] [cookiebot.js] www.self.com init simulate reading for 4.8 s
-[20:28:51] [INFO] [cookiebot.js] (4 of 7) Navigating to: https://www.fedex.com
-[20:29:02] [INFO] [cookiebot.js] www.fedex.com init scrolling
-[20:29:05] [INFO] [cookiebot.js] www.max.com scrolled for 35.1s
-[20:29:06] [INFO] [cookiebot.js] www.max.com init simulate reading for 4.6 s
-[20:29:10] [INFO] [cookiebot.js] (3 of 10) Navigating to: https://www.docker.com
-[20:29:20] [INFO] [cookiebot.js] www.docker.com init scrolling
-[20:29:22] [INFO] [cookiebot.js] www.fedex.com scrolled for 20.3s
-[20:29:23] [INFO] [cookiebot.js] www.fedex.com init simulate reading for 4.7 s
-[20:29:28] [INFO] [cookiebot.js] (5 of 7) Navigating to: https://cryptopanic.com
-[20:29:36] [INFO] [cookiebot.js] cryptopanic.com init scrolling
-[20:29:38] [INFO] [cookiebot.js] www.docker.com scrolled for 17.7s
-[20:29:39] [INFO] [cookiebot.js] www.docker.com init simulate reading for 5.6 s
-[20:29:45] [INFO] [cookiebot.js] (4 of 10) Navigating to: https://www.pexels.com
-[20:29:54] [INFO] [cookiebot.js] www.pexels.com init scrolling
-[20:30:11] [INFO] [cookiebot.js] www.pexels.com scrolled for 17.0s
-[20:30:12] [INFO] [cookiebot.js] cryptopanic.com scrolled for 36.2s
-[20:30:12] [INFO] [cookiebot.js] www.pexels.com init simulate reading for 3.8 s
-[20:30:13] [INFO] [cookiebot.js] cryptopanic.com init simulate reading for 3.4 s
-[20:30:16] [INFO] [cookiebot.js] (6 of 7) Navigating to: https://www.youtube.com
-[20:30:16] [INFO] [cookiebot.js] (5 of 10) Navigating to: https://www.youtube.com/@FCBarcelona
-[20:30:24] [INFO] [cookiebot.js] www.youtube.com init scrolling
-[20:30:27] [INFO] [cookiebot.js] www.youtube.com init scrolling
-[20:30:40] [INFO] [cookiebot.js] www.youtube.com scrolled for 13.5s
-[20:30:41] [INFO] [cookiebot.js] www.youtube.com init simulate reading for 5.6 s
-[20:30:46] [INFO] [cookiebot.js] (6 of 10) Navigating to: https://www.foxnews.com
-[20:30:55] [INFO] [cookiebot.js] www.foxnews.com init scrolling
-[20:30:59] [INFO] [cookiebot.js] www.youtube.com scrolled for 35.7s
-[20:31:00] [INFO] [cookiebot.js] www.youtube.com init simulate reading for 3.6 s
-[20:31:04] [INFO] [cookiebot.js] (7 of 7) Navigating to: https://www.nbc.com
-[20:31:20] [INFO] [cookiebot.js] www.nbc.com init scrolling
-[20:31:25] [INFO] [cookiebot.js] www.foxnews.com scrolled for 29.5s
-[20:31:26] [INFO] [cookiebot.js] www.foxnews.com init simulate reading for 5.5 s
-[20:31:31] [INFO] [cookiebot.js] (7 of 10) Navigating to: https://www.premierleague.com
-[20:31:42] [INFO] [cookiebot.js] www.premierleague.com init scrolling
-[20:31:47] [WARN] [cookiebot.js] Task forced to stop: Cookiebot task exceeded 240000ms limit
-[20:31:47] [ERROR] [cookiebot.js] Failed to load https://www.premierleague.com:
-[20:31:47] [DEBUG] [cookiebot.js] Page closed successfully.
-[20:31:47] [INFO] [cookiebot.js] Total task duration: 240.07 seconds
-[20:31:47] [DEBUG] [metrics.js] Task 'cookiebot' recorded: SUCCESS, duration: 240304ms
-[20:31:47] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0002 (240358ms)
-[20:31:47] [WARN] [cookiebot.js] Task forced to stop: Cookiebot task exceeded 240000ms limit
-[20:31:47] [DEBUG] [cookiebot.js] Page closed successfully.
-[20:31:47] [INFO] [cookiebot.js] Total task duration: 240.07 seconds
-[20:31:47] [DEBUG] [metrics.js] Task 'cookiebot' recorded: SUCCESS, duration: 240084ms
-[20:31:47] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0001 (240947ms)
-[20:31:47] [INFO] [orchestrator.js] [Orchestrator] All tasks completed
-[20:31:47] [INFO] [main.js] [Queue] Group 2 completed successfully.
-[20:31:47] [INFO] [main.js] [Queue] Processing Task Group 3/4: ["pageview"]
-[20:31:47] [INFO] [orchestrator.js] [Orchestrator] Task 'pageview' added (timeout: 600000ms). Queue: 1
-[20:31:47] [INFO] [main.js] [Queue] Tasks for Group 3 added. Waiting for completion...
-[20:31:48] [ERROR] [cookiebot.js] Failed to load https://www.nbc.com:
-[20:31:48] [INFO] [orchestrator.js] [Orchestrator] Processing 1 tasks...
-[20:31:48] [INFO] [orchestrator.js] [Orchestrator][roxy:0001] Starting checklist: 1 tasks, 5 workers
-[20:31:48] [INFO] [orchestrator.js] [Orchestrator][roxy:0002] Starting checklist: 1 tasks, 5 workers
-[20:31:48] [INFO] [orchestrator.js] [Orchestrator][roxy:0002][Worker 0] Starting 'pageview'
-[20:31:48] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[20:31:48] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[20:31:48] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[20:31:48] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[20:31:48] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:31:48] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:31:48] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:31:48] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:31:48] [INFO] [pageview.js] Starting migrated pageview task...
-[20:31:48] [INFO] [pageview.js] Initialized with profile: 23-Balanced (Persona: casual)
-[20:31:48] [INFO] [pageview.js] Target (Random): https://x.com/devaorda/with_replies
-[20:31:48] [INFO] [pageview.js] Referrer: https://www.reddit.com/
-[20:31:48] [INFO] [pageview.js] Navigating...
-[20:31:49] [INFO] [orchestrator.js] [Orchestrator][roxy:0001][Worker 0] Starting 'pageview'
-[20:31:50] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[20:31:50] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[20:31:50] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[20:31:50] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[20:31:50] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:31:50] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:31:50] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:31:50] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:31:50] [INFO] [pageview.js] Starting migrated pageview task...
-[20:31:50] [INFO] [pageview.js] Initialized with profile: 17-Balanced (Persona: casual)
-[20:31:50] [INFO] [pageview.js] Target (Random): https://x.com/HamzahEvanrp/with_replies
-[20:31:50] [INFO] [pageview.js] Referrer: https://www.bing.com/search?q=HamzahEvanrp%20x%20profile&form=QBLH&sp=-1&ghc=1&cvid=B146F31DE5DD709611DFA8A8908CEE09
-[20:31:50] [INFO] [pageview.js] Navigating...
-[20:31:57] [INFO] [pageview.js] Simulating reading for ~45.00s (20 cycles)
-[20:32:00] [INFO] [pageview.js] Simulating reading for ~45.00s (20 cycles)
-[20:32:38] [WARN] [pageview.js] Task forced to stop: Pageview task exceeded 50s limit
-[20:32:38] [DEBUG] [pageview.js] Page closed successfully.
-[20:32:38] [INFO] [pageview.js] Total task duration: 50.05 seconds
-[20:32:38] [DEBUG] [metrics.js] Task 'pageview' recorded: SUCCESS, duration: 50274ms
-[20:32:38] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0002 (50375ms)
-[20:32:40] [WARN] [pageview.js] Task forced to stop: Pageview task exceeded 50s limit
-[20:32:40] [DEBUG] [pageview.js] Page closed successfully.
-[20:32:40] [INFO] [pageview.js] Total task duration: 50.05 seconds
-[20:32:40] [DEBUG] [metrics.js] Task 'pageview' recorded: SUCCESS, duration: 51073ms
-[20:32:41] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0001 (52944ms)
-[20:32:41] [INFO] [orchestrator.js] [Orchestrator] All tasks completed
-[20:32:41] [INFO] [main.js] [Queue] Group 3 completed successfully.
-[20:32:41] [INFO] [main.js] [Queue] Processing Task Group 4/4: ["cookiebot"]
-[20:32:41] [INFO] [orchestrator.js] [Orchestrator] Task 'cookiebot' added (timeout: 600000ms). Queue: 1
-[20:32:41] [INFO] [main.js] [Queue] Tasks for Group 4 added. Waiting for completion...
-[20:32:41] [INFO] [orchestrator.js] [Orchestrator] Processing 1 tasks...
-[20:32:41] [INFO] [orchestrator.js] [Orchestrator][roxy:0001] Starting checklist: 1 tasks, 5 workers
-[20:32:41] [INFO] [orchestrator.js] [Orchestrator][roxy:0002] Starting checklist: 1 tasks, 5 workers
-[20:32:41] [INFO] [orchestrator.js] [Orchestrator][roxy:0002][Worker 0] Starting 'cookiebot'
-[20:32:41] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[20:32:41] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[20:32:41] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[20:32:41] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[20:32:41] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:32:41] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:32:41] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:32:41] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:32:41] [INFO] [cookiebot.js] Ultra-Lite mode enabled: media, styles, and tracking scripts blocked
-[20:32:41] [INFO] [cookiebot.js] URL list size: 1287
-[20:32:41] [INFO] [cookiebot.js] Starting random visits loop for 5 times.
-[20:32:41] [INFO] [cookiebot.js] (1 of 5) Navigating to: https://miningpoolstats.stream
-[20:32:42] [INFO] [orchestrator.js] [Orchestrator][roxy:0001][Worker 0] Starting 'cookiebot'
-[20:32:42] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
-[20:32:42] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
-[20:32:42] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
-[20:32:42] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
-[20:32:42] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:32:42] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
-[20:32:42] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:32:42] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
-[20:32:42] [INFO] [cookiebot.js] Ultra-Lite mode enabled: media, styles, and tracking scripts blocked
-[20:32:42] [INFO] [cookiebot.js] URL list size: 1287
-[20:32:42] [INFO] [cookiebot.js] Starting random visits loop for 5 times.
-[20:32:42] [INFO] [cookiebot.js] (1 of 5) Navigating to: https://www.shein.com
-[20:32:44] [WARN] [cookiebot.js] Network error visiting https://miningpoolstats.stream
-[20:32:44] [INFO] [cookiebot.js] (2 of 5) Navigating to: https://www.battle.net
-[20:32:52] [INFO] [cookiebot.js] www.shein.com init scrolling
-[20:32:54] [INFO] [cookiebot.js] www.battle.net init scrolling
-[20:33:10] [INFO] [cookiebot.js] www.battle.net scrolled for 16.3s
-[20:33:11] [INFO] [cookiebot.js] www.battle.net init simulate reading for 5.3 s
-[20:33:17] [INFO] [cookiebot.js] (3 of 5) Navigating to: https://www.kickstarter.com
-[20:33:17] [INFO] [cookiebot.js] www.shein.com scrolled for 25.7s
-[20:33:19] [INFO] [cookiebot.js] www.shein.com init simulate reading for 5.4 s
-[20:33:24] [INFO] [cookiebot.js] (2 of 5) Navigating to: https://www.ubisoft.com
-[20:33:28] [INFO] [cookiebot.js] www.kickstarter.com init scrolling
-[20:33:34] [INFO] [cookiebot.js] www.ubisoft.com init scrolling
-[20:34:03] [INFO] [cookiebot.js] www.kickstarter.com scrolled for 34.9s
-[20:34:04] [INFO] [cookiebot.js] www.ubisoft.com scrolled for 30.4s
-[20:34:04] [INFO] [cookiebot.js] www.kickstarter.com init simulate reading for 3.8 s
-[20:34:05] [INFO] [cookiebot.js] www.ubisoft.com init simulate reading for 3.8 s
-[20:34:08] [INFO] [cookiebot.js] (4 of 5) Navigating to: https://www.wholefoodsmarket.com
-[20:34:09] [INFO] [cookiebot.js] (3 of 5) Navigating to: https://www.airbnb.com
-[20:34:19] [INFO] [cookiebot.js] www.airbnb.com init scrolling
-[20:34:30] [INFO] [cookiebot.js] www.wholefoodsmarket.com init scrolling
-[20:34:35] [INFO] [cookiebot.js] www.airbnb.com scrolled for 15.2s
-[20:34:36] [INFO] [cookiebot.js] www.airbnb.com init simulate reading for 3.0 s
-[20:34:38] [INFO] [cookiebot.js] (4 of 5) Navigating to: https://www.goodhousekeeping.com
-[20:34:50] [INFO] [cookiebot.js] www.goodhousekeeping.com init scrolling
-[20:34:54] [INFO] [cookiebot.js] www.wholefoodsmarket.com scrolled for 23.2s
-[20:34:55] [INFO] [cookiebot.js] www.wholefoodsmarket.com init simulate reading for 3.9 s
-[20:34:58] [INFO] [cookiebot.js] (5 of 5) Navigating to: https://www.hulu.com
-[20:35:07] [INFO] [cookiebot.js] www.hulu.com init scrolling
-[20:35:26] [INFO] [cookiebot.js] www.goodhousekeeping.com scrolled for 35.3s
-[20:35:26] [INFO] [cookiebot.js] www.hulu.com scrolled for 19.7s
-[20:35:27] [INFO] [cookiebot.js] www.goodhousekeeping.com init simulate reading for 4.3 s
-[20:35:27] [INFO] [cookiebot.js] www.hulu.com init simulate reading for 4.7 s
-[20:35:31] [INFO] [cookiebot.js] (5 of 5) Navigating to: https://www.disneyplus.com
-[20:35:32] [DEBUG] [cookiebot.js] Page closed successfully.
-[20:35:32] [INFO] [cookiebot.js] Total task duration: 171.55 seconds
-[20:35:32] [DEBUG] [metrics.js] Task 'cookiebot' recorded: SUCCESS, duration: 171769ms
-[20:35:32] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0002 (171832ms)
-[20:35:53] [INFO] [cookiebot.js] www.disneyplus.com init scrolling
-[20:36:06] [INFO] [cookiebot.js] www.disneyplus.com scrolled for 12.8s
-[20:36:07] [INFO] [cookiebot.js] www.disneyplus.com init simulate reading for 3.5 s
-[20:36:11] [DEBUG] [cookiebot.js] Page closed successfully.
-[20:36:11] [INFO] [cookiebot.js] Total task duration: 209.18 seconds
-[20:36:11] [DEBUG] [metrics.js] Task 'cookiebot' recorded: SUCCESS, duration: 209198ms
-[20:36:11] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in roxy:0001 (210306ms)
-[20:36:11] [INFO] [orchestrator.js] [Orchestrator] All tasks completed
-[20:36:11] [INFO] [main.js] [Queue] Group 4 completed successfully.
-[20:36:11] [INFO] [main.js] MultiBrowseAutomation - Shutting down...
-[20:36:11] [INFO] [orchestrator.js] [Orchestrator] Queue empty, resolving immediately
-[20:36:11] [INFO] [sessionManager.js] [SessionManager] SessionManager shutting down...
-[20:36:11] [WARN] [automator.js] [Automator] Native disconnect event fired for: ws://127.0.0.1:54668/devtools/browser/67e2d3e2-ba74-4a35-b709-a9ffd34332e3
-[20:36:11] [INFO] [automator.js] Background reconnection attempt 1 for ws://127.0.0.1:54668/devtools/browser/67e2d3e2-ba74-4a35-b709-a9ffd34332e3
-[20:36:11] [INFO] [automator.js] Attempting to reconnect to ws://127.0.0.1:54668/devtools/browser/67e2d3e2-ba74-4a35-b709-a9ffd34332e3
-[20:36:11] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:54668/devtools/browser/67e2d3e2-ba74-4a35-b709-a9ffd34332e3
-[20:36:11] [WARN] [automator.js] [Automator] Native disconnect event fired for: ws://127.0.0.1:41789/devtools/browser/70505871-b4f2-4752-8eb6-7e2798ba0910
-[20:36:11] [INFO] [automator.js] Background reconnection attempt 1 for ws://127.0.0.1:41789/devtools/browser/70505871-b4f2-4752-8eb6-7e2798ba0910
-[20:36:11] [INFO] [automator.js] Attempting to reconnect to ws://127.0.0.1:41789/devtools/browser/70505871-b4f2-4752-8eb6-7e2798ba0910
-[20:36:11] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:41789/devtools/browser/70505871-b4f2-4752-8eb6-7e2798ba0910
-[20:36:11] [INFO] [sessionManager.js] [SessionManager] SessionManager shutdown complete
-[20:36:11] [WARN] [orchestrator.js] [Orchestrator] Disconnected from dashboard
-[20:36:11] [INFO] [automator.js] Automator shutting down...
-[20:36:11] [INFO] [automator.js] Closing 0 browser connections
-[20:36:11] [INFO] [automator.js] [Automator] Proactive health checks natively disabled.
-[20:36:11] [INFO] [automator.js] All connections closed
-[20:36:11] [INFO] [automator.js] Automator shutdown complete
-[20:36:11] [INFO] [metrics.js] Generating JSON summary report...
-[20:36:11] [INFO] [metrics.js] Successfully generated JSON report at C:\My Script\auto-ai\run-summary.json
-[20:36:11] [INFO] [orchestrator.js] [Orchestrator] Orchestrator shutdown complete
+[02:21:20] [INFO] [EntropyController] [session-1773602480928-2bszeqsto] Session initialized with paceMultiplier=0.91
+[02:21:20] [INFO] [EntropyController] [session-1773602480928-2bszeqsto] Fatigue scheduled for T+3.7m
+[02:21:20] [INFO] [agent-main.js] OWB Agent Runner - Starting...
+[02:21:20] [INFO] [agent-main.js] [DEBUG] Debug mode enabled - visual overlay will be active
+[02:21:20] [INFO] [agent-main.js] Mode: state
+[02:21:20] [INFO] [agent-main.js] Strategy: defend
+[02:21:20] [INFO] [agent-main.js] Model: gemma3:4b
+[02:21:20] [INFO] [api/agent/visualDiff.js] Sharp module loaded successfully
+[02:21:21] [INFO] [api/agent/sessionStore.js] [SessionStore] Database initialized successfully
+[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from settings.json
+[02:21:21] [INFO] [agent-main.js] LLM model set to: gemma3:4b (from owb-config: gemma3:4b)
+[02:21:21] [INFO] [agent-main.js] Checking Docker LLM status...
+[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from settings.json
+[02:21:21] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
+[02:21:21] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
+[02:21:21] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
+[02:21:21] [INFO] [sessionManager.js] [SessionManager] Database initialized at C:\My Script\auto-ai\data\sessions.db
+[02:21:21] [INFO] [agent-main.js] Discovering browsers...
+[02:21:21] [INFO] [orchestrator.js] [Orchestrator] Starting browser discovery...
+[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[02:21:21] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
+[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[02:21:21] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
+[02:21:21] [INFO] [discovery.js] Loading 8 discovery connectors...
+[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
+[02:21:21] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[02:21:21] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
+[02:21:21] [INFO] [discovery.js] Loaded connector: ixbrowser
+[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
+[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[02:21:21] [INFO] [localBrave.js] Initialized LocalBraveDiscover
+[02:21:21] [INFO] [discovery.js] Loaded connector: localBrave
+[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
+[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[02:21:21] [INFO] [discovery.js] Loaded connector: localChrome
+[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
+[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[02:21:21] [INFO] [discovery.js] Loaded connector: localEdge
+[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
+[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[02:21:21] [INFO] [discovery.js] Loaded connector: localVivaldi
+[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
+[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[02:21:21] [INFO] [discovery.js] Loaded connector: morelogin
+[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
+[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[02:21:21] [INFO] [roxybrowser.js] Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/
+[02:21:21] [INFO] [discovery.js] Loaded connector: roxybrowser
+[02:21:21] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
+[02:21:21] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[02:21:21] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
+[02:21:21] [INFO] [discovery.js] Loaded connector: undetectable
+[02:21:21] [INFO] [discovery.js] Successfully loaded 8 connectors
+[02:21:21] [INFO] [discovery.js] Starting browser discovery with 8 connectors in parallel...
+[02:21:21] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
+[02:21:21] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
+[02:21:21] [INFO] [localBrave.js] Discovering localBrave instances
+[02:21:21] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
+[02:21:21] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
+[02:21:21] [INFO] [roxybrowser.js] Discovering roxybrowser instances from: http://127.0.0.1:50000/
+[02:21:21] [INFO] [undetectable.js] Starting discovery for undetectable browser type
+[02:21:21] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
+[02:21:21] [WARN] [retry.js] [API request to http://127.0.0.1:50000/browser/connection_info] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[02:21:21] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[02:21:21] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[02:21:21] [DEBUG] [localBrave.js] Found 3 browser tabs from Brave on port 9001
+[02:21:21] [INFO] [localBrave.js] Found connectable Brave instance: Local Brave Browser (Port 9001)
+[02:21:21] [INFO] [localBrave.js] Discovery complete. Found 1 localBrave profiles.
+[02:21:22] [ERROR] [retry.js] [API request to http://127.0.0.1:50000/browser/connection_info] All 2 attempts failed. Last error: fetch failed
+[02:21:22] [ERROR] [roxybrowser.js] Error during roxybrowser discovery: fetch failed
+[02:21:22] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
+[02:21:22] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
+[02:21:22] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
+[02:21:22] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
+[02:21:22] [INFO] [discovery.js] Connector ixbrowser found no endpoints
+[02:21:22] [INFO] [discovery.js] Connector localBrave found 1 endpoints
+[02:21:22] [INFO] [discovery.js] Connector localChrome found no endpoints
+[02:21:22] [INFO] [discovery.js] Connector localEdge found no endpoints
+[02:21:22] [INFO] [discovery.js] Connector localVivaldi found no endpoints
+[02:21:22] [INFO] [discovery.js] Connector morelogin found no endpoints
+[02:21:22] [INFO] [discovery.js] Connector roxybrowser found no endpoints
+[02:21:22] [INFO] [discovery.js] Connector undetectable found no endpoints
+[02:21:22] [INFO] [discovery.js] Discovery complete. Found 1 total endpoints
+[02:21:22] [INFO] [orchestrator.js] Found 1 browser endpoints. Connecting...
+[02:21:22] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
+[02:21:22] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
+[02:21:22] [INFO] [sessionManager.js] [SessionManager] Session added: brave:9001 (5 workers)
+[02:21:22] [INFO] [orchestrator.js] [Orchestrator] Connected: brave:9001
+[02:21:22] [INFO] [orchestrator.js] [Orchestrator] Discovery complete. Connected to 1 browsers.
+[02:21:22] [DEBUG] [metrics.js] Browser discovery: 1 discovered, 1 connected, 0 failed
+[02:21:22] [INFO] [automator.js] [Automator] Proactive background health polling is DISABLED in Phase 2 for maximum CPU responsiveness. Relying exclusively on native socket disconnect events.
+[02:21:22] [INFO] [agent-main.js] Connected to 1 browser(s).
+[02:21:22] [INFO] [agent-main.js] Using session: brave:9001
+[02:21:22] [INFO] [agent-main.js] Using existing tab: https://clashofcoins.com/play/
+[02:21:22] [INFO] [agent-main.js] [Browser] Viewport size: undefinedxundefined
+[02:21:22] [INFO] [agent-main.js] Current URL: https://clashofcoins.com/play/
+[02:21:22] [INFO] [agent-main.js] Initializing API context...
+[02:21:22] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
+[02:21:22] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
+[02:21:22] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
+[02:21:22] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
+[02:21:22] [INFO] [agent-main.js] ========================================
+[02:21:22] [INFO] [agent-main.js] Running State: A - Grey Free land
+[02:21:22] [INFO] [agent-main.js] Repeat count: 500
+[02:21:22] [INFO] [agent-main.js] 
+--- Iteration 1/500 ---
+[02:21:22] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-1-2026-03-15-02-21-22.png
+[02:21:22] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
+[02:21:22] [INFO] [api/utils/visual-debug.js] [VisualDebug] Enabled - cursor and clicks will be visualized
+[02:21:22] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
+[02:21:22] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
+[02:21:22] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
+[02:21:22] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
+[02:21:22] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
+[02:21:22] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 138.6 KB
+[02:21:22] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 138.6 KB → 30.4 KB (4.6x smaller, 161ms)
+[02:21:22] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.56x compression, 161ms
+[02:21:22] [INFO] [api/agent/vision.js] [captureState] Screenshot: 40 KB (viewport: 2196x1015)
+[02:21:22] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-21-22.png (30 KB)
+[02:21:22] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
+[02:21:22] [INFO] [owb-agents.js] [OWB] Initialized OWB-specific LLM client: model=gemma3:4b, maxTokens=4096, timeout=180000ms
+[02:21:22] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
+[02:21:31] [INFO] [api/agent/llmClient.js] Response time: 8557ms
+[02:21:31] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 260, "y": 348}, {"x": 780, "y": 348}, {"x": 880, "y": 188}]}
+[02:21:31] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":260,"y":348},{"x":780,"y":348},{"x":880,"y":188}]}
+[02:21:31] [INFO] [owb-agents.js] [State A] Found 3 target(s)
+[02:21:31] [INFO] [owb-agents.js] [State A] Coords: (260, 348) -> scaled (520, 695) -> final (520, 695)
+[02:21:31] [INFO] [owb-agents.js] [State A] Coords: (780, 348) -> scaled (1560, 695) -> final (1560, 695)
+[02:21:31] [INFO] [owb-agents.js] [State A] Coords: (880, 188) -> scaled (1760, 376) -> final (1760, 376)
+[02:21:31] [INFO] [owb-agents.js] [State A] Clicking 3 target(s)...
+[02:21:31] [INFO] [owb-agents.js] [State A] Target 1/3: (520, 695) price=?
+[02:21:31] [INFO] [api/interactions/clickAt.js] Clicking at (520, 695) with button: left
+[02:21:31] [INFO] [api/interactions/clickAt.js] ClickAt completed at (520, 695)
+[02:21:32] [INFO] [owb-agents.js] [State A] Target 2/3: (1560, 695) price=?
+[02:21:32] [INFO] [api/interactions/clickAt.js] Clicking at (1560, 695) with button: left
+[02:21:32] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1561, 696)
+[02:21:33] [INFO] [owb-agents.js] [State A] Target 3/3: (1760, 376) price=?
+[02:21:33] [INFO] [api/interactions/clickAt.js] Clicking at (1760, 376) with button: left
+[02:21:34] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1760, 376)
+[02:21:34] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
+[02:21:34] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602494695-2026-03-15-02-21-34.png (30 KB)
+[02:21:34] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 3 target(s)
+[02:21:34] [INFO] [agent-main.js] ✅ Iteration 1 completed successfully
+[02:21:35] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-1-2026-03-15-02-21-34.png
+[02:21:35] [INFO] [agent-main.js] Waiting 2s before next iteration...
+[02:21:37] [INFO] [agent-main.js] 
+--- Iteration 2/500 ---
+[02:21:38] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-2-2026-03-15-02-21-37.png
+[02:21:38] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
+[02:21:38] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
+[02:21:38] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
+[02:21:38] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
+[02:21:38] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
+[02:21:38] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
+[02:21:40] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 237.5 KB
+[02:21:40] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 237.5 KB → 59.1 KB (4.0x smaller, 169ms)
+[02:21:40] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.02x compression, 169ms
+[02:21:40] [INFO] [api/agent/vision.js] [captureState] Screenshot: 79 KB (viewport: 2196x1015)
+[02:21:40] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-21-40.png (59 KB)
+[02:21:40] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
+[02:21:40] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
+[02:21:42] [INFO] [api/agent/llmClient.js] Response time: 1469ms
+[02:21:42] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 556, "y": 328, "price": "50"}], "found": true}
+[02:21:42] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":556,"y":328,"price":"50"}],"found":true}
+[02:21:42] [INFO] [owb-agents.js] [State A] Found 1 target(s)
+[02:21:42] [INFO] [owb-agents.js] [State A] Coords: (556, 328) -> scaled (1112, 655) -> final (1112, 655)
+[02:21:42] [INFO] [owb-agents.js] [State A] Clicking 1 target(s)...
+[02:21:42] [INFO] [owb-agents.js] [State A] Target 1/1: (1112, 655) price=50
+[02:21:42] [INFO] [api/interactions/clickAt.js] Clicking at (1112, 655) with button: left
+[02:21:43] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1112, 655)
+[02:21:43] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
+[02:21:43] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602503255-2026-03-15-02-21-43.png (59 KB)
+[02:21:43] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 1 target(s)
+[02:21:43] [INFO] [agent-main.js] ✅ Iteration 2 completed successfully
+[02:21:43] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-2-2026-03-15-02-21-43.png
+[02:21:43] [INFO] [agent-main.js] Waiting 2s before next iteration...
+[02:21:45] [INFO] [agent-main.js] 
+--- Iteration 3/500 ---
+[02:21:46] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-3-2026-03-15-02-21-45.png
+[02:21:46] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
+[02:21:46] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
+[02:21:46] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
+[02:21:46] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
+[02:21:46] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
+[02:21:46] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
+[02:21:47] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 304.1 KB
+[02:21:47] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 304.1 KB → 79.4 KB (3.8x smaller, 204ms)
+[02:21:47] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 3.83x compression, 204ms
+[02:21:47] [INFO] [api/agent/vision.js] [captureState] Screenshot: 106 KB (viewport: 2196x1015)
+[02:21:47] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-21-47.png (79 KB)
+[02:21:47] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
+[02:21:47] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
+[02:21:49] [INFO] [api/agent/llmClient.js] Response time: 1840ms
+[02:21:49] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 480, "y": 348}, {"x": 778, "y": 348}, {"x": 778, "y": 178}], "found": true}
+[02:21:49] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":480,"y":348},{"x":778,"y":348},{"x":778,"y":178}],"found":true}
+[02:21:49] [INFO] [owb-agents.js] [State A] Found 3 target(s)
+[02:21:49] [INFO] [owb-agents.js] [State A] Coords: (480, 348) -> scaled (960, 695) -> final (960, 695)
+[02:21:49] [INFO] [owb-agents.js] [State A] Coords: (778, 348) -> scaled (1556, 695) -> final (1556, 695)
+[02:21:49] [INFO] [owb-agents.js] [State A] Coords: (778, 178) -> scaled (1556, 356) -> final (1556, 356)
+[02:21:49] [INFO] [owb-agents.js] [State A] Clicking 3 target(s)...
+[02:21:49] [INFO] [owb-agents.js] [State A] Target 1/3: (960, 695) price=?
+[02:21:49] [INFO] [api/interactions/clickAt.js] Clicking at (960, 695) with button: left
+[02:21:50] [INFO] [api/interactions/clickAt.js] ClickAt completed at (960, 695)
+[02:21:50] [INFO] [owb-agents.js] [State A] Target 2/3: (1556, 695) price=?
+[02:21:50] [INFO] [api/interactions/clickAt.js] Clicking at (1556, 695) with button: left
+[02:21:51] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1555, 695)
+[02:21:51] [INFO] [owb-agents.js] [State A] Target 3/3: (1556, 356) price=?
+[02:21:51] [INFO] [api/interactions/clickAt.js] Clicking at (1556, 356) with button: left
+[02:21:51] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1556, 357)
+[02:21:51] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
+[02:21:51] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602511978-2026-03-15-02-21-51.png (79 KB)
+[02:21:51] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 3 target(s)
+[02:21:51] [INFO] [agent-main.js] ✅ Iteration 3 completed successfully
+[02:21:52] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-3-2026-03-15-02-21-51.png
+[02:21:52] [INFO] [agent-main.js] Waiting 2s before next iteration...
+[02:21:54] [INFO] [agent-main.js] 
+--- Iteration 4/500 ---
+[02:21:56] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-4-2026-03-15-02-21-54.png
+[02:21:56] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
+[02:21:56] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
+[02:21:56] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
+[02:21:56] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
+[02:21:56] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
+[02:21:56] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
+[02:21:57] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 314.2 KB
+[02:21:57] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 314.2 KB → 72.2 KB (4.4x smaller, 191ms)
+[02:21:57] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.35x compression, 191ms
+[02:21:57] [INFO] [api/agent/vision.js] [captureState] Screenshot: 96 KB (viewport: 2196x1015)
+[02:21:57] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-21-57.png (72 KB)
+[02:21:57] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
+[02:21:57] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
+[02:21:59] [INFO] [api/agent/llmClient.js] Response time: 1637ms
+[02:21:59] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 392, "y": 276}, {"x": 688, "y": 276}], "found": true}
+[02:21:59] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":392,"y":276},{"x":688,"y":276}],"found":true}
+[02:21:59] [INFO] [owb-agents.js] [State A] Found 2 target(s)
+[02:21:59] [INFO] [owb-agents.js] [State A] Coords: (392, 276) -> scaled (784, 551) -> final (784, 551)
+[02:21:59] [INFO] [owb-agents.js] [State A] Coords: (688, 276) -> scaled (1376, 551) -> final (1376, 551)
+[02:21:59] [INFO] [owb-agents.js] [State A] Clicking 2 target(s)...
+[02:21:59] [INFO] [owb-agents.js] [State A] Target 1/2: (784, 551) price=?
+[02:21:59] [INFO] [api/interactions/clickAt.js] Clicking at (784, 551) with button: left
+[02:22:00] [INFO] [api/interactions/clickAt.js] ClickAt completed at (784, 550)
+[02:22:00] [INFO] [owb-agents.js] [State A] Target 2/2: (1376, 551) price=?
+[02:22:00] [INFO] [api/interactions/clickAt.js] Clicking at (1376, 551) with button: left
+[02:22:01] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1376, 551)
+[02:22:01] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
+[02:22:01] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602521148-2026-03-15-02-22-01.png (72 KB)
+[02:22:01] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 2 target(s)
+[02:22:01] [INFO] [agent-main.js] ✅ Iteration 4 completed successfully
+[02:22:01] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-4-2026-03-15-02-22-01.png
+[02:22:01] [INFO] [agent-main.js] Waiting 2s before next iteration...
+[02:22:03] [INFO] [agent-main.js] 
+--- Iteration 5/500 ---
+[02:22:04] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-5-2026-03-15-02-22-03.png
+[02:22:04] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
+[02:22:04] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
+[02:22:04] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
+[02:22:04] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
+[02:22:04] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
+[02:22:04] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
+[02:22:05] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 313.7 KB
+[02:22:06] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 313.7 KB → 72.7 KB (4.3x smaller, 208ms)
+[02:22:06] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.31x compression, 208ms
+[02:22:06] [INFO] [api/agent/vision.js] [captureState] Screenshot: 97 KB (viewport: 2196x1015)
+[02:22:06] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-22-06.png (73 KB)
+[02:22:06] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
+[02:22:06] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
+[02:22:07] [INFO] [api/agent/llmClient.js] Response time: 1367ms
+[02:22:07] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 640, "y": 336, "price": "50"}], "found": true}
+[02:22:07] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":640,"y":336,"price":"50"}],"found":true}
+[02:22:07] [INFO] [owb-agents.js] [State A] Found 1 target(s)
+[02:22:07] [INFO] [owb-agents.js] [State A] Coords: (640, 336) -> scaled (1280, 671) -> final (1280, 671)
+[02:22:07] [INFO] [owb-agents.js] [State A] Clicking 1 target(s)...
+[02:22:07] [INFO] [owb-agents.js] [State A] Target 1/1: (1280, 671) price=50
+[02:22:07] [INFO] [api/interactions/clickAt.js] Clicking at (1280, 671) with button: left
+[02:22:08] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1280, 671)
+[02:22:08] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
+[02:22:08] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602528382-2026-03-15-02-22-08.png (73 KB)
+[02:22:08] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 1 target(s)
+[02:22:08] [INFO] [agent-main.js] ✅ Iteration 5 completed successfully
+[02:22:09] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-5-2026-03-15-02-22-08.png
+[02:22:09] [INFO] [agent-main.js] Waiting 2s before next iteration...
+[02:22:11] [INFO] [agent-main.js] 
+--- Iteration 6/500 ---
+[02:22:12] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-6-2026-03-15-02-22-11.png
+[02:22:12] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
+[02:22:12] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
+[02:22:12] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
+[02:22:12] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
+[02:22:12] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
+[02:22:12] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
+[02:22:12] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 314.3 KB
+[02:22:13] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 314.3 KB → 72.6 KB (4.3x smaller, 184ms)
+[02:22:13] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.33x compression, 184ms
+[02:22:13] [INFO] [api/agent/vision.js] [captureState] Screenshot: 97 KB (viewport: 2196x1015)
+[02:22:13] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-22-13.png (73 KB)
+[02:22:13] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
+[02:22:13] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
+[02:22:15] [INFO] [api/agent/llmClient.js] Response time: 1964ms
+[02:22:15] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 344, "y": 312}, {"x": 656, "y": 312}, {"x": 864, "y": 188}, {"x": 864, "y": 312}], "found": true}
+[02:22:15] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":344,"y":312},{"x":656,"y":312},{"x":864,"y":188},{"x":864,"y":312}],"found":true}
+[02:22:15] [INFO] [owb-agents.js] [State A] Found 4 target(s)
+[02:22:15] [INFO] [owb-agents.js] [State A] Coords: (344, 312) -> scaled (688, 623) -> final (688, 623)
+[02:22:15] [INFO] [owb-agents.js] [State A] Coords: (656, 312) -> scaled (1312, 623) -> final (1312, 623)
+[02:22:15] [INFO] [owb-agents.js] [State A] Coords: (864, 188) -> scaled (1728, 376) -> final (1728, 376)
+[02:22:15] [INFO] [owb-agents.js] [State A] Coords: (864, 312) -> scaled (1728, 623) -> final (1728, 623)
+[02:22:15] [INFO] [owb-agents.js] [State A] Clicking 4 target(s)...
+[02:22:15] [INFO] [owb-agents.js] [State A] Target 1/4: (688, 623) price=?
+[02:22:15] [INFO] [api/interactions/clickAt.js] Clicking at (688, 623) with button: left
+[02:22:15] [INFO] [api/interactions/clickAt.js] ClickAt completed at (688, 624)
+[02:22:15] [INFO] [owb-agents.js] [State A] Target 2/4: (1312, 623) price=?
+[02:22:15] [INFO] [api/interactions/clickAt.js] Clicking at (1312, 623) with button: left
+[02:22:16] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1312, 622)
+[02:22:16] [INFO] [owb-agents.js] [State A] Target 3/4: (1728, 376) price=?
+[02:22:16] [INFO] [api/interactions/clickAt.js] Clicking at (1728, 376) with button: left
+[02:22:17] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1728, 375)
+[02:22:18] [INFO] [owb-agents.js] [State A] Target 4/4: (1728, 623) price=?
+[02:22:18] [INFO] [api/interactions/clickAt.js] Clicking at (1728, 623) with button: left
+[02:22:18] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1729, 622)
+[02:22:18] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
+[02:22:18] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602538631-2026-03-15-02-22-18.png (73 KB)
+[02:22:18] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 4 target(s)
+[02:22:18] [INFO] [agent-main.js] ✅ Iteration 6 completed successfully
+[02:22:19] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-6-2026-03-15-02-22-18.png
+[02:22:19] [INFO] [agent-main.js] Waiting 2s before next iteration...
+[02:22:21] [INFO] [agent-main.js] 
+--- Iteration 7/500 ---
+[02:22:21] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-7-2026-03-15-02-22-21.png
+[02:22:21] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
+[02:22:21] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
+[02:22:21] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
+[02:22:21] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
+[02:22:21] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
+[02:22:21] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
+[02:22:22] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 319.5 KB
+[02:22:23] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 319.5 KB → 74.5 KB (4.3x smaller, 196ms)
+[02:22:23] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.29x compression, 196ms
+[02:22:23] [INFO] [api/agent/vision.js] [captureState] Screenshot: 99 KB (viewport: 2196x1015)
+[02:22:23] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-22-23.png (74 KB)
+[02:22:23] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
+[02:22:23] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
+[02:22:24] [INFO] [api/agent/llmClient.js] Response time: 1681ms
+[02:22:24] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 278, "y": 328}, {"x": 778, "y": 328}]}
+[02:22:24] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":278,"y":328},{"x":778,"y":328}]}
+[02:22:24] [INFO] [owb-agents.js] [State A] Found 2 target(s)
+[02:22:24] [INFO] [owb-agents.js] [State A] Coords: (278, 328) -> scaled (556, 655) -> final (556, 655)
+[02:22:24] [INFO] [owb-agents.js] [State A] Coords: (778, 328) -> scaled (1556, 655) -> final (1556, 655)
+[02:22:24] [INFO] [owb-agents.js] [State A] Clicking 2 target(s)...
+[02:22:24] [INFO] [owb-agents.js] [State A] Target 1/2: (556, 655) price=?
+[02:22:24] [INFO] [api/interactions/clickAt.js] Clicking at (556, 655) with button: left
+[02:22:26] [INFO] [api/interactions/clickAt.js] ClickAt completed at (556, 655)
+[02:22:27] [INFO] [owb-agents.js] [State A] Target 2/2: (1556, 655) price=?
+[02:22:27] [INFO] [api/interactions/clickAt.js] Clicking at (1556, 655) with button: left
+[02:22:28] [INFO] [api/interactions/clickAt.js] ClickAt completed at (1556, 654)
+[02:22:28] [INFO] [owb-agents.js] [State A] Waiting for actions to complete...
+[02:22:28] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-state-a-verified-1773602548229-2026-03-15-02-22-28.png (74 KB)
+[02:22:28] [INFO] [owb-agents.js] [State A] Action completed successfully - clicked 2 target(s)
+[02:22:28] [INFO] [agent-main.js] ✅ Iteration 7 completed successfully
+[02:22:29] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-success-7-2026-03-15-02-22-28.png
+[02:22:29] [INFO] [agent-main.js] Waiting 2s before next iteration...
+[02:22:31] [INFO] [agent-main.js] 
+--- Iteration 8/500 ---
+[02:22:31] [INFO] [owb-agents.js] [DEBUG] Screenshot saved: logs/debug-state-A-before-8-2026-03-15-02-22-31.png
+[02:22:31] [INFO] [owb-agents.js] >>> Executing State A: Grey Free land
+[02:22:31] [INFO] [owb-agents.js] [State A] Buy Unowned/Grey land
+[02:22:31] [INFO] [owb-agents.js] [State A] Viewport: 2196x1015
+[02:22:31] [INFO] [owb-agents.js] [State A] Canvas detected at (0, 0), size: 2196x1015
+[02:22:31] [INFO] [owb-agents.js] [State A] V-PREP config: 1098x508 (max scale: 2x)
+[02:22:31] [INFO] [api/agent/vision.js] [captureState] Viewport: 2196x1015, quality: 80, vprep: true
+[02:22:32] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Processing: 2196x1015, 325.1 KB
+[02:22:32] [INFO] [api/utils/vision-preprocessor.js] [V-PREP] Complete: 325.1 KB → 76.2 KB (4.3x smaller, 163ms)
+[02:22:32] [INFO] [api/agent/vision.js] [captureState] V-PREP applied: 4.27x compression, 163ms
+[02:22:32] [INFO] [api/agent/vision.js] [captureState] Screenshot: 102 KB (viewport: 2196x1015)
+[02:22:32] [INFO] [owb-agents.js] [DEBUG] V-PREP processed image saved: logs/debug-before-stateA-2026-03-15-02-22-32.png (76 KB)
+[02:22:32] [INFO] [owb-agents.js] [V-PREP] Output: 1098x508, Viewport: 2196x1015, Scale factors: X=2.000, Y=1.998
+[02:22:32] [INFO] [api/agent/llmClient.js] Sending Request to gemma3:4b [Vision Enabled]...
+[02:22:34] [INFO] [api/agent/llmClient.js] Response time: 1641ms
+[02:22:34] [INFO] [api/agent/llmClient.js] Raw LLM Output: {"targets": [{"x": 340, "y": 280}, {"x": 680, "y": 280}], "found": true}
+[02:22:34] [INFO] [owb-agents.js] [State A] LLM result: {"targets":[{"x":340,"y":280},{"x":680,"y":280}],"found":true}
+[02:22:34] [INFO] [owb-agents.js] [State A] Found 2 target(s)
+[02:22:34] [INFO] [owb-agents.js] [State A] Coords: (340, 280) -> scaled (680, 559) -> final (680, 559)
+[02:22:34] [INFO] [owb-agents.js] [State A] Coords: (680, 280) -> scaled (1360, 559) -> final (1360, 559)
+[02:22:34] [INFO] [owb-agents.js] [State A] Clicking 2 target(s)...
+[02:22:34] [INFO] [owb-agents.js] [State A] Target 1/2: (680, 559) price=?
+[02:22:34] [INFO] [api/interactions/clickAt.js] Clicking at (680, 559) with button: left
+[02:22:35] [INFO] [agent-main.js] [Shutdown] Received SIGINT. Closing browsers and cleaning up...
+[02:22:35] [INFO] [orchestrator.js] [Orchestrator] Queue empty, resolving immediately
+[02:22:35] [INFO] [sessionManager.js] [SessionManager] SessionManager shutting down...
+[02:22:35] [WARN] [automator.js] [Automator] Native disconnect event fired for: ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
+[02:22:35] [INFO] [automator.js] Background reconnection attempt 1 for ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
+[02:22:35] [INFO] [automator.js] Attempting to reconnect to ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
+[02:22:35] [ERROR] [owb-agents.js] [State A] Failed: mouse.move: Target page, context or browser has been closed
+[02:22:35] [WARN] [agent-main.js] ❌ Iteration 8 failed - no valid action taken
+[02:22:35] [WARN] [owb-agents.js] [DEBUG] Screenshot failed: Page has been closed
+[02:22:35] [INFO] [agent-main.js] Waiting 2s before next iteration...
+[02:22:35] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:9001/devtools/browser/34da975a-928f-443e-8068-e1be3584a722
+[02:22:35] [INFO] [sessionManager.js] [SessionManager] SessionManager shutdown complete
+[02:22:35] [INFO] [automator.js] Automator shutting down...
+[02:22:35] [INFO] [automator.js] Closing 0 browser connections
+[02:22:35] [INFO] [automator.js] [Automator] Proactive health checks natively disabled.
+[02:22:35] [INFO] [automator.js] All connections closed
+[02:22:35] [INFO] [automator.js] Automator shutdown complete
+[02:22:35] [INFO] [metrics.js] Generating JSON summary report...
+[02:22:35] [INFO] [metrics.js] Successfully generated JSON report at C:\My Script\auto-ai\run-summary.json
+[02:22:35] [INFO] [orchestrator.js] [Orchestrator] Orchestrator shutdown complete
+[02:22:35] [INFO] [agent-main.js] [Shutdown] Orchestrator shutdown complete.

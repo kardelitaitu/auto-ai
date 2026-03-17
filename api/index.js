@@ -156,7 +156,7 @@ import {
 } from './core/errors.js';
 
 // ─── Actions ──────────────────────────────────────────────────────
-import { click, type, hover, rightClick } from './interactions/actions.js';
+import { click, type, hover, rightClick, drag, clickAt, multiSelect, press, typeText, hold, releaseAll } from './interactions/actions.js';
 import { quoteWithAI } from './actions/quote.js';
 import { replyWithAI } from './actions/reply.js';
 import { likeWithAPI } from './actions/like.js';
@@ -184,6 +184,7 @@ import { text, attr, visible, count, exists, currentUrl } from './interactions/q
 // ─── Wait ────────────────────────────────────────────────────────
 import {
     wait,
+    waitWithAbort,
     waitFor,
     waitVisible,
     waitHidden,
@@ -251,6 +252,10 @@ import { apply as patchApply, stripCDPMarkers, check as patchCheck } from './uti
 import { readline } from './utils/file.readline.js';
 import { consumeline } from './utils/file.consumeline.js';
 
+// ─── Visual Debug ─────────────────────────────────────────────
+import visualDebugModule from './utils/visual-debug.js';
+const visualDebug = visualDebugModule;
+
 // ─── Agent ─────────────────────────────────────────────────────
 import { see } from './agent/observer.js';
 import { doAction } from './agent/executor.js';
@@ -263,7 +268,21 @@ import {
     agentRunner,
     captureAXTree,
     captureState,
+    processWithVPrep as _processWithVPrep,
+    getVPrepPresets as _getVPrepPresets,
+    getVPrepStats as _getVPrepStats,
 } from './agent/index.js';
+import { gameAgentRunner } from './agent/gameRunner.js';
+
+// ─── Vision Preprocessor (V-PREP) ─────────────────────────────
+import { VisionPreprocessor, VPrepPresets, processForVision as _processForVision } from './utils/vision-preprocessor.js';
+const visionPreprocessor = new VisionPreprocessor();
+
+// ─── Game State ───────────────────────────────────────────────
+import * as gameState from './interactions/gameState.js';
+import * as gameUnits from './interactions/game-units.js';
+import * as resourceTracker from './interactions/resourceTracker.js';
+import * as gameMenus from './interactions/gameMenus.js';
 
 // ─── Init ───────────────────────────────────────────────────────
 import { initPage, diagnosePage, clearLiteMode } from './core/init.js';
@@ -397,6 +416,13 @@ export const api = {
     type,
     hover,
     rightClick,
+    drag,
+    clickAt,
+    multiSelect,
+    press,
+    typeText,
+    hold,
+    releaseAll,
     quoteWithAI,
     replyWithAI,
     likeWithAPI,
@@ -420,6 +446,7 @@ export const api = {
 
     // ── Wait (synchronization) ───────────────────────────────────
     wait,
+    waitWithAbort,
     waitFor,
     waitVisible,
     waitHidden,
@@ -511,6 +538,77 @@ export const api = {
      */
     agent: agentFn,
 
+    /**
+     * Game Agent - Enhanced agent for strategy games with verification
+     * @example
+     * await api.gameAgent('Build a barracks and train 5 footmen');
+     */
+    gameAgent: {
+        run: (goal, config) => gameAgentRunner.run(goal, config),
+        stop: () => gameAgentRunner.stop(),
+        isRunning: () => gameAgentRunner.isRunning,
+        getStats: () => gameAgentRunner.getUsageStats(),
+    },
+
+    // ── V-PREP (Vision Pre-Processing) ──────────────────────────
+    /**
+     * Vision Pre-Processing and Resolution Enhancement Protocol
+     * Optimizes screenshots for LLM vision consumption.
+     *
+     * @example
+     * // Quick process with preset
+     * const result = await api.vprep.process(buffer, api.vprep.presets.GAME_UI);
+     *
+     * // Custom configuration
+     * const result = await api.vprep.process(buffer, {
+     *     targetWidth: 800,
+     *     grayscale: true,
+     *     contrast: 1.3,
+     *     edgeEnhance: true,
+     * });
+     *
+     * // Use with captureState
+     * const state = await api.agent.captureState({ vprep: true, vprepConfig: { grayscale: true } });
+     */
+    vprep: {
+        /**
+         * Process an image buffer for optimal LLM consumption
+         * @param {Buffer|string} input - Image buffer or base64 string
+         * @param {object} [config] - Processing options
+         * @returns {Promise<object>} Result with base64, buffer, and stats
+         */
+        process: (input, config) => visionPreprocessor.process(input, config),
+
+        /**
+         * Preset configurations for common use cases
+         */
+        presets: VPrepPresets,
+
+        /**
+         * Get processing statistics
+         * @returns {object} Stats including total processed, bytes saved
+         */
+        getStats: () => visionPreprocessor.getStats(),
+
+        /**
+         * Reset statistics
+         */
+        resetStats: () => visionPreprocessor.resetStats(),
+
+        /**
+         * The VisionPreprocessor instance for advanced usage
+         */
+        instance: visionPreprocessor,
+    },
+
+    // ── Game State ───────────────────────────────────────────────
+    game: {
+        ...gameState,
+        units: gameUnits,
+        resources: resourceTracker,
+        menus: gameMenus,
+    },
+
     // ── Events & Plugins ────────────────────────────────────────
     get events() {
         return getEvents();
@@ -550,6 +648,9 @@ export const api = {
             post: intentPost,
         }
     },
+
+    // ── Visual Debug ───────────────────────────────────────────────
+    visualDebug,
 };
 
 export default api;
@@ -572,6 +673,13 @@ export {
     type,
     hover,
     rightClick,
+    drag,
+    clickAt,
+    multiSelect,
+    press,
+    typeText,
+    hold,
+    releaseAll,
     quoteWithAI,
     replyWithAI,
     likeWithAPI,
@@ -598,6 +706,7 @@ export {
     exists,
     currentUrl,
     wait,
+    waitWithAbort,
     waitFor,
     waitVisible,
     waitHidden,
@@ -651,6 +760,8 @@ export {
     screenshot,
     readline,
     consumeline,
+    // Visual Debug
+    visualDebug,
     see,
     doAction as do,
     agentFind as find,

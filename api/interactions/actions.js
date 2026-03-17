@@ -22,7 +22,12 @@ import { createLogger } from '../core/logger.js';
 import { mathUtils } from '../utils/math.js';
 import { getLocator, stringify } from '../utils/locator.js';
 import { createPipeline, retryMiddleware, recoveryMiddleware } from '../core/middleware.js';
-import { ElementObscuredError } from '../core/errors.js';
+import { ElementObscuredError, SessionDisconnectedError } from '../core/errors.js';
+
+export { drag } from './drag.js';
+export { clickAt } from './clickAt.js';
+export { multiSelect } from './multiSelect.js';
+export { press, typeText, hold, releaseAll } from './keys.js';
 
 const logger = createLogger('api/actions.js');
 
@@ -44,7 +49,7 @@ async function waitForStableBox(locator, options = {}) {
 
     while (Date.now() - start < timeoutMs) {
         if (!isSessionActive()) {
-            throw new Error('SessionDisconnectedError: Browser closed during stability check.');
+            throw new SessionDisconnectedError('Browser closed during stability check.');
         }
         const box = await locator.boundingBox().catch((e) => {
             if (e.message?.includes('SessionDisconnectedError')) throw e;
@@ -104,7 +109,7 @@ async function isObscured(locator) {
  */
 export async function click(selector, options = {}) {
     if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed before click.');
+        throw new SessionDisconnectedError('Browser closed before click.');
     }
 
     const page = getPage();
@@ -216,7 +221,7 @@ export async function click(selector, options = {}) {
  */
 export async function type(selector, text, options = {}) {
     if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed before type.');
+        throw new SessionDisconnectedError('Browser closed before type.');
     }
     const { recovery = true } = options;
 
@@ -316,7 +321,7 @@ export async function type(selector, text, options = {}) {
  */
 export async function hover(selector, options = {}) {
     if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed before hover.');
+        throw new SessionDisconnectedError('Browser closed before hover.');
     }
     const { recovery = true } = options;
 

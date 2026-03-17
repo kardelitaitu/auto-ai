@@ -1,27 +1,27 @@
 {
   "summary": {
     "system": {
-      "uptime": 558013,
-      "uptimeFormatted": "9m 18s",
-      "timeSinceReset": 558013,
-      "timeSinceResetFormatted": "9m 18s"
+      "uptime": 74714,
+      "uptimeFormatted": "1m 14s",
+      "timeSinceReset": 74714,
+      "timeSinceResetFormatted": "1m 14s"
     },
     "tasks": {
-      "executed": 8,
+      "executed": 0,
       "failed": 0,
-      "succeeded": 8,
-      "successRate": 100,
-      "avgDuration": 132978.5,
-      "totalDuration": 1063828,
+      "succeeded": 0,
+      "successRate": 0,
+      "avgDuration": 0,
+      "totalDuration": 0,
       "durationPercentiles": {
-        "p50": 51073,
-        "p95": 240304,
-        "p99": 240304
+        "p50": 0,
+        "p95": 0,
+        "p99": 0
       }
     },
     "browsers": {
-      "discovered": 2,
-      "connected": 2,
+      "discovered": 1,
+      "connected": 1,
       "failed": 0,
       "connectionRate": "100.00"
     },
@@ -32,8 +32,8 @@
       "avgResponseTime": 0
     },
     "sessions": {
-      "created": 2,
-      "active": 2,
+      "created": 1,
+      "active": 1,
       "closed": 0
     },
     "social": {
@@ -61,80 +61,7 @@
       },
       "errors": {}
     },
-    "runEndTime": "2026-03-11T13:36:11.417Z"
+    "runEndTime": "2026-03-15T19:22:35.310Z"
   },
-  "tasks": [
-    {
-      "taskName": "pageview",
-      "duration": 50280,
-      "success": true,
-      "sessionId": "roxy:0002",
-      "error": null,
-      "startTime": "2026-03-11T13:26:55.242Z",
-      "timestamp": 1773235665522
-    },
-    {
-      "taskName": "pageview",
-      "duration": 50846,
-      "success": true,
-      "sessionId": "roxy:0001",
-      "error": null,
-      "startTime": "2026-03-11T13:26:56.134Z",
-      "timestamp": 1773235666980
-    },
-    {
-      "taskName": "cookiebot",
-      "duration": 240304,
-      "success": true,
-      "sessionId": "roxy:0002",
-      "error": null,
-      "startTime": "2026-03-11T13:27:47.095Z",
-      "timestamp": 1773235907399
-    },
-    {
-      "taskName": "cookiebot",
-      "duration": 240084,
-      "success": true,
-      "sessionId": "roxy:0001",
-      "error": null,
-      "startTime": "2026-03-11T13:27:47.904Z",
-      "timestamp": 1773235907988
-    },
-    {
-      "taskName": "pageview",
-      "duration": 50274,
-      "success": true,
-      "sessionId": "roxy:0002",
-      "error": null,
-      "startTime": "2026-03-11T13:31:48.155Z",
-      "timestamp": 1773235958429
-    },
-    {
-      "taskName": "pageview",
-      "duration": 51073,
-      "success": true,
-      "sessionId": "roxy:0001",
-      "error": null,
-      "startTime": "2026-03-11T13:31:49.926Z",
-      "timestamp": 1773235960999
-    },
-    {
-      "taskName": "cookiebot",
-      "duration": 171769,
-      "success": true,
-      "sessionId": "roxy:0002",
-      "error": null,
-      "startTime": "2026-03-11T13:32:41.125Z",
-      "timestamp": 1773236132894
-    },
-    {
-      "taskName": "cookiebot",
-      "duration": 209198,
-      "success": true,
-      "sessionId": "roxy:0001",
-      "error": null,
-      "startTime": "2026-03-11T13:32:42.170Z",
-      "timestamp": 1773236171368
-    }
-  ]
+  "tasks": []
 }

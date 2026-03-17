@@ -103,6 +103,15 @@ export declare const api: {
     exists: (selector: string) => Promise<boolean>;
     getCurrentUrl: () => Promise<string>;
 
+    // V-PREP (Vision Pre-Processing)
+    vprep: {
+        process: (input: Buffer | string, config?: VPrepConfig) => Promise<VPrepResult>;
+        presets: VPrepPresets;
+        getStats: () => VPrepStats;
+        resetStats: () => void;
+        instance: import('./utils/vision-preprocessor.js').VisionPreprocessor;
+    };
+
     ActionError: typeof import('./core/errors.js').ActionError;
     ValidationError: typeof import('./core/errors.js').ValidationError;
     ElementNotFoundError: typeof import('./core/errors.js').ElementNotFoundError;
@@ -218,13 +227,69 @@ export class AutomationError extends Error {
     constructor(message: string, code?: string);
 }
 
-export class SessionError extends AutomationError {}
-export class ContextError extends AutomationError {}
-export class ElementError extends AutomationError {}
-export class ActionError extends AutomationError {}
-export class NavigationError extends AutomationError {}
-export class ConfigError extends AutomationError {}
-export class LLMError extends AutomationError {}
-export class ValidationError extends AutomationError {}
+export class SessionError extends AutomationError { }
+export class ContextError extends AutomationError { }
+export class ElementError extends AutomationError { }
+export class ActionError extends AutomationError { }
+export class NavigationError extends AutomationError { }
+export class ConfigError extends AutomationError { }
+export class LLMError extends AutomationError { }
+export class ValidationError extends AutomationError { }
 
 export function isErrorCode(error: Error, code: string): boolean;
+
+// ─── V-PREP Types (Vision Pre-Processing) ──────────────────────
+
+export interface ROI {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+}
+
+export interface VPrepConfig {
+    targetWidth?: number;
+    targetHeight?: number;
+    grayscale?: boolean;
+    contrast?: number;
+    brightness?: number;
+    sharpness?: number;
+    noiseReduction?: number;
+    roi?: ROI;
+    autoROI?: boolean;
+    edgeEnhance?: boolean;
+    format?: 'jpeg' | 'webp';
+    quality?: number;
+    debug?: boolean;
+}
+
+export interface VPrepStats {
+    originalSize: number;
+    processedSize: number;
+    compressionRatio: string;
+    processingTime: number;
+    outputDimensions?: { width: number; height: number };
+    error?: string;
+}
+
+export interface VPrepResult {
+    buffer: Buffer;
+    base64: string;
+    appliedROI?: ROI | null;
+    stats: VPrepStats;
+}
+
+export interface VPrepPresets {
+    FAST: VPrepConfig;
+    GAME_UI: VPrepConfig;
+    TEXT_HEAVY: VPrepConfig;
+    TOKEN_SAVING: VPrepConfig;
+    DEBUG: VPrepConfig;
+}
+
+export class VisionPreprocessor {
+    constructor(options?: Partial<VPrepConfig>);
+    process(input: Buffer | string, config?: VPrepConfig): Promise<VPrepResult>;
+    getStats(): { totalProcessed: number; totalSavedBytes: number; avgCompressionRatio: number };
+    resetStats(): void;
+}

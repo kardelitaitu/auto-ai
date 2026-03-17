@@ -25,12 +25,7 @@ import { ReferrerEngine } from '../utils/urlReferrer.js';
 import metricsCollector from '../utils/metrics.js';
 import { takeScreenshot } from '../utils/screenshot.js';
 import { applyHumanizationPatch } from '../utils/browserPatch.js';
-// import { humanTiming } from '../api/behaviors/human-timing.js';
-// import { entropy } from '../utils/entropyController.js';
-// import { GhostCursor } from '../utils/ghostCursor.js';
-// import PopupCloser from '../utils/popup-closer.js';
-// import OllamaClient from '../core/ollama-client.js';
-// import { config } from '../utils/config-service.js';
+
 
 // Helper: Extract username from tweet URL
 function extractUsername(tweetUrl) {
