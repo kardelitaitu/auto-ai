@@ -38,7 +38,7 @@ vi.mock('@api/index.js', () => {
 });
 
 import { api } from '@api/index.js';
-import { EngagementHandler } from '@api/twitter/twitter-agent/EngagementHandler.js';
+import { EngagementHandler } from '../../../../twitter/twitter-agent/EngagementHandler.js';
 import { mathUtils } from '@api/utils/math.js';
 
 describe('EngagementHandler', () => {

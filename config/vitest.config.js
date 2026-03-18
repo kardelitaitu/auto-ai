@@ -93,8 +93,11 @@ export default defineConfig({
                 'backup/',
                 '**/*.test.js',
                 '**/*.spec.js',
+                '**/*.manual.js',
                 'local-agent/',
                 'api/ui/electron-dashboard/',
+                'api/tests/unit/semantic-parser-runner.js',
+                'api/tests/edge-cases/',
             ],
             thresholds: {
                 statements: 70,

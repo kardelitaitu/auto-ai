@@ -1710,8 +1710,12 @@ export class TwitterAgent {
                 maxDurationSec * 1000
             );
             this.sessionEndTime = Date.now() + durationMs;
+            
+            // Sync fatigue threshold: 70-90% of session duration
+            this.fatigueThreshold = Math.round(durationMs * mathUtils.randomInRange(0.7, 0.9));
+            
             this.log(
-                `Session Timer Set: ${(durationMs / 1000).toFixed(1)}s (until ${new Date(this.sessionEndTime).toLocaleTimeString()})`
+                `Session Timer Set: ${(durationMs / 1000).toFixed(1)}s (until ${new Date(this.sessionEndTime).toLocaleTimeString()}). Fatigue at ${(this.fatigueThreshold / 60000).toFixed(1)}m.`
             );
         } else {
             this.log(`Session Mode: Fixed Cycles (${cycles})`);
@@ -1750,9 +1754,9 @@ export class TwitterAgent {
         }
 
         while (true) {
-            // HUMAN-LIKE: Check if should end session based on natural patterns
+            // HUMAN-LIKE: Check if should end session based on natural patterns (only if no explicit end time set)
             const elapsed = Date.now() - this.sessionStart;
-            if (this.human.session.shouldEndSession(elapsed)) {
+            if (!this.sessionEndTime && this.human.session.shouldEndSession(elapsed)) {
                 this.log(`⏳ Natural session end reached. Finishing...`);
                 break;
             }

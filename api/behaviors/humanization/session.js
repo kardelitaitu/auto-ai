@@ -5,18 +5,6 @@
  */
 
 import { api } from '../../index.js';
-/**
- * Session Manager
- * Human-like session patterns based on time-of-day
- *
- * Human Session Patterns:
- * - Peak hours (8-10am, 12-1pm, 7-9pm): 10-20 minute sessions
- * - Off hours: 3-8 minute sessions
- * - Natural breaks: 30-60 minutes between sessions
- * - Session warmup: 3-5 seconds
- * - Session cooldown: 2-5 seconds
- */
-
 import { mathUtils } from '../../utils/math.js';
 import { scrollRandom } from '../scroll-helper.js';
 
@@ -33,62 +21,72 @@ export class SessionManager {
      * @returns {object} Session configuration
      */
     getOptimalLength() {
-        // Use agent config if available, otherwise fallback to heuristics
-        const configMinSec = this.agent?.config?.session?.minDuration;
-        const configMaxSec = this.agent?.config?.session?.maxDuration;
+        // Return cached value if already calculated for this session
+        if (this._cachedOptimalLength) {
+            return this._cachedOptimalLength;
+        }
 
-        if (configMinSec && configMaxSec) {
+        // Use agent config if available (prioritize minSeconds/maxSeconds from settings.json)
+        const sessionConfig = this.agent?.config?.session || {};
+        const configMinSec = sessionConfig.minSeconds || sessionConfig.minDuration;
+        const configMaxSec = sessionConfig.maxSeconds || sessionConfig.maxDuration;
+
+        let result;
+
+        if (configMinSec && configMaxSec && !isNaN(configMinSec) && !isNaN(configMaxSec)) {
             const minMs = configMinSec * 1000;
             const maxMs = configMaxSec * 1000;
             const targetMs = mathUtils.randomInRange(minMs, maxMs);
 
-            return {
+            result = {
                 minMs,
                 maxMs,
                 targetMs,
                 reason: `configured ${configMinSec}-${configMaxSec}s session`,
             };
-        }
-
-        const hour = new Date().getHours();
-        const isWeekend = [0, 6].includes(new Date().getDay());
-
-        let baseLength, variability;
-
-        if (hour >= 8 && hour <= 10) {
-            // Morning peak
-            baseLength = isWeekend ? 15 : 10; // minutes
-            variability = 0.3;
-        } else if (hour >= 12 && hour <= 14) {
-            // Lunch peak
-            baseLength = 12;
-            variability = 0.25;
-        } else if (hour >= 18 && hour <= 21) {
-            // Evening peak
-            baseLength = isWeekend ? 20 : 15;
-            variability = 0.35;
-        } else if (hour >= 22 || hour <= 5) {
-            // Late night/early morning (shorter sessions)
-            baseLength = isWeekend ? 10 : 5;
-            variability = 0.4;
         } else {
-            // Normal hours
-            baseLength = isWeekend ? 12 : 8;
-            variability = 0.3;
+            const hour = new Date().getHours();
+            const isWeekend = [0, 6].includes(new Date().getDay());
+
+            let baseLength, variability;
+
+            if (hour >= 8 && hour <= 10) {
+                // Morning peak
+                baseLength = isWeekend ? 15 : 10; // minutes
+                variability = 0.3;
+            } else if (hour >= 12 && hour <= 14) {
+                // Lunch peak
+                baseLength = 12;
+                variability = 0.25;
+            } else if (hour >= 18 && hour <= 21) {
+                // Evening peak
+                baseLength = isWeekend ? 20 : 15;
+                variability = 0.35;
+            } else if (hour >= 22 || hour <= 5) {
+                // Late night/early morning (shorter sessions)
+                baseLength = isWeekend ? 10 : 7; // Increased from 5 to 7 for consistency
+                variability = 0.4;
+            } else {
+                // Normal hours
+                baseLength = isWeekend ? 12 : 8;
+                variability = 0.3;
+            }
+
+            // Add gaussian variation
+            const meanMs = baseLength * 60 * 1000;
+            const stdDevMs = baseLength * variability * 60 * 1000;
+            const variation = mathUtils.gaussian(meanMs, stdDevMs);
+
+            result = {
+                minMs: baseLength * 0.6 * 60 * 1000,
+                maxMs: baseLength * 1.4 * 60 * 1000,
+                targetMs: Math.max(120000, Math.round(variation)), // Floor at 2 minutes
+                reason: this._getReason(hour, isWeekend),
+            };
         }
 
-        // Add gaussian variation
-        const variation = mathUtils.gaussian(
-            baseLength * 60 * 1000,
-            baseLength * variability * 60 * 1000
-        );
-
-        return {
-            minMs: baseLength * 0.6 * 60 * 1000,
-            maxMs: baseLength * 1.4 * 60 * 1000,
-            targetMs: Math.round(variation),
-            reason: this._getReason(hour, isWeekend),
-        };
+        this._cachedOptimalLength = result;
+        return result;
     }
 
     /**

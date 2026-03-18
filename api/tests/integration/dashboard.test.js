@@ -17,11 +17,12 @@ import { DashboardServer } from '../../ui/electron-dashboard/dashboard.js';
 describe('DashboardServer Integration', () => {
     let server;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.restoreAllMocks();
+        server = new DashboardServer(0); // random port to avoid conflicts
+        await server.start(); // Initialize broadcast manager (must be before fake timers)
         vi.useFakeTimers();
         vi.setSystemTime(10000);
-        server = new DashboardServer();
         server.dashboardData.tasks = [];
         server.dashboardData.apiMetrics = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
         server.historyManager.tasks = [];
@@ -84,16 +85,20 @@ describe('DashboardServer Integration', () => {
     });
 
     describe('Metrics Update Behavior', () => {
-        it('should replace entire metrics object on update', () => {
+        it('should merge partial updates (merge semantics)', () => {
             server.updateMetrics({ sessions: [{ id: 's1' }], queue: { queueLength: 5 } });
             server.updateMetrics({ sessions: [{ id: 's1' }, { id: 's2' }] });
             expect(server.latestMetrics.sessions).toHaveLength(2);
-            expect(server.latestMetrics.queue).toBeUndefined();
+            // queue remains unchanged because not in second payload
+            expect(server.latestMetrics.queue.queueLength).toBe(5);
         });
 
-        it('should completely replace on empty update', () => {
+        it('should do nothing on empty update', () => {
+            server.updateMetrics({ sessions: [{ id: 's1' }], queue: { queueLength: 5 } });
             server.updateMetrics({});
-            expect(server.latestMetrics.sessions).toBeUndefined();
+            // Both sessions and queue remain unchanged
+            expect(server.latestMetrics.sessions).toHaveLength(1);
+            expect(server.latestMetrics.queue.queueLength).toBe(5);
         });
     });
 

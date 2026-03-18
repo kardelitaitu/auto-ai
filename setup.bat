@@ -1,9 +1,9 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
 
-echo ==========================================
-echo   Auto-AI Setup Script
-echo ==========================================
+echo ===========================================
+echo   Auto-AI Full Project Setup
+echo ===========================================
 echo.
 
 :: Check for Node.js
@@ -22,27 +22,67 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
-:: Check for package.json
+:: Root Setup
+echo [INFO] Step 1: Root directory setup...
 if not exist "package.json" (
     echo [ERROR] package.json not found in the current directory.
     pause
     exit /b 1
 )
 
-echo [INFO] Found package.json. Starting npm install...
-echo.
+:: Initialize root .env if it doesn't exist
+if exist ".env.example" (
+    if not exist ".env" (
+        echo [INFO] Creating root .env from .env.example...
+        copy ".env.example" ".env" >nul
+    )
+)
 
+echo [INFO] Running npm install in root...
 call npm install
+if %ERRORLEVEL% neq 0 (
+    echo [ERROR] Root npm install failed.
+    pause
+    exit /b 1
+)
 
-if %ERRORLEVEL% equ 0 (
-    echo.
-    echo ==========================================
-    echo   Setup completed successfully!
-    echo ==========================================
+:: UI Dashboard Setup
+echo.
+echo [INFO] Step 2: UI Dashboard setup...
+set "DASHBOARD_DIR=api\ui\electron-dashboard"
+
+if exist "%DASHBOARD_DIR%" (
+    pushd "%DASHBOARD_DIR%"
+    
+    if exist "package.json" (
+        :: Initialize dashboard .env if it doesn't exist
+        if exist ".env.example" (
+            if not exist ".env" (
+                echo [INFO] Creating dashboard .env from .env.example...
+                copy ".env.example" ".env" >nul
+            )
+        )
+        
+        echo [INFO] Running npm install in !DASHBOARD_DIR!...
+        call npm install
+        if !ERRORLEVEL! neq 0 (
+            echo [ERROR] Dashboard npm install failed.
+            popd
+            pause
+            exit /b 1
+        )
+    ) else (
+        echo [WARN] package.json not found in !DASHBOARD_DIR!. skipping install.
+    )
+    popd
 ) else (
-    echo.
-    echo [ERROR] npm install failed. Please check the logs above.
+    echo [WARN] Dashboard directory not found at !DASHBOARD_DIR!.
 )
 
 echo.
-exit
+echo ===========================================
+echo   Setup completed successfully!
+echo ===========================================
+echo.
+pause
+exit /b 0

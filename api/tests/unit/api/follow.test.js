@@ -60,8 +60,10 @@ describe('api/actions/follow.js', () => {
 
     describe('followWithAPI', () => {
         it('should follow successfully', async () => {
-            visible.mockResolvedValueOnce(false); // not already following
-            visible.mockResolvedValueOnce(true); // now following
+            visible.mockResolvedValueOnce(false); // unfollowSel not visible
+            visible.mockResolvedValueOnce(true);  // followSel visible
+            // after click, verification loop will see unfollowSel (now visible)
+            visible.mockResolvedValue(true);
 
             const result = await followWithAPI({ username: 'testuser' });
 
@@ -81,7 +83,8 @@ describe('api/actions/follow.js', () => {
         });
 
         it('should skip if button shows Following', async () => {
-            visible.mockResolvedValueOnce(false);
+            visible.mockResolvedValueOnce(false); // unfollowSel not visible
+            visible.mockResolvedValueOnce(true);  // followSel visible
             mockPage.textContent.mockResolvedValue('Following');
 
             const result = await followWithAPI({ username: 'testuser' });
@@ -92,8 +95,13 @@ describe('api/actions/follow.js', () => {
         });
 
         it('should return failure if verification fails', async () => {
+            // unfollowSel not visible, followSel visible
             visible.mockResolvedValueOnce(false);
-            visible.mockResolvedValueOnce(false);
+            visible.mockResolvedValueOnce(true);
+            // after click, verification loop will check unfollowSel (still false)
+            visible.mockResolvedValue(false);
+            // button text remains "Follow"
+            mockPage.textContent.mockResolvedValue('Follow');
 
             const result = await followWithAPI({ username: 'testuser', maxAttempts: 1 });
 
@@ -102,7 +110,8 @@ describe('api/actions/follow.js', () => {
         });
 
         it('should handle click error', async () => {
-            visible.mockResolvedValueOnce(false);
+            visible.mockResolvedValueOnce(false); // unfollowSel not visible
+            visible.mockResolvedValueOnce(true);  // followSel visible
             click.mockRejectedValueOnce(new Error('Click failed'));
 
             const result = await followWithAPI({ username: 'testuser' });

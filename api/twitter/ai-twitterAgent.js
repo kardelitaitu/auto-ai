@@ -1663,9 +1663,9 @@ export class AITwitterAgent extends TwitterAgent {
                 // CHECK END CONDITIONS
                 // ============================================================
 
-                // Check if should end session naturally
+                // Check if should end session naturally (only if no explicit end time set)
                 const elapsed = Date.now() - this.sessionStart;
-                if (this.human.session.shouldEndSession(elapsed)) {
+                if (!this.sessionEndTime && this.human.session.shouldEndSession(elapsed)) {
                     this.log(`⏳ Natural session end reached. Finishing...`);
                     break;
                 }

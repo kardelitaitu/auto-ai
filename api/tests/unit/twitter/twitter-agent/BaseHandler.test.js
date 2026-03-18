@@ -40,7 +40,7 @@ describe('BaseHandler', () => {
     beforeEach(async () => {
         vi.clearAllMocks();
 
-        const module = await import('@api/twitter/twitter-agent/BaseHandler.js');
+        const module = await import('../../../../twitter/twitter-agent/BaseHandler.js');
         BaseHandler = module.BaseHandler;
 
         mockAgent = {

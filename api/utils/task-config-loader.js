@@ -19,6 +19,8 @@ import { createLogger } from '../core/logger.js';
 
 const logger = createLogger('task-config-loader.js');
 
+const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
+
 /**
  * Task Configuration Loader
  * Provides centralized configuration loading with caching, validation, and environment overrides
@@ -132,9 +134,9 @@ export class TaskConfigLoader {
         return {
             // Session configuration
             session: {
-                cycles: payload.cycles ?? activityConfig.defaultCycles,
-                minDuration: payload.minDuration ?? activityConfig.defaultMinDuration,
-                maxDuration: payload.maxDuration ?? activityConfig.defaultMaxDuration,
+                cycles: clamp(payload.cycles ?? activityConfig.defaultCycles, 1, 100),
+                minDuration: clamp(payload.minDuration ?? activityConfig.defaultMinDuration, 60, 3600),
+                maxDuration: clamp(payload.maxDuration ?? activityConfig.defaultMaxDuration, 120, 7200),
                 timeout:
                     payload.taskTimeoutMs ??
                     (activityConfig.defaultMinDuration + activityConfig.defaultMaxDuration) * 1000,

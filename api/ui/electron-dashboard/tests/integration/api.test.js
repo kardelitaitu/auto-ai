@@ -1,23 +1,43 @@
 /**
  * Auto-AI Framework - Proprietary Software
  * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
- * @fileoverview Integration tests for dashboard Socket.io communication
+ * @fileoverview Integration tests for dashboard REST API endpoints
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
+import { createServer } from 'net';
+
+/**
+ * Find an available port by trying to bind to port 0
+ */
+function getAvailablePort() {
+    return new Promise((resolve, reject) => {
+        const server = createServer();
+        server.listen(0, () => {
+            const port = server.address().port;
+            server.close(() => resolve(port));
+        });
+        server.on('error', reject);
+    });
+}
 
 describe('Dashboard Export Endpoints', () => {
     let server;
-    const TEST_PORT = 3011;
+    let TEST_PORT;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
+        TEST_PORT = await getAvailablePort();
         const { DashboardServer } = await import('../../dashboard.js');
         server = new DashboardServer(TEST_PORT);
         await server.start();
-    });
+        // Give server time to fully initialize
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }, 30000);
 
-    afterEach(async () => {
+    afterAll(async () => {
         if (server) {
             await server.stop();
+            // Give time for port to be released
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
     });
 

@@ -229,7 +229,7 @@ describe('NavigationHandler', () => {
 
             await handler.navigateHome();
 
-            expect(handler.safeHumanClick).toHaveBeenCalledTimes(2);
+            expect(handler.safeHumanClick).toHaveBeenCalledTimes(1);
             expect(api.waitForURL).toHaveBeenCalledWith('**/home**', { timeout: 5000 });
         });
 
@@ -286,7 +286,7 @@ describe('NavigationHandler', () => {
 
             await handler.navigateHome();
 
-            expect(handler.safeHumanClick).toHaveBeenCalledTimes(2);
+            expect(handler.safeHumanClick).toHaveBeenCalledTimes(1);
         });
 
         it('should catch and handle locator errors', async () => {

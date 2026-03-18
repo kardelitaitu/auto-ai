@@ -115,8 +115,8 @@ describe('SessionManager', () => {
             vi.setSystemTime(new Date('2024-01-01T23:00:00')); // 11 PM
 
             const config = sessionManager.getOptimalLength();
-            // Late night weekday: 5 mins = 300000
-            expect(config.targetMs).toBe(300000);
+            // Late night weekday: 7 mins = 420000 (baseLength = 7)
+            expect(config.targetMs).toBe(420000);
             expect(config.reason).toContain('late night');
         });
 

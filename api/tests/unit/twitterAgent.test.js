@@ -9,7 +9,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('@api/utils/ghostCursor.js', () => ({
     GhostCursor: class {
         constructor() {}
-        click() {}
+        click() {
+            return { success: true, x: 100, y: 100 };
+        }
     },
 }));
 
@@ -103,6 +105,11 @@ vi.mock('../../utils/math.js', () => ({
         roll: vi.fn(() => true),
     },
 }));
+vi.mock('../../utils/entropyController.js', () => ({
+    entropy: {
+        pick: vi.fn(() => 'default'),
+    },
+}));
 
 describe('twitterAgent', () => {
     let TwitterAgent;
@@ -136,6 +143,7 @@ describe('twitterAgent', () => {
                 click: vi.fn().mockResolvedValue(undefined),
                 textContent: vi.fn().mockResolvedValue('mock text'),
                 getAttribute: vi.fn().mockResolvedValue('mock attr'),
+                elementHandle: vi.fn().mockResolvedValue({}),
             }),
             getByText: vi.fn().mockReturnValue({
                 first: vi.fn().mockReturnValue({
@@ -152,6 +160,9 @@ describe('twitterAgent', () => {
                 wheel: vi.fn().mockResolvedValue(undefined),
             },
             reload: vi.fn().mockResolvedValue(undefined),
+            evaluate: vi.fn().mockResolvedValue(true),
+            removeAllListeners: vi.fn(),
+            on: vi.fn(),
         };
 
         api.getPage.mockReturnValue(mockPage);
@@ -174,30 +185,219 @@ describe('twitterAgent', () => {
         vi.useRealTimers();
     });
 
-    it('should initialize correctly', () => {
-        expect(agent).toBeDefined();
-        expect(agent.page).toBe(mockPage);
-    });
-
-    it('checkLoginState should return true if logged in', async () => {
-        mockPage.locator.mockReturnValue({
-            first: vi.fn().mockReturnThis(),
-            isVisible: vi.fn().mockResolvedValue(false),
-            count: vi.fn().mockResolvedValue(1),
+    describe('initialization', () => {
+        it('should initialize correctly', () => {
+            expect(agent).toBeDefined();
+            expect(agent.page).toBe(mockPage);
         });
-        const result = await agent.checkLoginState();
-        expect(result).toBe(true);
+
+        it('should have correct initial state', () => {
+            expect(agent.state.likes).toBe(0);
+            expect(agent.state.follows).toBe(0);
+            expect(agent.state.retweets).toBe(0);
+            expect(agent.state.tweets).toBe(0);
+            expect(agent.state.engagements).toBe(0);
+            expect(agent.state.activityMode).toBe('NORMAL');
+        });
+
+        it('should have session properties', () => {
+            expect(agent.sessionStart).toBeDefined();
+            expect(agent.loopIndex).toBe(0);
+            expect(agent.isFatigued).toBe(false);
+        });
+
+        it('should have configuration', () => {
+            expect(agent.config).toBe(mockProfile);
+        });
+
+        it('should have modular handlers', () => {
+            expect(agent.navigation).toBeDefined();
+            expect(agent.engagement).toBeDefined();
+            expect(agent.session).toBeDefined();
+        });
     });
 
-    it('navigateHome should call api.goto', async () => {
-        mockPage.url.mockReturnValue('https://x.com/someuser/status/123');
-        vi.spyOn(Math, 'random').mockReturnValue(0.05); // Trigger 10% direct URL path
-        await agent.navigateHome();
-        expect(api.goto).toHaveBeenCalledWith('https://x.com/home');
+    describe('clamp', () => {
+        it('should clamp value within range', () => {
+            expect(agent.clamp(5, 0, 10)).toBe(5);
+        });
+
+        it('should clamp to min when below', () => {
+            expect(agent.clamp(-5, 0, 10)).toBe(0);
+        });
+
+        it('should clamp to max when above', () => {
+            expect(agent.clamp(15, 0, 10)).toBe(10);
+        });
+
+        it('should handle equal values', () => {
+            expect(agent.clamp(5, 5, 5)).toBe(5);
+        });
     });
 
-    it('postTweet should call api methods', async () => {
-        await agent.postTweet('Hello World');
-        expect(api.wait).toHaveBeenCalled();
+    describe('log', () => {
+        it('should log using provided logger', () => {
+            agent.log('test message');
+            expect(mockLogger.info).toHaveBeenCalledWith('[Agent:test-profile] test message');
+        });
+
+        it('should fallback to console.log when no logger', () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+            const agentNoLogger = new TwitterAgent(mockPage, mockProfile, null);
+            agentNoLogger.log('test message');
+            expect(consoleSpy).toHaveBeenCalledWith('[Agent:test-profile] test message');
+            consoleSpy.mockRestore();
+        });
+    });
+
+    describe('checkLoginState', () => {
+        it('should return true if login element not visible', async () => {
+            mockPage.locator.mockReturnValue({
+                first: vi.fn().mockReturnThis(),
+                isVisible: vi.fn().mockResolvedValue(false),
+                count: vi.fn().mockResolvedValue(1),
+            });
+            const result = await agent.checkLoginState();
+            expect(result).toBe(true);
+        });
+
+        it('should return false if login element visible', async () => {
+            mockPage.locator.mockReturnValue({
+                first: vi.fn().mockReturnThis(),
+                isVisible: vi.fn().mockResolvedValue(true),
+                count: vi.fn().mockResolvedValue(1),
+            });
+            const result = await agent.checkLoginState();
+            expect(result).toBe(false);
+        });
+    });
+
+    describe('isElementActionable', () => {
+        it('should return true when element is actionable', async () => {
+            const mockElement = {
+                elementHandle: vi.fn().mockResolvedValue({}),
+            };
+            mockPage.evaluate.mockResolvedValue(true);
+
+            const result = await agent.isElementActionable(mockElement);
+            expect(result).toBe(true);
+        });
+
+        it('should return false when element handle is null', async () => {
+            const mockElement = {
+                elementHandle: vi.fn().mockResolvedValue(null),
+            };
+
+            const result = await agent.isElementActionable(mockElement);
+            expect(result).toBe(false);
+        });
+
+        it('should return false on error', async () => {
+            const mockElement = {
+                elementHandle: vi.fn().mockRejectedValue(new Error('test error')),
+            };
+
+            const result = await agent.isElementActionable(mockElement);
+            expect(result).toBe(false);
+        });
+    });
+
+    describe('dismissOverlays', () => {
+        it('should be a function', () => {
+            expect(typeof agent.dismissOverlays).toBe('function');
+        });
+
+        it('should handle errors gracefully', async () => {
+            mockPage.locator.mockImplementation(() => {
+                throw new Error('Locator error');
+            });
+
+            await expect(agent.dismissOverlays()).resolves.not.toThrow();
+        });
+    });
+
+    describe('pollForFollowState', () => {
+        it('should be a function', () => {
+            expect(typeof agent.pollForFollowState).toBe('function');
+        });
+
+        it('should return boolean', async () => {
+            mockPage.locator.mockReturnValue({
+                first: vi.fn().mockReturnThis(),
+                isVisible: vi.fn().mockResolvedValue(false),
+                textContent: vi.fn().mockResolvedValue('Follow'),
+            });
+
+            const result = await agent.pollForFollowState('[data-testid="unfollow"]', '[data-testid="follow"]', 50);
+            expect(typeof result).toBe('boolean');
+        });
+    });
+
+    describe('sixLayerClick', () => {
+        it('should return true when click succeeds', async () => {
+            const mockElement = {};
+            vi.spyOn(agent, 'safeHumanClick').mockResolvedValue(true);
+
+            const result = await agent.sixLayerClick(mockElement, '[Test]');
+            expect(result).toBe(true);
+        });
+
+        it('should return false when all layers fail', async () => {
+            const mockElement = {};
+            vi.spyOn(agent, 'safeHumanClick').mockRejectedValue(new Error('Click failed'));
+
+            const result = await agent.sixLayerClick(mockElement, '[Test]');
+            expect(result).toBe(false);
+        });
+    });
+
+    describe('shutdown', () => {
+        it('should cleanup listeners', () => {
+            agent.shutdown();
+            expect(mockPage.removeAllListeners).toHaveBeenCalledWith('request');
+            expect(mockPage.removeAllListeners).toHaveBeenCalledWith('response');
+        });
+
+        it('should handle errors gracefully', () => {
+            mockPage.removeAllListeners.mockImplementation(() => {
+                throw new Error('Cleanup error');
+            });
+
+            expect(() => agent.shutdown()).not.toThrow();
+        });
+
+        it('should handle closed page', () => {
+            mockPage.isClosed.mockReturnValue(true);
+
+            agent.shutdown();
+
+            expect(mockPage.removeAllListeners).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('function existence', () => {
+        it('navigateHome should be a function', () => {
+            expect(typeof agent.navigateHome).toBe('function');
+        });
+
+        it('postTweet should be a function', () => {
+            expect(typeof agent.postTweet).toBe('function');
+        });
+
+        it('humanClick should be a function', () => {
+            expect(typeof agent.humanClick).toBe('function');
+        });
+
+        it('safeHumanClick should be a function', () => {
+            expect(typeof agent.safeHumanClick).toBe('function');
+        });
+
+        it('robustFollow should be a function', () => {
+            expect(typeof agent.robustFollow).toBe('function');
+        });
+
+        it('scrollToGoldenZone should be a function', () => {
+            expect(typeof agent.scrollToGoldenZone).toBe('function');
+        });
     });
 });

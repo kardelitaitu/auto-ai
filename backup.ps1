@@ -8,11 +8,19 @@ param(
 
 # Excluded folders (relative to project root)
 $ExcludedFolders = @(
+    ".agents",
+    ".llm-context",
+    ".opencode",
+    ".vscode",
     "node_modules",
     ".git",
     "backups",
     "logs",
-    "sessions"
+    "sessions",
+    "dist-exe",
+    "dist",
+    "api/ui/electron-dashboard/dist-exe",
+    "api/ui/electron-dashboard/dist"
 )
 
 # Excluded file extensions
@@ -29,8 +37,11 @@ $ExcludedExtensions = @(
 $ExcludedFiles = @(
     "package-lock.json",
     "logs.json",
+    "nul",
     "logs.txt",
-    "run-summary.json"
+    "run-summary.json",
+    "AGENT-JOURNAL.md.bak",
+    "patchnotes.md.bak"
 )
 
 # Create output directory if it doesn't exist
@@ -38,9 +49,24 @@ if (-not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 }
 
-# Generate backup filename with timestamp
-$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$backupName = "auto-ai_$timestamp.zip"
+# Generate next sequence number by scanning output directory
+$nextNum = 1
+if (Test-Path $OutputDir) {
+    $existingBackups = Get-ChildItem -Path $OutputDir -Filter "*.zip"
+    $maxNum = 0
+    foreach ($file in $existingBackups) {
+        if ($file.Name -match "^(\d{4})") {
+            $num = [int]$matches[1]
+            if ($num -gt $maxNum) { $maxNum = $num }
+        }
+    }
+    $nextNum = $maxNum + 1
+}
+$prefix = $nextNum.ToString("0000")
+
+# Generate backup filename with specific format: XXXX auto-ai Backup d MMMM HHhMMm.zip
+$dateString = Get-Date -Format "d MMMM HH'h'mm'm'"
+$backupName = "$prefix auto-ai Backup $dateString.zip"
 $backupPath = Join-Path $OutputDir $backupName
 
 # Get all files, filtering out exclusions
@@ -88,7 +114,7 @@ try {
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     
     # Create temp directory structure for zip
-    $tempDir = Join-Path $env:TEMP "backup_$timestamp"
+    $tempDir = Join-Path $env:TEMP "backup_$($nextNum.ToString('0000'))"
     if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
     New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
     

@@ -7,9 +7,12 @@ node_modules
 *.db
 screenshot
 examples
+logs
+tests
 local-agent
 test-dir
 nul
+/backups/
 coverage
 .env
 config/settings.json

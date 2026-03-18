@@ -112,6 +112,10 @@ export function clearSessionInterval(name) {
  * Get the current context store.
  * @returns {object|null}
  */
+/**
+ * Get the current context store (session-bound).
+ * @returns {object|null} The store object or null if no context is active.
+ */
 export function getStore() {
     return contextStore.getStore();
 }
@@ -151,12 +155,22 @@ export async function withPage(page, asyncFn, options = {}) {
     return runWithLogger(() => contextStore.run(store, asyncFn));
 }
 
+/**
+ * Check if the current session is active (page not closed, browser connected).
+ * @returns {boolean} True if session is active.
+ */
 export function isSessionActive() {
     const store = contextStore.getStore();
     if (!store || !store.page) return false;
     return !store.page.isClosed() && store.page.context().browser()?.isConnected() !== false;
 }
 
+/**
+ * Verify session health and throw descriptive error if dead.
+ * @throws {ContextNotInitializedError}
+ * @throws {PageClosedError}
+ * @throws {SessionDisconnectedError}
+ */
 /**
  * Verify session health and throw descriptive error if dead.
  * @throws {ContextNotInitializedError}
@@ -186,6 +200,12 @@ export function getPage() {
     return contextStore.getStore().page;
 }
 
+/**
+ * Evaluate a function in the browser context of the current page.
+ * @param {Function} pageFunction - Function to evaluate
+ * @param {...any} args - Arguments to pass to the function
+ * @returns {Promise<any>} Result of the evaluation
+ */
 export async function evalPage(pageFunction, ...args) {
     const page = getPage();
     return page.evaluate(pageFunction, ...args);
@@ -221,6 +241,10 @@ export function getPlugins() {
     return contextStore.getStore().plugins;
 }
 
+/**
+ * Tear down the current context.
+ * Useful for forceful cleanup, though AsyncLocalStorage garbage collects automatically.
+ */
 /**
  * Tear down the current context.
  * Useful for forceful cleanup, though AsyncLocalStorage garbage collects automatically.

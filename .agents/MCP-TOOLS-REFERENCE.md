@@ -8,28 +8,38 @@ Quick reference for all available MCP tools when working on the Auto-AI codebase
 
 | Task | Primary Tools |
 |------|---------------|
-| Find a file | `code-index_find_files` or `filesystem_list_directory` |
-| Search code patterns | `code-index_search_code_advanced` |
+| Find a file | `filesystem_list_directory`, `filesystem_search_files`, or `glob` |
+| Search code patterns | `grep` or `context-mode_ctx_batch_execute` |
 | Read file contents | `filesystem_read_text_file` or `filesystem_read_multiple_files` |
 | Edit source files | `filesystem_edit_file` (surgical) or `filesystem_write_file` (full rewrite) |
-| Run tests/commands | `bash` for quick commands, `Desktop_Commander_start_process` for REPLs |
-| Research documentation | `Tavily_tavily-search` + `Tavily_tavily-extract` |
-| Quick URL lookup | `DuckDuckGo_Search_Server_search` |
-| Understand file structure | `File_Context_Server_generate_outline` or `code-index_get_file_summary` |
+| Run tests/commands | `bash` for quick commands, `context-mode_ctx_execute` for large output |
+| Research a topic | `Tavily_tavily-search` or `Tavily_tavily-research` |
+| Extract URL content | `Tavily_tavily-extract` or `webfetch` |
+| Explore site structure | `Tavily_tavily-map` or `Tavily_tavily-crawl` |
+| Quick URL lookup | `webfetch` |
+| Store knowledge | `Memory_create_entities`, `Memory_create_relations` |
 | Complex problem solving | `Sequential_Thinking_sequentialthinking` |
-| Learn SDK patterns | `context7_resolve-library-id` + `context7_query-docs` |
+| Context protection | `context-mode_ctx_batch_execute`, `context-mode_ctx_stats` |
+| Code analysis | `tree-sitter` for AST parsing |
 
 ---
 
 ## Tool Categories
 
+### Context Protection (context-mode)
+
+**context-mode** - Context window protection via indexing and sandbox:
+
+- `context-mode_ctx_execute` - Execute code with automatic indexing
+- `context-mode_ctx_batch_execute` - Batch multiple commands, index all output
+- `context-mode_ctx_search` - Search indexed content
+- `context-mode_ctx_index` - Index documentation/knowledge
+- `context-mode_ctx_stats` - Session statistics and context savings
+- `context-mode_ctx_doctor` - Diagnostic health check
+
+> **Project Tip**: Use `ctx_batch_execute` for running multiple commands that produce large output. Raw data stays in sandbox - only indexed summaries enter context.
+
 ### Code Exploration
-
-**code-index** - Fast codebase search and analysis:
-
-- `code-index_find_files` - Find files by glob pattern (e.g., `*.test.js`, `agent*.js`)
-- `code-index_search_code_advanced` - Search code with regex, fuzzy matching, file filtering
-- `code-index_get_file_summary` - Get line count, functions, imports, complexity metrics
 
 **filesystem** - Direct file operations:
 
@@ -38,13 +48,18 @@ Quick reference for all available MCP tools when working on the Auto-AI codebase
 - `filesystem_list_directory` - List directory contents with depth control
 - `filesystem_directory_tree` - Get recursive JSON tree view
 - `filesystem_get_file_info` - Metadata: size, dates, permissions, line count
+- `filesystem_search_files` - Recursively search for files by pattern
+- `filesystem_edit_file` - Surgical line-based edits
+- `filesystem_write_file` - Full file write/rewrite
+- `filesystem_move_file` - Move or rename files
+- `filesystem_create_directory` - Create directories
 
-**File Context Server** - Advanced context management:
+**Built-in tools** - Quick file operations:
 
-- `File_Context_Server_read_context` - Read files with chunking for large codebases
-- `File_Context_Server_generate_outline` - Extract classes, functions, imports from files
+- `glob` - Fast file pattern matching (e.g., `glob(pattern: "**/*.js")`)
+- `grep` - Fast content search (e.g., `grep(pattern: "api\\.", path: "src/")`)
 
-> **Project Tip**: For `api/` modules, use `code-index_search_code_advanced` with pattern `api\.` to find all API method usages.
+> **Project Tip**: Prefer `filesystem_*` tools for file operations. Use `glob` and `grep` for quick searches.
 
 ---
 
@@ -55,14 +70,12 @@ Quick reference for all available MCP tools when working on the Auto-AI codebase
 ```javascript
 // Replace a specific function
 filesystem_edit_file(path: "api/agent/gameRunner.js", 
-  oldString: "async run() { ... }",
-  newString: "async run() { /* improved */ }")
+  edits: [{oldText: "async run() { ... }", newText: "async run() { /* improved */ }"}])
 ```
 
 **filesystem_write_file** - Full file write/rewrite:
 
 - Use for new files or complete rewrites
-- Supports append mode
 - Chunk files >30 lines for reliability
 
 > **Project Tip**: After edits, run `npx eslint .` to verify code style. Check AGENTS.md Workflow Reminder for required steps.
@@ -94,43 +107,56 @@ filesystem_edit_file(path: "api/agent/gameRunner.js",
 
 ### Documentation & Research
 
-**context7** (Upstash) - SDK documentation lookup:
-
-- `context7_resolve-library-id` - Resolve package name to ID (e.g., "playwright", "vitest")
-- `context7_query-docs` - Get code examples and docs for libraries
-
 **Tavily** - Deep research (complex queries):
 
-- `Tavily_tavily-search` - AI-powered comprehensive search
+- `Tavily_tavily-search` - AI-powered comprehensive search with ranked results
 - `Tavily_tavily-extract` - Parse content from specific URLs
+- `Tavily_tavily-crawl` - Deep crawl starting from a URL, exploring related pages
+- `Tavily_tavily-map` - Map site structure from a URL, understanding navigation
+- `Tavily_tavily-research` - Comprehensive multi-source research for in-depth analysis
 
-**DuckDuckGo** - Quick fact checking:
+**Usage Examples:**
+```bash
+# Search for information
+Tavily_tavily-search(query: "playwright features", search_depth: "advanced", max_results: 5)
 
-- `DuckDuckGo_Search_Server_search` - Quick URL lookups
-- `DuckDuckGo_Search_Server_fetch_content` - Read webpage content
+# Extract content from specific pages
+Tavily_tavily-extract(urls: ["https://playwright.dev/docs"], extract_depth: "advanced")
 
-**Fetch** - Direct URL content:
+# Crawl site for related content
+Tavily_tavily-crawl(url: "https://example.com/blog", max_depth: 3, limit: 50)
 
-- `Fetch_fetch` - Get URL as markdown/text/html
+# Map website structure
+Tavily_tavily-map(url: "https://example.com", max_depth: 2)
 
-> **Project Tip**: For Playwright API docs, use context7. For debugging MCP tool issues, use DuckDuckGo.
+# Deep research on complex topic
+Tavily_tavily-research(input: "Compare Playwright vs Puppeteer for browser automation")
+```
+
+**Built-in webfetch** - Quick URL content:
+
+- `webfetch` - Get URL as markdown/text/html
+
+> **Project Tip**: Use `Tavily_tavily-search` for most research. Use `Tavily_tavily-research` for comprehensive analysis. For quick URL lookups, use `webfetch`.
 
 ---
 
-### System Operations
+### Code Analysis
 
-**Desktop Commander** - OS-level operations (use with caution):
+**tree-sitter** - Code structure analysis:
 
-| Category | Key Tools |
-|----------|-----------|
-| **File I/O** | `read_file`, `write_file`, `read_multiple_files`, `edit_block` |
-| **Directory** | `list_directory`, `create_directory`, `move_file`, `get_file_info` |
-| **Process** | `start_process`, `interact_with_process`, `read_process_output`, `kill_process` |
-| **Search** | `start_search`, `get_more_search_results`, `stop_search`, `list_searches` |
-| **Sessions** | `list_sessions`, `list_processes`, `force_terminate` |
-| **Config** | `get_config`, `set_config_value`, `get_usage_stats`, `get_recent_tool_calls` |
+- Parse JavaScript, TypeScript, Python, and other languages
+- Extract function definitions, class structures, imports/exports
+- Find code patterns using AST queries
+- Analyze code complexity and dependencies
 
-> **Project Tip**: Use `start_process` with Python REPL for data analysis tasks. Use `bash` for simple shell commands.
+**Usage Patterns:**
+- **Code refactoring**: Identify all usages of a function before renaming
+- **Architecture analysis**: Map module dependencies and exports
+- **Code review**: Detect potential issues like deep nesting or large functions
+- **Documentation**: Auto-generate API docs from code structure
+
+> **Project Tip**: Use tree-sitter for complex code analysis. For simple content searches, use `grep`. tree-sitter provides language-aware parsing.
 
 ---
 
@@ -149,7 +175,17 @@ npx eslint .
 node main.js pageview=https://example.com
 ```
 
-> **Project Tip**: For long-running processes, use `Desktop_Commander_start_process` instead to enable interaction.
+**context-mode ctx_execute** - Execute with context protection:
+
+```bash
+# Execute JavaScript with automatic indexing
+ctx_execute(language: "javascript", code: "console.log('hello')")
+
+# Execute shell commands with indexing
+ctx_execute(language: "shell", code: "git status")
+```
+
+> **Project Tip**: Use `bash` for quick commands. Use `ctx_batch_execute` when running multiple commands that produce large output.
 
 ---
 
@@ -157,20 +193,26 @@ node main.js pageview=https://example.com
 
 ### Debugging a Module
 
-1. Find files: `code-index_find_files pattern: "gameRunner*"`
-2. Read summary: `code-index_get_file_summary` 
-3. Search usage: `code-index_search_code_advanced pattern: "gameRunner\."`
-4. Read code: `filesystem_read_text_file` with appropriate path
+1. Find files: `glob(pattern: "**/gameRunner*")`
+2. Search usage: `grep(pattern: "gameRunner\\.", path: "src/")`
+3. Read code: `filesystem_read_text_file(path: "path/to/file.js")`
+4. Check logs: `bash` with `tail -100 logs/app.log`
 
 ### Making Code Changes
 
-1. Understand context: `code-index_get_file_summary` for the file
-2. Make edit: `filesystem_edit_file` with oldString/newString
+1. Read file: `filesystem_read_text_file(path: "file.js")` 
+2. Make edit: `filesystem_edit_file(path: "file.js", edits: [{oldText: "...", newText: "..."}])`
 3. Verify: `bash` with `npx eslint .`
 4. Test: `bash` with `npx vitest run`
 
 ### Researching External APIs
 
-1. Resolve library: `context7_resolve-library-id query: "playwright"`
-2. Query docs: `context7_query-docs libraryId, query: "page.click"`
-3. Alternative: `Tavily_tavily-search query: "playwright click API"`
+1. Deep research: `Tavily_tavily-search(query: "playwright click API", search_depth: "advanced")`
+2. Extract content: `Tavily_tavily-extract(urls: ["https://playwright.dev/docs"])`
+3. Quick lookup: `webfetch(url: "https://example.com/docs")`
+
+### Batch Command Execution
+
+1. Run multiple commands: `context-mode_ctx_batch_execute(commands: [...], queries: [...])`
+2. Search indexed output: `context-mode_ctx_search(queries: ["error", "warning"])`
+3. Check context savings: `context-mode_ctx_stats`

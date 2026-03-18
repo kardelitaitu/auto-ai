@@ -414,6 +414,55 @@ export class DashboardServer {
             this.server = null;
         }
     }
+
+    /**
+     * Get current system metrics (CPU, memory, etc.)
+     * @returns {Object} System metrics
+     */
+    getSystemMetrics() {
+        if (this.broadcastManager) {
+            const metrics = this.broadcastManager.collectMetrics();
+            return metrics.system || {};
+        }
+        return { cpu: { usage: 0, cores: 0 }, memory: { total: 0, used: 0, free: 0, percent: 0 } };
+    }
+
+    /**
+     * Backward compatibility getters for broadcast manager properties
+     */
+    get broadcastPaused() {
+        return this.broadcastManager?.broadcastPaused ?? false;
+    }
+
+    set broadcastPaused(value) {
+        if (this.broadcastManager) {
+            this.broadcastManager.broadcastPaused = value;
+        }
+    }
+
+    get broadcastInterval() {
+        return this.broadcastManager?.broadcastInterval ?? null;
+    }
+
+    get consecutiveErrors() {
+        return this.broadcastManager?.consecutiveErrors ?? 0;
+    }
+
+    set consecutiveErrors(value) {
+        if (this.broadcastManager) {
+            this.broadcastManager.consecutiveErrors = value;
+        }
+    }
+
+    get maxConsecutiveErrors() {
+        return this.broadcastManager?.maxConsecutiveErrors ?? 5;
+    }
+
+    set maxConsecutiveErrors(value) {
+        if (this.broadcastManager) {
+            this.broadcastManager.maxConsecutiveErrors = value;
+        }
+    }
 }
 
 // Re-export validation and auth functions for backward compatibility

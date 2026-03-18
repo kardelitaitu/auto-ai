@@ -653,6 +653,7 @@ describe('AITwitterAgent', () => {
                 executeAction: vi
                     .fn()
                     .mockResolvedValue({ success: true, executed: true, reason: 'mocked' }),
+                setCurrentTweetId: vi.fn(),
             };
         });
 

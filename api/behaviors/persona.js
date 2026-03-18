@@ -14,7 +14,7 @@
 
 export const PERSONAS = {
     casual: {
-        speed: 0.4,
+        speed: 0.8,
         hoverMin: 1000,
         hoverMax: 3000,
         typoRate: 0.04,
@@ -30,7 +30,7 @@ export const PERSONAS = {
         overshootProb: 0.15,
     },
     efficient: {
-        speed: 0.75,
+        speed: 1.5,
         hoverMin: 100,
         hoverMax: 300,
         typoRate: 0.01,
@@ -46,7 +46,7 @@ export const PERSONAS = {
         overshootProb: 0.05,
     },
     researcher: {
-        speed: 0.35,
+        speed: 0.7,
         hoverMin: 2000,
         hoverMax: 4000,
         typoRate: 0.025,
@@ -62,7 +62,7 @@ export const PERSONAS = {
         overshootProb: 0.1,
     },
     power: {
-        speed: 1,
+        speed: 2,
         hoverMin: 50,
         hoverMax: 100,
         typoRate: 0.005,
@@ -78,7 +78,7 @@ export const PERSONAS = {
         overshootProb: 0.02,
     },
     glitchy: {
-        speed: 0.5,
+        speed: 0.9,
         hoverMin: 200,
         hoverMax: 3000,
         typoRate: 0.075,
@@ -94,7 +94,7 @@ export const PERSONAS = {
         overshootProb: 0.25,
     },
     elderly: {
-        speed: 0.2,
+        speed: 0.4,
         hoverMin: 3000,
         hoverMax: 5000,
         typoRate: 0.06,
@@ -110,7 +110,7 @@ export const PERSONAS = {
         overshootProb: 0.08,
     },
     teen: {
-        speed: 0.65,
+        speed: 1.3,
         hoverMin: 100,
         hoverMax: 500,
         typoRate: 0.05,
@@ -126,7 +126,7 @@ export const PERSONAS = {
         overshootProb: 0.12,
     },
     professional: {
-        speed: 0.6,
+        speed: 1.2,
         hoverMin: 500,
         hoverMax: 1000,
         typoRate: 0.015,
@@ -142,7 +142,7 @@ export const PERSONAS = {
         overshootProb: 0.03,
     },
     gamer: {
-        speed: 0.9,
+        speed: 1.6,
         hoverMin: 50,
         hoverMax: 150,
         typoRate: 0.02,
@@ -158,7 +158,7 @@ export const PERSONAS = {
         overshootProb: 0.01,
     },
     typer: {
-        speed: 0.5,
+        speed: 1,
         hoverMin: 200,
         hoverMax: 400,
         typoRate: 0.015,
@@ -174,7 +174,7 @@ export const PERSONAS = {
         overshootProb: 0.02,
     },
     hesitant: {
-        speed: 0.3,
+        speed: 0.6,
         hoverMin: 3000,
         hoverMax: 6000,
         typoRate: 0.05,
@@ -190,7 +190,7 @@ export const PERSONAS = {
         overshootProb: 0.3,
     },
     impulsive: {
-        speed: 0.8,
+        speed: 1.4,
         hoverMin: 50,
         hoverMax: 150,
         typoRate: 0.06,
@@ -206,7 +206,7 @@ export const PERSONAS = {
         overshootProb: 0.2,
     },
     distracted: {
-        speed: 0.45,
+        speed: 0.9,
         hoverMin: 500,
         hoverMax: 4000,
         typoRate: 0.035,
@@ -222,7 +222,7 @@ export const PERSONAS = {
         overshootProb: 0.18,
     },
     focused: {
-        speed: 0.55,
+        speed: 1.1,
         hoverMin: 800,
         hoverMax: 1500,
         typoRate: 0.01,
@@ -238,7 +238,7 @@ export const PERSONAS = {
         overshootProb: 0.02,
     },
     newbie: {
-        speed: 0.25,
+        speed: 0.5,
         hoverMin: 2000,
         hoverMax: 4000,
         typoRate: 0.09,
@@ -254,7 +254,7 @@ export const PERSONAS = {
         overshootProb: 0.2,
     },
     expert: {
-        speed: 0.7,
+        speed: 1.4,
         hoverMin: 150,
         hoverMax: 400,
         typoRate: 0.005,

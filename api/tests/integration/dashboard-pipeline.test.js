@@ -19,11 +19,12 @@ import { DashboardServer } from '../../ui/electron-dashboard/dashboard.js';
 describe('Dashboard Data Pipeline', () => {
     let server;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.restoreAllMocks();
+        server = new DashboardServer(0); // random port to avoid conflicts
+        await server.start(); // Initialize broadcast manager (must be before fake timers)
         vi.useFakeTimers();
         vi.setSystemTime(10000);
-        server = new DashboardServer();
         server.dashboardData.tasks = [];
         server.dashboardData.apiMetrics = { calls: 0, failures: 0, successRate: 100, avgResponseTime: 0 };
         server.historyManager.tasks = [];

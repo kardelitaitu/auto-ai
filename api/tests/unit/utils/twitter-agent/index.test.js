@@ -6,7 +6,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock BaseHandler
-vi.mock('@api/twitter/twitter-agent/BaseHandler.js', () => ({
+vi.mock('../../../../twitter/twitter-agent/BaseHandler.js', () => ({
     BaseHandler: class MockBaseHandler {
         constructor(agent) {
             this.agent = agent;
@@ -100,58 +100,58 @@ describe('twitter-agent module - Check Imports/Context', () => {
     });
 
     it('should import NavigationHandler', async () => {
-        const { NavigationHandler } = await import('@api/twitter/twitter-agent/NavigationHandler.js');
+        const { NavigationHandler } = await import('../../../../twitter/twitter-agent/NavigationHandler.js');
         expect(NavigationHandler).toBeDefined();
         expect(typeof NavigationHandler).toBe('function');
     });
 
     it('should import SessionHandler', async () => {
-        const { SessionHandler } = await import('@api/twitter/twitter-agent/SessionHandler.js');
+        const { SessionHandler } = await import('../../../../twitter/twitter-agent/SessionHandler.js');
         expect(SessionHandler).toBeDefined();
         expect(typeof SessionHandler).toBe('function');
     });
 
     it('should import InteractionHandler', async () => {
-        const { InteractionHandler } = await import('@api/twitter/twitter-agent/InteractionHandler.js');
+        const { InteractionHandler } = await import('../../../../twitter/twitter-agent/InteractionHandler.js');
         expect(InteractionHandler).toBeDefined();
         expect(typeof InteractionHandler).toBe('function');
     });
 
     it('should import EngagementHandler', async () => {
-        const { EngagementHandler } = await import('@api/twitter/twitter-agent/EngagementHandler.js');
+        const { EngagementHandler } = await import('../../../../twitter/twitter-agent/EngagementHandler.js');
         expect(EngagementHandler).toBeDefined();
         expect(typeof EngagementHandler).toBe('function');
     });
 
     it('should import BaseHandler', async () => {
-        const { BaseHandler } = await import('@api/twitter/twitter-agent/BaseHandler.js');
+        const { BaseHandler } = await import('../../../../twitter/twitter-agent/BaseHandler.js');
         expect(BaseHandler).toBeDefined();
         expect(typeof BaseHandler).toBe('function');
     });
 
     it('should create NavigationHandler instance', async () => {
-        const { NavigationHandler } = await import('@api/twitter/twitter-agent/NavigationHandler.js');
+        const { NavigationHandler } = await import('../../../../twitter/twitter-agent/NavigationHandler.js');
         const handler = new NavigationHandler(mockAgent);
         expect(handler).toBeDefined();
         expect(handler.page).toBe(mockAgent.page);
     });
 
     it('should create SessionHandler instance', async () => {
-        const { SessionHandler } = await import('@api/twitter/twitter-agent/SessionHandler.js');
+        const { SessionHandler } = await import('../../../../twitter/twitter-agent/SessionHandler.js');
         const handler = new SessionHandler(mockAgent);
         expect(handler).toBeDefined();
         expect(handler.page).toBe(mockAgent.page);
     });
 
     it('should create InteractionHandler instance', async () => {
-        const { InteractionHandler } = await import('@api/twitter/twitter-agent/InteractionHandler.js');
+        const { InteractionHandler } = await import('../../../../twitter/twitter-agent/InteractionHandler.js');
         const handler = new InteractionHandler(mockAgent);
         expect(handler).toBeDefined();
         expect(handler.page).toBe(mockAgent.page);
     });
 
     it('should create EngagementHandler instance', async () => {
-        const { EngagementHandler } = await import('@api/twitter/twitter-agent/EngagementHandler.js');
+        const { EngagementHandler } = await import('../../../../twitter/twitter-agent/EngagementHandler.js');
         const handler = new EngagementHandler(mockAgent);
         expect(handler).toBeDefined();
         expect(handler.page).toBe(mockAgent.page);

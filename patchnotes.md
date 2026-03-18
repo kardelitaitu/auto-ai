@@ -1,4 +1,16 @@
+### ✅ version 1.0.7 - 2026-03-17
+### Infrastructure & Git
+- **Git History Cleanup**: Resolved a critical push block caused by large Electron build artifacts (`.exe` files) committed to the repository. Used `git filter-branch` to purge the `api/ui/electron-dashboard/dist-exe/` directory from the entire Git history, reducing repository size and restoring the ability to push to GitHub.
+- **Enhanced Backup Script**: Upgraded `backup.ps1` with a more human-readable and organized naming convention. Features include incremental sequence numbers (e.g., `0001`, `0002`), custom date formatting, and optimized exclusion lists to skip build artifacts and temporary files.
+- **Comprehensive Setup Script**: Redesigned `setup.bat` into a full-project initializer. It now automatically handles dependency installation for both the root and the Electron dashboard (`api/ui/electron-dashboard`), and initializes `.env` files from available templates.
 
+### ✅ version 1.0.6 - 2026-03-14
+Improvements
+- **Existing Tab Support**: Modified `agent-main.js` to reuse existing browser tabs insteads of always creating new ones.
+- **Model Stability & Debugging**: Fixed a configuration bug in `agent-main.js` where model overrides failed to apply. Standardized on `qwen3.5:2b` and disabled verbose Ollama reasoning (`think: false`). Added **Raw LLM Output** logging in `llmClient.js`.
+- **JSON Output Enforcement**: Strictly enforced JSON-only responses from Ollama in `llmClient.js` using `format: 'json'` and updated system prompts in `gameRunner.js` to eliminate conversational chatter causing parsing failures.
+- **Action & Verify Fixes**: Added support for the `verify` action in `actionEngine.js` and streamlined the `gameRunner.js` execution loop to prevent redundant retries and architectural mismatches.
+- **Robust JSON Extraction**: Implemented fallback parsing in `llmClient.js` to handle model chatter outside JSON blocks.
 
 ### ✅ version 1.0.5 - 2026-03-13
 ### Tooling Fixes
@@ -546,35 +558,7 @@
 - ✨ **New Core Modules** (11 Total)
 - ✅ **Retained Components**
 - 📚 **Documentation & Examples**
-summarized
-patch
-notes:
-Dashboard
-Metrics
-Fix.
-Renamed
-Total Tasks
-to
-Completed Tasks
-implemented
-persistent
-success-based
-counting
-via
-HistoryManager
-and
-updated
-Active Queue
-to
-include
-both
-pending
-and
-active
-tasks
-for
-better
-visibility.
+
 - Added Phase 7 (Multi-Action Sequences) to gameRunner.js and owb-agents.js
 ### ✅ version 1.0.6 - 2026-03-14
 ### OWB Agent Improvements

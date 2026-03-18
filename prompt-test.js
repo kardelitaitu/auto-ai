@@ -12,6 +12,7 @@
 import { REPLY_SYSTEM_PROMPT, buildReplyPrompt, sanitizeReplyText } from './api/twitter/twitter-reply-prompt.js';
 
 // ─── Internal OpenRouter Fetch Utility ──────────────────────────────────────
+// eslint-disable-next-line no-unused-vars
 async function openrouterFetch(path, body, apiKey) {
     const url = `https://openrouter.ai/api/v1${path}`;
     const response = await fetch(url, {

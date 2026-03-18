@@ -27,7 +27,6 @@ import { bookmarkWithAPI } from '../api/actions/bookmark.js';
 import { retweetWithAPI } from '../api/actions/retweet.js';
 import { followWithAPI } from '../api/actions/follow.js';
 
-const DEFAULT_CYCLES = 20;
 const DEFAULT_MIN_DURATION = 540;
 const DEFAULT_MAX_DURATION = 840;
 const WAIT_UNTIL = 'domcontentloaded';
@@ -113,6 +112,224 @@ function resolvePersona(profile) {
     const mapped = type ? byType[type.toLowerCase()] : null;
     if (mapped && available.has(mapped)) return mapped;
     return 'casual';
+}
+
+/**
+ * Safely extract engagement probabilities with defaults.
+ * Prevents TypeError if config structure changes.
+ */
+function getEngagementProbabilities(config) {
+    const probs = config?.engagement?.probabilities ?? {};
+    return {
+        reply: probs.reply ?? 0.5,
+        quote: probs.quote ?? 0.2,
+        like: probs.like ?? 0.15,
+        bookmark: probs.bookmark ?? 0.05,
+        retweet: probs.retweet ?? 0.2,
+        follow: probs.follow ?? 0.1,
+    };
+}
+
+/**
+ * Safely extract warmup timing with defaults.
+ */
+function getWarmupTiming(config) {
+    const warmup = config?.timing?.warmup ?? {};
+    return { min: warmup.min ?? 2000, max: warmup.max ?? 15000 };
+}
+
+/**
+ * Configure persona, theme, and idle simulation for the session.
+ * @returns {Promise<{theme: string}>}
+ */
+async function setupEnvironment(profile, api, logger, withPageLock) {
+    if (profile) {
+        await api.setPersona(resolvePersona(profile));
+        logger.info(`Persona: ${api.getPersonaName()}`);
+
+        const persona = api.getPersona();
+        const distractionChance =
+            typeof persona.microMoveChance === 'number'
+                ? persona.microMoveChance
+                : typeof persona.idleChance === 'number'
+                    ? persona.idleChance
+                    : 0.2;
+
+        api.setDistractionChance(distractionChance);
+        logger.info(`Distraction chance: ${(distractionChance * 100).toFixed(0)}%`);
+    }
+
+    const theme = profile?.theme || 'dark';
+    logger.info(`Enforcing theme: ${theme}`);
+    await withPageLock(async () =>
+        api.emulateMedia({ colorScheme: theme })
+    );
+
+    const persona = api.getPersona();
+    const idleChance = typeof persona.idleChance === 'number' ? persona.idleChance : 0.02;
+    const speed = typeof persona.speed === 'number' && persona.speed > 0 ? persona.speed : 1;
+    const idleRoll = Math.random();
+    const shouldIdle = idleRoll < Math.max(0.05, Math.min(0.4, idleChance * 2));
+
+    if (shouldIdle) {
+        api.idle.start({
+            wiggle: true,
+            scroll: idleChance > 0.02,
+            frequency: Math.min(8000, Math.max(2000, Math.round(4000 / speed))),
+            magnitude: api.getPersonaName() === 'glitchy' ? 8 : 3,
+        });
+        logger.info(`Idle simulation started`);
+    }
+
+    return { theme };
+}
+
+/**
+ * Navigate to weighted entry point and simulate reading if not on home.
+ * @returns {Promise<{entryName: string}>}
+ */
+async function navigateAndRead(agent, entryUrl, api, logger, withPageLock, abortSignal) {
+    const entryName = entryUrl.replace('https://x.com/', '').replace('https://x.com', '') || 'home';
+    logger.info(`🎲 Rolled entry point: ${entryName} → ${entryUrl}`);
+
+    const referrerEngine = new ReferrerEngine({ addUTM: true });
+    const ctx = referrerEngine.generateContext(entryUrl);
+
+    await withPageLock(async () => {
+        await api.goto(entryUrl, {
+            waitUntil: WAIT_UNTIL,
+            timeout: PAGE_TIMEOUT_MS,
+            referer: ctx.referrer || undefined,
+        });
+    });
+
+    const xLoaded = await withPageLock(async () =>
+        Promise.race([
+            api.waitVisible('[data-testid="AppTabBar_Home_Link"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE })
+                .then(() => 'home')
+                .catch((e) => { logger.debug(`Page detection: home link not visible (${e.message})`); return null; }),
+            api.waitVisible('[data-testid="loginButton"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE })
+                .then(() => 'login')
+                .catch((e) => { logger.debug(`Page detection: login button not visible (${e.message})`); return null; }),
+            api.waitVisible('[role="main"]', { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE })
+                .then(() => 'main')
+                .catch((e) => { logger.debug(`Page detection: main role not visible (${e.message})`); return null; }),
+            api.wait(TWITTER_TIMEOUTS.NAVIGATION)
+                .then(() => { throw new Error('X.com load timeout'); })
+                .catch((e) => { logger.debug(`Page detection: navigation timeout (${e.message})`); return null; }),
+        ])
+    ).catch(() => null);
+
+    logger.info(`X.com loaded (${xLoaded || 'partial'})`);
+
+    const idleTimeout = xLoaded ? 4000 : 12000;
+    logger.info(`Waiting for network settlement (${idleTimeout}ms)...`);
+
+    try {
+        await withPageLock(async () =>
+            api.waitForLoadState('networkidle', { timeout: idleTimeout })
+        );
+        logger.info(`Network idle reached.`);
+    } catch (_e) {
+        logger.info(`Network active, proceeding after ${idleTimeout}ms...`);
+    }
+
+    const currentUrl = await api.getCurrentUrl();
+    const onHome = currentUrl.includes('/home') ||
+        currentUrl === 'https://x.com/' ||
+        currentUrl === 'https://x.com';
+
+    if (!onHome) {
+        const scrollDuration = mathUtils.randomInRange(10000, 20000);
+        const scrollDurationSec = (scrollDuration / 1000).toFixed(2);
+        logger.info(`📖 Simulating reading on ${entryName} for ${scrollDurationSec}s...`);
+
+        const scrollStart = Date.now();
+        while (Date.now() - scrollStart < scrollDuration) {
+            await withPageLock(async () =>
+                api.scroll.read(null, {
+                    pauses: 1,
+                    scrollAmount: mathUtils.randomInRange(200, 600),
+                })
+            );
+            await api.waitWithAbort(mathUtils.randomInRange(200, 500), abortSignal);
+        }
+        logger.info(`✅ Finished reading, navigating to home...`);
+        await withPageLock(async () => agent.navigateHome());
+    }
+
+    return { entryName };
+}
+
+/**
+ * Check login state with retry loop.
+ * @returns {Promise<boolean>}
+ */
+async function checkLoginWithRetry(agent, api, logger, abortSignal, withPageLock) {
+    logger.info(`Checking login state...`);
+    let loginCheckDelay = LOGIN_CHECK_DELAY;
+
+    for (let i = 0; i < LOGIN_CHECK_LOOPS; i++) {
+        if (abortSignal.aborted) throw new Error('Aborted');
+
+        const loggedIn = await withPageLock(async () =>
+            agent.checkLoginState()
+        );
+
+        if (loggedIn) {
+            logger.info(`✅ Logged in (check ${i + 1}/${LOGIN_CHECK_LOOPS})`);
+            return true;
+        }
+
+        if (i < LOGIN_CHECK_LOOPS - 1) {
+            logger.info(`Not logged in yet, waiting ${loginCheckDelay}ms...`);
+            await api.waitWithAbort(loginCheckDelay, abortSignal);
+            loginCheckDelay = Math.min(loginCheckDelay + 1000, 5000);
+        }
+    }
+
+    logger.warn(`Login check failed after ${LOGIN_CHECK_LOOPS} attempts`);
+    return false;
+}
+
+/**
+ * Log final session statistics (AI stats, queue, engagement progress).
+ */
+async function logFinalStats({ getAIStats, getQueueStats, getEngagementProgress, sessionStart, abortSignal, logger }) {
+    const aiStatsSnapshot = getAIStats?.();
+    if (aiStatsSnapshot) {
+        logger.info(`Final AI Stats: ${JSON.stringify(aiStatsSnapshot)}`);
+    }
+
+    const queueStatsSnapshot = getQueueStats?.();
+    if (!queueStatsSnapshot) return;
+
+    const progressSnapshot = getEngagementProgress?.();
+    const sessionStartTime = sessionStart || Date.now();
+    const duration = ((Date.now() - sessionStartTime) / 1000 / 60).toFixed(1);
+
+    if (!abortSignal.aborted) {
+        try {
+            const logConfig = await getLoggingConfig();
+
+            if (queueStatsSnapshot && logConfig?.finalStats?.showQueueStatus !== false) {
+                logger.info(
+                    `DiveQueue: queue=${queueStatsSnapshot.queue.queueLength}, active=${queueStatsSnapshot.queue.activeCount}, utilization=${queueStatsSnapshot.queue.utilizationPercent}%`
+                );
+            }
+
+            if (logConfig?.finalStats?.showEngagement !== false &&
+                logConfig?.engagementProgress?.enabled) {
+                if (progressSnapshot) {
+                    logger.info(`Engagement Progress: ${formatEngagementSummary(progressSnapshot, logConfig.engagementProgress)}`);
+                }
+            }
+        } catch (loggingError) {
+            logger.warn(`Final stats logging error: ${loggingError.message}`);
+        }
+    }
+
+    logger.info(`Task Finished. Duration: ${duration}m`);
 }
 
 /**
@@ -230,8 +447,8 @@ export default async function apiTwitterActivityTask(page, payload) {
                                     throwIfAborted();
 
                                     // Initialize agent
-                                    const probs = taskConfig.engagement.probabilities;
-                                    const rawActions = taskConfig.actions || {};
+                                    const probs = getEngagementProbabilities(taskConfig);
+                                    const rawActions = taskConfig?.actions ?? {};
                                     agent = new AITwitterAgent(page, profile, logger, {
                                         replyProbability: probs.reply,
                                         quoteProbability: probs.quote,
@@ -240,32 +457,13 @@ export default async function apiTwitterActivityTask(page, payload) {
                                             ...taskConfig,
                                             // Inject .actions so ActionRunner.loadConfig() reads the correct
                                             // probabilities from settings.json instead of its hardcoded defaults
-                                            actions: {
-                                                reply: {
-                                                    probability: probs.reply,
-                                                    enabled: rawActions.reply?.enabled !== false,
-                                                },
-                                                quote: {
-                                                    probability: probs.quote,
-                                                    enabled: rawActions.quote?.enabled !== false,
-                                                },
-                                                like: {
-                                                    probability: probs.like,
-                                                    enabled: rawActions.like?.enabled !== false,
-                                                },
-                                                bookmark: {
-                                                    probability: probs.bookmark,
-                                                    enabled: rawActions.bookmark?.enabled !== false,
-                                                },
-                                                retweet: {
-                                                    probability: probs.retweet,
-                                                    enabled: rawActions.retweet?.enabled !== false,
-                                                },
-                                                follow: {
-                                                    probability: probs.follow,
-                                                    enabled: rawActions.follow?.enabled !== false,
-                                                },
-                                            },
+                                            actions: Object.fromEntries(
+                                                ['reply', 'quote', 'like', 'bookmark', 'retweet', 'follow']
+                                                    .map(name => [name, {
+                                                        probability: probs[name],
+                                                        enabled: rawActions[name]?.enabled !== false,
+                                                    }])
+                                            ),
                                         },
                                     });
 
@@ -370,31 +568,8 @@ export default async function apiTwitterActivityTask(page, payload) {
                                         logger.info(`AITwitterAgent initialized`);
                                     }
 
-                                    // Persona setup
-                                    if (profile) {
-                                        await api.setPersona(resolvePersona(profile));
-                                        logger.info(`Persona: ${api.getPersonaName()}`);
-
-                                        const persona = api.getPersona();
-                                        const distractionChance =
-                                            typeof persona.microMoveChance === 'number'
-                                                ? persona.microMoveChance
-                                                : typeof persona.idleChance === 'number'
-                                                    ? persona.idleChance
-                                                    : 0.2;
-
-                                        api.setDistractionChance(distractionChance);
-                                        logger.info(
-                                            `Distraction chance: ${(distractionChance * 100).toFixed(0)}%`
-                                        );
-                                    }
-
-                                    // Set theme using API
-                                    const theme = profile?.theme || 'dark';
-                                    logger.info(`Enforcing theme: ${theme}`);
-                                    await withPageLock(async () =>
-                                        api.emulateMedia({ colorScheme: theme })
-                                    );
+                                    // Setup persona, theme, and idle simulation
+                                    await setupEnvironment(profile, api, logger, withPageLock);
 
                                     // Popup closer
                                     if (!popupCloser) {
@@ -416,190 +591,24 @@ export default async function apiTwitterActivityTask(page, payload) {
                                         await popupCloser.start();
                                     }
 
-                                    // Start idle simulation
-                                    const persona = api.getPersona();
-                                    const idleChance =
-                                        typeof persona.idleChance === 'number'
-                                            ? persona.idleChance
-                                            : 0.02;
-                                    const speed =
-                                        typeof persona.speed === 'number' && persona.speed > 0
-                                            ? persona.speed
-                                            : 1;
-                                    const idleRoll = Math.random();
-                                    const shouldIdle =
-                                        idleRoll < Math.max(0.05, Math.min(0.4, idleChance * 2));
-
-                                    if (shouldIdle) {
-                                        api.idle.start({
-                                            wiggle: true,
-                                            scroll: idleChance > 0.02,
-                                            frequency: Math.min(
-                                                8000,
-                                                Math.max(2000, Math.round(4000 / speed))
-                                            ),
-                                            magnitude: api.getPersonaName() === 'glitchy' ? 8 : 3,
-                                        });
-                                        logger.info(`Idle simulation started`);
-                                    }
-
                                     // Warmup
-                                    const wakeUp = humanTiming.getWarmupDelay({
-                                        min: taskConfig.timing.warmup.min,
-                                        max: taskConfig.timing.warmup.max,
-                                    });
+                                    const warmup = getWarmupTiming(taskConfig);
+                                    const wakeUp = humanTiming.getWarmupDelay(warmup);
                                     logger.info(`Warm-up ${humanTiming.formatDuration(wakeUp)}...`);
                                     await api.waitWithAbort(wakeUp, abortSignal);
 
                                     throwIfAborted();
 
-                                    // Navigation with ReferrerEngine and API
-                                    const entryUrl = selectEntryPoint();
-                                    const entryName =
-                                        entryUrl
-                                            .replace('https://x.com/', '')
-                                            .replace('https://x.com', '') || 'home';
-                                    logger.info(
-                                        `🎲 Rolled entry point: ${entryName} → ${entryUrl}`
+                                    // Navigation and reading simulation
+                                    await navigateAndRead(
+                                        agent, selectEntryPoint(), api, logger, withPageLock, abortSignal
                                     );
 
-                                    const referrerEngine = new ReferrerEngine({ addUTM: true });
-                                    const ctx = referrerEngine.generateContext(entryUrl);
-
-                                    await withPageLock(async () => {
-                                        // Don't override Sec-Fetch headers globally - they break media requests
-                                        // The browser will set appropriate headers per request type
-
-                                        await api.goto(entryUrl, {
-                                            waitUntil: WAIT_UNTIL,
-                                            timeout: PAGE_TIMEOUT_MS,
-                                            referer: ctx.referrer || undefined,
-                                        });
-                                    });
-
-                                    // Page load detection
-                                    const xLoaded = await withPageLock(async () =>
-                                        Promise.race([
-                                            api
-                                                .waitVisible(
-                                                    '[data-testid="AppTabBar_Home_Link"]',
-                                                    { timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE }
-                                                )
-                                                .then(() => 'home')
-                                                .catch(() => { }),
-                                            api
-                                                .waitVisible('[data-testid="loginButton"]', {
-                                                    timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE,
-                                                })
-                                                .then(() => 'login')
-                                                .catch(() => { }),
-                                            api
-                                                .waitVisible('[role="main"]', {
-                                                    timeout: TWITTER_TIMEOUTS.ELEMENT_VISIBLE,
-                                                })
-                                                .then(() => 'main')
-                                                .catch(() => { }),
-                                            api
-                                                .wait(TWITTER_TIMEOUTS.NAVIGATION)
-                                                .then(() => {
-                                                    throw new Error('X.com load timeout');
-                                                })
-                                                .catch(() => { }),
-                                        ])
-                                    ).catch(() => null);
-
-                                    logger.info(`X.com loaded (${xLoaded || 'partial'})`);
-
-                                    const idleTimeout = xLoaded ? 4000 : 12000;
-                                    logger.info(
-                                        `Waiting for network settlement (${idleTimeout}ms)...`
-                                    );
-
-                                    try {
-                                        await withPageLock(async () =>
-                                            api.waitForLoadState('networkidle', {
-                                                timeout: idleTimeout,
-                                            })
-                                        );
-                                        logger.info(`Network idle reached.`);
-                                    } catch (_e) {
-                                        logger.info(
-                                            `Network active, proceeding after ${idleTimeout}ms...`
-                                        );
-                                    }
+                                    throwIfAborted();
+                                    await checkLoginWithRetry(agent, api, logger, abortSignal, withPageLock);
 
                                     throwIfAborted();
-
-                                    const currentUrl = await api.getCurrentUrl();
-                                    const onHome =
-                                        currentUrl.includes('/home') ||
-                                        currentUrl === 'https://x.com/' ||
-                                        currentUrl === 'https://x.com';
-                                    if (!onHome) {
-                                        const scrollDuration = mathUtils.randomInRange(
-                                            10000,
-                                            20000
-                                        );
-                                        const scrollDurationSec = (scrollDuration / 1000).toFixed(
-                                            2
-                                        );
-                                        logger.info(
-                                            `📖 Simulating reading on ${entryName} for ${scrollDurationSec}s...`
-                                        );
-
-                                        const scrollStart = Date.now();
-                                        while (Date.now() - scrollStart < scrollDuration) {
-                                            await withPageLock(async () =>
-                                                api.scroll.read(null, {
-                                                    pauses: 1,
-                                                    scrollAmount: mathUtils.randomInRange(200, 600),
-                                                })
-                                            );
-                                            await api.waitWithAbort(mathUtils.randomInRange(200, 500), abortSignal);
-                                        }
-                                        logger.info(`✅ Finished reading, navigating to home...`);
-                                        await withPageLock(async () => agent.navigateHome());
-                                    }
-
-                                    throwIfAborted();
-                                    logger.info(`Checking login state...`);
-                                    let loginCheckDelay = LOGIN_CHECK_DELAY;
-                                    for (let i = 0; i < LOGIN_CHECK_LOOPS; i++) {
-                                        throwIfAborted();
-                                        const loggedIn = await withPageLock(async () =>
-                                            agent.checkLoginState()
-                                        );
-                                        if (loggedIn) {
-                                            logger.info(
-                                                `✅ Logged in (check ${i + 1}/${LOGIN_CHECK_LOOPS})`
-                                            );
-                                            break;
-                                        }
-                                        if (i < LOGIN_CHECK_LOOPS - 1) {
-                                            logger.info(
-                                                `Not logged in yet, waiting ${loginCheckDelay}ms...`
-                                            );
-                                            await api.waitWithAbort(loginCheckDelay, abortSignal);
-                                            loginCheckDelay = Math.min(
-                                                loginCheckDelay + 1000,
-                                                5000
-                                            );
-                                        }
-                                    }
-
-                                    throwIfAborted();
-                                    const cycles =
-                                        typeof payload.cycles === 'number'
-                                            ? payload.cycles
-                                            : DEFAULT_CYCLES;
-                                    const minDuration =
-                                        typeof payload.minDuration === 'number'
-                                            ? payload.minDuration
-                                            : DEFAULT_MIN_DURATION;
-                                    const maxDuration =
-                                        typeof payload.maxDuration === 'number'
-                                            ? payload.maxDuration
-                                            : DEFAULT_MAX_DURATION;
+                                    const { cycles, minDuration, maxDuration } = taskConfig.session;
 
                                     logger.info(
                                         `Starting session (${cycles} cycles, ${minDuration}-${maxDuration}s)...`
@@ -611,7 +620,6 @@ export default async function apiTwitterActivityTask(page, payload) {
                                             abortSignal,
                                         });
                                         sessionSuccess = true;
-                                        logger.info(`Session completed successfully`);
                                     } catch (sessionError) {
                                         sessionSuccess = false;
                                         if (abortSignal.aborted) {
@@ -665,56 +673,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                 }
 
                 if (hasAgent) {
-                    // Metrics are now recorded in real-time by each api/actions/* handler
-                    // (like.js, retweet.js, follow.js, bookmark.js, reply.js, quote.js)
-
-                    const aiStatsSnapshot = getAIStats ? getAIStats() : null;
-                    if (aiStatsSnapshot) {
-                        logger.info(`Final AI Stats: ${JSON.stringify(aiStatsSnapshot)}`);
-                    }
-
-                    if (getQueueStats) {
-                        const queueStatsSnapshot = getQueueStats();
-                        const progressSnapshot = getEngagementProgress
-                            ? getEngagementProgress()
-                            : null;
-                        const sessionStartTime = sessionStart || Date.now();
-                        const duration = ((Date.now() - sessionStartTime) / 1000 / 60).toFixed(1);
-
-                        setTimeout(async () => {
-                            if (abortSignal.aborted) return;
-                            try {
-                                const logConfig = await getLoggingConfig();
-
-                                if (
-                                    queueStatsSnapshot &&
-                                    logConfig?.finalStats?.showQueueStatus !== false
-                                ) {
-                                    logger.info(
-                                        `DiveQueue: queue=${queueStatsSnapshot.queue.queueLength}, active=${queueStatsSnapshot.queue.activeCount}, utilization=${queueStatsSnapshot.queue.utilizationPercent}%`
-                                    );
-                                }
-
-                                if (
-                                    logConfig?.finalStats?.showEngagement !== false &&
-                                    logConfig?.engagementProgress?.enabled
-                                ) {
-                                    const progressConfig = logConfig.engagementProgress;
-                                    if (progressSnapshot) {
-                                        const summary = formatEngagementSummary(
-                                            progressSnapshot,
-                                            progressConfig
-                                        );
-                                        logger.info(`Engagement Progress: ${summary}`);
-                                    }
-                                }
-                            } catch (loggingError) {
-                                logger.warn(`Deferred logging error: ${loggingError.message}`);
-                            }
-                        }, 50);
-
-                        logger.info(`Task Finished. Duration: ${duration}m`);
-                    }
+                    await logFinalStats({ getAIStats, getQueueStats, getEngagementProgress, sessionStart, abortSignal, logger });
 
                     if (typeof agent.shutdown === 'function') {
                         await agent.shutdown();

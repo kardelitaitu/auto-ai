@@ -33,7 +33,7 @@ async function discoverModel() {
                 API_ENDPOINT = `${BASE_URL}${prefix}/chat/completions`;
                 return true;
             }
-        } catch (e) {
+        } catch {
             // Continue probing
         }
     }

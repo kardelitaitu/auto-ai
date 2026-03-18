@@ -36,7 +36,7 @@ export class NavigationHandler extends BaseHandler {
         }
 
         try {
-            const useHomeIcon = Math.random() < 0.8;
+            const useHomeIcon = this.mathUtils.random() < 0.8;
             let targetSelector = useHomeIcon
                 ? '[data-testid="AppTabBar_Home_Link"]'
                 : '[aria-label="X"]';
@@ -54,7 +54,7 @@ export class NavigationHandler extends BaseHandler {
 
             if (await api.visible(target)) {
                 this.log(`[Navigation] Clicking '${targetName}' to navigate home...`);
-                const clicked = await api.click(targetSelector);
+                const clicked = await this.safeHumanClick(target, `${targetName} Click`, 2);
 
                 if (clicked) {
                     await api.wait(this.mathUtils.randomInRange(800, 1500));
@@ -65,10 +65,10 @@ export class NavigationHandler extends BaseHandler {
                         await this.ensureForYouTab();
                         return;
                     } catch {
-                        this.log('[Navigation] api.click() did not trigger navigation.');
+                        this.log('[Navigation] safeHumanClick did not trigger navigation.');
                     }
                 } else {
-                    this.log(`[Navigation] api.click() failed for '${targetName}'.`);
+                    this.log(`[Navigation] safeHumanClick failed for '${targetName}'.`);
                 }
             }
         } catch (e) {
