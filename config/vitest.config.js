@@ -98,6 +98,9 @@ export default defineConfig({
                 'api/ui/electron-dashboard/',
                 'api/tests/unit/semantic-parser-runner.js',
                 'api/tests/edge-cases/',
+                'api/tests/dashboard-data-generator.js',
+                'api/tests/simulate-task-history.js',
+                'api/tests/mocks/index.js',
             ],
             thresholds: {
                 statements: 70,

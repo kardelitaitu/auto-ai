@@ -5,6 +5,7 @@
  */
 
 // Mock Playwright Page for testing
+import { vi } from 'vitest';
 
 export const createMockPage = (overrides = {}) => ({
     goto: vi.fn().mockResolvedValue({}),

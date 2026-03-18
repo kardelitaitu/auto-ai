@@ -5,6 +5,7 @@
  */
 
 // Common mock objects for testing
+import { vi } from 'vitest';
 
 // Mock logger with all required methods
 export const mockLogger = {
