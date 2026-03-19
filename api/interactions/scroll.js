@@ -563,3 +563,139 @@ async function _getViewportDensity(page) {
         return { pCount: paragraphs.length, imgCount: images.length, textLength };
     });
 }
+
+/**
+ * Focus2 — Improved golden view scroll with accurate distance calculation.
+ * Scrolls element to center of viewport using absolute document coordinates.
+ * @param {string|import('playwright').Locator} selector - CSS selector or Locator to focus
+ * @param {object} [options]
+ * @param {number} [options.timeout=5000] - Max time to wait for selector attachment
+ * @param {number} [options.maxDuration=4000] - Max total scroll duration in ms
+ * @param {number} [options.minDuration=1500] - Min total scroll duration in ms
+ * @param {number} [options.headerOffset=55] - Fixed header height to compensate (Twitter ~55px)
+ * @returns {Promise<{success: boolean, distance: number, steps: number, duration: number}>}
+ */
+export async function focus2(selector, options = {}) {
+    const page = getPage();
+    const cursor = getCursor();
+    const { timeout = 5000, maxDuration = 4000, minDuration = 1500, headerOffset = 55 } = options;
+
+    const locator = getLocator(selector).first();
+    const startTime = Date.now();
+
+    // Wait for element to exist in DOM
+    await locator.waitFor({ state: 'attached', timeout });
+
+    // Get element's ABSOLUTE document position and current scroll state
+    const elementInfo = await locator.evaluate((el) => {
+        // Get absolute position by walking up the DOM
+        let absoluteY = 0;
+        let current = el;
+        while (current) {
+            absoluteY += current.offsetTop;
+            current = current.offsetParent;
+        }
+
+        const rect = el.getBoundingClientRect();
+        return {
+            absoluteY,
+            height: rect.height,
+            width: rect.width,
+            viewportY: rect.top,
+            viewportX: rect.left,
+        };
+    }).catch(() => null);
+
+    if (!elementInfo) {
+        logger.warn('[focus2] Could not get element info');
+        return { success: false, distance: 0, steps: 0, duration: 0 };
+    }
+
+    // Get viewport and current scroll position
+    const scrollState = await page.evaluate(() => ({
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+    }));
+
+    // Calculate effective viewport center, accounting for fixed header
+    // Twitter has ~55px fixed header at top
+    const effectiveViewportHeight = scrollState.viewportHeight - headerOffset;
+    const effectiveCenter = headerOffset + effectiveViewportHeight / 2;
+
+    // Target: element center should be at effective center
+    const elementCenter = elementInfo.absoluteY + elementInfo.height / 2;
+    const targetScrollY = elementCenter - effectiveCenter;
+    const deltaY = targetScrollY - scrollState.scrollY;
+    const distance = Math.abs(deltaY);
+
+    logger.debug(`[focus2] Element absY=${elementInfo.absoluteY}px, viewport=${scrollState.viewportHeight}px, effectiveCenter=${effectiveCenter.toFixed(0)}px, delta=${deltaY.toFixed(0)}px`);
+
+    // Skip if already centered (within 50px tolerance)
+    if (distance < 50) {
+        const box = { x: elementInfo.viewportX, y: elementInfo.viewportY, width: elementInfo.width, height: elementInfo.height };
+        await _moveCursorToBox(cursor, box);
+        return { success: true, distance, steps: 0, duration: Date.now() - startTime };
+    }
+
+    // Determine number of steps based on distance
+    let steps;
+    if (distance < 100) steps = 1;
+    else if (distance < 300) steps = 2;
+    else if (distance < 800) steps = 3;
+    else if (distance < 1500) steps = 4;
+    else steps = 5;
+
+    // Calculate total duration proportional to distance but within bounds
+    const baseDuration = minDuration + (maxDuration - minDuration) * Math.min(distance / 2000, 1);
+    const totalDuration = Math.max(minDuration, Math.min(maxDuration, baseDuration));
+    const stepDuration = totalDuration / steps;
+
+    logger.debug(`[focus2] Scrolling ${distance.toFixed(0)}px in ${steps} steps over ${totalDuration.toFixed(0)}ms`);
+
+    // Execute scroll in steps using scrollBy for relative movement
+    let scrolledSoFar = 0;
+    for (let i = 0; i < steps; i++) {
+        // Calculate this step's portion using easeOutCubic
+        const progress = (i + 1) / steps;
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        const targetPosition = deltaY * easedProgress;
+        const stepDelta = targetPosition - scrolledSoFar;
+
+        // Execute scroll for this step
+        try {
+            await _smoothScroll(page, stepDelta, stepDuration, 'quart');
+        } catch {
+            await page.evaluate((d) => window.scrollBy(0, d), stepDelta);
+        }
+
+        scrolledSoFar += stepDelta;
+
+        // Small pause between steps (except last)
+        if (i < steps - 1) {
+            await new Promise((r) => setTimeout(r, mathUtils.randomInRange(50, 150)));
+        }
+    }
+
+    // Brief settle time
+    await new Promise((r) => setTimeout(r, mathUtils.randomInRange(100, 200)));
+
+    // Verify final position using viewport-relative coordinates
+    const finalViewportY = await locator.evaluate((el) => el.getBoundingClientRect().top).catch(() => null);
+    const finalOffset = finalViewportY !== null ? Math.abs(finalViewportY + elementInfo.height / 2 - effectiveCenter) : distance;
+
+    // Move cursor to element
+    const cursorBox = {
+        x: elementInfo.viewportX,
+        y: finalViewportY ?? elementInfo.viewportY,
+        width: elementInfo.width,
+        height: elementInfo.height,
+    };
+    await _moveCursorToBox(cursor, cursorBox);
+
+    const duration = Date.now() - startTime;
+    const success = finalOffset < 100;
+
+    logger.debug(`[focus2] Done: final offset=${finalOffset.toFixed(0)}px, duration=${duration}ms, success=${success}`);
+
+    return { success, distance, steps, duration, finalOffset };
+}

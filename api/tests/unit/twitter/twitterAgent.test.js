@@ -82,6 +82,9 @@ describe('TwitterAgent', () => {
             keyboard: {
                 press: vi.fn(),
             },
+            url: vi.fn().mockReturnValue('https://x.com/home'),
+            isClosed: vi.fn().mockReturnValue(false),
+            removeAllListeners: vi.fn(),
         };
 
         mockLogger = {
@@ -419,6 +422,206 @@ describe('TwitterAgent', () => {
             expect(agent.state.consecutiveLoginFailures).toBe(0);
             expect(agent.state.tabs.preferForYou).toBe(true);
             expect(agent.state.tabs.switchChance).toBe(0.15);
+        });
+    });
+
+    describe('isSessionExpired', () => {
+        it('should return false when no session end time', () => {
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            expect(agent.isSessionExpired()).toBe(false);
+        });
+
+        it('should return false when session not expired', () => {
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            agent.sessionEndTime = Date.now() + 60000;
+            expect(agent.isSessionExpired()).toBe(false);
+        });
+
+        it('should return true when session expired', () => {
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            agent.sessionEndTime = Date.now() - 1000;
+            expect(agent.isSessionExpired()).toBe(true);
+        });
+    });
+
+    describe('shutdown', () => {
+        it('should remove network listeners', () => {
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            agent.shutdown();
+            expect(mockPage.removeAllListeners).toHaveBeenCalledWith('request');
+            expect(mockPage.removeAllListeners).toHaveBeenCalledWith('response');
+        });
+
+        it('should handle closed page', () => {
+            mockPage.isClosed = vi.fn().mockReturnValue(true);
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            agent.shutdown();
+            // Should not throw
+        });
+    });
+
+    describe('checkLoginState', () => {
+        it('should detect login failure when sign-in text visible', async () => {
+            mockPage.getByText = vi.fn().mockReturnValue({
+                first: vi.fn().mockReturnValue({
+                    isVisible: vi.fn().mockResolvedValue(true),
+                }),
+            });
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            const result = await agent.checkLoginState();
+            expect(result).toBe(false);
+            expect(agent.state.consecutiveLoginFailures).toBe(1);
+        });
+    });
+
+    describe('dismissOverlays', () => {
+        it('should dismiss toasts', async () => {
+            mockPage.locator = vi.fn().mockReturnValue({
+                count: vi.fn().mockResolvedValue(1),
+            });
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            await agent.dismissOverlays();
+            expect(mockPage.keyboard.press).toHaveBeenCalledWith('Escape');
+        });
+
+        it('should dismiss modals', async () => {
+            mockPage.locator = vi.fn()
+                .mockReturnValueOnce({ count: vi.fn().mockResolvedValue(0) })
+                .mockReturnValueOnce({ count: vi.fn().mockResolvedValue(1) });
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            await agent.dismissOverlays();
+            expect(mockPage.keyboard.press).toHaveBeenCalledWith('Escape');
+        });
+
+        it('should handle no overlays', async () => {
+            mockPage.locator = vi.fn().mockReturnValue({
+                count: vi.fn().mockResolvedValue(0),
+            });
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            await agent.dismissOverlays();
+            expect(mockPage.keyboard.press).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('humanType', () => {
+        it('should return for null element', async () => {
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            await agent.humanType(null, 'test');
+            // Should not throw
+        });
+
+        it('should return for empty text', async () => {
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            const element = { focus: vi.fn() };
+            await agent.humanType(element, '');
+            // Should not throw
+        });
+    });
+
+    describe('simulateFidget', () => {
+        it('should complete without error', async () => {
+            mockPage.evaluate = vi.fn().mockResolvedValue([]);
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            await agent.simulateFidget();
+            // Should complete without throwing
+        });
+    });
+
+    describe('normalizeProbabilities edge cases', () => {
+        it('should handle null probabilities', () => {
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            const result = agent.normalizeProbabilities(null);
+            expect(result).toHaveProperty('refresh');
+        });
+
+        it('should handle undefined probabilities', () => {
+            const config = {
+                id: 'test-agent',
+                description: 'Test Agent',
+                timings: { scrollPause: { mean: 1000 }, readingPhase: { mean: 5000 } },
+                probabilities: {},
+            };
+            const agent = new TwitterAgent(mockPage, config, mockLogger);
+            const result = agent.normalizeProbabilities(undefined);
+            expect(result).toHaveProperty('refresh');
         });
     });
 });

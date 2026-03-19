@@ -520,7 +520,7 @@ describe('Coverage Gap Tests', () => {
         });
 
         it('should use fallback when primary function rejects', async () => {
-            const primaryFn = vi.fn().mockReturnValue(Promise.reject(new Error('Primary failed')));
+            const primaryFn = vi.fn().mockImplementation(() => Promise.reject(new Error('Primary failed')));
             const fallbackFn = vi.fn().mockResolvedValue({ fallback: true });
 
             const result = await diveQueue.addDive(primaryFn, fallbackFn, {
@@ -535,7 +535,7 @@ describe('Coverage Gap Tests', () => {
                 fallbackEngagement: false,
             });
 
-            const primaryFn = vi.fn().mockReturnValue(Promise.reject(new Error('Primary failed')));
+            const primaryFn = vi.fn().mockImplementation(() => Promise.reject(new Error('Primary failed')));
             const fallbackFn = vi.fn().mockResolvedValue({ fallback: true });
 
             const result = await noFallbackQueue.addDive(primaryFn, fallbackFn, {
@@ -546,10 +546,10 @@ describe('Coverage Gap Tests', () => {
         });
 
         it('should handle both primary and fallback failing', async () => {
-            const primaryFn = vi.fn().mockReturnValue(Promise.reject(new Error('Primary failed')));
+            const primaryFn = vi.fn().mockImplementation(() => Promise.reject(new Error('Primary failed')));
             const fallbackFn = vi
                 .fn()
-                .mockReturnValue(Promise.reject(new Error('Fallback also failed')));
+                .mockImplementation(() => Promise.reject(new Error('Fallback also failed')));
 
             const result = await diveQueue.addDive(primaryFn, fallbackFn, {
                 taskName: 'both-fail-dive',

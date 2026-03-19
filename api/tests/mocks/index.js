@@ -269,13 +269,18 @@ export const createModuleMock = (modulePath, mockExports) => {
 };
 
 /**
- * Applies multiple mocks at once
- * @param {Array} mocks - Array of [path, mockFactory] pairs
+ * Returns mock configurations for use with vi.mock()
+ * Note: vi.mock() must be called at module level, not inside functions
+ * @param {Array} mocks - Array of [modulePath, mockFactory] pairs
+ * @returns {Array} The input array (for chaining)
  */
 export const applyMocks = (mocks) => {
-    mocks.forEach(([path, factory]) => {
-        vi.mock(path, factory);
-    });
+    // Return the mocks array - callers should use vi.mock() at module level
+    // Example usage in test file:
+    //   import { loggerMock, contextMock } from './mocks';
+    //   vi.mock('@api/core/logger.js', () => loggerMock);
+    //   vi.mock('@api/core/context.js', () => contextMock);
+    return mocks;
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════

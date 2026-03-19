@@ -13,8 +13,8 @@
  *   import * as unitTests from '@tests/unit';
  */
 
-import aiTwitterActivity from './ai-twitter-activity.test.js';
 import aiTwitterAgent from './ai-twitterAgent.test.js';
+import aiTwitterActivity from './ai-twitter-activity.test.js';
 import asyncQueue from './async-queue.test.js';
 import configService from './config-service.test.js';
 import engagementLimits from './engagement-limits.test.js';

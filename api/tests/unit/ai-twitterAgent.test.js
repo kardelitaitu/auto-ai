@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AITwitterAgent } from '@api/twitter/ai-twitterAgent.js';
+import AITwitterAgent from '@api/twitter/ai-twitterAgent.js';
 import { TwitterAgent } from '@api/twitter/twitterAgent.js';
 import { DiveQueue } from '@api/utils/async-queue.js';
 import { AIReplyEngine } from '@api/agent/ai-reply-engine/index.js';

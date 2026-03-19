@@ -165,7 +165,7 @@ import { retweetWithAPI } from './actions/retweet.js';
 import { followWithAPI } from './actions/follow.js';
 
 // ─── Scroll ───────────────────────────────────────────────────────
-import { focus, scroll, toTop, toBottom, read, back as scrollBack } from './interactions/scroll.js';
+import { focus, focus2, scroll, toTop, toBottom, read, back as scrollBack } from './interactions/scroll.js';
 
 // ─── Cursor ───────────────────────────────────────────────────────
 import {
@@ -326,11 +326,15 @@ import { retweet as intentRetweet } from './twitter/intent-retweet.js';
 import { follow as intentFollow } from './twitter/intent-follow.js';
 import { post as intentPost } from './twitter/intent-post.js';
 
+// ─── Twitter Navigation ────────────────────────────────────────
+import { home as twitterHome, isOnHome } from './twitter/navigation.js';
+
 // ─── Build Dual-Callable APIs ──────────────────────────────────
 
-// Scroll: api.scroll(300) + api.scroll.focus('.el')
+// Scroll: api.scroll(300) + api.scroll.focus('.el') + api.scroll.focus2('.el')
 const scrollFn = Object.assign(scroll, {
     focus,
+    focus2,
     toTop,
     toBottom,
     read,
@@ -638,7 +642,7 @@ export const api = {
     // ── Memory ─────────────────────────────────────────────────────
     memory,
 
-    // ── Twitter Intents ────────────────────────────────────────────
+    // ── Twitter ────────────────────────────────────────────────────
     twitter: {
         intent: {
             like: intentLike,
@@ -646,7 +650,9 @@ export const api = {
             retweet: intentRetweet,
             follow: intentFollow,
             post: intentPost,
-        }
+        },
+        home: twitterHome,
+        isOnHome,
     },
 
     // ── Visual Debug ───────────────────────────────────────────────
