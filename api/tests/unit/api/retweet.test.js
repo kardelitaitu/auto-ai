@@ -61,8 +61,8 @@ describe('api/actions/retweet.js', () => {
     describe('retweetWithAPI', () => {
         it('should retweet successfully', async () => {
             visible.mockResolvedValueOnce(false); // not already retweeted
-            visible.mockResolvedValueOnce(true); // confirm menu visible
-            visible.mockResolvedValueOnce(true); // now unretweetable
+            visible.mockResolvedValueOnce(true);  // confirm menu visible
+            visible.mockResolvedValueOnce(true);  // now unretweetable
 
             const result = await retweetWithAPI();
 
@@ -72,7 +72,7 @@ describe('api/actions/retweet.js', () => {
         });
 
         it('should skip if already retweeted', async () => {
-            visible.mockResolvedValueOnce(true); // already retweeted
+            visible.mockResolvedValueOnce(true);  // already retweeted
 
             const result = await retweetWithAPI();
 
@@ -82,8 +82,8 @@ describe('api/actions/retweet.js', () => {
         });
 
         it('should return failure if confirm menu not found', async () => {
-            visible.mockResolvedValueOnce(false);
-            visible.mockResolvedValueOnce(false);
+            visible.mockResolvedValueOnce(false); // not already retweeted
+            visible.mockResolvedValueOnce(false); // confirm menu not found
 
             const result = await retweetWithAPI();
 
@@ -93,9 +93,9 @@ describe('api/actions/retweet.js', () => {
         });
 
         it('should return failure if verification fails', async () => {
-            visible.mockResolvedValueOnce(false);
-            visible.mockResolvedValueOnce(true);
-            visible.mockResolvedValueOnce(false);
+            visible.mockResolvedValueOnce(false); // not already retweeted
+            visible.mockResolvedValueOnce(true);  // confirm menu visible
+            visible.mockResolvedValueOnce(false); // verification fails
 
             const result = await retweetWithAPI();
 

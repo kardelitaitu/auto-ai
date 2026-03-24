@@ -23,6 +23,17 @@ The retweet task (`retweet.js`) is an API-enhanced automation task that navigate
 | 11 | `retweetBranch11_multiPhaseEngagement` | 5% | 5-8 min | Home (1-2 min) → Notifications (1-2 min) → Tweet (1-2 min) → Retweet → Profile (1-2 min) |
 | 12 | `retweetBranch12_misclickRecovery` | 2% | 4-6 min | Home (2-3 min) → Tweet (1-2 min) → Misclick → Escape → Retweet |
 
+## Workflow
+
+The retweet task follows these steps to ensure a human-like and robust interaction:
+
+1.  **Validation**: Verifies the target URL is valid for x.com or twitter.com.
+2.  **Navigation**: Direct navigation to the tweet URL.
+3.  **Visual Verification**: Wait for the retweet button to become visible.
+4.  **Human Behavior**: Simulates reading by scrolling through the content.
+5.  **Execution**: Performs the retweet action using `api.retweet()` wrapped in `api.recover()` for maximum reliability.
+6.  **Confirmation**: Verifies the action was successful by checking for the unretweet state.
+
 ### Debug Override
 
 Force a specific branch via CLI:

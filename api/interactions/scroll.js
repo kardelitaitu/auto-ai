@@ -24,7 +24,7 @@ import { mathUtils } from '../utils/math.js';
 import { createLogger } from '../core/logger.js';
 import { getSettings } from '../utils/config.js';
 import { getLocator } from '../utils/locator.js';
-import { ValidationError } from '../core/errors.js';
+import { ValidationError, ElementNotFoundError } from '../core/errors.js';
 
 const logger = createLogger('api/scroll.js');
 
@@ -608,7 +608,7 @@ export async function focus2(selector, options = {}) {
 
     if (!elementInfo) {
         logger.warn('[focus2] Could not get element info');
-        return { success: false, distance: 0, steps: 0, duration: 0 };
+        return { success: false };
     }
 
     // Get viewport and current scroll position

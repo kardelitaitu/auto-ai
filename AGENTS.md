@@ -23,8 +23,8 @@ Quick reference guide for agents working on this repository.
 
 | File | Purpose |
 |------|---------|
-| `main.js` | CLI entry - starts Orchestrator with browser discovery |
-| `agent-main.js` | Agent entry - strategy game automation (OWB) |
+| `main.js` | Browser web automation entry - runs tasks like `pageview`, `follow`, `retweet` |
+| `agent-main.js` | Web-based game automation entry (OWB) - strategy game AI agent |
 | `api/index.js` | Unified API export - `import { api } from './api/index.js'` |
 
 ---

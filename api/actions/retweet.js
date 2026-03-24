@@ -36,38 +36,43 @@ export async function retweetWithAPI(options = {}) {
     const confirmSel = '[data-testid="retweetConfirm"]';
 
     try {
-        // Already retweeted guard
+        // 1. Already retweeted guard
         const alreadyRetweeted = tweetElement
             ? await tweetElement
                   .locator(unretweetSel)
                   .first()
                   .isVisible()
                   .catch(() => false)
-            : await visible(unretweetSel);
+            : await visible(unretweetSel).catch(() => false);
 
         if (alreadyRetweeted) {
             logger.info(`Tweet already retweeted, skipping.`);
             return { success: true, reason: 'already_retweeted', method: 'retweetAPI' };
         }
 
-        // Scroll into view
+        // 2. Scroll into view if needed
         if (tweetElement) {
             await tweetElement.scrollIntoViewIfNeeded().catch(() => {});
         }
         await wait(mathUtils.randomInRange(300, 700));
 
-        // Click retweet button with ghost cursor to open menu
+        // 3. Click retweet button with ghost cursor to open menu
         const retweetTarget = tweetElement ? tweetElement.locator(retweetSel).first() : retweetSel;
 
         logger.info(`[retweetWithAPI] Clicking retweet button (ghost cursor)...`);
-        await click(retweetTarget);
+        await click(retweetTarget).catch((err) => {
+            if (err.message.includes('not visible') || err.message.includes('not found')) {
+                throw new Error('Retweet button not found');
+            }
+            throw err;
+        });
 
         await wait(mathUtils.randomInRange(500, 1000));
 
-        // Click confirm in menu
-        const confirmVisible = await visible(confirmSel);
+        // 4. Click confirm in menu
+        const confirmVisible = await visible(confirmSel).catch(() => false);
         if (!confirmVisible) {
-            logger.warn(`Retweet confirm menu not found`);
+            logger.warn(`Retweet confirm menu not found. May have been closed or misclicked.`);
             await page.keyboard.press('Escape').catch(() => {});
             return { success: false, reason: 'confirm_menu_not_found', method: 'retweetAPI' };
         }
@@ -77,14 +82,14 @@ export async function retweetWithAPI(options = {}) {
 
         await wait(mathUtils.randomInRange(600, 1200));
 
-        // Verify
+        // 5. Verify
         const nowUnretweetable = tweetElement
             ? await tweetElement
                   .locator(unretweetSel)
                   .first()
                   .isVisible()
                   .catch(() => false)
-            : await visible(unretweetSel);
+            : await visible(unretweetSel).catch(() => false);
 
         if (nowUnretweetable) {
             logger.info(`✅ api.retweetWithAPI successful!`);
@@ -96,6 +101,12 @@ export async function retweetWithAPI(options = {}) {
         return { success: false, reason: 'verification_failed', method: 'retweetAPI' };
     } catch (error) {
         logger.error(`api.retweetWithAPI error: ${error.message}`);
-        return { success: false, reason: error.message, method: 'retweetAPI' };
+        
+        let reason = error.message;
+        if (error.message.includes('Retweet button not found')) {
+            reason = 'retweet_button_not_found';
+        }
+        
+        return { success: false, reason, method: 'retweetAPI' };
     }
 }

@@ -10,6 +10,7 @@ import { mathUtils } from '../utils/math.js';
 import { wait } from '../interactions/wait.js';
 import { visible } from '../interactions/queries.js';
 import { click } from '../interactions/actions.js';
+import { ActionError } from '../core/errors.js';
 import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('api/like.js');
@@ -47,7 +48,7 @@ export async function likeWithAPI(options = {}) {
 
         if (alreadyLiked) {
             logger.info(`Tweet already liked, skipping.`);
-            return { success: true, reason: 'already_liked', method: 'likeAPI' };
+            return { success: true, reason: 'already_liked' };
         }
 
         // Scroll into view
@@ -78,13 +79,13 @@ export async function likeWithAPI(options = {}) {
         if (toastVisible || nowUnliked) {
             logger.info(`✅ api.likeWithAPI successful!`);
             metricsCollector.recordSocialAction('like', 1);
-            return { success: true, reason: 'success', method: 'likeAPI' };
+            return { success: true, method: 'likeAPI' };
         }
 
         logger.warn(`❌ api.likeWithAPI: no confirmation signal detected`);
-        return { success: false, reason: 'verification_failed', method: 'likeAPI' };
+        return { success: false, reason: 'verification_failed' };
     } catch (error) {
         logger.error(`api.likeWithAPI error: ${error.message}`);
-        return { success: false, reason: error.message, method: 'likeAPI' };
+        return { success: false, reason: error.message };
     }
 }

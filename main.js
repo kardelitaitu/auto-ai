@@ -16,35 +16,9 @@ import { showBanner } from './api/utils/banner.js';
 import Orchestrator from './api/core/orchestrator.js';
 import { ensureDockerLLM } from './api/utils/dockerLLM.js';
 import { getSettings } from './api/utils/configLoader.js';
+import { parseTaskArgs } from './api/utils/task-parser.js';
 
 const logger = createLogger('main.js');
-
-// Global reference for signal handlers to access
-let globalOrchestrator = null;
-let isShuttingDown = false;
-
-/**
- * Graceful shutdown handler - closes all browsers before exit
- */
-async function gracefulShutdown(signal) {
-    if (isShuttingDown) {
-        logger.info(`[Shutdown] Already shutting down, ignoring ${signal}...`);
-        return;
-    }
-    isShuttingDown = true;
-    logger.info(`[Shutdown] Received ${signal}. Closing browsers and cleaning up...`);
-
-    try {
-        if (globalOrchestrator) {
-            await globalOrchestrator.shutdown();
-            logger.info('[Shutdown] Orchestrator shutdown complete.');
-        }
-    } catch (error) {
-        logger.error('[Shutdown] Error during shutdown:', error.message);
-    }
-
-    process.exit(0);
-}
 
 /**
  * The main entry point of the application.
@@ -52,11 +26,35 @@ async function gracefulShutdown(signal) {
  * It sets up the orchestrator, discovers browsers, and runs automation tasks.
  */
 (async () => {
+    // State for signal handlers - scoped to this IIFE
+    let isShuttingDown = false;
+    let orchestrator = null;
+
+    // Graceful shutdown handler - closes all browsers before exit
+    async function gracefulShutdown(signal) {
+        if (isShuttingDown) {
+            logger.info(`[Shutdown] Already shutting down, ignoring ${signal}...`);
+            return;
+        }
+        isShuttingDown = true;
+        logger.info(`[Shutdown] Received ${signal}. Closing browsers and cleaning up...`);
+
+        try {
+            if (orchestrator) {
+                await orchestrator.shutdown();
+                logger.info('[Shutdown] Orchestrator shutdown complete.');
+            }
+        } catch (error) {
+            logger.error('[Shutdown] Error during shutdown:', error.message);
+        }
+
+        process.exit(0);
+    }
+
     // Show visual banner first
     showBanner();
 
     logger.info('MultiBrowseAutomation - Starting up...');
-    let orchestrator;
 
     try {
         // Step 1: Ensure Docker LLM is running (if enabled)
@@ -68,7 +66,6 @@ async function gracefulShutdown(signal) {
         }
 
         orchestrator = new Orchestrator();
-        globalOrchestrator = orchestrator; // Expose for signal handlers
 
         // Parse CLI arguments for options
         const args = process.argv.slice(2);
@@ -85,8 +82,6 @@ async function gracefulShutdown(signal) {
         if (settings?.ui?.dashboard?.enabled) {
             await orchestrator.startDashboard(settings.ui.dashboard.port || 3001);
         }
-
-        // Retry Loop for Discovery
 
         // Retry Loop for Discovery
         const maxRetries = 3;
@@ -129,103 +124,36 @@ async function gracefulShutdown(signal) {
         }
 
         // Parse tasks into sequential groups separated by 'then'
-        const taskGroups = [];
-        let currentGroup = [];
+        const { groups, taskCount } = parseTaskArgs(tasksToRun);
 
-        tasksToRun.forEach((arg) => {
-            if (arg.toLowerCase() === 'then') {
-                if (currentGroup.length > 0) {
-                    taskGroups.push(currentGroup);
-                    currentGroup = [];
-                }
-            } else {
-                currentGroup.push(arg);
-            }
-        });
-        if (currentGroup.length > 0) {
-            taskGroups.push(currentGroup);
-        }
-
-        if (taskGroups.length === 0) {
+        if (taskCount === 0) {
             logger.info('No tasks specified. System initialized in idle mode.');
         } else {
-            logger.info(
-                `MultiBrowseAutomation - Initialized. Processing ${taskGroups.length} sequential task groups.`
-            );
+            logger.info(`MultiBrowseAutomation - Initialized. Processing ${taskCount} task(s) in ${groups.length} group(s).`);
 
-            for (let i = 0; i < taskGroups.length; i++) {
-                const group = taskGroups[i];
-                logger.info(
-                    `[Queue] Processing Task Group ${i + 1}/${taskGroups.length}: ${JSON.stringify(group)}`
-                );
+            for (let i = 0; i < groups.length; i++) {
+                const group = groups[i];
+                logger.info(`[Queue] Processing Group ${i + 1}/${groups.length}...`);
 
-                let currentTask = null;
-                let currentPayload = {};
+                let tasksAdded = 0;
+                let tasksSkipped = 0;
 
-                group.forEach((arg) => {
-                    const firstEqualIndex = arg.indexOf('=');
-
-                    if (firstEqualIndex > 0) {
-                        const key = arg.substring(0, firstEqualIndex);
-                        let value = arg.substring(firstEqualIndex + 1);
-                        if (value.startsWith('"') && value.endsWith('"'))
-                            value = value.slice(1, -1);
-
-                        // Shorthand detection: taskName=VALUE
-                        const isNewTaskShorthand = currentTask && key === currentTask;
-
-                        if (!currentTask || isNewTaskShorthand) {
-                            if (isNewTaskShorthand) {
-                                orchestrator.addTask(currentTask, currentPayload);
-                            }
-                            currentTask = key.endsWith('.js') ? key.slice(0, -3) : key;
-
-                            // If the value is purely numeric, it's a parameter (e.g. followback=5)
-                            // Otherwise, it's treated as a URL for navigation tasks
-                            const isNumeric = /^\d+$/.test(value);
-
-                            if (isNumeric) {
-                                currentPayload = { value: parseInt(value) };
-                            } else {
-                                // Auto-prepend protocol for shorthand URL values
-                                let urlValue = value;
-                                if (
-                                    urlValue &&
-                                    !urlValue.includes('://') &&
-                                    (urlValue.includes('.') || urlValue === 'localhost')
-                                ) {
-                                    urlValue = 'https://' + urlValue;
-                                }
-                                currentPayload = { url: urlValue };
-                            }
-                        } else {
-                            // It's a parameter for the current task
-                            let paramValue = value;
-                            if (
-                                key === 'url' &&
-                                paramValue &&
-                                !paramValue.includes('://') &&
-                                (paramValue.includes('.') || paramValue === 'localhost')
-                            ) {
-                                paramValue = 'https://' + paramValue;
-                            }
-                            currentPayload[key] = paramValue;
-                        }
-                    } else {
-                        // No '=' - this must be a new task name (start of a new task in group)
-                        if (currentTask) {
-                            orchestrator.addTask(currentTask, currentPayload);
-                        }
-                        currentTask = arg.endsWith('.js') ? arg.slice(0, -3) : arg;
-                        currentPayload = {};
+                for (const { name, payload } of group) {
+                    try {
+                        orchestrator.addTask(name, payload);
+                        tasksAdded++;
+                    } catch (error) {
+                        logger.warn(`[Queue] Skipping task '${name}': ${error.message}`);
+                        tasksSkipped++;
                     }
-                });
-
-                if (currentTask) {
-                    orchestrator.addTask(currentTask, currentPayload);
                 }
 
-                logger.info(`[Queue] Tasks for Group ${i + 1} added. Waiting for completion...`);
+                if (tasksAdded === 0) {
+                    logger.warn(`[Queue] No valid tasks in group ${i + 1}, skipping...`);
+                    continue;
+                }
+
+                logger.info(`[Queue] Added ${tasksAdded} task(s)${tasksSkipped > 0 ? `, skipped ${tasksSkipped}` : ''}...`);
                 await orchestrator.waitForTasksToComplete();
                 logger.info(`[Queue] Group ${i + 1} completed successfully.`);
             }

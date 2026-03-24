@@ -1,3 +1,5 @@
+25-03-2026--05:30 > Multiple Files > Pre pnpm migration baseline. Includes retweet workflow refinements, task parser utility, and various core API stability fixes.
+20-03-2026--22:45 > api/actions/like.js, api/interactions/scroll.js > Fixed unit test failures in like.test.js and scroll.test.js. Added missing imports for ActionError and ElementNotFoundError. Updated likeWithAPI() and focus2() to return result objects instead of throwing errors to match test expectations and improve consistency. Verified 100% pass rate.
 19-03-2026--00:20 > api/agent > Added tests for untested agent files. finder.js: 0%→100% (12 new tests), observer.js: 0%→100% (25 new tests). Created finder.test.js, observer.test.js. Lint clean, all 7522 tests pass.
 18-03-2026--23:41 > api/twitter > Twitter coverage improvements. navigation.js: added 13 tests, twitterAgent.js: added 14 tests (19→33 total). Created navigation.test.js, expanded twitterAgent.test.js. Lint clean, all 7485 tests pass.
 18-03-2026--21:18 > api/interactions, api/agent > Continued coverage improvements. scroll.js: 44.79%→98.61% (26 new tests), llmClient.js: 34.26%→72.9% (34 new tests), actionEngine.js: 67.63%→88.38% (53 new tests). Created scroll.test.js, llmClient.test.js, actionEngine.test.js. Lint clean, all 7458 tests pass.
@@ -119,7 +121,10 @@
   - Added .npmrc with node_modules=true to prevent hoisting to parent
 
 
-# AGENT-JOURNAL.md
+# AGENT JOURNAL
+
+25-03-2026--05:30 > Multiple Files > Pre pnpm migration baseline. Includes retweet workflow refinements, task parser utility, and various core API stability fixes.
+22-03-2026--08:15 > tasks/retweet.js, api/actions/retweet.js, tasks/retweet.md > Improved retweet workflow with robust waiting, URL validation, and enhanced error logging.
 
 ## 2026-03-11: Bar-Style Chart Update
 - **Status**: Completed

@@ -203,23 +203,22 @@ export default async function apiTwitterFollowLikeRetweetTask(page, payload) {
 
                     await api.think(mathUtils.randomInRange(1000, 2500));
 
-                    // ── STEP 2b: Like (100% chance) ──────────────────────────
-                    {
-                        logger.info(`[api-twitterFollowLikeRetweet] Liking...`);
-                        const likeResult = await api.likeWithAPI({ tweetElement: tweetArticle });
-
-                        if (likeResult.success) {
-                            logger.info(
-                                `[api-twitterFollowLikeRetweet] ✅ Liked (${likeResult.reason})`
-                            );
-                            // Metrics already recorded by api.likeWithAPI()
-                        } else {
-                            logger.warn(
-                                `[api-twitterFollowLikeRetweet] ⚠️ Like: ${likeResult.reason}`
-                            );
-                        }
-                        await api.think(mathUtils.randomInRange(800, 2000));
-                    }
+                         // ── STEP 2b: Like (100% chance) ──────────────────────────
+                     {
+                         logger.info(`[api-twitterFollowLikeRetweet] Liking...`);
+                         try {
+                             await api.likeWithAPI({ tweetElement: tweetArticle });
+                             logger.info(
+                                 `[api-twitterFollowLikeRetweet] ✅ Liked (success)`
+                             );
+                             // Metrics already recorded by api.likeWithAPI()
+                         } catch (error) {
+                             logger.warn(
+                                 `[api-twitterFollowLikeRetweet] ⚠️ Like: ${error.message}`
+                             );
+                         }
+                         await api.think(mathUtils.randomInRange(800, 2000));
+                     }
 
                     // ── STEP 3: Click profile link from tweet article ───────
                     // Matches the @username anchor inside the tweet article:

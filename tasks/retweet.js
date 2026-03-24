@@ -155,24 +155,22 @@ async function retweetBranch1_directRetweet(page, logger) {
     }
     logger.info(`[Branch1] Finished browsing, scrolling back to retweet button...`);
 
-    // Scroll to retweet button using focus2
-    const scrollResult = await api.scroll.focus2(retweetBtn);
-    logger.info(`[Branch1] focus2 result: distance=${scrollResult.distance?.toFixed(0)}px, steps=${scrollResult.steps}, success=${scrollResult.success}`);
-    await api.wait(mathUtils.randomInRange(600, 1000));
-
-    // Execute retweet
-    const result = await retweetWithAPI({ page, tweetElement });
-
-    // Navigate to home and simulate reading feed for 2-5 minutes
-    if (result.success) {
-        logger.info('[Branch1] Retweet successful, navigating to home feed...');
-        const homeReadMs = mathUtils.randomInRange(120000, 300000); // 2-5 minutes
+     // Scroll to retweet button using focus2
+     const scrollResult = await api.scroll.focus2(retweetBtn);
+     logger.info(`[Branch1] focus2 result: distance=${scrollResult.distance?.toFixed(0)}px, steps=${scrollResult.steps}`);
+     await api.wait(mathUtils.randomInRange(600, 1000));
+     
+     // Execute retweet
+     await retweetWithAPI({ page, tweetElement });
+     
+     // Navigate to home and simulate reading feed for 2-5 minutes
+     logger.info('[Branch1] Retweet successful, navigating to home feed...');
+     const homeReadMs = mathUtils.randomInRange(120000, 300000); // 2-5 minutes
         logger.info(`[Branch1] Reading home feed for ${(homeReadMs / 60000).toFixed(1)} minutes...`);
         await api.twitter.home({ readDurationMs: homeReadMs });
     }
 
     return result;
-}
 
 /**
  * Branch 2: Profile Visit + Retweet

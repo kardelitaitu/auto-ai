@@ -1,3 +1,16 @@
+### ✅ version 1.0.9 - 2026-03-25
+### Pre-Migration Baseline
+- **Retweet Workflow Refinement**: Improved `retweet.js` with better waiting mechanisms and validation.
+- **Task Parser Utility**: Added `api/utils/task-parser.js` for enhanced task command parsing.
+- **Core Stability**: Various fixes to `like.js`, `scroll.js`, and entry points (`main.js`, `agent-main.js`) for better consistency.
+- **Documentation**: Updated `AGENTS.md` and prepared pnpm migration draft.
+
+### ✅ version 1.0.8 - 2026-03-20
+### API & Test Fixes
+- **Test Error Repair**: Fixed critical unit test failures in `like.test.js` and `scroll.test.js`.
+- **Improved Consistency**: Refactored `likeWithAPI` and `focus2` to return structured outcome objects instead of throwing exceptions for expected business-logic failures, aligning with JSDoc specifications and test assertions.
+- **Dependency Guard**: Resolved `ReferenceError`s by correctly importing missing error classes (`ActionError`, `ElementNotFoundError`) in the API interaction layer.
+
 ### ✅ version 1.0.7 - 2026-03-17
 ### Infrastructure & Git
 - **Git History Cleanup**: Resolved a critical push block caused by large Electron build artifacts (`.exe` files) committed to the repository. Used `git filter-branch` to purge the `api/ui/electron-dashboard/dist-exe/` directory from the entire Git history, reducing repository size and restoring the ability to push to GitHub.
@@ -361,7 +374,6 @@ Improvements
 - **Improved Navigation Latency**: Lowered initial navigation timeout from 60s to 30s to fail fast on slow pipes.
 - **Responsiveness Guard**: Added a 5-second JS responsiveness check after navigation to detect and skip "dead" or extremely heavy pages before interaction attempts.
 - **Graceful Error Recovery**: Enhanced loop logic to log and skip failed/timed-out URLs, preventing task stalls.
-
 
 ### ✅ version 0.4.1
 
