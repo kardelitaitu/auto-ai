@@ -36,9 +36,9 @@ vi.mock('../../core/logger.js', () => ({
     })),
 }));
 
-// Mock connectors
+// Mock connectors - make roxybrowser undefined to simulate missing/invalid
 vi.mock('../../connectors/discovery/roxybrowser.js', () => ({
-    default: {}, // Not a function, invalid export
+    default: undefined,
 }));
 
 vi.mock('../../connectors/discovery/ixbrowser.js', () => ({

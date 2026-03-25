@@ -232,12 +232,15 @@ export async function apply(fingerprint = null) {
 
           // Spoof complex plugins object
           if (prop === "plugins") {
-            const pluginArrayProto = window.PluginArray
-              ? window.PluginArray.prototype
-              : Object.prototype;
-            const pluginProto = window.Plugin
-              ? window.Plugin.prototype
-              : Object.prototype;
+            const hasWindow = typeof window !== "undefined";
+            const pluginArrayProto =
+              hasWindow && window.PluginArray
+                ? window.PluginArray.prototype
+                : Object.prototype;
+            const pluginProto =
+              hasWindow && window.Plugin
+                ? window.Plugin.prototype
+                : Object.prototype;
 
             // Create objects that mimic PluginArray and Plugin identity
             const pluginArray = Object.create(pluginArrayProto, {
@@ -354,7 +357,11 @@ export async function apply(fingerprint = null) {
       });
 
       // Ghost 3.0: Permissions API hardening
-      if (window.navigator.permissions) {
+      if (
+        typeof window !== "undefined" &&
+        window.navigator &&
+        window.navigator.permissions
+      ) {
         const originalQuery = window.navigator.permissions.query;
         window.navigator.permissions.query = (parameters) =>
           parameters.name === "notifications"
@@ -442,9 +449,10 @@ export async function check() {
   const page = getPage();
 
   const results = await page.evaluate(() => {
-    const webdriver = navigator.webdriver;
+    const webdriver = navigator ? navigator.webdriver : false;
     const hasCDC = !!(
-      window.cdc_adoQjvpsHSjkbJjLPRbPQ || window.$cdc_asdjflasutopfhvcZLmcfl_
+      (typeof window !== "undefined" && window.cdc_adoQjvpsHSjkbJjLPRbPQ) ||
+      (typeof window !== "undefined" && window.$cdc_asdjflasutopfhvcZLmcfl_)
     );
 
     return {
