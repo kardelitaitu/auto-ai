@@ -451,3 +451,5 @@ Create a helper function for Twitter intent URLs to be used as a utility through
 25-03-2026--22-50 > api/tests/unit/agent/gameRunner.test.js > Expanded run-path coverage with invalid LLM response, parallel execution, and verification-disabled cases; reset runner caches for stable single-file coverage
 25-03-2026--23-44 > api/tests/unit/api/actions.test.js > Added locator-path, force-skip-obscured, and typo-without-correction cases to raise branch coverage for interactions/actions.js
 25-03-2026--23-46 > api/tests/unit/api/behaviors/humanization-error.test.js > Added navigation, refresh, nearby-click, and rollback-branch coverage for humanization error recovery
+25-03-2026--23-57 > api/tests/unit/free-api-router.test.js > Added shared-helper, proxy masking, no-key fast-fail, reasoning_content fallback, and direct-call error-path coverage for free-api-router
+26-03-2026--00-00 > api/tests/unit/utils/vision-preprocessor.test.js > Added ROI fallback, singleton reuse, posterize/maskBlue, and debug/path coverage to raise V-PREP branch/function coverage
