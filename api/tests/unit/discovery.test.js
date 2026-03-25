@@ -93,6 +93,7 @@ describe('core/discovery', () => {
 
     beforeEach(async () => {
         vi.clearAllMocks();
+        vi.resetModules();
         // Re-import to get fresh instance
         const module = await import('../../core/discovery.js');
         Discovery = module.default;
