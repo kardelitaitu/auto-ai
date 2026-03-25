@@ -375,12 +375,14 @@ export async function apply(fingerprint = null) {
       }
 
       // Ghost 3.0: Ensure navigator is immutable so driver cannot re-inject properties
-      Object.defineProperty(window, "navigator", {
-        value: navigatorProxy,
-        configurable: false,
-        writable: false,
-        enumerable: true,
-      });
+      if (typeof window === "object" && window !== null) {
+        Object.defineProperty(window, "navigator", {
+          value: navigatorProxy,
+          configurable: false,
+          writable: false,
+          enumerable: true,
+        });
+      }
     } catch (e) {
       console.warn("[Patch] Failed to apply static spoofs", e);
     }
