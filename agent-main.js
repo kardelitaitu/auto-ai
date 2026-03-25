@@ -16,7 +16,6 @@ import { createLogger } from './api/core/logger.js';
 import { showBanner } from './api/utils/banner.js';
 import Orchestrator from './api/core/orchestrator.js';
 import { ensureDockerLLM } from './api/utils/dockerLLM.js';
-import { api } from './api/index.js';
 import { llmClient } from './api/agent/index.js';
 import owbAgents from './owb-agents.js';
 import { GAME_CONFIG, LLM_CONFIG } from './owb-config.js';

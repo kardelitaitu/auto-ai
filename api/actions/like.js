@@ -10,7 +10,6 @@ import { mathUtils } from '../utils/math.js';
 import { wait } from '../interactions/wait.js';
 import { visible } from '../interactions/queries.js';
 import { click } from '../interactions/actions.js';
-import { ActionError } from '../core/errors.js';
 import metricsCollector from '../utils/metrics.js';
 
 const logger = createLogger('api/like.js');

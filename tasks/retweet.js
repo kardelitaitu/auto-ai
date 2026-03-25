@@ -166,11 +166,11 @@ async function retweetBranch1_directRetweet(page, logger) {
      // Navigate to home and simulate reading feed for 2-5 minutes
      logger.info('[Branch1] Retweet successful, navigating to home feed...');
      const homeReadMs = mathUtils.randomInRange(120000, 300000); // 2-5 minutes
-        logger.info(`[Branch1] Reading home feed for ${(homeReadMs / 60000).toFixed(1)} minutes...`);
-        await api.twitter.home({ readDurationMs: homeReadMs });
-    }
-
-    return result;
+     logger.info(`[Branch1] Reading home feed for ${(homeReadMs / 60000).toFixed(1)} minutes...`);
+     await api.twitter.home({ readDurationMs: homeReadMs });
+     
+     return { success: true, branch: 'Branch1' };
+}
 
 /**
  * Branch 2: Profile Visit + Retweet

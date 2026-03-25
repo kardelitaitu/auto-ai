@@ -77,7 +77,7 @@ while (attempt < maxAttempts) {
     log.success("Force pushed to remote!");
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     if (attempt < maxAttempts) {
       log.warn(`Attempt ${attempt} failed, retrying...`);
     } else {

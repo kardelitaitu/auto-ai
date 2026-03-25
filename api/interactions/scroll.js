@@ -24,7 +24,7 @@ import { mathUtils } from '../utils/math.js';
 import { createLogger } from '../core/logger.js';
 import { getSettings } from '../utils/config.js';
 import { getLocator } from '../utils/locator.js';
-import { ValidationError, ElementNotFoundError } from '../core/errors.js';
+import { ValidationError } from '../core/errors.js';
 
 const logger = createLogger('api/scroll.js');
 

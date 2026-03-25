@@ -51,6 +51,15 @@ const logger = createLogger('main.js');
         process.exit(0);
     }
 
+    // Register signal handlers inside the IIFE
+    process.on('SIGINT', async () => {
+        await gracefulShutdown('SIGINT');
+    });
+
+    process.on('SIGTERM', async () => {
+        await gracefulShutdown('SIGTERM');
+    });
+
     // Show visual banner first
     showBanner();
 
@@ -182,6 +191,3 @@ process.on('unhandledRejection', (reason, promise) => {
     logger.error('Unhandled Promise Rejection at:', promise, 'reason:', reason);
     process.exit(1);
 });
-
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
