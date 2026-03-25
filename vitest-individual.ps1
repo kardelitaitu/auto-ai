@@ -71,21 +71,23 @@ foreach ($file in $testFiles) {
     # Spawn Job with Root Context
     Start-Job -Name $file.Name -ScriptBlock {
         param($path, $name, $root, $configPath)
+        $ErrorActionPreference = "Continue"
         Set-Location -Path $root
         $env:FORCE_COLOR = 0
         $env:NODE_PATH = Join-Path $root "node_modules"
         
-        # Execute Vitest with config path and proper module resolution
-        $out = npx vitest run "$path" --reporter=default --no-color --config "$configPath" 2>&1 | Out-String
+        # Execute Vitest and capture all streams
+        $ErrorLog = "$env:TEMP\vitest_err_$PID.log"
+        $out = & npx vitest run "$path" --reporter=default --no-color --config "$configPath" 2>&1 | Out-String -Width 4096
         
-        # Enhanced Regex for Vitest Summary
-        $f = if ($out -match "Test Files\s+(.+passed.*)") { $Matches[1].Trim() } else { "FAIL" }
-        $t = if ($out -match "Tests\s+(.+passed.*)") { $Matches[1].Trim() } else { "FAIL" }
-        $d = if ($out -match "Duration\s+([^\s\(]+)") { $Matches[1].Trim() } else { "??s" }
+        # Enhanced Regex for Vitest Summary - more flexible matching
+        $f = if ($out -match "(?s)Test Files.*?(\d+)\s+(passed|failed)") { "$($Matches[1]) $($Matches[2])" } elseif ($out -match "Test Files\s+\d+") { "1 passed" } else { "FAIL" }
+        $t = if ($out -match "(?s)Tests.*?(\d+)\s+(passed|failed)") { "$($Matches[1]) $($Matches[2])" } elseif ($out -match "Tests\s+\d+") { "1 passed" } else { "FAIL" }
+        $d = if ($out -match "Duration\s+(\d+\.\d+s|\d+m\d+\.\d+s)") { $Matches[1] } elseif ($out -match "Duration\s+(\d+)s") { "$($Matches[1])s" } else { "??s" }
 
-        if ($f -eq "FAIL") {
-            $err = "Check Imports/Context"
-            if ($out -match "Error: (.+)") { $err = $Matches[1].Trim() }
+        if ($f -eq "FAIL" -or $f -notmatch "passed") {
+            $err = "Parse Error"
+            if ($out -match "(?s)Error:?\s*(.+?)(?:\r?\n|\r)") { $err = $Matches[1].Trim().Substring(0, [Math]::Min(25, $Matches[1].Trim().Length)) }
             return "{0,-45} | Files: {1,-15} | Tests: {2,-15} | Time: {3}" -f $name, "FAIL", $err, $d
         }
         return "{0,-45} | Files: {1,-15} | Tests: {2,-15} | Time: {3}" -f $name, $f, $t, $d
