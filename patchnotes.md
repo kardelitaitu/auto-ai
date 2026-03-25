@@ -14,6 +14,7 @@
   - Stage → Lint → Commit → Push (automatic, push is default)
   - Color-coded output with 1x retry on failure
   - `--no-verify` flag to skip linting
+  - Auto-generates message in format "DD Month YYYY - hh:mm AM/PM" if no message provided
 - Created `pnpm amend` helper (`scripts/git-amend.js`):
   - Stage → Lint → Amend → Force Push (automatic)
   - Supports optional new message
