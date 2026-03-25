@@ -1,0 +1,4 @@
+{"timestamp":"2026-03-19T10:08:46.580Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1773914926559-sof6eo661] Session initialized with paceMultiplier=0.77"}
+{"timestamp":"2026-03-19T10:08:46.581Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1773914926559-sof6eo661] Fatigue scheduled for T+3.8m"}
+{"timestamp":"2026-03-19T10:08:46.633Z","level":"INFO","module":"api/agent/visualDiff.js","sessionId":null,"message":"Sharp module loaded successfully"}
+{"timestamp":"2026-03-19T10:08:46.649Z","level":"INFO","module":"api/agent/sessionStore.js","sessionId":null,"message":"[SessionStore] Database initialized successfully"}

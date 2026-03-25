@@ -1,49 +1,99 @@
 {
-  "name": "multi-browser-automation",
-  "version": "0.0.30",
-  "description": "Agentic orchestration framework for discovering and automating pre-existing browser instances via CDP",
-  "main": "main.js",
-  "scripts": {
-    "start": "node main.js",
-    "test": "npx vitest run",
-    "test:unit": "npx vitest run tests/unit",
-    "test:integration": "npx vitest run tests/integration",
-    "test:edge-cases": "npx vitest run tests/edge-cases",
-    "test:all": "npx vitest run tests/",
-    "test:watch": "npx vitest",
-    "test:coverage": "npx vitest run --coverage",
-    "test:verbose": "npx vitest run --reporter=verbose",
-    "docs": "jsdoc -c jsdoc.json",
-    "docs:watch": "jsdoc -c jsdoc.json -r"
-  },
-  "keywords": [
-    "automation",
-    "browser",
-    "playwright",
-    "cdp",
-    "multi-browser",
-    "roxybrowser",
-    "ixbrowser",
-    "morelogin",
-    "anti-detect",
-    "orchestration"
-  ],
-  "author": "",
-  "license": "MIT",
-  "type": "module",
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.7",
-    "https-proxy-agent": "^7.0.6",
-    "playwright": "^1.56.1"
-  },
-  "devDependencies": {
-    "@jest/globals": "^30.2.0",
-    "docdash": "^2.0.2",
-    "jest": "^30.2.0",
-    "jsdoc": "^4.0.5",
-    "vitest": "^4.0.18"
-  }
+    "name": "multi-browser-automation",
+    "version": "0.0.30",
+    "description": "Agentic orchestration framework for discovering and automating pre-existing browser instances via CDP",
+    "main": "main.js",
+    "scripts": {
+        "prepare": "husky install",
+        "commit": "node scripts/git-commit.js",
+        "amend": "node scripts/git-amend.js",
+        "start": "node main.js",
+        "debug": "node --inspect-brk main.js",
+        "test": "npx vitest run -c config/vitest.config.js",
+        "test:smoke": "npx vitest run -c config/vitest.smoke.config.js",
+        "test:unit": "npx vitest run -c config/vitest.config.js api/tests/unit",
+        "test:integration": "npx vitest run -c config/vitest.config.js api/tests/integration",
+        "test:edge-cases": "npx vitest run -c config/vitest.config.js api/tests/edge-cases",
+        "test:all": "npx vitest run -c config/vitest.config.js api/tests",
+        "test:watch": "npx vitest -c config/vitest.config.js",
+        "test:coverage": "node --max-old-space-size=32768 node_modules/vitest/vitest.mjs run -c config/vitest.config.js --coverage --silent --reporter=dot",
+        "test:ci": "vitest run -c config/vitest.config.js --coverage --silent",
+        "test:verbose": "npx vitest run -c config/vitest.config.js --reporter=verbose",
+        "test:bun": "bun run vitest run -c config/vitest.config.js",
+        "test:bun:unit": "bun run vitest run -c config/vitest.config.js api/tests/unit",
+        "test:bun:integration": "bun run vitest run -c config/vitest.config.js api/tests/integration",
+        "test:bun:edge": "bun run vitest run -c config/vitest.config.js api/tests/edge-cases",
+        "test:bun:all": "bun run vitest run -c config/vitest.config.js api/tests",
+        "test:bun:watch": "bun run vitest -c config/vitest.config.js",
+        "test:bun:coverage": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot",
+        "test:bun:verbose": "bun run vitest run -c config/vitest.config.js --reporter=verbose",
+        "lint": "eslint . --config config/eslint.config.js",
+        "lint:fix": "eslint . --config config/eslint.config.js --fix",
+        "format": "prettier --write . --config config/.prettierrc",
+        "docs": "node node_modules/jsdoc/jsdoc.js -r -d ./docs -t node_modules/docdash --exclude \"**/free-api-router.js\" tasks utils core connectors local-agent",
+        "docs:tasks": "node node_modules/jsdoc/jsdoc.js -r -d ./docs -t node_modules/docdash tasks",
+        "docs:utils": "node node_modules/jsdoc/jsdoc.js -r -d ./docs -t node_modules/docdash utils",
+        "docs:watch": "jsdoc -c jsdoc.json -r"
+    },
+    "lint-staged": {
+        "*.js": [
+            "eslint --fix --config config/eslint.config.js",
+            "prettier --write"
+        ]
+    },
+    "keywords": [
+        "automation",
+        "browser",
+        "playwright",
+        "cdp",
+        "multi-browser",
+        "roxybrowser",
+        "ixbrowser",
+        "morelogin",
+        "anti-detect",
+        "orchestration"
+    ],
+    "author": "gantengmaksimal",
+    "license": "PROPRIETARY",
+    "type": "module",
+    "engines": {
+        "node": ">=16.0.0"
+    },
+    "dependencies": {
+        "@heyputer/puter.js": "^2.2.10",
+        "@tavily/core": "^0.7.2",
+        "better-sqlite3": "^12.6.2",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.0",
+        "https-proxy-agent": "^7.0.6",
+        "playwright": "^1.56.1",
+        "sharp": "^0.34.5",
+        "socket.io": "^4.7.5",
+        "socket.io-client": "^4.7.5",
+        "zod": "^4.3.6"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.29.0",
+        "@babel/register": "^7.28.6",
+        "@eslint/js": "^10.0.1",
+        "@jest/globals": "^30.2.0",
+        "@vitest/coverage-istanbul": "^3.2.4",
+        "@vitest/coverage-v8": "^3.2.4",
+        "chai": "^6.2.2",
+        "docdash": "^2.0.2",
+        "eslint": "^10.0.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-node": "^11.1.0",
+        "globals": "^17.3.0",
+        "jest": "^30.2.0",
+        "jsdoc": "^4.0.5",
+        "jsdom": "^28.1.0",
+        "mocha": "^11.7.5",
+        "prettier": "^3.8.1",
+        "typedoc": "^0.28.17",
+        "vitest": "^3.2.4",
+        "husky": "^9.1.0",
+        "lint-staged": "^15.4.3"
+    },
+    "packageManager": "pnpm@10.33.0"
 }

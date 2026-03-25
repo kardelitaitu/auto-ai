@@ -1,6 +1,7 @@
 # Quick Start Guide - Running Auto-AI with Docker LLM
 
 ## Prerequisites
+
 - Docker installed and running
 - Node.js 18+ installed
 - Browser (ixBrowser, Brave, etc.) running
@@ -12,6 +13,7 @@ docker model run ai/qwen3-vl:4B-UD-Q4_K_XL
 ```
 
 The model will start on port **12434**. You should see output like:
+
 ```
 ✔ Model ai/qwen3-vl:4B-UD-Q4_K_XL is ready
 Server listening on http://localhost:12434
@@ -37,6 +39,7 @@ node main.js simpleNavigate targetUrl=https://example.com
 ```
 
 The system will:
+
 1. Discover running browsers
 2. Route simple tasks to local LLM (fast, free)
 3. Route complex tasks to cloud (OpenRouter)
@@ -55,6 +58,7 @@ Check the logs for routing decisions:
 ## What Gets Routed Where?
 
 ### Local LLM (Fast & Free)
+
 - Navigation tasks
 - Simple clicks
 - Scrolling
@@ -62,6 +66,7 @@ Check the logs for routing decisions:
 - Routine interactions
 
 ### Cloud LLM (Powerful)
+
 - Captcha solving
 - Error recovery
 - Complex page analysis
@@ -71,6 +76,7 @@ Check the logs for routing decisions:
 ## Troubleshooting
 
 **Local LLM not connecting:**
+
 ```bash
 # Check if Docker is running
 docker ps
@@ -84,11 +90,13 @@ docker model run ai/qwen3-vl:4B-UD-Q4_K_XL
 ```
 
 **All requests going to cloud:**
+
 - Check task complexity - simple tasks route to local automatically
 - Use `forceLocal: true` to override routing
 - Verify `.env` has correct `LOCAL_LLM_ENDPOINT`
 
 **Port conflict:**
+
 ```bash
 # Check what's using port 12434
 netstat -ano | findstr :12434
@@ -99,6 +107,7 @@ netstat -ano | findstr :12434
 ## Configuration Reference
 
 **Environment Variables:**
+
 ```env
 # Required for cloud fallback
 OPENROUTER_API_KEY=sk-or-v1-...
@@ -108,6 +117,32 @@ OPENROUTER_DEFAULT_MODEL=anthropic/claude-3.5-sonnet
 LOCAL_LLM_ENDPOINT=http://localhost:12434/api/generate
 LOCAL_LLM_MODEL=ai/qwen3-vl:4B-UD-Q4_K_XL
 ```
+
+**settings.json:**
+
+```json
+{
+    "orchestration": {
+        "taskDispatchMode": "broadcast",
+        "reuseSharedContext": false,
+        "pagePoolMaxPerSession": 2
+    }
+}
+```
+
+**taskDispatchMode options:**
+
+- broadcast: send full task list to every session (default)
+- centralized: share a single task list across sessions
+
+**reuseSharedContext options:**
+
+- false: create and close a shared context per checklist (default)
+- true: reuse a shared context across checklists
+
+**pagePoolMaxPerSession options:**
+
+- number: maximum pooled pages per session (defaults to concurrencyPerBrowser)
 
 ## Testing the Setup
 
@@ -131,3 +166,62 @@ node tests/test-core-modules.js
 4. Build custom tasks in `tasks/` directory
 
 For detailed architecture information, see `walkthrough.md`.
+
+---
+
+## AI Agent - Strategy Game Automation
+
+For **autonomous vision-based AI agents** for strategy games, see [.AGENT.README.md](./.AGENT.README.md).
+
+### Quick Start - Game Agent
+
+```javascript
+import { api } from './api/index.js';
+
+await api.init(page);
+
+// Autonomous game agent
+const result = await api.gameAgent.run('Build barracks and train 5 footmen', {
+    maxSteps: 50,
+    stepDelay: 500,
+    stuckDetection: true
+});
+
+// Or use individual primitives
+await api.game.menus.build('barracks');
+await api.game.units.selectUnit('.unit-1');
+await api.game.resources.waitFor({ gold: 500 });
+```
+
+### Running Agent Tasks
+
+**Auto-Play (runs automatically with predefined rules):**
+```bash
+# Auto-play with strategy
+node agent-main.js owb
+node agent-main.js owb play
+node agent-main.js owb play=rush
+
+# Specific strategies
+node agent-main.js owb rush
+node agent-main.js owb turtle
+node agent-main.js owb economy
+node agent-main.js owb balanced
+
+# Single actions
+node agent-main.js owb build=barracks
+node agent-main.js owb train=5
+node agent-main.js owb attack
+node agent-main.js owb gather
+
+# With options
+node agent-main.js owb rush --loops=5
+node agent-main.js owb play=turtle
+```
+
+**Via API:**
+```javascript
+import { api } from './api/index.js';
+await api.init(page);
+const result = await api.gameAgent.run('Your goal here');
+```

@@ -1,7 +1,7 @@
 # Add auto directory to PATH
 # Run this as Administrator
 
-$autoPath = "C:\My Script\auto"
+$autoPath = "C:\My Script\auto-ai"
 
 # Get current user PATH
 $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
