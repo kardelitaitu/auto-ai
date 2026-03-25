@@ -1,3 +1,7 @@
+25-03-2026--10:00 > .editorconfig, CODEOWNERS, .github/workflows/ci.yml > Developer infrastructure: (1) Created .editorconfig for consistent editor settings (utf-8, lf, 2-space indent). (2) Created CODEOWNERS with username @kardelitaitu for automatic code review routing. (3) Created CI/CD pipeline (.github/workflows/ci.yml) - runs lint + unit + integration + edge tests on push/PR. API docs for core and agent already comprehensive with mermaid diagrams.
+
+25-03-2026--09:45 > scripts/git-commit.js > Added auto-generated commit message: If no message provided, generates "DD Month YYYY - hh:mm AM/PM" format automatically (e.g., "25 March 2026 - 9:45 AM").
+
 25-03-2026--09:40 > vitest-individual.ps1 > Fixed unapproved PowerShell verb and typo: Renamed 'Flush-LogBufferr' (unapproved verb + typo) to 'Clear-LogBuffer' (approved verb) and updated all 3 call sites.
 25-03-2026--08:30 > vitest-individual.ps1, package.json, scripts/ > Test optimization + Git workflow tools: (1) Optimized vitest-individual.ps1 with batching (10 files/job, 8 parallel jobs) - reduced from ~2min to ~57s. (2) Added pre-commit linting with husky + lint-staged - auto-fixes and formats staged files on git commit. (3) Created pnpm commit helper (scripts/git-commit.js) - stages, lints, commits, and pushes automatically with color output and 1x retry. (4) Created pnpm amend helper (scripts/git-amend.js) - amends and force pushes with same workflow. All 7805 tests pass, lint clean.
 

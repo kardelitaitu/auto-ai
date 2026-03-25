@@ -1,0 +1,41 @@
+# CODEOWNERS - https://help.github.com/articles/about-codeowners/
+
+# Default owner for everything
+* @kardelitaitu
+
+# API Core modules - Framework backbone
+api/core/ @kardelitaitu
+
+# API Agent modules - AI logic
+api/agent/ @kardelitaitu
+
+# API Behaviors - Human-like behaviors
+api/behaviors/ @kardelitaitu
+
+# API Actions - User actions (like, follow, retweet, etc.)
+api/actions/ @kardelitaitu
+
+# API Interactions - Browser interactions
+api/interactions/ @kardelitaitu
+
+# API Twitter - Twitter-specific logic
+api/twitter/ @kardelitaitu
+
+# API Utils - Utility functions
+api/utils/ @kardelitaitu
+
+# Tasks - Task definitions
+tasks/ @kardelitaitu
+
+# Main entry points
+main.js @kardelitaitu
+agent-main.js @kardelitaitu
+
+# Configuration
+config/ @kardelitaitu
+
+# Scripts
+scripts/ @kardelitaitu
+
+# Electron Dashboard (if separate ownership needed)
+api/ui/electron-dashboard/ @kardelitaitu

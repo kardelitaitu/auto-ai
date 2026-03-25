@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [20]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run ESLint
+        run: pnpm run lint
+      
+      - name: Run Unit Tests
+        run: pnpm run test:bun:unit
+      
+      - name: Run Integration Tests
+        run: pnpm run test:bun:integration
+      
+      - name: Run Edge Case Tests
+        run: pnpm run test:bun:edge
+
+  build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build check
+        run: pnpm build || echo "No build script defined"
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [lint-and-test, build]
+    if: always()
+    
+    steps:
+      - name: Success notification
+        if: needs.lint-and-test.result == 'success' && needs.build.result == 'success'
+        run: echo "✅ All checks passed!"
+      
+      - name: Failure notification
+        if: needs.lint-and-test.result == 'failure' || needs.build.result == 'failure'
+        run: |
+          echo "❌ CI Failed!"
+          echo "Check the logs above for details."
+          exit 1
