@@ -112,20 +112,22 @@ export async function apply(fingerprint = null) {
         return getter;
       };
 
-      for (const [prop, value] of Object.entries(staticSpoofs)) {
-        try {
-          Object.defineProperty(navProto, prop, {
-            get: makeNativeGetter(prop, value),
-            configurable: true,
-            enumerable: prop !== "webdriver",
-          });
-        } catch (e) {
-          console.warn("[Patch] Failed to define getter for", prop, e);
+      if (navProto && typeof navProto === "object") {
+        for (const [prop, value] of Object.entries(staticSpoofs)) {
+          try {
+            Object.defineProperty(navProto, prop, {
+              get: makeNativeGetter(prop, value),
+              configurable: true,
+              enumerable: prop !== "webdriver",
+            });
+          } catch (e) {
+            console.warn("[Patch] Failed to define getter for", prop, e);
+          }
         }
       }
 
       // Ghost 3.0: Chrome Object Hardening
-      if (!window.chrome) {
+      if (typeof window !== "undefined" && !window.chrome) {
         const chromeMock = {
           app: {
             isInstalled: false,
