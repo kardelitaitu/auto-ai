@@ -149,7 +149,12 @@ jobs:
         run: pnpm install --frozen-lockfile
       
       - name: Build check
-        run: pnpm build || echo "No build script defined"
+        run: |
+          if grep -q '"build":' package.json; then
+            pnpm build
+          else
+            echo "No build script defined - skipping"
+          fi
 
   notify:
     runs-on: ubuntu-latest
