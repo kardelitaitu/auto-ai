@@ -49,9 +49,8 @@ vi.mock('../../connectors/discovery/ixbrowser.js', () => ({
         async discover() {
             return [
                 {
-                    ws: 'ws://localhost:53200/devtools/browser/abc123',
-                    http: 'http://localhost:53200',
                     windowName: 'Profile 1',
+                    ws: 'ws://localhost:9222/devtools/browser/123',
                 },
             ];
         }
@@ -97,6 +96,9 @@ describe('core/discovery', () => {
         // Re-import to get fresh instance
         const module = await import('../../core/discovery.js');
         Discovery = module.default;
+        // Clear connectors before each test
+        const discovery = new Discovery();
+        discovery.connectors.length = 0;
     });
 
     describe('Discovery Class', () => {
