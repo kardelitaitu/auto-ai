@@ -3,7 +3,11 @@
  * Auto-AI Framework - Git Commit Helper
  * Stage → Lint → Commit → Push (automatic)
  *
- * Usage: pnpm commit "message" [--no-verify]
+ * Usage: pnpm commit "message" [--no-verify] [--no-push]
+ *
+ * Options:
+ *   --no-verify, -n  Skip lint-staged checks
+ *   --no-push, -N    Commit only, don't push to remote
  */
 
 import { execSync } from "child_process";
@@ -28,6 +32,7 @@ const log = {
 
 const args = process.argv.slice(2);
 const skipVerify = args.includes("--no-verify") || args.includes("-n");
+const noPush = args.includes("--no-push") || args.includes("-N");
 
 let message = args.filter((arg) => !arg.startsWith("-")).join(" ");
 
@@ -110,9 +115,14 @@ while (attempt < maxAttempts) {
     log.success("Commit successful!");
     console.log(`   ${colors.bright}Message:${colors.reset} "${message}"`);
 
-    log.step("Pushing to remote...");
-    execSync("git push", { stdio: "inherit" });
-    log.success("Pushed to remote!");
+    if (noPush) {
+      log.info("Skipping push (--no-push flag detected)");
+      log.info("To push later, run: git push");
+    } else {
+      log.step("Pushing to remote...");
+      execSync("git push", { stdio: "inherit" });
+      log.success("Pushed to remote!");
+    }
 
     process.exit(0);
   } catch (_error) {
