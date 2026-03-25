@@ -29,14 +29,37 @@ const log = {
 const args = process.argv.slice(2);
 const skipVerify = args.includes("--no-verify") || args.includes("-n");
 
-const message = args.filter((arg) => !arg.startsWith("-")).join(" ");
+let message = args.filter((arg) => !arg.startsWith("-")).join(" ");
 
+// Auto-generate message if not provided
 if (!message) {
-  log.error('Usage: pnpm commit "message" [--no-verify]');
-  console.log(`\n${colors.bright}Options:${colors.reset}`);
-  console.log("  --no-verify, -n  Skip lint-staged");
-  console.log('\nExample: pnpm commit "feat: new feature"');
-  process.exit(1);
+  const now = new Date();
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const day = String(now.getDate()).padStart(2, "0");
+  const month = months[now.getMonth()];
+  const year = now.getFullYear();
+
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+
+  message = `${day} ${month} ${year} - ${hours}:${minutes} ${ampm}`;
+  log.info(`No message provided, using auto-generated: "${message}"`);
 }
 
 let attempt = 0;
