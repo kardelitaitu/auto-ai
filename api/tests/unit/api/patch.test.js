@@ -5,16 +5,6 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { apply, check, stripCDPMarkers } from "@api/utils/patch.js";
-
-// Mocks
-vi.mock("@api/core/logger.js", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  }),
-}));
 
 vi.mock("@api/core/context.js", () => ({
   getPage: vi.fn(),
@@ -22,322 +12,385 @@ vi.mock("@api/core/context.js", () => ({
 }));
 
 import { getPage } from "@api/core/context.js";
+import { apply, check, stripCDPMarkers } from "@api/utils/patch.js";
 
 describe("api/utils/patch.js", () => {
-  let mockContext;
   let mockPage;
+  let originalWindow;
+  let originalNavigator;
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    mockContext = {
-      addInitScript: vi.fn().mockResolvedValue(),
-    };
+    vi.useFakeTimers();
 
     mockPage = {
-      context: vi.fn().mockReturnValue(mockContext),
-      addInitScript: vi.fn().mockImplementation(async (fn, data) => {
-        if (typeof fn === "function") {
-          // Mock browser environment for coverage of the injected script
-          const mockNav = { webdriver: true, languages: ["en"] };
-          const mockWin = {
-            navigator: mockNav,
-            document: {},
-            chrome: null,
-            PluginArray: function () {},
-            Plugin: function () {},
-          };
-
-          // Partial mock of Object.getPrototypeOf to return our mockNav
-          const originalGetPrototypeOf = Object.getPrototypeOf;
-          Object.getPrototypeOf = vi.fn().mockImplementation((obj) => {
-            if (obj === mockNav) return {};
-            return originalGetPrototypeOf(obj);
-          });
-
-          // Redirect globals for the duration of the call
-          const originalNavigator = global.navigator;
-          const originalWindow = global.window;
-          const originalDocument = global.document;
-
-          // Node.js 24+ has navigator as getter-only, use Object.defineProperty
-          Object.defineProperty(global, "navigator", {
-            value: mockNav,
-            writable: true,
-            configurable: true,
-          });
-          global.window = mockWin;
-          global.document = mockWin.document;
-
-          try {
-            await fn(data);
-          } catch (e) {
-            // ignore
-          } finally {
-            Object.defineProperty(global, "navigator", {
-              value: originalNavigator,
-              writable: true,
-              configurable: true,
-            });
-            global.window = originalWindow;
-            global.document = originalDocument;
-            Object.getPrototypeOf = originalGetPrototypeOf;
-          }
-        }
+      addInitScript: vi.fn().mockImplementation(async (script, payload) => {
+        mockPage.lastInitScript = script;
+        mockPage.lastInitPayload = payload;
       }),
-      evaluate: vi.fn().mockImplementation(async (fn) => {
-        if (typeof fn === "function") {
-          global.window = {
-            cdc_adoQjvpsHSjkbJjLPRbPQ: null,
-            $cdc_asdjflasutopfhvcZLmcfl_: null,
-          };
-          Object.defineProperty(global, "navigator", {
-            value: { webdriver: false },
-            writable: true,
-            configurable: true,
-          });
-          try {
-            return await fn();
-          } catch (e) {
-            return { webdriver: false, cdcMarkers: false, passed: true };
-          } finally {
-            delete global.window;
-            Object.defineProperty(global, "navigator", {
-              value: undefined,
-              writable: true,
-              configurable: true,
-            });
-          }
-        }
-        return { webdriver: false, cdcMarkers: false, passed: true };
+      evaluate: vi.fn().mockResolvedValue({
+        webdriver: false,
+        cdcMarkers: false,
+        passed: true,
       }),
     };
 
     getPage.mockReturnValue(mockPage);
+
+    originalWindow = global.window;
+    originalNavigator = global.navigator;
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    delete mockPage.lastInitScript;
+    delete mockPage.lastInitPayload;
+
+    if (originalWindow === undefined) {
+      delete global.window;
+    } else {
+      global.window = originalWindow;
+    }
+
+    if (originalNavigator === undefined) {
+      delete global.navigator;
+    } else {
+      Object.defineProperty(global, "navigator", {
+        value: originalNavigator,
+        configurable: true,
+        writable: true,
+      });
+    }
+
+    delete global.Notification;
   });
 
   describe("apply", () => {
-    it("should add init script to page", async () => {
+    it("adds an init script with the default spoof payload", async () => {
       await apply();
-      expect(mockPage.addInitScript).toHaveBeenCalled();
-      expect(mockPage.addInitScript.mock.calls[0][0]).toBeDefined();
+
+      expect(mockPage.addInitScript).toHaveBeenCalledTimes(1);
+      const [script, payload] = mockPage.addInitScript.mock.calls[0];
+
+      expect(script).toEqual(expect.any(Function));
+      expect(payload).toEqual({
+        languages: ["en-US", "en"],
+        deviceMemory: 8,
+        hardwareConcurrency: 8,
+        maxTouchPoints: 0,
+      });
     });
 
-    it("should use provided fingerprint data", async () => {
-      const customFingerprint = {
+    it("passes a custom fingerprint payload through to the init script", async () => {
+      const fingerprint = {
         languages: ["es-ES", "es"],
         deviceMemory: 16,
         hardwareConcurrency: 12,
         maxTouchPoints: 5,
       };
-      await apply(customFingerprint);
-      expect(mockPage.addInitScript).toHaveBeenCalled();
-      const call = mockPage.addInitScript.mock.calls[0][1];
-      expect(call.languages).toEqual(["es-ES", "es"]);
-      expect(call.deviceMemory).toBe(16);
-      expect(call.hardwareConcurrency).toBe(12);
-      expect(call.maxTouchPoints).toBe(5);
+
+      await apply(fingerprint);
+
+      const [, payload] = mockPage.addInitScript.mock.calls[0];
+      expect(payload).toEqual(fingerprint);
     });
 
-    it("should use default spoof data when none provided", async () => {
+    it("exposes the expected patching behavior in the injected script source", async () => {
       await apply();
-      const call = mockPage.addInitScript.mock.calls[0][1];
-      expect(call.languages).toEqual(["en-US", "en"]);
-      expect(call.deviceMemory).toBe(8);
-      expect(call.hardwareConcurrency).toBe(8);
-      expect(call.maxTouchPoints).toBe(0);
+
+      const [script] = mockPage.addInitScript.mock.calls[0];
+      const source = String(script);
+
+      expect(source).toContain("stripMarkers");
+      expect(source).toContain("webdriver");
+      expect(source).toContain("PluginArray");
+      expect(source).toContain("getBattery");
+      expect(source).toContain("Function.prototype.toString");
+      expect(source).toContain("navigatorProxy");
     });
 
-    it("should call addInitScript with null fingerprint", async () => {
-      await apply(null);
-      expect(mockPage.addInitScript).toHaveBeenCalled();
-    });
-
-    it("should execute the patch callback and modify navigator", async () => {
+    it("executes the injected script against a browser-like shim", async () => {
       await apply();
-      const [fn, data] = mockPage.addInitScript.mock.calls[0];
 
-      const mockNavProto = {};
-      const mockNavigator = Object.create(mockNavProto);
-      mockNavigator.webdriver = true;
-      mockNavigator.languages = [];
-      mockNavigator.plugins = [];
-      mockNavigator.mediaDevices = [];
-      mockNavigator.userAgent = "test";
+      const navigatorProto = {};
+      const navigatorShim = Object.create(navigatorProto);
+      navigatorShim.webdriver = true;
+      navigatorShim.languages = ["en"];
 
-      const mockWindow = {
-        navigator: mockNavigator,
-        chrome: null,
+      global.navigator = navigatorShim;
+      const originalDateNow = Date.now;
+      const originalRandom = Math.random;
+      Date.now = vi.fn(() => 1700000000000);
+      Math.random = vi.fn(() => 0.25);
+      global.window = {
+        navigator: navigatorShim,
         document: {},
-        PluginArray: function () {},
-        Plugin: function () {},
+        chrome: null,
+        PluginArray: function PluginArray() {},
+        Plugin: function Plugin() {},
       };
+      global.document = global.window.document;
 
-      fn.call(mockWindow, data);
+      const initScript = mockPage.lastInitScript;
+      const payload = mockPage.lastInitPayload;
+
+      expect(initScript).toEqual(expect.any(Function));
+      expect(() => initScript(payload)).not.toThrow();
+
+      expect(global.window.navigator).toBeDefined();
+      expect(global.window.navigator.getBattery()).toBeInstanceOf(Promise);
+      await expect(global.window.navigator.getBattery()).resolves.toEqual(
+        expect.objectContaining({
+          charging: true,
+          chargingTime: 0,
+          dischargingTime: Infinity,
+        }),
+      );
+
+      Date.now = originalDateNow;
+      Math.random = originalRandom;
     });
 
-    it("should handle plugins array in navigator", async () => {
+    it("patches native-looking getters and toString behavior", async () => {
       await apply();
-      const [fn, data] = mockPage.addInitScript.mock.calls[0];
 
-      const mockNavigator = {
-        plugins: [1, 2, 3],
-        webdriver: true,
-      };
-      const mockWindow = {
-        navigator: mockNavigator,
-        chrome: null,
+      const navigatorProto = {};
+      const navigatorShim = Object.create(navigatorProto);
+      navigatorShim.webdriver = true;
+      global.navigator = navigatorShim;
+      global.window = {
+        navigator: navigatorShim,
         document: {},
-        PluginArray: function () {
-          this.length = 0;
-        },
-        Plugin: function () {},
+        chrome: null,
+        PluginArray: function PluginArray() {},
+        Plugin: function Plugin() {},
       };
+      global.document = global.window.document;
 
-      fn.call(mockWindow, data);
+      const initScript = mockPage.lastInitScript;
+      expect(initScript).toEqual(expect.any(Function));
+      expect(() => initScript(mockPage.lastInitPayload)).not.toThrow();
+
+      const languagesDescriptor = Object.getOwnPropertyDescriptor(
+        Object.getPrototypeOf(global.window.navigator),
+        "languages",
+      );
+
+      expect(languagesDescriptor).toBeDefined();
+      expect(languagesDescriptor.get()).toEqual(["en-US", "en"]);
+      expect(String(languagesDescriptor.get)).toContain("[native code]");
+
+      const spoofedFunction = function playwrightAutomationProbe() {};
+      expect(String(spoofedFunction)).toContain("[native code]");
+
+      expect(global.window.chrome).toBeDefined();
+      expect(global.window.chrome.app.getIsInstalled()).toBe(false);
+      expect(global.window.chrome.app.getDetails()).toBeNull();
+      expect(global.window.chrome.csi()).toEqual(
+        expect.objectContaining({
+          pageT: 0,
+          tran: 0,
+        }),
+      );
+      expect(global.window.chrome.loadTimes()).toEqual(
+        expect.objectContaining({
+          navigationType: "Other",
+          wasFetchedFromCache: false,
+        }),
+      );
+      const pluginList = global.window.navigator.plugins;
+      expect(pluginList).toHaveLength(3);
+      expect(pluginList[0]).toEqual(
+        expect.objectContaining({
+          name: "PDF Viewer",
+          filename: "internal-pdf-viewer",
+        }),
+      );
+      expect(pluginList[Symbol.iterator]).toEqual(expect.any(Function));
+      expect(pluginList.item(1)).toBe(pluginList[1]);
+      expect(pluginList.namedItem("ignored")).toBe(pluginList[0]);
+      expect(() => pluginList.refresh()).not.toThrow();
+      expect([...pluginList]).toHaveLength(3);
+      expect(global.window.navigator.hasOwnProperty("languages")).toBe(false);
+      expect(global.window.navigator.hasOwnProperty("webdriver")).toBe(false);
+      expect(Object.keys(global.window.navigator)).not.toContain("webdriver");
+      expect(Reflect.ownKeys(global.window.navigator)).not.toContain(
+        "webdriver",
+      );
+      expect(
+        Object.getOwnPropertyDescriptor(
+          Object.getPrototypeOf(global.window.navigator),
+          "languages",
+        ),
+      ).toEqual(
+        expect.objectContaining({
+          configurable: true,
+          enumerable: true,
+        }),
+      );
     });
 
-    it("should handle webdriver property that cannot be deleted", async () => {
+    it("leaves an existing chrome object untouched", async () => {
       await apply();
-      const [fn, data] = mockPage.addInitScript.mock.calls[0];
 
-      const mockNavigator = {};
-      Object.defineProperty(mockNavigator, "webdriver", {
-        value: true,
-        configurable: false,
-      });
-
-      const mockWindow = {
-        navigator: mockNavigator,
-        chrome: null,
+      const navigatorProto = {};
+      const navigatorShim = Object.create(navigatorProto);
+      navigatorShim.webdriver = true;
+      global.navigator = navigatorShim;
+      global.window = {
+        navigator: navigatorShim,
         document: {},
+        chrome: { alreadyPresent: true },
+        PluginArray: function PluginArray() {},
+        Plugin: function Plugin() {},
       };
+      global.document = global.window.document;
 
-      expect(() => fn.call(mockWindow, data)).not.toThrow();
+      const initScript = mockPage.lastInitScript;
+      expect(() => initScript(mockPage.lastInitPayload)).not.toThrow();
+      expect(global.window.chrome).toEqual({ alreadyPresent: true });
     });
 
-    it("should handle platform and vendor properties", async () => {
+    it("handles a navigator without a prototype", async () => {
       await apply();
-      const [fn, data] = mockPage.addInitScript.mock.calls[0];
 
-      const mockNavigator = {
-        platform: "test",
-        vendor: "test",
-        webdriver: true,
-      };
-      const mockWindow = {
-        navigator: mockNavigator,
-        chrome: null,
+      const navigatorShim = Object.create(null);
+      navigatorShim.webdriver = true;
+
+      global.navigator = navigatorShim;
+      global.window = {
+        navigator: navigatorShim,
         document: {},
+        chrome: null,
+        PluginArray: function PluginArray() {},
+        Plugin: function Plugin() {},
       };
+      global.document = global.window.document;
 
-      fn.call(mockWindow, data);
+      const initScript = mockPage.lastInitScript;
+      expect(() => initScript(mockPage.lastInitPayload)).not.toThrow();
     });
 
-    it("should handle webgl properties", async () => {
-      await apply();
-      const [fn, data] = mockPage.addInitScript.mock.calls[0];
+    it("propagates page errors from addInitScript", async () => {
+      mockPage.addInitScript.mockRejectedValueOnce(new Error("Page closed"));
 
-      const mockNavigator = { webdriver: true };
-      const mockWindow = {
-        navigator: mockNavigator,
-        chrome: null,
-        document: {},
-        WEBGL_debug_renderer_info: { UNMASKED_VENDOR_WEBGL: "test" },
-        webgl: {},
-      };
-
-      fn.call(mockWindow, data);
+      await expect(apply()).rejects.toThrow("Page closed");
     });
   });
 
   describe("stripCDPMarkers", () => {
-    it("should handle undefined window", () => {
-      const originalWindow = global.window;
-      global.window = undefined;
-
-      expect(() => stripCDPMarkers()).not.toThrow();
-
-      global.window = originalWindow;
-    });
-
-    it("should handle window without CDP markers", () => {
-      global.window = {};
-      expect(() => stripCDPMarkers()).not.toThrow();
+    it("does not throw when window is missing", () => {
       delete global.window;
+
+      expect(() => stripCDPMarkers()).not.toThrow();
     });
 
-    it("should handle window with CDP markers", () => {
+    it("clears known marker properties when present", () => {
       global.window = {
-        cdc_adoQjvpsHSjkbJjLPRbPQ: "test",
-        $cdc_asdjflasutopfhvcZLmcfl_: "test",
+        cdc_adoQjvpsHSjkbJjLPRbPQ: "present",
+        $cdc_asdjflasutopfhvcZLmcfl_: "present",
       };
-      expect(() => stripCDPMarkers()).not.toThrow();
+
+      stripCDPMarkers();
+
       expect(global.window.cdc_adoQjvpsHSjkbJjLPRbPQ).toBeUndefined();
       expect(global.window.$cdc_asdjflasutopfhvcZLmcfl_).toBeUndefined();
-      delete global.window;
     });
 
-    it("should handle window with read-only CDP markers", () => {
-      Object.defineProperty(global, "window", {
-        value: {
-          cdc_adoQjvpsHSjkbJjLPRbPQ: "test",
-        },
-        writable: true,
+    it("ignores assignment failures gracefully", () => {
+      const windowMock = {};
+      Object.defineProperty(windowMock, "cdc_adoQjvpsHSjkbJjLPRbPQ", {
         configurable: true,
+        get() {
+          throw new Error("read failure");
+        },
       });
+
+      global.window = windowMock;
+
       expect(() => stripCDPMarkers()).not.toThrow();
-      delete global.window;
+    });
+
+    it("leaves non-marker descriptors untouched", () => {
+      const windowMock = {};
+      Object.defineProperty(windowMock, "safeValue", {
+        configurable: true,
+        get() {
+          return 1;
+        },
+      });
+
+      global.window = windowMock;
+
+      stripCDPMarkers();
+
+      expect(
+        Object.getOwnPropertyDescriptor(global.window, "safeValue").get(),
+      ).toBe(1);
     });
   });
 
   describe("check", () => {
-    it("should return check results", async () => {
+    it("returns the detection result from the page evaluation", async () => {
       const result = await check();
+
+      expect(mockPage.evaluate).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
         webdriver: false,
         cdcMarkers: false,
         passed: true,
       });
-      expect(mockPage.evaluate).toHaveBeenCalled();
     });
 
-    it("should return false when webdriver is detected", async () => {
-      mockPage.evaluate.mockResolvedValue({
+    it("returns a failed status when webdriver is reported", async () => {
+      mockPage.evaluate.mockResolvedValueOnce({
         webdriver: true,
         cdcMarkers: false,
         passed: false,
       });
+
       const result = await check();
-      expect(result.passed).toBe(false);
+
       expect(result.webdriver).toBe(true);
+      expect(result.passed).toBe(false);
     });
 
-    it("should return false when CDC markers are detected", async () => {
-      mockPage.evaluate.mockResolvedValue({
+    it("returns a failed status when cdc markers are reported", async () => {
+      mockPage.evaluate.mockResolvedValueOnce({
         webdriver: false,
         cdcMarkers: true,
         passed: false,
       });
+
       const result = await check();
-      expect(result.passed).toBe(false);
+
       expect(result.cdcMarkers).toBe(true);
+      expect(result.passed).toBe(false);
     });
 
-    it("should return full results object", async () => {
-      mockPage.evaluate.mockResolvedValue({
+    it("uses navigator and window state inside page.evaluate", async () => {
+      mockPage.evaluate.mockImplementationOnce(async (fn) => {
+        global.window = {
+          cdc_adoQjvpsHSjkbJjLPRbPQ: undefined,
+          $cdc_asdjflasutopfhvcZLmcfl_: undefined,
+        };
+        global.navigator = { webdriver: false };
+
+        return fn();
+      });
+
+      const result = await check();
+
+      expect(result).toEqual({
         webdriver: false,
         cdcMarkers: false,
         passed: true,
       });
-      const result = await check();
-      expect(result).toHaveProperty("webdriver");
-      expect(result).toHaveProperty("cdcMarkers");
-      expect(result).toHaveProperty("passed");
     });
 
-    it("should propagate evaluation error", async () => {
-      mockPage.evaluate.mockRejectedValue(new Error("Eval error"));
+    it("propagates page evaluation errors", async () => {
+      mockPage.evaluate.mockRejectedValueOnce(new Error("Eval error"));
+
       await expect(check()).rejects.toThrow("Eval error");
     });
   });
