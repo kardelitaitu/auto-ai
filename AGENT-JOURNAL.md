@@ -1,3 +1,9 @@
+25-03-2026--10:25 > tasks/api-twitterActivity.js > Reduced verbose logging: Commented out 11 verbose info logs (network settlement, reading simulation, login checks, startup jitter, retries, action delegation, warmup). Prefixed unused `scrollDurationSec` with underscore. Lint passes.
+
+25-03-2026--10:20 > api/core/orchestrator.js > Reduced verbose logging: Commented out 3 verbose info logs (task queue processing, session checklist start, worker task start). Lint passes.
+
+25-03-2026--10:15 > main.js > Reduced verbose logging: Commented out 5 verbose info logs (Docker LLM check, discovery attempt, browser tip, queue processing, task addition). Prefixed unused `tasksSkipped` with underscore. Lint passes.
+
 25-03-2026--10:00 > .editorconfig, CODEOWNERS, .github/workflows/ci.yml > Developer infrastructure: (1) Created .editorconfig for consistent editor settings (utf-8, lf, 2-space indent). (2) Created CODEOWNERS with username @kardelitaitu for automatic code review routing. (3) Created CI/CD pipeline (.github/workflows/ci.yml) - runs lint + unit + integration + edge tests on push/PR. API docs for core and agent already comprehensive with mermaid diagrams.
 
 25-03-2026--09:45 > scripts/git-commit.js > Added auto-generated commit message: If no message provided, generates "DD Month YYYY - hh:mm AM/PM" format automatically (e.g., "25 March 2026 - 9:45 AM").

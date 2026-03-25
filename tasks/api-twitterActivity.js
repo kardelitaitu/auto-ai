@@ -223,15 +223,15 @@ async function navigateAndRead(agent, entryUrl, api, logger, withPageLock, abort
     logger.info(`X.com loaded (${xLoaded || 'partial'})`);
 
     const idleTimeout = xLoaded ? 4000 : 12000;
-    logger.info(`Waiting for network settlement (${idleTimeout}ms)...`);
+    // logger.info(`Waiting for network settlement (${idleTimeout}ms)...`);
 
     try {
         await withPageLock(async () =>
             api.waitForLoadState('networkidle', { timeout: idleTimeout })
         );
-        logger.info(`Network idle reached.`);
+        // logger.info(`Network idle reached.`);
     } catch (_e) {
-        logger.info(`Network active, proceeding after ${idleTimeout}ms...`);
+        // logger.info(`Network active, proceeding after ${idleTimeout}ms...`);
     }
 
     const currentUrl = await api.getCurrentUrl();
@@ -241,8 +241,8 @@ async function navigateAndRead(agent, entryUrl, api, logger, withPageLock, abort
 
     if (!onHome) {
         const scrollDuration = mathUtils.randomInRange(10000, 20000);
-        const scrollDurationSec = (scrollDuration / 1000).toFixed(2);
-        logger.info(`📖 Simulating reading on ${entryName} for ${scrollDurationSec}s...`);
+        const _scrollDurationSec = (scrollDuration / 1000).toFixed(2);
+        // logger.info(`📖 Simulating reading on ${entryName} for ${scrollDurationSec}s...`);
 
         const scrollStart = Date.now();
         while (Date.now() - scrollStart < scrollDuration) {
@@ -254,7 +254,7 @@ async function navigateAndRead(agent, entryUrl, api, logger, withPageLock, abort
             );
             await api.waitWithAbort(mathUtils.randomInRange(200, 500), abortSignal);
         }
-        logger.info(`✅ Finished reading, navigating to home...`);
+        // logger.info(`✅ Finished reading, navigating to home...`);
         await withPageLock(async () => agent.navigateHome());
     }
 
@@ -266,7 +266,7 @@ async function navigateAndRead(agent, entryUrl, api, logger, withPageLock, abort
  * @returns {Promise<boolean>}
  */
 async function checkLoginWithRetry(agent, api, logger, abortSignal, withPageLock) {
-    logger.info(`Checking login state...`);
+    // logger.info(`Checking login state...`);
     let loginCheckDelay = LOGIN_CHECK_DELAY;
 
     for (let i = 0; i < LOGIN_CHECK_LOOPS; i++) {
@@ -282,7 +282,7 @@ async function checkLoginWithRetry(agent, api, logger, abortSignal, withPageLock
         }
 
         if (i < LOGIN_CHECK_LOOPS - 1) {
-            logger.info(`Not logged in yet, waiting ${loginCheckDelay}ms...`);
+            // logger.info(`Not logged in yet, waiting ${loginCheckDelay}ms...`);
             await api.waitWithAbort(loginCheckDelay, abortSignal);
             loginCheckDelay = Math.min(loginCheckDelay + 1000, 5000);
         }
@@ -376,9 +376,9 @@ export default async function apiTwitterActivityTask(page, payload) {
 
             // Startup jitter
             const startupJitter = Math.floor(Math.random() * 5000); // 5 seconds
-            logger.info(
-                `⏳ Startup: Running parallel initialization (Jitter: ${startupJitter}ms)...`
-            );
+            // logger.info(
+            //     `⏳ Startup: Running parallel initialization (Jitter: ${startupJitter}ms)...`
+            // );
 
             // Parallel initialization
             let taskConfig, profile;
@@ -438,9 +438,9 @@ export default async function apiTwitterActivityTask(page, payload) {
 
                                     if (attempt > 0) {
                                         const delay = Math.pow(2, attempt) * 1000;
-                                        logger.info(
-                                            `Retry ${attempt}/${MAX_RETRIES} in ${delay}ms...`
-                                        );
+                                        // logger.info(
+                                        //     `Retry ${attempt}/${MAX_RETRIES} in ${delay}ms...`
+                                        // );
                                         await api.waitWithAbort(delay, abortSignal);
                                     }
 
@@ -474,7 +474,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                             async (context = {}) => {
                                                 action.stats.attempts++;
                                                 if (!agent.diveQueue?.canEngage(engType)) {
-                                                    logger.info(`${name} limit reached, skipping.`);
+                                                    // logger.info(`${name} limit reached, skipping.`);
                                                     return {
                                                         success: false,
                                                         executed: false,
@@ -483,9 +483,9 @@ export default async function apiTwitterActivityTask(page, payload) {
                                                     };
                                                 }
                                                 try {
-                                                    logger.info(
-                                                        `Delegating ${name} to api.${name}WithAI/API()...`
-                                                    );
+                                                    // logger.info(
+                                                    //     `Delegating ${name} to api.${name}WithAI/API()...`
+                                                    // );
                                                     const result = await api.withPage(page, () =>
                                                         apiFn(context)
                                                     );
@@ -594,7 +594,7 @@ export default async function apiTwitterActivityTask(page, payload) {
                                     // Warmup
                                     const warmup = getWarmupTiming(taskConfig);
                                     const wakeUp = humanTiming.getWarmupDelay(warmup);
-                                    logger.info(`Warm-up ${humanTiming.formatDuration(wakeUp)}...`);
+                                    // logger.info(`Warm-up ${humanTiming.formatDuration(wakeUp)}...`);
                                     await api.waitWithAbort(wakeUp, abortSignal);
 
                                     throwIfAborted();

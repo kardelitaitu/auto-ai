@@ -226,7 +226,7 @@ class Orchestrator extends EventEmitter {
 
         this.isProcessingTasks = true;
         this.currentGroupStartTime = Date.now();
-        logger.info(`[Orchestrator] Processing ${this.taskQueue.length} tasks...`);
+        // logger.info(`[Orchestrator] Processing ${this.taskQueue.length} tasks...`);
 
         const tasks = [...this.taskQueue];
         this.taskQueue.length = 0;
@@ -270,9 +270,9 @@ class Orchestrator extends EventEmitter {
     }
 
     async processSharedChecklistForSession(session, tasks, _options = {}) {
-        logger.info(
-            `[Orchestrator][${session.id}] Starting checklist: ${tasks.length} tasks, ${session.workers.length} workers`
-        );
+        // logger.info(
+        //     `[Orchestrator][${session.id}] Starting checklist: ${tasks.length} tasks, ${session.workers.length} workers`
+        // );
 
         let sharedContext;
         let createdNewContext = false;
@@ -350,9 +350,9 @@ class Orchestrator extends EventEmitter {
                         // Optimization: Removed aggressive checkPageResponsive before EVERY task.
                         // We rely on task failure natural retries to rotate dead pages instead of a proactive CDP round-trip.
 
-                        logger.info(
-                            `[Orchestrator][${session.id}][Worker ${allocatedWorker.id}] Starting '${task.taskName}'`
-                        );
+                        // logger.info(
+                        //     `[Orchestrator][${session.id}][Worker ${allocatedWorker.id}] Starting '${task.taskName}'`
+                        // );
                         await this.executeTask(task, page, session);
                         session.completedTaskCount = (session.completedTaskCount || 0) + 1;
                     } catch (e) {

@@ -67,7 +67,7 @@ const logger = createLogger('main.js');
 
     try {
         // Step 1: Ensure Docker LLM is running (if enabled)
-        logger.info('Checking Docker LLM status...');
+        // logger.info('Checking Docker LLM status...');
         const dockerReady = await ensureDockerLLM();
         if (!dockerReady) {
             logger.warn('Docker LLM is not ready. Local vision processing may not work.');
@@ -98,7 +98,7 @@ const logger = createLogger('main.js');
         let connectedCount = 0;
 
         while (attempt <= maxRetries) {
-            if (attempt > 1) logger.info(`[Discovery] Attempt ${attempt}/${maxRetries}...`);
+            // if (attempt > 1) logger.info(`[Discovery] Attempt ${attempt}/${maxRetries}...`);
 
             await orchestrator.startDiscovery({ browsers: browserList });
             connectedCount = orchestrator.sessionManager.activeSessionsCount;
@@ -111,9 +111,9 @@ const logger = createLogger('main.js');
                 logger.warn(
                     `[Discovery] No browsers found on attempt ${attempt}. Retrying in 5 seconds...`
                 );
-                logger.info(
-                    `[Tip] Ensure your browser (e.g. ixbrowser, brave) is OPEN and running.`
-                );
+                // logger.info(
+                //     `[Tip] Ensure your browser (e.g. ixbrowser, brave) is OPEN and running.`
+                // );
                 await new Promise((resolve) => setTimeout(resolve, 5000));
                 // Clear previous connectors/state if needed, though Orchestrator handles reloading logic
             }
@@ -142,10 +142,10 @@ const logger = createLogger('main.js');
 
             for (let i = 0; i < groups.length; i++) {
                 const group = groups[i];
-                logger.info(`[Queue] Processing Group ${i + 1}/${groups.length}...`);
+                // logger.info(`[Queue] Processing Group ${i + 1}/${groups.length}...`);
 
                 let tasksAdded = 0;
-                let tasksSkipped = 0;
+                let _tasksSkipped = 0;
 
                 for (const { name, payload } of group) {
                     try {
@@ -153,7 +153,7 @@ const logger = createLogger('main.js');
                         tasksAdded++;
                     } catch (error) {
                         logger.warn(`[Queue] Skipping task '${name}': ${error.message}`);
-                        tasksSkipped++;
+                        _tasksSkipped++;
                     }
                 }
 
@@ -162,7 +162,7 @@ const logger = createLogger('main.js');
                     continue;
                 }
 
-                logger.info(`[Queue] Added ${tasksAdded} task(s)${tasksSkipped > 0 ? `, skipped ${tasksSkipped}` : ''}...`);
+                // logger.info(`[Queue] Added ${tasksAdded} task(s)${tasksSkipped > 0 ? `, skipped ${tasksSkipped}` : ''}...`);
                 await orchestrator.waitForTasksToComplete();
                 logger.info(`[Queue] Group ${i + 1} completed successfully.`);
             }
