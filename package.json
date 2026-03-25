@@ -22,7 +22,7 @@
         "test:bun": "bun run vitest run -c config/vitest.config.js",
         "test:bun:unit": "bun run vitest run -c config/vitest.config.js api/tests/unit",
         "test:bun:integration": "bun run vitest run -c config/vitest.config.js api/tests/integration",
-        "test:bun:edge": "bun run vitest run -c config/vitest.config.js --dir api/tests/edge-cases",
+        "test:bun:edge": "bun run vitest run -c config/vitest.config.js api/tests/edge-cases",
         "test:bun:all": "bun run vitest run -c config/vitest.config.js api/tests",
         "test:bun:watch": "bun run vitest -c config/vitest.config.js",
         "test:bun:coverage": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot",
