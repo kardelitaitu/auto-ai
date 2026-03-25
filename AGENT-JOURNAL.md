@@ -1,3 +1,5 @@
+25-03-2026--10:30 > scripts/git-commit.js, package.json > Fixed commit helper: (1) Changed `pnpm lint-staged` to `pnpm exec lint-staged` in git-commit.js and git-amend.js. (2) Added husky and lint-staged to devDependencies (were missing). Commit helper now works properly. Pushed to remote.
+
 25-03-2026--10:25 > tasks/api-twitterActivity.js > Reduced verbose logging: Commented out 11 verbose info logs (network settlement, reading simulation, login checks, startup jitter, retries, action delegation, warmup). Prefixed unused `scrollDurationSec` with underscore. Lint passes.
 
 25-03-2026--10:20 > api/core/orchestrator.js > Reduced verbose logging: Commented out 3 verbose info logs (task queue processing, session checklist start, worker task start). Lint passes.
