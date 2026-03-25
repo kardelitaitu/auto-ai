@@ -15,8 +15,8 @@ import { cpus } from 'os';
 const cpuCount = cpus().length;
 // Reserve 2 threads for OS/IDE stability, allocate the rest to the execution pool
 const calculatedThreads = Math.max(1, cpuCount - 2);
-// Dynamic minThreads: use at least 8, or half of available, whichever is higher
-const calculatedMinThreads = Math.max(8, Math.floor(cpuCount / 2));
+// Dynamic minThreads: use at least 1, but never exceed maxThreads
+const calculatedMinThreads = Math.max(1, Math.min(calculatedThreads, Math.floor(cpuCount / 2)));
 
 console.log(`\n=== [SYSTEM_NODE] Test Execution Orchestrator ===`);
 console.log(`Hardware Detected: ${cpuCount} Logical Cores`);
