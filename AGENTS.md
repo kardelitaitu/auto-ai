@@ -95,6 +95,43 @@ node agent-main.js owb state-a x20           # Run specific state 20 times
 
 ---
 
+## Git Workflow (Feature Branches)
+
+### Branch Naming Convention
+- `feature/<name>` - New features (e.g., `feature/scheduler-queue`)
+- `fix/<name>` - Bug fixes (e.g., `fix/navigator-error`)
+- `refactor/<name>` - Code refactoring
+- `docs/<name>` - Documentation updates
+
+### Workflow
+```bash
+# 1. Create new branch from main
+git checkout -b feature/my-feature
+
+# 2. Make changes, run lint & tests
+npm run lint
+npm run test:bun:unit
+
+# 3. Push and create PR
+git push -u origin feature/my-feature
+# Create PR on GitHub, merge after review
+
+# 4. Sync with main
+git checkout main
+git pull origin main
+
+# 5. Delete merged branch (local)
+git branch -d feature/my-feature
+```
+
+### Rules
+- Always run lint + tests before pushing
+- Keep branches small and focused
+- Merge to main only via PR (or after testing)
+- Delete local/remote branches after merge
+
+---
+
 ## Workflow Reminder
 
 1. **Journal**: Append changes to `AGENT-JOURNAL.md`: `dd-mm-yyy--HH-MM > filename > description`
