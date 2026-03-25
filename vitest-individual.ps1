@@ -37,7 +37,7 @@ if ($totalFiles -eq 0) {
 Write-Host "[!] Found $totalFiles test files across all target modules." -ForegroundColor Gray
 
 # Helper for Safe Disk I/O
-function Flush-LogBuffer {
+function Clear-LogBuffer {
     param($buffer, $path)
     if ($buffer.Count -gt 0) {
         $buffer | Out-File -FilePath $path -Append -Encoding utf8
@@ -61,7 +61,7 @@ foreach ($file in $testFiles) {
                 Write-Host "[$completedCount/$totalFiles] Finished: $($_.Name)" -ForegroundColor Green
                 
                 # Buffer flushes when it reaches the ParallelFactor size
-                if ($logBuffer.Count -ge $ParallelFactor) { Flush-LogBuffer $logBuffer $logFile }
+                if ($logBuffer.Count -ge $ParallelFactor) { Clear-LogBuffer $logBuffer $logFile }
             }
             Remove-Job $_
         }
@@ -141,7 +141,7 @@ Parallel Factor Used   : $ParallelFactor
 "@
 
 $logBuffer.Add($footer)
-Flush-LogBuffer $logBuffer $logFile
+Clear-LogBuffer $logBuffer $logFile
 
 Write-Host "`n[DONE] Audit complete in $($totalTime.ToString("mm\:ss\.ff"))" -ForegroundColor Cyan
 Invoke-Item $logFile

@@ -1,3 +1,4 @@
+25-03-2026--09:40 > vitest-individual.ps1 > Fixed unapproved PowerShell verb and typo: Renamed 'Flush-LogBufferr' (unapproved verb + typo) to 'Clear-LogBuffer' (approved verb) and updated all 3 call sites.
 25-03-2026--08:30 > vitest-individual.ps1, package.json, scripts/ > Test optimization + Git workflow tools: (1) Optimized vitest-individual.ps1 with batching (10 files/job, 8 parallel jobs) - reduced from ~2min to ~57s. (2) Added pre-commit linting with husky + lint-staged - auto-fixes and formats staged files on git commit. (3) Created pnpm commit helper (scripts/git-commit.js) - stages, lints, commits, and pushes automatically with color output and 1x retry. (4) Created pnpm amend helper (scripts/git-amend.js) - amends and force pushes with same workflow. All 7805 tests pass, lint clean.
 
 25-03-2026--05:30 > Multiple Files > Pre pnpm migration baseline. Includes retweet workflow refinements, task parser utility, and various core API stability fixes.
