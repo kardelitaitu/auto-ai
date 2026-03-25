@@ -8,7 +8,6 @@ node_modules
 screenshot
 examples
 logs
-# tests
 local-agent
 test-dir
 nul
