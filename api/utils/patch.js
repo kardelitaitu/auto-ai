@@ -203,9 +203,11 @@ export async function apply(fingerprint = null) {
       }
 
       // Still need Proxy for complex objects like plugins and battery
-      const fakeNavigator = Object.create(
-        Object.getPrototypeOf(originalNavigator),
-      );
+      const originalNavProto =
+        originalNavigator && typeof originalNavigator === "object"
+          ? Object.getPrototypeOf(originalNavigator)
+          : Object.prototype;
+      const fakeNavigator = Object.create(originalNavProto);
 
       // Still need Proxy for complex objects like plugins and battery
       const navigatorProxy = new Proxy(fakeNavigator, {
@@ -345,7 +347,9 @@ export async function apply(fingerprint = null) {
           );
         },
         getPrototypeOf: () => {
-          return Object.getPrototypeOf(originalNavigator);
+          return originalNavigator && typeof originalNavigator === "object"
+            ? Object.getPrototypeOf(originalNavigator)
+            : Object.prototype;
         },
       });
 

@@ -214,6 +214,8 @@ describe('core/discovery', () => {
 
         it('should warn on invalid connector export', async () => {
             const discovery = new Discovery();
+            // Clear any existing connectors first
+            discovery.connectors.length = 0;
 
             fs.readdirSync.mockReturnValue(['roxybrowser.js']);
             fs.statSync.mockReturnValue({ isFile: () => true });
