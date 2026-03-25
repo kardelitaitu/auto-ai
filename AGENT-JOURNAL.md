@@ -1,3 +1,12 @@
+25-03-2026--10:35 > Root Directory > Created 7 planning documents for future development:
+- 0001-log-reduction.md - Reduce verbose logging in 5 twitter task files (~77+ logs)
+- 0002-test-performance.md - Further optimize vitest-individual.ps1 (parallel factor, caching)
+- 0003-ci-cd-improvements.md - Enhance CI pipeline (parallel jobs, timing alerts, artifacts)
+- 0004-test-coverage.md - Identify and improve low-coverage files in api/
+- 0005-jsdoc-comments.md - Add JSDoc to undocumented functions
+- 0006-error-handling.md - Add retry logic to fragile network operations
+- 0007-performance-optimization.md - Profile and optimize slow startup paths
+
 25-03-2026--10:30 > scripts/git-commit.js, package.json > Fixed commit helper: (1) Changed `pnpm lint-staged` to `pnpm exec lint-staged` in git-commit.js and git-amend.js. (2) Added husky and lint-staged to devDependencies (were missing). Commit helper now works properly. Pushed to remote.
 
 25-03-2026--10:25 > tasks/api-twitterActivity.js > Reduced verbose logging: Commented out 11 verbose info logs (network settlement, reading simulation, login checks, startup jitter, retries, action delegation, warmup). Prefixed unused `scrollDurationSec` with underscore. Lint passes.
