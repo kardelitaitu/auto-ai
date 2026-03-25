@@ -14,7 +14,9 @@ import { cpus } from 'os';
 // ============================================================================
 const cpuCount = cpus().length;
 // Reserve 2 threads for OS/IDE stability, allocate the rest to the execution pool
-const calculatedThreads = Math.max(1, cpuCount - 2); 
+const calculatedThreads = Math.max(1, cpuCount - 2);
+// Dynamic minThreads: use at least 8, or half of available, whichever is higher
+const calculatedMinThreads = Math.max(8, Math.floor(cpuCount / 2));
 
 console.log(`\n=== [SYSTEM_NODE] Test Execution Orchestrator ===`);
 console.log(`Hardware Detected: ${cpuCount} Logical Cores`);
@@ -62,9 +64,9 @@ export default defineConfig({
         poolOptions: {
             threads: {
                 maxThreads: calculatedThreads,
-                minThreads: 12,
+                minThreads: calculatedMinThreads,
                 isolate: true,
-            }
+            },
         },
         fileParallelism: true,
         logHeapUsage: true, // Injects memory telemetry into the dot reporter

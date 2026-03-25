@@ -1,5 +1,5 @@
 # --- Configuration ---
-$ParallelFactor = 16 # Single input for both MaxParallel and BufferSize
+$ParallelFactor = 24 # Single input for both MaxParallel and BufferSize (increased from 16)
 $targetDirs = @("api") # Modular array for multi-directory scanning
 $logFile = "vitest-individual.txt"
 $projectRoot = $PSScriptRoot
