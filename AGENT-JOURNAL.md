@@ -449,3 +449,5 @@ Create a helper function for Twitter intent URLs to be used as a utility through
 25-03-2026--22:16 > .agents/skills/plan-improvement/SKILL.md > Added valid YAML frontmatter and planning workflow guidance
 25-03-2026--22-28 > api/tests/unit/api/patch.test.js > Reworked patch unit tests to focus on stable observable behavior, default/custom payloads, injected script source, stripCDPMarkers, and check() coverage
 25-03-2026--22-50 > api/tests/unit/agent/gameRunner.test.js > Expanded run-path coverage with invalid LLM response, parallel execution, and verification-disabled cases; reset runner caches for stable single-file coverage
+25-03-2026--23-44 > api/tests/unit/api/actions.test.js > Added locator-path, force-skip-obscured, and typo-without-correction cases to raise branch coverage for interactions/actions.js
+25-03-2026--23-46 > api/tests/unit/api/behaviors/humanization-error.test.js > Added navigation, refresh, nearby-click, and rollback-branch coverage for humanization error recovery
