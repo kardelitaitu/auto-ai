@@ -125,7 +125,8 @@ git branch -d feature/my-feature
 ```
 
 ### Rules
-- Always run lint + tests before pushing
+- **NEVER push to GitHub** unless explicitly asked by user
+- Always run lint + tests before committing
 - Keep branches small and focused
 - Merge to main only via PR (or after testing)
 - Delete local/remote branches after merge
