@@ -44,7 +44,7 @@ while (attempt < maxAttempts) {
     if (!skipVerify) {
       log.step("Running lint-staged...");
       try {
-        execSync("pnpm lint-staged", { stdio: "inherit" });
+        execSync("pnpm exec lint-staged", { stdio: "inherit" });
       } catch (lintError) {
         if (attempt >= maxAttempts) {
           log.error("Lint failed");

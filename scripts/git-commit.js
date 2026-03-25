@@ -78,7 +78,7 @@ while (attempt < maxAttempts) {
     } else {
       log.step("Running lint-staged (auto-fix + format)...");
       try {
-        execSync("pnpm lint-staged", { stdio: "inherit" });
+        execSync("pnpm exec lint-staged", { stdio: "inherit" });
         lintPassed = true;
       } catch (lintError) {
         if (attempt >= maxAttempts) {
