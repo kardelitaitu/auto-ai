@@ -73,7 +73,7 @@ npm test
 ### Unit Tests Only
 
 ```bash
-npm run test:unit
+pnpm run test:unit
 # or
 npx vitest run tests/unit
 ```
@@ -81,7 +81,7 @@ npx vitest run tests/unit
 ### Integration Tests Only
 
 ```bash
-npm run test:integration
+pnpm run test:integration
 # or
 npx vitest run tests/integration
 ```
@@ -95,7 +95,7 @@ npx vitest run tests/edge-cases
 ### Watch Mode
 
 ```bash
-npm run test:watch
+pnpm run test:watch
 ```
 
 ## Test Categories

@@ -13,7 +13,7 @@ Identify and improve test coverage for low-coverage files in api/ directory.
 ### Phase 1: Baseline Analysis
 Run coverage report to identify low-coverage files:
 ```bash
-npm run test:coverage
+pnpm run test:coverage
 ```
 
 ### Phase 2: Prioritization

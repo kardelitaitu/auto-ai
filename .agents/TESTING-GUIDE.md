@@ -8,16 +8,16 @@ Vitest testing strategy for the Auto-AI project.
 
 | Command | Description |
 |---------|-------------|
-| `npm run test` | Run all tests |
-| `npm run test:unit` | Run unit tests only |
-| `npm run test:integration` | Run integration tests only |
-| `npm run test:edge-cases` | Run edge case tests |
-| `npm run test:all` | Run all test suites |
-| `npm run test:coverage` | Run with coverage (recommended) |
-| `npm run test:watch` | Watch mode for development |
-| `npm run test:verbose` | Detailed output |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Auto-fix lint issues |
+| `pnpm run test` | Run all tests |
+| `pnpm run test:unit` | Run unit tests only |
+| `pnpm run test:integration` | Run integration tests only |
+| `pnpm run test:edge-cases` | Run edge case tests |
+| `pnpm run test:all` | Run all test suites |
+| `pnpm run test:coverage` | Run with coverage (recommended) |
+| `pnpm run test:watch` | Watch mode for development |
+| `pnpm run test:verbose` | Detailed output |
+| `pnpm run lint` | Run ESLint |
+| `pnpm run lint:fix` | Auto-fix lint issues |
 
 ---
 
@@ -128,7 +128,7 @@ const mockPage = {
 
 View coverage:
 ```bash
-npm run test:coverage
+pnpm run test:coverage
 # Open coverage/index.html for visual report
 ```
 
@@ -173,6 +173,6 @@ describe('actionEngine', () => {
 ## Workflow
 
 1. Write test first (`*.test.js`)
-2. Run `npm run test:unit` to verify
-3. Run `npm run lint` to check style
-4. Run `npm run test:coverage` before commit
+2. Run `pnpm run test:unit` to verify
+3. Run `pnpm run lint` to check style
+4. Run `pnpm run test:coverage` before commit

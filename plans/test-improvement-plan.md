@@ -248,7 +248,7 @@ templates/
 ```yaml
 # .github/workflows/test.yml
 - name: Run Tests
-  run: npm run test:coverage
+  run: pnpm run test:coverage
   
 - name: Upload Coverage
   uses: codecov/codecov-action

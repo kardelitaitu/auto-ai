@@ -33,35 +33,35 @@ Quick reference guide for agents working on this repository.
 
 ### Development
 ```bash
-npm run lint              # Check code style
-npm run lint:fix          # Auto-fix lint issues
-npm run format            # Format code with Prettier
+pnpm run lint              # Check code style
+pnpm run lint:fix          # Auto-fix lint issues
+pnpm run format            # Format code with Prettier
 ```
 
 ### Testing (Use Bun for ~20-40% faster execution)
 
 **Preferred (Bun):**
 ```bash
-npm run test:bun:unit         # Unit tests with Bun
-npm run test:bun:integration  # Integration tests with Bun
-npm run test:bun:edge         # Edge case tests with Bun
-npm run test:bun:all          # All test suites with Bun
-npm run test:bun:coverage     # Coverage report with Bun
-npm run test:bun:watch        # Watch mode with Bun
-npm run test:bun:verbose      # Verbose output with Bun
+pnpm run test:bun:unit         # Unit tests with Bun
+pnpm run test:bun:integration  # Integration tests with Bun
+pnpm run test:bun:edge         # Edge case tests with Bun
+pnpm run test:bun:all          # All test suites with Bun
+pnpm run test:bun:coverage     # Coverage report with Bun
+pnpm run test:bun:watch        # Watch mode with Bun
+pnpm run test:bun:verbose      # Verbose output with Bun
 ```
 
 **Alternative (Node.js):**
 ```bash
-npm run test:unit         # Unit tests only (api/tests/unit)
-npm run test:integration  # Integration tests only (api/tests/integration)
-npm run test:edge-cases   # Edge case tests only (api/tests/edge-cases)
-npm run test:smoke        # Smoke tests only
-npm run test:all          # All test suites
-npm run test:coverage     # Run tests with coverage report
-npm run test:ci           # CI/CD mode with coverage
-npm run test:watch        # Watch mode for development
-npm run test:verbose      # Detailed test output
+pnpm run test:unit         # Unit tests only (api/tests/unit)
+pnpm run test:integration  # Integration tests only (api/tests/integration)
+pnpm run test:edge-cases   # Edge case tests only (api/tests/edge-cases)
+pnpm run test:smoke        # Smoke tests only
+pnpm run test:all          # All test suites
+pnpm run test:coverage     # Run tests with coverage report
+pnpm run test:ci           # CI/CD mode with coverage
+pnpm run test:watch        # Watch mode for development
+pnpm run test:verbose      # Detailed test output
 ```
 
 > **Performance**: Bun runs tests **20-40% faster** than Node.js. Use `test:bun:*` variants for development. Use `test:*` (Node.js) if Bun is unavailable or for CI environments requiring Node.js compatibility.
@@ -109,8 +109,8 @@ node agent-main.js owb state-a x20           # Run specific state 20 times
 git checkout -b feature/my-feature
 
 # 2. Make changes, run lint & tests
-npm run lint
-npm run test:bun:unit
+pnpm run lint
+pnpm run test:bun:unit
 
 # 3. Push and create PR
 git push -u origin feature/my-feature
@@ -136,8 +136,8 @@ git branch -d feature/my-feature
 ## Workflow Reminder
 
 1. **Journal**: Append changes to `AGENT-JOURNAL.md`: `dd-mm-yyy--HH-MM > filename > description`
-2. **Lint**: Run `npm run lint` after code changes
-3. **Test**: Run `npm run test:bun:coverage` when modifying tests or core modules
+2. **Lint**: Run `pnpm run lint` after code changes
+3. **Test**: Run `pnpm run test:bun:coverage` when modifying tests or core modules
 4. **Patch Notes**: For major changes, update `patchnotes.md` with summary
 
 ---
@@ -219,7 +219,7 @@ filesystem_edit_file(path: "file.js", edits: [{oldText: "...", newText: "..."}])
 filesystem_read_multiple_files(paths: ["file1.js", "file2.js"])
 ```
 
-> **Best Practice**: Use `filesystem_edit_file` for surgical changes, `filesystem_write_file` for complete rewrites. Always verify with `npm run lint` after edits.
+> **Best Practice**: Use `filesystem_edit_file` for surgical changes, `filesystem_write_file` for complete rewrites. Always verify with `pnpm run lint` after edits.
 
 ---
 
@@ -458,7 +458,7 @@ import { SessionDisconnectedError } from './api/core/errors.js';
 ### Test Runner
 **Bun** is the preferred test runner for this project:
 - **20-40% faster** than Node.js
-- Use `npm run test:bun:*` commands for all test operations
+- Use `pnpm run test:bun:*` commands for all test operations
 - Vitest runs inside Bun for compatibility with existing test patterns
 
 ### Test Locations

@@ -205,5 +205,5 @@ class IxBrowserDiscover extends BaseDiscover {
 ## Testing
 
 - **Framework**: Vitest with `pool: 'forks'`
-- **Command**: `npm run test:coverage`
+- **Command**: `pnpm run test:coverage`
 - **Location**: `tests/unit/` and `tests/integration/`
