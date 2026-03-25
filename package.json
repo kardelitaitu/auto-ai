@@ -4,6 +4,9 @@
     "description": "Agentic orchestration framework for discovering and automating pre-existing browser instances via CDP",
     "main": "main.js",
     "scripts": {
+        "prepare": "husky install",
+        "commit": "node scripts/git-commit.js",
+        "amend": "node scripts/git-amend.js",
         "start": "node main.js",
         "debug": "node --inspect-brk main.js",
         "test": "npx vitest run -c config/vitest.config.js",
@@ -31,6 +34,12 @@
         "docs:tasks": "node node_modules/jsdoc/jsdoc.js -r -d ./docs -t node_modules/docdash tasks",
         "docs:utils": "node node_modules/jsdoc/jsdoc.js -r -d ./docs -t node_modules/docdash utils",
         "docs:watch": "jsdoc -c jsdoc.json -r"
+    },
+    "lint-staged": {
+        "*.js": [
+            "eslint --fix --config config/eslint.config.js",
+            "prettier --write"
+        ]
     },
     "keywords": [
         "automation",
@@ -83,5 +92,6 @@
         "prettier": "^3.8.1",
         "typedoc": "^0.28.17",
         "vitest": "^3.2.4"
-    }
+    },
+    "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }

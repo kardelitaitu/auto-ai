@@ -1,3 +1,29 @@
+### ✅ version 1.1.0 - 2026-03-25
+### Developer Experience & Performance
+
+**Test Performance Optimization:**
+- Optimized `vitest-individual.ps1` with batching strategy (10 files per job, 8 parallel jobs)
+- Reduced individual test execution from ~2 minutes to ~57 seconds (~52% improvement)
+- All 7805 tests passing consistently
+
+**Git Workflow Enhancement:**
+- Added pre-commit linting with husky + lint-staged
+  - Auto-fixes ESLint errors and formats with Prettier on every `git commit`
+  - Only checks staged files (fast!)
+- Created `pnpm commit` helper (`scripts/git-commit.js`):
+  - Stage → Lint → Commit → Push (automatic, push is default)
+  - Color-coded output with 1x retry on failure
+  - `--no-verify` flag to skip linting
+- Created `pnpm amend` helper (`scripts/git-amend.js`):
+  - Stage → Lint → Amend → Force Push (automatic)
+  - Supports optional new message
+
+**Usage:**
+- `pnpm commit "message"` - Commit and push
+- `pnpm commit "message" --no-verify` - Skip linting, then commit and push
+- `pnpm amend` - Amend last commit (keep message) and push
+- `pnpm amend "new message"` - Amend with new message and push
+
 ### ✅ version 1.0.9 - 2026-03-25
 ### Pre-Migration Baseline
 - **Retweet Workflow Refinement**: Improved `retweet.js` with better waiting mechanisms and validation.
