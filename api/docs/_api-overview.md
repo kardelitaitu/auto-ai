@@ -12,6 +12,15 @@ This document provides a high-level overview of the Auto-AI Unified Browser Tool
 - [Agent](./agent.md) - LLM-powered semantic interactions
 - [Utils](./utils.md) - Utility functions
 
+## What To Read First
+
+- Start with [README.md](./README.md) for module selection and basic usage.
+- Read [ARCHITECTURE.md](./ARCHITECTURE.md) for the runtime flow and internal layers.
+- Read [core.md](./core.md) before changing session isolation, config, middleware, or hooks.
+- Read [interactions.md](./interactions.md) before adding or modifying browser actions.
+- Read [agent.md](./agent.md) before changing semantic or LLM-driven behavior.
+- Read [LLM-PROVIDERS.md](./LLM-PROVIDERS.md) before changing model routing or provider setup.
+
 ## Quick Start
 
 ```javascript

@@ -41,11 +41,14 @@ vi.mock("@api/core/logger.js", () => ({
 }));
 
 vi.mock("fs/promises", () => ({
-  promises: {
-    mkdir: vi.fn().mockResolvedValue(undefined),
-    writeFile: vi.fn().mockResolvedValue(undefined),
-  },
+  mkdir: vi.fn().mockResolvedValue(undefined),
+  writeFile: vi.fn().mockResolvedValue(undefined),
 }));
+
+vi.mock("path", async () => {
+  const actual = await vi.importActual("path");
+  return actual;
+});
 
 describe("vision-preprocessor.js", () => {
   let VisionPreprocessor;
@@ -352,6 +355,48 @@ describe("vision-preprocessor.js", () => {
       expect(result).toHaveProperty("buffer");
     });
 
+    it("should detect an ROI when saliency is high", async () => {
+      const preprocessor = new VisionPreprocessor();
+      vi.spyOn(preprocessor, "_calculateBlockSaliency").mockReturnValue(42);
+
+      const data = Buffer.alloc(120 * 120 * 3, 128);
+      const pipeline = {
+        raw: vi.fn().mockReturnThis(),
+        toBuffer: vi.fn().mockResolvedValue({
+          data,
+          info: { width: 120, height: 120, channels: 3 },
+        }),
+      };
+
+      const roi = await preprocessor._detectROI(pipeline, {
+        width: 120,
+        height: 120,
+      });
+
+      expect(roi).toEqual({
+        left: 0,
+        top: 0,
+        width: 120,
+        height: 120,
+      });
+    });
+
+    it("should calculate block saliency for grayscale data", () => {
+      const preprocessor = new VisionPreprocessor();
+      const data = Buffer.alloc(10 * 10, 128);
+
+      const saliency = preprocessor._calculateBlockSaliency(
+        data,
+        0,
+        0,
+        10,
+        10,
+        1,
+      );
+
+      expect(saliency).toBe(0);
+    });
+
     it("should return null when _detectROI raw extraction fails", async () => {
       const preprocessor = new VisionPreprocessor();
       const pipeline = {
@@ -377,6 +422,15 @@ describe("vision-preprocessor.js", () => {
       expect(result).toEqual({ width: 0, height: 0 });
     });
 
+    it("should return dimensions when _getDimensions succeeds", async () => {
+      const preprocessor = new VisionPreprocessor();
+      const result = await preprocessor._getDimensions(
+        Buffer.from("ok-buffer"),
+      );
+
+      expect(result).toEqual({ width: 800, height: 600 });
+    });
+
     it("should handle edge enhancement option", async () => {
       const preprocessor = new VisionPreprocessor();
       const inputBuffer = Buffer.from("test-image-data");
@@ -393,6 +447,71 @@ describe("vision-preprocessor.js", () => {
       await preprocessor.process(inputBuffer, { sharpness: 5 });
 
       expect(mockPipeline.sharpen).toHaveBeenCalledWith(5);
+    });
+
+    it("should save debug image successfully", async () => {
+      const preprocessor = new VisionPreprocessor();
+      const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
+
+      await preprocessor._saveDebugImage(Buffer.from("debug"), {
+        format: "jpeg",
+      });
+
+      expect(debugSpy).not.toHaveBeenCalled();
+      debugSpy.mockRestore();
+    });
+
+    it("should warn and continue when debug image save fails", async () => {
+      const preprocessor = new VisionPreprocessor();
+      const fs = await import("fs/promises");
+      const mkdirSpy = vi
+        .spyOn(fs, "mkdir")
+        .mockRejectedValueOnce(new Error("save failed"));
+
+      await expect(
+        preprocessor._saveDebugImage(Buffer.from("debug"), { format: "jpeg" }),
+      ).resolves.toBeUndefined();
+
+      expect(mkdirSpy).toHaveBeenCalled();
+      mkdirSpy.mockRestore();
+    });
+
+    it("should process via the singleton helper", async () => {
+      const module = await import("@api/utils/vision-preprocessor.js");
+      const spy = vi
+        .spyOn(module.getVisionPreprocessor(), "process")
+        .mockResolvedValueOnce({
+          buffer: Buffer.from("x"),
+          base64: "eA==",
+          stats: {},
+        });
+
+      await module.processForVision(Buffer.from("input"), { autoROI: false });
+
+      expect(spy).toHaveBeenCalled();
+      spy.mockRestore();
+    });
+
+    it("should create a fresh singleton after module reset", async () => {
+      vi.resetModules();
+      const module = await import("@api/utils/vision-preprocessor.js");
+
+      const first = module.getVisionPreprocessor({ targetWidth: 640 });
+      const second = module.getVisionPreprocessor({ targetWidth: 1200 });
+
+      expect(first).toBe(second);
+      expect(first.defaultConfig.targetWidth).toBe(640);
+    });
+
+    it("should expose expected preset values", async () => {
+      const module = await import("@api/utils/vision-preprocessor.js");
+      expect(module.VPrepPresets.FAST.quality).toBe(70);
+      expect(module.VPrepPresets.GAME_UI.edgeEnhance).toBe(true);
+      expect(module.VPrepPresets.TEXT_HEAVY.sharpness).toBe(1.5);
+      expect(module.VPrepPresets.TOKEN_SAVING.grayscale).toBe(true);
+      expect(module.VPrepPresets.OWB_BLUE_OPTIMIZED.maskBlue).toBe(true);
+      expect(module.VPrepPresets.DEBUG.debug).toBe(true);
+      expect(module.VPrepPresets.OWB_GAME.autoROI).toBe(false);
     });
   });
 });

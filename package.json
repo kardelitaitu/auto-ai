@@ -26,6 +26,7 @@
         "test:bun:all": "bun run vitest run -c config/vitest.config.js api/tests",
         "test:bun:watch": "bun run vitest -c config/vitest.config.js",
         "test:bun:coverage": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot",
+        "test:bun:coverage:integration": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot api/tests/integration",
         "test:bun:verbose": "bun run vitest run -c config/vitest.config.js --reporter=verbose",
         "lint": "eslint . --config config/eslint.config.js",
         "lint:fix": "eslint . --config config/eslint.config.js --fix",
@@ -70,6 +71,7 @@
         "sharp": "^0.34.5",
         "socket.io": "^4.7.5",
         "socket.io-client": "^4.7.5",
+        "tavily-mcp": "^0.2.18",
         "zod": "^4.3.6"
     },
     "devDependencies": {
@@ -85,15 +87,15 @@
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-node": "^11.1.0",
         "globals": "^17.3.0",
+        "husky": "^9.1.0",
         "jest": "^30.2.0",
         "jsdoc": "^4.0.5",
         "jsdom": "^28.1.0",
+        "lint-staged": "^15.4.3",
         "mocha": "^11.7.5",
         "prettier": "^3.8.1",
         "typedoc": "^0.28.17",
-        "vitest": "^3.2.4",
-        "husky": "^9.1.0",
-        "lint-staged": "^15.4.3"
+        "vitest": "^3.2.4"
     },
     "packageManager": "pnpm@10.33.0"
 }

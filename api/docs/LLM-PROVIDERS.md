@@ -107,7 +107,7 @@ curl http://localhost:11434/api/generate -d '{
 
 ```bash
 # Run a simple task
-node main.js simpleNavigate targetUrl=https://example.com
+pnpm run start -- simpleNavigate targetUrl=https://example.com
 
 # Check logs for:
 # [Local] Sending request to local LLM...
@@ -143,6 +143,13 @@ await api.agent.run('task', { forceLocal: true });
 // Force cloud
 await api.agent.run('task', { forceCloud: true });
 ```
+
+## Related Docs
+
+- [API README](./README.md) - Main entry into the API docs
+- [API Overview](./_api-overview.md) - Short summary and reading order
+- [Agent Docs](./agent.md) - Semantic agent behavior and execution flow
+- [Core Docs](./core.md) - Configuration, context, hooks, and middleware
 
 ---
 

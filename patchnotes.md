@@ -615,3 +615,7 @@ Improvements
 - **Improved Purchase Accuracy**: Added adjacency rules and "closest to center" priority to ensure smarter expansion during the unowned land purchase phase.
 ### API Error Handling
 - **Custom Error Classes**: Replaced generic `throw new Error('SessionDisconnectedError: ...')` with custom `SessionDisconnectedError` class across 8 interaction modules (`gameMenus.js`, `resourceTracker.js`, `gameState.js`, `actions.js`, `multiSelect.js`, `clickAt.js`, `drag.js`, `keys.js`). This provides consistent error codes and improved stack traces for debugging.
+
+### Tree-sitter MCP Fix
+- Added a local `tree_sitter_mcp_launcher.py` wrapper so the MCP server normalizes `.cs` to `csharp` before startup.
+- Updated the OpenCode MCP config to launch the wrapper instead of the raw module entrypoint.

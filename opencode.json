@@ -46,8 +46,7 @@
       "type": "local",
       "command": [
         "C:\\Python313\\python.exe",
-        "-m",
-        "mcp_server_tree_sitter"
+        "C:\\My Script\\auto-ai\\tree_sitter_mcp_launcher.py"
       ]
     }
   },

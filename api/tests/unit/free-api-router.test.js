@@ -2756,38 +2756,6 @@ describe("FreeApiRouter", () => {
     });
   });
 
-  describe("Direct Fallback Error Paths", () => {
-    it("should handle proxy fallback to direct when both fail", async () => {
-      const { FreeApiRouter } = require("../../utils/free-api-router.js");
-
-      router = new FreeApiRouter({
-        enabled: true,
-        apiKeys: ["test-key"],
-        primaryModel: "test/model",
-        proxyEnabled: true,
-        proxyList: ["proxy1:8080"],
-        proxyFallbackToDirect: true,
-      });
-
-      global.fetch = vi.fn().mockResolvedValue({
-        ok: false,
-        status: 500,
-        text: async () => "Error",
-      });
-
-      let result;
-      try {
-        result = await router.processRequest({
-          messages: [{ role: "user", content: "hello" }],
-        });
-      } catch (e) {
-        result = { success: false, error: e.message };
-      }
-
-      expect(result.success).toBe(false);
-    });
-  });
-
   describe("Warning Status in Response", () => {
     it("should include warningStatus in response", async () => {
       const { FreeApiRouter } = require("../../utils/free-api-router.js");
@@ -2941,13 +2909,11 @@ describe("FreeApiRouter", () => {
         fallbackModels: ["model2"],
       });
 
-      global.fetch = vi
-        .fn()
-        .mockResolvedValue({
-          ok: false,
-          status: 500,
-          text: async () => "Error",
-        });
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 500,
+        text: async () => "Error",
+      });
 
       let result;
       try {
@@ -4664,6 +4630,530 @@ describe("FreeApiRouter", () => {
       });
 
       expect(router.circuitBreaker.recordSuccess).toHaveBeenCalled();
+    });
+  });
+
+  describe("Coverage Gap Fixes", () => {
+    describe("processRequest proxy success end-to-end", () => {
+      it("should succeed through proxy via _callThroughProxy in processRequest", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+          proxyEnabled: true,
+          proxyList: ["proxy1:8080"],
+        });
+
+        global.fetch = vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => ({
+            choices: [{ message: { content: "proxy success" } }],
+          }),
+        });
+
+        const result = await router.processRequest({
+          messages: [{ role: "user", content: "hello" }],
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.content).toBe("proxy success");
+      });
+    });
+
+    describe("processRequest rate limit exhausted", () => {
+      it("should skip model when rateLimitStatus is exhausted", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "model1",
+          fallbackModels: ["model2"],
+        });
+
+        router.rateLimitTracker.getWarningStatus = vi
+          .fn()
+          .mockReturnValue("exhausted");
+
+        global.fetch = vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => ({
+            choices: [{ message: { content: "response" } }],
+          }),
+        });
+
+        const result = await router.processRequest({
+          messages: [{ role: "user", content: "hello" }],
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error).toContain("exhausted");
+      });
+    });
+
+    describe("processRequest progress logging", () => {
+      it("should log progress when first model fails and more remain", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "model1",
+          fallbackModels: ["model2", "model3"],
+        });
+
+        let callCount = 0;
+        global.fetch = vi.fn().mockImplementation(() => {
+          callCount++;
+          if (callCount === 1) {
+            return Promise.resolve({
+              ok: false,
+              status: 500,
+              text: async () => "Server Error",
+            });
+          }
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({
+              choices: [{ message: { content: "success on model2" } }],
+            }),
+          });
+        });
+
+        const result = await router.processRequest({
+          messages: [{ role: "user", content: "hello" }],
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.model).toBe("model2");
+      });
+    });
+
+    describe("syncWithHelper primary in working", () => {
+      it("should set fallbacks to other working models when primary is in working", async () => {
+        const {
+          FreeApiRouter,
+          setSharedHelper,
+        } = require("../../utils/free-api-router.js");
+
+        setSharedHelper({
+          getResults: () => ({
+            working: ["primary/model", "working2", "working3"],
+            total: 3,
+          }),
+        });
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "primary/model",
+          fallbackModels: ["old-fallback"],
+        });
+
+        const result = router.syncWithHelper();
+
+        expect(result).toBe(true);
+        expect(router.config.models.primary).toBe("primary/model");
+        expect(router.config.models.fallbacks).toEqual([
+          "working2",
+          "working3",
+        ]);
+        expect(router.config.models.fallbacks).not.toContain("primary/model");
+      });
+    });
+
+    describe("getModelsInfo with null helper", () => {
+      it("should return empty testedFailed when helper returns null", () => {
+        const {
+          FreeApiRouter,
+          setSharedHelper,
+        } = require("../../utils/free-api-router.js");
+
+        setSharedHelper({
+          getResults: () => null,
+        });
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "primary",
+          fallbackModels: ["fallback1"],
+        });
+
+        const info = router.getModelsInfo();
+
+        expect(info.testedWorking).toEqual([]);
+        expect(info.testedFailed).toEqual([]);
+        expect(info.totalTested).toBe(0);
+      });
+
+      it("should return empty testedFailed when results has no failed property", () => {
+        const {
+          FreeApiRouter,
+          setSharedHelper,
+        } = require("../../utils/free-api-router.js");
+
+        setSharedHelper({
+          getResults: () => ({
+            working: ["model1"],
+            total: 1,
+          }),
+        });
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "primary",
+          fallbackModels: ["fallback1"],
+        });
+
+        const info = router.getModelsInfo();
+
+        expect(info.testedWorking).toEqual(["model1"]);
+        expect(info.testedFailed).toEqual([]);
+        expect(info.totalTested).toBe(1);
+      });
+    });
+
+    describe("getStats successRate", () => {
+      it("should return calculated successRate when totalRequests > 0", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        router.stats.totalRequests = 10;
+        router.stats.successes = 5;
+
+        const stats = router.getStats();
+
+        expect(stats.router.successRate).toBe("50.0%");
+      });
+
+      it("should return 0% when totalRequests is 0", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        const stats = router.getStats();
+
+        expect(stats.router.successRate).toBe("0%");
+      });
+    });
+
+    describe("directFallbackUsed result fields", () => {
+      it("should include directFallbackUsed true when proxy fails and direct succeeds", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+          proxyEnabled: true,
+          proxyList: ["proxy1:8080"],
+          proxyFallbackToDirect: true,
+        });
+
+        let callCount = 0;
+        global.fetch = vi.fn().mockImplementation(() => {
+          callCount++;
+          if (callCount === 1) {
+            return Promise.resolve({
+              ok: false,
+              status: 500,
+              text: async () => "Proxy Error",
+            });
+          }
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({
+              choices: [{ message: { content: "direct success" } }],
+            }),
+          });
+        });
+
+        const result = await router.processRequest({
+          messages: [{ role: "user", content: "hello" }],
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.directFallbackUsed).toBe(true);
+        expect(result.proxyUsed).toBe(false);
+        expect(result.content).toBe("direct success");
+        expect(result.modelFallbacks).toBeGreaterThanOrEqual(0);
+      });
+    });
+
+    describe("response content parsing edge cases", () => {
+      it("should handle _callDirect with undefined content (no content key)", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        global.fetch = vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => ({
+            choices: [{ message: { reasoning_content: "reasoned answer" } }],
+          }),
+        });
+
+        const result = await router._callDirect(
+          { model: "test", messages: [] },
+          60000,
+        );
+
+        expect(result.success).toBe(true);
+        expect(result.content).toBe("reasoned answer");
+      });
+
+      it("should handle _callThroughProxy with reasoning_content fallback", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+          proxyEnabled: true,
+          proxyList: ["proxy1:8080"],
+        });
+
+        global.fetch = vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => ({
+            choices: [{ message: { reasoning_content: "proxy reasoned" } }],
+          }),
+        });
+
+        const result = await router._callThroughProxy(
+          { host: "proxy1", port: "8080" },
+          { model: "test", messages: [] },
+          60000,
+        );
+
+        expect(result.success).toBe(true);
+        expect(result.content).toBe("proxy reasoned");
+        expect(result.proxy).toBe("proxy1:8080");
+      });
+    });
+
+    describe("non-429 server error handling", () => {
+      it("should handle 500 errors and fallback to next model", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "model1",
+          fallbackModels: ["model2"],
+        });
+
+        let callCount = 0;
+        global.fetch = vi.fn().mockImplementation(() => {
+          callCount++;
+          if (callCount === 1) {
+            return Promise.resolve({
+              ok: false,
+              status: 500,
+              text: async () => "Internal Server Error",
+            });
+          }
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({
+              choices: [{ message: { content: "success" } }],
+            }),
+          });
+        });
+
+        const result = await router.processRequest({
+          messages: [{ role: "user", content: "hello" }],
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.content).toBe("success");
+      });
+
+      it("should handle 503 errors through _callDirect throw", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        global.fetch = vi.fn().mockResolvedValue({
+          ok: false,
+          status: 503,
+          text: async () => "Service Unavailable",
+        });
+
+        await expect(
+          router._callDirect({ model: "test", messages: [] }, 60000),
+        ).rejects.toThrow();
+      });
+    });
+
+    describe("rateLimitTracker and apiKeyTimeoutTracker on success", () => {
+      it("should call rateLimitTracker.trackRequest on success", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        global.fetch = vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => ({
+            choices: [{ message: { content: "response" } }],
+          }),
+        });
+
+        const result = await router.processRequest({
+          messages: [{ role: "user", content: "hello" }],
+        });
+
+        expect(result.success).toBe(true);
+      });
+    });
+
+    describe("getDetailedStats delegation", () => {
+      it("should call all sub-module methods", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "primary",
+          fallbackModels: ["fallback1"],
+        });
+
+        router.circuitBreaker.getAllStates = vi.fn().mockReturnValue({});
+        router.rateLimitTracker.getCacheStatus = vi.fn().mockReturnValue({});
+        router.modelPerfTracker.getAllStats = vi.fn().mockReturnValue({});
+        router.modelPerfTracker.getBestModel = vi
+          .fn()
+          .mockReturnValue("primary");
+
+        const stats = router.getDetailedStats();
+
+        expect(router.circuitBreaker.getAllStates).toHaveBeenCalled();
+        expect(router.rateLimitTracker.getCacheStatus).toHaveBeenCalled();
+        expect(router.modelPerfTracker.getAllStats).toHaveBeenCalled();
+        expect(router.modelPerfTracker.getBestModel).toHaveBeenCalledWith(
+          ["primary", "fallback1"],
+          "test-key",
+        );
+        expect(stats.bestModel).toBe("primary");
+      });
+    });
+
+    describe("validateConfig delegation", () => {
+      it("should pass config through to configValidator", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        router.configValidator.validateConfig = vi
+          .fn()
+          .mockResolvedValue({ valid: true, warnings: [] });
+
+        const testConfig = { apiKeys: ["key1"], models: { primary: "model1" } };
+        const result = await router.validateConfig(testConfig);
+
+        expect(result.valid).toBe(true);
+        expect(router.configValidator.validateConfig).toHaveBeenCalledWith(
+          testConfig,
+        );
+      });
+    });
+
+    describe("resetStats module delegation", () => {
+      it("should call reset/invalidate on all sub-modules", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        router.stats.totalRequests = 10;
+        router.stats.successes = 5;
+        router.stats.failures = 5;
+
+        router.circuitBreaker.reset = vi.fn();
+        router.rateLimitTracker.invalidateCache = vi.fn();
+        router.requestDedupe.clear = vi.fn();
+        router.modelPerfTracker.reset = vi.fn();
+        router.apiKeyTimeoutTracker.reset = vi.fn();
+
+        router.resetStats();
+
+        expect(router.stats.totalRequests).toBe(0);
+        expect(router.circuitBreaker.reset).toHaveBeenCalled();
+        expect(router.rateLimitTracker.invalidateCache).toHaveBeenCalled();
+        expect(router.requestDedupe.clear).toHaveBeenCalled();
+        expect(router.modelPerfTracker.reset).toHaveBeenCalled();
+        expect(router.apiKeyTimeoutTracker.reset).toHaveBeenCalled();
+      });
+    });
+
+    describe("isReady variations", () => {
+      it("should return true when enabled with API key", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        expect(router.isReady()).toBe(true);
+      });
+
+      it("should return falsy when enabled but no API keys", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: [],
+          primaryModel: "test/model",
+        });
+
+        expect(!router.isReady()).toBe(true);
+      });
+
+      it("should return false when disabled", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+
+        router = new FreeApiRouter({
+          enabled: false,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        expect(router.isReady()).toBe(false);
+      });
     });
   });
 });

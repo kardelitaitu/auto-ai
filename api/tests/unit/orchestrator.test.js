@@ -341,6 +341,14 @@ describe("Orchestrator", () => {
       orchestrator.logMetrics();
       expect(metricsCollector.logStats).toHaveBeenCalled();
     });
+
+    it("should fall back when metricsCollector throws", () => {
+      metricsCollector.getStats.mockImplementationOnce(() => {
+        throw new Error("metrics failed");
+      });
+
+      expect(orchestrator.getMetrics()).toEqual({});
+    });
   });
 
   describe("Shutdown", () => {
@@ -364,6 +372,20 @@ describe("Orchestrator", () => {
 
       expect(waitSpy).not.toHaveBeenCalled();
       expect(mockSessionManager.shutdown).toHaveBeenCalled();
+    });
+
+    it("should force cancel when graceful shutdown times out", async () => {
+      const waitSpy = vi
+        .spyOn(orchestrator, "waitForTasksToComplete")
+        .mockResolvedValue({
+          timedOut: true,
+        });
+      const cancelSpy = vi.spyOn(orchestrator, "_forceCancelAllTasks");
+
+      await orchestrator.shutdown(false);
+
+      expect(waitSpy).toHaveBeenCalled();
+      expect(cancelSpy).toHaveBeenCalled();
     });
   });
 
@@ -446,6 +468,14 @@ describe("Orchestrator", () => {
     it("should fall back for recent tasks and breakdown helpers", () => {
       expect(orchestrator.getRecentTasks()).toEqual([]);
       expect(orchestrator.getTaskBreakdown()).toEqual({});
+    });
+
+    it("should return empty session metrics on session manager failure", () => {
+      mockSessionManager.getAllSessions.mockImplementation(() => {
+        throw new Error("session failure");
+      });
+
+      expect(orchestrator.getSessionMetrics()).toEqual([]);
     });
   });
 });

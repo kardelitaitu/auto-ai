@@ -97,6 +97,7 @@ export default defineConfig({
                 'api/tests/dashboard-data-generator.js',
                 'api/tests/simulate-task-history.js',
                 'api/tests/mocks/index.js',
+                'api/tests/integration/twitter-agent.test.js',
             ],
             thresholds: {
                 statements: 0,

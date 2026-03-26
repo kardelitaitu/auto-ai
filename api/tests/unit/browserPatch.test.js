@@ -110,6 +110,22 @@ describe("browserPatch", () => {
         global.HTMLCanvasElement.prototype.toDataURL_ORIGINAL,
       );
     });
+
+    it("should skip canvas poisoning on x.com", () => {
+      global.window.location.hostname = "x.com";
+      injectedCallback();
+
+      const canvas = new HTMLCanvasElement();
+      expect(canvas.toDataURL()).toBe("original");
+    });
+
+    it("should skip canvas poisoning on twitter.com", () => {
+      global.window.location.hostname = "twitter.com";
+      injectedCallback();
+
+      const canvas = new HTMLCanvasElement();
+      expect(canvas.toDataURL()).toBe("original");
+    });
   });
 
   describe("Coverage Gap Tests", () => {

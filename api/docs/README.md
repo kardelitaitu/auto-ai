@@ -33,6 +33,14 @@ graph LR
 - **Semantic Agent**: LLM-powered interactions via accessibility tree mapping
 - **Recovery-First**: Every action includes automatic retry and state recovery
 
+## When To Use Which Module
+
+- Use `api.core` concepts when you need session isolation, config, hooks, logging, or recovery behavior.
+- Use `api.interactions` when you want direct browser actions like click, type, hover, scroll, navigate, or wait.
+- Use `api.behaviors` when you want to shape typing, cursor movement, attention, idle behavior, or persona selection.
+- Use `api.agent` when the task should be driven semantically from labels, screenshots, or the accessibility tree.
+- Use `api.utils` when you need file I/O, retry helpers, config helpers, timing, math, or logging utilities.
+
 ## Table of Contents
 
 - [Quick Start](#quick-start)
@@ -45,6 +53,7 @@ graph LR
     - [Utils](#utils)
     - [Actions](#actions)
 - [Examples](#examples)
+- [Project Links](#project-links)
 
 ---
 
@@ -177,6 +186,18 @@ await api.findElement('.lazy-loaded-content');
 // Recover from unexpected navigation
 await api.recover();
 ```
+
+## Project Links
+
+- [Architecture](./ARCHITECTURE.md) - System diagrams and internal flow
+- [Core Modules](./core.md) - Context, config, errors, events, hooks, middleware, plugins
+- [Interactions](./interactions.md) - Actions, scroll, cursor, navigation, wait, queries
+- [Behaviors](./behaviors.md) - Persona, timing, attention, idle, recovery, warmup
+- [Agent](./agent.md) - LLM-powered semantic interactions
+- [Utils](./utils.md) - File I/O, memory, patch, retry, config, timing
+- [Actions](./actions.md) - Twitter-specific actions
+- [LLM Providers](./LLM-PROVIDERS.md) - Local and cloud model setup
+- [API Overview](./_api-overview.md) - Short high-level summary
 
 ---
 
