@@ -28,6 +28,7 @@ graph LR
 ```
 
 **Key Design Principles:**
+
 - **Session Isolation**: Each browser page runs in its own `AsyncLocalStorage` context
 - **Human Mimicry**: All interactions use persona-driven timing and motion physics
 - **Semantic Agent**: LLM-powered interactions via accessibility tree mapping

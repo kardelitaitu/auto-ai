@@ -11,9 +11,9 @@
  * @module api/wait
  */
 
-import { getPage } from '../core/context.js';
-import { getLocator } from '../utils/locator.js';
-import { ValidationError, ElementTimeoutError } from '../core/errors.js';
+import { getPage } from "../core/context.js";
+import { getLocator } from "../utils/locator.js";
+import { ValidationError, ElementTimeoutError } from "../core/errors.js";
 
 /**
  * Wait for a duration with Gaussian jitter (±15%).
@@ -22,11 +22,11 @@ import { ValidationError, ElementTimeoutError } from '../core/errors.js';
  * @throws {ValidationError} If ms is not a positive number
  */
 export async function wait(ms) {
-    if (typeof ms !== 'number' || Number.isNaN(ms) || ms < 0) {
-        throw new ValidationError(`wait() requires a positive number, got: ${ms}`);
-    }
-    const jitter = ms * 0.15 * (Math.random() - 0.5) * 2;
-    await new Promise((r) => setTimeout(r, Math.max(0, Math.round(ms + jitter))));
+  if (typeof ms !== "number" || Number.isNaN(ms) || ms < 0) {
+    throw new ValidationError(`wait() requires a positive number, got: ${ms}`);
+  }
+  const jitter = ms * 0.15 * (Math.random() - 0.5) * 2;
+  await new Promise((r) => setTimeout(r, Math.max(0, Math.round(ms + jitter))));
 }
 
 /**
@@ -38,32 +38,37 @@ export async function wait(ms) {
  * @throws {Error} If signal is aborted
  */
 export async function waitWithAbort(ms, signal) {
-    if (typeof ms !== 'number' || Number.isNaN(ms) || ms < 0) {
-        throw new ValidationError(`waitWithAbort() requires a positive number, got: ${ms}`);
+  if (typeof ms !== "number" || Number.isNaN(ms) || ms < 0) {
+    throw new ValidationError(
+      `waitWithAbort() requires a positive number, got: ${ms}`,
+    );
+  }
+
+  if (signal && signal.aborted) {
+    throw signal.reason || new Error("Aborted");
+  }
+
+  return new Promise((resolve, reject) => {
+    const abortHandler = () => {
+      clearTimeout(timeoutId);
+      reject(signal.reason || new Error("Aborted"));
+    };
+
+    if (signal) {
+      signal.addEventListener("abort", abortHandler, { once: true });
     }
-    
-    if (signal && signal.aborted) {
-        throw signal.reason || new Error('Aborted');
-    }
-    
-    return new Promise((resolve, reject) => {
-        const abortHandler = () => {
-            clearTimeout(timeoutId);
-            reject(signal.reason || new Error('Aborted'));
-        };
-        
+
+    const jitter = ms * 0.15 * (Math.random() - 0.5) * 2;
+    const timeoutId = setTimeout(
+      () => {
         if (signal) {
-            signal.addEventListener('abort', abortHandler, { once: true });
+          signal.removeEventListener("abort", abortHandler);
         }
-        
-        const jitter = ms * 0.15 * (Math.random() - 0.5) * 2;
-        const timeoutId = setTimeout(() => {
-            if (signal) {
-                signal.removeEventListener('abort', abortHandler);
-            }
-            resolve();
-        }, Math.max(0, Math.round(ms + jitter)));
-    });
+        resolve();
+      },
+      Math.max(0, Math.round(ms + jitter)),
+    );
+  });
 }
 
 /**
@@ -76,23 +81,23 @@ export async function waitWithAbort(ms, signal) {
  * @returns {Promise<void>}
  */
 export async function waitFor(selectorOrPredicate, options = {}) {
-    const { timeout = 10000, state = 'attached', polling = 100 } = options;
+  const { timeout = 10000, state = "attached", polling = 100 } = options;
 
-    if (typeof selectorOrPredicate === 'function') {
-        const startTime = Date.now();
-        while (Date.now() - startTime < timeout) {
-            try {
-                if (await selectorOrPredicate()) return;
-            } catch (_e) {
-                // Ignore errors during polling (e.g. page crashes, temporary disconnects)
-            }
-            await new Promise((r) => setTimeout(r, polling));
-        }
-        throw new ElementTimeoutError('predicate', timeout);
+  if (typeof selectorOrPredicate === "function") {
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeout) {
+      try {
+        if (await selectorOrPredicate()) return;
+      } catch (_e) {
+        // Ignore errors during polling (e.g. page crashes, temporary disconnects)
+      }
+      await new Promise((r) => setTimeout(r, polling));
     }
+    throw new ElementTimeoutError("predicate", timeout);
+  }
 
-    const locator = getLocator(selectorOrPredicate);
-    await locator.waitFor({ state, timeout });
+  const locator = getLocator(selectorOrPredicate);
+  await locator.waitFor({ state, timeout });
 }
 
 /**
@@ -103,9 +108,9 @@ export async function waitFor(selectorOrPredicate, options = {}) {
  * @returns {Promise<void>}
  */
 export async function waitVisible(selector, options = {}) {
-    const { timeout = 10000 } = options;
-    const locator = getLocator(selector).first();
-    await locator.waitFor({ state: 'visible', timeout });
+  const { timeout = 10000 } = options;
+  const locator = getLocator(selector).first();
+  await locator.waitFor({ state: "visible", timeout });
 }
 
 /**
@@ -116,19 +121,19 @@ export async function waitVisible(selector, options = {}) {
  * @returns {Promise<void>}
  */
 export async function waitHidden(selector, options = {}) {
-    const { timeout = 10000 } = options;
-    const locator = getLocator(selector).first();
-    await locator.waitFor({ state: 'hidden', timeout });
+  const { timeout = 10000 } = options;
+  const locator = getLocator(selector).first();
+  await locator.waitFor({ state: "hidden", timeout });
 }
 
-export async function waitForLoadState(state = 'networkidle', options = {}) {
-    const page = getPage();
-    const { timeout = 10000 } = options;
-    await page.waitForLoadState(state, { timeout });
+export async function waitForLoadState(state = "networkidle", options = {}) {
+  const page = getPage();
+  const { timeout = 10000 } = options;
+  await page.waitForLoadState(state, { timeout });
 }
 
 export async function waitForURL(urlOrPredicate, options = {}) {
-    const page = getPage();
-    const { timeout = 10000, waitUntil } = options;
-    await page.waitForURL(urlOrPredicate, { timeout, waitUntil });
+  const page = getPage();
+  const { timeout = 10000, waitUntil } = options;
+  await page.waitForURL(urlOrPredicate, { timeout, waitUntil });
 }

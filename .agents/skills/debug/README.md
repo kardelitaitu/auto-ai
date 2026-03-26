@@ -12,14 +12,14 @@ The Debug Skill provides systematic debugging capabilities for investigating err
 
 ## Key Features
 
-| Feature | Description |
-|---------|-------------|
-| **Log Analysis** | Parse and analyze application logs |
-| **Stack Trace Parsing** | Extract and analyze stack traces |
-| **Error Pattern Detection** | Identify common error patterns |
-| **State Capture** | Capture debugging snapshots |
-| **Performance Profiling** | Profile task execution |
-| **Browser Debugging** | Debug browser automation issues |
+| Feature                     | Description                        |
+| --------------------------- | ---------------------------------- |
+| **Log Analysis**            | Parse and analyze application logs |
+| **Stack Trace Parsing**     | Extract and analyze stack traces   |
+| **Error Pattern Detection** | Identify common error patterns     |
+| **State Capture**           | Capture debugging snapshots        |
+| **Performance Profiling**   | Profile task execution             |
+| **Browser Debugging**       | Debug browser automation issues    |
 
 ## Architecture
 
@@ -52,56 +52,58 @@ console.log(`Most common error: ${patterns.mostFrequent.category}`);
 
 // Parse stack trace
 const stack = await parseStackTrace(error.stack);
-console.log(`Root cause: ${stack.rootCause.function} at ${stack.rootCause.file}:${stack.rootCause.line}`);
+console.log(
+    `Root cause: ${stack.rootCause.function} at ${stack.rootCause.file}:${stack.rootCause.line}`
+);
 ```
 
 ## Debug Levels
 
-| Level | Description | Use Case |
-|-------|-------------|----------|
-| **TRACE** | Most detailed | Complex debugging |
-| **DEBUG** | Detailed info | Development |
-| **INFO** | Normal operations | General logging |
-| **WARN** | Potential issues | Monitoring |
-| **ERROR** | Failures | Alerting |
+| Level     | Description       | Use Case            |
+| --------- | ----------------- | ------------------- |
+| **TRACE** | Most detailed     | Complex debugging   |
+| **DEBUG** | Detailed info     | Development         |
+| **INFO**  | Normal operations | General logging     |
+| **WARN**  | Potential issues  | Monitoring          |
+| **ERROR** | Failures          | Alerting            |
 | **FATAL** | Critical failures | Immediate attention |
 
 ## Use Cases
 
-| Use Case | Description | Tool |
-|----------|-------------|------|
+| Use Case                | Description               | Tool                   |
+| ----------------------- | ------------------------- | ---------------------- |
 | **Error Investigation** | Find root cause of errors | `analyzeErrorPatterns` |
-| **Log Analysis** | Parse and filter logs | `parseAutoAILogs` |
-| **Stack Analysis** | Analyze stack traces | `parseStackTrace` |
-| **Performance Issues** | Identify bottlenecks | `profileTaskExecution` |
-| **State Debugging** | Capture page state | `captureDebugState` |
-| **Element Debugging** | Debug element issues | `debugElement` |
+| **Log Analysis**        | Parse and filter logs     | `parseAutoAILogs`      |
+| **Stack Analysis**      | Analyze stack traces      | `parseStackTrace`      |
+| **Performance Issues**  | Identify bottlenecks      | `profileTaskExecution` |
+| **State Debugging**     | Capture page state        | `captureDebugState`    |
+| **Element Debugging**   | Debug element issues      | `debugElement`         |
 
 ## Common Issues Guide
 
 ### Browser Issues
 
-| Issue | Symptoms | Solution |
-|-------|----------|----------|
-| No browsers found | Discovery fails | Check processes and ports |
-| Session disconnected | Automation stops | Re-discover sessions |
-| Target closed | Page crashes | Create new page/context |
+| Issue                | Symptoms         | Solution                  |
+| -------------------- | ---------------- | ------------------------- |
+| No browsers found    | Discovery fails  | Check processes and ports |
+| Session disconnected | Automation stops | Re-discover sessions      |
+| Target closed        | Page crashes     | Create new page/context   |
 
 ### Task Issues
 
-| Issue | Symptoms | Solution |
-|-------|----------|----------|
-| Timeout | Task hangs | Increase timeout |
-| Element not found | Click fails | Add wait before action |
-| Navigation failed | Page load fails | Check URL and network |
+| Issue             | Symptoms        | Solution               |
+| ----------------- | --------------- | ---------------------- |
+| Timeout           | Task hangs      | Increase timeout       |
+| Element not found | Click fails     | Add wait before action |
+| Navigation failed | Page load fails | Check URL and network  |
 
 ### LLM Issues
 
-| Issue | Symptoms | Solution |
-|-------|----------|----------|
-| LLM timeout | Slow response | Use faster model |
-| Invalid response | Parse error | Validate format |
-| Rate limited | 429 errors | Add delays |
+| Issue            | Symptoms      | Solution         |
+| ---------------- | ------------- | ---------------- |
+| LLM timeout      | Slow response | Use faster model |
+| Invalid response | Parse error   | Validate format  |
+| Rate limited     | 429 errors    | Add delays       |
 
 ## API Reference
 
@@ -110,11 +112,12 @@ console.log(`Root cause: ${stack.rootCause.function} at ${stack.rootCause.file}:
 Parses Auto-AI framework logs.
 
 **Parameters:**
+
 - `logPath` (string): Path to log file
 - `options` (object): Parse options
-  - `tailLines`: number - Lines to read
-  - `level`: string - Filter by level
-  - `component`: string - Filter by component
+    - `tailLines`: number - Lines to read
+    - `level`: string - Filter by level
+    - `component`: string - Filter by component
 
 **Returns:** `Promise<ParsedLogs>`
 
@@ -123,6 +126,7 @@ Parses Auto-AI framework logs.
 Analyzes error patterns in logs.
 
 **Parameters:**
+
 - `logPath` (string): Path to log file
 
 **Returns:** `Promise<ErrorPatterns>`
@@ -132,6 +136,7 @@ Analyzes error patterns in logs.
 Parses a stack trace string.
 
 **Parameters:**
+
 - `stack` (string): Stack trace
 
 **Returns:** `StackAnalysis`
@@ -141,6 +146,7 @@ Parses a stack trace string.
 Captures debug state from a page.
 
 **Parameters:**
+
 - `page` (Page): Playwright page
 
 **Returns:** `Promise<DebugState>`
@@ -196,4 +202,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*Built with ❤️ by the Auto-AI Team*
+_Built with ❤️ by the Auto-AI Team_

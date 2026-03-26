@@ -6,21 +6,21 @@ Quick reference for all available MCP tools when working on the Auto-AI codebase
 
 ## Quick Reference by Use Case
 
-| Task | Primary Tools |
-|------|---------------|
-| Find a file | `filesystem_list_directory`, `filesystem_search_files`, or `glob` |
-| Search code patterns | `grep` or `context-mode_ctx_batch_execute` |
-| Read file contents | `filesystem_read_text_file` or `filesystem_read_multiple_files` |
-| Edit source files | `filesystem_edit_file` (surgical) or `filesystem_write_file` (full rewrite) |
-| Run tests/commands | `bash` for quick commands, `context-mode_ctx_execute` for large output |
-| Research a topic | `Tavily_tavily-search` or `Tavily_tavily-research` |
-| Extract URL content | `Tavily_tavily-extract` or `webfetch` |
-| Explore site structure | `Tavily_tavily-map` or `Tavily_tavily-crawl` |
-| Quick URL lookup | `webfetch` |
-| Store knowledge | `Memory_create_entities`, `Memory_create_relations` |
-| Complex problem solving | `Sequential_Thinking_sequentialthinking` |
-| Context protection | `context-mode_ctx_batch_execute`, `context-mode_ctx_stats` |
-| Code analysis | `tree-sitter` for AST parsing |
+| Task                    | Primary Tools                                                               |
+| ----------------------- | --------------------------------------------------------------------------- |
+| Find a file             | `filesystem_list_directory`, `filesystem_search_files`, or `glob`           |
+| Search code patterns    | `grep` or `context-mode_ctx_batch_execute`                                  |
+| Read file contents      | `filesystem_read_text_file` or `filesystem_read_multiple_files`             |
+| Edit source files       | `filesystem_edit_file` (surgical) or `filesystem_write_file` (full rewrite) |
+| Run tests/commands      | `bash` for quick commands, `context-mode_ctx_execute` for large output      |
+| Research a topic        | `Tavily_tavily-search` or `Tavily_tavily-research`                          |
+| Extract URL content     | `Tavily_tavily-extract` or `webfetch`                                       |
+| Explore site structure  | `Tavily_tavily-map` or `Tavily_tavily-crawl`                                |
+| Quick URL lookup        | `webfetch`                                                                  |
+| Store knowledge         | `Memory_create_entities`, `Memory_create_relations`                         |
+| Complex problem solving | `Sequential_Thinking_sequentialthinking`                                    |
+| Context protection      | `context-mode_ctx_batch_execute`, `context-mode_ctx_stats`                  |
+| Code analysis           | `tree-sitter` for AST parsing                                               |
 
 ---
 
@@ -69,7 +69,7 @@ Quick reference for all available MCP tools when working on the Auto-AI codebase
 
 ```javascript
 // Replace a specific function
-filesystem_edit_file(path: "api/agent/gameRunner.js", 
+filesystem_edit_file(path: "api/agent/gameRunner.js",
   edits: [{oldText: "async run() { ... }", newText: "async run() { /* improved */ }"}])
 ```
 
@@ -116,6 +116,7 @@ filesystem_edit_file(path: "api/agent/gameRunner.js",
 - `Tavily_tavily-research` - Comprehensive multi-source research for in-depth analysis
 
 **Usage Examples:**
+
 ```bash
 # Search for information
 Tavily_tavily-search(query: "playwright features", search_depth: "advanced", max_results: 5)
@@ -151,6 +152,7 @@ Tavily_tavily-research(input: "Compare Playwright vs Puppeteer for browser autom
 - Analyze code complexity and dependencies
 
 **Usage Patterns:**
+
 - **Code refactoring**: Identify all usages of a function before renaming
 - **Architecture analysis**: Map module dependencies and exports
 - **Code review**: Detect potential issues like deep nesting or large functions
@@ -200,7 +202,7 @@ ctx_execute(language: "shell", code: "git status")
 
 ### Making Code Changes
 
-1. Read file: `filesystem_read_text_file(path: "file.js")` 
+1. Read file: `filesystem_read_text_file(path: "file.js")`
 2. Make edit: `filesystem_edit_file(path: "file.js", edits: [{oldText: "...", newText: "..."}])`
 3. Verify: `bash` with `npx eslint .`
 4. Test: `bash` with `npx vitest run`

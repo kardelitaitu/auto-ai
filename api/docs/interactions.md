@@ -63,7 +63,7 @@ await api.click('.login-button', {
 
 // Type with humanization (default clears field first)
 await api.type('#username', 'myuser', {
-    humanize: true
+    humanize: true,
 });
 
 // Hover
@@ -315,18 +315,18 @@ Capture screenshots of the current page.
 
 ### Functions
 
-| Function                  | Description                              |
-| ------------------------- | ---------------------------------------- |
-| `screenshot(options)`     | Capture page screenshot                  |
+| Function              | Description             |
+| --------------------- | ----------------------- |
+| `screenshot(options)` | Capture page screenshot |
 
 ### Screenshot Options
 
-| Option     | Type    | Default  | Description                              |
-| ---------- | ------- | -------- | ---------------------------------------- |
-| `path`     | string  | -        | File path to save the screenshot         |
-| `fullPage` | boolean | `false`  | Capture full scrollable page             |
+| Option     | Type    | Default  | Description                               |
+| ---------- | ------- | -------- | ----------------------------------------- |
+| `path`     | string  | -        | File path to save the screenshot          |
+| `fullPage` | boolean | `false`  | Capture full scrollable page              |
 | `type`     | string  | `'jpeg'` | Image format: `'jpeg'`, `'png'`, `'webp'` |
-| `quality`  | number  | `80`     | Image quality (0-100, JPEG only)         |
+| `quality`  | number  | `80`     | Image quality (0-100, JPEG only)          |
 
 ### Usage
 
@@ -340,20 +340,20 @@ await api.screenshot({ path: './screenshots/page.png' });
 // Full page screenshot
 await api.screenshot({
     path: './screenshots/full.png',
-    fullPage: true
+    fullPage: true,
 });
 
 // High quality PNG
 await api.screenshot({
     path: './screenshots/hq.png',
-    type: 'png'
+    type: 'png',
 });
 
 // JPEG with custom quality
 await api.screenshot({
     path: './screenshots/page.jpg',
     type: 'jpeg',
-    quality: 95
+    quality: 95,
 });
 ```
 
@@ -365,18 +365,18 @@ Emulate CSS media features like color scheme and print styles.
 
 ### Functions
 
-| Function                    | Description                              |
-| --------------------------- | ---------------------------------------- |
-| `emulateMedia(options)`     | Emulate media features                   |
+| Function                | Description            |
+| ----------------------- | ---------------------- |
+| `emulateMedia(options)` | Emulate media features |
 
 ### Emulate Media Options
 
-| Option        | Type   | Description                              |
-| ------------- | ------ | ---------------------------------------- |
-| `type`        | string | Media type: `'screen'`, `'print'`, `null` |
-| `colorScheme` | string | Color scheme: `'light'`, `'dark'`, `'no-preference'`, `null` |
-| `prefersReducedMotion` | string | `'reduce'`, `'no-preference'`, `null` |
-| `forcedColors` | string | `'active'`, `'none'`, `null` |
+| Option                 | Type   | Description                                                  |
+| ---------------------- | ------ | ------------------------------------------------------------ |
+| `type`                 | string | Media type: `'screen'`, `'print'`, `null`                    |
+| `colorScheme`          | string | Color scheme: `'light'`, `'dark'`, `'no-preference'`, `null` |
+| `prefersReducedMotion` | string | `'reduce'`, `'no-preference'`, `null`                        |
+| `forcedColors`         | string | `'active'`, `'none'`, `null`                                 |
 
 ### Usage
 
@@ -396,13 +396,13 @@ await api.emulateMedia({ type: 'screen' });
 // Combine options
 await api.emulateMedia({
     type: 'screen',
-    colorScheme: 'dark'
+    colorScheme: 'dark',
 });
 
 // Reset all media emulation
 await api.emulateMedia({
     type: null,
-    colorScheme: null
+    colorScheme: null,
 });
 ```
 
@@ -414,18 +414,18 @@ Auto-detect and dismiss cookie consent banners, popup ads, and notification prom
 
 ### Functions
 
-| Function                 | Description                                    |
-| ------------------------ | ---------------------------------------------- |
-| `handleBanners(options)` | Auto-detect and dismiss common banners/modals  |
+| Function                 | Description                                   |
+| ------------------------ | --------------------------------------------- |
+| `handleBanners(options)` | Auto-detect and dismiss common banners/modals |
 
 ### Banner Options
 
-| Option                   | Type    | Default | Description                              |
-| ------------------------ | ------- | ------- | ---------------------------------------- |
-| `acceptCookies`          | boolean | `true`  | Accept cookie consent banners            |
-| `closePopups`            | boolean | `true`  | Close popup ads and overlays             |
-| `dismissNotifications`   | boolean | `true`  | Dismiss browser notification prompts     |
-| `timeout`                | number  | `5000`  | Max time to wait for banner detection (ms) |
+| Option                 | Type    | Default | Description                                |
+| ---------------------- | ------- | ------- | ------------------------------------------ |
+| `acceptCookies`        | boolean | `true`  | Accept cookie consent banners              |
+| `closePopups`          | boolean | `true`  | Close popup ads and overlays               |
+| `dismissNotifications` | boolean | `true`  | Dismiss browser notification prompts       |
+| `timeout`              | number  | `5000`  | Max time to wait for banner detection (ms) |
 
 ### Usage
 

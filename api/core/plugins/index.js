@@ -11,20 +11,17 @@
  * @module api/plugins
  */
 
-import { getPlugins } from '../context.js';
-import { createLogger } from '../../core/logger.js';
-import { BasePlugin } from './base.js';
-
-const _logger = createLogger('api/plugins/index.js');
+import { getPlugins } from "../context.js";
+import { BasePlugin } from "./base.js";
 
 const BUILTIN_PLUGINS = [
-    { name: '__builtin_coverage_dummy' },
-    {
-        name: '__builtin_fail',
-        init: () => {
-            throw new Error('fail');
-        },
+  { name: "__builtin_coverage_dummy" },
+  {
+    name: "__builtin_fail",
+    init: () => {
+      throw new Error("fail");
     },
+  },
 ];
 
 /**
@@ -32,15 +29,15 @@ const BUILTIN_PLUGINS = [
  * Should be called during page initialization.
  */
 export function loadBuiltinPlugins() {
-    const manager = getPlugins();
-    for (const plugin of BUILTIN_PLUGINS) {
-        try {
-            manager.register(plugin);
-        } catch (_e) {
-            // logger.debug(`[Plugins] Failed to load "${plugin.name}":`, e.message);
-        }
+  const manager = getPlugins();
+  for (const plugin of BUILTIN_PLUGINS) {
+    try {
+      manager.register(plugin);
+    } catch (_e) {
+      // logger.debug(`[Plugins] Failed to load "${plugin.name}":`, e.message);
     }
-    // logger.info(`[Plugins] Loaded ${BUILTIN_PLUGINS.length} built-in plugins`);
+  }
+  // logger.info(`[Plugins] Loaded ${BUILTIN_PLUGINS.length} built-in plugins`);
 }
 
 /**
@@ -48,7 +45,7 @@ export function loadBuiltinPlugins() {
  * @returns {import('./manager.js').PluginManager}
  */
 export function getPluginManager() {
-    return getPlugins();
+  return getPlugins();
 }
 
 /**
@@ -57,7 +54,7 @@ export function getPluginManager() {
  * @returns {import('./manager.js').PluginManager}
  */
 export function registerPlugin(plugin) {
-    return getPlugins().register(plugin);
+  return getPlugins().register(plugin);
 }
 
 /**
@@ -66,7 +63,7 @@ export function registerPlugin(plugin) {
  * @returns {import('./manager.js').PluginManager}
  */
 export function unregisterPlugin(name) {
-    return getPlugins().unregister(name);
+  return getPlugins().unregister(name);
 }
 
 /**
@@ -75,7 +72,7 @@ export function unregisterPlugin(name) {
  * @returns {import('./manager.js').PluginManager}
  */
 export function enablePlugin(name) {
-    return getPlugins().enable(name);
+  return getPlugins().enable(name);
 }
 
 /**
@@ -84,7 +81,7 @@ export function enablePlugin(name) {
  * @returns {import('./manager.js').PluginManager}
  */
 export function disablePlugin(name) {
-    return getPlugins().disable(name);
+  return getPlugins().disable(name);
 }
 
 /**
@@ -92,7 +89,7 @@ export function disablePlugin(name) {
  * @returns {string[]}
  */
 export function listPlugins() {
-    return getPlugins().list();
+  return getPlugins().list();
 }
 
 /**
@@ -100,18 +97,18 @@ export function listPlugins() {
  * @returns {string[]}
  */
 export function listEnabledPlugins() {
-    return getPlugins().listEnabled();
+  return getPlugins().listEnabled();
 }
 
 export { BasePlugin };
 
 export default {
-    loadBuiltinPlugins,
-    getPluginManager,
-    registerPlugin,
-    unregisterPlugin,
-    enablePlugin,
-    disablePlugin,
-    listPlugins,
-    listEnabledPlugins,
+  loadBuiltinPlugins,
+  getPluginManager,
+  registerPlugin,
+  unregisterPlugin,
+  enablePlugin,
+  disablePlugin,
+  listPlugins,
+  listEnabledPlugins,
 };

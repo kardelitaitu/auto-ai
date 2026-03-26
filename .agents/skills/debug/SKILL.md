@@ -1,15 +1,15 @@
 ---
 name: debug
 description: |
-  Debugging, troubleshooting, and problem diagnosis for the Auto-AI framework.
-  Use when investigating errors, analyzing logs, diagnosing browser automation issues,
-  troubleshooting session problems, or fixing code bugs.
-  Triggers on tasks involving error investigation, log analysis, stack trace parsing,
-  crash diagnosis, or performance troubleshooting.
+    Debugging, troubleshooting, and problem diagnosis for the Auto-AI framework.
+    Use when investigating errors, analyzing logs, diagnosing browser automation issues,
+    troubleshooting session problems, or fixing code bugs.
+    Triggers on tasks involving error investigation, log analysis, stack trace parsing,
+    crash diagnosis, or performance troubleshooting.
 license: MIT
 metadata:
-  author: Auto-AI Framework
-  version: '1.0.0'
+    author: Auto-AI Framework
+    version: '1.0.0'
 ---
 
 # Debugging Skill
@@ -68,17 +68,17 @@ node -e "console.log(process.memoryUsage())"
 
 async function debugBrowserDiscovery() {
     const diagnostics = {
-        checks: []
+        checks: [],
     };
-    
+
     // Check 1: Are browser processes running?
     const browserProcesses = await checkProcesses(['chrome', 'ixbrowser', 'brave']);
     diagnostics.checks.push({
         name: 'Browser Process',
         status: browserProcesses.length > 0 ? 'PASS' : 'FAIL',
-        details: `Found ${browserProcesses.length} browser processes`
+        details: `Found ${browserProcesses.length} browser processes`,
     });
-    
+
     // Check 2: Are debug ports open?
     const ports = [9222, 9223, 18800, 18801];
     for (const port of ports) {
@@ -86,26 +86,26 @@ async function debugBrowserDiscovery() {
         diagnostics.checks.push({
             name: `Port ${port}`,
             status: isOpen ? 'OPEN' : 'CLOSED',
-            details: isOpen ? 'Accepting connections' : 'Not listening'
+            details: isOpen ? 'Accepting connections' : 'Not listening',
         });
     }
-    
+
     // Check 3: Can we connect via CDP?
     try {
         const response = await fetch('http://localhost:9222/json');
         diagnostics.checks.push({
             name: 'CDP Connection',
             status: 'PASS',
-            details: `Response: ${response.status}`
+            details: `Response: ${response.status}`,
         });
     } catch (e) {
         diagnostics.checks.push({
             name: 'CDP Connection',
             status: 'FAIL',
-            details: e.message
+            details: e.message,
         });
     }
-    
+
     return diagnostics;
 }
 
@@ -131,17 +131,17 @@ async function checkPort(port) {
 
 async function debugSessionIssues(session) {
     const issues = [];
-    
+
     // Check browser connection state
     if (!session.browser.isConnected()) {
         issues.push({
             type: 'DISCONNECTED',
             severity: 'CRITICAL',
             message: 'Browser instance is disconnected',
-            fix: 'Restart browser and re-discover'
+            fix: 'Restart browser and re-discover',
         });
     }
-    
+
     // Check for orphaned pages
     const contexts = session.browser.contexts();
     for (const context of contexts) {
@@ -152,12 +152,12 @@ async function debugSessionIssues(session) {
                     type: 'CLOSED_PAGE',
                     severity: 'WARN',
                     message: 'Found closed page in context',
-                    fix: 'Remove closed pages from tracking'
+                    fix: 'Remove closed pages from tracking',
                 });
             }
         }
     }
-    
+
     // Check memory usage
     const memUsage = process.memoryUsage();
     if (memUsage.heapUsed > memUsage.heapTotal * 0.8) {
@@ -165,10 +165,10 @@ async function debugSessionIssues(session) {
             type: 'HIGH_MEMORY',
             severity: 'WARN',
             message: `Heap usage: ${(memUsage.heapUsed / 1024 / 1024).toFixed(2)}MB`,
-            fix: 'Consider garbage collection or reducing concurrent sessions'
+            fix: 'Consider garbage collection or reducing concurrent sessions',
         });
     }
-    
+
     return issues;
 }
 ```
@@ -184,9 +184,9 @@ async function debugTaskExecution(task, error) {
         payload: task.payload,
         error: error.message,
         stack: error.stack,
-        suggestions: []
+        suggestions: [],
     };
-    
+
     // Analyze error type
     if (error.message.includes('timeout')) {
         analysis.suggestions.push({
@@ -194,11 +194,11 @@ async function debugTaskExecution(task, error) {
             fixes: [
                 'Increase taskTimeout in settings.json',
                 'Check if page is loading correctly',
-                'Verify network connectivity'
-            ]
+                'Verify network connectivity',
+            ],
         });
     }
-    
+
     if (error.message.includes('selector')) {
         analysis.suggestions.push({
             cause: 'Element not found on page',
@@ -206,11 +206,11 @@ async function debugTaskExecution(task, error) {
                 'Verify selector is correct',
                 'Add wait before action',
                 'Check if page structure changed',
-                'Use api.waitVisible() before click'
-            ]
+                'Use api.waitVisible() before click',
+            ],
         });
     }
-    
+
     if (error.message.includes('navigation')) {
         analysis.suggestions.push({
             cause: 'Page navigation failed',
@@ -218,11 +218,11 @@ async function debugTaskExecution(task, error) {
                 'Check URL is valid',
                 'Verify network connectivity',
                 'Check for redirect loops',
-                'Increase navigation timeout'
-            ]
+                'Increase navigation timeout',
+            ],
         });
     }
-    
+
     if (error.message.includes('disconnected') || error.message.includes('Target closed')) {
         analysis.suggestions.push({
             cause: 'Browser or page disconnected',
@@ -230,11 +230,11 @@ async function debugTaskExecution(task, error) {
                 'Check browser process is running',
                 'Verify CDP connection is stable',
                 'Reduce concurrent sessions',
-                'Add reconnection logic'
-            ]
+                'Add reconnection logic',
+            ],
         });
     }
-    
+
     return analysis;
 }
 ```
@@ -245,40 +245,37 @@ async function debugTaskExecution(task, error) {
 
 ```javascript
 async function parseAutoAILogs(logPath, options = {}) {
-    const { 
-        tailLines = 1000, 
-        level = null,
-        component = null 
-    } = options;
-    
+    const { tailLines = 1000, level = null, component = null } = options;
+
     const logs = await Desktop_Commander_read_file(logPath, {
-        offset: -tailLines
+        offset: -tailLines,
     });
-    
+
     const lines = logs.split('\n');
     const parsed = {
         errors: [],
         warnings: [],
         info: [],
-        debug: []
+        debug: [],
     };
-    
+
     // Log pattern: [timestamp] [level] [component] message
-    const logPattern = /\[(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2})\]\s*\[(\w+)\]\s*\[([^\]]+)\]\s*(.*)/;
-    
+    const logPattern =
+        /\[(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2})\]\s*\[(\w+)\]\s*\[([^\]]+)\]\s*(.*)/;
+
     for (const line of lines) {
         const match = line.match(logPattern);
         if (match) {
             const [, timestamp, logLevel, comp, message] = match;
-            
+
             // Filter by level if specified
             if (level && logLevel.toUpperCase() !== level.toUpperCase()) continue;
-            
+
             // Filter by component if specified
             if (component && !comp.toLowerCase().includes(component.toLowerCase())) continue;
-            
+
             const entry = { timestamp, level: logLevel, component: comp, message };
-            
+
             switch (logLevel.toUpperCase()) {
                 case 'ERROR':
                 case 'FATAL':
@@ -297,15 +294,15 @@ async function parseAutoAILogs(logPath, options = {}) {
             }
         }
     }
-    
+
     return {
         summary: {
             errors: parsed.errors.length,
             warnings: parsed.warnings.length,
             info: parsed.info.length,
-            debug: parsed.debug.length
+            debug: parsed.debug.length,
         },
-        ...parsed
+        ...parsed,
     };
 }
 ```
@@ -315,40 +312,40 @@ async function parseAutoAILogs(logPath, options = {}) {
 ```javascript
 async function detectErrorPatterns(logPath) {
     const logs = await Desktop_Commander_read_file(logPath, {
-        offset: -5000
+        offset: -5000,
     });
-    
+
     const errorPatterns = {
         'Session Disconnected': /session.*disconnected|browser.*disconnected|target.*closed/i,
-        'Timeout': /timeout|timed out|exceeded.*timeout/i,
+        Timeout: /timeout|timed out|exceeded.*timeout/i,
         'Element Not Found': /element.*not found|selector.*not found|no.*element/i,
         'Navigation Failed': /navigation.*failed|failed.*navigate|net::ERR/i,
         'Permission Denied': /permission denied|EACCES|unauthorized/i,
         'Memory Error': /out of memory|heap.*limit|ENOMEM/i,
         'Network Error': /ECONNREFUSED|ECONNRESET|network.*error/i,
-        'LLM Error': /llm.*error|openrouter.*error|model.*error/i
+        'LLM Error': /llm.*error|openrouter.*error|model.*error/i,
     };
-    
+
     const patterns = {};
     const lines = logs.split('\n');
-    
+
     for (const [patternName, regex] of Object.entries(errorPatterns)) {
-        const matches = lines.filter(line => regex.test(line));
+        const matches = lines.filter((line) => regex.test(line));
         if (matches.length > 0) {
             patterns[patternName] = {
                 count: matches.length,
                 examples: matches.slice(0, 3),
                 firstOccurrence: findTimestamp(matches[0]),
-                lastOccurrence: findTimestamp(matches[matches.length - 1])
+                lastOccurrence: findTimestamp(matches[matches.length - 1]),
             };
         }
     }
-    
+
     // Sort by frequency
     const sorted = Object.entries(patterns)
         .sort((a, b) => b[1].count - a[1].count)
         .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {});
-    
+
     return sorted;
 }
 ```
@@ -361,10 +358,10 @@ async function detectErrorPatterns(logPath) {
 function parseNodeStack(stack) {
     const frames = [];
     const lines = stack.split('\n');
-    
+
     // Pattern: at Function (file:line:column)
     const pattern = /at\s+(?:(.+?)\s+\()?(?:(.+?):(\d+)(?::(\d+))?)\)?/;
-    
+
     for (const line of lines) {
         const match = line.match(pattern);
         if (match) {
@@ -375,17 +372,17 @@ function parseNodeStack(stack) {
                 line: parseInt(lineNum) || 0,
                 column: parseInt(col) || 0,
                 isInternal: file?.includes('node:') || file?.includes('node_modules'),
-                raw: line.trim()
+                raw: line.trim(),
             });
         }
     }
-    
+
     return {
         totalFrames: frames.length,
-        internalFrames: frames.filter(f => f.isInternal).length,
-        appFrames: frames.filter(f => !f.isInternal).length,
+        internalFrames: frames.filter((f) => f.isInternal).length,
+        appFrames: frames.filter((f) => !f.isInternal).length,
         frames,
-        rootCause: frames.find(f => !f.isInternal) || frames[0]
+        rootCause: frames.find((f) => !f.isInternal) || frames[0],
     };
 }
 ```
@@ -395,31 +392,31 @@ function parseNodeStack(stack) {
 ```javascript
 async function extractErrorContext(stackAnalysis, sourceDir = null) {
     const context = [];
-    
-    for (const frame of stackAnalysis.frames.filter(f => !f.isInternal)) {
+
+    for (const frame of stackAnalysis.frames.filter((f) => !f.isInternal)) {
         if (frame.line > 0) {
             try {
                 const filePath = sourceDir ? `${sourceDir}/${frame.file}` : frame.file;
                 const startLine = Math.max(0, frame.line - 5);
-                
+
                 const code = await Desktop_Commander_read_file(filePath, {
                     offset: startLine,
-                    length: 11
+                    length: 11,
                 });
-                
+
                 context.push({
                     file: frame.file,
                     function: frame.function,
                     line: frame.line,
                     code: code,
-                    highlightLine: 6 // The error line in our 11-line window
+                    highlightLine: 6, // The error line in our 11-line window
                 });
             } catch (e) {
                 // File not found or unreadable
             }
         }
     }
-    
+
     return context;
 }
 ```
@@ -434,44 +431,43 @@ async function captureDebugState(page) {
         url: page.url(),
         title: await page.title(),
         viewport: page.viewportSize(),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     };
-    
+
     try {
         // Capture screenshot
         state.screenshot = await page.screenshot({
             type: 'jpeg',
-            quality: 80
+            quality: 80,
         });
-        
+
         // Capture console logs
         state.consoleLogs = [];
-        page.on('console', msg => {
+        page.on('console', (msg) => {
             state.consoleLogs.push({
                 type: msg.type(),
-                text: msg.text()
+                text: msg.text(),
             });
         });
-        
+
         // Capture network failures
         state.networkErrors = [];
-        page.on('requestfailed', request => {
+        page.on('requestfailed', (request) => {
             state.networkErrors.push({
                 url: request.url(),
-                error: request.failure()?.errorText
+                error: request.failure()?.errorText,
             });
         });
-        
+
         // Get page metrics
         state.metrics = await page.metrics();
-        
+
         // Get accessibility tree
         state.accessibility = await page.accessibility.snapshot();
-        
     } catch (e) {
         state.captureError = e.message;
     }
-    
+
     return state;
 }
 ```
@@ -482,48 +478,47 @@ async function captureDebugState(page) {
 async function debugElement(page, selector) {
     const debug = {
         selector,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     };
-    
+
     try {
         // Check if element exists
-        debug.exists = await page.locator(selector).count() > 0;
-        
+        debug.exists = (await page.locator(selector).count()) > 0;
+
         if (debug.exists) {
             const element = page.locator(selector).first();
-            
+
             // Get element properties
             debug.boundingBox = await element.boundingBox();
             debug.isVisible = await element.isVisible();
             debug.isEnabled = await element.isEnabled();
             debug.text = await element.textContent();
-            debug.attributes = await element.evaluate(el => {
+            debug.attributes = await element.evaluate((el) => {
                 const attrs = {};
                 for (const attr of el.attributes) {
                     attrs[attr.name] = attr.value;
                 }
                 return attrs;
             });
-            
+
             // Check if element is in viewport
             debug.inViewport = await element.isInViewport();
-            
+
             // Get computed styles
-            debug.styles = await element.evaluate(el => {
+            debug.styles = await element.evaluate((el) => {
                 const computed = window.getComputedStyle(el);
                 return {
                     display: computed.display,
                     visibility: computed.visibility,
                     opacity: computed.opacity,
-                    position: computed.position
+                    position: computed.position,
                 };
             });
         }
-        
     } catch (e) {
         debug.error = e.message;
     }
-    
+
     return debug;
 }
 ```
@@ -537,9 +532,9 @@ async function debugAgentExecution(agentResult) {
     const debug = {
         success: agentResult.success,
         steps: agentResult.steps || [],
-        errors: []
+        errors: [],
     };
-    
+
     // Analyze each step
     for (const step of debug.steps) {
         if (step.error) {
@@ -547,27 +542,27 @@ async function debugAgentExecution(agentResult) {
                 step: step.action,
                 error: step.error,
                 timestamp: step.timestamp,
-                context: step.context
+                context: step.context,
             });
         }
     }
-    
+
     // Check for common agent issues
     if (debug.steps.length === 0) {
         debug.issues = ['Agent took no steps - check goal parsing'];
     } else if (debug.steps.length > 50) {
         debug.issues = ['Agent took many steps - may be stuck in a loop'];
     }
-    
+
     // Analyze LLM calls
     if (agentResult.llmCalls) {
         debug.llmStats = {
             totalCalls: agentResult.llmCalls.length,
-            averageResponseTime: average(agentResult.llmCalls.map(c => c.duration)),
-            errors: agentResult.llmCalls.filter(c => c.error).length
+            averageResponseTime: average(agentResult.llmCalls.map((c) => c.duration)),
+            errors: agentResult.llmCalls.filter((c) => c.error).length,
         };
     }
-    
+
     return debug;
 }
 ```
@@ -580,16 +575,16 @@ async function debugLLMResponse(response, expectedFormat = null) {
         raw: response,
         parsed: null,
         valid: false,
-        issues: []
+        issues: [],
     };
-    
+
     try {
         // Try to parse as JSON
         debug.parsed = JSON.parse(response);
         debug.valid = true;
     } catch (e) {
         debug.issues.push('Response is not valid JSON');
-        
+
         // Try to extract JSON from response
         const jsonMatch = response.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
@@ -602,7 +597,7 @@ async function debugLLMResponse(response, expectedFormat = null) {
             }
         }
     }
-    
+
     // Validate against expected format
     if (expectedFormat && debug.parsed) {
         for (const field of expectedFormat) {
@@ -611,7 +606,7 @@ async function debugLLMResponse(response, expectedFormat = null) {
             }
         }
     }
-    
+
     return debug;
 }
 ```
@@ -625,60 +620,60 @@ async function profileTaskExecution(taskFn) {
     const profile = {
         startTime: Date.now(),
         checkpoints: [],
-        memory: []
+        memory: [],
     };
-    
+
     // Setup memory tracking
     const memoryInterval = setInterval(() => {
         profile.memory.push({
             time: Date.now() - profile.startTime,
             heapUsed: process.memoryUsage().heapUsed,
-            heapTotal: process.memoryUsage().heapTotal
+            heapTotal: process.memoryUsage().heapTotal,
         });
     }, 1000);
-    
+
     // Checkpoint helper
     const checkpoint = (name) => {
         profile.checkpoints.push({
             name,
             time: Date.now() - profile.startTime,
-            memory: process.memoryUsage().heapUsed
+            memory: process.memoryUsage().heapUsed,
         });
     };
-    
+
     try {
         // Execute task with checkpointing
         checkpoint('start');
         const result = await taskFn(checkpoint);
         checkpoint('complete');
-        
+
         profile.success = true;
         profile.result = result;
         profile.duration = Date.now() - profile.startTime;
-        
     } catch (error) {
         checkpoint('error');
         profile.success = false;
         profile.error = error;
         profile.duration = Date.now() - profile.startTime;
     }
-    
+
     clearInterval(memoryInterval);
-    
+
     // Analyze profile
     profile.analysis = {
         totalTime: profile.duration,
         timeBetweenCheckpoints: profile.checkpoints.map((cp, i, arr) => ({
-            from: arr[i-1]?.name || 'start',
+            from: arr[i - 1]?.name || 'start',
             to: cp.name,
-            duration: cp.time - (arr[i-1]?.time || 0)
+            duration: cp.time - (arr[i - 1]?.time || 0),
         })),
-        peakMemory: Math.max(...profile.memory.map(m => m.heapUsed)),
-        memoryGrowth: profile.memory.length > 1 
-            ? profile.memory[profile.memory.length - 1].heapUsed - profile.memory[0].heapUsed 
-            : 0
+        peakMemory: Math.max(...profile.memory.map((m) => m.heapUsed)),
+        memoryGrowth:
+            profile.memory.length > 1
+                ? profile.memory[profile.memory.length - 1].heapUsed - profile.memory[0].heapUsed
+                : 0,
     };
-    
+
     return profile;
 }
 ```
@@ -691,19 +686,26 @@ async function profileTaskExecution(taskFn) {
 async function saveDebugSnapshot(data, name) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const filename = `debug/${name}-${timestamp}.json`;
-    
-    await Desktop_Commander_write_file(filename, JSON.stringify({
-        timestamp: new Date().toISOString(),
-        name,
-        data,
-        environment: {
-            nodeVersion: process.version,
-            platform: process.platform,
-            memory: process.memoryUsage(),
-            uptime: process.uptime()
-        }
-    }, null, 2));
-    
+
+    await Desktop_Commander_write_file(
+        filename,
+        JSON.stringify(
+            {
+                timestamp: new Date().toISOString(),
+                name,
+                data,
+                environment: {
+                    nodeVersion: process.version,
+                    platform: process.platform,
+                    memory: process.memoryUsage(),
+                    uptime: process.uptime(),
+                },
+            },
+            null,
+            2
+        )
+    );
+
     return filename;
 }
 ```
@@ -713,30 +715,27 @@ async function saveDebugSnapshot(data, name) {
 ```javascript
 function compareStates(state1, state2, ignoreFields = []) {
     const differences = [];
-    
-    const allKeys = new Set([
-        ...Object.keys(state1 || {}),
-        ...Object.keys(state2 || {})
-    ]);
-    
+
+    const allKeys = new Set([...Object.keys(state1 || {}), ...Object.keys(state2 || {})]);
+
     for (const key of allKeys) {
         if (ignoreFields.includes(key)) continue;
-        
+
         const val1 = state1?.[key];
         const val2 = state2?.[key];
-        
+
         if (JSON.stringify(val1) !== JSON.stringify(val2)) {
             differences.push({
                 field: key,
                 before: val1,
-                after: val2
+                after: val2,
             });
         }
     }
-    
+
     return {
         identical: differences.length === 0,
-        differences
+        differences,
     };
 }
 ```
@@ -744,12 +743,14 @@ function compareStates(state1, state2, ignoreFields = []) {
 ## Debugging Checklist
 
 ### Before Debugging
+
 - [ ] Reproduce the issue consistently
 - [ ] Note the exact error message
 - [ ] Identify what changed recently
 - [ ] Gather relevant logs
 
 ### During Debugging
+
 - [ ] Read error messages carefully
 - [ ] Check the stack trace
 - [ ] Look for patterns in logs
@@ -757,6 +758,7 @@ function compareStates(state1, state2, ignoreFields = []) {
 - [ ] Use debug snapshots
 
 ### After Fixing
+
 - [ ] Verify the fix works
 - [ ] Check for side effects
 - [ ] Document the root cause
@@ -765,15 +767,15 @@ function compareStates(state1, state2, ignoreFields = []) {
 
 ## Common Fixes
 
-| Issue | Quick Fix |
-|-------|-----------|
-| No browsers found | Check browser processes and ports |
-| Session disconnected | Re-discover and get new session |
-| Element not found | Add `api.waitVisible()` before action |
-| Timeout errors | Increase timeout in settings |
-| LLM errors | Check API key and model availability |
-| Memory issues | Reduce concurrent sessions |
-| Port conflicts | Check for existing processes on port |
+| Issue                | Quick Fix                             |
+| -------------------- | ------------------------------------- |
+| No browsers found    | Check browser processes and ports     |
+| Session disconnected | Re-discover and get new session       |
+| Element not found    | Add `api.waitVisible()` before action |
+| Timeout errors       | Increase timeout in settings          |
+| LLM errors           | Check API key and model availability  |
+| Memory issues        | Reduce concurrent sessions            |
+| Port conflicts       | Check for existing processes on port  |
 
 ## Debug Environment Setup
 

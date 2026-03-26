@@ -50,6 +50,7 @@ vprepConfig: {
 ```
 
 **Tuning Tips:**
+
 - Increase `targetWidth` for better accuracy (slower)
 - Decrease `targetWidth` for faster processing (less accurate)
 - Increase `contrast` if tiles are hard to distinguish
@@ -70,6 +71,7 @@ LLM_CONFIG: {
 ```
 
 **Tuning Tips:**
+
 - Use `gemma3:4b` for reliable JSON output
 - Use `qwen2.5vl:3b` for better vision (but less reliable JSON)
 - Increase `maxTokens` for complex prompts
@@ -81,10 +83,11 @@ In prompt files, adjust margin values:
 
 ```javascript
 // In state-*.js files
-formatCoordinateConstraints(vprepWidth, vprepHeight, 50) // 50px margin
+formatCoordinateConstraints(vprepWidth, vprepHeight, 50); // 50px margin
 ```
 
 **Tuning Tips:**
+
 - Increase margin if clicks are near edges
 - Decrease margin to allow more click area
 - Typical range: 30-70 pixels
@@ -96,17 +99,20 @@ formatCoordinateConstraints(vprepWidth, vprepHeight, 50) // 50px margin
 ### State A: Free Territory
 
 **Common Issues:**
+
 - LLM returns wrong coordinates
 - LLM clicks on grey tiles without numbers
 - LLM clicks on red tiles
 
 **Tuning:**
+
 1. Check visual guide in `prompts/base/visual-guide.js`
 2. Update color definitions if game colors changed
 3. Adjust price number examples in prompt
 4. Increase margin if clicks are off-center
 
 **Example Adjustment:**
+
 ```javascript
 // In prompts/states/state-a.js
 // Add more specific visual descriptions
@@ -120,10 +126,12 @@ GREY TILES WITH NUMBER (TARGET):
 ### State B: Enemy Territory
 
 **Common Issues:**
+
 - LLM doesn't find red tiles
 - LLM clicks on blue tiles instead
 
 **Tuning:**
+
 1. Verify red color definition matches game
 2. Add more specific adjacency rules
 3. Adjust confidence threshold
@@ -131,10 +139,12 @@ GREY TILES WITH NUMBER (TARGET):
 ### State C: Own Territory
 
 **Common Issues:**
+
 - LLM clicks on tiles with buildings
 - LLM doesn't find empty tiles
 
 **Tuning:**
+
 1. Clarify "empty" vs "occupied" distinction
 2. Add building icon descriptions
 3. Adjust targeting preference (edge vs center)
@@ -142,10 +152,12 @@ GREY TILES WITH NUMBER (TARGET):
 ### State D: Building Menu
 
 **Common Issues:**
+
 - LLM doesn't recognize upgrade button
 - LLM clicks wrong area
 
 **Tuning:**
+
 1. Add more specific button location hints
 2. Include cost number in detection
 3. Adjust close menu coordinates
@@ -153,10 +165,12 @@ GREY TILES WITH NUMBER (TARGET):
 ### State E: Build Options
 
 **Common Issues:**
+
 - LLM selects wrong building
 - LLM can't distinguish the three options
 
 **Tuning:**
+
 1. Add position hints (left/center/right)
 2. Include icon descriptions
 3. Adjust strategy logic
@@ -178,6 +192,7 @@ node qwen-tester.js
 ### Debug Screenshots
 
 Check `logs/debug-*.png` files to see:
+
 - What the LLM sees (V-PREP output)
 - Where the LLM clicked
 - Result of the action
@@ -185,6 +200,7 @@ Check `logs/debug-*.png` files to see:
 ### Validation Metrics
 
 Track these metrics in logs:
+
 - Detection accuracy (correct state identified)
 - Action success rate (click hit target)
 - Response time (LLM inference duration)
@@ -196,10 +212,12 @@ Track these metrics in logs:
 ### Scenario 1: LLM Returns Wrong Coordinates
 
 **Symptoms:**
+
 - Clicks are outside valid area
 - Clicks miss the target
 
 **Solutions:**
+
 1. Check V-PREP output dimensions
 2. Verify coordinate scaling factor
 3. Increase coordinate margins
@@ -208,10 +226,12 @@ Track these metrics in logs:
 ### Scenario 2: State Detection Fails
 
 **Symptoms:**
+
 - Wrong state detected
 - Low confidence scores
 
 **Solutions:**
+
 1. Update visual descriptions
 2. Add more detection criteria
 3. Adjust confidence threshold
@@ -220,11 +240,13 @@ Track these metrics in logs:
 ### Scenario 3: LLM Ignores Instructions
 
 **Symptoms:**
+
 - Returns wrong JSON format
 - Includes extra text
 - Missing required fields
 
 **Solutions:**
+
 1. Simplify prompt
 2. Add more explicit output format
 3. Use XML delimiters
@@ -236,14 +258,14 @@ Track these metrics in logs:
 
 Available variables in state prompts:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `vprepWidth` | V-PREP image width | 640 |
-| `vprepHeight` | V-PREP image height | 360 |
-| `viewportWidth` | Browser viewport width | 1280 |
-| `viewportHeight` | Browser viewport height | 720 |
-| `gold` | Current gold amount | 180 |
-| `strategy` | Building strategy | 'balanced' |
+| Variable         | Description             | Example    |
+| ---------------- | ----------------------- | ---------- |
+| `vprepWidth`     | V-PREP image width      | 640        |
+| `vprepHeight`    | V-PREP image height     | 360        |
+| `viewportWidth`  | Browser viewport width  | 1280       |
+| `viewportHeight` | Browser viewport height | 720        |
+| `gold`           | Current gold amount     | 180        |
+| `strategy`       | Building strategy       | 'balanced' |
 
 ---
 
@@ -262,16 +284,19 @@ Available variables in state prompts:
 ## Troubleshooting
 
 ### LLM Returns Empty Response
+
 - Check image is being sent
 - Verify model is running
 - Check token limits
 
 ### Coordinates Out of Bounds
+
 - Verify V-PREP dimensions
 - Check scaling factor calculation
 - Add explicit bounds in prompt
 
 ### State Always Detected as A
+
 - Check other state prompts
 - Verify visual differences
 - Adjust detection criteria

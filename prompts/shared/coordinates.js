@@ -14,15 +14,19 @@
  * @param {number} options.viewportHeight - Browser viewport height
  * @returns {object} Scaled coordinates {x, y}
  */
-export function scaleToViewport(x, y, { vprepWidth, vprepHeight, viewportWidth, viewportHeight }) {
-    const scaleX = viewportWidth / vprepWidth;
-    const scaleY = viewportHeight / vprepHeight;
+export function scaleToViewport(
+  x,
+  y,
+  { vprepWidth, vprepHeight, viewportWidth, viewportHeight },
+) {
+  const scaleX = viewportWidth / vprepWidth;
+  const scaleY = viewportHeight / vprepHeight;
 
-    return {
-        x: Math.round(x * scaleX),
-        y: Math.round(y * scaleY),
-        scale: { x: scaleX, y: scaleY }
-    };
+  return {
+    x: Math.round(x * scaleX),
+    y: Math.round(y * scaleY),
+    scale: { x: scaleX, y: scaleY },
+  };
 }
 
 /**
@@ -32,15 +36,19 @@ export function scaleToViewport(x, y, { vprepWidth, vprepHeight, viewportWidth, 
  * @param {object} options - Scaling options
  * @returns {object} Scaled coordinates {x, y}
  */
-export function scaleToVPrep(x, y, { vprepWidth, vprepHeight, viewportWidth, viewportHeight }) {
-    const scaleX = vprepWidth / viewportWidth;
-    const scaleY = vprepHeight / viewportHeight;
+export function scaleToVPrep(
+  x,
+  y,
+  { vprepWidth, vprepHeight, viewportWidth, viewportHeight },
+) {
+  const scaleX = vprepWidth / viewportWidth;
+  const scaleY = vprepHeight / viewportHeight;
 
-    return {
-        x: Math.round(x * scaleX),
-        y: Math.round(y * scaleY),
-        scale: { x: scaleX, y: scaleY }
-    };
+  return {
+    x: Math.round(x * scaleX),
+    y: Math.round(y * scaleY),
+    scale: { x: scaleX, y: scaleY },
+  };
 }
 
 /**
@@ -54,19 +62,19 @@ export function scaleToVPrep(x, y, { vprepWidth, vprepHeight, viewportWidth, vie
  * @returns {boolean} True if valid
  */
 export function validateCoordinates(x, y, { width, height, margin = 10 }) {
-    if (typeof x !== 'number' || typeof y !== 'number') {
-        return false;
-    }
-    if (isNaN(x) || isNaN(y)) {
-        return false;
-    }
-    if (x < margin || x > width - margin) {
-        return false;
-    }
-    if (y < margin || y > height - margin) {
-        return false;
-    }
-    return true;
+  if (typeof x !== "number" || typeof y !== "number") {
+    return false;
+  }
+  if (isNaN(x) || isNaN(y)) {
+    return false;
+  }
+  if (x < margin || x > width - margin) {
+    return false;
+  }
+  if (y < margin || y > height - margin) {
+    return false;
+  }
+  return true;
 }
 
 /**
@@ -77,7 +85,7 @@ export function validateCoordinates(x, y, { width, height, margin = 10 }) {
  * @returns {string} Formatted coordinate constraints
  */
 export function formatCoordinateConstraints(width, height, margin = 50) {
-    return `
+  return `
 <COORDINATE CONSTRAINTS>
 - Image size: ${width}x${height} pixels
 - Valid x range: ${margin} to ${width - margin}
@@ -93,35 +101,43 @@ export function formatCoordinateConstraints(width, height, margin = 50) {
  * @returns {object|null} Parsed coordinates {x, y} or null
  */
 export function parseCoordinates(llmResult) {
-    if (!llmResult) return null;
+  if (!llmResult) return null;
 
-    // Direct x,y properties
-    if (llmResult.x !== undefined && llmResult.y !== undefined) {
-        return { x: llmResult.x, y: llmResult.y };
+  // Direct x,y properties
+  if (llmResult.x !== undefined && llmResult.y !== undefined) {
+    return { x: llmResult.x, y: llmResult.y };
+  }
+
+  // Array format [{x, y}]
+  if (Array.isArray(llmResult) && llmResult.length > 0) {
+    const first = llmResult[0];
+    if (first.x !== undefined && first.y !== undefined) {
+      return { x: first.x, y: first.y };
     }
+  }
 
-    // Array format [{x, y}]
-    if (Array.isArray(llmResult) && llmResult.length > 0) {
-        const first = llmResult[0];
-        if (first.x !== undefined && first.y !== undefined) {
-            return { x: first.x, y: first.y };
-        }
+  // Coordinates array format {coordinates: [{x, y}]}
+  if (
+    llmResult.coordinates &&
+    Array.isArray(llmResult.coordinates) &&
+    llmResult.coordinates.length > 0
+  ) {
+    const first = llmResult.coordinates[0];
+    if (first.x !== undefined && first.y !== undefined) {
+      return { x: first.x, y: first.y };
     }
+  }
 
-    // Coordinates array format {coordinates: [{x, y}]}
-    if (llmResult.coordinates && Array.isArray(llmResult.coordinates) && llmResult.coordinates.length > 0) {
-        const first = llmResult.coordinates[0];
-        if (first.x !== undefined && first.y !== undefined) {
-            return { x: first.x, y: first.y };
-        }
-    }
+  // Action format {action: 'clickAt', x, y}
+  if (
+    llmResult.action === "clickAt" &&
+    llmResult.x !== undefined &&
+    llmResult.y !== undefined
+  ) {
+    return { x: llmResult.x, y: llmResult.y };
+  }
 
-    // Action format {action: 'clickAt', x, y}
-    if (llmResult.action === 'clickAt' && llmResult.x !== undefined && llmResult.y !== undefined) {
-        return { x: llmResult.x, y: llmResult.y };
-    }
-
-    return null;
+  return null;
 }
 
 /**
@@ -133,7 +149,7 @@ export function parseCoordinates(llmResult) {
  * @returns {number} Distance in pixels
  */
 export function calculateDistance(x1, y1, x2, y2) {
-    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
 /**
@@ -143,18 +159,18 @@ export function calculateDistance(x1, y1, x2, y2) {
  * @returns {object} Center coordinates {x, y}
  */
 export function getImageCenter(width, height) {
-    return {
-        x: Math.round(width / 2),
-        y: Math.round(height / 2)
-    };
+  return {
+    x: Math.round(width / 2),
+    y: Math.round(height / 2),
+  };
 }
 
 export default {
-    scaleToViewport,
-    scaleToVPrep,
-    validateCoordinates,
-    formatCoordinateConstraints,
-    parseCoordinates,
-    calculateDistance,
-    getImageCenter
+  scaleToViewport,
+  scaleToVPrep,
+  validateCoordinates,
+  formatCoordinateConstraints,
+  parseCoordinates,
+  calculateDistance,
+  getImageCenter,
 };

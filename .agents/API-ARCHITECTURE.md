@@ -55,7 +55,7 @@ main.js → Orchestrator.addTask()
 
 ```javascript
 // tasks/example.js
-export default async function(page, payload) {
+export default async function (page, payload) {
     try {
         // Use api for all interactions
         await api.withPage(page, async () => {
@@ -159,13 +159,13 @@ Actions pass through a composable middleware stack:
 ```javascript
 // api/core/middleware.js
 const pipeline = [
-    validateInput,      // Check parameters
-    preAction,          // Before action hooks
-    humanizeTiming,     // Add realistic delays
-    executeAction,      // Perform the action
-    verifyAction,       // Confirm it worked
-    postAction,         // After action hooks
-    logResult           // Record for debugging
+    validateInput, // Check parameters
+    preAction, // Before action hooks
+    humanizeTiming, // Add realistic delays
+    executeAction, // Perform the action
+    verifyAction, // Confirm it worked
+    postAction, // After action hooks
+    logResult, // Record for debugging
 ];
 ```
 
@@ -176,17 +176,20 @@ const pipeline = [
 All high-level actions use `executeWithRecovery`:
 
 ```javascript
-await executeWithRecovery(async () => {
-    await api.click('.dynamic-element');
-}, {
-    maxRetries: 3,
-    strategies: [
-        'same_action_retry',
-        'alternative_selector',
-        'wait_and_retry',
-        'scroll_and_retry'
-    ]
-});
+await executeWithRecovery(
+    async () => {
+        await api.click('.dynamic-element');
+    },
+    {
+        maxRetries: 3,
+        strategies: [
+            'same_action_retry',
+            'alternative_selector',
+            'wait_and_retry',
+            'scroll_and_retry',
+        ],
+    }
+);
 ```
 
 **Custom Error Types** (api/core/errors.js):
@@ -259,9 +262,9 @@ const page = await browser.newPage();
 await api.withPage(page, async () => {
     await api.init(page, {
         persona: 'focused',
-        humanizationPatch: true
+        humanizationPatch: true,
     });
-    
+
     await api.goto('https://example.com');
     await api.type('#input', 'hello');
     await api.click('#submit');
@@ -276,11 +279,11 @@ import { gameRunner } from './api/agent/gameRunner.js';
 
 await api.withPage(page, async () => {
     await api.init(page);
-    
+
     const result = await gameRunner.run('Train 5 units', {
         maxSteps: 50,
         stepDelay: 500,
-        stuckDetection: true
+        stuckDetection: true,
     });
 });
 ```
@@ -293,11 +296,11 @@ import { getPage } from '../core/context.js';
 import { actionEngine } from '../agent/actionEngine.js';
 
 export async function myAction(selector, options = {}) {
-    const page = getPage();  // Gets current context page
+    const page = getPage(); // Gets current context page
     await actionEngine.execute({
         type: 'custom',
         selector,
-        ...options
+        ...options,
     });
 }
 

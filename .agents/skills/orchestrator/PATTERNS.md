@@ -2,14 +2,14 @@
 
 ## Pattern Selection Guide
 
-| Pattern | Best For | Complexity | Example Use Case |
-|---------|----------|------------|------------------|
-| Supervisor | Central coordination | Medium | Task delegation to specialists |
-| Pipeline | Sequential processing | Low | Research → Code → Review |
-| Fan-Out/Fan-In | Parallel voting | Medium | Fact-checking with multiple agents |
-| Hierarchical | Complex tasks | High | Multi-level project breakdown |
-| Message Bus | Event-driven | Medium | Real-time agent communication |
-| Load Balancer | High throughput | Low | Distributing identical tasks |
+| Pattern        | Best For              | Complexity | Example Use Case                   |
+| -------------- | --------------------- | ---------- | ---------------------------------- |
+| Supervisor     | Central coordination  | Medium     | Task delegation to specialists     |
+| Pipeline       | Sequential processing | Low        | Research → Code → Review           |
+| Fan-Out/Fan-In | Parallel voting       | Medium     | Fact-checking with multiple agents |
+| Hierarchical   | Complex tasks         | High       | Multi-level project breakdown      |
+| Message Bus    | Event-driven          | Medium     | Real-time agent communication      |
+| Load Balancer  | High throughput       | Low        | Distributing identical tasks       |
 
 ---
 
@@ -20,21 +20,21 @@
 const supervisor = new SupervisorOrchestrator();
 
 // Register specialized agents
-supervisor.registerWorker('researcher', { 
+supervisor.registerWorker('researcher', {
     agent: researchAgent,
-    capabilities: ['web-search', 'summarization'] 
+    capabilities: ['web-search', 'summarization'],
 });
 
-supervisor.registerWorker('coder', { 
+supervisor.registerWorker('coder', {
     agent: codeAgent,
-    capabilities: ['javascript', 'python', 'debugging'] 
+    capabilities: ['javascript', 'python', 'debugging'],
 });
 
 // Delegate task
 const result = await supervisor.delegate({
     type: 'coding',
     requirements: ['javascript'],
-    description: 'Create a function to...'
+    description: 'Create a function to...',
 });
 ```
 
@@ -67,8 +67,8 @@ const fan = new FanOutFanInOrchestrator({
     combiner: (results, errors) => ({
         consensus: findConsensus(results),
         votes: results.length,
-        disagreements: errors.length
-    })
+        disagreements: errors.length,
+    }),
 });
 
 // Add multiple agents for voting
@@ -102,13 +102,13 @@ bus.subscribe('worker1', 'task', async (msg) => {
 // Send message
 await bus.send('supervisor', 'worker1', {
     type: 'task',
-    content: { action: 'analyze', data: '...' }
+    content: { action: 'analyze', data: '...' },
 });
 
 // Broadcast to all
 await bus.broadcast('supervisor', {
     type: 'status-check',
-    content: { query: 'Are you ready?' }
+    content: { query: 'Are you ready?' },
 });
 ```
 
@@ -150,7 +150,7 @@ queue.enqueue({ action: 'docs', data: '...' }, 'low');
 while (true) {
     const task = queue.dequeue();
     if (!task) break;
-    
+
     const agent = balancer.getNext();
     await agent.execute(task);
 }
@@ -167,15 +167,15 @@ console.log(queue.getStatus());
 ```javascript
 // Quick setup
 const consensus = new ConsensusBuilder({
-    threshold: 0.6,      // 60% agreement required
-    minResponses: 3      // Minimum agents needed
+    threshold: 0.6, // 60% agreement required
+    minResponses: 3, // Minimum agents needed
 });
 
 // Collect responses from agents
 const responses = [
     { agentId: 'agent1', value: 'Option A' },
     { agentId: 'agent2', value: 'Option A' },
-    { agentId: 'agent3', value: 'Option B' }
+    { agentId: 'agent3', value: 'Option B' },
 ];
 
 // Build consensus
@@ -198,13 +198,13 @@ if (result.consensus) {
 // Quick setup
 const faultTolerant = new FaultTolerantOrchestrator({
     maxRetries: 3,
-    fallbackAgents: [fallbackAgent1, fallbackAgent2]
+    fallbackAgents: [fallbackAgent1, fallbackAgent2],
 });
 
 // Execute with automatic retry and fallback
 const result = await faultTolerant.executeWithFallback(
     task,
-    primaryAgent  // Will retry 3 times, then use fallbacks
+    primaryAgent // Will retry 3 times, then use fallbacks
 );
 
 if (result.usedFallback) {
@@ -244,7 +244,7 @@ const monitor = new OrchestrationMonitor();
 monitor.recordTask({
     agentId: 'researcher',
     success: true,
-    duration: 1500
+    duration: 1500,
 });
 
 // Get dashboard data
@@ -289,7 +289,7 @@ const supervisor = new SupervisorOrchestrator();
 const balancer = new LoadBalancer();
 
 // Add workers to balancer
-workers.forEach(w => balancer.addAgent(w));
+workers.forEach((w) => balancer.addAgent(w));
 
 // Supervisor delegates through balancer
 supervisor.execute = async (task) => {
@@ -306,23 +306,23 @@ supervisor.execute = async (task) => {
 async function orchestrateWithHandling(task, orchestrator) {
     try {
         const result = await orchestrator.execute(task);
-        
+
         if (!result.success) {
             console.error('Task failed:', result.error);
-            
+
             // Retry or escalate
             if (result.retriable) {
                 return await orchestrator.execute(task);
             }
         }
-        
+
         return result;
     } catch (error) {
         console.error('Orchestration error:', error);
-        
+
         // Log for debugging
         await logError({ task, error, timestamp: new Date() });
-        
+
         throw error;
     }
 }

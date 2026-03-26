@@ -12,14 +12,14 @@ The Code Skill provides intelligent code analysis, generation, and refactoring c
 
 ## Key Features
 
-| Feature | Description |
-|---------|-------------|
-| **Code Analysis** | Parse and analyze code structure |
-| **Code Generation** | Generate quality code from specifications |
-| **Refactoring** | Safe code transformations |
-| **Pattern Detection** | Identify code patterns and anti-patterns |
-| **Style Enforcement** | Ensure consistent code style |
-| **Documentation** | Generate code documentation |
+| Feature               | Description                               |
+| --------------------- | ----------------------------------------- |
+| **Code Analysis**     | Parse and analyze code structure          |
+| **Code Generation**   | Generate quality code from specifications |
+| **Refactoring**       | Safe code transformations                 |
+| **Pattern Detection** | Identify code patterns and anti-patterns  |
+| **Style Enforcement** | Ensure consistent code style              |
+| **Documentation**     | Generate code documentation               |
 
 ## Architecture
 
@@ -56,30 +56,30 @@ const code = await generateCode({
     type: 'function',
     name: 'calculateTotal',
     params: ['items', 'tax'],
-    returnType: 'number'
+    returnType: 'number',
 });
 ```
 
 ## Supported Languages
 
-| Language | Parser | Features |
-|----------|--------|----------|
-| JavaScript | ✅ | Full support |
-| TypeScript | ✅ | Full support |
-| Python | ✅ | Full support |
-| Java | ✅ | Basic support |
-| Go | ✅ | Basic support |
-| Rust | ✅ | Basic support |
+| Language   | Parser | Features      |
+| ---------- | ------ | ------------- |
+| JavaScript | ✅     | Full support  |
+| TypeScript | ✅     | Full support  |
+| Python     | ✅     | Full support  |
+| Java       | ✅     | Basic support |
+| Go         | ✅     | Basic support |
+| Rust       | ✅     | Basic support |
 
 ## Code Quality Metrics
 
-| Metric | Description | Target |
-|--------|-------------|--------|
-| **Complexity** | Cyclomatic complexity | < 10 |
-| **Lines** | Function length | < 50 |
-| **Depth** | Nesting depth | < 4 |
-| **Duplication** | Code duplication | < 5% |
-| **Coverage** | Test coverage | > 80% |
+| Metric          | Description           | Target |
+| --------------- | --------------------- | ------ |
+| **Complexity**  | Cyclomatic complexity | < 10   |
+| **Lines**       | Function length       | < 50   |
+| **Depth**       | Nesting depth         | < 4    |
+| **Duplication** | Code duplication      | < 5%   |
+| **Coverage**    | Test coverage         | > 80%  |
 
 ## API Reference
 
@@ -88,6 +88,7 @@ const code = await generateCode({
 Analyzes code structure and returns AST-like representation.
 
 **Parameters:**
+
 - `filePath` (string): Path to source file
 
 **Returns:** `Promise<CodeStructure>`
@@ -97,11 +98,12 @@ Analyzes code structure and returns AST-like representation.
 Generates code from specification.
 
 **Parameters:**
+
 - `specification` (object): Code specification
-  - `type`: string - Type of code (function, class, module)
-  - `name`: string - Name of generated item
-  - `params`: string[] - Parameters
-  - `returnType`: string - Return type
+    - `type`: string - Type of code (function, class, module)
+    - `name`: string - Name of generated item
+    - `params`: string[] - Parameters
+    - `returnType`: string - Return type
 
 **Returns:** `Promise<string>`
 
@@ -110,6 +112,7 @@ Generates code from specification.
 Applies refactoring transformations.
 
 **Parameters:**
+
 - `filePath` (string): Path to source file
 - `transformations`: object[] - Transformations to apply
 
@@ -152,4 +155,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*Built with ❤️ by the Auto-AI Team*
+_Built with ❤️ by the Auto-AI Team_

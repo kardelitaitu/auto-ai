@@ -1,15 +1,15 @@
 ---
 name: analyze-read
 description: |
-  Master file reading and analysis operations using Desktop Commander read tools.
-  Use when reading files, analyzing file contents, processing different file formats
-  (text, PDF, DOCX, Excel, images), or extracting data from local files.
-  Triggers on tasks involving file inspection, content extraction, data analysis,
-  or reading configuration files, logs, code files, and documents.
+    Master file reading and analysis operations using Desktop Commander read tools.
+    Use when reading files, analyzing file contents, processing different file formats
+    (text, PDF, DOCX, Excel, images), or extracting data from local files.
+    Triggers on tasks involving file inspection, content extraction, data analysis,
+    or reading configuration files, logs, code files, and documents.
 license: MIT
 metadata:
-  author: Auto-AI Framework
-  version: '1.0.0'
+    author: Auto-AI Framework
+    version: '1.0.0'
 ---
 
 # File Reading & Analysis Skill
@@ -32,14 +32,14 @@ Use this skill when:
 
 ## Tool Selection Guide
 
-| Task | Tool | Best For |
-|------|------|----------|
-| Read any file | `Desktop_Commander_read_file` | Primary tool for all file types |
-| Multiple files | `Desktop_Commander_read_multiple_files` | Batch reading |
-| List directory | `Desktop_Commander_list_directory` | File discovery |
-| Search files | `Desktop_Commander_start_search` | Finding files by pattern |
-| Get file info | `Desktop_Commander_get_file_info` | Metadata without reading |
-| File analysis | `start_process` + Python | Data processing |
+| Task           | Tool                                    | Best For                        |
+| -------------- | --------------------------------------- | ------------------------------- |
+| Read any file  | `Desktop_Commander_read_file`           | Primary tool for all file types |
+| Multiple files | `Desktop_Commander_read_multiple_files` | Batch reading                   |
+| List directory | `Desktop_Commander_list_directory`      | File discovery                  |
+| Search files   | `Desktop_Commander_start_search`        | Finding files by pattern        |
+| Get file info  | `Desktop_Commander_get_file_info`       | Metadata without reading        |
+| File analysis  | `start_process` + Python                | Data processing                 |
 
 ## Core Reading Patterns
 
@@ -51,9 +51,9 @@ const content = await Desktop_Commander_read_file('/path/to/file.js');
 
 // Read with options
 const content = await Desktop_Commander_read_file('/path/to/file.txt', {
-    encoding: 'utf8',     // File encoding
-    offset: 0,            // Start line (0-based)
-    length: 1000          // Max lines to read
+    encoding: 'utf8', // File encoding
+    offset: 0, // Start line (0-based)
+    length: 1000, // Max lines to read
 });
 ```
 
@@ -62,32 +62,32 @@ const content = await Desktop_Commander_read_file('/path/to/file.txt', {
 ```javascript
 // Read last N lines (tail behavior)
 const tail = await Desktop_Commander_read_file('/var/log/app.log', {
-    offset: -100          // Last 100 lines
+    offset: -100, // Last 100 lines
 });
 
 // Read specific range
 const section = await Desktop_Commander_read_file('/path/to/file.js', {
-    offset: 50,           // Start at line 50
-    length: 20            // Read 20 lines
+    offset: 50, // Start at line 50
+    length: 20, // Read 20 lines
 });
 
 // Chunked reading for very large files
 async function readInChunks(filePath, chunkSize = 1000) {
     let offset = 0;
     let allContent = '';
-    
+
     while (true) {
         const chunk = await Desktop_Commander_read_file(filePath, {
             offset: offset,
-            length: chunkSize
+            length: chunkSize,
         });
-        
+
         if (!chunk || chunk.trim() === '') break;
-        
+
         allContent += chunk;
         offset += chunkSize;
     }
-    
+
     return allContent;
 }
 ```
@@ -95,23 +95,25 @@ async function readInChunks(filePath, chunkSize = 1000) {
 ### 3. Format-Specific Reading
 
 #### PDF Files
+
 ```javascript
 // Read PDF with markdown extraction
 const pdfContent = await Desktop_Commander_read_file('/path/to/document.pdf');
 
 // Read specific pages
 const firstPages = await Desktop_Commander_read_file('/path/to/document.pdf', {
-    offset: 0,            // Start page (0-based)
-    length: 5             // Number of pages
+    offset: 0, // Start page (0-based)
+    length: 5, // Number of pages
 });
 ```
 
 #### Excel Files
+
 ```javascript
 // Read Excel with range
 const excelData = await Desktop_Commander_read_file('/path/to/data.xlsx', {
-    sheet: 'Sheet1',      // Sheet name or index
-    range: 'A1:D100'      // Cell range
+    sheet: 'Sheet1', // Sheet name or index
+    range: 'A1:D100', // Cell range
 });
 
 // Returns JSON array format
@@ -119,18 +121,20 @@ const data = JSON.parse(excelData);
 ```
 
 #### DOCX Files
+
 ```javascript
 // Read DOCX outline (structure view)
 const outline = await Desktop_Commander_read_file('/path/to/document.docx');
 
 // Read raw XML for editing
 const xml = await Desktop_Commander_read_file('/path/to/document.docx', {
-    offset: 1,            // Must be non-zero for raw XML
-    length: 100
+    offset: 1, // Must be non-zero for raw XML
+    length: 100,
 });
 ```
 
 #### Image Files
+
 ```javascript
 // Returns base64 encoded image
 const imageData = await Desktop_Commander_read_file('/path/to/image.png');
@@ -144,24 +148,24 @@ const imageData = await Desktop_Commander_read_file('/path/to/image.png');
 ```javascript
 async function analyzeCodeFile(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     // Extract imports
     const imports = content.match(/import.*from.*/g) || [];
-    
+
     // Extract functions
     const functions = content.match(/function\s+\w+/g) || [];
-    
+
     // Extract classes
     const classes = content.match(/class\s+\w+/g) || [];
-    
+
     // Count lines
     const lines = content.split('\n').length;
-    
+
     return {
         imports: imports.length,
         functions: functions.length,
         classes: classes.length,
-        totalLines: lines
+        totalLines: lines,
     };
 }
 ```
@@ -171,38 +175,37 @@ async function analyzeCodeFile(filePath) {
 ```javascript
 async function analyzeLogFile(filePath, options = {}) {
     const { tailLines = 1000, patterns = ['ERROR', 'WARN'] } = options;
-    
+
     const logs = await Desktop_Commander_read_file(filePath, {
-        offset: -tailLines
+        offset: -tailLines,
     });
-    
+
     const lines = logs.split('\n');
     const analysis = {
         totalLines: lines.length,
         errors: [],
         warnings: [],
-        timeline: []
+        timeline: [],
     };
-    
-    lines.forEach(line => {
+
+    lines.forEach((line) => {
         if (line.includes('ERROR')) {
             analysis.errors.push(line);
         }
         if (line.includes('WARN')) {
             analysis.warnings.push(line);
         }
-        
+
         // Extract timestamp if present
         const timeMatch = line.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
         if (timeMatch) {
             analysis.timeline.push({
                 timestamp: timeMatch[0],
-                level: line.includes('ERROR') ? 'error' : 
-                       line.includes('WARN') ? 'warn' : 'info'
+                level: line.includes('ERROR') ? 'error' : line.includes('WARN') ? 'warn' : 'info',
             });
         }
     });
-    
+
     return analysis;
 }
 ```
@@ -212,14 +215,14 @@ async function analyzeLogFile(filePath, options = {}) {
 ```javascript
 async function analyzeConfig(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     // Try parsing as JSON
     try {
         const config = JSON.parse(content);
         return {
             format: 'json',
             keys: Object.keys(config),
-            size: JSON.stringify(config).length
+            size: JSON.stringify(config).length,
         };
     } catch (e) {
         // Try parsing as YAML
@@ -229,14 +232,14 @@ async function analyzeConfig(filePath) {
             return {
                 format: 'yaml',
                 keys: Object.keys(config),
-                size: content.length
+                size: content.length,
             };
         } catch (e2) {
             // Plain text
             return {
                 format: 'text',
                 lines: content.split('\n').length,
-                size: content.length
+                size: content.length,
             };
         }
     }
@@ -250,16 +253,17 @@ async function analyzeConfig(filePath) {
 ```javascript
 async function smartRead(filePath, purpose = 'analysis') {
     const info = await Desktop_Commander_get_file_info(filePath);
-    
+
     // Decide reading strategy based on file size
-    if (info.size > 10 * 1024 * 1024) { // > 10MB
+    if (info.size > 10 * 1024 * 1024) {
+        // > 10MB
         // Large file - read in chunks or tail
         if (purpose === 'log-analysis') {
             return await Desktop_Commander_read_file(filePath, { offset: -5000 });
         }
         return await readInChunks(filePath, 5000);
     }
-    
+
     // Normal file - read all
     return await Desktop_Commander_read_file(filePath);
 }
@@ -270,31 +274,31 @@ async function smartRead(filePath, purpose = 'analysis') {
 ```javascript
 async function compareFiles(file1, file2) {
     const [content1, content2] = await Desktop_Commander_read_multiple_files([file1, file2]);
-    
+
     const lines1 = content1.split('\n');
     const lines2 = content2.split('\n');
-    
+
     const differences = [];
     const maxLines = Math.max(lines1.length, lines2.length);
-    
+
     for (let i = 0; i < maxLines; i++) {
         if (lines1[i] !== lines2[i]) {
             differences.push({
                 line: i + 1,
                 file1: lines1[i] || '[EOF]',
-                file2: lines2[i] || '[EOF]'
+                file2: lines2[i] || '[EOF]',
             });
         }
     }
-    
+
     return {
         identical: differences.length === 0,
         differences,
         stats: {
             file1Lines: lines1.length,
             file2Lines: lines2.length,
-            diffCount: differences.length
-        }
+            diffCount: differences.length,
+        },
     };
 }
 ```
@@ -305,26 +309,26 @@ async function compareFiles(file1, file2) {
 async function extractData(filePath, extractionRules) {
     const content = await Desktop_Commander_read_file(filePath);
     const lines = content.split('\n');
-    
+
     const results = [];
-    
+
     for (const rule of extractionRules) {
         const { pattern, type = 'regex', multiple = false } = rule;
-        
+
         if (type === 'regex') {
             const regex = new RegExp(pattern, 'g');
-            const matches = multiple 
-                ? [...content.matchAll(regex)].map(m => m[0])
+            const matches = multiple
+                ? [...content.matchAll(regex)].map((m) => m[0])
                 : content.match(regex);
-            
+
             results.push({
                 rule: pattern,
                 matches,
-                count: Array.isArray(matches) ? matches.length : (matches ? 1 : 0)
+                count: Array.isArray(matches) ? matches.length : matches ? 1 : 0,
             });
         }
     }
-    
+
     return results;
 }
 ```
@@ -338,42 +342,41 @@ async function safeReadFile(filePath, options = {}) {
     try {
         // Check file exists
         const info = await Desktop_Commander_get_file_info(filePath);
-        
+
         if (!info.exists) {
             return {
                 success: false,
                 error: 'File not found',
-                filePath
+                filePath,
             };
         }
-        
+
         // Check file size
         if (info.size === 0) {
             return {
                 success: true,
                 content: '',
                 warning: 'File is empty',
-                filePath
+                filePath,
             };
         }
-        
+
         // Read file
         const content = await Desktop_Commander_read_file(filePath, options);
-        
+
         return {
             success: true,
             content,
             size: info.size,
             modified: info.mtime,
-            filePath
+            filePath,
         };
-        
     } catch (error) {
         return {
             success: false,
             error: error.message,
             code: error.code,
-            filePath
+            filePath,
         };
     }
 }
@@ -381,13 +384,13 @@ async function safeReadFile(filePath, options = {}) {
 
 ### Common Error Scenarios
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `ENOENT` | File not found | Check path, use `get_file_info` first |
-| `EACCES` | Permission denied | Check file permissions |
-| `EISDIR` | Reading directory as file | Use `list_directory` instead |
-| `EMFILE` | Too many open files | Close files, use `read_multiple_files` |
-| `EFBIG` | File too large | Use chunked reading |
+| Error    | Cause                     | Solution                               |
+| -------- | ------------------------- | -------------------------------------- |
+| `ENOENT` | File not found            | Check path, use `get_file_info` first  |
+| `EACCES` | Permission denied         | Check file permissions                 |
+| `EISDIR` | Reading directory as file | Use `list_directory` instead           |
+| `EMFILE` | Too many open files       | Close files, use `read_multiple_files` |
+| `EFBIG`  | File too large            | Use chunked reading                    |
 
 ## Integration Patterns
 
@@ -398,7 +401,7 @@ async function safeReadFile(filePath, options = {}) {
 const searchResults = await Desktop_Commander_start_search({
     path: '/project',
     pattern: '*.test.js',
-    searchType: 'files'
+    searchType: 'files',
 });
 
 // Analyze each file
@@ -414,7 +417,9 @@ for (const file of searchResults) {
 // Read, process, analyze
 const pid = await Desktop_Commander_start_process('python3 -i');
 
-await Desktop_Commander_interact_with_process(pid, `
+await Desktop_Commander_interact_with_process(
+    pid,
+    `
 import pandas as pd
 import json
 
@@ -434,7 +439,8 @@ with open('/tmp/analysis.json', 'w') as f:
         'columns': list(df.columns),
         'null_counts': df.isnull().sum().to_dict()
     }, f)
-`);
+`
+);
 
 // Read analysis results
 const analysis = await Desktop_Commander_read_file('/tmp/analysis.json');
@@ -480,18 +486,21 @@ stat file.txt                  # File info
 ## Troubleshooting
 
 ### File Not Reading
+
 1. Check path is absolute
 2. Verify file exists with `get_file_info`
 3. Check permissions
 4. Try different encoding
 
 ### Large File Issues
+
 1. Use negative offset for tail reading
 2. Use chunked reading strategy
 3. Consider file size before reading
 4. Use `read_multiple_files` for batch operations
 
 ### Encoding Problems
+
 1. Specify encoding parameter
 2. Try different encodings (utf8, latin1, ascii)
 3. Check file with `file` command
@@ -499,42 +508,41 @@ stat file.txt                  # File info
 ## Examples
 
 ### Analyze Package Dependencies
+
 ```javascript
 async function analyzeDependencies(projectPath) {
-    const packageJson = await Desktop_Commander_read_file(
-        `${projectPath}/package.json`
-    );
-    
+    const packageJson = await Desktop_Commander_read_file(`${projectPath}/package.json`);
+
     const pkg = JSON.parse(packageJson);
-    
+
     return {
         dependencies: Object.keys(pkg.dependencies || {}),
         devDependencies: Object.keys(pkg.devDependencies || {}),
         scripts: Object.keys(pkg.scripts || {}),
-        engines: pkg.engines || {}
+        engines: pkg.engines || {},
     };
 }
 ```
 
 ### Extract TODO Comments
+
 ```javascript
 async function extractTODOs(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
     const lines = content.split('\n');
-    
+
     const todos = [];
-    
+
     lines.forEach((line, index) => {
         if (line.includes('TODO') || line.includes('FIXME') || line.includes('HACK')) {
             todos.push({
                 line: index + 1,
                 content: line.trim(),
-                type: line.includes('TODO') ? 'todo' :
-                      line.includes('FIXME') ? 'fixme' : 'hack'
+                type: line.includes('TODO') ? 'todo' : line.includes('FIXME') ? 'fixme' : 'hack',
             });
         }
     });
-    
+
     return todos;
 }
 ```

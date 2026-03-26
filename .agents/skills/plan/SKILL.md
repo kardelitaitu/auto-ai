@@ -1,15 +1,15 @@
 ---
 name: plan
 description: |
-  Project planning, task breakdown, and implementation roadmap creation.
-  Use when planning new features, breaking down complex tasks, creating
-  implementation timelines, estimating effort, or organizing development work.
-  Triggers on tasks involving project planning, feature breakdown, sprint planning,
-  task prioritization, or implementation strategy.
+    Project planning, task breakdown, and implementation roadmap creation.
+    Use when planning new features, breaking down complex tasks, creating
+    implementation timelines, estimating effort, or organizing development work.
+    Triggers on tasks involving project planning, feature breakdown, sprint planning,
+    task prioritization, or implementation strategy.
 license: MIT
 metadata:
-  author: Auto-AI Framework
-  version: '1.0.0'
+    author: Auto-AI Framework
+    version: '1.0.0'
 ---
 
 # Project Planning Skill
@@ -48,15 +48,16 @@ Use this skill when:
 const userStory = {
     id: 'US-001',
     title: 'Browser Auto-Discovery',
-    description: 'As a user, I want the system to automatically discover running browsers so that I don\'t need to manually configure connections.',
+    description:
+        "As a user, I want the system to automatically discover running browsers so that I don't need to manually configure connections.",
     acceptance: [
         'System detects all supported browser types',
         'Connection endpoints are validated',
         'Discovery completes within 10 seconds',
-        'Failed discoveries are logged with details'
+        'Failed discoveries are logged with details',
     ],
     priority: 'High',
-    storyPoints: 8
+    storyPoints: 8,
 };
 ```
 
@@ -68,20 +69,20 @@ const requirementsChecklist = {
         'What should the system do?',
         'What inputs are expected?',
         'What outputs are required?',
-        'What are the edge cases?'
+        'What are the edge cases?',
     ],
     nonFunctional: [
         'Performance requirements?',
         'Security considerations?',
         'Scalability needs?',
-        'Reliability expectations?'
+        'Reliability expectations?',
     ],
     constraints: [
         'Technology limitations?',
         'Time constraints?',
         'Resource limitations?',
-        'External dependencies?'
-    ]
+        'External dependencies?',
+    ],
 };
 ```
 
@@ -96,36 +97,36 @@ function decomposeFeature(feature) {
         components: [
             {
                 name: 'Backend/API',
-                tasks: feature.apiEndpoints.map(ep => ({
+                tasks: feature.apiEndpoints.map((ep) => ({
                     task: `Implement ${ep}`,
                     estimate: 4,
-                    dependencies: []
-                }))
+                    dependencies: [],
+                })),
             },
             {
                 name: 'Frontend/UI',
-                tasks: feature.components.map(comp => ({
+                tasks: feature.components.map((comp) => ({
                     task: `Create ${comp} component`,
                     estimate: 3,
-                    dependencies: ['Backend/API']
-                }))
+                    dependencies: ['Backend/API'],
+                })),
             },
             {
                 name: 'Testing',
                 tasks: [
                     { task: 'Unit tests', estimate: 4, dependencies: ['Backend/API'] },
                     { task: 'Integration tests', estimate: 3, dependencies: ['Frontend/UI'] },
-                    { task: 'E2E tests', estimate: 2, dependencies: ['Integration tests'] }
-                ]
+                    { task: 'E2E tests', estimate: 2, dependencies: ['Integration tests'] },
+                ],
             },
             {
                 name: 'Documentation',
                 tasks: [
                     { task: 'API documentation', estimate: 2, dependencies: ['Backend/API'] },
-                    { task: 'User guide', estimate: 3, dependencies: ['Frontend/UI'] }
-                ]
-            }
-        ]
+                    { task: 'User guide', estimate: 3, dependencies: ['Frontend/UI'] },
+                ],
+            },
+        ],
     };
 }
 ```
@@ -139,28 +140,28 @@ function assessComplexity(task) {
             newTechnology: task.requiresNewTech ? 2 : 0,
             integrationPoints: task.integrationCount,
             dataComplexity: task.dataModelComplexity,
-            algorithmComplexity: task.algorithmDifficulty
+            algorithmComplexity: task.algorithmDifficulty,
         },
         scope: {
             linesOfCode: task.estimatedLOC / 500,
             componentsAffected: task.componentCount,
-            externalDependencies: task.externalDeps
+            externalDependencies: task.externalDeps,
         },
         risk: {
             uncertainty: task.uncertaintyLevel,
             dependencies: task.blockingDependencies,
-            testingDifficulty: task.testComplexity
-        }
+            testingDifficulty: task.testComplexity,
+        },
     };
-    
+
     const score = Object.values(factors)
         .flatMap(Object.values)
         .reduce((a, b) => a + b, 0);
-    
+
     return {
         score,
         level: score < 5 ? 'Low' : score < 10 ? 'Medium' : 'High',
-        factors
+        factors,
     };
 }
 ```
@@ -176,7 +177,7 @@ const storyPointScale = {
     3: { description: 'Medium', hours: '2-4', example: 'New API endpoint with validation' },
     5: { description: 'Complex', hours: '4-8', example: 'Multi-step workflow' },
     8: { description: 'Very Complex', hours: '8-16', example: 'Integration with external service' },
-    13: { description: 'Epic', hours: '16-32', example: 'Complete feature module' }
+    13: { description: 'Epic', hours: '16-32', example: 'Complete feature module' },
 };
 
 function estimateStoryPoints(task) {
@@ -187,9 +188,9 @@ function estimateStoryPoints(task) {
         'form-validation': 3,
         'multi-step-form': 5,
         'payment-integration': 8,
-        'full-auth-system': 13
+        'full-auth-system': 13,
     };
-    
+
     // Compare with references
     const comparable = findComparableStory(task, referenceStories);
     return referenceStories[comparable] || 5; // Default to 5
@@ -200,17 +201,17 @@ function estimateStoryPoints(task) {
 
 ```javascript
 function estimateTime(tasks) {
-    return tasks.map(task => {
+    return tasks.map((task) => {
         const optimistic = task.baseEstimate;
         const pessimistic = task.baseEstimate * 2.5;
         const mostLikely = task.baseEstimate * 1.5;
-        
+
         // PERT formula
         const expected = (optimistic + 4 * mostLikely + pessimistic) / 6;
-        
+
         // Add buffer for unknowns
         const withBuffer = expected * (1 + task.uncertainty);
-        
+
         return {
             task: task.name,
             optimistic,
@@ -218,7 +219,7 @@ function estimateTime(tasks) {
             pessimistic,
             expected: Math.round(expected * 10) / 10,
             withBuffer: Math.round(withBuffer * 10) / 10,
-            unit: 'hours'
+            unit: 'hours',
         };
     });
 }
@@ -228,23 +229,23 @@ function estimateTime(tasks) {
 
 ```javascript
 const tShirtSizes = {
-    'XS': { description: '< 1 day', points: 1 },
-    'S': { description: '1-2 days', points: 2 },
-    'M': { description: '3-5 days', points: 5 },
-    'L': { description: '1-2 weeks', points: 13 },
-    'XL': { description: '2-4 weeks', points: 21 },
-    'XXL': { description: '> 4 weeks', points: 34 }
+    XS: { description: '< 1 day', points: 1 },
+    S: { description: '1-2 days', points: 2 },
+    M: { description: '3-5 days', points: 5 },
+    L: { description: '1-2 weeks', points: 13 },
+    XL: { description: '2-4 weeks', points: 21 },
+    XXL: { description: '> 4 weeks', points: 34 },
 };
 
 function tshirtEstimate(feature) {
     // Compare with similar completed features
     const similarFeatures = findSimilarCompleted(feature);
-    
+
     if (similarFeatures.length > 0) {
-        const avgSize = average(similarFeatures.map(f => f.size));
+        const avgSize = average(similarFeatures.map((f) => f.size));
         return avgSize;
     }
-    
+
     // Default estimation based on description
     return estimateFromDescription(feature.description);
 }
@@ -261,33 +262,33 @@ function createRoadmap(features, timeline) {
             name: 'Foundation',
             duration: '2 weeks',
             focus: 'Core infrastructure and architecture',
-            features: features.filter(f => f.layer === 'core')
+            features: features.filter((f) => f.layer === 'core'),
         },
         {
             name: 'MVP',
             duration: '4 weeks',
             focus: 'Minimum viable product features',
-            features: features.filter(f => f.priority === 'High')
+            features: features.filter((f) => f.priority === 'High'),
         },
         {
             name: 'Enhancement',
             duration: '3 weeks',
             focus: 'Additional features and polish',
-            features: features.filter(f => f.priority === 'Medium')
+            features: features.filter((f) => f.priority === 'Medium'),
         },
         {
             name: 'Optimization',
             duration: '2 weeks',
             focus: 'Performance and refinement',
-            features: features.filter(f => f.type === 'optimization')
-        }
+            features: features.filter((f) => f.type === 'optimization'),
+        },
     ];
-    
-    return phases.map(phase => ({
+
+    return phases.map((phase) => ({
         ...phase,
         totalPoints: phase.features.reduce((sum, f) => sum + f.points, 0),
         startDate: calculateStartDate(phase, phases),
-        endDate: calculateEndDate(phase, phases)
+        endDate: calculateEndDate(phase, phases),
     }));
 }
 ```
@@ -298,17 +299,17 @@ function createRoadmap(features, timeline) {
 function planSprint(backlog, velocity, sprintLength = 2) {
     // Sort by priority and dependencies
     const sorted = sortByPriorityAndDependencies(backlog);
-    
+
     const sprint = {
         number: getNextSprintNumber(),
         duration: sprintLength,
         capacity: velocity,
         planned: [],
-        stretch: []
+        stretch: [],
     };
-    
+
     let remainingCapacity = velocity;
-    
+
     for (const item of sorted) {
         if (item.points <= remainingCapacity) {
             sprint.planned.push(item);
@@ -317,9 +318,9 @@ function planSprint(backlog, velocity, sprintLength = 2) {
             sprint.stretch.push(item);
         }
     }
-    
-    sprint.utilization = ((velocity - remainingCapacity) / velocity * 100).toFixed(1);
-    
+
+    sprint.utilization = (((velocity - remainingCapacity) / velocity) * 100).toFixed(1);
+
     return sprint;
 }
 ```
@@ -331,22 +332,10 @@ function planSprint(backlog, velocity, sprintLength = 2) {
 ```javascript
 function moscowPrioritize(items) {
     return {
-        mustHave: items.filter(item => 
-            item.criticality === 'critical' || 
-            item.businessValue > 8
-        ),
-        shouldHave: items.filter(item => 
-            item.criticality === 'high' && 
-            item.businessValue > 6
-        ),
-        couldHave: items.filter(item => 
-            item.criticality === 'medium' && 
-            item.businessValue > 4
-        ),
-        wontHave: items.filter(item => 
-            item.criticality === 'low' || 
-            item.businessValue <= 4
-        )
+        mustHave: items.filter((item) => item.criticality === 'critical' || item.businessValue > 8),
+        shouldHave: items.filter((item) => item.criticality === 'high' && item.businessValue > 6),
+        couldHave: items.filter((item) => item.criticality === 'medium' && item.businessValue > 4),
+        wontHave: items.filter((item) => item.criticality === 'low' || item.businessValue <= 4),
     };
 }
 ```
@@ -356,18 +345,10 @@ function moscowPrioritize(items) {
 ```javascript
 function valueEffortMatrix(features) {
     return {
-        quickWins: features.filter(f => 
-            f.value > 6 && f.effort < 4
-        ),
-        majorProjects: features.filter(f => 
-            f.value > 6 && f.effort >= 4
-        ),
-        fillIns: features.filter(f => 
-            f.value <= 6 && f.effort < 4
-        ),
-        avoid: features.filter(f => 
-            f.value <= 6 && f.effort >= 4
-        )
+        quickWins: features.filter((f) => f.value > 6 && f.effort < 4),
+        majorProjects: features.filter((f) => f.value > 6 && f.effort >= 4),
+        fillIns: features.filter((f) => f.value <= 6 && f.effort < 4),
+        avoid: features.filter((f) => f.value <= 6 && f.effort >= 4),
     };
 }
 ```
@@ -379,40 +360,38 @@ function valueEffortMatrix(features) {
 ```javascript
 function mapDependencies(tasks) {
     const graph = {};
-    
-    tasks.forEach(task => {
+
+    tasks.forEach((task) => {
         graph[task.id] = {
             task,
             dependencies: task.dependencies || [],
-            dependents: []
+            dependents: [],
         };
     });
-    
+
     // Build reverse dependencies
-    Object.keys(graph).forEach(id => {
-        graph[id].dependencies.forEach(depId => {
+    Object.keys(graph).forEach((id) => {
+        graph[id].dependencies.forEach((depId) => {
             if (graph[depId]) {
                 graph[depId].dependents.push(id);
             }
         });
     });
-    
+
     return graph;
 }
 
 function findCriticalPath(graph) {
     // Find tasks with no dependencies (start points)
-    const starts = Object.keys(graph).filter(id => 
-        graph[id].dependencies.length === 0
-    );
-    
+    const starts = Object.keys(graph).filter((id) => graph[id].dependencies.length === 0);
+
     // Calculate longest path
-    const paths = starts.map(start => calculatePathLength(graph, start));
-    
+    const paths = starts.map((start) => calculatePathLength(graph, start));
+
     return {
         criticalPath: Math.max(...paths),
         bottlenecks: findBottlenecks(graph),
-        parallelizable: findParallelizableTasks(graph)
+        parallelizable: findParallelizableTasks(graph),
     };
 }
 ```
@@ -422,9 +401,9 @@ function findCriticalPath(graph) {
 ```javascript
 function visualizeDependencies(tasks) {
     const lines = ['Dependency Graph:', ''];
-    
-    tasks.forEach(task => {
-        const deps = task.dependencies.map(d => `  - ${d}`).join('\n');
+
+    tasks.forEach((task) => {
+        const deps = task.dependencies.map((d) => `  - ${d}`).join('\n');
         lines.push(`${task.name}:`);
         if (deps) {
             lines.push(deps);
@@ -433,7 +412,7 @@ function visualizeDependencies(tasks) {
         }
         lines.push('');
     });
-    
+
     return lines.join('\n');
 }
 ```
@@ -449,39 +428,39 @@ function createDesignDocument(feature) {
         sections: [
             {
                 name: 'Overview',
-                content: feature.description
+                content: feature.description,
             },
             {
                 name: 'Architecture',
-                content: describeArchitecture(feature)
+                content: describeArchitecture(feature),
             },
             {
                 name: 'Components',
-                content: listComponents(feature)
+                content: listComponents(feature),
             },
             {
                 name: 'Data Model',
-                content: describeDataModel(feature)
+                content: describeDataModel(feature),
             },
             {
                 name: 'API Design',
-                content: describeAPI(feature)
+                content: describeAPI(feature),
             },
             {
                 name: 'Security Considerations',
-                content: describeSecurity(feature)
+                content: describeSecurity(feature),
             },
             {
                 name: 'Testing Strategy',
-                content: describeTesting(feature)
+                content: describeTesting(feature),
             },
             {
                 name: 'Migration Plan',
-                content: describeMigration(feature)
-            }
+                content: describeMigration(feature),
+            },
         ],
         reviewers: [],
-        status: 'draft'
+        status: 'draft',
     };
 }
 ```
@@ -495,29 +474,29 @@ const implementationChecklist = {
         'Design reviewed and approved',
         'Dependencies identified',
         'Environment setup complete',
-        'Branch created'
+        'Branch created',
     ],
     development: [
         'Code follows style guide',
         'Unit tests written',
         'Documentation updated',
         'Error handling implemented',
-        'Logging added'
+        'Logging added',
     ],
     review: [
         'Self-review completed',
         'Code reviewed by peer',
         'Tests passing',
         'No lint errors',
-        'Performance verified'
+        'Performance verified',
     ],
     deployment: [
         'Staging deployment tested',
         'Rollback plan documented',
         'Monitoring configured',
         'Alerts set up',
-        'Documentation published'
-    ]
+        'Documentation published',
+    ],
 };
 ```
 
@@ -528,8 +507,8 @@ const implementationChecklist = {
 ```javascript
 function assessRisks(tasks) {
     const risks = [];
-    
-    tasks.forEach(task => {
+
+    tasks.forEach((task) => {
         // Technical risks
         if (task.complexity === 'high') {
             risks.push({
@@ -538,10 +517,10 @@ function assessRisks(tasks) {
                 description: 'High complexity may lead to delays',
                 probability: 'medium',
                 impact: 'high',
-                mitigation: 'Break into smaller tasks, add buffer time'
+                mitigation: 'Break into smaller tasks, add buffer time',
             });
         }
-        
+
         // Dependency risks
         if (task.externalDependencies > 2) {
             risks.push({
@@ -550,10 +529,10 @@ function assessRisks(tasks) {
                 description: 'Multiple external dependencies',
                 probability: 'medium',
                 impact: 'medium',
-                mitigation: 'Identify alternatives, add contingency'
+                mitigation: 'Identify alternatives, add contingency',
             });
         }
-        
+
         // Knowledge risks
         if (task.requiresNewSkill) {
             risks.push({
@@ -562,16 +541,18 @@ function assessRisks(tasks) {
                 description: 'Team lacks required expertise',
                 probability: 'high',
                 impact: 'high',
-                mitigation: 'Training, pair programming, external help'
+                mitigation: 'Training, pair programming, external help',
             });
         }
     });
-    
+
     return risks.sort((a, b) => {
         const impactScore = { high: 3, medium: 2, low: 1 };
         const probScore = { high: 3, medium: 2, low: 1 };
-        return (impactScore[b.impact] * probScore[b.probability]) -
-               (impactScore[a.impact] * probScore[a.probability]);
+        return (
+            impactScore[b.impact] * probScore[b.probability] -
+            impactScore[a.impact] * probScore[a.probability]
+        );
     });
 }
 ```
@@ -580,12 +561,12 @@ function assessRisks(tasks) {
 
 ```javascript
 function createContingencyPlan(risks) {
-    return risks.map(risk => ({
+    return risks.map((risk) => ({
         risk: risk.description,
         trigger: `${risk.probability} probability, ${risk.impact} impact`,
         contingency: risk.mitigation,
         owner: identifyOwner(risk),
-        reviewDate: calculateReviewDate()
+        reviewDate: calculateReviewDate(),
     }));
 }
 ```
@@ -598,19 +579,19 @@ function createContingencyPlan(risks) {
 function generateBurndownData(sprint) {
     const totalPoints = sprint.planned.reduce((sum, t) => sum + t.points, 0);
     const dailyIdeal = totalPoints / sprint.duration;
-    
+
     const data = {
         dates: generateDateRange(sprint.startDate, sprint.duration),
         ideal: [],
-        actual: []
+        actual: [],
     };
-    
+
     let remaining = totalPoints;
     data.dates.forEach((date, i) => {
-        data.ideal.push(Math.max(0, totalPoints - (dailyIdeal * (i + 1))));
+        data.ideal.push(Math.max(0, totalPoints - dailyIdeal * (i + 1)));
         data.actual.push(remaining); // Update with actual remaining
     });
-    
+
     return data;
 }
 ```
@@ -620,15 +601,15 @@ function generateBurndownData(sprint) {
 ```javascript
 function trackVelocity(sprints) {
     return {
-        sprints: sprints.map(s => ({
+        sprints: sprints.map((s) => ({
             number: s.number,
             planned: s.plannedPoints,
             completed: s.completedPoints,
-            velocity: s.completedPoints
+            velocity: s.completedPoints,
         })),
-        average: average(sprints.map(s => s.completedPoints)),
-        trend: calculateTrend(sprints.map(s => s.completedPoints)),
-        forecast: forecastNextSprint(sprints)
+        average: average(sprints.map((s) => s.completedPoints)),
+        trend: calculateTrend(sprints.map((s) => s.completedPoints)),
+        forecast: forecastNextSprint(sprints),
     };
 }
 ```
@@ -642,34 +623,26 @@ const featurePlanTemplate = {
     id: 'FP-001',
     name: 'Feature Name',
     description: 'Brief description of what and why',
-    
-    goals: [
-        'Primary goal',
-        'Secondary goal'
-    ],
-    
+
+    goals: ['Primary goal', 'Secondary goal'],
+
     requirements: {
         functional: [],
         nonFunctional: [],
-        constraints: []
+        constraints: [],
     },
-    
-    tasks: [
-        { id: 'T1', name: 'Task 1', estimate: 4, dependencies: [] }
-    ],
-    
+
+    tasks: [{ id: 'T1', name: 'Task 1', estimate: 4, dependencies: [] }],
+
     timeline: {
         start: '2024-01-01',
         end: '2024-01-15',
-        milestones: []
+        milestones: [],
     },
-    
+
     risks: [],
-    
-    successCriteria: [
-        'Criterion 1',
-        'Criterion 2'
-    ]
+
+    successCriteria: ['Criterion 1', 'Criterion 2'],
 };
 ```
 
@@ -680,31 +653,27 @@ const sprintPlanTemplate = {
     number: 1,
     goal: 'Sprint goal statement',
     duration: 14, // days
-    
+
     capacity: {
         teamSize: 4,
         velocity: 40,
-        availableHours: 320
+        availableHours: 320,
     },
-    
+
     planned: [],
     stretch: [],
     blocked: [],
-    
+
     ceremonies: {
         planning: 'Date/Time',
         standup: 'Daily 9am',
         review: 'Date/Time',
-        retrospective: 'Date/Time'
+        retrospective: 'Date/Time',
     },
-    
+
     risks: [],
-    
-    definitionOfDone: [
-        'Code reviewed',
-        'Tests passing',
-        'Documentation updated'
-    ]
+
+    definitionOfDone: ['Code reviewed', 'Tests passing', 'Documentation updated'],
 };
 ```
 
@@ -734,16 +703,16 @@ async function generatePlanFromCodebase(directory) {
     const files = await Desktop_Commander_start_search({
         path: directory,
         pattern: '*.{js,ts,py}',
-        searchType: 'files'
+        searchType: 'files',
     });
-    
+
     const analysis = {
         modules: identifyModules(files),
         dependencies: analyzeDependencies(files),
         complexity: assessCodebaseComplexity(files),
-        gaps: identifyGaps(files)
+        gaps: identifyGaps(files),
     };
-    
+
     return createImprovementPlan(analysis);
 }
 ```
@@ -754,14 +723,14 @@ async function generatePlanFromCodebase(directory) {
 async function trackProgress(planFile) {
     const plan = await Desktop_Commander_read_file(planFile);
     const tasks = parseTasks(plan);
-    
+
     const progress = {
         total: tasks.length,
         completed: 0,
         inProgress: 0,
-        pending: 0
+        pending: 0,
     };
-    
+
     // Check implementation status
     for (const task of tasks) {
         const implemented = await checkImplementation(task);
@@ -773,9 +742,9 @@ async function trackProgress(planFile) {
             progress.pending++;
         }
     }
-    
-    progress.percentComplete = (progress.completed / progress.total * 100).toFixed(1);
-    
+
+    progress.percentComplete = ((progress.completed / progress.total) * 100).toFixed(1);
+
     return progress;
 }
 ```

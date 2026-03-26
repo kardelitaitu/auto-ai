@@ -9,9 +9,6 @@
  * @module utils/banner
  */
 
-import { createLogger } from '../core/logger.js';
-const _logger = createLogger('banner');
-
 const BANNER = `
 \x1b[36m   ______            __                  \x1b[0m
 \x1b[36m  / ____/___ _____  / /____  ____  ____ _\x1b[0m
@@ -24,7 +21,7 @@ const BANNER = `
 \x1b[35m  / /|_/ / __ \`/ //_/ ___/ / __ \`__ \\/ __ \`/ / \x1b[0m
 \x1b[35m / /  / / /_/ / ,< (__  ) / / / / / / /_/ / /  \x1b[0m
 \x1b[35m/_/  /_/\\__,_/_/|_/____/_/_/ /_/ /_/\\__,_/_/   \x1b[0m
-                                               
+
 \x1b[90m      >> Smart Browser Automation <<      \x1b[0m
 `;
 
@@ -32,6 +29,5 @@ const BANNER = `
  * Prints the startup banner
  */
 export function showBanner() {
-    console.log(BANNER);
-    // logger.info("Initializing Agent Environment...");
+  console.log(BANNER);
 }

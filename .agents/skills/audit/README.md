@@ -12,14 +12,14 @@ The Audit Skill provides comprehensive security auditing, vulnerability detectio
 
 ## Key Features
 
-| Feature | Description |
-|---------|-------------|
-| **Secret Detection** | Find exposed API keys, tokens, credentials |
-| **Vulnerability Scanning** | SQL injection, XSS, command injection patterns |
-| **PII Detection** | Personal data exposure (emails, SSN, credit cards) |
-| **Compliance Checks** | GDPR, HIPAA, PCI-DSS pattern matching |
-| **Configuration Audit** | Security hardening verification |
-| **Integrity Verification** | File checksum and tampering detection |
+| Feature                    | Description                                        |
+| -------------------------- | -------------------------------------------------- |
+| **Secret Detection**       | Find exposed API keys, tokens, credentials         |
+| **Vulnerability Scanning** | SQL injection, XSS, command injection patterns     |
+| **PII Detection**          | Personal data exposure (emails, SSN, credit cards) |
+| **Compliance Checks**      | GDPR, HIPAA, PCI-DSS pattern matching              |
+| **Configuration Audit**    | Security hardening verification                    |
+| **Integrity Verification** | File checksum and tampering detection              |
 
 ## Architecture
 
@@ -42,13 +42,13 @@ The Audit Skill provides comprehensive security auditing, vulnerability detectio
 
 ## Severity Levels
 
-| Level | Color | Description | Response Time |
-|-------|-------|-------------|---------------|
-| **CRITICAL** | 🔴 | Active security risk | Immediate |
-| **HIGH** | 🟠 | Significant vulnerability | 24-48 hours |
-| **MEDIUM** | 🟡 | Potential security issue | 1-2 weeks |
-| **LOW** | 🔵 | Minor security concern | Next release |
-| **INFO** | ⚪ | Informational finding | As needed |
+| Level        | Color | Description               | Response Time |
+| ------------ | ----- | ------------------------- | ------------- |
+| **CRITICAL** | 🔴    | Active security risk      | Immediate     |
+| **HIGH**     | 🟠    | Significant vulnerability | 24-48 hours   |
+| **MEDIUM**   | 🟡    | Potential security issue  | 1-2 weeks     |
+| **LOW**      | 🔵    | Minor security concern    | Next release  |
+| **INFO**     | ⚪    | Informational finding     | As needed     |
 
 ## Quick Start
 
@@ -70,44 +70,44 @@ console.log(`High: ${report.summary.highFindings}`);
 
 ### Secret Patterns
 
-| Pattern | Example | Risk Level |
-|---------|---------|------------|
-| API Keys | `api_key="sk-..."` | CRITICAL |
-| AWS Keys | `AKIA...` | CRITICAL |
-| GitHub Tokens | `ghp_...` | CRITICAL |
-| JWT Tokens | `eyJ...` | HIGH |
-| Private Keys | `-----BEGIN PRIVATE KEY-----` | CRITICAL |
-| Passwords | `password="..."` | HIGH |
+| Pattern       | Example                       | Risk Level |
+| ------------- | ----------------------------- | ---------- |
+| API Keys      | `api_key="sk-..."`            | CRITICAL   |
+| AWS Keys      | `AKIA...`                     | CRITICAL   |
+| GitHub Tokens | `ghp_...`                     | CRITICAL   |
+| JWT Tokens    | `eyJ...`                      | HIGH       |
+| Private Keys  | `-----BEGIN PRIVATE KEY-----` | CRITICAL   |
+| Passwords     | `password="..."`              | HIGH       |
 
 ### Vulnerability Patterns
 
-| Vulnerability | Pattern | OWASP Category |
-|---------------|---------|----------------|
-| SQL Injection | `query(\`${...\}`)` | A03:2021 |
-| XSS | `.innerHTML =` | A03:2021 |
-| Command Injection | `exec(`${...}`)` | A03:2021 |
-| Path Traversal | `../../` | A01:2021 |
-| Insecure Deserialization | `eval()` | A08:2021 |
+| Vulnerability            | Pattern             | OWASP Category |
+| ------------------------ | ------------------- | -------------- |
+| SQL Injection            | `query(\`${...\}`)` | A03:2021       |
+| XSS                      | `.innerHTML =`      | A03:2021       |
+| Command Injection        | `exec(`${...}`)`    | A03:2021       |
+| Path Traversal           | `../../`            | A01:2021       |
+| Insecure Deserialization | `eval()`            | A08:2021       |
 
 ### PII Patterns
 
-| Data Type | Pattern | Regulation |
-|-----------|---------|------------|
-| Email | `[a-z]+@[a-z]+\.[a-z]+` | GDPR |
-| Phone | `\d{3}-\d{3}-\d{4}` | GDPR |
-| SSN | `\d{3}-\d{2}-\d{4}` | HIPAA |
-| Credit Card | `\d{4}-\d{4}-\d{4}-\d{4}` | PCI-DSS |
-| IP Address | `\d+\.\d+\.\d+\.\d+` | GDPR |
+| Data Type   | Pattern                   | Regulation |
+| ----------- | ------------------------- | ---------- |
+| Email       | `[a-z]+@[a-z]+\.[a-z]+`   | GDPR       |
+| Phone       | `\d{3}-\d{3}-\d{4}`       | GDPR       |
+| SSN         | `\d{3}-\d{2}-\d{4}`       | HIPAA      |
+| Credit Card | `\d{4}-\d{4}-\d{4}-\d{4}` | PCI-DSS    |
+| IP Address  | `\d+\.\d+\.\d+\.\d+`      | GDPR       |
 
 ## Use Cases
 
-| Use Case | Description | Output |
-|----------|-------------|--------|
-| **Pre-commit Scan** | Scan code before commit | Pass/Fail + findings |
-| **CI/CD Integration** | Automated security gate | Security gate status |
-| **Compliance Audit** | Verify regulatory compliance | Compliance report |
-| **Code Review** | Security-focused review | Annotated findings |
-| **Incident Response** | Post-breach investigation | Exposure report |
+| Use Case              | Description                  | Output               |
+| --------------------- | ---------------------------- | -------------------- |
+| **Pre-commit Scan**   | Scan code before commit      | Pass/Fail + findings |
+| **CI/CD Integration** | Automated security gate      | Security gate status |
+| **Compliance Audit**  | Verify regulatory compliance | Compliance report    |
+| **Code Review**       | Security-focused review      | Annotated findings   |
+| **Incident Response** | Post-breach investigation    | Exposure report      |
 
 ## Configuration
 
@@ -116,11 +116,7 @@ console.log(`High: ${report.summary.highFindings}`);
     "audit": {
         "enabled": true,
         "severityThreshold": "MEDIUM",
-        "excludePatterns": [
-            "node_modules/**",
-            "*.test.js",
-            "coverage/**"
-        ],
+        "excludePatterns": ["node_modules/**", "*.test.js", "coverage/**"],
         "customPatterns": {
             "secrets": [],
             "vulnerabilities": [],
@@ -142,10 +138,11 @@ console.log(`High: ${report.summary.highFindings}`);
 Performs comprehensive security audit on a directory.
 
 **Parameters:**
+
 - `directoryPath` (string): Path to directory
 - `options` (object): Audit options
-  - `depth`: number - Scan depth
-  - `excludePatterns`: string[] - Patterns to exclude
+    - `depth`: number - Scan depth
+    - `excludePatterns`: string[] - Patterns to exclude
 
 **Returns:** `Promise<AuditReport>`
 
@@ -154,8 +151,9 @@ Performs comprehensive security audit on a directory.
 Scans file for exposed secrets.
 
 **Parameters:**
+
 - `filePath` (string): Path to file or directory
-  - `patterns`: string[] - Custom patterns to scan
+    - `patterns`: string[] - Custom patterns to scan
 
 **Returns:** `Promise<SecretFinding[]>`
 
@@ -164,6 +162,7 @@ Scans file for exposed secrets.
 Checks file against compliance standards.
 
 **Parameters:**
+
 - `filePath` (string): Path to file
 - `standards`: string[] - Standards to check (GDPR, HIPAA, PCI-DSS)
 
@@ -208,13 +207,13 @@ Checks file against compliance standards.
 # GitHub Actions example
 - name: Security Audit
   run: |
-    node -e "
-    const { performSecurityAudit } = require('./skills/audit');
-    const report = await performSecurityAudit('.');
-    if (report.summary.criticalFindings > 0) {
-      process.exit(1);
-    }
-    "
+      node -e "
+      const { performSecurityAudit } = require('./skills/audit');
+      const report = await performSecurityAudit('.');
+      if (report.summary.criticalFindings > 0) {
+        process.exit(1);
+      }
+      "
 ```
 
 ## Contributing
@@ -232,9 +231,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Security
 
 If you discover a security vulnerability, please report it responsibly:
+
 - **Email:** security@auto-ai.dev
 - **Security Policy:** [SECURITY.md](SECURITY.md)
 
 ---
 
-*Built with ❤️ by the Auto-AI Team*
+_Built with ❤️ by the Auto-AI Team_

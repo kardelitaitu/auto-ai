@@ -149,17 +149,17 @@ Session isolation using `AsyncLocalStorage`:
 
 Autonomous AI agent for browser automation:
 
-| Module | Purpose |
-|--------|---------|
-| `gameRunner.js` | Main autonomous loop for strategy games |
-| `llmClient.js` | LLM communication (OpenRouter/Ollama) |
-| `actionEngine.js` | Execute actions with GhostCursor humanization |
-| `vision.js` | Screenshot analysis and visual perception |
-| `executor.js` | Task execution with retry logic |
-| `responseValidator.js` | Validate LLM responses |
-| `confidenceScorer.js` | Score action confidence |
-| `historyManager.js` | Manage conversation history |
-| `contextCompressor.js` | Compress AXTree for LLM context |
+| Module                 | Purpose                                       |
+| ---------------------- | --------------------------------------------- |
+| `gameRunner.js`        | Main autonomous loop for strategy games       |
+| `llmClient.js`         | LLM communication (OpenRouter/Ollama)         |
+| `actionEngine.js`      | Execute actions with GhostCursor humanization |
+| `vision.js`            | Screenshot analysis and visual perception     |
+| `executor.js`          | Task execution with retry logic               |
+| `responseValidator.js` | Validate LLM responses                        |
+| `confidenceScorer.js`  | Score action confidence                       |
+| `historyManager.js`    | Manage conversation history                   |
+| `contextCompressor.js` | Compress AXTree for LLM context               |
 
 ---
 
@@ -167,13 +167,13 @@ Autonomous AI agent for browser automation:
 
 High-level user actions with humanization:
 
-| Module | Purpose |
-|--------|---------|
-| `actions.js` | Main action exports |
-| `cursor.js` | Mouse movement with GhostCursor |
-| `navigation.js` | Page navigation with retry |
-| `scroll.js` | Natural scrolling patterns |
-| `wait.js` | Wait conditions (network, element, etc.) |
+| Module          | Purpose                                  |
+| --------------- | ---------------------------------------- |
+| `actions.js`    | Main action exports                      |
+| `cursor.js`     | Mouse movement with GhostCursor          |
+| `navigation.js` | Page navigation with retry               |
+| `scroll.js`     | Natural scrolling patterns               |
+| `wait.js`       | Wait conditions (network, element, etc.) |
 
 ---
 
@@ -194,11 +194,11 @@ class IxBrowserDiscover extends BaseDiscover {
 
 ## Configuration Files
 
-| File | Purpose |
-|------|---------|
-| `config/settings.json` | LLM endpoints, humanization settings, personas |
-| `config/browserAPI.json` | Browser vendor API ports |
-| `.env` | OpenRouter API key, local LLM config |
+| File                     | Purpose                                        |
+| ------------------------ | ---------------------------------------------- |
+| `config/settings.json`   | LLM endpoints, humanization settings, personas |
+| `config/browserAPI.json` | Browser vendor API ports                       |
+| `.env`                   | OpenRouter API key, local LLM config           |
 
 ---
 

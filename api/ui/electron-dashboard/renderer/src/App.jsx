@@ -77,21 +77,40 @@ function App() {
 
                 {/* Main Content Area */}
                 {!isCompact ? (
-                    <section style={{ display: 'flex', gap: '16px', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+                    <section
+                        style={{
+                            display: 'flex',
+                            gap: '16px',
+                            flex: 1,
+                            minHeight: 0,
+                            overflow: 'hidden',
+                        }}
+                    >
                         {/* Left: Tabbed Content Area */}
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
+                        <div
+                            style={{
+                                flex: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                minWidth: 0,
+                                overflow: 'hidden',
+                            }}
+                        >
                             <TabHeader
                                 activeTab={activeTab}
                                 setActiveTab={setActiveTab}
                                 sessions={sessions}
                                 recentTasks={data.recentTasks}
                             />
-                            <div className="glass" style={{
-                                flex: 1,
-                                padding: '16px',
-                                overflowY: 'auto',
-                                minHeight: '200px'
-                            }}>
+                            <div
+                                className="glass"
+                                style={{
+                                    flex: 1,
+                                    padding: '16px',
+                                    overflowY: 'auto',
+                                    minHeight: '200px',
+                                }}
+                            >
                                 <TabContent
                                     activeTab={activeTab}
                                     sessions={sessions}
@@ -101,28 +120,62 @@ function App() {
                         </div>
 
                         {/* Right: Mission Control Stats */}
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
+                        <div
+                            style={{
+                                width: '180px',
+                                flexShrink: 0,
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '10px',
+                                    flex: 1,
+                                }}
+                            >
                                 <TwitterStats twitterActions={twitterActions} />
                             </div>
                         </div>
                     </section>
                 ) : (
                     /* Compact Mode */
-                    <section style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-                            gap: '12px'
-                        }}>
-                            {sessions.map(session => (
+                    <section
+                        style={{
+                            gridColumn: '1 / -1',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '12px',
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+                                gap: '12px',
+                            }}
+                        >
+                            {sessions.map((session) => (
                                 <div key={session.id} className="glass" style={{ padding: '12px' }}>
-                                    <div style={{ fontSize: '12px', fontWeight: '500' }}>{session.profile || session.id}</div>
-                                    <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>{session.status}</div>
+                                    <div style={{ fontSize: '12px', fontWeight: '500' }}>
+                                        {session.profile || session.id}
+                                    </div>
+                                    <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>
+                                        {session.status}
+                                    </div>
                                 </div>
                             ))}
                             {sessions.length === 0 && (
-                                <div className="glass" style={{ padding: '20px', textAlign: 'center', color: 'var(--text-dim)' }}>
+                                <div
+                                    className="glass"
+                                    style={{
+                                        padding: '20px',
+                                        textAlign: 'center',
+                                        color: 'var(--text-dim)',
+                                    }}
+                                >
                                     No active sessions.
                                 </div>
                             )}

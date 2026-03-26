@@ -1,15 +1,14 @@
 ---
 name: read-file
-description:
-  Master file reading operations using Desktop Commander and generic read tools.
-  Use when reading files, analyzing file contents, handling large files, or
-  processing different file formats (text, PDF, DOCX, Excel, images).
-  Triggers on tasks involving file inspection, content extraction, or data
-  analysis from local files.
+description: Master file reading operations using Desktop Commander and generic read tools.
+    Use when reading files, analyzing file contents, handling large files, or
+    processing different file formats (text, PDF, DOCX, Excel, images).
+    Triggers on tasks involving file inspection, content extraction, or data
+    analysis from local files.
 license: MIT
 metadata:
-  author: Auto-AI Framework
-  version: '1.0.0'
+    author: Auto-AI Framework
+    version: '1.0.0'
 ---
 
 # File Reading Tool
@@ -50,16 +49,16 @@ Reference these guidelines when:
 
 ## Quick Reference
 
-| Task | Tool | Parameters |
-|------|------|------------|
-| Read entire text file | `Desktop_Commander_read_file` | path |
-| Read PDF file | `Desktop_Commander_read_file` | path |
-| Read Excel file | `Desktop_Commander_read_file` | path, sheet, range |
-| Read DOCX file | `Desktop_Commander_read_file` | path, offset, length |
-| Read image file | `Desktop_Commander_read_file` | path |
-| Read from URL | `Desktop_Commander_read_file` | path, isUrl=true |
-| List directory | `Desktop_Commander_list_directory` | path, depth |
-| Search files | `Desktop_Commander_start_search` | path, pattern |
+| Task                  | Tool                               | Parameters           |
+| --------------------- | ---------------------------------- | -------------------- |
+| Read entire text file | `Desktop_Commander_read_file`      | path                 |
+| Read PDF file         | `Desktop_Commander_read_file`      | path                 |
+| Read Excel file       | `Desktop_Commander_read_file`      | path, sheet, range   |
+| Read DOCX file        | `Desktop_Commander_read_file`      | path, offset, length |
+| Read image file       | `Desktop_Commander_read_file`      | path                 |
+| Read from URL         | `Desktop_Commander_read_file`      | path, isUrl=true     |
+| List directory        | `Desktop_Commander_list_directory` | path, depth          |
+| Search files          | `Desktop_Commander_start_search`   | path, pattern        |
 
 ## File Type Handling
 
@@ -86,7 +85,10 @@ const content = await Desktop_Commander_read_file('/path/to/file.js', { offset: 
 const content = await Desktop_Commander_read_file('/path/to/document.pdf');
 
 // Read specific pages
-const content = await Desktop_Commander_read_file('/path/to/document.pdf', { offset: 0, length: 5 });
+const content = await Desktop_Commander_read_file('/path/to/document.pdf', {
+    offset: 0,
+    length: 5,
+});
 ```
 
 ### Excel Files
@@ -95,13 +97,13 @@ const content = await Desktop_Commander_read_file('/path/to/document.pdf', { off
 // Read specific sheet
 const content = await Desktop_Commander_read_file('/path/to/data.xlsx', {
     sheet: 'Sheet1',
-    range: 'A1:D100'
+    range: 'A1:D100',
 });
 
 // Read by sheet index
 const content = await Desktop_Commander_read_file('/path/to/data.xlsx', {
-    sheet: '0',  // First sheet
-    range: 'A1:C50'
+    sheet: '0', // First sheet
+    range: 'A1:C50',
 });
 ```
 
@@ -113,8 +115,8 @@ const content = await Desktop_Commander_read_file('/path/to/document.docx');
 
 // Read raw XML for editing
 const content = await Desktop_Commander_read_file('/path/to/document.docx', {
-    offset: 1,  // Must be non-zero for raw XML
-    length: 100
+    offset: 1, // Must be non-zero for raw XML
+    length: 100,
 });
 ```
 
@@ -139,7 +141,7 @@ const chunkCount = await File_Context_Server_get_chunk_count('/path/to/large/fil
 // Read specific chunks
 for (let i = 0; i < chunkCount; i++) {
     const chunk = await File_Context_Server_read_context('/path/to/large/file.js', {
-        chunkNumber: i
+        chunkNumber: i,
     });
     // Process chunk
 }
@@ -157,11 +159,11 @@ let offset = 0;
 while (true) {
     const content = await Desktop_Commander_read_file('/path/to/large.log', {
         offset: offset,
-        length: linesPerChunk
+        length: linesPerChunk,
     });
-    
+
     if (!content || content.trim() === '') break;
-    
+
     // Process chunk
     offset += linesPerChunk;
 }
@@ -171,12 +173,12 @@ while (true) {
 
 ### Common Errors and Solutions
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| File not found | Invalid path | Check file exists with `filesystem_get_file_info` |
-| Permission denied | Insufficient permissions | Run with appropriate permissions |
-| Encoding issues | Wrong file encoding | Specify encoding parameter |
-| Timeout | Very large file | Use chunked reading |
+| Error             | Cause                    | Solution                                          |
+| ----------------- | ------------------------ | ------------------------------------------------- |
+| File not found    | Invalid path             | Check file exists with `filesystem_get_file_info` |
+| Permission denied | Insufficient permissions | Run with appropriate permissions                  |
+| Encoding issues   | Wrong file encoding      | Specify encoding parameter                        |
+| Timeout           | Very large file          | Use chunked reading                               |
 
 ### Robust Reading Pattern
 
@@ -188,16 +190,16 @@ async function safeReadFile(filePath, options = {}) {
         if (!info.exists) {
             throw new Error(`File not found: ${filePath}`);
         }
-        
+
         // Read with error handling
         const content = await Desktop_Commander_read_file(filePath, options);
         return { success: true, content, metadata: info };
     } catch (error) {
-        return { 
-            success: false, 
+        return {
+            success: false,
             error: error.message,
             filePath,
-            options 
+            options,
         };
     }
 }
@@ -231,7 +233,7 @@ console.log(`Size: ${info.size} bytes, Modified: ${info.mtime}`);
 // Read with context for better understanding
 const content = await Desktop_Commander_read_file('/path/to/file.js', {
     offset: 10,
-    length: 20  // Get 20 lines around line 10
+    length: 20, // Get 20 lines around line 10
 });
 ```
 
@@ -250,11 +252,7 @@ const context = await File_Context_Server_get_profile_context();
 ### Reading Multiple Files
 
 ```javascript
-const files = [
-    '/path/to/file1.js',
-    '/path/to/file2.js',
-    '/path/to/config.json'
-];
+const files = ['/path/to/file1.js', '/path/to/file2.js', '/path/to/config.json'];
 
 const contents = await Desktop_Commander_read_multiple_files(files);
 ```
@@ -266,11 +264,14 @@ const contents = await Desktop_Commander_read_multiple_files(files);
 const pid = await Desktop_Commander_start_process('python3 -i');
 
 // Analyze CSV file
-await Desktop_Commander_interact_with_process(pid, `
+await Desktop_Commander_interact_with_process(
+    pid,
+    `
 import pandas as pd
 df = pd.read_csv('/path/to/data.csv')
 print(df.describe())
-`);
+`
+);
 ```
 
 ### Searching File Contents
@@ -281,7 +282,7 @@ const results = await Desktop_Commander_start_search({
     path: '/project',
     pattern: 'TODO|FIXME',
     searchType: 'content',
-    contextLines: 2
+    contextLines: 2,
 });
 ```
 
@@ -300,11 +301,11 @@ const functionMatch = content.match(/function\s+myFunction[\s\S]*?^}/m);
 ```javascript
 // Read last 100 lines of log
 const logs = await Desktop_Commander_read_file('/var/log/app.log', {
-    offset: -100
+    offset: -100,
 });
 
 // Extract errors
-const errors = logs.split('\n').filter(line => line.includes('ERROR'));
+const errors = logs.split('\n').filter((line) => line.includes('ERROR'));
 ```
 
 ### Configuration Inspection
@@ -324,7 +325,7 @@ const config = JSON.parse(configContent);
 const files = await Desktop_Commander_start_search({
     path: '/project',
     pattern: '*.test.js',
-    searchType: 'files'
+    searchType: 'files',
 });
 
 // Read first test file
@@ -348,7 +349,7 @@ const result = await Desktop_Commander_read_file('/tmp/result');
 ```javascript
 // Specify encoding for text files
 const content = await Desktop_Commander_read_file('/path/to/file.txt', {
-    encoding: 'utf8'  // or 'latin1', 'ascii', etc.
+    encoding: 'utf8', // or 'latin1', 'ascii', etc.
 });
 ```
 
@@ -372,7 +373,7 @@ const chunkSize = Math.ceil(lineCount / 10);
 for (let i = 0; i < 10; i++) {
     const chunk = await Desktop_Commander_read_file('/path/to/large/file', {
         offset: i * chunkSize,
-        length: chunkSize
+        length: chunkSize,
     });
     // Process chunk immediately
 }

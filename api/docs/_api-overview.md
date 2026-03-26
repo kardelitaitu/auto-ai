@@ -27,9 +27,9 @@ This document provides a high-level overview of the Auto-AI Unified Browser Tool
 import { api } from './api/index.js';
 
 await api.withPage(page, async () => {
-  await api.init(page, { persona: 'casual' });
-  await api.goto('https://example.com');
-  await api.click('.login-button');
+    await api.init(page, { persona: 'casual' });
+    await api.goto('https://example.com');
+    await api.click('.login-button');
 });
 ```
 

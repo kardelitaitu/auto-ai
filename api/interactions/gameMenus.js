@@ -10,29 +10,29 @@
  * @module api/interactions/gameMenus
  */
 
-import { getPage as _getPage, isSessionActive } from '../core/context.js';
-import { createLogger } from '../core/logger.js';
-import { mathUtils as _mathUtils } from '../utils/math.js';
-import { clickAt } from './clickAt.js';
-import { wait } from './wait.js';
-import { SessionDisconnectedError } from '../core/errors.js';
+import { getPage as _getPage, isSessionActive } from "../core/context.js";
+import { createLogger } from "../core/logger.js";
+import { mathUtils as _mathUtils } from "../utils/math.js";
+import { clickAt } from "./clickAt.js";
+import { wait } from "./wait.js";
+import { SessionDisconnectedError } from "../core/errors.js";
 
-const logger = createLogger('api/interactions/gameMenus.js');
+const logger = createLogger("api/interactions/gameMenus.js");
 
 let menuConfig = {
-    build: { button: { x: 50, y: 500 } },
-    barracks: { x: 150, y: 250 },
-    house: { x: 200, y: 250 },
-    farm: { x: 250, y: 250 },
-    footman: { x: 100, y: 300 },
-    archer: { x: 150, y: 300 },
-    confirm: { x: 400, y: 450 },
-    cancel: { x: 300, y: 450 },
-    close: { x: 600, y: 50 },
-    research: { x: 300, y: 400 },
-    blacksmith: { x: 200, y: 350 },
-    weaponry: { x: 100, y: 200 },
-    armor: { x: 150, y: 200 },
+  build: { button: { x: 50, y: 500 } },
+  barracks: { x: 150, y: 250 },
+  house: { x: 200, y: 250 },
+  farm: { x: 250, y: 250 },
+  footman: { x: 100, y: 300 },
+  archer: { x: 150, y: 300 },
+  confirm: { x: 400, y: 450 },
+  cancel: { x: 300, y: 450 },
+  close: { x: 600, y: 50 },
+  research: { x: 300, y: 400 },
+  blacksmith: { x: 200, y: 350 },
+  weaponry: { x: 100, y: 200 },
+  armor: { x: 150, y: 200 },
 };
 
 /**
@@ -40,10 +40,10 @@ let menuConfig = {
  * @param {object} customConfig - Custom config to merge
  */
 export function loadConfig(customConfig) {
-    if (customConfig) {
-        menuConfig = { ...menuConfig, ...customConfig };
-        logger.info('Menu config loaded');
-    }
+  if (customConfig) {
+    menuConfig = { ...menuConfig, ...customConfig };
+    logger.info("Menu config loaded");
+  }
 }
 
 /**
@@ -52,11 +52,11 @@ export function loadConfig(customConfig) {
  * @returns {object|null}
  */
 function getPosition(key) {
-    const pos = menuConfig[key];
-    if (!pos) {
-        return null;
-    }
-    return pos.button || pos;
+  const pos = menuConfig[key];
+  if (!pos) {
+    return null;
+  }
+  return pos.button || pos;
 }
 
 /**
@@ -65,21 +65,21 @@ function getPosition(key) {
  * @returns {Promise<boolean>}
  */
 export async function openMenu(menuName) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    const pos = getPosition(menuName);
-    if (!pos) {
-        logger.warn(`Menu "${menuName}" not found in config`);
-        return false;
-    }
+  const pos = getPosition(menuName);
+  if (!pos) {
+    logger.warn(`Menu "${menuName}" not found in config`);
+    return false;
+  }
 
-    logger.info(`Opening menu: ${menuName}`);
-    await clickAt(pos.x, pos.y);
-    await wait(300);
+  logger.info(`Opening menu: ${menuName}`);
+  await clickAt(pos.x, pos.y);
+  await wait(300);
 
-    return true;
+  return true;
 }
 
 /**
@@ -88,21 +88,21 @@ export async function openMenu(menuName) {
  * @returns {Promise<boolean>}
  */
 export async function closeMenu(position = null) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    const pos = position || getPosition('close');
-    if (!pos) {
-        logger.warn('No close position defined');
-        return false;
-    }
+  const pos = position || getPosition("close");
+  if (!pos) {
+    logger.warn("No close position defined");
+    return false;
+  }
 
-    logger.info('Closing menu');
-    await clickAt(pos.x, pos.y);
-    await wait(200);
+  logger.info("Closing menu");
+  await clickAt(pos.x, pos.y);
+  await wait(200);
 
-    return true;
+  return true;
 }
 
 /**
@@ -111,21 +111,21 @@ export async function closeMenu(position = null) {
  * @returns {Promise<boolean>}
  */
 export async function selectItem(itemName) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    const pos = getPosition(itemName);
-    if (!pos) {
-        logger.warn(`Item "${itemName}" not found in config`);
-        return false;
-    }
+  const pos = getPosition(itemName);
+  if (!pos) {
+    logger.warn(`Item "${itemName}" not found in config`);
+    return false;
+  }
 
-    logger.info(`Selecting item: ${itemName}`);
-    await clickAt(pos.x, pos.y);
-    await wait(200);
+  logger.info(`Selecting item: ${itemName}`);
+  await clickAt(pos.x, pos.y);
+  await wait(200);
 
-    return true;
+  return true;
 }
 
 /**
@@ -133,21 +133,21 @@ export async function selectItem(itemName) {
  * @returns {Promise<boolean>}
  */
 export async function confirm() {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    const pos = getPosition('confirm');
-    if (!pos) {
-        logger.warn('Confirm position not defined');
-        return false;
-    }
+  const pos = getPosition("confirm");
+  if (!pos) {
+    logger.warn("Confirm position not defined");
+    return false;
+  }
 
-    logger.info('Confirming action');
-    await clickAt(pos.x, pos.y);
-    await wait(300);
+  logger.info("Confirming action");
+  await clickAt(pos.x, pos.y);
+  await wait(300);
 
-    return true;
+  return true;
 }
 
 /**
@@ -155,21 +155,21 @@ export async function confirm() {
  * @returns {Promise<boolean>}
  */
 export async function cancel() {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    const pos = getPosition('cancel');
-    if (!pos) {
-        logger.warn('Cancel position not defined');
-        return false;
-    }
+  const pos = getPosition("cancel");
+  if (!pos) {
+    logger.warn("Cancel position not defined");
+    return false;
+  }
 
-    logger.info('Cancelling action');
-    await clickAt(pos.x, pos.y);
-    await wait(200);
+  logger.info("Cancelling action");
+  await clickAt(pos.x, pos.y);
+  await wait(200);
 
-    return true;
+  return true;
 }
 
 /**
@@ -179,18 +179,18 @@ export async function cancel() {
  * @returns {Promise<boolean>}
  */
 export async function build(structureName, _options = {}) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    logger.info(`Building structure: ${structureName}`);
+  logger.info(`Building structure: ${structureName}`);
 
-    await openMenu('build');
-    await selectItem(structureName);
-    await confirm();
+  await openMenu("build");
+  await selectItem(structureName);
+  await confirm();
 
-    logger.info(`Building ${structureName}`);
-    return true;
+  logger.info(`Building ${structureName}`);
+  return true;
 }
 
 /**
@@ -200,28 +200,31 @@ export async function build(structureName, _options = {}) {
  * @returns {Promise<boolean>}
  */
 export async function train(unitName, options = {}) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const { count = 1, queue: _queue = 1 } = options;
+
+  logger.info(`Training unit: ${unitName} (count: ${count})`);
+
+  await openMenu("build");
+  await selectItem(unitName);
+
+  if (count > 1) {
+    for (let i = 1; i < count; i++) {
+      await clickAt(
+        menuConfig[unitName]?.x || 100,
+        (menuConfig[unitName]?.y || 300) + i * 30,
+      );
     }
+  }
 
-    const { count = 1, queue: _queue = 1 } = options;
+  await confirm();
+  await wait(500);
 
-    logger.info(`Training unit: ${unitName} (count: ${count})`);
-
-    await openMenu('build');
-    await selectItem(unitName);
-
-    if (count > 1) {
-        for (let i = 1; i < count; i++) {
-            await clickAt(menuConfig[unitName]?.x || 100, (menuConfig[unitName]?.y || 300) + (i * 30));
-        }
-    }
-
-    await confirm();
-    await wait(500);
-
-    logger.info(`Training ${count} ${unitName}(s)`);
-    return true;
+  logger.info(`Training ${count} ${unitName}(s)`);
+  return true;
 }
 
 /**
@@ -231,19 +234,19 @@ export async function train(unitName, options = {}) {
  * @returns {Promise<boolean>}
  */
 export async function research(building, upgrade) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    logger.info(`Researching ${upgrade} at ${building}`);
+  logger.info(`Researching ${upgrade} at ${building}`);
 
-    await openMenu('research');
-    await selectItem(building);
-    await selectItem(upgrade);
-    await confirm();
+  await openMenu("research");
+  await selectItem(building);
+  await selectItem(upgrade);
+  await confirm();
 
-    logger.info(`Researching ${upgrade}`);
-    return true;
+  logger.info(`Researching ${upgrade}`);
+  return true;
 }
 
 /**
@@ -252,46 +255,46 @@ export async function research(building, upgrade) {
  * @returns {Promise<boolean>}
  */
 export async function runSequence(sequence) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    logger.info(`Running menu sequence: ${sequence.length} steps`);
+  logger.info(`Running menu sequence: ${sequence.length} steps`);
 
-    for (const step of sequence) {
-        const { action, target, position } = step;
+  for (const step of sequence) {
+    const { action, target, position } = step;
 
-        switch (action) {
-            case 'open':
-                await openMenu(target);
-                break;
-            case 'select':
-                await selectItem(target);
-                break;
-            case 'click':
-                if (position) {
-                    await clickAt(position.x, position.y);
-                }
-                break;
-            case 'confirm':
-                await confirm();
-                break;
-            case 'cancel':
-                await cancel();
-                break;
-            case 'close':
-                await closeMenu(position);
-                break;
-            case 'wait':
-                await wait(target);
-                break;
-            default:
-                logger.warn(`Unknown action: ${action}`);
+    switch (action) {
+      case "open":
+        await openMenu(target);
+        break;
+      case "select":
+        await selectItem(target);
+        break;
+      case "click":
+        if (position) {
+          await clickAt(position.x, position.y);
         }
+        break;
+      case "confirm":
+        await confirm();
+        break;
+      case "cancel":
+        await cancel();
+        break;
+      case "close":
+        await closeMenu(position);
+        break;
+      case "wait":
+        await wait(target);
+        break;
+      default:
+        logger.warn(`Unknown action: ${action}`);
     }
+  }
 
-    logger.info('Menu sequence completed');
-    return true;
+  logger.info("Menu sequence completed");
+  return true;
 }
 
 /**
@@ -300,20 +303,20 @@ export async function runSequence(sequence) {
  * @param {object} position - { x, y }
  */
 export function setPosition(key, position) {
-    menuConfig[key] = position;
-    logger.debug(`Set position for "${key}":`, position);
+  menuConfig[key] = position;
+  logger.debug(`Set position for "${key}":`, position);
 }
 
 export default {
-    loadConfig,
-    openMenu,
-    closeMenu,
-    selectItem,
-    confirm,
-    cancel,
-    build,
-    train,
-    research,
-    runSequence,
-    setPosition,
+  loadConfig,
+  openMenu,
+  closeMenu,
+  selectItem,
+  confirm,
+  cancel,
+  build,
+  train,
+  research,
+  runSequence,
+  setPosition,
 };

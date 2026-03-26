@@ -50,6 +50,7 @@ sequenceDiagram
 ```
 
 **Loop Phases:**
+
 1. **Perception**: Capture page state via accessibility tree (`api.agent.see()`)
 2. **Reasoning**: LLM analyzes state and plans next action
 3. **Execution**: Perform action via `api.agent.do()`

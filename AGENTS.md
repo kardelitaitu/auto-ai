@@ -10,11 +10,11 @@ Quick reference guide for agents working on this repository.
 
 ## Entry Points
 
-| File | Purpose |
-|------|---------|
-| `main.js` | Primary automation CLI entry point for tasks like `pageview`, `follow`, and `retweet` |
-| `agent-main.js` | OWB / game-agent runner for strategy automation |
-| `api/index.js` | Unified API export: `import { api } from './api/index.js'` |
+| File            | Purpose                                                                               |
+| --------------- | ------------------------------------------------------------------------------------- |
+| `main.js`       | Primary automation CLI entry point for tasks like `pageview`, `follow`, and `retweet` |
+| `agent-main.js` | OWB / game-agent runner for strategy automation                                       |
+| `api/index.js`  | Unified API export: `import { api } from './api/index.js'`                            |
 
 ## Architecture at a Glance
 
@@ -85,18 +85,18 @@ node agent-main.js owb state-a x20
 
 ### Agent Modes (`agent-main.js`)
 
-| Mode | Description |
-|------|-------------|
-| `play` | Auto-play mode |
-| `rush` | Fast attack strategy |
-| `turtle` | Defensive strategy |
-| `economy` | Resource-focused |
-| `balanced` | Mixed strategy |
-| `build` | Construction focus |
-| `train` | Unit training focus |
-| `attack` | Aggressive combat |
-| `gather` | Resource collection |
-| `state-*` | Run a specific game state |
+| Mode       | Description               |
+| ---------- | ------------------------- |
+| `play`     | Auto-play mode            |
+| `rush`     | Fast attack strategy      |
+| `turtle`   | Defensive strategy        |
+| `economy`  | Resource-focused          |
+| `balanced` | Mixed strategy            |
+| `build`    | Construction focus        |
+| `train`    | Unit training focus       |
+| `attack`   | Aggressive combat         |
+| `gather`   | Resource collection       |
+| `state-*`  | Run a specific game state |
 
 ## Working Conventions
 
@@ -117,9 +117,9 @@ node agent-main.js owb state-a x20
 - Vitest uses `pool: 'forks'` because AsyncLocalStorage-based session isolation depends on worker-process isolation.
 - Coverage is expected for core paths, and `pnpm run test:coverage` is the standard pre-commit validation when touching core modules or tests.
 - Common test patterns include:
-  - mocking `api/core/logger.js` and other core dependencies with `vi.mock()`
-  - exercising `api.withPage()` blocks instead of calling raw `page.*`
-  - using isolated fixtures for agent and interaction modules
+    - mocking `api/core/logger.js` and other core dependencies with `vi.mock()`
+    - exercising `api.withPage()` blocks instead of calling raw `page.*`
+    - using isolated fixtures for agent and interaction modules
 
 ## Task System & Configuration
 
@@ -128,10 +128,10 @@ node agent-main.js owb state-a x20
 - Task payloads generally include task-specific parameters plus browser/session context.
 - Supported browsers include anti-detect vendors plus local Chrome/Brave/Edge/Vivaldi profiles.
 - Configuration is layered:
-  - `config/settings.json` for LLM, humanization, and persona settings
-  - `config/browserAPI.json` for browser vendor ports
-  - `config/timeouts.json` for timeout values
-  - `.env` for runtime environment variables
+    - `config/settings.json` for LLM, humanization, and persona settings
+    - `config/browserAPI.json` for browser vendor ports
+    - `config/timeouts.json` for timeout values
+    - `.env` for runtime environment variables
 - Humanization features include mouse movement, keystroke dynamics, scrolling patterns, idle behavior, PID-style movement tuning, and sensor noise spoofing.
 
 ## What To Inspect First

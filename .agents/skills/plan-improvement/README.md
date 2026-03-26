@@ -12,13 +12,13 @@ The Plan Improvement Skill provides structured approaches for analyzing existing
 
 ## Key Features
 
-| Feature | Description |
-|---------|-------------|
-| **Gap Analysis** | Identify gaps between current and desired state |
-| **Priority Matrix** | Rank improvements by impact and effort |
-| **Progress Tracking** | Monitor implementation status |
-| **ROI Calculation** | Estimate return on investment |
-| **Roadmap Planning** | Create phased implementation plans |
+| Feature               | Description                                     |
+| --------------------- | ----------------------------------------------- |
+| **Gap Analysis**      | Identify gaps between current and desired state |
+| **Priority Matrix**   | Rank improvements by impact and effort          |
+| **Progress Tracking** | Monitor implementation status                   |
+| **ROI Calculation**   | Estimate return on investment                   |
+| **Roadmap Planning**  | Create phased implementation plans              |
 
 ## Quick Start
 
@@ -32,7 +32,7 @@ const gaps = await analyzeGaps(currentState, desiredState);
 // Create improvement plan
 const plan = createImprovementPlan(gaps, {
     budget: 100,
-    timeline: '3 months'
+    timeline: '3 months',
 });
 ```
 
@@ -58,4 +58,4 @@ This project is licensed under the MIT License.
 
 ---
 
-*Built with ❤️ by the Auto-AI Team*
+_Built with ❤️ by the Auto-AI Team_

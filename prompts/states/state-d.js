@@ -3,19 +3,22 @@
  * Detection and action for upgrade menu with large white hex and cost
  */
 
-import { getBaseSystemPrompt, getActionSystemPrompt } from '../base/system.js';
-import { getMenuVisualGuide } from '../base/visual-guide.js';
-import { formatCoordinateConstraints } from '../shared/coordinates.js';
-import { validateCoordinateResponse, parseLLMJson } from '../shared/validation.js';
+import { getBaseSystemPrompt, getActionSystemPrompt } from "../base/system.js";
+import { getMenuVisualGuide } from "../base/visual-guide.js";
+import { formatCoordinateConstraints } from "../shared/coordinates.js";
+import {
+  validateCoordinateResponse,
+  parseLLMJson,
+} from "../shared/validation.js";
 
 /**
  * State D identifier and description
  */
 export const STATE_D = {
-    key: 'D',
-    name: 'BUILDING_MENU',
-    description: 'Building upgrade menu open',
-    action: 'Click upgrade button or close menu'
+  key: "D",
+  name: "BUILDING_MENU",
+  description: "Building upgrade menu open",
+  action: "Click upgrade button or close menu",
 };
 
 /**
@@ -25,13 +28,13 @@ export const STATE_D = {
  * @returns {object} Prompt with system and user messages
  */
 export function getDetectionPrompt(imageWidth, imageHeight) {
-    const systemPrompt = getBaseSystemPrompt({
-        imageWidth,
-        imageHeight,
-        task: 'Identify if this is State D (Building Upgrade Menu with large white hex)'
-    });
+  const systemPrompt = getBaseSystemPrompt({
+    imageWidth,
+    imageHeight,
+    task: "Identify if this is State D (Building Upgrade Menu with large white hex)",
+  });
 
-    const userPrompt = `
+  const userPrompt = `
 <YOUR JOB>
 Check if this image shows State D: Building Upgrade Menu.
 
@@ -51,12 +54,12 @@ Return ONLY this JSON:
 }
 `.trim();
 
-    return {
-        messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-        ]
-    };
+  return {
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  };
 }
 
 /**
@@ -68,13 +71,13 @@ Return ONLY this JSON:
  * @returns {object} Prompt with system and user messages
  */
 export function getActionPrompt(vprepWidth, vprepHeight, viewport, gold = 0) {
-    const systemPrompt = getActionSystemPrompt({
-        imageWidth: vprepWidth,
-        imageHeight: vprepHeight,
-        actionType: 'Click upgrade button if affordable, or close menu'
-    });
+  const systemPrompt = getActionSystemPrompt({
+    imageWidth: vprepWidth,
+    imageHeight: vprepHeight,
+    actionType: "Click upgrade button if affordable, or close menu",
+  });
 
-    const userPrompt = `
+  const userPrompt = `
 <YOUR JOB>
 Analyze the building upgrade menu and decide:
 1. If you have enough gold (${gold}), click the UPGRADE button
@@ -117,12 +120,12 @@ If menu not found:
 IMPORTANT: Only return the JSON object, nothing else.
 `.trim();
 
-    return {
-        messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-        ]
-    };
+  return {
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  };
 }
 
 /**
@@ -131,32 +134,44 @@ IMPORTANT: Only return the JSON object, nothing else.
  * @param {object} options - Validation options
  * @returns {object} Validation result
  */
-export function validateResponse(rawResponse, { vprepWidth, vprepHeight, viewportWidth: _viewportWidth, viewportHeight: _viewportHeight }) {
-    const parsed = parseLLMJson(rawResponse);
-    if (!parsed) {
-        return { valid: false, errors: ['Failed to parse JSON'], parsed: null };
-    }
+export function validateResponse(
+  rawResponse,
+  {
+    vprepWidth,
+    vprepHeight,
+    viewportWidth: _viewportWidth,
+    viewportHeight: _viewportHeight,
+  },
+) {
+  const parsed = parseLLMJson(rawResponse);
+  if (!parsed) {
+    return { valid: false, errors: ["Failed to parse JSON"], parsed: null };
+  }
 
-    // Check if menu not found
-    if (parsed.found === false) {
-        return { valid: true, errors: [], parsed: { found: false, x: 0, y: 0, action: null, cost: null } };
-    }
+  // Check if menu not found
+  if (parsed.found === false) {
+    return {
+      valid: true,
+      errors: [],
+      parsed: { found: false, x: 0, y: 0, action: null, cost: null },
+    };
+  }
 
-    // Validate coordinates in V-PREP space
-    const validation = validateCoordinateResponse(parsed, {
-        width: vprepWidth,
-        height: vprepHeight,
-        margin: 50
-    });
+  // Validate coordinates in V-PREP space
+  const validation = validateCoordinateResponse(parsed, {
+    width: vprepWidth,
+    height: vprepHeight,
+    margin: 50,
+  });
 
-    if (!validation.valid) {
-        return validation;
-    }
-
-    validation.parsed.action = parsed.action || 'upgrade';
-    validation.parsed.cost = parsed.cost || null;
-
+  if (!validation.valid) {
     return validation;
+  }
+
+  validation.parsed.action = parsed.action || "upgrade";
+  validation.parsed.cost = parsed.cost || null;
+
+  return validation;
 }
 
 /**
@@ -165,29 +180,34 @@ export function validateResponse(rawResponse, { vprepWidth, vprepHeight, viewpor
  * @returns {object} Complete prompt package
  */
 export function getStateDPrompt(options = {}) {
-    const {
-        vprepWidth = 640,
-        vprepHeight = 360,
-        viewportWidth = 1280,
-        viewportHeight = 720,
-        gold = 0,
-        mode = 'action'
-    } = options;
+  const {
+    vprepWidth = 640,
+    vprepHeight = 360,
+    viewportWidth = 1280,
+    viewportHeight = 720,
+    gold = 0,
+    mode = "action",
+  } = options;
 
-    if (mode === 'detection') {
-        return getDetectionPrompt(viewportWidth, viewportHeight);
-    }
+  if (mode === "detection") {
+    return getDetectionPrompt(viewportWidth, viewportHeight);
+  }
 
-    return getActionPrompt(vprepWidth, vprepHeight, {
-        width: viewportWidth,
-        height: viewportHeight
-    }, gold);
+  return getActionPrompt(
+    vprepWidth,
+    vprepHeight,
+    {
+      width: viewportWidth,
+      height: viewportHeight,
+    },
+    gold,
+  );
 }
 
 export default {
-    STATE_D,
-    getDetectionPrompt,
-    getActionPrompt,
-    validateResponse,
-    getStateDPrompt
+  STATE_D,
+  getDetectionPrompt,
+  getActionPrompt,
+  validateResponse,
+  getStateDPrompt,
 };

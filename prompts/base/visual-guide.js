@@ -7,65 +7,65 @@
  * Tile color definitions based on game screenshots
  */
 export const TILE_COLORS = {
-    OWN: {
-        primary: '#4A90D9',
-        description: 'Solid blue colored hexagons',
-        meaning: 'Your territory - can build here'
-    },
-    FREE: {
-        primary: '#808080',
-        secondary: '#606060',
-        description: 'Grey/dark hexagons',
-        meaning: 'Unowned - purchasable if has price number'
-    },
-    ENEMY: {
-        primary: '#FF6B6B',
-        secondary: '#FF4444',
-        description: 'Red/pink colored hexagons',
-        meaning: 'Enemy territory - can attack'
-    },
-    MENU: {
-        primary: '#FFFFFF',
-        secondary: '#F0F0F0',
-        description: 'White/light colored hexagons',
-        meaning: 'Menu or UI element'
-    }
+  OWN: {
+    primary: "#4A90D9",
+    description: "Solid blue colored hexagons",
+    meaning: "Your territory - can build here",
+  },
+  FREE: {
+    primary: "#808080",
+    secondary: "#606060",
+    description: "Grey/dark hexagons",
+    meaning: "Unowned - purchasable if has price number",
+  },
+  ENEMY: {
+    primary: "#FF6B6B",
+    secondary: "#FF4444",
+    description: "Red/pink colored hexagons",
+    meaning: "Enemy territory - can attack",
+  },
+  MENU: {
+    primary: "#FFFFFF",
+    secondary: "#F0F0F0",
+    description: "White/light colored hexagons",
+    meaning: "Menu or UI element",
+  },
 };
 
 /**
  * Price number visual characteristics
  */
 export const PRICE_NUMBERS = {
-    appearance: 'White or light colored text centered in grey hex',
-    examples: ['00', '50', '80', '100', '200', '1200'],
-    location: 'Centered within the hexagon',
-    meaning: 'Gold cost to purchase this tile'
+  appearance: "White or light colored text centered in grey hex",
+  examples: ["00", "50", "80", "100", "200", "1200"],
+  location: "Centered within the hexagon",
+  meaning: "Gold cost to purchase this tile",
 };
 
 /**
  * Building icons visual guide
  */
 export const BUILDING_ICONS = {
-    DEFENSIVE: {
-        description: 'Shield/fortress icon',
-        cost: 300,
-        color: 'Blue/teal icon on white hex'
-    },
-    MELEE: {
-        description: 'Sword/arrow icon',
-        cost: 200,
-        color: 'Blue/teal icon on white hex'
-    },
-    HEALER: {
-        description: 'Plus/cross icon',
-        cost: 500,
-        color: 'Blue/teal icon on white hex'
-    },
-    UPGRADE: {
-        description: 'Upward chevrons icon',
-        cost: 2400,
-        color: 'Blue icon on white hex with cost below'
-    }
+  DEFENSIVE: {
+    description: "Shield/fortress icon",
+    cost: 300,
+    color: "Blue/teal icon on white hex",
+  },
+  MELEE: {
+    description: "Sword/arrow icon",
+    cost: 200,
+    color: "Blue/teal icon on white hex",
+  },
+  HEALER: {
+    description: "Plus/cross icon",
+    cost: 500,
+    color: "Blue/teal icon on white hex",
+  },
+  UPGRADE: {
+    description: "Upward chevrons icon",
+    cost: 2400,
+    color: "Blue icon on white hex with cost below",
+  },
 };
 
 /**
@@ -73,7 +73,7 @@ export const BUILDING_ICONS = {
  * @returns {string} Visual guide text
  */
 export function getTileVisualGuide() {
-    return `
+  return `
 <TILE VISUAL GUIDE>
 
 BLUE TILES (YOUR TERRITORY):
@@ -107,7 +107,7 @@ WHITE TILES (MENU/UI):
  * @returns {string} Menu visual guide text
  */
 export function getMenuVisualGuide() {
-    return `
+  return `
 <MENU VISUAL GUIDE>
 
 BUILDING MENU (State D):
@@ -138,7 +138,7 @@ GOLD COUNTER:
  * @returns {string} Complete visual reference
  */
 export function getCompleteVisualReference() {
-    return `
+  return `
 ${getTileVisualGuide()}
 
 ${getMenuVisualGuide()}
@@ -153,10 +153,10 @@ ${getMenuVisualGuide()}
 }
 
 export default {
-    TILE_COLORS,
-    PRICE_NUMBERS,
-    BUILDING_ICONS,
-    getTileVisualGuide,
-    getMenuVisualGuide,
-    getCompleteVisualReference
+  TILE_COLORS,
+  PRICE_NUMBERS,
+  BUILDING_ICONS,
+  getTileVisualGuide,
+  getMenuVisualGuide,
+  getCompleteVisualReference,
 };

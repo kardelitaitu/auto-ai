@@ -6,18 +6,18 @@ Vitest testing strategy for the Auto-AI project.
 
 ## Test Commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm run test` | Run all tests |
-| `pnpm run test:unit` | Run unit tests only |
-| `pnpm run test:integration` | Run integration tests only |
-| `pnpm run test:edge-cases` | Run edge case tests |
-| `pnpm run test:all` | Run all test suites |
-| `pnpm run test:coverage` | Run with coverage (recommended) |
-| `pnpm run test:watch` | Watch mode for development |
-| `pnpm run test:verbose` | Detailed output |
-| `pnpm run lint` | Run ESLint |
-| `pnpm run lint:fix` | Auto-fix lint issues |
+| Command                     | Description                     |
+| --------------------------- | ------------------------------- |
+| `pnpm run test`             | Run all tests                   |
+| `pnpm run test:unit`        | Run unit tests only             |
+| `pnpm run test:integration` | Run integration tests only      |
+| `pnpm run test:edge-cases`  | Run edge case tests             |
+| `pnpm run test:all`         | Run all test suites             |
+| `pnpm run test:coverage`    | Run with coverage (recommended) |
+| `pnpm run test:watch`       | Watch mode for development      |
+| `pnpm run test:verbose`     | Detailed output                 |
+| `pnpm run lint`             | Run ESLint                      |
+| `pnpm run lint:fix`         | Auto-fix lint issues            |
 
 ---
 
@@ -60,6 +60,7 @@ api/tests/
 **Vitest Config**: `config/vitest.config.js`
 
 Key settings:
+
 - `pool: 'forks'` - Required for AsyncLocalStorage isolation
 - Coverage target: >90% line coverage
 
@@ -82,11 +83,13 @@ describe('myModule', () => {
 
     it('should do something', async () => {
         // Arrange
-        const mockPage = { /* mock page */ };
-        
+        const mockPage = {
+            /* mock page */
+        };
+
         // Act
         const result = await myFunction(mockPage);
-        
+
         // Assert
         expect(result).toBeDefined();
     });
@@ -101,8 +104,8 @@ vi.mock('../core/logger.js', () => ({
     createLogger: () => ({
         info: vi.fn(),
         error: vi.fn(),
-        debug: vi.fn()
-    })
+        debug: vi.fn(),
+    }),
 }));
 
 // Mock Playwright page
@@ -111,8 +114,8 @@ const mockPage = {
     click: vi.fn(),
     locator: vi.fn(() => ({
         click: vi.fn(),
-        fill: vi.fn()
-    }))
+        fill: vi.fn(),
+    })),
 };
 ```
 
@@ -120,13 +123,14 @@ const mockPage = {
 
 ## Coverage Targets
 
-| Metric | Target |
-|--------|--------|
-| Line coverage | >90% |
-| Branch coverage | >85% |
-| Function coverage | >90% |
+| Metric            | Target |
+| ----------------- | ------ |
+| Line coverage     | >90%   |
+| Branch coverage   | >85%   |
+| Function coverage | >90%   |
 
 View coverage:
+
 ```bash
 pnpm run test:coverage
 # Open coverage/index.html for visual report
@@ -161,7 +165,7 @@ describe('actionEngine', () => {
     it('should execute click action with GhostCursor', async () => {
         const result = await actionEngine.execute({
             type: 'click',
-            selector: '#btn'
+            selector: '#btn',
         });
         expect(result.success).toBe(true);
     });

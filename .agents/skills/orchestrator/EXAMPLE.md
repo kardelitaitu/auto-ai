@@ -30,47 +30,47 @@ class BasicSupervisor {
             agent: worker,
             capabilities,
             status: 'idle',
-            tasksCompleted: 0
+            tasksCompleted: 0,
         });
     }
 
     async delegate(task) {
         // Find best worker based on capabilities
         const worker = this.findBestWorker(task.requirements || []);
-        
+
         if (!worker) {
             throw new Error('No suitable worker found');
         }
 
         console.log(`Delegating to: ${worker.name}`);
-        
+
         worker.status = 'busy';
         const startTime = Date.now();
-        
+
         try {
             const result = await worker.agent.execute(task);
             worker.status = 'idle';
             worker.tasksCompleted++;
-            
+
             this.taskHistory.push({
                 task: task.id,
                 worker: worker.name,
                 duration: Date.now() - startTime,
-                success: true
+                success: true,
             });
-            
+
             return result;
         } catch (error) {
             worker.status = 'idle';
-            
+
             this.taskHistory.push({
                 task: task.id,
                 worker: worker.name,
                 duration: Date.now() - startTime,
                 success: false,
-                error: error.message
+                error: error.message,
             });
-            
+
             throw error;
         }
     }
@@ -81,11 +81,9 @@ class BasicSupervisor {
 
         for (const [name, worker] of this.workers) {
             if (worker.status !== 'idle') continue;
-            
-            const score = requirements.filter(r => 
-                worker.capabilities.includes(r)
-            ).length;
-            
+
+            const score = requirements.filter((r) => worker.capabilities.includes(r)).length;
+
             if (score > bestScore) {
                 bestScore = score;
                 bestMatch = { name, ...worker };
@@ -98,9 +96,10 @@ class BasicSupervisor {
     getStats() {
         return {
             totalWorkers: this.workers.size,
-            idleWorkers: Array.from(this.workers.values()).filter(w => w.status === 'idle').length,
-            tasksCompleted: this.taskHistory.filter(t => t.success).length,
-            tasksFailed: this.taskHistory.filter(t => !t.success).length
+            idleWorkers: Array.from(this.workers.values()).filter((w) => w.status === 'idle')
+                .length,
+            tasksCompleted: this.taskHistory.filter((t) => t.success).length,
+            tasksFailed: this.taskHistory.filter((t) => !t.success).length,
         };
     }
 }
@@ -113,7 +112,7 @@ supervisor.registerWorker('coder', codeAgent, ['code', 'test']);
 const result = await supervisor.delegate({
     id: 'task-001',
     requirements: ['research'],
-    description: 'Research AI agent patterns'
+    description: 'Research AI agent patterns',
 });
 
 console.log('Stats:', supervisor.getStats());
@@ -138,7 +137,7 @@ class DataPipeline {
             name,
             processor,
             skipOnError: options.skipOnError || false,
-            timeout: options.timeout || 30000
+            timeout: options.timeout || 30000,
         });
     }
 
@@ -148,32 +147,31 @@ class DataPipeline {
 
         for (const stage of this.stages) {
             console.log(`Processing stage: ${stage.name}`);
-            
+
             const startTime = Date.now();
-            
+
             try {
                 const result = await Promise.race([
                     stage.processor(data),
-                    new Promise((_, reject) => 
+                    new Promise((_, reject) =>
                         setTimeout(() => reject(new Error('Timeout')), stage.timeout)
-                    )
+                    ),
                 ]);
 
                 data = result;
-                
+
                 this.results.push({
                     stage: stage.name,
                     success: true,
                     duration: Date.now() - startTime,
-                    outputSize: JSON.stringify(result).length
+                    outputSize: JSON.stringify(result).length,
                 });
-
             } catch (error) {
                 this.results.push({
                     stage: stage.name,
                     success: false,
                     duration: Date.now() - startTime,
-                    error: error.message
+                    error: error.message,
                 });
 
                 if (!stage.skipOnError) {
@@ -181,7 +179,7 @@ class DataPipeline {
                         success: false,
                         failedAt: stage.name,
                         error: error.message,
-                        results: this.results
+                        results: this.results,
                     };
                 }
             }
@@ -191,7 +189,7 @@ class DataPipeline {
             success: true,
             output: data,
             results: this.results,
-            totalTime: this.results.reduce((sum, r) => sum + r.duration, 0)
+            totalTime: this.results.reduce((sum, r) => sum + r.duration, 0),
         };
     }
 }
@@ -208,7 +206,7 @@ pipeline.addStage('transform', async (data) => {
     return {
         ...data,
         processed: true,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     };
 });
 
@@ -241,22 +239,16 @@ class VotingOrchestrator {
 
     async execute(task) {
         console.log(`Distributing to ${this.agents.length} agents`);
-        
+
         // Fan out: Execute all agents in parallel
-        const promises = this.agents.map(agent => 
-            this.executeWithTimeout(agent, task)
-        );
+        const promises = this.agents.map((agent) => this.executeWithTimeout(agent, task));
 
         const results = await Promise.allSettled(promises);
-        
+
         // Separate successes and failures
-        const successful = results
-            .filter(r => r.status === 'fulfilled')
-            .map(r => r.value);
-        
-        const failed = results
-            .filter(r => r.status === 'rejected')
-            .map(r => r.reason.message);
+        const successful = results.filter((r) => r.status === 'fulfilled').map((r) => r.value);
+
+        const failed = results.filter((r) => r.status === 'rejected').map((r) => r.reason.message);
 
         console.log(`${successful.length} succeeded, ${failed.length} failed`);
 
@@ -267,16 +259,16 @@ class VotingOrchestrator {
     async executeWithTimeout(agent, task) {
         return Promise.race([
             agent.execute(task),
-            new Promise((_, reject) => 
+            new Promise((_, reject) =>
                 setTimeout(() => reject(new Error('Agent timeout')), this.timeout)
-            )
+            ),
         ]);
     }
 
     aggregateResults(results, errors) {
         // Group similar responses
         const groups = new Map();
-        
+
         results.forEach((result, index) => {
             const key = JSON.stringify(result);
             if (!groups.has(key)) {
@@ -289,17 +281,16 @@ class VotingOrchestrator {
         // Find majority
         const sorted = Array.from(groups.values()).sort((a, b) => b.count - a.count);
         const majority = sorted[0];
-        
-        const hasConsensus = majority && 
-            (majority.count / results.length) >= this.threshold;
+
+        const hasConsensus = majority && majority.count / results.length >= this.threshold;
 
         return {
             consensus: hasConsensus,
             value: majority?.value,
-            confidence: majority ? (majority.count / results.length) : 0,
+            confidence: majority ? majority.count / results.length : 0,
             votes: results.length,
             dissenters: results.length - (majority?.count || 0),
-            errors
+            errors,
         };
     }
 }
@@ -312,7 +303,7 @@ voting.addAgent(reviewerAgent3);
 
 const result = await voting.execute({
     type: 'review',
-    code: 'function add(a, b) { return a + b; }'
+    code: 'function add(a, b) { return a + b; }',
 });
 
 console.log(`Consensus: ${result.consensus} (${result.confidence * 100}% agreement)`);
@@ -337,7 +328,7 @@ class MessageBus {
         this.agents.set(id, {
             agent,
             inbox: [],
-            status: 'ready'
+            status: 'ready',
         });
     }
 
@@ -360,15 +351,15 @@ class MessageBus {
             to,
             type: message.type,
             content: message.content,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         };
 
         recipient.inbox.push(msg);
-        
+
         // Notify handlers
         const handlers = this.handlers.get(message.type) || [];
-        await Promise.all(handlers.map(h => h(msg)));
-        
+        await Promise.all(handlers.map((h) => h(msg)));
+
         return msg.id;
     }
 
@@ -387,7 +378,7 @@ class MessageBus {
         if (!agent) return [];
 
         const processed = [];
-        
+
         while (agent.inbox.length > 0) {
             const message = agent.inbox.shift();
             try {
@@ -397,7 +388,7 @@ class MessageBus {
                 processed.push({ message, error: error.message, success: false });
             }
         }
-        
+
         return processed;
     }
 
@@ -420,13 +411,13 @@ bus.on('task', async (msg) => {
 // Send message
 await bus.send('coordinator', 'worker1', {
     type: 'task',
-    content: { action: 'analyze', data: '...' }
+    content: { action: 'analyze', data: '...' },
 });
 
 // Broadcast
 await bus.broadcast('coordinator', {
     type: 'status-check',
-    content: { query: 'ready?' }
+    content: { query: 'ready?' },
 });
 ```
 
@@ -451,12 +442,12 @@ class AgentLoadBalancer {
             agent,
             weight,
             activeTasks: 0,
-            totalTasks: 0
+            totalTasks: 0,
         });
         this.metrics.set(agent.id || this.agents.length, {
             completed: 0,
             failed: 0,
-            totalTime: 0
+            totalTime: 0,
         });
     }
 
@@ -480,7 +471,7 @@ class AgentLoadBalancer {
     }
 
     leastConnections() {
-        return this.agents.reduce((min, agent) => 
+        return this.agents.reduce((min, agent) =>
             agent.activeTasks < min.activeTasks ? agent : min
         );
     }
@@ -488,41 +479,41 @@ class AgentLoadBalancer {
     weighted() {
         const total = this.agents.reduce((sum, a) => sum + a.weight, 0);
         let random = Math.random() * total;
-        
+
         for (const agent of this.agents) {
             random -= agent.weight;
             if (random <= 0) return agent;
         }
-        
+
         return this.agents[0];
     }
 
     async execute(task) {
         const agentInfo = this.getNext();
         agentInfo.activeTasks++;
-        
+
         const start = Date.now();
-        
+
         try {
             const result = await agentInfo.agent.execute(task);
             const duration = Date.now() - start;
-            
+
             agentInfo.activeTasks--;
             agentInfo.totalTasks++;
-            
+
             const metrics = this.metrics.get(agentInfo.agent.id);
             if (metrics) {
                 metrics.completed++;
                 metrics.totalTime += duration;
             }
-            
+
             return result;
         } catch (error) {
             agentInfo.activeTasks--;
-            
+
             const metrics = this.metrics.get(agentInfo.agent.id);
             if (metrics) metrics.failed++;
-            
+
             throw error;
         }
     }
@@ -532,14 +523,14 @@ class AgentLoadBalancer {
             id: agent.agent.id || i,
             active: agent.activeTasks,
             total: agent.totalTasks,
-            weight: agent.weight
+            weight: agent.weight,
         }));
     }
 }
 
 // Usage
 const balancer = new AgentLoadBalancer('least-connections');
-balancer.add(agent1, 2);  // Higher capacity
+balancer.add(agent1, 2); // Higher capacity
 balancer.add(agent1, 1);
 balancer.add(agent1, 1);
 
@@ -568,7 +559,7 @@ class FaultTolerantOrchestrator {
             threshold: options.threshold || 5,
             state: 'closed', // closed, open, half-open
             lastFailure: null,
-            resetTimeout: options.resetTimeout || 30000
+            resetTimeout: options.resetTimeout || 30000,
         };
     }
 
@@ -587,7 +578,7 @@ class FaultTolerantOrchestrator {
         }
 
         let lastError;
-        
+
         // Try primary with retries
         for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
             try {
@@ -597,7 +588,7 @@ class FaultTolerantOrchestrator {
             } catch (error) {
                 lastError = error;
                 this.recordFailure();
-                
+
                 if (attempt < this.maxRetries) {
                     await this.delay(Math.pow(2, attempt) * 1000);
                 }
@@ -612,17 +603,17 @@ class FaultTolerantOrchestrator {
         for (const fallback of this.fallbacks) {
             try {
                 const result = await fallback.execute(task);
-                return { 
-                    success: true, 
-                    result, 
+                return {
+                    success: true,
+                    result,
                     agent: fallback.id,
-                    usedFallback: true 
+                    usedFallback: true,
                 };
             } catch (error) {
                 // Continue to next fallback
             }
         }
-        
+
         return { success: false, error: 'All agents failed' };
     }
 
@@ -634,14 +625,14 @@ class FaultTolerantOrchestrator {
     recordFailure() {
         this.circuitBreaker.failures++;
         this.circuitBreaker.lastFailure = Date.now();
-        
+
         if (this.circuitBreaker.failures >= this.circuitBreaker.threshold) {
             this.circuitBreaker.state = 'open';
         }
     }
 
     delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 }
 
@@ -649,7 +640,7 @@ class FaultTolerantOrchestrator {
 const orchestrator = new FaultTolerantOrchestrator({
     maxRetries: 2,
     threshold: 3,
-    resetTimeout: 60000
+    resetTimeout: 60000,
 });
 
 orchestrator.addFallback(backupAgent);

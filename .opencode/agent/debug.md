@@ -3,28 +3,28 @@ description: Debugging, troubleshooting, and problem diagnosis for the Auto-AI f
 mode: subagent
 temperature: 0.1
 tools:
-  read: true
-  edit: false
-  write: false
-  bash: true
-  glob: true
-  grep: true
-  webfetch: true
-  skill: true
+    read: true
+    edit: false
+    write: false
+    bash: true
+    glob: true
+    grep: true
+    webfetch: true
+    skill: true
 permission:
-  bash:
-    "grep *": allow
-    "find *": allow
-    "cat *": allow
-    "head *": allow
-    "tail *": allow
-    "wc *": allow
-    "ps *": allow
-    "netstat *": allow
-    "lsof *": allow
-    "*": ask
-  edit: deny
-  write: deny
+    bash:
+        'grep *': allow
+        'find *': allow
+        'cat *': allow
+        'head *': allow
+        'tail *': allow
+        'wc *': allow
+        'ps *': allow
+        'netstat *': allow
+        'lsof *': allow
+        '*': ask
+    edit: deny
+    write: deny
 steps: 30
 hidden: false
 color: warning
@@ -64,21 +64,25 @@ Follow this systematic approach:
 ## Common Auto-AI Issues
 
 ### Browser Discovery Failures
+
 - Check if browser processes are running
 - Verify debug ports (9222, 9223, 18800+) are open
 - Test CDP connection with `curl http://localhost:9222/json`
 
 ### Session Disconnection
+
 - Verify browser process is still alive
 - Check for memory pressure (heap usage > 80%)
 - Look for "Target closed" or "disconnected" in logs
 
 ### Task Execution Failures
+
 - Timeout errors: Check page load times, network
 - Selector errors: Verify element exists, add waitVisible()
 - Navigation errors: Check URL validity, redirect loops
 
 ### LLM/Agent Errors
+
 - Check API key validity and model availability
 - Look for rate limiting or quota exceeded
 - Verify model endpoint is responsive
@@ -105,6 +109,7 @@ curl -s http://localhost:9222/json | head -20
 ## Log Analysis Pattern
 
 Look for these patterns in logs:
+
 - `Session disconnected` - Browser connection lost
 - `Timeout` - Operation exceeded time limit
 - `Element not found` - Selector didn't match

@@ -3,19 +3,25 @@
  * Detection and action for three building choices menu
  */
 
-import { getBaseSystemPrompt, getActionSystemPrompt } from '../base/system.js';
-import { getMenuVisualGuide, BUILDING_ICONS as _BUILDING_ICONS } from '../base/visual-guide.js';
-import { formatCoordinateConstraints } from '../shared/coordinates.js';
-import { validateCoordinateResponse, parseLLMJson } from '../shared/validation.js';
+import { getBaseSystemPrompt, getActionSystemPrompt } from "../base/system.js";
+import {
+  getMenuVisualGuide,
+  BUILDING_ICONS as _BUILDING_ICONS,
+} from "../base/visual-guide.js";
+import { formatCoordinateConstraints } from "../shared/coordinates.js";
+import {
+  validateCoordinateResponse,
+  parseLLMJson,
+} from "../shared/validation.js";
 
 /**
  * State E identifier and description
  */
 export const STATE_E = {
-    key: 'E',
-    name: 'BUILD_OPTIONS',
-    description: 'Three building options menu',
-    action: 'Select building to construct'
+  key: "E",
+  name: "BUILD_OPTIONS",
+  description: "Three building options menu",
+  action: "Select building to construct",
 };
 
 /**
@@ -25,13 +31,13 @@ export const STATE_E = {
  * @returns {object} Prompt with system and user messages
  */
 export function getDetectionPrompt(imageWidth, imageHeight) {
-    const systemPrompt = getBaseSystemPrompt({
-        imageWidth,
-        imageHeight,
-        task: 'Identify if this is State E (Build Options with three hexagonal choices)'
-    });
+  const systemPrompt = getBaseSystemPrompt({
+    imageWidth,
+    imageHeight,
+    task: "Identify if this is State E (Build Options with three hexagonal choices)",
+  });
 
-    const userPrompt = `
+  const userPrompt = `
 <YOUR JOB>
 Check if this image shows State E: Build Options Menu with three hexagonal choices.
 
@@ -51,12 +57,12 @@ Return ONLY this JSON:
 }
 `.trim();
 
-    return {
-        messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-        ]
-    };
+  return {
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  };
 }
 
 /**
@@ -68,14 +74,20 @@ Return ONLY this JSON:
  * @param {string} strategy - Building strategy ('balanced', 'defensive', 'offensive')
  * @returns {object} Prompt with system and user messages
  */
-export function getActionPrompt(vprepWidth, vprepHeight, viewport, gold = 0, strategy = 'balanced') {
-    const systemPrompt = getActionSystemPrompt({
-        imageWidth: vprepWidth,
-        imageHeight: vprepHeight,
-        actionType: 'Select the best affordable building from three options'
-    });
+export function getActionPrompt(
+  vprepWidth,
+  vprepHeight,
+  viewport,
+  gold = 0,
+  strategy = "balanced",
+) {
+  const systemPrompt = getActionSystemPrompt({
+    imageWidth: vprepWidth,
+    imageHeight: vprepHeight,
+    actionType: "Select the best affordable building from three options",
+  });
 
-    const userPrompt = `
+  const userPrompt = `
 <YOUR JOB>
 Analyze the three building options and select the best one you can afford.
 
@@ -121,12 +133,12 @@ If none affordable:
 IMPORTANT: Only return the JSON object, nothing else.
 `.trim();
 
-    return {
-        messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-        ]
-    };
+  return {
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  };
 }
 
 /**
@@ -135,39 +147,51 @@ IMPORTANT: Only return the JSON object, nothing else.
  * @param {object} options - Validation options
  * @returns {object} Validation result
  */
-export function validateResponse(rawResponse, { vprepWidth, vprepHeight, viewportWidth: _viewportWidth, viewportHeight: _viewportHeight }) {
-    const parsed = parseLLMJson(rawResponse);
-    if (!parsed) {
-        return { valid: false, errors: ['Failed to parse JSON'], parsed: null };
-    }
+export function validateResponse(
+  rawResponse,
+  {
+    vprepWidth,
+    vprepHeight,
+    viewportWidth: _viewportWidth,
+    viewportHeight: _viewportHeight,
+  },
+) {
+  const parsed = parseLLMJson(rawResponse);
+  if (!parsed) {
+    return { valid: false, errors: ["Failed to parse JSON"], parsed: null };
+  }
 
-    // Check if no affordable building
-    if (parsed.found === false) {
-        return { valid: true, errors: [], parsed: { found: false, x: 0, y: 0, building: null, cost: null } };
-    }
+  // Check if no affordable building
+  if (parsed.found === false) {
+    return {
+      valid: true,
+      errors: [],
+      parsed: { found: false, x: 0, y: 0, building: null, cost: null },
+    };
+  }
 
-    // Validate coordinates in V-PREP space
-    const validation = validateCoordinateResponse(parsed, {
-        width: vprepWidth,
-        height: vprepHeight,
-        margin: 50
-    });
+  // Validate coordinates in V-PREP space
+  const validation = validateCoordinateResponse(parsed, {
+    width: vprepWidth,
+    height: vprepHeight,
+    margin: 50,
+  });
 
-    if (!validation.valid) {
-        return validation;
-    }
-
-    // Validate building type
-    const validBuildings = ['defensive', 'melee', 'healer'];
-    if (parsed.building && !validBuildings.includes(parsed.building)) {
-        validation.errors.push(`Invalid building type: ${parsed.building}`);
-        validation.valid = false;
-    }
-
-    validation.parsed.building = parsed.building || null;
-    validation.parsed.cost = parsed.cost || null;
-
+  if (!validation.valid) {
     return validation;
+  }
+
+  // Validate building type
+  const validBuildings = ["defensive", "melee", "healer"];
+  if (parsed.building && !validBuildings.includes(parsed.building)) {
+    validation.errors.push(`Invalid building type: ${parsed.building}`);
+    validation.valid = false;
+  }
+
+  validation.parsed.building = parsed.building || null;
+  validation.parsed.cost = parsed.cost || null;
+
+  return validation;
 }
 
 /**
@@ -176,30 +200,36 @@ export function validateResponse(rawResponse, { vprepWidth, vprepHeight, viewpor
  * @returns {object} Complete prompt package
  */
 export function getStateEPrompt(options = {}) {
-    const {
-        vprepWidth = 640,
-        vprepHeight = 360,
-        viewportWidth = 1280,
-        viewportHeight = 720,
-        gold = 0,
-        strategy = 'balanced',
-        mode = 'action'
-    } = options;
+  const {
+    vprepWidth = 640,
+    vprepHeight = 360,
+    viewportWidth = 1280,
+    viewportHeight = 720,
+    gold = 0,
+    strategy = "balanced",
+    mode = "action",
+  } = options;
 
-    if (mode === 'detection') {
-        return getDetectionPrompt(viewportWidth, viewportHeight);
-    }
+  if (mode === "detection") {
+    return getDetectionPrompt(viewportWidth, viewportHeight);
+  }
 
-    return getActionPrompt(vprepWidth, vprepHeight, {
-        width: viewportWidth,
-        height: viewportHeight
-    }, gold, strategy);
+  return getActionPrompt(
+    vprepWidth,
+    vprepHeight,
+    {
+      width: viewportWidth,
+      height: viewportHeight,
+    },
+    gold,
+    strategy,
+  );
 }
 
 export default {
-    STATE_E,
-    getDetectionPrompt,
-    getActionPrompt,
-    validateResponse,
-    getStateEPrompt
+  STATE_E,
+  getDetectionPrompt,
+  getActionPrompt,
+  validateResponse,
+  getStateEPrompt,
 };

@@ -12,14 +12,14 @@ The Orchestrator Skill enables coordinated execution of tasks across multiple AI
 
 ## Key Features
 
-| Feature | Description |
-|---------|-------------|
+| Feature                | Description                              |
+| ---------------------- | ---------------------------------------- |
 | **Supervisor Pattern** | Central coordinator delegates to workers |
-| **Pipeline Pattern** | Sequential multi-stage processing |
-| **Fan-Out/Fan-In** | Parallel execution with consensus |
-| **Message Passing** | Inter-agent communication |
-| **Load Balancing** | Distribute tasks evenly |
-| **Fault Tolerance** | Automatic retry and fallback |
+| **Pipeline Pattern**   | Sequential multi-stage processing        |
+| **Fan-Out/Fan-In**     | Parallel execution with consensus        |
+| **Message Passing**    | Inter-agent communication                |
+| **Load Balancing**     | Distribute tasks evenly                  |
+| **Fault Tolerance**    | Automatic retry and fallback             |
 
 ## Architecture
 
@@ -42,12 +42,12 @@ The Orchestrator Skill enables coordinated execution of tasks across multiple AI
 
 ## Patterns
 
-| Pattern | Best For | Complexity |
-|---------|----------|------------|
-| Supervisor | Task delegation | Medium |
-| Pipeline | Sequential processing | Low |
-| Fan-Out/Fan-In | Parallel voting | Medium |
-| Hierarchical | Complex tasks | High |
+| Pattern        | Best For              | Complexity |
+| -------------- | --------------------- | ---------- |
+| Supervisor     | Task delegation       | Medium     |
+| Pipeline       | Sequential processing | Low        |
+| Fan-Out/Fan-In | Parallel voting       | Medium     |
+| Hierarchical   | Complex tasks         | High       |
 
 ## Quick Start
 
@@ -73,6 +73,7 @@ const result = await pipeline.execute(input);
 Central coordinator for task delegation.
 
 **Methods:**
+
 - `registerWorker(name, agent)` - Register a worker agent
 - `delegate(task)` - Delegate task to best worker
 - `selectWorker(requirements)` - Select worker by capability
@@ -82,6 +83,7 @@ Central coordinator for task delegation.
 Sequential multi-stage processing.
 
 **Methods:**
+
 - `addStage(name, agent, transform)` - Add pipeline stage
 - `execute(input)` - Execute pipeline
 
@@ -90,6 +92,7 @@ Sequential multi-stage processing.
 Parallel execution with result aggregation.
 
 **Methods:**
+
 - `addAgent(agent)` - Add agent to fan-out
 - `execute(task)` - Execute and aggregate results
 
@@ -120,4 +123,4 @@ This project is licensed under the MIT License.
 
 ---
 
-*Built with ❤️ by the Auto-AI Team*
+_Built with ❤️ by the Auto-AI Team_

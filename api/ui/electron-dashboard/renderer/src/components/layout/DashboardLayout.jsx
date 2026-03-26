@@ -13,9 +13,7 @@ const DashboardLayout = ({ children, header }) => {
                     </>
                 )}
             </header>
-            <main className="sessions-grid">
-                {children}
-            </main>
+            <main className="sessions-grid">{children}</main>
         </div>
     );
 };

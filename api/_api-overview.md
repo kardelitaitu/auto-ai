@@ -131,3 +131,50 @@ Intercept and modify API actions using a pipeline.
 Listen to internal API state transitions via `api.events`.
 
 - **Common Hooks**: `before:navigate`, `after:click`, `on:detection`, `on:error`.
+
+---
+
+## 📝 Code Conventions
+
+### Export Patterns
+
+The codebase follows consistent export patterns based on module type:
+
+**Pattern A - Named Exports Only** (Interaction modules)
+```javascript
+// api/interactions/actions.js
+export function click() { }
+export function type() { }
+```
+
+**Pattern B - Default Object Export** (Utility modules)
+```javascript
+// api/utils/math.js
+export const mathUtils = { gaussian, randomInRange, /* ... */ };
+export default mathUtils;
+```
+
+**Pattern C - Class + Singleton + Re-exports** (Config modules)
+```javascript
+// api/core/config.js
+export class ConfigurationManager { }
+export const configManager = new ConfigurationManager();
+export default configManager;
+```
+
+### Logger Naming
+
+Use short filename format for logger names:
+```javascript
+// Good
+const logger = createLogger('llmClient.js');
+
+// Avoid
+const logger = createLogger('api/agent/llmClient.js');
+```
+
+### Error Handling
+
+- Use error classes from `api/core/errors.js` for automation-related errors
+- Use error classes from `api/utils/errors.js` for HTTP/API-related errors
+- Both modules provide `ConfigError` and `ValidationError` (different signatures)

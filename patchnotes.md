@@ -1,60 +1,73 @@
 ### ✅ version 1.1.0 - 2026-03-25
+
 ### Developer Experience & Performance
 
 **Test Performance Optimization:**
+
 - Optimized `vitest-individual.ps1` with batching strategy (10 files per job, 8 parallel jobs)
 - Reduced individual test execution from ~2 minutes to ~57 seconds (~52% improvement)
 - All 7805 tests passing consistently
 
 **Git Workflow Enhancement:**
+
 - Added pre-commit linting with husky + lint-staged
-  - Auto-fixes ESLint errors and formats with Prettier on every `git commit`
-  - Only checks staged files (fast!)
+    - Auto-fixes ESLint errors and formats with Prettier on every `git commit`
+    - Only checks staged files (fast!)
 - Created `pnpm commit` helper (`scripts/git-commit.js`):
-  - Stage → Lint → Commit → Push (automatic, push is default)
-  - Color-coded output with 1x retry on failure
-  - `--no-verify` flag to skip linting
-  - Auto-generates message in format "DD Month YYYY - hh:mm AM/PM" if no message provided
+    - Stage → Lint → Commit → Push (automatic, push is default)
+    - Color-coded output with 1x retry on failure
+    - `--no-verify` flag to skip linting
+    - Auto-generates message in format "DD Month YYYY - hh:mm AM/PM" if no message provided
 - Created `pnpm amend` helper (`scripts/git-amend.js`):
-  - Stage → Lint → Amend → Force Push (automatic)
-  - Supports optional new message
+    - Stage → Lint → Amend → Force Push (automatic)
+    - Supports optional new message
 
 **Usage:**
+
 - `pnpm commit "message"` - Commit and push
 - `pnpm commit "message" --no-verify` - Skip linting, then commit and push
 - `pnpm amend` - Amend last commit (keep message) and push
 - `pnpm amend "new message"` - Amend with new message and push
 
 **Developer Infrastructure:**
+
 - Created `.editorconfig` for consistent editor settings (utf-8, lf line endings, 2-space indent)
 - Created `CODEOWNERS` for automatic code review routing (username: @kardelitaitu)
 - Created CI/CD pipeline (`.github/workflows/ci.yml`):
-  - Runs on push to main and PRs
-  - Executes lint + unit tests + integration tests + edge case tests
-  - Node 20 with pnpm 9
+    - Runs on push to main and PRs
+    - Executes lint + unit tests + integration tests + edge case tests
+    - Node 20 with pnpm 9
 - API documentation already comprehensive with Mermaid diagrams for core and agent modules
 
 ### ✅ version 1.0.9 - 2026-03-25
+
 ### Pre-Migration Baseline
+
 - **Retweet Workflow Refinement**: Improved `retweet.js` with better waiting mechanisms and validation.
 - **Task Parser Utility**: Added `api/utils/task-parser.js` for enhanced task command parsing.
 - **Core Stability**: Various fixes to `like.js`, `scroll.js`, and entry points (`main.js`, `agent-main.js`) for better consistency.
 - **Documentation**: Updated `AGENTS.md` and prepared pnpm migration draft.
 
 ### ✅ version 1.0.8 - 2026-03-20
+
 ### API & Test Fixes
+
 - **Test Error Repair**: Fixed critical unit test failures in `like.test.js` and `scroll.test.js`.
 - **Improved Consistency**: Refactored `likeWithAPI` and `focus2` to return structured outcome objects instead of throwing exceptions for expected business-logic failures, aligning with JSDoc specifications and test assertions.
 - **Dependency Guard**: Resolved `ReferenceError`s by correctly importing missing error classes (`ActionError`, `ElementNotFoundError`) in the API interaction layer.
 
 ### ✅ version 1.0.7 - 2026-03-17
+
 ### Infrastructure & Git
+
 - **Git History Cleanup**: Resolved a critical push block caused by large Electron build artifacts (`.exe` files) committed to the repository. Used `git filter-branch` to purge the `api/ui/electron-dashboard/dist-exe/` directory from the entire Git history, reducing repository size and restoring the ability to push to GitHub.
 - **Enhanced Backup Script**: Upgraded `backup.ps1` with a more human-readable and organized naming convention. Features include incremental sequence numbers (e.g., `0001`, `0002`), custom date formatting, and optimized exclusion lists to skip build artifacts and temporary files.
 - **Comprehensive Setup Script**: Redesigned `setup.bat` into a full-project initializer. It now automatically handles dependency installation for both the root and the Electron dashboard (`api/ui/electron-dashboard`), and initializes `.env` files from available templates.
 
 ### ✅ version 1.0.6 - 2026-03-14
+
 Improvements
+
 - **Existing Tab Support**: Modified `agent-main.js` to reuse existing browser tabs insteads of always creating new ones.
 - **Model Stability & Debugging**: Fixed a configuration bug in `agent-main.js` where model overrides failed to apply. Standardized on `qwen3.5:2b` and disabled verbose Ollama reasoning (`think: false`). Added **Raw LLM Output** logging in `llmClient.js`.
 - **JSON Output Enforcement**: Strictly enforced JSON-only responses from Ollama in `llmClient.js` using `format: 'json'` and updated system prompts in `gameRunner.js` to eliminate conversational chatter causing parsing failures.
@@ -62,10 +75,13 @@ Improvements
 - **Robust JSON Extraction**: Implemented fallback parsing in `llmClient.js` to handle model chatter outside JSON blocks.
 
 ### ✅ version 1.0.5 - 2026-03-13
+
 ### Tooling Fixes
+
 - **Repaired Prompt Tester**: Fixed broken imports and legacy LLM provider logic in `prompt-test.js`. Aligned it with the current project structure and `settings.json` format while maintaining its standalone functionality.
 
 ### OWB Agent Improvements
+
 - **Existing Tab Support**: Modified `agent-main.js` to reuse existing browser tabs instead of always creating new ones.
 - **Model Stability & Debugging**: Fixed a configuration bug in `agent-main.js` where model overrides failed to apply. Standardized on `qwen3.5:2b` and disabled verbose Ollama reasoning (`think: false`). Added **Raw LLM Output** logging in `llmClient.js`.
 - **JSON Output Enforcement**: Strictly enforced JSON-only responses from Ollama in `llmClient.js` using `format: 'json'` and updated system prompts in `gameRunner.js` to eliminate conversational chatter causing parsing failures.
@@ -77,31 +93,38 @@ Improvements
 - **Critical Fix**: Replaced broad JSON extraction with a high-accuracy brace-counting parser in `llmClient.js` to fix "Unexpected non-whitespace character" errors caused by trailing LLM chatter.
 
 ### ✅ version 1.0.4 - 2026-03-12
+
 ### Test Execution Improvements
+
 - **Flexible Test Filtering**: Removed hardcoded paths from `package.json` test scripts, enabling file-specific filtering via CLI arguments (e.g., `npm run test -- filename.test.js`).
 - **Single-File Coverage Support**: Verified and documented the usage of `npm run test:coverage -- filename.test.js` for isolated coverage analysis.
 
 ### ✅ version 1.0.3 - 2026-03-11
+
 ### Visual Chart Update
+
 - **Modern Bar Charts**: Replaced line-style sparklines with high-density vertical bar charts for CPU and RAM monitoring.
 - **Adaptive Spacing**: Implemented dynamic bar width and spacing logic for consistent quality across different data resolutions.
 - **Premium Styling**: Refined aesthetics with subtle corner rounding and optimized opacity for the glassmorphism dashboard.
 
 ### ✅ version 1.0.2 - 2026-03-10
+
 ### Modular History & Real-time Fixes
+
 - **Independent History Module**: Extracted `HistoryManager` into a standalone module to ensure robust data persistence and cleaner dashboard server logic.
 - **Real-Time Task Emissions**: Orchestrator now emits `task-update` events immediately upon completion, bypassing the 5s broadcast delay.
 - **Improved Data Integrity**: Standardized task field mapping (taskName/name/command) and enforced a strict 40-item history cap.
 - **Reliability**: Dashboard now handles task updates via both IPC and Socket.io, preventing data loss during Orchestrator restarts or disconnects.
 
 ### ✅ version 1.0.1 - 2026-03-10
+
 ### Dashboard Overhaul
+
 - **Modular Refactor**: Completely rewritten React frontend with component-based architecture.
 - **Premium UI**: Modern glassmorphism aesthetic with curated design tokens.
 - **Smart Windows**: Added "Always on Top" and "Compact Mode" toggles for non-intrusive monitoring.
 - **Reliability**: Added React Error Boundaries and Socket.io reconnection heartbeat.
 - **UX**: Added entry animations and polished typography (Inter font).
-
 
 ### ✅ version 0.8.0
 
@@ -156,7 +179,6 @@ Improvements
 - **Visibility & Control**: Exposed previously hidden runner configurations (`maxSteps`, `stepDelay`) to the `settings.json` file for user orchestration control.
 - **Unified Agent Interface**: Transformed `api.agent` into a dual-callable API. It can now be used as a function for high-level autonomous orchestration (`api.agent("prompt")`) while retaining its sub-properties for granular control (`api.agent.see()`, `api.agent.do()`).
 - **Documentation**: Created `agentictask.md` explaining the new `api.agent` usage.
-
 
 (06 March 2026) VS Code Testing Enhancements
 
@@ -608,14 +630,20 @@ Improvements
 - 📚 **Documentation & Examples**
 
 - Added Phase 7 (Multi-Action Sequences) to gameRunner.js and owb-agents.js
+
 ### ✅ version 1.0.6 - 2026-03-14
+
 ### OWB Agent Improvements
+
 - **Refined Selection Prompt**: Upgraded the `executeStateA` prompt in `owb-agents.js` with structured contextual guidance, color guides, and priority rules.
 - **Enhanced LLM Logging**: Improved tactical transparency by adding `price` and `rationale` fields to the land detection response.
 - **Improved Purchase Accuracy**: Added adjacency rules and "closest to center" priority to ensure smarter expansion during the unowned land purchase phase.
+
 ### API Error Handling
+
 - **Custom Error Classes**: Replaced generic `throw new Error('SessionDisconnectedError: ...')` with custom `SessionDisconnectedError` class across 8 interaction modules (`gameMenus.js`, `resourceTracker.js`, `gameState.js`, `actions.js`, `multiSelect.js`, `clickAt.js`, `drag.js`, `keys.js`). This provides consistent error codes and improved stack traces for debugging.
 
 ### Tree-sitter MCP Fix
+
 - Added a local `tree_sitter_mcp_launcher.py` wrapper so the MCP server normalizes `.cs` to `csharp` before startup.
 - Updated the OpenCode MCP config to launch the wrapper instead of the raw module entrypoint.

@@ -15,14 +15,14 @@ export default defineConfig({
         poolOptions: {
             vmThreads: {
                 isolate: false,
-            }
+            },
         },
         // Disable coverage for the smoke run
         coverage: {
-            enabled: false
+            enabled: false,
         },
         retry: 0,
-        silent: true
+        silent: true,
     },
     resolve: {
         alias: {

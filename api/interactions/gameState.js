@@ -10,11 +10,11 @@
  * @module api/interactions/gameState
  */
 
-import { getPage, isSessionActive } from '../core/context.js';
-import { createLogger } from '../core/logger.js';
-import { SessionDisconnectedError } from '../core/errors.js';
+import { getPage, isSessionActive } from "../core/context.js";
+import { createLogger } from "../core/logger.js";
+import { SessionDisconnectedError } from "../core/errors.js";
 
-const logger = createLogger('api/interactions/gameState.js');
+const logger = createLogger("api/interactions/gameState.js");
 
 /**
  * Wait for an element to reach a specific state
@@ -23,31 +23,27 @@ const logger = createLogger('api/interactions/gameState.js');
  * @returns {Promise<boolean>}
  */
 export async function waitForElementState(selector, options = {}) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const page = getPage();
+  const { state = "visible", timeout = 5000, throwOnTimeout = false } = options;
+
+  logger.debug(`Waiting for element "${selector}" to be ${state}`);
+
+  try {
+    const locator = page.locator(selector);
+    await locator.waitFor({ state, timeout });
+    logger.debug(`Element "${selector}" is now ${state}`);
+    return true;
+  } catch (e) {
+    logger.warn(`Element "${selector}" did not become ${state}: ${e.message}`);
+    if (throwOnTimeout) {
+      throw e;
     }
-
-    const page = getPage();
-    const {
-        state = 'visible',
-        timeout = 5000,
-        throwOnTimeout = false,
-    } = options;
-
-    logger.debug(`Waiting for element "${selector}" to be ${state}`);
-
-    try {
-        const locator = page.locator(selector);
-        await locator.waitFor({ state, timeout });
-        logger.debug(`Element "${selector}" is now ${state}`);
-        return true;
-    } catch (e) {
-        logger.warn(`Element "${selector}" did not become ${state}: ${e.message}`);
-        if (throwOnTimeout) {
-            throw e;
-        }
-        return false;
-    }
+    return false;
+  }
 }
 
 /**
@@ -58,32 +54,34 @@ export async function waitForElementState(selector, options = {}) {
  * @returns {Promise<boolean>}
  */
 export async function waitForEnabled(selector, enabled = true, timeout = 5000) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const page = getPage();
+  const locator = page.locator(selector);
+
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeout) {
+    const isVisible = await locator.isVisible().catch(() => false);
+    if (!isVisible) {
+      await page.waitForTimeout(100);
+      continue;
     }
 
-    const page = getPage();
-    const locator = page.locator(selector);
-    
-    const startTime = Date.now();
-    
-    while (Date.now() - startTime < timeout) {
-        const isVisible = await locator.isVisible().catch(() => false);
-        if (!isVisible) {
-            await page.waitForTimeout(100);
-            continue;
-        }
-
-        const isDisabled = await locator.isDisabled().catch(() => false);
-        if (enabled ? !isDisabled : isDisabled) {
-            return true;
-        }
-
-        await page.waitForTimeout(100);
+    const isDisabled = await locator.isDisabled().catch(() => false);
+    if (enabled ? !isDisabled : isDisabled) {
+      return true;
     }
 
-    logger.warn(`Element "${selector}" did not become ${enabled ? 'enabled' : 'disabled'}`);
-    return false;
+    await page.waitForTimeout(100);
+  }
+
+  logger.warn(
+    `Element "${selector}" did not become ${enabled ? "enabled" : "disabled"}`,
+  );
+  return false;
 }
 
 /**
@@ -94,32 +92,32 @@ export async function waitForEnabled(selector, enabled = true, timeout = 5000) {
  * @returns {Promise<boolean>}
  */
 export async function waitForText(selector, expectedText, timeout = 5000) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const page = getPage();
+  const locator = page.locator(selector);
+
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeout) {
+    const isVisible = await locator.isVisible().catch(() => false);
+    if (!isVisible) {
+      await page.waitForTimeout(100);
+      continue;
     }
 
-    const page = getPage();
-    const locator = page.locator(selector);
-    
-    const startTime = Date.now();
-    
-    while (Date.now() - startTime < timeout) {
-        const isVisible = await locator.isVisible().catch(() => false);
-        if (!isVisible) {
-            await page.waitForTimeout(100);
-            continue;
-        }
-
-        const text = await locator.textContent().catch(() => '');
-        if (text && text.includes(expectedText)) {
-            return true;
-        }
-
-        await page.waitForTimeout(100);
+    const text = await locator.textContent().catch(() => "");
+    if (text && text.includes(expectedText)) {
+      return true;
     }
 
-    logger.warn(`Element "${selector}" text did not contain "${expectedText}"`);
-    return false;
+    await page.waitForTimeout(100);
+  }
+
+  logger.warn(`Element "${selector}" text did not contain "${expectedText}"`);
+  return false;
 }
 
 /**
@@ -129,31 +127,35 @@ export async function waitForText(selector, expectedText, timeout = 5000) {
  * @param {number} timeout - Timeout in ms
  * @returns {Promise<boolean>}
  */
-export async function waitForValueChange(selector, initialValue, timeout = 5000) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
+export async function waitForValueChange(
+  selector,
+  initialValue,
+  timeout = 5000,
+) {
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const page = getPage();
+  const locator = page.locator(selector);
+
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeout) {
+    const value = await locator
+      .inputValue()
+      .catch(() => locator.textContent().catch(() => ""));
+
+    if (value !== initialValue) {
+      logger.debug(`Value changed from "${initialValue}" to "${value}"`);
+      return true;
     }
 
-    const page = getPage();
-    const locator = page.locator(selector);
-    
-    const startTime = Date.now();
-    
-    while (Date.now() - startTime < timeout) {
-        const value = await locator.inputValue().catch(() => 
-            locator.textContent().catch(() => '')
-        );
-        
-        if (value !== initialValue) {
-            logger.debug(`Value changed from "${initialValue}" to "${value}"`);
-            return true;
-        }
+    await page.waitForTimeout(100);
+  }
 
-        await page.waitForTimeout(100);
-    }
-
-    logger.warn(`Value did not change from "${initialValue}"`);
-    return false;
+  logger.warn(`Value did not change from "${initialValue}"`);
+  return false;
 }
 
 /**
@@ -164,53 +166,57 @@ export async function waitForValueChange(selector, initialValue, timeout = 5000)
  * @returns {Promise<boolean>}
  */
 export async function waitForPixelChange(x, y, options = {}) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    const page = getPage();
-    const {
-        threshold = 10,
-        timeout = 5000,
-    } = options;
+  const page = getPage();
+  const { threshold = 10, timeout = 5000 } = options;
 
-    const initialColor = await page.evaluate(([px, py]) => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+  const initialColor = await page.evaluate(
+    ([px, py]) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = 1;
+      canvas.height = 1;
+      ctx.drawImage(document, px, py, 1, 1, 0, 0, 1, 1);
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+      return { r, g, b };
+    },
+    [x, y],
+  );
+
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeout) {
+    await page.waitForTimeout(200);
+
+    const currentColor = await page.evaluate(
+      ([px, py]) => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
         canvas.width = 1;
         canvas.height = 1;
         ctx.drawImage(document, px, py, 1, 1, 0, 0, 1, 1);
         const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
         return { r, g, b };
-    }, [x, y]);
+      },
+      [x, y],
+    );
 
-    const startTime = Date.now();
-    
-    while (Date.now() - startTime < timeout) {
-        await page.waitForTimeout(200);
-        
-        const currentColor = await page.evaluate(([px, py]) => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 1;
-            canvas.height = 1;
-            ctx.drawImage(document, px, py, 1, 1, 0, 0, 1, 1);
-            const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
-            return { r, g, b };
-        }, [x, y]);
+    const diff =
+      Math.abs(currentColor.r - initialColor.r) +
+      Math.abs(currentColor.g - initialColor.g) +
+      Math.abs(currentColor.b - initialColor.b);
 
-        const diff = Math.abs(currentColor.r - initialColor.r) +
-                     Math.abs(currentColor.g - initialColor.g) +
-                     Math.abs(currentColor.b - initialColor.b);
-
-        if (diff > threshold) {
-            logger.debug(`Pixel changed at (${x}, ${y})`);
-            return true;
-        }
+    if (diff > threshold) {
+      logger.debug(`Pixel changed at (${x}, ${y})`);
+      return true;
     }
+  }
 
-    logger.debug(`Pixel did not change at (${x}, ${y})`);
-    return false;
+  logger.debug(`Pixel did not change at (${x}, ${y})`);
+  return false;
 }
 
 /**
@@ -220,34 +226,38 @@ export async function waitForPixelChange(x, y, options = {}) {
  * @param {number} timeout - Timeout in ms
  * @returns {Promise<boolean>}
  */
-export async function waitForPopup(popupSelector, appear = true, timeout = 5000) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
+export async function waitForPopup(
+  popupSelector,
+  appear = true,
+  timeout = 5000,
+) {
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const page = getPage();
+  const locator = page.locator(popupSelector);
+
+  if (appear) {
+    try {
+      await locator.waitFor({ state: "visible", timeout });
+      return true;
+    } catch {
+      return false;
+    }
+  } else {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      const isVisible = await locator.isVisible().catch(() => false);
+      if (!isVisible) {
+        return true;
+      }
+      await page.waitForTimeout(100);
     }
 
-    const page = getPage();
-    const locator = page.locator(popupSelector);
-    
-    if (appear) {
-        try {
-            await locator.waitFor({ state: 'visible', timeout });
-            return true;
-        } catch {
-            return false;
-        }
-    } else {
-        const startTime = Date.now();
-        
-        while (Date.now() - startTime < timeout) {
-            const isVisible = await locator.isVisible().catch(() => false);
-            if (!isVisible) {
-                return true;
-            }
-            await page.waitForTimeout(100);
-        }
-        
-        return false;
-    }
+    return false;
+  }
 }
 
 /**
@@ -257,46 +267,50 @@ export async function waitForPopup(popupSelector, appear = true, timeout = 5000)
  * @param {number} timeout - Timeout in ms
  * @returns {Promise<boolean>}
  */
-export async function waitForResources(resources, resourceSelector = '[class*="resource"]', timeout = 30000) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
+export async function waitForResources(
+  resources,
+  resourceSelector = '[class*="resource"]',
+  timeout = 30000,
+) {
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const page = getPage();
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeout) {
+    let allMet = true;
+
+    for (const [resourceName, requiredAmount] of Object.entries(resources)) {
+      const selector = `${resourceSelector}:has-text("${resourceName}")`;
+      const locator = page.locator(selector);
+
+      const isVisible = await locator.isVisible().catch(() => false);
+      if (!isVisible) {
+        allMet = false;
+        break;
+      }
+
+      const text = await locator.textContent().catch(() => "0");
+      const currentAmount = parseInt(text.replace(/\D/g, ""), 10) || 0;
+
+      if (currentAmount < requiredAmount) {
+        allMet = false;
+        break;
+      }
     }
 
-    const page = getPage();
-    const startTime = Date.now();
-    
-    while (Date.now() - startTime < timeout) {
-        let allMet = true;
-        
-        for (const [resourceName, requiredAmount] of Object.entries(resources)) {
-            const selector = `${resourceSelector}:has-text("${resourceName}")`;
-            const locator = page.locator(selector);
-            
-            const isVisible = await locator.isVisible().catch(() => false);
-            if (!isVisible) {
-                allMet = false;
-                break;
-            }
-            
-            const text = await locator.textContent().catch(() => '0');
-            const currentAmount = parseInt(text.replace(/\D/g, ''), 10) || 0;
-            
-            if (currentAmount < requiredAmount) {
-                allMet = false;
-                break;
-            }
-        }
-        
-        if (allMet) {
-            logger.info(`Resource requirements met: ${JSON.stringify(resources)}`);
-            return true;
-        }
-        
-        await page.waitForTimeout(500);
+    if (allMet) {
+      logger.info(`Resource requirements met: ${JSON.stringify(resources)}`);
+      return true;
     }
-    
-    logger.warn(`Resource requirements not met within ${timeout}ms`);
-    return false;
+
+    await page.waitForTimeout(500);
+  }
+
+  logger.warn(`Resource requirements not met within ${timeout}ms`);
+  return false;
 }
 
 /**
@@ -305,44 +319,44 @@ export async function waitForResources(resources, resourceSelector = '[class*="r
  * @returns {Promise<object>}
  */
 export async function getGameState(options = {}) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
 
-    const page = getPage();
-    const { screenshot = true } = options;
+  const page = getPage();
+  const { screenshot = true } = options;
 
-    const state = {
-        url: page.url(),
-        timestamp: Date.now(),
-    };
+  const state = {
+    url: page.url(),
+    timestamp: Date.now(),
+  };
 
-    if (screenshot) {
-        try {
-            const buffer = await page.screenshot({ type: 'jpeg', quality: 60 });
-            state.screenshot = buffer.toString('base64');
-        } catch (e) {
-            logger.warn('Screenshot failed:', e.message);
-        }
-    }
-
+  if (screenshot) {
     try {
-        const axTree = await page.accessibility.snapshot();
-        state.axTree = axTree;
+      const buffer = await page.screenshot({ type: "jpeg", quality: 60 });
+      state.screenshot = buffer.toString("base64");
     } catch (e) {
-        logger.warn('AXTree failed:', e.message);
+      logger.warn("Screenshot failed:", e.message);
     }
+  }
 
-    return state;
+  try {
+    const axTree = await page.accessibility.snapshot();
+    state.axTree = axTree;
+  } catch (e) {
+    logger.warn("AXTree failed:", e.message);
+  }
+
+  return state;
 }
 
 export default {
-    waitForElementState,
-    waitForEnabled,
-    waitForText,
-    waitForValueChange,
-    waitForPixelChange,
-    waitForPopup,
-    waitForResources,
-    getGameState,
+  waitForElementState,
+  waitForEnabled,
+  waitForText,
+  waitForValueChange,
+  waitForPixelChange,
+  waitForPopup,
+  waitForResources,
+  getGameState,
 };

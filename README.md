@@ -184,7 +184,7 @@ await api.init(page);
 const result = await api.gameAgent.run('Build barracks and train 5 footmen', {
     maxSteps: 50,
     stepDelay: 500,
-    stuckDetection: true
+    stuckDetection: true,
 });
 
 // Or use individual primitives
@@ -196,6 +196,7 @@ await api.game.resources.waitFor({ gold: 500 });
 ### Running Agent Tasks
 
 **Auto-Play (runs automatically with predefined rules):**
+
 ```bash
 # Auto-play with strategy
 node agent-main.js owb
@@ -220,6 +221,7 @@ node agent-main.js owb play=turtle
 ```
 
 **Via API:**
+
 ```javascript
 import { api } from './api/index.js';
 await api.init(page);

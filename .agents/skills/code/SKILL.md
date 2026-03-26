@@ -1,13 +1,13 @@
 ---
 name: code
 description: |
-  Use for codebase inspection, implementation, refactoring, debugging, and test
-  updates in Auto-AI. Triggers when the task involves reading, changing, or
-  validating repository code.
+    Use for codebase inspection, implementation, refactoring, debugging, and test
+    updates in Auto-AI. Triggers when the task involves reading, changing, or
+    validating repository code.
 license: MIT
 metadata:
-  author: Auto-AI Framework
-  version: '1.0.0'
+    author: Auto-AI Framework
+    version: '1.0.0'
 ---
 
 # Code Skill

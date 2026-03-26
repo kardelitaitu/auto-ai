@@ -11,7 +11,7 @@ const Icons = {
     Tasks: '📋',
     API: '🌐',
     Uptime: '⏱️',
-    Queue: '📥'
+    Queue: '📥',
 };
 
 const getAdaptiveColor = (value) => {
@@ -20,18 +20,28 @@ const getAdaptiveColor = (value) => {
     return 'var(--accent-error)';
 };
 
-export function MetricsPanel({ system, cumulative, apiMetrics, totalActiveWork, cpuHistory, ramHistory, isCompact }) {
+export function MetricsPanel({
+    system,
+    cumulative,
+    apiMetrics,
+    totalActiveWork,
+    cpuHistory,
+    ramHistory,
+    isCompact,
+}) {
     const cpuUsage = safeGet(system, 'cpu.usage', 0);
     const ramPercent = safeGet(system, 'memory.percent', 0);
 
     return (
-        <section style={{
-            display: 'grid',
-            gridTemplateColumns: isCompact ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-            gap: '8px',
-            paddingBottom: '12px',
-            flexShrink: 0
-        }}>
+        <section
+            style={{
+                display: 'grid',
+                gridTemplateColumns: isCompact ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+                gap: '8px',
+                paddingBottom: '12px',
+                flexShrink: 0,
+            }}
+        >
             {/* CPU */}
             <div style={{ display: 'flex', minHeight: '140px' }}>
                 <MetricCard
@@ -60,7 +70,9 @@ export function MetricsPanel({ system, cumulative, apiMetrics, totalActiveWork, 
 
             {/* Queue & Tasks */}
             {!isCompact && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%' }}>
+                <div
+                    style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%' }}
+                >
                     <div style={{ flex: 1 }}>
                         <MetricCard
                             title="Active Queue"
@@ -82,13 +94,21 @@ export function MetricsPanel({ system, cumulative, apiMetrics, totalActiveWork, 
 
             {/* API Health & Uptime */}
             {!isCompact && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%' }}>
+                <div
+                    style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%' }}
+                >
                     <div style={{ flex: 1 }}>
                         <MetricCard
                             title="API Health"
                             value={`${apiMetrics.successRate || 100}%`}
                             icon={Icons.API}
-                            color={apiMetrics.successRate >= 90 ? 'var(--accent-success)' : apiMetrics.successRate >= 70 ? 'var(--accent-warning)' : 'var(--accent-error)'}
+                            color={
+                                apiMetrics.successRate >= 90
+                                    ? 'var(--accent-success)'
+                                    : apiMetrics.successRate >= 70
+                                      ? 'var(--accent-warning)'
+                                      : 'var(--accent-error)'
+                            }
                         />
                     </div>
                     <div style={{ flex: 1 }}>

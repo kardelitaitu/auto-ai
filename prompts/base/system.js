@@ -12,7 +12,7 @@
  * @returns {string} System prompt
  */
 export function getBaseSystemPrompt({ imageWidth, imageHeight, task }) {
-    return `You are analyzing a hexagonal territory conquest game called OWB (Open World Browser).
+  return `You are analyzing a hexagonal territory conquest game called OWB (Open World Browser).
 The image you see is ${imageWidth}x${imageHeight} pixels.
 
 YOUR JOB: ${task}
@@ -39,7 +39,7 @@ GAME CONTEXT:
  * @returns {string} System prompt for state detection
  */
 export function getStateDetectionPrompt({ imageWidth, imageHeight }) {
-    return `You are a game state detector for a hexagonal territory conquest game.
+  return `You are a game state detector for a hexagonal territory conquest game.
 The image is ${imageWidth}x${imageHeight} pixels.
 
 YOUR JOB: Analyze the image and identify which game state is currently displayed.
@@ -69,7 +69,7 @@ Return ONLY this JSON object:
  * @returns {string} System prompt for action execution
  */
 export function getActionSystemPrompt({ imageWidth, imageHeight, actionType }) {
-    return `You are an action executor for a hexagonal territory conquest game.
+  return `You are an action executor for a hexagonal territory conquest game.
 The image is ${imageWidth}x${imageHeight} pixels.
 
 YOUR JOB: Find the target and return coordinates for: ${actionType}
@@ -86,7 +86,7 @@ COORDINATE SYSTEM:
 }
 
 export default {
-    getBaseSystemPrompt,
-    getStateDetectionPrompt,
-    getActionSystemPrompt
+  getBaseSystemPrompt,
+  getStateDetectionPrompt,
+  getActionSystemPrompt,
 };

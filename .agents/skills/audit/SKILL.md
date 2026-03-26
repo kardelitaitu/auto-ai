@@ -1,16 +1,16 @@
 ---
 name: audit-read
 description: |
-  Security and compliance auditing through file reading and analysis.
-  Use when auditing code for security vulnerabilities, checking configurations,
-  verifying compliance, detecting sensitive data exposure, or performing
-  integrity checks on files and codebases.
-  Triggers on tasks involving security audits, code reviews, compliance checks,
-  vulnerability scanning, or data privacy verification.
+    Security and compliance auditing through file reading and analysis.
+    Use when auditing code for security vulnerabilities, checking configurations,
+    verifying compliance, detecting sensitive data exposure, or performing
+    integrity checks on files and codebases.
+    Triggers on tasks involving security audits, code reviews, compliance checks,
+    vulnerability scanning, or data privacy verification.
 license: MIT
 metadata:
-  author: Auto-AI Framework
-  version: '1.0.0'
+    author: Auto-AI Framework
+    version: '1.0.0'
 ---
 
 # File Audit & Security Skill
@@ -34,13 +34,13 @@ Use this skill when:
 
 ## Audit Categories
 
-| Category | Focus Areas | Key Patterns |
-|----------|-------------|--------------|
-| **Security** | Secrets, injection, XSS, CSRF | `API_KEY`, `password`, `eval()`, `innerHTML` |
-| **Privacy** | PII, GDPR, data exposure | Email, SSN, credit cards, phone numbers |
-| **Compliance** | Standards, regulations | PCI-DSS, HIPAA, SOC2 patterns |
-| **Configuration** | Hardening, defaults | Debug modes, weak passwords, open ports |
-| **Integrity** | Checksums, validation | Hashes, signatures, tampering detection |
+| Category          | Focus Areas                   | Key Patterns                                 |
+| ----------------- | ----------------------------- | -------------------------------------------- |
+| **Security**      | Secrets, injection, XSS, CSRF | `API_KEY`, `password`, `eval()`, `innerHTML` |
+| **Privacy**       | PII, GDPR, data exposure      | Email, SSN, credit cards, phone numbers      |
+| **Compliance**    | Standards, regulations        | PCI-DSS, HIPAA, SOC2 patterns                |
+| **Configuration** | Hardening, defaults           | Debug modes, weak passwords, open ports      |
+| **Integrity**     | Checksums, validation         | Hashes, signatures, tampering detection      |
 
 ## Security Auditing Patterns
 
@@ -49,7 +49,7 @@ Use this skill when:
 ```javascript
 async function auditSecrets(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     const secretPatterns = [
         { name: 'API Key', pattern: /api[_-]?key\s*[=:]\s*['"][^'"]+['"]/gi },
         { name: 'Secret Key', pattern: /secret[_-]?key\s*[=:]\s*['"][^'"]+['"]/gi },
@@ -60,11 +60,11 @@ async function auditSecrets(filePath) {
         { name: 'GitHub Token', pattern: /gh[pousr]_[A-Za-z0-9_]{36,}/g },
         { name: 'Slack Token', pattern: /xox[bpors]-[0-9]{10,13}/g },
         { name: 'Google API Key', pattern: /AIza[0-9A-Za-z_-]{35}/g },
-        { name: 'JWT', pattern: /eyJ[A-Za-z0-9-_]+\.eyJ[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+/g }
+        { name: 'JWT', pattern: /eyJ[A-Za-z0-9-_]+\.eyJ[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+/g },
     ];
-    
+
     const findings = [];
-    
+
     for (const { name, pattern } of secretPatterns) {
         const matches = content.match(pattern);
         if (matches) {
@@ -74,25 +74,25 @@ async function auditSecrets(filePath) {
                 pattern: name,
                 matches: matches.length,
                 file: filePath,
-                lines: findLineNumbers(content, pattern)
+                lines: findLineNumbers(content, pattern),
             });
         }
     }
-    
+
     return findings;
 }
 
 function findLineNumbers(content, pattern) {
     const lines = content.split('\n');
     const lineNumbers = [];
-    
+
     lines.forEach((line, index) => {
         if (pattern.test(line)) {
             lineNumbers.push(index + 1);
         }
         pattern.lastIndex = 0; // Reset regex
     });
-    
+
     return lineNumbers;
 }
 ```
@@ -102,7 +102,7 @@ function findLineNumbers(content, pattern) {
 ```javascript
 async function auditInjectionVulnerabilities(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     const injectionPatterns = [
         { name: 'SQL Injection', pattern: /query\s*\(\s*['"`].*\$\{/g },
         { name: 'SQL Injection', pattern: /execute\s*\(\s*.*\+.*\)/gi },
@@ -112,11 +112,11 @@ async function auditInjectionVulnerabilities(filePath) {
         { name: 'InnerHTML', pattern: /\.innerHTML\s*=/g },
         { name: 'Document Write', pattern: /document\.write\s*\(/g },
         { name: 'OuterHTML', pattern: /\.outerHTML\s*=/g },
-        { name: 'Template Literal Injection', pattern: /`\$\{.*exec/g }
+        { name: 'Template Literal Injection', pattern: /`\$\{.*exec/g },
     ];
-    
+
     const findings = [];
-    
+
     for (const { name, pattern } of injectionPatterns) {
         const matches = content.match(pattern);
         if (matches) {
@@ -126,11 +126,11 @@ async function auditInjectionVulnerabilities(filePath) {
                 vulnerability: name,
                 occurrences: matches.length,
                 file: filePath,
-                lines: findLineNumbers(content, pattern)
+                lines: findLineNumbers(content, pattern),
             });
         }
     }
-    
+
     return findings;
 }
 ```
@@ -140,20 +140,23 @@ async function auditInjectionVulnerabilities(filePath) {
 ```javascript
 async function auditPrivacyViolations(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     const piiPatterns = [
         { name: 'Email Address', pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
         { name: 'Phone Number', pattern: /(\+?1[-.]?)?\(?[0-9]{3}\)?[-.]?[0-9]{3}[-.]?[0-9]{4}/g },
         { name: 'SSN', pattern: /\b\d{3}[-.]?\d{2}[-.]?\d{4}\b/g },
         { name: 'Credit Card', pattern: /\b(?:\d{4}[-\s]?){3}\d{4}\b/g },
         { name: 'IP Address', pattern: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g },
-        { name: 'Date of Birth', pattern: /\b(0[1-9]|1[0-2])[-/](0[1-9]|[12]\d|3[01])[-/]\d{4}\b/g },
+        {
+            name: 'Date of Birth',
+            pattern: /\b(0[1-9]|1[0-2])[-/](0[1-9]|[12]\d|3[01])[-/]\d{4}\b/g,
+        },
         { name: 'Postal Code', pattern: /\b\d{5}(-\d{4})?\b/g },
-        { name: 'Driver License', pattern: /\b[A-Z]{1,2}\d{5,8}\b/g }
+        { name: 'Driver License', pattern: /\b[A-Z]{1,2}\d{5,8}\b/g },
     ];
-    
+
     const findings = [];
-    
+
     for (const { name, pattern } of piiPatterns) {
         const matches = content.match(pattern);
         if (matches && matches.length > 0) {
@@ -163,11 +166,11 @@ async function auditPrivacyViolations(filePath) {
                 dataType: name,
                 occurrences: matches.length,
                 file: filePath,
-                lines: findLineNumbers(content, pattern)
+                lines: findLineNumbers(content, pattern),
             });
         }
     }
-    
+
     return findings;
 }
 ```
@@ -179,36 +182,36 @@ async function auditPrivacyViolations(filePath) {
 ```javascript
 async function auditSecurityConfig(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     let config;
     try {
         config = JSON.parse(content);
     } catch (e) {
         return [{ error: 'Invalid JSON configuration' }];
     }
-    
+
     const findings = [];
-    
+
     // Check for debug mode
     if (config.debug === true || config.DEBUG === true) {
         findings.push({
             type: 'CONFIG',
             severity: 'MEDIUM',
             issue: 'Debug mode enabled',
-            recommendation: 'Disable debug mode in production'
+            recommendation: 'Disable debug mode in production',
         });
     }
-    
+
     // Check for weak passwords
     if (config.password && config.password.length < 12) {
         findings.push({
             type: 'CONFIG',
             severity: 'HIGH',
             issue: 'Weak password detected',
-            recommendation: 'Use passwords with at least 12 characters'
+            recommendation: 'Use passwords with at least 12 characters',
         });
     }
-    
+
     // Check for default credentials
     const defaultCredentials = ['admin', 'password', '123456', 'root'];
     if (config.username && defaultCredentials.includes(config.username.toLowerCase())) {
@@ -216,30 +219,30 @@ async function auditSecurityConfig(filePath) {
             type: 'CONFIG',
             severity: 'CRITICAL',
             issue: 'Default username detected',
-            recommendation: 'Change default credentials'
+            recommendation: 'Change default credentials',
         });
     }
-    
+
     // Check for open CORS
     if (config.cors && config.cors.origin === '*') {
         findings.push({
             type: 'CONFIG',
             severity: 'MEDIUM',
             issue: 'CORS allows all origins',
-            recommendation: 'Restrict CORS to specific domains'
+            recommendation: 'Restrict CORS to specific domains',
         });
     }
-    
+
     // Check for SQL logging
     if (config.logging && config.logging.sql === true) {
         findings.push({
             type: 'CONFIG',
             severity: 'LOW',
             issue: 'SQL logging enabled',
-            recommendation: 'Disable SQL logging in production'
+            recommendation: 'Disable SQL logging in production',
         });
     }
-    
+
     return findings;
 }
 ```
@@ -250,16 +253,16 @@ async function auditSecurityConfig(filePath) {
 async function auditEnvironmentFile(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
     const lines = content.split('\n');
-    
+
     const findings = [];
-    
+
     lines.forEach((line, index) => {
         // Skip comments and empty lines
         if (line.trim().startsWith('#') || !line.trim()) return;
-        
+
         const [key, ...valueParts] = line.split('=');
         const value = valueParts.join('=');
-        
+
         // Check for sensitive values
         if (key.match(/(SECRET|PASSWORD|TOKEN|KEY|CREDENTIAL)/i)) {
             if (!value || value === '' || value === 'changeme' || value === 'xxx') {
@@ -268,11 +271,11 @@ async function auditEnvironmentFile(filePath) {
                     severity: 'HIGH',
                     issue: `Empty or default value for ${key}`,
                     line: index + 1,
-                    recommendation: 'Set a secure value'
+                    recommendation: 'Set a secure value',
                 });
             }
         }
-        
+
         // Check for production URLs in dev files
         if (key.match(/(URL|ENDPOINT)/i) && value.includes('localhost')) {
             findings.push({
@@ -280,11 +283,11 @@ async function auditEnvironmentFile(filePath) {
                 severity: 'LOW',
                 issue: `Localhost URL in ${key}`,
                 line: index + 1,
-                recommendation: 'Verify this is not a production file'
+                recommendation: 'Verify this is not a production file',
             });
         }
     });
-    
+
     return findings;
 }
 ```
@@ -296,9 +299,9 @@ async function auditEnvironmentFile(filePath) {
 ```javascript
 async function auditGDPRCompliance(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     const findings = [];
-    
+
     // Check for data retention policies
     if (content.includes('userData') && !content.includes('retention')) {
         findings.push({
@@ -306,10 +309,10 @@ async function auditGDPRCompliance(filePath) {
             standard: 'GDPR',
             severity: 'HIGH',
             issue: 'User data handling without retention policy',
-            recommendation: 'Implement data retention policies'
+            recommendation: 'Implement data retention policies',
         });
     }
-    
+
     // Check for consent mechanisms
     if (content.includes('collect') && !content.includes('consent')) {
         findings.push({
@@ -317,10 +320,10 @@ async function auditGDPRCompliance(filePath) {
             standard: 'GDPR',
             severity: 'MEDIUM',
             issue: 'Data collection without consent mechanism',
-            recommendation: 'Implement user consent for data collection'
+            recommendation: 'Implement user consent for data collection',
         });
     }
-    
+
     // Check for data deletion capabilities
     if (content.includes('user') && !content.includes('delete') && !content.includes('erase')) {
         findings.push({
@@ -328,10 +331,10 @@ async function auditGDPRCompliance(filePath) {
             standard: 'GDPR',
             severity: 'MEDIUM',
             issue: 'No data deletion capability found',
-            recommendation: 'Implement right to be forgotten'
+            recommendation: 'Implement right to be forgotten',
         });
     }
-    
+
     return findings;
 }
 ```
@@ -341,16 +344,16 @@ async function auditGDPRCompliance(filePath) {
 ```javascript
 async function auditPCIDSSCompliance(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     const findings = [];
-    
+
     // Check for plaintext card storage
     const cardPatterns = [
         /card_number\s*[=:]\s*['"][^'"]+['"]/gi,
         /credit_card\s*[=:]\s*['"][^'"]+['"]/gi,
-        /cardNumber\s*[=:]\s*['"][^'"]+['"]/gi
+        /cardNumber\s*[=:]\s*['"][^'"]+['"]/gi,
     ];
-    
+
     for (const pattern of cardPatterns) {
         if (pattern.test(content)) {
             findings.push({
@@ -358,11 +361,11 @@ async function auditPCIDSSCompliance(filePath) {
                 standard: 'PCI-DSS',
                 severity: 'CRITICAL',
                 issue: 'Plaintext credit card data detected',
-                recommendation: 'Never store card data in plaintext'
+                recommendation: 'Never store card data in plaintext',
             });
         }
     }
-    
+
     // Check for encryption usage
     if (content.includes('card') && !content.includes('encrypt')) {
         findings.push({
@@ -370,10 +373,10 @@ async function auditPCIDSSCompliance(filePath) {
             standard: 'PCI-DSS',
             severity: 'HIGH',
             issue: 'Card data handling without encryption',
-            recommendation: 'Use strong encryption for card data'
+            recommendation: 'Use strong encryption for card data',
         });
     }
-    
+
     return findings;
 }
 ```
@@ -386,16 +389,16 @@ async function auditPCIDSSCompliance(filePath) {
 async function verifyFileIntegrity(filePath, expectedHash = null) {
     const { createHash } = await import('crypto');
     const content = await Desktop_Commander_read_file(filePath);
-    
+
     const hash = createHash('sha256').update(content).digest('hex');
-    
+
     const findings = {
         file: filePath,
         hash,
         size: content.length,
-        lines: content.split('\n').length
+        lines: content.split('\n').length,
     };
-    
+
     if (expectedHash) {
         findings.integrityMatch = hash === expectedHash;
         if (!findings.integrityMatch) {
@@ -403,7 +406,7 @@ async function verifyFileIntegrity(filePath, expectedHash = null) {
             findings.issue = 'File integrity check failed';
         }
     }
-    
+
     return findings;
 }
 ```
@@ -413,46 +416,46 @@ async function verifyFileIntegrity(filePath, expectedHash = null) {
 ```javascript
 async function detectCodeTampering(filePath, baselinePath = null) {
     const currentContent = await Desktop_Commander_read_file(filePath);
-    
+
     if (!baselinePath) {
         return {
             file: filePath,
-            warning: 'No baseline provided for comparison'
+            warning: 'No baseline provided for comparison',
         };
     }
-    
+
     const baselineContent = await Desktop_Commander_read_file(baselinePath);
-    
+
     if (currentContent === baselineContent) {
         return {
             file: filePath,
             status: 'CLEAN',
-            message: 'No tampering detected'
+            message: 'No tampering detected',
         };
     }
-    
+
     // Find differences
     const currentLines = currentContent.split('\n');
     const baselineLines = baselineContent.split('\n');
     const differences = [];
-    
+
     const maxLines = Math.max(currentLines.length, baselineLines.length);
     for (let i = 0; i < maxLines; i++) {
         if (currentLines[i] !== baselineLines[i]) {
             differences.push({
                 line: i + 1,
                 current: currentLines[i] || '[EOF]',
-                baseline: baselineLines[i] || '[EOF]'
+                baseline: baselineLines[i] || '[EOF]',
             });
         }
     }
-    
+
     return {
         file: filePath,
         status: 'MODIFIED',
         severity: 'HIGH',
         differences: differences.length,
-        details: differences.slice(0, 10) // First 10 differences
+        details: differences.slice(0, 10), // First 10 differences
     };
 }
 ```
@@ -472,81 +475,77 @@ async function performSecurityAudit(directoryPath) {
             criticalFindings: 0,
             highFindings: 0,
             mediumFindings: 0,
-            lowFindings: 0
+            lowFindings: 0,
         },
-        findings: []
+        findings: [],
     };
-    
+
     // Get all files in directory
     const files = await Desktop_Commander_start_search({
         path: directoryPath,
         pattern: '*.{js,ts,py,json,yaml,yml,env,config}',
-        searchType: 'files'
+        searchType: 'files',
     });
-    
+
     for (const file of files) {
         const fileAudit = {
             file,
             secrets: await auditSecrets(file),
             injections: await auditInjectionVulnerabilities(file),
-            pii: await auditPrivacyViolations(file)
+            pii: await auditPrivacyViolations(file),
         };
-        
+
         // Count findings by severity
-        const allFindings = [
-            ...fileAudit.secrets,
-            ...fileAudit.injections,
-            ...fileAudit.pii
-        ];
-        
-        allFindings.forEach(finding => {
+        const allFindings = [...fileAudit.secrets, ...fileAudit.injections, ...fileAudit.pii];
+
+        allFindings.forEach((finding) => {
             report.summary[`${finding.severity.toLowerCase()}Findings`]++;
             report.findings.push({ ...finding, file });
         });
-        
+
         report.files.push(fileAudit);
         report.summary.totalFiles++;
     }
-    
+
     // Generate recommendations
     report.recommendations = generateRecommendations(report);
-    
+
     return report;
 }
 
 function generateRecommendations(report) {
     const recommendations = [];
-    
+
     if (report.summary.criticalFindings > 0) {
         recommendations.push({
             priority: 'IMMEDIATE',
             action: 'Address critical findings immediately',
-            count: report.summary.criticalFindings
+            count: report.summary.criticalFindings,
         });
     }
-    
+
     if (report.summary.highFindings > 0) {
         recommendations.push({
             priority: 'HIGH',
             action: 'Review and fix high severity issues',
-            count: report.summary.highFindings
+            count: report.summary.highFindings,
         });
     }
-    
-    if (report.findings.some(f => f.type === 'SECRET')) {
+
+    if (report.findings.some((f) => f.type === 'SECRET')) {
         recommendations.push({
             priority: 'HIGH',
-            action: 'Rotate exposed credentials and secrets'
+            action: 'Rotate exposed credentials and secrets',
         });
     }
-    
-    if (report.findings.some(f => f.type === 'PII')) {
+
+    if (report.findings.some((f) => f.type === 'PII')) {
         recommendations.push({
             priority: 'MEDIUM',
-            action: 'Review PII handling and ensure compliance'
+            action: 'Review PII handling and ensure compliance',
         });
     }
-    
+
     return recommendations;
 }
 ```
@@ -581,13 +580,13 @@ function generateRecommendations(report) {
 
 ## Severity Levels
 
-| Level | Description | Response Time |
-|-------|-------------|---------------|
-| **CRITICAL** | Active exploitation risk | Immediate |
-| **HIGH** | Significant vulnerability | 24-48 hours |
-| **MEDIUM** | Potential security issue | 1-2 weeks |
-| **LOW** | Minor security concern | Next release |
-| **INFO** | Informational finding | As needed |
+| Level        | Description               | Response Time |
+| ------------ | ------------------------- | ------------- |
+| **CRITICAL** | Active exploitation risk  | Immediate     |
+| **HIGH**     | Significant vulnerability | 24-48 hours   |
+| **MEDIUM**   | Potential security issue  | 1-2 weeks     |
+| **LOW**      | Minor security concern    | Next release  |
+| **INFO**     | Informational finding     | As needed     |
 
 ## Common Vulnerability Patterns
 
@@ -711,7 +710,7 @@ const codeAnalysis = await analyzeCodeQuality('/project');
 const combinedReport = {
     security: auditResults,
     quality: codeAnalysis,
-    recommendations: mergeRecommendations(auditResults, codeAnalysis)
+    recommendations: mergeRecommendations(auditResults, codeAnalysis),
 };
 ```
 
@@ -721,12 +720,12 @@ const combinedReport = {
 // Run audit in CI pipeline
 async function runCIAudit() {
     const report = await performSecurityAudit(process.env.SOURCE_DIR);
-    
+
     if (report.summary.criticalFindings > 0) {
         console.error('CRITICAL SECURITY ISSUES FOUND');
         process.exit(1);
     }
-    
+
     // Generate report artifact
     await writeAuditReport(report);
 }

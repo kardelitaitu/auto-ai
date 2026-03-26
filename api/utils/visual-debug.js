@@ -10,17 +10,17 @@
  * @module api/utils/visual-debug
  */
 
-import { getPage } from '../core/context.js';
-import { createLogger } from '../core/logger.js';
+import { getPage } from "../core/context.js";
+import { createLogger } from "../core/logger.js";
 
-const logger = createLogger('api/utils/visual-debug.js');
+const logger = createLogger("api/utils/visual-debug.js");
 
 // IDs for DOM elements
 const IDS = {
-    cursor: 'autoai-debug-cursor',
-    overlay: 'autoai-debug-overlay',
-    styles: 'autoai-debug-styles',
-    clickHistory: 'autoai-debug-click-history'
+  cursor: "autoai-debug-cursor",
+  overlay: "autoai-debug-overlay",
+  styles: "autoai-debug-styles",
+  clickHistory: "autoai-debug-click-history",
 };
 
 // State
@@ -154,35 +154,36 @@ const STYLES_CSS = `
  * @returns {Promise<boolean>}
  */
 export async function enable() {
-    const page = getPage();
-    if (!page) {
-        logger.warn('[VisualDebug] No page available');
-        return false;
-    }
-    
-    try {
-        // Inject styles and create elements in one evaluate call
-        await page.evaluate(({ ids, css }) => {
-            // Add styles
-            if (!document.getElementById(ids.styles)) {
-                const style = document.createElement('style');
-                style.id = ids.styles;
-                style.textContent = css;
-                document.head.appendChild(style);
-            }
-            
-            // Create cursor
-            if (!document.getElementById(ids.cursor)) {
-                const cursor = document.createElement('div');
-                cursor.id = ids.cursor;
-                document.body.appendChild(cursor);
-            }
-            
-            // Create info panel
-            if (!document.getElementById(ids.overlay)) {
-                const overlay = document.createElement('div');
-                overlay.id = ids.overlay;
-                overlay.innerHTML = `
+  const page = getPage();
+  if (!page) {
+    logger.warn("[VisualDebug] No page available");
+    return false;
+  }
+
+  try {
+    // Inject styles and create elements in one evaluate call
+    await page.evaluate(
+      ({ ids, css }) => {
+        // Add styles
+        if (!document.getElementById(ids.styles)) {
+          const style = document.createElement("style");
+          style.id = ids.styles;
+          style.textContent = css;
+          document.head.appendChild(style);
+        }
+
+        // Create cursor
+        if (!document.getElementById(ids.cursor)) {
+          const cursor = document.createElement("div");
+          cursor.id = ids.cursor;
+          document.body.appendChild(cursor);
+        }
+
+        // Create info panel
+        if (!document.getElementById(ids.overlay)) {
+          const overlay = document.createElement("div");
+          overlay.id = ids.overlay;
+          overlay.innerHTML = `
                     <h4>🐛 Auto-AI Debug</h4>
                     <div class="stat">
                         <span class="stat-label">Cursor:</span>
@@ -198,109 +199,121 @@ export async function enable() {
                     </div>
                     <div id="${ids.clickHistory}"></div>
                 `;
-                document.body.appendChild(overlay);
+          document.body.appendChild(overlay);
+        }
+
+        // Track mouse movement
+        if (!window.__autoaiMouseTracking) {
+          window.__autoaiMouseTracking = true;
+          document.addEventListener("mousemove", (e) => {
+            const cursor = document.getElementById(ids.cursor);
+            if (cursor) {
+              cursor.style.left = e.clientX + "px";
+              cursor.style.top = e.clientY + "px";
             }
-            
-            // Track mouse movement
-            if (!window.__autoaiMouseTracking) {
-                window.__autoaiMouseTracking = true;
-                document.addEventListener('mousemove', (e) => {
-                    const cursor = document.getElementById(ids.cursor);
-                    if (cursor) {
-                        cursor.style.left = e.clientX + 'px';
-                        cursor.style.top = e.clientY + 'px';
-                    }
-                    
-                    const posDisplay = document.getElementById('cursor-pos');
-                    if (posDisplay) {
-                        posDisplay.textContent = `${Math.round(e.clientX)}, ${Math.round(e.clientY)}`;
-                    }
-                });
+
+            const posDisplay = document.getElementById("cursor-pos");
+            if (posDisplay) {
+              posDisplay.textContent = `${Math.round(e.clientX)}, ${Math.round(e.clientY)}`;
             }
-            
-            // Track clicks and pointer events
-            if (!window.__autoaiClickTracking) {
-                window.__autoaiClickTracking = true;
-                window.__autoaiClickCount = 0;
-                window.__autoaiClickHistory = [];
-                
-                // Helper function to update cursor position (called from external code)
-                window.__autoaiMoveCursor = (x, y) => {
-                    const cursor = document.getElementById(ids.cursor);
-                    if (cursor) {
-                        cursor.style.left = x + 'px';
-                        cursor.style.top = y + 'px';
-                    }
-                    
-                    const posDisplay = document.getElementById('cursor-pos');
-                    if (posDisplay) {
-                        posDisplay.textContent = `${Math.round(x)}, ${Math.round(y)}`;
-                    }
-                };
-                
-                // Helper function to record click
-                window.__autoaiRecordClick = (x, y, source) => {
-                    window.__autoaiClickCount++;
-                    
-                    // Move cursor to click position
-                    window.__autoaiMoveCursor(x, y);
-                    
-                    // Create click marker
-                    const marker = document.createElement('div');
-                    marker.className = 'autoai-click-marker';
-                    marker.style.left = x + 'px';
-                    marker.style.top = y + 'px';
-                    document.body.appendChild(marker);
-                    setTimeout(() => marker.remove(), 600);
-                    
-                    // Update display
-                    const countDisplay = document.getElementById('click-count');
-                    if (countDisplay) {
-                        countDisplay.textContent = window.__autoaiClickCount;
-                    }
-                    
-                    const lastClickDisplay = document.getElementById('last-click');
-                    if (lastClickDisplay) {
-                        lastClickDisplay.textContent = `${Math.round(x)}, ${Math.round(y)}`;
-                    }
-                    
-                    // Add to history
-                    const time = new Date().toLocaleTimeString();
-                    window.__autoaiClickHistory.unshift({ x: Math.round(x), y: Math.round(y), time, source });
-                    if (window.__autoaiClickHistory.length > 10) {
-                        window.__autoaiClickHistory.pop();
-                    }
-                    
-                    // Update history display
-                    const historyContainer = document.getElementById(ids.clickHistory);
-                    if (historyContainer) {
-                        historyContainer.innerHTML = window.__autoaiClickHistory
-                            .map(c => `<div class="click-entry">${c.time}: (${c.x}, ${c.y}) [${c.source}]</div>`)
-                            .join('');
-                    }
-                    
-                    console.log(`[AutoAI Debug] Click #${window.__autoaiClickCount} at (${Math.round(x)}, ${Math.round(y)}) via ${source}`);
-                };
-                
-                // Track DOM clicks
-                document.addEventListener('click', (e) => {
-                    window.__autoaiRecordClick(e.clientX, e.clientY, 'click');
-                });
-                
-                // Track pointer events (more reliable for canvas)
-                document.addEventListener('pointerdown', (e) => {
-                    window.__autoaiRecordClick(e.clientX, e.clientY, 'pointer');
-                });
+          });
+        }
+
+        // Track clicks and pointer events
+        if (!window.__autoaiClickTracking) {
+          window.__autoaiClickTracking = true;
+          window.__autoaiClickCount = 0;
+          window.__autoaiClickHistory = [];
+
+          // Helper function to update cursor position (called from external code)
+          window.__autoaiMoveCursor = (x, y) => {
+            const cursor = document.getElementById(ids.cursor);
+            if (cursor) {
+              cursor.style.left = x + "px";
+              cursor.style.top = y + "px";
             }
-        }, { ids: IDS, css: STYLES_CSS });
-        
-        isEnabled = true;
-        logger.info('[VisualDebug] Enabled - cursor and clicks will be visualized');
-        return true;
-    } catch (e) {
-        logger.error(`[VisualDebug] Failed to enable: ${e.message}`);
-        return false;
-    }
+
+            const posDisplay = document.getElementById("cursor-pos");
+            if (posDisplay) {
+              posDisplay.textContent = `${Math.round(x)}, ${Math.round(y)}`;
+            }
+          };
+
+          // Helper function to record click
+          window.__autoaiRecordClick = (x, y, source) => {
+            window.__autoaiClickCount++;
+
+            // Move cursor to click position
+            window.__autoaiMoveCursor(x, y);
+
+            // Create click marker
+            const marker = document.createElement("div");
+            marker.className = "autoai-click-marker";
+            marker.style.left = x + "px";
+            marker.style.top = y + "px";
+            document.body.appendChild(marker);
+            setTimeout(() => marker.remove(), 600);
+
+            // Update display
+            const countDisplay = document.getElementById("click-count");
+            if (countDisplay) {
+              countDisplay.textContent = window.__autoaiClickCount;
+            }
+
+            const lastClickDisplay = document.getElementById("last-click");
+            if (lastClickDisplay) {
+              lastClickDisplay.textContent = `${Math.round(x)}, ${Math.round(y)}`;
+            }
+
+            // Add to history
+            const time = new Date().toLocaleTimeString();
+            window.__autoaiClickHistory.unshift({
+              x: Math.round(x),
+              y: Math.round(y),
+              time,
+              source,
+            });
+            if (window.__autoaiClickHistory.length > 10) {
+              window.__autoaiClickHistory.pop();
+            }
+
+            // Update history display
+            const historyContainer = document.getElementById(ids.clickHistory);
+            if (historyContainer) {
+              historyContainer.innerHTML = window.__autoaiClickHistory
+                .map(
+                  (c) =>
+                    `<div class="click-entry">${c.time}: (${c.x}, ${c.y}) [${c.source}]</div>`,
+                )
+                .join("");
+            }
+
+            console.log(
+              `[AutoAI Debug] Click #${window.__autoaiClickCount} at (${Math.round(x)}, ${Math.round(y)}) via ${source}`,
+            );
+          };
+
+          // Track DOM clicks
+          document.addEventListener("click", (e) => {
+            window.__autoaiRecordClick(e.clientX, e.clientY, "click");
+          });
+
+          // Track pointer events (more reliable for canvas)
+          document.addEventListener("pointerdown", (e) => {
+            window.__autoaiRecordClick(e.clientX, e.clientY, "pointer");
+          });
+        }
+      },
+      { ids: IDS, css: STYLES_CSS },
+    );
+
+    isEnabled = true;
+    logger.info("[VisualDebug] Enabled - cursor and clicks will be visualized");
+    return true;
+  } catch (e) {
+    logger.error(`[VisualDebug] Failed to enable: ${e.message}`);
+    return false;
+  }
 }
 
 /**
@@ -308,29 +321,31 @@ export async function enable() {
  * @returns {Promise<boolean>}
  */
 export async function disable() {
-    const page = getPage();
-    if (!page) return false;
-    
-    try {
-        await page.evaluate((ids) => {
-            document.getElementById(ids.cursor)?.remove();
-            document.getElementById(ids.overlay)?.remove();
-            document.getElementById(ids.styles)?.remove();
-            document.querySelectorAll('.autoai-click-marker').forEach(el => el.remove());
-            
-            delete window.__autoaiClickCount;
-            delete window.__autoaiClickHistory;
-            window.__autoaiMouseTracking = false;
-            window.__autoaiClickTracking = false;
-        }, IDS);
-        
-        isEnabled = false;
-        logger.info('[VisualDebug] Disabled');
-        return true;
-    } catch (e) {
-        logger.error(`[VisualDebug] Failed to disable: ${e.message}`);
-        return false;
-    }
+  const page = getPage();
+  if (!page) return false;
+
+  try {
+    await page.evaluate((ids) => {
+      document.getElementById(ids.cursor)?.remove();
+      document.getElementById(ids.overlay)?.remove();
+      document.getElementById(ids.styles)?.remove();
+      document
+        .querySelectorAll(".autoai-click-marker")
+        .forEach((el) => el.remove());
+
+      delete window.__autoaiClickCount;
+      delete window.__autoaiClickHistory;
+      window.__autoaiMouseTracking = false;
+      window.__autoaiClickTracking = false;
+    }, IDS);
+
+    isEnabled = false;
+    logger.info("[VisualDebug] Disabled");
+    return true;
+  } catch (e) {
+    logger.error(`[VisualDebug] Failed to disable: ${e.message}`);
+    return false;
+  }
 }
 
 /**
@@ -338,11 +353,11 @@ export async function disable() {
  * @returns {Promise<boolean>}
  */
 export async function toggle() {
-    if (isEnabled) {
-        return await disable();
-    } else {
-        return await enable();
-    }
+  if (isEnabled) {
+    return await disable();
+  } else {
+    return await enable();
+  }
 }
 
 /**
@@ -352,14 +367,15 @@ export async function toggle() {
  * @param {string} label - Optional label
  * @returns {Promise<void>}
  */
-export async function mark(x, y, label = '') {
-    const page = getPage();
-    if (!page || !isEnabled) return;
-    
-    try {
-        await page.evaluate(({ x, y, label }) => {
-            const marker = document.createElement('div');
-            marker.style.cssText = `
+export async function mark(x, y, label = "") {
+  const page = getPage();
+  if (!page || !isEnabled) return;
+
+  try {
+    await page.evaluate(
+      ({ x, y, label }) => {
+        const marker = document.createElement("div");
+        marker.style.cssText = `
                 position: fixed;
                 left: ${x}px;
                 top: ${y}px;
@@ -377,15 +393,17 @@ export async function mark(x, y, label = '') {
                 color: cyan;
                 background: rgba(0, 255, 255, 0.1);
             `;
-            if (label) {
-                marker.textContent = label;
-            }
-            document.body.appendChild(marker);
-            setTimeout(() => marker.remove(), 2000);
-        }, { x, y, label });
-    } catch (e) {
-        logger.error(`[VisualDebug] Failed to mark: ${e.message}`);
-    }
+        if (label) {
+          marker.textContent = label;
+        }
+        document.body.appendChild(marker);
+        setTimeout(() => marker.remove(), 2000);
+      },
+      { x, y, label },
+    );
+  } catch (e) {
+    logger.error(`[VisualDebug] Failed to mark: ${e.message}`);
+  }
 }
 
 /**
@@ -395,18 +413,21 @@ export async function mark(x, y, label = '') {
  * @returns {Promise<void>}
  */
 export async function moveCursor(x, y) {
-    const page = getPage();
-    if (!page || !isEnabled) return;
-    
-    try {
-        await page.evaluate(({ x, y }) => {
-            if (window.__autoaiMoveCursor) {
-                window.__autoaiMoveCursor(x, y);
-            }
-        }, { x, y });
-    } catch (_e) {
-        // Ignore errors
-    }
+  const page = getPage();
+  if (!page || !isEnabled) return;
+
+  try {
+    await page.evaluate(
+      ({ x, y }) => {
+        if (window.__autoaiMoveCursor) {
+          window.__autoaiMoveCursor(x, y);
+        }
+      },
+      { x, y },
+    );
+  } catch (_e) {
+    // Ignore errors
+  }
 }
 
 /**
@@ -414,7 +435,7 @@ export async function moveCursor(x, y) {
  * @returns {boolean}
  */
 export function isEnabledDebug() {
-    return isEnabled;
+  return isEnabled;
 }
 
 /**
@@ -422,18 +443,18 @@ export function isEnabledDebug() {
  * @returns {object}
  */
 export function getState() {
-    return {
-        enabled: isEnabled,
-        ...IDS
-    };
+  return {
+    enabled: isEnabled,
+    ...IDS,
+  };
 }
 
 export default {
-    enable,
-    disable,
-    toggle,
-    mark,
-    moveCursor,
-    getState,
-    isEnabled: isEnabledDebug
+  enable,
+  disable,
+  toggle,
+  mark,
+  moveCursor,
+  getState,
+  isEnabled: isEnabledDebug,
 };

@@ -1,179 +1,179 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 
 permissions:
-  contents: read
+    contents: read
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-  VITEST_MAX_THREADS: 4
-  VITEST_MIN_THREADS: 2
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+    VITEST_MAX_THREADS: 4
+    VITEST_MIN_THREADS: 2
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Run ESLint
-        run: pnpm run lint
+    lint:
+        runs-on: ubuntu-latest
 
-  test-unit:
-    runs-on: ubuntu-latest
-    
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-      
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Run Unit Tests
-        run: pnpm run test:bun:unit
+        env:
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
-  test-integration:
-    runs-on: ubuntu-latest
-    
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-      
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Run Integration Tests
-        run: pnpm run test:bun:integration
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
 
-  test-edge:
-    runs-on: ubuntu-latest
-    
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-      
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Run Edge Case Tests
-        run: pnpm run test:bun:edge
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
 
-  build:
-    runs-on: ubuntu-latest
-    needs: [lint, test-unit, test-integration, test-edge]
-    
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-      
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Build check
-        run: |
-          if grep -q '"build":' package.json; then
-            pnpm build
-          else
-            echo "No build script defined - skipping"
-          fi
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
 
-  notify:
-    runs-on: ubuntu-latest
-    needs: [lint, test-unit, test-integration, test-edge, build]
-    if: always()
-    
-    steps:
-      - name: Success notification
-        if: needs.lint.result == 'success' && needs.test-unit.result == 'success' && needs.test-integration.result == 'success' && needs.test-edge.result == 'success' && needs.build.result == 'success'
-        run: echo "✅ All checks passed!"
-      
-      - name: Failure notification
-        if: needs.lint.result == 'failure' || needs.test-unit.result == 'failure' || needs.test-integration.result == 'failure' || needs.test-edge.result == 'failure' || needs.build.result == 'failure'
-        run: |
-          echo "❌ CI Failed!"
-          echo "Check the logs above for details."
-          exit 1
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run ESLint
+              run: pnpm run lint
+
+    test-unit:
+        runs-on: ubuntu-latest
+
+        env:
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+
+            - name: Install bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run Unit Tests
+              run: pnpm run test:bun:unit
+
+    test-integration:
+        runs-on: ubuntu-latest
+
+        env:
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+
+            - name: Install bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run Integration Tests
+              run: pnpm run test:bun:integration
+
+    test-edge:
+        runs-on: ubuntu-latest
+
+        env:
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+
+            - name: Install bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run Edge Case Tests
+              run: pnpm run test:bun:edge
+
+    build:
+        runs-on: ubuntu-latest
+        needs: [lint, test-unit, test-integration, test-edge]
+
+        env:
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+
+            - name: Install bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build check
+              run: |
+                  if grep -q '"build":' package.json; then
+                    pnpm build
+                  else
+                    echo "No build script defined - skipping"
+                  fi
+
+    notify:
+        runs-on: ubuntu-latest
+        needs: [lint, test-unit, test-integration, test-edge, build]
+        if: always()
+
+        steps:
+            - name: Success notification
+              if: needs.lint.result == 'success' && needs.test-unit.result == 'success' && needs.test-integration.result == 'success' && needs.test-edge.result == 'success' && needs.build.result == 'success'
+              run: echo "✅ All checks passed!"
+
+            - name: Failure notification
+              if: needs.lint.result == 'failure' || needs.test-unit.result == 'failure' || needs.test-integration.result == 'failure' || needs.test-edge.result == 'failure' || needs.build.result == 'failure'
+              run: |
+                  echo "❌ CI Failed!"
+                  echo "Check the logs above for details."
+                  exit 1

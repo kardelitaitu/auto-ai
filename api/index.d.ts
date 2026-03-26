@@ -19,6 +19,7 @@ export declare const api: {
     eval: (fn: (...args: any[]) => any, ...args: any[]) => Promise<any>;
     init: (page: Page, options?: ApiOptions) => Promise<void>;
     diagnose: (page: Page) => Promise<object>;
+    screenshot: (options?: { path?: string; fullPage?: boolean; type?: 'jpeg' | 'png'; quality?: number }) => Promise<Buffer>;
     emulateMedia: (options?: {
         type?: string;
         colorScheme?: 'light' | 'dark' | 'no-preference';
@@ -72,10 +73,13 @@ export declare const api: {
     getPersona: () => PersonaConfig;
     getPersonaName: () => string;
     listPersonas: () => string[];
+    getSessionDuration: () => number;
 
     recover: (error: Error) => Promise<void>;
     findElement: (selector: string, options?: { timeout?: number }) => Promise<Locator | null>;
     smartClick: (selector: string, options?: ClickOptions) => Promise<void>;
+    urlChanged: (previousUrl: string) => Promise<boolean>;
+    undo: () => Promise<void>;
 
     getContextState: () => object;
     setContextState: (state: object) => void;
@@ -90,6 +94,10 @@ export declare const api: {
     recoveryMiddleware: (options?: object) => Function;
     metricsMiddleware: (options?: object) => Function;
     rateLimitMiddleware: (options?: RateLimitOptions) => Function;
+
+    // Events
+    getAvailableHooks: () => string[];
+    getHookDescription: (hook: string) => string | undefined;
 
     file: {
         readline: (filename: string) => Promise<string>;
@@ -227,16 +235,43 @@ export class AutomationError extends Error {
     constructor(message: string, code?: string);
 }
 
-export class SessionError extends AutomationError { }
-export class ContextError extends AutomationError { }
-export class ElementError extends AutomationError { }
-export class ActionError extends AutomationError { }
-export class NavigationError extends AutomationError { }
-export class ConfigError extends AutomationError { }
-export class LLMError extends AutomationError { }
-export class ValidationError extends AutomationError { }
+export class SessionError extends AutomationError {}
+export class ContextError extends AutomationError {}
+export class ElementError extends AutomationError {}
+export class ActionError extends AutomationError {}
+export class NavigationError extends AutomationError {}
+export class ConfigError extends AutomationError {}
+export class LLMError extends AutomationError {}
+export class ValidationError extends AutomationError {}
 
 export function isErrorCode(error: Error, code: string): boolean;
+
+// HTTP/API Error classes
+export class AppError extends Error {
+    code: string;
+    metadata: object;
+    timestamp: string;
+    constructor(code: string, message: string, metadata?: object, cause?: Error);
+    toJSON(): object;
+    toString(): string;
+}
+
+export class RouterError extends AppError {}
+export class ProxyError extends AppError {}
+export class RateLimitError extends AppError {
+    retryable: boolean;
+}
+export class ModelError extends AppError {}
+export class BrowserError extends AppError {}
+export class TimeoutError extends AppError {
+    retryable: boolean;
+}
+export class CircuitBreakerError extends AppError {
+    retryable: boolean;
+}
+
+export function classifyHttpError(statusCode: number, message: string, metadata?: object): AppError;
+export function wrapError(error: Error, code?: string, metadata?: object): AppError;
 
 // ─── V-PREP Types (Vision Pre-Processing) ──────────────────────
 

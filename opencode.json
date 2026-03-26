@@ -1,56 +1,46 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "context-mode": {
-      "type": "local",
-      "command": [
-        "cmd",
-        "/c",
-        "context-mode"
-      ]
+    "$schema": "https://opencode.ai/config.json",
+    "mcp": {
+        "context-mode": {
+            "type": "local",
+            "command": ["cmd", "/c", "context-mode"]
+        },
+        "filesystem": {
+            "type": "local",
+            "command": [
+                "node",
+                "C:\\nvm4w\\nodejs\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js",
+                "C:\\My Script\\auto",
+                "C:\\My Script\\auto-ai"
+            ]
+        },
+        "Sequential Thinking": {
+            "type": "local",
+            "command": [
+                "node",
+                "C:\\nvm4w\\nodejs\\node_modules\\@modelcontextprotocol\\server-sequential-thinking\\dist\\index.js"
+            ]
+        },
+        "Tavily": {
+            "type": "local",
+            "command": [
+                "npx",
+                "-y",
+                "mcp-remote",
+                "https://mcp.tavily.com/mcp/?tavilyApiKey=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"
+            ]
+        },
+        "Memory": {
+            "type": "local",
+            "command": ["npx", "-y", "@modelcontextprotocol/server-memory"]
+        },
+        "tree-sitter": {
+            "type": "local",
+            "command": [
+                "C:\\Python313\\python.exe",
+                "C:\\My Script\\auto-ai\\tree_sitter_mcp_launcher.py"
+            ]
+        }
     },
-    "filesystem": {
-      "type": "local",
-      "command": [
-        "node",
-        "C:\\nvm4w\\nodejs\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js",
-        "C:\\My Script\\auto",
-        "C:\\My Script\\auto-ai"
-      ]
-    },
-    "Sequential Thinking": {
-      "type": "local",
-      "command": [
-        "node",
-        "C:\\nvm4w\\nodejs\\node_modules\\@modelcontextprotocol\\server-sequential-thinking\\dist\\index.js"
-      ]
-    },
-    "Tavily": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "mcp-remote",
-        "https://mcp.tavily.com/mcp/?tavilyApiKey=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"
-      ]
-    },
-    "Memory": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ]
-    },
-    "tree-sitter": {
-      "type": "local",
-      "command": [
-        "C:\\Python313\\python.exe",
-        "C:\\My Script\\auto-ai\\tree_sitter_mcp_launcher.py"
-      ]
-    }
-  },
-  "plugin": [
-    "context-mode"
-  ]
+    "plugin": ["context-mode"]
 }

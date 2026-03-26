@@ -12,17 +12,17 @@
  * @returns {string} - JSON string or fallback representation
  */
 function safeStringify(obj) {
-    const seen = new WeakSet();
+  const seen = new WeakSet();
 
-    return JSON.stringify(obj, (key, value) => {
-        if (typeof value === 'object' && value !== null) {
-            if (seen.has(value)) {
-                return '[Circular]';
-            }
-            seen.add(value);
-        }
-        return value;
-    });
+  return JSON.stringify(obj, (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return "[Circular]";
+      }
+      seen.add(value);
+    }
+    return value;
+  });
 }
 
 /**
@@ -36,18 +36,18 @@ function safeStringify(obj) {
  * @returns {string} - Hash string in base-36
  */
 export function quickHash(obj) {
-    try {
-        const str = safeStringify(obj);
-        let hash = 5381;
-        for (let i = 0; i < str.length; i++) {
-            hash = ((hash << 5) + hash) + str.charCodeAt(i);
-            hash = hash | 0; // Convert to 32-bit integer
-        }
-        return hash.toString(36);
-    } catch (e) {
-        // Fallback for unexpected errors
-        return 'hash_error';
+  try {
+    const str = safeStringify(obj);
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) + hash + str.charCodeAt(i);
+      hash = hash | 0; // Convert to 32-bit integer
     }
+    return hash.toString(36);
+  } catch (e) {
+    // Fallback for unexpected errors
+    return "hash_error";
+  }
 }
 
 /**
@@ -58,14 +58,14 @@ export function quickHash(obj) {
  * @returns {string} - Hash string in base-36
  */
 export function quickHashString(str) {
-    if (typeof str !== 'string') {
-        return quickHash(str);
-    }
+  if (typeof str !== "string") {
+    return quickHash(str);
+  }
 
-    let hash = 5381;
-    for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) + hash) + str.charCodeAt(i);
-        hash = hash | 0; // Convert to 32-bit integer
-    }
-    return hash.toString(36);
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) + hash + str.charCodeAt(i);
+    hash = hash | 0; // Convert to 32-bit integer
+  }
+  return hash.toString(36);
 }

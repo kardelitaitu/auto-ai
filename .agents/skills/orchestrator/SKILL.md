@@ -1,15 +1,15 @@
 ---
 name: orchestrator
 description: |
-  Multi-agent orchestration for delegating tasks to specialized AI agents.
-  Use when coordinating multiple agents, designing agent workflows, implementing
-  task delegation, building agent pipelines, or creating supervisor patterns.
-  Triggers on tasks involving agent coordination, task distribution, multi-agent
-  systems, agent communication, or hierarchical task management.
+    Multi-agent orchestration for delegating tasks to specialized AI agents.
+    Use when coordinating multiple agents, designing agent workflows, implementing
+    task delegation, building agent pipelines, or creating supervisor patterns.
+    Triggers on tasks involving agent coordination, task distribution, multi-agent
+    systems, agent communication, or hierarchical task management.
 license: MIT
 metadata:
-  author: Auto-AI Framework
-  version: '1.0.0'
+    author: Auto-AI Framework
+    version: '1.0.0'
 ---
 
 # Multi-Agent Orchestrator Skill
@@ -73,7 +73,7 @@ class SupervisorOrchestrator {
             agent: worker,
             status: 'idle',
             capabilities: worker.capabilities || [],
-            tasksCompleted: 0
+            tasksCompleted: 0,
         });
     }
 
@@ -81,36 +81,36 @@ class SupervisorOrchestrator {
     async delegate(task) {
         // Analyze task requirements
         const requirements = this.analyzeRequirements(task);
-        
+
         // Find best matching worker
         const worker = this.selectWorker(requirements);
-        
+
         if (!worker) {
             throw new Error('No suitable worker found');
         }
 
         // Update worker status
         worker.status = 'busy';
-        
+
         try {
             // Execute task
             const result = await worker.agent.execute(task);
-            
+
             worker.tasksCompleted++;
             worker.status = 'idle';
-            
+
             return {
                 success: true,
                 worker: worker.name,
                 result,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             };
         } catch (error) {
             worker.status = 'idle';
             return {
                 success: false,
                 worker: worker.name,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -122,7 +122,7 @@ class SupervisorOrchestrator {
 
         for (const [name, worker] of this.workers) {
             if (worker.status !== 'idle') continue;
-            
+
             const score = this.calculateMatchScore(worker, requirements);
             if (score > bestScore) {
                 bestScore = score;
@@ -162,7 +162,7 @@ class PipelineOrchestrator {
             name,
             agent,
             transform: transform || ((input, result) => result),
-            status: 'pending'
+            status: 'pending',
         });
     }
 
@@ -173,37 +173,36 @@ class PipelineOrchestrator {
 
         for (const stage of this.stages) {
             console.log(`[Pipeline] Executing stage: ${stage.name}`);
-            
+
             stage.status = 'running';
             const startTime = Date.now();
 
             try {
                 const result = await stage.agent.execute(data);
-                
+
                 // Transform output for next stage
                 data = stage.transform(data, result);
-                
+
                 stage.status = 'completed';
                 stageResults.push({
                     stage: stage.name,
                     success: true,
                     duration: Date.now() - startTime,
-                    output: data
+                    output: data,
                 });
-
             } catch (error) {
                 stage.status = 'failed';
                 stageResults.push({
                     stage: stage.name,
                     success: false,
-                    error: error.message
+                    error: error.message,
                 });
-                
+
                 // Stop pipeline on failure
                 return {
                     success: false,
                     failedAt: stage.name,
-                    stages: stageResults
+                    stages: stageResults,
                 };
             }
         }
@@ -211,7 +210,7 @@ class PipelineOrchestrator {
         return {
             success: true,
             finalOutput: data,
-            stages: stageResults
+            stages: stageResults,
         };
     }
 }
@@ -221,11 +220,11 @@ const pipeline = new PipelineOrchestrator();
 pipeline.addStage('research', researchAgent);
 pipeline.addStage('code', codeAgent, (input, result) => ({
     specs: input,
-    code: result
+    code: result,
 }));
 pipeline.addStage('review', reviewAgent, (input, result) => ({
     ...input,
-    review: result
+    review: result,
 }));
 ```
 
@@ -249,22 +248,16 @@ class FanOutFanInOrchestrator {
     // Execute with fan-out/fan-in
     async execute(task) {
         console.log(`[FanOut] Distributing to ${this.agents.length} agents`);
-        
+
         // Fan out: Execute all agents
-        const promises = this.agents.map(agent => 
-            this.executeWithTimeout(agent, task)
-        );
+        const promises = this.agents.map((agent) => this.executeWithTimeout(agent, task));
 
         const results = await Promise.allSettled(promises);
-        
+
         // Fan in: Combine results
-        const successful = results
-            .filter(r => r.status === 'fulfilled')
-            .map(r => r.value);
-        
-        const failed = results
-            .filter(r => r.status === 'rejected')
-            .map(r => r.reason.message);
+        const successful = results.filter((r) => r.status === 'fulfilled').map((r) => r.value);
+
+        const failed = results.filter((r) => r.status === 'rejected').map((r) => r.reason.message);
 
         console.log(`[FanIn] ${successful.length} succeeded, ${failed.length} failed`);
 
@@ -274,9 +267,7 @@ class FanOutFanInOrchestrator {
     async executeWithTimeout(agent, task, timeout = 60000) {
         return Promise.race([
             agent.execute(task),
-            new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Timeout')), timeout)
-            )
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout)),
         ]);
     }
 
@@ -285,7 +276,7 @@ class FanOutFanInOrchestrator {
             success: errors.length === 0,
             results,
             errors,
-            consensus: this.findConsensus(results)
+            consensus: this.findConsensus(results),
         };
     }
 
@@ -293,14 +284,14 @@ class FanOutFanInOrchestrator {
         // Find common elements across results
         if (results.length === 0) return null;
         if (results.length === 1) return results[0];
-        
+
         // Simple voting mechanism
         const votes = new Map();
         for (const result of results) {
             const key = JSON.stringify(result);
             votes.set(key, (votes.get(key) || 0) + 1);
         }
-        
+
         let maxVotes = 0;
         let consensus = null;
         for (const [key, count] of votes) {
@@ -309,7 +300,7 @@ class FanOutFanInOrchestrator {
                 consensus = JSON.parse(key);
             }
         }
-        
+
         return consensus;
     }
 }
@@ -330,7 +321,7 @@ class HierarchicalOrchestrator {
     addLevel(level, agents) {
         this.levels.set(level, {
             agents,
-            coordinator: null
+            coordinator: null,
         });
     }
 
@@ -358,7 +349,7 @@ class HierarchicalOrchestrator {
         // If this level has a coordinator, use it to plan
         if (levelData.coordinator) {
             const subtasks = await levelData.coordinator.plan(task);
-            
+
             // Execute subtasks at next level
             const nextLevel = level - 1;
             if (nextLevel >= 0) {
@@ -377,9 +368,9 @@ class HierarchicalOrchestrator {
 
     aggregateLevelResults(results) {
         return {
-            success: results.every(r => r.success),
+            success: results.every((r) => r.success),
             results,
-            aggregated: this.mergeResults(results)
+            aggregated: this.mergeResults(results),
         };
     }
 }
@@ -402,7 +393,7 @@ class AgentMessageBus {
         this.agents.set(id, {
             agent,
             inbox: [],
-            status: 'ready'
+            status: 'ready',
         });
     }
 
@@ -428,14 +419,14 @@ class AgentMessageBus {
             type: message.type,
             content: message.content,
             timestamp: new Date().toISOString(),
-            correlationId: message.correlationId
+            correlationId: message.correlationId,
         };
 
         recipient.inbox.push(msg);
-        
+
         // Notify subscribers
         await this.notifySubscribers(msg);
-        
+
         return msg.id;
     }
 
@@ -494,18 +485,20 @@ class SharedStateManager {
     // Get state with optional path
     get(path = null) {
         if (!path) return this.state;
-        
-        return path.split('.').reduce((obj, key) => 
-            obj && obj[key] !== undefined ? obj[key] : undefined, 
-            this.state
-        );
+
+        return path
+            .split('.')
+            .reduce(
+                (obj, key) => (obj && obj[key] !== undefined ? obj[key] : undefined),
+                this.state
+            );
     }
 
     // Set state with locking
     async set(path, value, agentId) {
         // Acquire lock
         await this.acquireLock(path, agentId);
-        
+
         try {
             const keys = path.split('.');
             const lastKey = keys.pop();
@@ -513,13 +506,13 @@ class SharedStateManager {
                 if (!obj[key]) obj[key] = {};
                 return obj[key];
             }, this.state);
-            
+
             const oldValue = target[lastKey];
             target[lastKey] = value;
-            
+
             // Notify watchers
             await this.notifyWatchers(path, value, oldValue, agentId);
-            
+
             return { success: true, oldValue };
         } finally {
             this.releaseLock(path, agentId);
@@ -529,14 +522,14 @@ class SharedStateManager {
     // Lock management
     async acquireLock(path, agentId, timeout = 5000) {
         const start = Date.now();
-        
+
         while (this.locks.has(path)) {
             if (Date.now() - start > timeout) {
                 throw new Error(`Lock timeout for ${path}`);
             }
-            await new Promise(r => setTimeout(r, 100));
+            await new Promise((r) => setTimeout(r, 100));
         }
-        
+
         this.locks.set(path, agentId);
     }
 
@@ -583,12 +576,12 @@ class LoadBalancer {
             weight,
             activeTasks: 0,
             totalTasks: 0,
-            averageTime: 0
+            averageTime: 0,
         });
         this.metrics.set(agent.id, {
             tasksCompleted: 0,
             totalTime: 0,
-            errors: 0
+            errors: 0,
         });
     }
 
@@ -615,7 +608,7 @@ class LoadBalancer {
     }
 
     leastConnections() {
-        return this.agents.reduce((min, agent) => 
+        return this.agents.reduce((min, agent) =>
             agent.activeTasks < min.activeTasks ? agent : min
         );
     }
@@ -623,17 +616,17 @@ class LoadBalancer {
     weighted() {
         const totalWeight = this.agents.reduce((sum, a) => sum + a.weight, 0);
         let random = Math.random() * totalWeight;
-        
+
         for (const agent of this.agents) {
             random -= agent.weight;
             if (random <= 0) return agent;
         }
-        
+
         return this.agents[0];
     }
 
     responseTime() {
-        return this.agents.reduce((min, agent) => 
+        return this.agents.reduce((min, agent) =>
             agent.averageTime < min.averageTime ? agent : min
         );
     }
@@ -646,8 +639,8 @@ class LoadBalancer {
             metrics.totalTime += duration;
             if (!success) metrics.errors++;
         }
-        
-        const agentData = this.agents.find(a => a.agent.id === agent.id);
+
+        const agentData = this.agents.find((a) => a.agent.id === agent.id);
         if (agentData) {
             agentData.activeTasks--;
             agentData.totalTasks++;
@@ -666,7 +659,7 @@ class PriorityTaskQueue {
             critical: [],
             high: [],
             medium: [],
-            low: []
+            low: [],
         };
         this.paused = false;
     }
@@ -679,7 +672,7 @@ class PriorityTaskQueue {
                 ...task,
                 id: task.id || this.generateId(),
                 priority,
-                enqueuedAt: Date.now()
+                enqueuedAt: Date.now(),
             });
         }
     }
@@ -689,14 +682,14 @@ class PriorityTaskQueue {
         if (this.paused) return null;
 
         const priorities = ['critical', 'high', 'medium', 'low'];
-        
+
         for (const priority of priorities) {
             const queue = this.queues[priority];
             if (queue.length > 0) {
                 return queue.shift();
             }
         }
-        
+
         return null;
     }
 
@@ -707,13 +700,17 @@ class PriorityTaskQueue {
             high: this.queues.high.length,
             medium: this.queues.medium.length,
             low: this.queues.low.length,
-            total: Object.values(this.queues).reduce((sum, q) => sum + q.length, 0)
+            total: Object.values(this.queues).reduce((sum, q) => sum + q.length, 0),
         };
     }
 
     // Pause/resume processing
-    pause() { this.paused = true; }
-    resume() { this.paused = false; }
+    pause() {
+        this.paused = true;
+    }
+    resume() {
+        this.paused = false;
+    }
 
     generateId() {
         return `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -738,23 +735,23 @@ class ConsensusBuilder {
             return {
                 consensus: false,
                 reason: 'Insufficient responses',
-                responses
+                responses,
             };
         }
 
         // Group similar responses
         const groups = this.groupResponses(responses);
-        
+
         // Find majority group
         const majority = this.findMajority(groups);
-        
+
         if (majority.count / responses.length >= this.threshold) {
             return {
                 consensus: true,
                 value: majority.value,
                 confidence: majority.count / responses.length,
                 agreeingAgents: majority.agents,
-                dissentingAgents: this.getDissentingAgents(responses, majority)
+                dissentingAgents: this.getDissentingAgents(responses, majority),
             };
         }
 
@@ -762,34 +759,32 @@ class ConsensusBuilder {
             consensus: false,
             reason: 'No clear majority',
             groups,
-            bestGuess: this.getBestGuess(groups)
+            bestGuess: this.getBestGuess(groups),
         };
     }
 
     groupResponses(responses) {
         const groups = new Map();
-        
+
         responses.forEach((response, index) => {
             const key = this.normalizeResponse(response.value);
             if (!groups.has(key)) {
                 groups.set(key, {
                     value: response.value,
                     count: 0,
-                    agents: []
+                    agents: [],
                 });
             }
             const group = groups.get(key);
             group.count++;
             group.agents.push(response.agentId || index);
         });
-        
+
         return Array.from(groups.values());
     }
 
     findMajority(groups) {
-        return groups.reduce((max, group) => 
-            group.count > max.count ? group : max
-        );
+        return groups.reduce((max, group) => (group.count > max.count ? group : max));
     }
 
     normalizeResponse(value) {
@@ -801,8 +796,10 @@ class ConsensusBuilder {
 
     getDissentingAgents(responses, majority) {
         return responses
-            .filter(r => this.normalizeResponse(r.value) !== this.normalizeResponse(majority.value))
-            .map(r => r.agentId);
+            .filter(
+                (r) => this.normalizeResponse(r.value) !== this.normalizeResponse(majority.value)
+            )
+            .map((r) => r.agentId);
     }
 
     getBestGuess(groups) {
@@ -834,30 +831,29 @@ class ResultMerger {
     }
 
     combineResults(results) {
-        return results.reduce((merged, result) => ({
-            ...merged,
-            ...result,
-            _sources: [...(merged._sources || []), result._source || 'unknown']
-        }), {});
+        return results.reduce(
+            (merged, result) => ({
+                ...merged,
+                ...result,
+                _sources: [...(merged._sources || []), result._source || 'unknown'],
+            }),
+            {}
+        );
     }
 
     latestResult(results) {
-        return results.sort((a, b) => 
-            new Date(b.timestamp) - new Date(a.timestamp)
-        )[0];
+        return results.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
     }
 
     bestResult(results) {
-        return results.sort((a, b) => 
-            (b.confidence || 0) - (a.confidence || 0)
-        )[0];
+        return results.sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
     }
 
     unionResults(results) {
         const union = new Set();
-        results.forEach(result => {
+        results.forEach((result) => {
             if (Array.isArray(result)) {
-                result.forEach(item => union.add(item));
+                result.forEach((item) => union.add(item));
             }
         });
         return Array.from(union);
@@ -865,10 +861,10 @@ class ResultMerger {
 
     intersectionResults(results) {
         if (results.length === 0) return [];
-        
-        const sets = results.map(r => new Set(Array.isArray(r) ? r : [r]));
+
+        const sets = results.map((r) => new Set(Array.isArray(r) ? r : [r]));
         const intersection = new Set(sets[0]);
-        
+
         for (let i = 1; i < sets.length; i++) {
             for (const item of intersection) {
                 if (!sets[i].has(item)) {
@@ -876,7 +872,7 @@ class ResultMerger {
                 }
             }
         }
-        
+
         return Array.from(intersection);
     }
 }
@@ -901,7 +897,7 @@ class FaultTolerantOrchestrator {
         }
 
         let lastError;
-        
+
         // Try primary agent with retries
         for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
             try {
@@ -911,7 +907,7 @@ class FaultTolerantOrchestrator {
             } catch (error) {
                 lastError = error;
                 this.circuitBreaker.recordFailure();
-                
+
                 if (attempt < this.maxRetries) {
                     await this.delay(Math.pow(2, attempt) * 1000);
                 }
@@ -922,11 +918,11 @@ class FaultTolerantOrchestrator {
         for (const fallbackAgent of this.fallbackAgents) {
             try {
                 const result = await fallbackAgent.execute(task);
-                return { 
-                    success: true, 
-                    result, 
+                return {
+                    success: true,
+                    result,
                     agent: fallbackAgent.id,
-                    usedFallback: true 
+                    usedFallback: true,
                 };
             } catch (error) {
                 // Continue to next fallback
@@ -937,7 +933,7 @@ class FaultTolerantOrchestrator {
     }
 
     delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 }
 
@@ -969,7 +965,7 @@ class CircuitBreaker {
     recordFailure() {
         this.failures++;
         this.lastFailure = Date.now();
-        
+
         if (this.failures >= this.failureThreshold) {
             this.state = 'open';
         }
@@ -988,14 +984,14 @@ class OrchestrationMonitor {
             tasks: { total: 0, completed: 0, failed: 0 },
             agents: new Map(),
             latency: [],
-            throughput: []
+            throughput: [],
         };
     }
 
     // Record task metrics
     recordTask(task) {
         this.metrics.tasks.total++;
-        
+
         if (task.success) {
             this.metrics.tasks.completed++;
         } else {
@@ -1004,14 +1000,17 @@ class OrchestrationMonitor {
 
         // Record agent metrics
         const agentMetrics = this.metrics.agents.get(task.agentId) || {
-            tasks: 0, successes: 0, failures: 0, totalTime: 0
+            tasks: 0,
+            successes: 0,
+            failures: 0,
+            totalTime: 0,
         };
-        
+
         agentMetrics.tasks++;
         agentMetrics.totalTime += task.duration || 0;
         if (task.success) agentMetrics.successes++;
         else agentMetrics.failures++;
-        
+
         this.metrics.agents.set(task.agentId, agentMetrics);
     }
 
@@ -1020,39 +1019,38 @@ class OrchestrationMonitor {
         return {
             overview: {
                 totalTasks: this.metrics.tasks.total,
-                successRate: this.metrics.tasks.total > 0 
-                    ? (this.metrics.tasks.completed / this.metrics.tasks.total * 100).toFixed(1) + '%'
-                    : '0%',
-                activeAgents: this.metrics.agents.size
+                successRate:
+                    this.metrics.tasks.total > 0
+                        ? ((this.metrics.tasks.completed / this.metrics.tasks.total) * 100).toFixed(
+                              1
+                          ) + '%'
+                        : '0%',
+                activeAgents: this.metrics.agents.size,
             },
             agents: Array.from(this.metrics.agents.entries()).map(([id, m]) => ({
                 id,
                 tasks: m.tasks,
-                successRate: m.tasks > 0 
-                    ? (m.successes / m.tasks * 100).toFixed(1) + '%'
-                    : '0%',
-                averageTime: m.tasks > 0 
-                    ? (m.totalTime / m.tasks).toFixed(0) + 'ms'
-                    : '0ms'
+                successRate: m.tasks > 0 ? ((m.successes / m.tasks) * 100).toFixed(1) + '%' : '0%',
+                averageTime: m.tasks > 0 ? (m.totalTime / m.tasks).toFixed(0) + 'ms' : '0ms',
             })),
-            alerts: this.getAlerts()
+            alerts: this.getAlerts(),
         };
     }
 
     getAlerts() {
         const alerts = [];
-        
+
         // Check for failing agents
         for (const [id, m] of this.metrics.agents) {
             if (m.tasks > 10 && m.failures / m.tasks > 0.3) {
                 alerts.push({
                     level: 'warning',
                     message: `Agent ${id} has high failure rate`,
-                    value: (m.failures / m.tasks * 100).toFixed(1) + '%'
+                    value: ((m.failures / m.tasks) * 100).toFixed(1) + '%',
                 });
             }
         }
-        
+
         return alerts;
     }
 }

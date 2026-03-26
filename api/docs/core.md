@@ -328,14 +328,14 @@ Lite mode is a performance optimization feature that blocks resource-heavy reque
 
 When enabled, lite mode intercepts and aborts the following resource types:
 
-| Resource Type   | Description                    |
-| --------------- | ------------------------------ |
-| `image`         | Images (PNG, JPG, GIF, etc.)   |
-| `media`         | Audio and video content        |
-| `font`          | Web fonts (WOFF, TTF, etc.)    |
-| `stylesheet`    | CSS stylesheets                |
-| `texttrack`     | Video subtitles/captions       |
-| `manifest`      | Web app manifests              |
+| Resource Type | Description                  |
+| ------------- | ---------------------------- |
+| `image`       | Images (PNG, JPG, GIF, etc.) |
+| `media`       | Audio and video content      |
+| `font`        | Web fonts (WOFF, TTF, etc.)  |
+| `stylesheet`  | CSS stylesheets              |
+| `texttrack`   | Video subtitles/captions     |
+| `manifest`    | Web app manifests            |
 
 Additionally, it blocks scripts and network requests from known tracking/advertising domains:
 
@@ -394,13 +394,13 @@ await api.clearLiteMode();
 
 ### Use Cases
 
-| Scenario                  | Recommendation                           |
-| ------------------------- | ---------------------------------------- |
+| Scenario                  | Recommendation                             |
+| ------------------------- | ------------------------------------------ |
 | **Low-bandwidth testing** | Enable lite mode to simulate slow networks |
-| **Automated testing**     | Skip images/media for faster test runs   |
-| **Progressive loading**   | Load text first, enable resources later  |
-| **Memory-constrained**    | Reduce RAM usage on large pages          |
-| **Ad/tracker analysis**   | Block trackers to focus on core content  |
+| **Automated testing**     | Skip images/media for faster test runs     |
+| **Progressive loading**   | Load text first, enable resources later    |
+| **Memory-constrained**    | Reduce RAM usage on large pages            |
+| **Ad/tracker analysis**   | Block trackers to focus on core content    |
 
 ### Example: Progressive Loading
 
@@ -423,15 +423,15 @@ await api.wait(3000);
 
 ### Functions
 
-| Function                  | Description                                      |
-| ------------------------- | ------------------------------------------------ |
-| `clearLiteMode(page)`     | Remove all lite-mode resource blocking routes    |
+| Function              | Description                                   |
+| --------------------- | --------------------------------------------- |
+| `clearLiteMode(page)` | Remove all lite-mode resource blocking routes |
 
 ### Parameters
 
-| Parameter | Type                          | Required | Description                           |
-| --------- | ----------------------------- | -------- | ------------------------------------- |
-| `page`    | `import('playwright').Page`   | No       | Page instance. Uses current context if not provided |
+| Parameter | Type                        | Required | Description                                         |
+| --------- | --------------------------- | -------- | --------------------------------------------------- |
+| `page`    | `import('playwright').Page` | No       | Page instance. Uses current context if not provided |
 
 ### Returns
 

@@ -1,6 +1,7 @@
 # vLLM Integration Plan for prompt-test.js
 
 ## Overview
+
 Modify `prompt-test.js` to use vLLM with `qwen3.5:2b` model and thinking enabled. Configuration will be hardcoded directly in the file (not read from settings.json).
 
 ---
@@ -25,6 +26,7 @@ python -m vllm.entrypoints.openai.api_server \
 ```
 
 **Note:** The model name `qwen3.5:2b` appears to be in Ollama format. For vLLM, use the HuggingFace model ID:
+
 - `Qwen/Qwen2.5-0.5B-Instruct` (0.5B params)
 - `Qwen/Qwen2.5-1.5B-Instruct` (1.5B params)
 - `Qwen/Qwen2.5-3B-Instruct` (3B params)
@@ -43,6 +45,7 @@ curl http://localhost:8000/health
 ## Implementation Plan: prompt-test.js Modifications
 
 ### File Location
+
 `C:\My Script\auto-ai\prompt-test.js`
 
 ### Change 1: Add vLLM Fetch Utility (After line 97)
@@ -53,10 +56,10 @@ Add new function `vllmFetch` after the existing `ollamaFetch` function:
 // ─── Internal vLLM Fetch Utility ──────────────────────────────────────────
 async function vllmFetch(path, body, endpoint) {
     const url = `${endpoint.replace(/\/$/, '')}${path}`;
-    
+
     const response = await fetch(url, {
         method: 'POST',
-        headers: { 
+        headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
@@ -68,15 +71,15 @@ async function vllmFetch(path, body, endpoint) {
     }
 
     const json = await response.json();
-    
+
     // Normalize vLLM response to expected format
     const message = json.choices?.[0]?.message;
     const content = message?.content || '';
-    
+
     // vLLM with --enable-thinking returns thinking in reasoning_content field
     // Qwen models may also use <thinking> tags within content
     let reasoning = message?.reasoning_content || null;
-    
+
     return {
         choices: [
             {
@@ -91,7 +94,7 @@ async function vllmFetch(path, body, endpoint) {
             completion_tokens: json.usage?.completion_tokens || 0,
             total_tokens: json.usage?.total_tokens || 0,
         },
-        _raw: json
+        _raw: json,
     };
 }
 ```
@@ -105,7 +108,7 @@ async function getActiveLLM() {
     // ─── HARDCODED vLLM CONFIGURATION ──────────────────────────────────
     const endpoint = 'http://localhost:8000/v1';
     const model = 'Qwen/Qwen2.5-1.5B-Instruct';
-    
+
     return {
         name: 'vLLM',
         model: model,
@@ -123,7 +126,7 @@ Add `chat_template_kwargs` for thinking support:
 ```javascript
 async function callLLM(systemPrompt, userPrompt) {
     const startMs = Date.now();
-    
+
     const requestBody = {
         model: LLM_MODEL,
         messages: [
@@ -134,14 +137,14 @@ async function callLLM(systemPrompt, userPrompt) {
         max_tokens: 4096,
         stream: false,
     };
-    
+
     // Add thinking parameter for vLLM with thinking enabled
     if (activeLLM.thinkingEnabled) {
         requestBody.chat_template_kwargs = {
             enable_thinking: true,
         };
     }
-    
+
     const data = await activeLLM.fetch('/v1/chat/completions', requestBody);
     // ... rest remains the same
 ```
@@ -152,7 +155,12 @@ Add `<thinking>` tag extraction (Qwen format):
 
 ```javascript
 // Support multiple field names for reasoning output
-let reasoning = messageObj?.reasoning || messageObj?.thinking || messageObj?.thought || messageObj?.reasoning_content || '';
+let reasoning =
+    messageObj?.reasoning ||
+    messageObj?.thinking ||
+    messageObj?.thought ||
+    messageObj?.reasoning_content ||
+    '';
 
 // Robust <think> extraction (for models that don't use dedicated reasoning field)
 if (content.includes('<think>')) {
@@ -218,13 +226,13 @@ if (LLM_PROVIDER === 'vLLM') {
 
 ## Changes Summary
 
-| # | Section | Location | Modification |
-|---|---------|----------|--------------|
-| 1 | vllmFetch | After line 97 | Add new vLLM fetch utility |
-| 2 | getActiveLLM | Lines 98-132 | Replace with hardcoded vLLM config |
-| 3 | callLLM | Around line 1001 | Add chat_template_kwargs for thinking |
-| 4 | Thinking extraction | Lines 1021-1034 | Add `<thinking>` tag support |
-| 5 | Warmup | Lines 1119-1134 | Add vLLM provider detection |
+| #   | Section             | Location         | Modification                          |
+| --- | ------------------- | ---------------- | ------------------------------------- |
+| 1   | vllmFetch           | After line 97    | Add new vLLM fetch utility            |
+| 2   | getActiveLLM        | Lines 98-132     | Replace with hardcoded vLLM config    |
+| 3   | callLLM             | Around line 1001 | Add chat_template_kwargs for thinking |
+| 4   | Thinking extraction | Lines 1021-1034  | Add `<thinking>` tag support          |
+| 5   | Warmup              | Lines 1119-1134  | Add vLLM provider detection           |
 
 ---
 

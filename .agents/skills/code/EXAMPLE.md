@@ -22,7 +22,7 @@
 async function analyzeJavaScriptStructure(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
     const lines = content.split('\n');
-    
+
     const structure = {
         file: filePath,
         imports: [],
@@ -31,13 +31,13 @@ async function analyzeJavaScriptStructure(filePath) {
         classes: [],
         constants: [],
         variables: [],
-        comments: []
+        comments: [],
     };
-    
+
     lines.forEach((line, index) => {
         const trimmed = line.trim();
         const lineNum = index + 1;
-        
+
         // Import statements
         if (trimmed.startsWith('import ')) {
             const match = trimmed.match(/import\s+(?:(.+?)\s+from\s+)?['"](.+)['"]/);
@@ -45,65 +45,73 @@ async function analyzeJavaScriptStructure(filePath) {
                 structure.imports.push({
                     specifier: match[1] || 'default',
                     module: match[2],
-                    line: lineNum
+                    line: lineNum,
                 });
             }
         }
-        
+
         // Export statements
         if (trimmed.startsWith('export ')) {
             structure.exports.push({
                 type: trimmed.includes('default') ? 'default' : 'named',
                 declaration: trimmed.substring(7, 60),
-                line: lineNum
+                line: lineNum,
             });
         }
-        
+
         // Function declarations
         if (trimmed.match(/^(async\s+)?function\s+\w+/)) {
             const match = trimmed.match(/^(async\s+)?function\s+(\w+)\s*\(([^)]*)\)/);
             structure.functions.push({
                 name: match[2],
                 async: !!match[1],
-                params: match[3].split(',').map(p => p.trim()).filter(p => p),
-                line: lineNum
+                params: match[3]
+                    .split(',')
+                    .map((p) => p.trim())
+                    .filter((p) => p),
+                line: lineNum,
             });
         }
-        
+
         // Arrow functions (const name = async () =>)
         if (trimmed.match(/^(const|let|var)\s+\w+\s*=\s*(async\s+)?\([^)]*\)\s*=>/)) {
-            const match = trimmed.match(/^(const|let|var)\s+(\w+)\s*=\s*(async\s+)?\(([^)]*)\)\s*=>/);
+            const match = trimmed.match(
+                /^(const|let|var)\s+(\w+)\s*=\s*(async\s+)?\(([^)]*)\)\s*=>/
+            );
             structure.functions.push({
                 name: match[2],
                 async: !!match[3],
                 type: 'arrow',
-                params: match[4].split(',').map(p => p.trim()).filter(p => p),
-                line: lineNum
+                params: match[4]
+                    .split(',')
+                    .map((p) => p.trim())
+                    .filter((p) => p),
+                line: lineNum,
             });
         }
-        
+
         // Class declarations
         if (trimmed.match(/^class\s+\w+/)) {
             const match = trimmed.match(/^class\s+(\w+)(?:\s+extends\s+(\w+))?/);
             structure.classes.push({
                 name: match[1],
                 extends: match[2] || null,
-                line: lineNum
+                line: lineNum,
             });
         }
-        
+
         // Constants (UPPER_CASE)
         if (trimmed.match(/^export\s+)?const\s+[A-Z_]+/)) {
             const match = trimmed.match(/const\s+([A-Z_]+)/);
             if (match) {
                 structure.constants.push({
                     name: match[1],
-                    line: lineNum
+                    line: lineNum,
                 });
             }
         }
     });
-    
+
     return {
         ...structure,
         summary: {
@@ -112,8 +120,8 @@ async function analyzeJavaScriptStructure(filePath) {
             functions: structure.functions.length,
             classes: structure.classes.length,
             constants: structure.constants.length,
-            totalLines: lines.length
-        }
+            totalLines: lines.length,
+        },
     };
 }
 
@@ -138,16 +146,16 @@ function generateFunction(spec) {
         body = [],
         async = false,
         exportType = null,
-        jsdoc = true
+        jsdoc = true,
     } = spec;
-    
+
     const lines = [];
-    
+
     // JSDoc
     if (jsdoc) {
         lines.push('/**');
         lines.push(` * ${name} function`);
-        params.forEach(p => {
+        params.forEach((p) => {
             const [paramName, paramType = 'any'] = p.split(':');
             lines.push(` * @param {${paramType}} ${paramName.trim()}`);
         });
@@ -156,31 +164,31 @@ function generateFunction(spec) {
         }
         lines.push(' */');
     }
-    
+
     // Export modifier
     let prefix = '';
     if (exportType === 'default') prefix = 'export default ';
     else if (exportType === 'named') prefix = 'export ';
-    
+
     // Function signature
     const asyncPrefix = async ? 'async ' : '';
-    const paramsStr = params.map(p => p.split(':')[0].trim()).join(', ');
-    
+    const paramsStr = params.map((p) => p.split(':')[0].trim()).join(', ');
+
     lines.push(`${prefix}${asyncPrefix}function ${name}(${paramsStr}) {`);
-    
+
     // Body
-    body.forEach(line => {
+    body.forEach((line) => {
         lines.push(`    ${line}`);
     });
-    
+
     // Default return
     if (returnType !== 'void' && body.length === 0) {
         lines.push('    // TODO: Implement function');
         lines.push(`    return null;`);
     }
-    
+
     lines.push('}');
-    
+
     return lines.join('\n');
 }
 
@@ -192,11 +200,11 @@ const func = generateFunction({
     body: [
         'const subtotal = items.reduce((sum, item) => sum + item.price, 0);',
         'const tax = subtotal * taxRate;',
-        'return subtotal + tax;'
+        'return subtotal + tax;',
     ],
     async: false,
     exportType: 'named',
-    jsdoc: true
+    jsdoc: true,
 });
 
 console.log(func);
@@ -213,68 +221,76 @@ function generateClass(spec) {
         implements: interfaces = [],
         properties = [],
         methods = [],
-        exportType = 'named'
+        exportType = 'named',
     } = spec;
-    
+
     const lines = [];
-    
+
     // Export
     let classLine = exportType === 'default' ? 'export default class ' : 'export class ';
     classLine += name;
-    
+
     if (parent) classLine += ` extends ${parent}`;
     if (interfaces.length > 0) classLine += ` implements ${interfaces.join(', ')}`;
-    
+
     lines.push(classLine + ' {');
-    
+
     // Properties
-    properties.forEach(prop => {
+    properties.forEach((prop) => {
         const visibility = prop.private ? 'private' : prop.protected ? 'protected' : 'public';
         const staticStr = prop.static ? 'static ' : '';
         const readonly = prop.readonly ? 'readonly ' : '';
         const type = prop.type ? `: ${prop.type}` : '';
         const defaultVal = prop.default !== undefined ? ` = ${JSON.stringify(prop.default)}` : '';
-        
+
         lines.push(`    ${visibility} ${staticStr}${readonly}${prop.name}${type}${defaultVal};`);
     });
-    
+
     // Constructor
-    const constructorProps = properties.filter(p => p.constructor);
-    if (constructorProps.length > 0 || methods.some(m => m.name === 'constructor')) {
-        const ctor = methods.find(m => m.name === 'constructor');
-        const params = constructorProps.map(p => {
+    const constructorProps = properties.filter((p) => p.constructor);
+    if (constructorProps.length > 0 || methods.some((m) => m.name === 'constructor')) {
+        const ctor = methods.find((m) => m.name === 'constructor');
+        const params = constructorProps.map((p) => {
             const vis = p.private ? 'private' : 'public';
             return `${vis} ${p.name}: ${p.type || 'any'}`;
         });
-        
+
         lines.push('');
         lines.push(`    constructor(${params.join(', ')}) {`);
         if (parent) lines.push('        super();');
-        constructorProps.forEach(p => {
+        constructorProps.forEach((p) => {
             lines.push(`        this.${p.name} = ${p.name};`);
         });
         lines.push('    }');
     }
-    
+
     // Methods
-    methods.filter(m => m.name !== 'constructor').forEach(method => {
-        const visibility = method.private ? 'private' : method.protected ? 'protected' : 'public';
-        const staticStr = method.static ? 'static ' : '';
-        const asyncStr = method.async ? 'async ' : '';
-        const returnType = method.returnType ? `: ${method.returnType}` : '';
-        const params = (method.params || []).join(', ');
-        
-        lines.push('');
-        lines.push(`    ${visibility} ${staticStr}${asyncStr}${method.name}(${params})${returnType} {`);
-        lines.push('        // TODO: Implement method');
-        if (method.returnType && method.returnType !== 'void') {
-            lines.push('        return null;');
-        }
-        lines.push('    }');
-    });
-    
+    methods
+        .filter((m) => m.name !== 'constructor')
+        .forEach((method) => {
+            const visibility = method.private
+                ? 'private'
+                : method.protected
+                  ? 'protected'
+                  : 'public';
+            const staticStr = method.static ? 'static ' : '';
+            const asyncStr = method.async ? 'async ' : '';
+            const returnType = method.returnType ? `: ${method.returnType}` : '';
+            const params = (method.params || []).join(', ');
+
+            lines.push('');
+            lines.push(
+                `    ${visibility} ${staticStr}${asyncStr}${method.name}(${params})${returnType} {`
+            );
+            lines.push('        // TODO: Implement method');
+            if (method.returnType && method.returnType !== 'void') {
+                lines.push('        return null;');
+            }
+            lines.push('    }');
+        });
+
     lines.push('}');
-    
+
     return lines.join('\n');
 }
 
@@ -284,12 +300,12 @@ const classCode = generateClass({
     extends: 'BaseService',
     properties: [
         { name: 'repository', type: 'Repository', private: true },
-        { name: 'cache', type: 'Cache', private: true }
+        { name: 'cache', type: 'Cache', private: true },
     ],
     methods: [
         { name: 'findById', params: ['id: string'], returnType: 'User', async: true },
-        { name: 'create', params: ['data: CreateUserDto'], returnType: 'User', async: true }
-    ]
+        { name: 'create', params: ['data: CreateUserDto'], returnType: 'User', async: true },
+    ],
 });
 
 console.log(classCode);
@@ -306,7 +322,7 @@ console.log(classCode);
 async function detectAntiPatterns(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
     const lines = content.split('\n');
-    
+
     const patterns = [
         {
             name: 'God Function',
@@ -315,15 +331,18 @@ async function detectAntiPatterns(filePath) {
                 if (line.match(/^(async\s+)?function\s+\w+/)) {
                     // Count lines until next function or end
                     let count = 0;
-                    let braceCount = (line.match(/{/g) || []).length - (line.match(/}/g) || []).length;
+                    let braceCount =
+                        (line.match(/{/g) || []).length - (line.match(/}/g) || []).length;
                     for (let i = index + 1; i < allLines.length && braceCount > 0; i++) {
-                        braceCount += (allLines[i].match(/{/g) || []).length - (allLines[i].match(/}/g) || []).length;
+                        braceCount +=
+                            (allLines[i].match(/{/g) || []).length -
+                            (allLines[i].match(/}/g) || []).length;
                         count++;
                     }
                     return count > 50;
                 }
                 return false;
-            }
+            },
         },
         {
             name: 'Deep Nesting',
@@ -331,16 +350,18 @@ async function detectAntiPatterns(filePath) {
             detect: (line) => {
                 const indent = line.search(/\S/);
                 return indent > 16; // 4 levels * 4 spaces
-            }
+            },
         },
         {
             name: 'Magic Number',
             description: 'Hardcoded numeric literals',
             detect: (line) => {
-                return line.match(/[^a-zA-Z_]\d{2,}[^a-zA-Z_]/) && 
-                       !line.match(/const|let|var.*=\s*\d/) &&
-                       !line.match(/\/\/.*\d/);
-            }
+                return (
+                    line.match(/[^a-zA-Z_]\d{2,}[^a-zA-Z_]/) &&
+                    !line.match(/const|let|var.*=\s*\d/) &&
+                    !line.match(/\/\/.*\d/)
+                );
+            },
         },
         {
             name: 'Long Parameter List',
@@ -351,7 +372,7 @@ async function detectAntiPatterns(filePath) {
                     return match[1].split(',').length > 4;
                 }
                 return false;
-            }
+            },
         },
         {
             name: 'Empty Catch',
@@ -362,26 +383,26 @@ async function detectAntiPatterns(filePath) {
                     return nextLine === '{}' || nextLine === '{ }';
                 }
                 return false;
-            }
+            },
         },
         {
             name: 'Console.log',
             description: 'Debug console statements',
             detect: (line) => {
                 return line.match(/console\.(log|debug|info)\(/);
-            }
+            },
         },
         {
             name: 'TODO/FIXME',
             description: 'Unfinished TODO comments',
             detect: (line) => {
                 return line.match(/\/\/\s*(TODO|FIXME|HACK|XXX)/i);
-            }
-        }
+            },
+        },
     ];
-    
+
     const findings = [];
-    
+
     lines.forEach((line, index) => {
         for (const pattern of patterns) {
             if (pattern.detect(line, index, lines)) {
@@ -389,12 +410,12 @@ async function detectAntiPatterns(filePath) {
                     pattern: pattern.name,
                     description: pattern.description,
                     line: index + 1,
-                    content: line.trim()
+                    content: line.trim(),
                 });
             }
         }
     });
-    
+
     return {
         file: filePath,
         totalFindings: findings.length,
@@ -402,7 +423,7 @@ async function detectAntiPatterns(filePath) {
             acc[f.pattern] = (acc[f.pattern] || 0) + 1;
             return acc;
         }, {}),
-        findings
+        findings,
     };
 }
 
@@ -422,40 +443,44 @@ console.log('Anti-patterns found:', antiPatterns.byPattern);
 async function calculateCodeMetrics(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
     const lines = content.split('\n');
-    
+
     const metrics = {
         file: filePath,
         lines: {
             total: lines.length,
             code: 0,
             comments: 0,
-            blank: 0
+            blank: 0,
         },
         functions: [],
         classes: [],
-        complexity: 0
+        complexity: 0,
     };
-    
+
     let currentFunction = null;
     let braceCount = 0;
     let functionStart = 0;
-    
+
     lines.forEach((line, index) => {
         const trimmed = line.trim();
-        
+
         // Line classification
         if (!trimmed || trimmed === '') {
             metrics.lines.blank++;
-        } else if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) {
+        } else if (
+            trimmed.startsWith('//') ||
+            trimmed.startsWith('/*') ||
+            trimmed.startsWith('*')
+        ) {
             metrics.lines.comments++;
         } else {
             metrics.lines.code++;
         }
-        
+
         // Track braces
         braceCount += (trimmed.match(/{/g) || []).length;
         braceCount -= (trimmed.match(/}/g) || []).length;
-        
+
         // Function detection
         const funcMatch = trimmed.match(/^(async\s+)?function\s+(\w+)/);
         if (funcMatch) {
@@ -468,11 +493,11 @@ async function calculateCodeMetrics(filePath) {
                 async: !!funcMatch[1],
                 startLine: index + 1,
                 lines: 0,
-                complexity: 1
+                complexity: 1,
             };
             functionStart = index;
         }
-        
+
         // Track complexity in current function
         if (currentFunction) {
             // Count decision points
@@ -481,7 +506,7 @@ async function calculateCodeMetrics(filePath) {
                 metrics.complexity++;
             }
         }
-        
+
         // End of function
         if (currentFunction && braceCount === 0 && trimmed === '}') {
             currentFunction.lines = index - functionStart + 1;
@@ -489,21 +514,29 @@ async function calculateCodeMetrics(filePath) {
             currentFunction = null;
         }
     });
-    
+
     // Summary
     metrics.summary = {
         linesOfCode: metrics.lines.code,
         commentRatio: ((metrics.lines.comments / metrics.lines.total) * 100).toFixed(1) + '%',
         functionCount: metrics.functions.length,
-        averageFunctionLength: metrics.functions.length > 0
-            ? Math.round(metrics.functions.reduce((sum, f) => sum + f.lines, 0) / metrics.functions.length)
-            : 0,
-        averageComplexity: metrics.functions.length > 0
-            ? (metrics.functions.reduce((sum, f) => sum + f.complexity, 0) / metrics.functions.length).toFixed(1)
-            : 0,
-        maxComplexity: Math.max(...metrics.functions.map(f => f.complexity), 0)
+        averageFunctionLength:
+            metrics.functions.length > 0
+                ? Math.round(
+                      metrics.functions.reduce((sum, f) => sum + f.lines, 0) /
+                          metrics.functions.length
+                  )
+                : 0,
+        averageComplexity:
+            metrics.functions.length > 0
+                ? (
+                      metrics.functions.reduce((sum, f) => sum + f.complexity, 0) /
+                      metrics.functions.length
+                  ).toFixed(1)
+                : 0,
+        maxComplexity: Math.max(...metrics.functions.map((f) => f.complexity), 0),
     };
-    
+
     return metrics;
 }
 
@@ -523,26 +556,26 @@ console.log('Metrics:', metrics.summary);
 async function extractFunction(filePath, startLine, endLine, newFunctionName) {
     const content = await Desktop_Commander_read_file(filePath);
     const lines = content.split('\n');
-    
+
     // Get the code block
     const codeBlock = lines.slice(startLine - 1, endLine);
     const indent = codeBlock[0].search(/\S/);
-    const dedentedCode = codeBlock.map(line => line.substring(indent));
-    
+    const dedentedCode = codeBlock.map((line) => line.substring(indent));
+
     // Analyze variables used in the block
     const variables = analyzeVariables(dedentedCode.join('\n'));
-    
+
     // Generate new function
-    const params = variables.used.filter(v => !variables.declared.includes(v));
+    const params = variables.used.filter((v) => !variables.declared.includes(v));
     const newFunction = `function ${newFunctionName}(${params.join(', ')}) {\n    ${dedentedCode.join('\n    ')}\n}`;
-    
+
     // Replace original code with function call
     const functionCall = `    ${newFunctionName}(${params.join(', ')});`;
-    
+
     // Build new file content
     const before = lines.slice(0, startLine - 1);
     const after = lines.slice(endLine);
-    
+
     // Find where to insert new function (before last export or at end)
     let insertIndex = lines.length;
     for (let i = lines.length - 1; i >= 0; i--) {
@@ -551,31 +584,46 @@ async function extractFunction(filePath, startLine, endLine, newFunctionName) {
             break;
         }
     }
-    
+
     const newLines = [
         ...before,
         functionCall,
         ...after.slice(0, insertIndex - endLine),
         '',
         newFunction,
-        ...after.slice(insertIndex - endLine)
+        ...after.slice(insertIndex - endLine),
     ];
-    
+
     return {
         original: codeBlock.join('\n'),
         extracted: newFunction,
         call: functionCall,
-        newContent: newLines.join('\n')
+        newContent: newLines.join('\n'),
     };
 }
 
 function analyzeVariables(code) {
     // Simplified variable analysis
-    const used = (code.match(/\b[a-zA-Z_]\w*\b/g) || [])
-        .filter(v => !['if', 'else', 'for', 'while', 'return', 'const', 'let', 'var', 'function', 'true', 'false', 'null', 'undefined'].includes(v));
-    const declared = (code.match(/(?:const|let|var)\s+(\w+)/g) || [])
-        .map(m => m.split(/\s+/)[1]);
-    
+    const used = (code.match(/\b[a-zA-Z_]\w*\b/g) || []).filter(
+        (v) =>
+            ![
+                'if',
+                'else',
+                'for',
+                'while',
+                'return',
+                'const',
+                'let',
+                'var',
+                'function',
+                'true',
+                'false',
+                'null',
+                'undefined',
+            ].includes(v)
+    );
+    const declared = (code.match(/(?:const|let|var)\s+(\w+)/g) || []).map((m) => m.split(/\s+/)[1]);
+
     return { used: [...new Set(used)], declared: [...new Set(declared)] };
 }
 
@@ -595,18 +643,21 @@ console.log('Extracted function:', result.extracted);
 async function generateJSDoc(filePath) {
     const content = await Desktop_Commander_read_file(filePath);
     const lines = content.split('\n');
-    
+
     const docs = [];
-    
+
     lines.forEach((line, index) => {
         const trimmed = line.trim();
-        
+
         // Function detection
         const funcMatch = trimmed.match(/^(export\s+)?(async\s+)?function\s+(\w+)\s*\(([^)]*)\)/);
         if (funcMatch) {
             const [, exported, async, name, params] = funcMatch;
-            const paramList = params.split(',').map(p => p.trim()).filter(p => p);
-            
+            const paramList = params
+                .split(',')
+                .map((p) => p.trim())
+                .filter((p) => p);
+
             docs.push({
                 type: 'function',
                 name,
@@ -614,10 +665,10 @@ async function generateJSDoc(filePath) {
                 exported: !!exported,
                 params: paramList,
                 line: index + 1,
-                signature: trimmed
+                signature: trimmed,
             });
         }
-        
+
         // Class detection
         const classMatch = trimmed.match(/^export\s+)?class\s+(\w+)/);
         if (classMatch) {
@@ -625,15 +676,15 @@ async function generateJSDoc(filePath) {
                 type: 'class',
                 name: classMatch[1],
                 line: index + 1,
-                signature: trimmed
+                signature: trimmed,
             });
         }
     });
-    
+
     // Generate markdown
     const markdown = ['# API Documentation', '', `Generated from: ${filePath}`, ''];
-    
-    docs.forEach(doc => {
+
+    docs.forEach((doc) => {
         if (doc.type === 'function') {
             markdown.push(`## ${doc.name}`);
             markdown.push('');
@@ -643,7 +694,7 @@ async function generateJSDoc(filePath) {
             markdown.push('');
             if (doc.params.length > 0) {
                 markdown.push('**Parameters:**');
-                doc.params.forEach(p => {
+                doc.params.forEach((p) => {
                     markdown.push(`- \`${p}\``);
                 });
                 markdown.push('');
@@ -652,10 +703,10 @@ async function generateJSDoc(filePath) {
             markdown.push('');
         }
     });
-    
+
     return {
         documentation: markdown.join('\n'),
-        items: docs
+        items: docs,
     };
 }
 

@@ -73,14 +73,14 @@ Edit `config.json` in the dashboard folder:
 }
 ```
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `server.port` | WebSocket server port | 3001 |
-| `server.host` | Server host | localhost |
-| `ui.defaultCompact` | Start in compact mode | false |
-| `ui.defaultAlwaysOnTop` | Always on top window | false |
-| `connect.remoteHost` | Connect to remote server (leave empty for local) | "" |
-| `connect.remotePort` | Remote server port | 3001 |
+| Option                  | Description                                      | Default   |
+| ----------------------- | ------------------------------------------------ | --------- |
+| `server.port`           | WebSocket server port                            | 3001      |
+| `server.host`           | Server host                                      | localhost |
+| `ui.defaultCompact`     | Start in compact mode                            | false     |
+| `ui.defaultAlwaysOnTop` | Always on top window                             | false     |
+| `connect.remoteHost`    | Connect to remote server (leave empty for local) | ""        |
+| `connect.remotePort`    | Remote server port                               | 3001      |
 
 ### Remote Server Connection
 
@@ -91,6 +91,7 @@ To connect to a dashboard server running on a different machine:
 3. Leave `server.port` as is (won't be used)
 
 Example for connecting to remote server at 192.168.1.100:3001:
+
 ```json
 {
     "connect": {
@@ -110,6 +111,7 @@ npm start
 ```
 
 The Electron app will:
+
 1. Start the WebSocket server on port 3001
 2. Open the dashboard UI
 3. Connect to itself via Socket.io
@@ -137,9 +139,10 @@ Then run the Electron app on another machine with remote config:
 If you want the dashboard to receive metrics from the Auto-AI orchestrator:
 
 1. Start the dashboard server:
-   ```bash
-   node start-server.js
-   ```
+
+    ```bash
+    node start-server.js
+    ```
 
 2. Ensure your orchestrator pushes metrics to the dashboard. The orchestrator will automatically detect the running dashboard server and connect to it.
 

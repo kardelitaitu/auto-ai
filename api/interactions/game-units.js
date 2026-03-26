@@ -10,12 +10,12 @@
  * @module api/interactions/gameUnits
  */
 
-import { getPage, isSessionActive } from '../core/context.js';
-import { createLogger } from '../core/logger.js';
-import { mathUtils } from '../utils/math.js';
-import { SessionDisconnectedError } from '../core/errors.js';
+import { getPage, isSessionActive } from "../core/context.js";
+import { createLogger } from "../core/logger.js";
+import { mathUtils } from "../utils/math.js";
+import { SessionDisconnectedError } from "../core/errors.js";
 
-const logger = createLogger('api/interactions/gameUnits.js');
+const logger = createLogger("api/interactions/gameUnits.js");
 
 /**
  * Select a single unit by selector or element ID
@@ -23,49 +23,50 @@ const logger = createLogger('api/interactions/gameUnits.js');
  * @returns {Promise<boolean>}
  */
 export async function selectUnit(unit) {
-    if (!isSessionActive()) {
-        throw new SessionDisconnectedError('Browser closed.');
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const page = getPage();
+
+  logger.info(`Selecting unit: ${unit}`);
+
+  let coords;
+
+  if (typeof unit === "number") {
+    const { getStateAgentElementMap } =
+      await import("../core/context-state.js");
+    const elementMap = getStateAgentElementMap();
+    const element = elementMap.find((el) => el.id === unit);
+    if (!element) {
+      throw new Error(`Element with ID ${unit} not found`);
     }
-
-    const page = getPage();
-    
-    logger.info(`Selecting unit: ${unit}`);
-    
-    let coords;
-    
-    if (typeof unit === 'number') {
-        const { getStateAgentElementMap } = await import('../core/context-state.js');
-        const elementMap = getStateAgentElementMap();
-        const element = elementMap.find((el) => el.id === unit);
-        if (!element) {
-            throw new Error(`Element with ID ${unit} not found`);
-        }
-        const locator = page.locator(element.selector);
-        const box = await locator.boundingBox();
-        if (!box) {
-            throw new Error(`Could not find element for unit ${unit}`);
-        }
-        coords = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-    } else if (typeof unit === 'string') {
-        const locator = page.locator(unit).first();
-        const box = await locator.boundingBox();
-        if (!box) {
-            throw new Error(`Could not find unit: ${unit}`);
-        }
-        coords = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-    } else if (typeof unit === 'object' && 'x' in unit && 'y' in unit) {
-        coords = unit;
-    } else {
-        throw new Error('Invalid unit input');
+    const locator = page.locator(element.selector);
+    const box = await locator.boundingBox();
+    if (!box) {
+      throw new Error(`Could not find element for unit ${unit}`);
     }
+    coords = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  } else if (typeof unit === "string") {
+    const locator = page.locator(unit).first();
+    const box = await locator.boundingBox();
+    if (!box) {
+      throw new Error(`Could not find unit: ${unit}`);
+    }
+    coords = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  } else if (typeof unit === "object" && "x" in unit && "y" in unit) {
+    coords = unit;
+  } else {
+    throw new Error("Invalid unit input");
+  }
 
-    await page.mouse.move(coords.x, coords.y);
-    await page.mouse.down();
-    await page.waitForTimeout(mathUtils.randomInRange(50, 150));
-    await page.mouse.up();
+  await page.mouse.move(coords.x, coords.y);
+  await page.mouse.down();
+  await page.waitForTimeout(mathUtils.randomInRange(50, 150));
+  await page.mouse.up();
 
-    logger.info(`Unit selected at (${coords.x}, ${coords.y})`);
-    return true;
+  logger.info(`Unit selected at (${coords.x}, ${coords.y})`);
+  return true;
 }
 
 /**
@@ -75,24 +76,26 @@ export async function selectUnit(unit) {
  * @returns {Promise<boolean>}
  */
 export async function selectByArea(start, end) {
-    if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new Error("SessionDisconnectedError: Browser closed.");
+  }
 
-    const page = getPage();
-    
-    logger.info(`Box selection from (${start.x}, ${start.y}) to (${end.x}, ${end.y})`);
-    
-    await page.mouse.move(start.x, start.y);
-    await page.mouse.down();
-    await page.waitForTimeout(100);
-    
-    await page.mouse.move(end.x, end.y, { steps: 10 });
-    await page.waitForTimeout(100);
-    await page.mouse.up();
+  const page = getPage();
 
-    logger.info('Box selection completed');
-    return true;
+  logger.info(
+    `Box selection from (${start.x}, ${start.y}) to (${end.x}, ${end.y})`,
+  );
+
+  await page.mouse.move(start.x, start.y);
+  await page.mouse.down();
+  await page.waitForTimeout(100);
+
+  await page.mouse.move(end.x, end.y, { steps: 10 });
+  await page.waitForTimeout(100);
+  await page.mouse.up();
+
+  logger.info("Box selection completed");
+  return true;
 }
 
 /**
@@ -100,24 +103,24 @@ export async function selectByArea(start, end) {
  * @returns {Promise<boolean>}
  */
 export async function selectAll() {
-    if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new Error("SessionDisconnectedError: Browser closed.");
+  }
 
-    const page = getPage();
-    
-    logger.info('Selecting all units (Ctrl+A)');
-    
-    const isMac = process.platform === 'darwin';
-    const modifier = isMac ? 'Meta' : 'Control';
-    
-    await page.keyboard.down(modifier);
-    await page.keyboard.press('a');
-    await page.keyboard.up(modifier);
+  const page = getPage();
 
-    await page.waitForTimeout(200);
-    
-    return true;
+  logger.info("Selecting all units (Ctrl+A)");
+
+  const isMac = process.platform === "darwin";
+  const modifier = isMac ? "Meta" : "Control";
+
+  await page.keyboard.down(modifier);
+  await page.keyboard.press("a");
+  await page.keyboard.up(modifier);
+
+  await page.waitForTimeout(200);
+
+  return true;
 }
 
 /**
@@ -126,19 +129,19 @@ export async function selectAll() {
  * @returns {Promise<boolean>}
  */
 export async function deselectAll(options = {}) {
-    if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new Error("SessionDisconnectedError: Browser closed.");
+  }
 
-    const page = getPage();
-    const { x = 10, y = 10 } = options;
-    
-    logger.info('Deselecting all (click empty area)');
-    
-    await page.mouse.move(x, y);
-    await page.click(x, y);
+  const page = getPage();
+  const { x = 10, y = 10 } = options;
 
-    return true;
+  logger.info("Deselecting all (click empty area)");
+
+  await page.mouse.move(x, y);
+  await page.click(x, y);
+
+  return true;
 }
 
 /**
@@ -146,33 +149,35 @@ export async function deselectAll(options = {}) {
  * @param {string} selectedIndicator - Selector for selected state indicator
  * @returns {Promise<Array>}
  */
-export async function getSelectedUnits(selectedIndicator = '[class*="selected"]') {
-    if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed.');
-    }
+export async function getSelectedUnits(
+  selectedIndicator = '[class*="selected"]',
+) {
+  if (!isSessionActive()) {
+    throw new Error("SessionDisconnectedError: Browser closed.");
+  }
 
-    const page = getPage();
-    
-    const selectedLocator = page.locator(selectedIndicator);
-    const count = await selectedLocator.count();
-    
-    const units = [];
-    for (let i = 0; i < count; i++) {
-        const el = selectedLocator.nth(i);
-        const box = await el.boundingBox().catch(() => null);
-        if (box) {
-            units.push({
-                index: i,
-                x: box.x,
-                y: box.y,
-                width: box.width,
-                height: box.height,
-            });
-        }
+  const page = getPage();
+
+  const selectedLocator = page.locator(selectedIndicator);
+  const count = await selectedLocator.count();
+
+  const units = [];
+  for (let i = 0; i < count; i++) {
+    const el = selectedLocator.nth(i);
+    const box = await el.boundingBox().catch(() => null);
+    if (box) {
+      units.push({
+        index: i,
+        x: box.x,
+        y: box.y,
+        width: box.width,
+        height: box.height,
+      });
     }
-    
-    logger.info(`Found ${units.length} selected units`);
-    return units;
+  }
+
+  logger.info(`Found ${units.length} selected units`);
+  return units;
 }
 
 /**
@@ -181,36 +186,36 @@ export async function getSelectedUnits(selectedIndicator = '[class*="selected"]'
  * @param {string} commandType - Command type description
  * @returns {Promise<boolean>}
  */
-export async function issueCommand(target, commandType = 'move') {
-    if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed.');
-    }
+export async function issueCommand(target, commandType = "move") {
+  if (!isSessionActive()) {
+    throw new Error("SessionDisconnectedError: Browser closed.");
+  }
 
-    const page = getPage();
-    
-    let coords;
-    
-    if (typeof target === 'string') {
-        const locator = page.locator(target).first();
-        const box = await locator.boundingBox();
-        if (!box) {
-            throw new Error(`Could not find target: ${target}`);
-        }
-        coords = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-    } else if (typeof target === 'object' && 'x' in target && 'y' in target) {
-        coords = target;
-    } else {
-        throw new Error('Invalid target');
-    }
-    
-    logger.info(`Issuing ${commandType} command to (${coords.x}, ${coords.y})`);
-    
-    await page.mouse.move(coords.x, coords.y);
-    await page.mouse.down({ button: 'right' });
-    await page.waitForTimeout(50);
-    await page.mouse.up({ button: 'right' });
+  const page = getPage();
 
-    return true;
+  let coords;
+
+  if (typeof target === "string") {
+    const locator = page.locator(target).first();
+    const box = await locator.boundingBox();
+    if (!box) {
+      throw new Error(`Could not find target: ${target}`);
+    }
+    coords = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  } else if (typeof target === "object" && "x" in target && "y" in target) {
+    coords = target;
+  } else {
+    throw new Error("Invalid target");
+  }
+
+  logger.info(`Issuing ${commandType} command to (${coords.x}, ${coords.y})`);
+
+  await page.mouse.move(coords.x, coords.y);
+  await page.mouse.down({ button: "right" });
+  await page.waitForTimeout(50);
+  await page.mouse.up({ button: "right" });
+
+  return true;
 }
 
 /**
@@ -219,22 +224,22 @@ export async function issueCommand(target, commandType = 'move') {
  * @returns {Promise<boolean>}
  */
 export async function selectGroup(groupNumber) {
-    if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new Error("SessionDisconnectedError: Browser closed.");
+  }
 
-    if (groupNumber < 1 || groupNumber > 9) {
-        throw new Error('Group number must be between 1 and 9');
-    }
+  if (groupNumber < 1 || groupNumber > 9) {
+    throw new Error("Group number must be between 1 and 9");
+  }
 
-    const page = getPage();
-    
-    logger.info(`Selecting group ${groupNumber}`);
-    
-    await page.keyboard.press(String(groupNumber));
-    await page.waitForTimeout(200);
+  const page = getPage();
 
-    return true;
+  logger.info(`Selecting group ${groupNumber}`);
+
+  await page.keyboard.press(String(groupNumber));
+  await page.waitForTimeout(200);
+
+  return true;
 }
 
 /**
@@ -243,27 +248,27 @@ export async function selectGroup(groupNumber) {
  * @returns {Promise<boolean>}
  */
 export async function assignGroup(groupNumber) {
-    if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new Error("SessionDisconnectedError: Browser closed.");
+  }
 
-    if (groupNumber < 1 || groupNumber > 9) {
-        throw new Error('Group number must be between 1 and 9');
-    }
+  if (groupNumber < 1 || groupNumber > 9) {
+    throw new Error("Group number must be between 1 and 9");
+  }
 
-    const page = getPage();
-    
-    logger.info(`Assigning selected units to group ${groupNumber}`);
-    
-    const isMac = process.platform === 'darwin';
-    const modifier = isMac ? 'Meta' : 'Control';
-    
-    await page.keyboard.down(modifier);
-    await page.keyboard.press(String(groupNumber));
-    await page.keyboard.up(modifier);
-    await page.waitForTimeout(200);
+  const page = getPage();
 
-    return true;
+  logger.info(`Assigning selected units to group ${groupNumber}`);
+
+  const isMac = process.platform === "darwin";
+  const modifier = isMac ? "Meta" : "Control";
+
+  await page.keyboard.down(modifier);
+  await page.keyboard.press(String(groupNumber));
+  await page.keyboard.up(modifier);
+  await page.waitForTimeout(200);
+
+  return true;
 }
 
 /**
@@ -272,30 +277,30 @@ export async function assignGroup(groupNumber) {
  * @returns {Promise<number>} Number of idle units found
  */
 export async function selectIdleUnits(_unitType = null) {
-    if (!isSessionActive()) {
-        throw new Error('SessionDisconnectedError: Browser closed.');
-    }
+  if (!isSessionActive()) {
+    throw new Error("SessionDisconnectedError: Browser closed.");
+  }
 
-    const page = getPage();
-    
-    logger.info('Selecting idle units');
-    
-    const hotkey = 'Tab';
-    await page.keyboard.press(hotkey);
-    await page.waitForTimeout(500);
+  const page = getPage();
 
-    const count = await getSelectedUnits();
-    return count.length;
+  logger.info("Selecting idle units");
+
+  const hotkey = "Tab";
+  await page.keyboard.press(hotkey);
+  await page.waitForTimeout(500);
+
+  const count = await getSelectedUnits();
+  return count.length;
 }
 
 export default {
-    selectUnit,
-    selectByArea,
-    selectAll,
-    deselectAll,
-    getSelectedUnits,
-    issueCommand,
-    selectGroup,
-    assignGroup,
-    selectIdleUnits,
+  selectUnit,
+  selectByArea,
+  selectAll,
+  deselectAll,
+  getSelectedUnits,
+  issueCommand,
+  selectGroup,
+  assignGroup,
+  selectIdleUnits,
 };

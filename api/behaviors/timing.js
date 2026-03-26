@@ -11,14 +11,11 @@
  * @module api/timing
  */
 
-import { humanTiming } from '../utils/timing.js';
-import { mathUtils } from '../utils/math.js';
-import { getPersona } from './persona.js';
-import { getPage } from '../core/context.js';
-import { createLogger } from '../core/logger.js';
-import { ValidationError } from '../core/errors.js';
-
-const _logger = createLogger('api/timing.js');
+import { humanTiming } from "../utils/timing.js";
+import { mathUtils } from "../utils/math.js";
+import { getPersona } from "./persona.js";
+import { getPage } from "../core/context.js";
+import { ValidationError } from "../core/errors.js";
 
 /**
  * Random "thinking" pause. Simulates cognitive decision-making.
@@ -29,48 +26,53 @@ const _logger = createLogger('api/timing.js');
  * @throws {ValidationError} If ms is provided but not a positive number
  */
 export async function think(ms) {
-    if (ms !== undefined && (typeof ms !== 'number' || Number.isNaN(ms) || ms <= 0)) {
-        throw new ValidationError(`think() requires a positive number, got: ${ms}`);
+  if (
+    ms !== undefined &&
+    (typeof ms !== "number" || Number.isNaN(ms) || ms <= 0)
+  ) {
+    throw new ValidationError(`think() requires a positive number, got: ${ms}`);
+  }
+  const page = getPage();
+  const persona = getPersona();
+  const base = ms || mathUtils.randomInRange(1000, 5000);
+
+  // Performance-Aware Impatience (Ghost 3.0)
+  let performanceMultiplier = 1.0;
+  try {
+    const stats = await page.evaluate(() => {
+      const nav = performance.getEntriesByType("navigation")[0];
+      const paint = performance.getEntriesByType("paint");
+      const lcp = performance
+        .getEntriesByType("largest-contentful-paint")
+        .pop();
+
+      return {
+        loadTime: nav ? nav.duration : Infinity,
+        firstPaint: paint.length > 0 ? paint[0].startTime : Infinity,
+        lcp: lcp ? lcp.startTime : Infinity,
+        // Simple main thread lag proxy (rough)
+        lag: (() => {
+          const start = Date.now();
+          for (let i = 0; i < 1e6; i++) {
+            void i;
+          }
+          return Date.now() - start;
+        })(),
+      };
+    });
+
+    // If page feels "heavy" (LCP > 2.5s or main thread lag > 50ms), human impatient
+    if (stats.lcp > 2500 || stats.lag > 50) {
+      performanceMultiplier = 0.75; // 25% faster decision-making/skipping
+      // logger.debug(`[Impatience] Triggered due to LCP: ${stats.lcp}ms / Lag: ${stats.lag}ms`);
     }
-    const page = getPage();
-    const persona = getPersona();
-    const base = ms || mathUtils.randomInRange(1000, 5000);
+  } catch (_e) {
+    void _e;
+  }
 
-    // Performance-Aware Impatience (Ghost 3.0)
-    let performanceMultiplier = 1.0;
-    try {
-        const stats = await page.evaluate(() => {
-            const nav = performance.getEntriesByType('navigation')[0];
-            const paint = performance.getEntriesByType('paint');
-            const lcp = performance.getEntriesByType('largest-contentful-paint').pop();
-
-            return {
-                loadTime: nav ? nav.duration : Infinity,
-                firstPaint: paint.length > 0 ? paint[0].startTime : Infinity,
-                lcp: lcp ? lcp.startTime : Infinity,
-                // Simple main thread lag proxy (rough)
-                lag: (() => {
-                    const start = Date.now();
-                    for (let i = 0; i < 1e6; i++) {
-                        void i;
-                    }
-                    return Date.now() - start;
-                })(),
-            };
-        });
-
-        // If page feels "heavy" (LCP > 2.5s or main thread lag > 50ms), human impatient
-        if (stats.lcp > 2500 || stats.lag > 50) {
-            performanceMultiplier = 0.75; // 25% faster decision-making/skipping
-            // logger.debug(`[Impatience] Triggered due to LCP: ${stats.lcp}ms / Lag: ${stats.lag}ms`);
-        }
-    } catch (_e) {
-        void _e;
-    }
-
-    const adjusted = Math.round((base * performanceMultiplier) / persona.speed);
-    const jittered = humanTiming.humanDelay(adjusted, { jitter: 0.2 });
-    await new Promise((r) => setTimeout(r, jittered));
+  const adjusted = Math.round((base * performanceMultiplier) / persona.speed);
+  const jittered = humanTiming.humanDelay(adjusted, { jitter: 0.2 });
+  await new Promise((r) => setTimeout(r, jittered));
 }
 
 /**
@@ -80,11 +82,11 @@ export async function think(ms) {
  * @throws {ValidationError} If ms is not a positive number
  */
 export async function delay(ms) {
-    if (typeof ms !== 'number' || Number.isNaN(ms) || ms <= 0) {
-        throw new ValidationError(`delay() requires a positive number, got: ${ms}`);
-    }
-    const jittered = humanTiming.humanDelay(ms);
-    await new Promise((r) => setTimeout(r, jittered));
+  if (typeof ms !== "number" || Number.isNaN(ms) || ms <= 0) {
+    throw new ValidationError(`delay() requires a positive number, got: ${ms}`);
+  }
+  const jittered = humanTiming.humanDelay(ms);
+  await new Promise((r) => setTimeout(r, jittered));
 }
 
 /**
@@ -96,7 +98,7 @@ export async function delay(ms) {
  * @returns {number}
  */
 export function gaussian(mean, dev, min, max) {
-    return mathUtils.gaussian(mean, dev, min, max);
+  return mathUtils.gaussian(mean, dev, min, max);
 }
 
 /**
@@ -106,5 +108,5 @@ export function gaussian(mean, dev, min, max) {
  * @returns {number}
  */
 export function randomInRange(min, max) {
-    return mathUtils.randomInRange(min, max);
+  return mathUtils.randomInRange(min, max);
 }

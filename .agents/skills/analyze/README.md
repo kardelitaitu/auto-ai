@@ -12,14 +12,14 @@ The Analyze Skill provides intelligent file reading and content analysis capabil
 
 ## Key Features
 
-| Feature | Description |
-|---------|-------------|
-| **Multi-Format Support** | Text, PDF, DOCX, Excel, images, and more |
-| **Smart Chunking** | Automatic large file handling with configurable chunk sizes |
-| **Format Detection** | Automatic file type detection and appropriate parser selection |
-| **Content Extraction** | Structured data extraction from documents |
-| **Batch Processing** | Parallel file analysis for improved throughput |
-| **Error Recovery** | Graceful handling of corrupt or inaccessible files |
+| Feature                  | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| **Multi-Format Support** | Text, PDF, DOCX, Excel, images, and more                       |
+| **Smart Chunking**       | Automatic large file handling with configurable chunk sizes    |
+| **Format Detection**     | Automatic file type detection and appropriate parser selection |
+| **Content Extraction**   | Structured data extraction from documents                      |
+| **Batch Processing**     | Parallel file analysis for improved throughput                 |
+| **Error Recovery**       | Graceful handling of corrupt or inaccessible files             |
 
 ## Architecture
 
@@ -51,35 +51,34 @@ import { analyzeFile, batchAnalyze } from './skills/analyze/SKILL.md';
 const result = await analyzeFile('/path/to/file.js', {
     extractImports: true,
     extractFunctions: true,
-    calculateComplexity: true
+    calculateComplexity: true,
 });
 
 // Batch analyze multiple files
-const results = await batchAnalyze([
-    '/path/to/file1.js',
-    '/path/to/file2.js',
-    '/path/to/config.json'
-], { parallel: true, maxConcurrent: 5 });
+const results = await batchAnalyze(
+    ['/path/to/file1.js', '/path/to/file2.js', '/path/to/config.json'],
+    { parallel: true, maxConcurrent: 5 }
+);
 ```
 
 ## Use Cases
 
-| Use Case | Description | Example |
-|----------|-------------|---------|
-| **Code Review** | Extract and analyze code structure | Function dependencies, complexity metrics |
-| **Log Analysis** | Parse and analyze log files | Error patterns, frequency analysis |
-| **Config Validation** | Verify configuration files | Schema validation, security checks |
-| **Data Processing** | Extract data from documents | CSV parsing, Excel extraction |
-| **Documentation** | Generate docs from code | API documentation, JSDoc extraction |
+| Use Case              | Description                        | Example                                   |
+| --------------------- | ---------------------------------- | ----------------------------------------- |
+| **Code Review**       | Extract and analyze code structure | Function dependencies, complexity metrics |
+| **Log Analysis**      | Parse and analyze log files        | Error patterns, frequency analysis        |
+| **Config Validation** | Verify configuration files         | Schema validation, security checks        |
+| **Data Processing**   | Extract data from documents        | CSV parsing, Excel extraction             |
+| **Documentation**     | Generate docs from code            | API documentation, JSDoc extraction       |
 
 ## Performance Benchmarks
 
-| File Size | Format | Processing Time | Memory Usage |
-|-----------|--------|-----------------|--------------|
-| < 100 KB | Any | < 50ms | < 10 MB |
-| 100 KB - 1 MB | Text | < 200ms | < 50 MB |
-| 1 MB - 10 MB | Text | < 1s | < 100 MB |
-| 10 MB+ | Any | Chunked | Configurable |
+| File Size     | Format | Processing Time | Memory Usage |
+| ------------- | ------ | --------------- | ------------ |
+| < 100 KB      | Any    | < 50ms          | < 10 MB      |
+| 100 KB - 1 MB | Text   | < 200ms         | < 50 MB      |
+| 1 MB - 10 MB  | Text   | < 1s            | < 100 MB     |
+| 10 MB+        | Any    | Chunked         | Configurable |
 
 ## Configuration
 
@@ -106,11 +105,12 @@ const results = await batchAnalyze([
 Analyzes a single file and returns structured results.
 
 **Parameters:**
+
 - `filePath` (string): Path to the file
 - `options` (object): Analysis options
-  - `extractImports`: boolean - Extract import statements
-  - `extractFunctions`: boolean - Extract function definitions
-  - `calculateComplexity`: boolean - Calculate complexity metrics
+    - `extractImports`: boolean - Extract import statements
+    - `extractFunctions`: boolean - Extract function definitions
+    - `calculateComplexity`: boolean - Calculate complexity metrics
 
 **Returns:** `Promise<AnalysisResult>`
 
@@ -119,10 +119,11 @@ Analyzes a single file and returns structured results.
 Analyzes multiple files in parallel.
 
 **Parameters:**
+
 - `files` (string[]): Array of file paths
 - `options` (object): Batch options
-  - `parallel`: boolean - Enable parallel processing
-  - `maxConcurrent`: number - Maximum concurrent operations
+    - `parallel`: boolean - Enable parallel processing
+    - `maxConcurrent`: number - Maximum concurrent operations
 
 **Returns:** `Promise<AnalysisResult[]>`
 
@@ -162,4 +163,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*Built with ❤️ by the Auto-AI Team*
+_Built with ❤️ by the Auto-AI Team_

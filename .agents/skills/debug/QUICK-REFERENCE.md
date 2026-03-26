@@ -25,16 +25,17 @@ node -e "const WebSocket = require('ws'); new WebSocket('ws://localhost:9222').o
 
 ## Log Locations
 
-| Component | Log Location |
-|-----------|--------------|
-| Main | `logs/app.log` |
+| Component    | Log Location            |
+| ------------ | ----------------------- |
+| Main         | `logs/app.log`          |
 | Orchestrator | `logs/orchestrator.log` |
-| Agent | `logs/agent.log` |
-| API | `logs/api.log` |
+| Agent        | `logs/agent.log`        |
+| API          | `logs/api.log`          |
 
 ## Error Patterns
 
 ### Browser Issues
+
 ```
 ERROR: No browsers found
 → Check browser processes are running
@@ -50,6 +51,7 @@ ERROR: Target closed
 ```
 
 ### Task Issues
+
 ```
 ERROR: Timeout
 → Task took too long
@@ -68,6 +70,7 @@ ERROR: Navigation failed
 ```
 
 ### LLM Issues
+
 ```
 ERROR: LLM timeout
 → Model too slow
@@ -88,6 +91,7 @@ ERROR: Rate limited
 ## Debug Code Snippets
 
 ### Check Browser Health
+
 ```javascript
 async function checkBrowserHealth(browser) {
     try {
@@ -104,15 +108,16 @@ async function checkBrowserHealth(browser) {
 ```
 
 ### Dump Page State
+
 ```javascript
 async function dumpPageState(page) {
     console.log('URL:', page.url());
     console.log('Title:', await page.title());
     console.log('Is closed:', page.isClosed());
-    
+
     // Take screenshot
     await page.screenshot({ path: 'debug-state.png' });
-    
+
     // Get page content summary
     const text = await page.evaluate(() => document.body.innerText.substring(0, 500));
     console.log('Content preview:', text);
@@ -120,15 +125,16 @@ async function dumpPageState(page) {
 ```
 
 ### Trace API Calls
+
 ```javascript
 // Add to page to trace all requests
-page.on('request', req => {
+page.on('request', (req) => {
     if (req.url().includes('api')) {
         console.log('API Request:', req.method(), req.url());
     }
 });
 
-page.on('response', res => {
+page.on('response', (res) => {
     if (res.url().includes('api')) {
         console.log('API Response:', res.status(), res.url());
     }
@@ -138,6 +144,7 @@ page.on('response', res => {
 ## Fix Patterns
 
 ### Retry with Backoff
+
 ```javascript
 async function retryWithBackoff(fn, maxAttempts = 3, delay = 1000) {
     for (let i = 0; i < maxAttempts; i++) {
@@ -145,17 +152,18 @@ async function retryWithBackoff(fn, maxAttempts = 3, delay = 1000) {
             return await fn();
         } catch (e) {
             if (i === maxAttempts - 1) throw e;
-            await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
+            await new Promise((r) => setTimeout(r, delay * Math.pow(2, i)));
         }
     }
 }
 ```
 
 ### Safe Element Action
+
 ```javascript
 async function safeClick(page, selector, options = {}) {
     const { timeout = 5000, retries = 2 } = options;
-    
+
     for (let i = 0; i <= retries; i++) {
         try {
             await page.waitForSelector(selector, { timeout });
@@ -170,17 +178,18 @@ async function safeClick(page, selector, options = {}) {
 ```
 
 ### Graceful Shutdown
+
 ```javascript
 async function gracefulShutdown(orchestrator) {
     console.log('Shutting down...');
-    
+
     try {
         await orchestrator.shutdown();
         console.log('Orchestrator stopped');
     } catch (e) {
         console.error('Shutdown error:', e);
     }
-    
+
     process.exit(0);
 }
 

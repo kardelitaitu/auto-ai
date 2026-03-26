@@ -8,17 +8,17 @@
 // Example: Analyze gaps between current and desired state
 function analyzeGaps(current, desired) {
     const gaps = [];
-    
+
     for (const [key, desiredValue] of Object.entries(desired)) {
         const currentValue = current[key];
-        
+
         if (currentValue === undefined) {
             gaps.push({
                 area: key,
                 type: 'MISSING',
                 severity: 'HIGH',
                 current: null,
-                desired: desiredValue
+                desired: desiredValue,
             });
         } else if (JSON.stringify(currentValue) !== JSON.stringify(desiredValue)) {
             gaps.push({
@@ -26,11 +26,11 @@ function analyzeGaps(current, desired) {
                 type: 'DIFFERENT',
                 severity: 'MEDIUM',
                 current: currentValue,
-                desired: desiredValue
+                desired: desiredValue,
             });
         }
     }
-    
+
     return gaps;
 }
 
@@ -46,11 +46,13 @@ const gaps = analyzeGaps(
 ```javascript
 // Example: Create priority matrix
 function createPriorityMatrix(improvements) {
-    return improvements.map(imp => ({
-        ...imp,
-        score: (imp.impact * imp.ease) / imp.cost,
-        quadrant: getQuadrant(imp.impact, imp.cost)
-    })).sort((a, b) => b.score - a.score);
+    return improvements
+        .map((imp) => ({
+            ...imp,
+            score: (imp.impact * imp.ease) / imp.cost,
+            quadrant: getQuadrant(imp.impact, imp.cost),
+        }))
+        .sort((a, b) => b.score - a.score);
 }
 
 function getQuadrant(impact, cost) {
@@ -69,17 +71,17 @@ class ImprovementTracker {
     constructor() {
         this.items = new Map();
     }
-    
+
     addItem(id, item) {
         this.items.set(id, {
             ...item,
             status: 'pending',
             progress: 0,
             startDate: null,
-            endDate: null
+            endDate: null,
         });
     }
-    
+
     updateProgress(id, progress) {
         const item = this.items.get(id);
         if (item) {
@@ -92,15 +94,15 @@ class ImprovementTracker {
             }
         }
     }
-    
+
     getSummary() {
         const items = Array.from(this.items.values());
         return {
             total: items.length,
-            completed: items.filter(i => i.status === 'completed').length,
-            inProgress: items.filter(i => i.status === 'in-progress').length,
-            pending: items.filter(i => i.status === 'pending').length,
-            averageProgress: items.reduce((sum, i) => sum + i.progress, 0) / items.length
+            completed: items.filter((i) => i.status === 'completed').length,
+            inProgress: items.filter((i) => i.status === 'in-progress').length,
+            pending: items.filter((i) => i.status === 'pending').length,
+            averageProgress: items.reduce((sum, i) => sum + i.progress, 0) / items.length,
         };
     }
 }

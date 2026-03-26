@@ -12,13 +12,13 @@ The Plan Skill provides comprehensive project planning capabilities including ta
 
 ## Key Features
 
-| Feature | Description |
-|---------|-------------|
-| **Task Breakdown** | Decompose complex tasks into manageable items |
-| **Estimation** | Story points, time estimates, complexity scoring |
-| **Prioritization** | MoSCoW, value/effort matrices |
-| **Dependency Mapping** | Identify task dependencies and critical path |
-| **Roadmap Planning** | Create phased implementation plans |
+| Feature                | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| **Task Breakdown**     | Decompose complex tasks into manageable items    |
+| **Estimation**         | Story points, time estimates, complexity scoring |
+| **Prioritization**     | MoSCoW, value/effort matrices                    |
+| **Dependency Mapping** | Identify task dependencies and critical path     |
+| **Roadmap Planning**   | Create phased implementation plans               |
 
 ## Quick Start
 
@@ -29,7 +29,7 @@ import { createTaskBreakdown, estimateEffort, prioritizeTasks } from './skills/p
 // Break down a feature
 const tasks = createTaskBreakdown('Build user authentication', {
     level: 'detailed',
-    includeTests: true
+    includeTests: true,
 });
 
 // Estimate effort
@@ -37,17 +37,17 @@ const estimates = estimateEffort(tasks);
 
 // Prioritize
 const prioritized = prioritizeTasks(tasks, {
-    method: 'value-effort'
+    method: 'value-effort',
 });
 ```
 
 ## Estimation Scales
 
-| Scale | Range | Use Case |
-|-------|-------|----------|
-| **T-Shirt** | XS, S, M, L, XL | High-level planning |
-| **Story Points** | 1, 2, 3, 5, 8, 13 | Sprint planning |
-| **Fibonacci** | 1, 2, 3, 5, 8, 13, 21 | Relative sizing |
+| Scale            | Range                 | Use Case            |
+| ---------------- | --------------------- | ------------------- |
+| **T-Shirt**      | XS, S, M, L, XL       | High-level planning |
+| **Story Points** | 1, 2, 3, 5, 8, 13     | Sprint planning     |
+| **Fibonacci**    | 1, 2, 3, 5, 8, 13, 21 | Relative sizing     |
 
 ## Configuration
 
@@ -67,4 +67,4 @@ This project is licensed under the MIT License.
 
 ---
 
-*Built with ❤️ by the Auto-AI Team*
+_Built with ❤️ by the Auto-AI Team_

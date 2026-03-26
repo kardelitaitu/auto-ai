@@ -1,12 +1,12 @@
 ---
 name: plan-improvement
 description: |
-  Use for breaking down ambiguous work into actionable plans, defining
-  milestones, estimating effort, and tracking implementation progress.
+    Use for breaking down ambiguous work into actionable plans, defining
+    milestones, estimating effort, and tracking implementation progress.
 license: MIT
 metadata:
-  author: Auto-AI Framework
-  version: '1.0.0'
+    author: Auto-AI Framework
+    version: '1.0.0'
 ---
 
 # Plan Improvement Skill
