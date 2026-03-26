@@ -55,10 +55,6 @@ export default defineConfig({
             '.opencode',
             'api/ui/electron-dashboard/node_modules',
             'api/ui/electron-dashboard/renderer/node_modules',
-            'api/tests/integration/context-session.test.js',
-            'api/tests/integration/orchestrator-full.test.js',
-            'api/tests/integration/session-manager.test.js',
-            'api/tests/integration/connector-discovery.test.js',
         ],
 
         testTimeout: 10000,
