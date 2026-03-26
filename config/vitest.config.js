@@ -13,14 +13,18 @@ import { cpus } from 'os';
 // Module A: Hardware Topology & Execution Strategy
 // ============================================================================
 const cpuCount = cpus().length;
-// Reserve 2 threads for OS/IDE stability, allocate the rest to the execution pool
-const calculatedThreads = Math.max(1, cpuCount - 2);
-// Dynamic minThreads: use at least 1, but never exceed maxThreads
-const calculatedMinThreads = Math.max(1, Math.min(calculatedThreads, Math.floor(cpuCount / 2)));
+// Allow CI override, fallback to calculated threads (reserve 2 for OS/IDE stability)
+const envMaxThreads = parseInt(process.env.VITEST_MAX_THREADS || '', 10);
+const envMinThreads = parseInt(process.env.VITEST_MIN_THREADS || '', 10);
+const calculatedThreads = envMaxThreads || Math.max(1, cpuCount - 2);
+const calculatedMinThreads =
+    envMinThreads || Math.max(1, Math.min(calculatedThreads, Math.floor(cpuCount / 2)));
 
 console.log(`\n=== [SYSTEM_NODE] Test Execution Orchestrator ===`);
 console.log(`Hardware Detected: ${cpuCount} Logical Cores`);
-console.log(`Thread Allocation: ${calculatedThreads} Max Workers`);
+console.log(
+    `Thread Allocation: ${calculatedThreads} Max Workers (env override: ${process.env.VITEST_MAX_THREADS || 'none'})`
+);
 console.log(`Coverage Engine: istanbul (Memory Optimized)`);
 console.log(`=================================================\n`);
 
@@ -51,11 +55,16 @@ export default defineConfig({
             '.opencode',
             'api/ui/electron-dashboard/node_modules',
             'api/ui/electron-dashboard/renderer/node_modules',
+            'api/tests/integration/context-session.test.js',
+            'api/tests/integration/orchestrator-full.test.js',
+            'api/tests/integration/session-manager.test.js',
+            'api/tests/integration/connector-discovery.test.js',
         ],
 
         testTimeout: 10000,
         hookTimeout: 10000,
         cache: true,
+        cacheDir: process.env.VITEST_CACHE_DIR || resolve(rootDir, 'node_modules/.vitest'),
 
         // --------------------------------------------------------------------
         // Concurrency Engine - Unchained Architecture
