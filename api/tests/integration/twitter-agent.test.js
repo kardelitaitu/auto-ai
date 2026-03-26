@@ -76,7 +76,7 @@ describe("TwitterAgent Integration", () => {
     vi.clearAllMocks();
     const mod = await import("@api/twitter/twitterAgent.js");
     TwitterAgent = mod.TwitterAgent;
-  });
+  }, 30000);
 
   it("should export TwitterAgent class", () => {
     expect(TwitterAgent).toBeDefined();

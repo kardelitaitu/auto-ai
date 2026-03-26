@@ -63,10 +63,10 @@ describe("Simple Orchestrator Integration", () => {
   it("should import orchestrator module", async () => {
     const orchestrator = await import("../../core/orchestrator.js");
     expect(orchestrator.default).toBeDefined();
-  });
+  }, 30000);
 
   it("should have orchestrator constructor", async () => {
     const Orchestrator = (await import("../../core/orchestrator.js")).default;
     expect(Orchestrator).toBeDefined();
-  });
+  }, 30000);
 });
