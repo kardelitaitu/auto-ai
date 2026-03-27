@@ -122,13 +122,14 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Build check
-              shell: bash
+              shell: pwsh
               run: |
-                  if grep -q '"build":' package.json; then
+                  $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+                  if ($null -ne $pkg.scripts -and $null -ne $pkg.scripts.build) {
                     pnpm build
-                  else
-                    echo "No build script defined - skipping"
-                  fi
+                  } else {
+                    Write-Host "No build script defined - skipping"
+                  }
 
     notify:
         runs-on: self-hosted-windows11
