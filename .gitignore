@@ -37,6 +37,8 @@ script/proxies.txt
 backup
 api/coverage
 api/ui/electron-dashboard/dist-exe/
+api/ui/electron-dashboard/package-lock.json
+api/ui/electron-dashboard/renderer/package-lock.json
 setup_log.txt
 vitest-individual.txt
 AGENT-JOURNAL.md
@@ -48,3 +50,10 @@ improve-test-coverage.md
 *.ps1
 jsdoc.json
 .llmignore
+_scanproblem.py
+js_files.txt
+owb-agents.js
+prompt-test.js
+tree_sitter_mcp_launcher.py
+tests/debug-sanitization.js
+CODEOWNERS
