@@ -75,6 +75,7 @@ export class SimpleSemaphore {
 class SessionManager {
   constructor(options = {}) {
     this.sessions = [];
+    this.sessionsMap = new Map();
     this.nextSessionId = 1;
 
     this.sessionTimeoutMs =
@@ -237,12 +238,11 @@ class SessionManager {
     const id = browserInfo || `session-${this.nextSessionId++}`;
     const now = Date.now();
 
-    const existingIndex = this.sessions.findIndex(
-      (s) => s.id === id || s.wsEndpoint === wsEndpoint,
-    );
-    if (existingIndex !== -1) {
+    const existing =
+      this.sessionsMap.get(id) ||
+      (wsEndpoint ? this._findByEndpoint(wsEndpoint) : null);
+    if (existing) {
       logger.info(`[SessionManager] Session ${id} exists, updating browser`);
-      const existing = this.sessions[existingIndex];
       existing.browser = browser;
       existing.wsEndpoint = wsEndpoint || existing.wsEndpoint;
       existing.lastActivity = now;
@@ -272,6 +272,7 @@ class SessionManager {
     };
 
     this.sessions.push(session);
+    this.sessionsMap.set(id, session);
     this._getSemaphore(id, this.concurrencyPerBrowser);
 
     logger.info(
@@ -280,6 +281,13 @@ class SessionManager {
     this.saveSessionState();
     metricsCollector.recordSessionEvent("created", this.sessions.length);
     return id;
+  }
+
+  _findByEndpoint(wsEndpoint) {
+    for (const session of this.sessions) {
+      if (session.wsEndpoint === wsEndpoint) return session;
+    }
+    return null;
   }
 
   async replaceBrowserByEndpoint(wsEndpoint, newBrowser) {
@@ -302,16 +310,17 @@ class SessionManager {
   }
 
   removeSession(sessionId) {
-    const index = this.sessions.findIndex((s) => s.id === sessionId);
-    if (index !== -1) {
-      const session = this.sessions[index];
+    const session = this.sessionsMap.get(sessionId);
+    if (session) {
+      const index = this.sessions.indexOf(session);
       this.closeManagedPages(session).catch(() => {});
       this.closeSessionBrowser(session).catch(() => {});
       this.workerSemaphores.delete(sessionId);
+      this.sessionsMap.delete(sessionId);
       for (const worker of session.workers || []) {
         this.workerOccupancy.delete(`${sessionId}:${worker.id}`);
       }
-      this.sessions.splice(index, 1);
+      if (index !== -1) this.sessions.splice(index, 1);
       this.saveSessionState();
       metricsCollector.recordSessionEvent("closed", this.sessions.length);
       logger.info(`[SessionManager] Session removed: ${sessionId}`);
@@ -321,17 +330,17 @@ class SessionManager {
   }
 
   registerPage(sessionId, page) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (session) session.managedPages.add(page);
   }
 
   unregisterPage(sessionId, page) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (session) session.managedPages.delete(page);
   }
 
   _cleanupStalePageRefs(sessionId) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (!session || !session.managedPages) return;
 
     for (const page of session.managedPages) {
@@ -346,7 +355,7 @@ class SessionManager {
   }
 
   async acquirePage(sessionId, context) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (!session || !context) return null;
 
     this._cleanupStalePageRefs(sessionId);
@@ -357,7 +366,7 @@ class SessionManager {
   }
 
   async releasePage(sessionId, page) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (!session) return;
 
     let isPageClosed = false;
@@ -382,7 +391,7 @@ class SessionManager {
   }
 
   async acquireWorker(sessionId, options = {}) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (!session) return null;
 
     const sem = this._getSemaphore(sessionId);
@@ -418,7 +427,7 @@ class SessionManager {
   }
 
   async releaseWorker(sessionId, workerId) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (!session) return;
 
     const worker = session.workers.find((w) => w.id === workerId);
@@ -437,7 +446,7 @@ class SessionManager {
   }
 
   async forceReleaseWorker(sessionId, workerId) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (!session) return false;
 
     const worker = session.workers.find((w) => w.id === workerId);
@@ -456,27 +465,36 @@ class SessionManager {
   }
 
   getWorkerHealth(sessionId) {
-    const session = this.sessions.find((s) => s.id === sessionId);
+    const session = this.sessionsMap.get(sessionId);
     if (!session) return null;
 
     const now = Date.now();
-    const workers = session.workers.map((w) => ({
-      id: w.id,
-      status: w.status,
-      occupiedAt: w.occupiedAt,
-      elapsed: w.occupiedAt ? now - w.occupiedAt : 0,
-      isStuck:
+    let busy = 0,
+      idle = 0,
+      stuck = 0;
+    const workers = session.workers.map((w) => {
+      const isStuck =
         w.status === "busy" &&
         w.occupiedAt &&
-        now - w.occupiedAt > this.stuckWorkerThresholdMs,
-    }));
+        now - w.occupiedAt > this.stuckWorkerThresholdMs;
+      if (isStuck) stuck++;
+      else if (w.status === "busy") busy++;
+      else idle++;
+      return {
+        id: w.id,
+        status: w.status,
+        occupiedAt: w.occupiedAt,
+        elapsed: w.occupiedAt ? now - w.occupiedAt : 0,
+        isStuck,
+      };
+    });
 
     return {
       sessionId,
       total: workers.length,
-      busy: workers.filter((w) => w.status === "busy").length,
-      idle: workers.filter((w) => w.status === "idle").length,
-      stuck: workers.filter((w) => w.isStuck).length,
+      busy,
+      idle,
+      stuck,
       workers,
     };
   }
@@ -618,7 +636,7 @@ class SessionManager {
   }
 
   getSession(sessionId) {
-    return this.sessions.find((s) => s.id === sessionId);
+    return this.sessionsMap.get(sessionId);
   }
 
   getIdleSession() {
