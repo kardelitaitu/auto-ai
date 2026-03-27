@@ -57,3 +57,5 @@ prompt-test.js
 tree_sitter_mcp_launcher.py
 tests/debug-sanitization.js
 CODEOWNERS
+api/docs/
+api/_api-overview.md
