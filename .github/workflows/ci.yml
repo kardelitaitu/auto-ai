@@ -11,8 +11,7 @@ permissions:
 
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-    VITEST_MAX_THREADS: 4
-    VITEST_MIN_THREADS: 2
+    # VITEST_MAX_THREADS and VITEST_MIN_THREADS removed to use maximum parallelism (cpuCount - 2)
 
 jobs:
     lint:
