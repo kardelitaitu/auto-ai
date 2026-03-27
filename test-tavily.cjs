@@ -1,5 +1,5 @@
 // Tavily API Key Test Script
-// Set TAVILY_API_KEY environment variable or replace placeholder
+// Set TAVILY_API_KEY environment variable or replace placeholder abcde
 // Get your key from https://app.tavily.com
 
 const { tavily } = require('@tavily/core');
