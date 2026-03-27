@@ -11,20 +11,8 @@
  */
 
 import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
-import fs from "fs";
-import path from "path";
 
 let profileManager;
-
-vi.mock("fs", async () => {
-  const actual = await vi.importActual("fs");
-  return { ...actual };
-});
-
-vi.mock("child_process", async () => {
-  const actual = await vi.importActual("child_process");
-  return { ...actual };
-});
 
 describe("profileManager Integration", () => {
   beforeAll(async () => {
@@ -33,9 +21,14 @@ describe("profileManager Integration", () => {
   });
 
   beforeEach(() => {
-    // Ensure profiles are loaded before each test
-    if (profileManager.getCount() === 0) {
-      profileManager.reload();
+    if (!profileManager || profileManager.getCount() === 0) {
+      const loaded = profileManager?.reload();
+      if (!loaded) {
+        console.warn(
+          "[profile-manager.test] Profiles not loaded, count:",
+          profileManager?.getCount(),
+        );
+      }
     }
   });
   describe("Module Export", () => {
@@ -78,6 +71,12 @@ describe("profileManager Integration", () => {
       const result = profileManager.reload();
       expect(result).toBe(true);
       expect(profileManager.getCount()).toBeGreaterThan(0);
+    });
+
+    it("should attempt to load profiles and return count", () => {
+      const count = profileManager.getCount();
+      expect(typeof count).toBe("number");
+      expect(count).toBeGreaterThanOrEqual(0);
     });
 
     it("should return accurate profile count", () => {
