@@ -96,7 +96,7 @@
         "lint-staged": "^15.4.3",
         "minimatch": "10.2.3",
         "mocha": "^11.7.5",
-        "picomatch": "4.0.3",
+        "picomatch": "4.0.4",
         "prettier": "^3.8.1",
         "serialize-javascript": "7.0.3",
         "tar": "7.5.11",
