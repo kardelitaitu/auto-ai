@@ -37,3 +37,14 @@ script/proxies.txt
 backup
 api/coverage
 api/ui/electron-dashboard/dist-exe/
+setup_log.txt
+vitest-individual.txt
+AGENT-JOURNAL.md
+patchnotes.md
+coverage_analysis.md
+final_prioritized_list.md
+improve-test-coverage.md
+*.bat
+*.ps1
+jsdoc.json
+.llmignore
