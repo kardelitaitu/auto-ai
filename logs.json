@@ -1,4 +1,0 @@
-{"timestamp":"2026-03-27T16:45:17.007Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1774629916986-1oe8e7a8h] Session initialized with paceMultiplier=1.19"}
-{"timestamp":"2026-03-27T16:45:17.008Z","level":"INFO","module":"EntropyController","sessionId":null,"message":"[session-1774629916986-1oe8e7a8h] Fatigue scheduled for T+3.6m"}
-{"timestamp":"2026-03-27T16:45:17.236Z","level":"INFO","module":"api/agent/visualDiff.js","sessionId":null,"message":"Sharp module loaded successfully"}
-{"timestamp":"2026-03-27T16:45:17.300Z","level":"WARN","module":"api/agent/sessionStore.js","sessionId":null,"message":"[SessionStore] Database not available, using in-memory fallback:"}

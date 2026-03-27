@@ -1,4 +1,0 @@
-[23:45:17] [INFO] [EntropyController] [session-1774629916986-1oe8e7a8h] Session initialized with paceMultiplier=1.19
-[23:45:17] [INFO] [EntropyController] [session-1774629916986-1oe8e7a8h] Fatigue scheduled for T+3.6m
-[23:45:17] [INFO] [api/agent/visualDiff.js] Sharp module loaded successfully
-[23:45:17] [WARN] [api/agent/sessionStore.js] [SessionStore] Database not available, using in-memory fallback:
