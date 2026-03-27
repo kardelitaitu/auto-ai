@@ -597,6 +597,23 @@ class Orchestrator extends EventEmitter {
     }
   }
 
+  _cleanupStaleActiveTasks() {
+    const staleThreshold = 86400000;
+    let cleaned = 0;
+    for (const [taskId, data] of this.activeTasks) {
+      if (
+        data.abortController.signal.aborted ||
+        Date.now() - data.startTime > staleThreshold
+      ) {
+        this.activeTasks.delete(taskId);
+        cleaned++;
+      }
+    }
+    if (cleaned > 0) {
+      logger.debug(`[Orchestrator] Cleaned ${cleaned} stale active tasks`);
+    }
+  }
+
   _evictTaskModuleCache() {
     if (this.taskModuleCache.size >= TASK_MODULE_CACHE_MAX_SIZE) {
       const oldestKey = this.taskModuleCache.keys().next().value;
@@ -618,6 +635,7 @@ class Orchestrator extends EventEmitter {
   }
 
   _checkMemoryHealth() {
+    this._cleanupStaleActiveTasks();
     const mem = this._getMemoryUsage();
     if (mem.heapUsed > MEMORY_WARNING_THRESHOLD_MB) {
       logger.warn(
@@ -929,11 +947,14 @@ class Orchestrator extends EventEmitter {
     }
 
     if (this.dashboardSocket) {
+      this.dashboardSocket.removeAllListeners();
       this.dashboardSocket.disconnect();
       this.dashboardSocket = null;
     }
 
-    // We do NOT kill the process here if it was persistent (unref'd)
+    if (this.dashboardProcess) {
+      this.dashboardProcess.removeAllListeners();
+    }
     this.dashboardProcess = null;
   }
 

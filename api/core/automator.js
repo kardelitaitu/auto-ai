@@ -103,6 +103,9 @@ class Automator {
 
     if (connectionInfo?.browser) {
       try {
+        if (typeof connectionInfo.browser.removeAllListeners === "function") {
+          connectionInfo.browser.removeAllListeners();
+        }
         await connectionInfo.browser.close();
       } catch (e) {
         logger.debug("Error closing old connection:", e.message);

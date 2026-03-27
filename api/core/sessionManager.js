@@ -120,11 +120,29 @@ class SessionManager {
           value TEXT
         );
       `);
+      this._cleanupStaleSessions();
       logger.info(
         `[SessionManager] Database initialized at ${SESSION_DB_FILE}`,
       );
     } catch (error) {
       logger.error(`[SessionManager] Database init failed: ${error.message}`);
+    }
+  }
+
+  _cleanupStaleSessions() {
+    if (!this.db) return;
+    try {
+      const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const result = this.db
+        .prepare("DELETE FROM sessions WHERE lastActivity < ?")
+        .run(weekAgo);
+      if (result.changes > 0) {
+        logger.info(
+          `[SessionManager] Cleaned up ${result.changes} stale sessions from DB`,
+        );
+      }
+    } catch (error) {
+      logger.warn(`[SessionManager] DB cleanup failed: ${error.message}`);
     }
   }
 
@@ -290,6 +308,9 @@ class SessionManager {
       this.closeManagedPages(session).catch(() => {});
       this.closeSessionBrowser(session).catch(() => {});
       this.workerSemaphores.delete(sessionId);
+      for (const worker of session.workers || []) {
+        this.workerOccupancy.delete(`${sessionId}:${worker.id}`);
+      }
       this.sessions.splice(index, 1);
       this.saveSessionState();
       metricsCollector.recordSessionEvent("closed", this.sessions.length);

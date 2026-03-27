@@ -17,6 +17,7 @@ const logger = createLogger("api/agent/adaptiveTiming.js");
 class AdaptiveTiming {
   constructor() {
     this.siteProfiles = new Map();
+    this.maxProfiles = 200;
     this.defaultTiming = {
       click: 100,
       type: 50,
@@ -53,6 +54,10 @@ class AdaptiveTiming {
       const profile = this._calculateTimingProfile(metrics);
       const url = page.url();
 
+      if (this.siteProfiles.size >= this.maxProfiles) {
+        const oldestKey = this.siteProfiles.keys().next().value;
+        this.siteProfiles.delete(oldestKey);
+      }
       this.siteProfiles.set(url, profile);
       logger.info(
         `[AdaptiveTiming] Created profile for ${url}: click=${profile.click}ms, wait=${profile.waitMultiplier.toFixed(2)}x`,

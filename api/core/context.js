@@ -319,3 +319,14 @@ export function clearContext() {
   // enterWith(null) clears the current execution tree's store
   contextStore.enterWith(null);
 }
+
+/**
+ * Destroy a session and clean up all associated resources.
+ * @param {import('playwright').Page} page - The page to destroy session for
+ */
+export function destroySession(page) {
+  if (page) {
+    sessionCache.delete(page);
+  }
+  clearContext();
+}
