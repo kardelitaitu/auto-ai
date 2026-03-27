@@ -1,5 +1,1 @@
-Run summary (2026-03-26T11:08:01.9380646+07:00)
-
-- Updated `AGENTS.md` with verified workflow examples from README, `agent-main.js`, task-parser tests, and the manual human-method test harness.
-- Added a verification log mapping each new documentation entry to repo evidence.
-- Excluded unverified script helpers like `docs:tasks` and `docs:utils` because no concrete usage evidence was found.
+2026-03-27T11:54:17.0133231+07:00 - Updated AGENTS.md with verified Git workflow helpers (`pnpm commit`, `pnpm amend`), the `vitest-individual.ps1` audit runner, a CI test-matrix note, and a verification log tied to `package.json`, `scripts/git-commit.js`, `scripts/git-amend.js`, `vitest-individual.ps1`, and `.github/workflows/ci.yml`.

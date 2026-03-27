@@ -182,6 +182,6 @@ Use these docs for the detailed version of the repo conventions:
 
 | Entry | Evidence |
 | ----- | -------- |
-| Git workflow helpers (`pnpm commit`, `pnpm amend`, `pnpm exec lint-staged`) | `package.json`, `scripts/git-commit.js`, `scripts/git-amend.js`, commits `035664c` and `d16b6d3` |
+| Git workflow helpers (`pnpm commit`, `pnpm amend`, `pnpm exec lint-staged`) | `package.json`, `scripts/git-commit.js`, `scripts/git-amend.js`, commit `035664c` |
 | Parallel Vitest audit runner (`.\vitest-individual.ps1`) | `vitest-individual.ps1`, commits `9e8e4a8` and `a9a1919` |
 | CI test matrix (`pnpm run lint`, `pnpm run test:bun:unit`, `pnpm run test:bun:integration`, `pnpm run test:bun:edge`) | `.github/workflows/ci.yml`, commits `938dd2f`, `37d7e58`, `fc172bc`, `1d6fd25`, `5d4544a` |

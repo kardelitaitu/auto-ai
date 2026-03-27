@@ -5,6 +5,7 @@ node_modules
 *.zip
 *.exe
 *.db
+automations
 screenshot
 examples
 logs.json
@@ -27,3 +28,6 @@ script/proxies.txt
 backup
 api/coverage
 api/ui/electron-dashboard/dist-exe/
+data/sessions.db
+data/sessions.db-shm
+data/sessions.db-wal

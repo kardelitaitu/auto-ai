@@ -63,7 +63,7 @@
     "dependencies": {
         "@heyputer/puter.js": "^2.2.10",
         "@tavily/core": "^0.7.2",
-        "better-sqlite3": "^12.6.2",
+        "better-sqlite3": "^12.8.0",
         "dotenv": "^16.4.7",
         "express": "^4.21.0",
         "https-proxy-agent": "^7.0.6",

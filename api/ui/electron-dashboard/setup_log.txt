@@ -1,0 +1,28 @@
+ WARN  using --force I sure hope you know what you are doing
+Scope: all 3 workspace projects
+../../..                                 | Progress: resolved 1, reused 0, downloaded 0, added 0
+../../..                                 |    +1025 ++++++++++++++++++++++++++++
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 62
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 282
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 405
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 549
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 602
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 644
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 768
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 845
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 931
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 1017
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 1020
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 1023
+../../..                                 | Progress: resolved 1025, reused 1025, downloaded 0, added 1025, done
+
+dependencies:
++ express 4.22.1
++ socket.io 4.8.3
+
+devDependencies:
++ electron 35.7.5
++ electron-builder 24.13.3
++ vitest 1.6.1
+
+Done in 14.3s using pnpm v10.33.0
