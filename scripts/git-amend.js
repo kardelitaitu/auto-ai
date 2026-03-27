@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 /**
  * Auto-AI Framework - Git Amend Helper
- * Stage → Lint → Amend → Push (automatic)
+ * Stage → Lint → Amend (default: no push)
  *
- * Usage: pnpm amend ["new message"]
+ * Usage: pnpm amend ["new message"] [--no-verify] [--push]
+ *
+ * Options:
+ *   --no-verify, -n  Skip lint-staged checks
+ *   --push, -P       Force push after amend (default: no push)
  */
 
 import { execSync } from "child_process";
@@ -28,6 +32,7 @@ const log = {
 
 const args = process.argv.slice(2);
 const skipVerify = args.includes("--no-verify") || args.includes("-n");
+const push = args.includes("--push") || args.includes("-P");
 
 const message = args.filter((arg) => !arg.startsWith("-")).join(" ");
 
@@ -72,9 +77,14 @@ while (attempt < maxAttempts) {
       log.success("Amend successful!");
     }
 
-    log.step("Force pushing to remote...");
-    execSync("git push --force", { stdio: "inherit" });
-    log.success("Force pushed to remote!");
+    if (push) {
+      log.step("Force pushing to remote...");
+      execSync("git push --force", { stdio: "inherit" });
+      log.success("Force pushed to remote!");
+    } else {
+      log.info("Skipping push (default behavior)");
+      log.info("To push later, run: git push");
+    }
 
     process.exit(0);
   } catch (_error) {

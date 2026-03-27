@@ -175,7 +175,7 @@ export const profileManager = {
    * @returns {boolean} True if reload was successful
    */
   reload: () => {
-    return ensureProfilesLoaded();
+    return loadProfiles();
   },
 
   /**

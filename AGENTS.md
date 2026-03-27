@@ -86,15 +86,15 @@ node agent-main.js owb state-a x20
 ### Git Workflow
 
 ```bash
-pnpm commit "message"
-pnpm commit --no-verify "message"
-pnpm commit --no-push "message"
-pnpm amend
-pnpm amend "updated message"
-pnpm amend --no-verify
+pnpm commit "message"              # Commit only (no push)
+pnpm commit "message" --push       # Commit + push
+pnpm commit --no-verify "message" # Skip lint-staged
+pnpm amend "updated message"       # Amend only (no push)
+pnpm amend "updated message" --push # Amend + force push
+pnpm amend --no-verify             # Skip lint-staged
 ```
 
-> `pnpm commit` auto-generates a date-based message when you omit one, and both helpers run `pnpm exec lint-staged` by default.
+> `pnpm commit` auto-generates a date-based message when you omit one, and both helpers run `pnpm exec lint-staged` by default. Push is no longer automatic - use `--push` to push after committing.
 
 ### Agent Modes (`agent-main.js`)
 
@@ -126,8 +126,15 @@ pnpm amend --no-verify
 - Prefer `api.*` methods over raw Playwright `page.*` calls for humanized interactions.
 - Use `api.withPage(...)` for session isolation and avoid leaking page state globally.
 - Follow the task-module pattern documented in the deeper API docs when adding new tasks.
-- Update `AGENT-JOURNAL.md` for changes and `patchnotes.md` for larger changes.
-- Do not push to GitHub unless explicitly asked by the user.
+- **Always update `AGENT-JOURNAL.md`** after making changes. Use this format:
+  ```
+  DD-MM-YYYY--HH:MM > File(s) > Description of changes
+  ```
+  - Entry goes at the TOP (before existing entries)
+  - Use past tense for completed work
+  - Be concise but specific about what was changed
+  - For larger releases, also update `patchnotes.md`
+- **Never run `git push` unless explicitly asked by the user.** Always commit only by default.
 - Keep branches small and focused, and prefer PR-based merges for shared work.
 
 ## Testing
@@ -224,7 +231,66 @@ Use these docs for the detailed version of the repo conventions:
 
 | Entry | Evidence |
 | ----- | -------- |
-| Git workflow helpers (`pnpm commit`, `pnpm amend`, `pnpm exec lint-staged`) | `package.json`, `scripts/git-commit.js`, `scripts/git-amend.js`, commit `035664c` |
+| Git workflow helpers (`pnpm commit`, `pnpm amend`, `pnpm exec lint-staged`, commit-only default) | `package.json`, `scripts/git-commit.js`, `scripts/git-amend.js`, commit `035664c` |
 | Parallel Vitest audit runner (`.\vitest-individual.ps1`) | `vitest-individual.ps1`, commits `9e8e4a8` and `a9a1919` |
 | CI test matrix (`pnpm run lint`, `pnpm run test:bun:unit`, `pnpm run test:bun:integration`, `pnpm run test:bun:edge`) | `.github/workflows/ci.yml`, commits `938dd2f`, `37d7e58`, `fc172bc`, `1d6fd25`, `5d4544a` |
 | Test mocking standards (top-level vi.mock) | `AGENTS.md`, commit `87abc3b` |
+
+# context-mode — MANDATORY routing rules
+
+You have context-mode MCP tools available. These rules are NOT optional — they protect your context window from flooding. A single unrouted command can dump 56 KB into context and waste the entire session.
+
+## BLOCKED commands — do NOT attempt these
+
+### curl / wget — BLOCKED
+Any shell command containing `curl` or `wget` will be intercepted and blocked by the context-mode plugin. Do NOT retry.
+Instead use:
+- `context-mode_ctx_fetch_and_index(url, source)` to fetch and index web pages
+- `context-mode_ctx_execute(language: "javascript", code: "const r = await fetch(...)")` to run HTTP calls in sandbox
+
+### Inline HTTP — BLOCKED
+Any shell command containing `fetch('http`, `requests.get(`, `requests.post(`, `http.get(`, or `http.request(` will be intercepted and blocked. Do NOT retry with shell.
+Instead use:
+- `context-mode_ctx_execute(language, code)` to run HTTP calls in sandbox — only stdout enters context
+
+### Direct web fetching — BLOCKED
+Do NOT use any direct URL fetching tool. Use the sandbox equivalent.
+Instead use:
+- `context-mode_ctx_fetch_and_index(url, source)` then `context-mode_ctx_search(queries)` to query the indexed content
+
+## REDIRECTED tools — use sandbox equivalents
+
+### Shell (>20 lines output)
+Shell is ONLY for: `git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`, and other short-output commands.
+For everything else, use:
+- `context-mode_ctx_batch_execute(commands, queries)` — run multiple commands + search in ONE call
+- `context-mode_ctx_execute(language: "shell", code: "...")` — run in sandbox, only stdout enters context
+
+### File reading (for analysis)
+If you are reading a file to **edit** it → reading is correct (edit needs content in context).
+If you are reading to **analyze, explore, or summarize** → use `context-mode_ctx_execute_file(path, language, code)` instead. Only your printed summary enters context.
+
+### grep / search (large results)
+Search results can flood context. Use `context-mode_ctx_execute(language: "shell", code: "grep ...")` to run searches in sandbox. Only your printed summary enters context.
+
+## Tool selection hierarchy
+
+1. **GATHER**: `context-mode_ctx_batch_execute(commands, queries)` — Primary tool. Runs all commands, auto-indexes output, returns search results. ONE call replaces 30+ individual calls.
+2. **FOLLOW-UP**: `context-mode_ctx_search(queries: ["q1", "q2", ...])` — Query indexed content. Pass ALL questions as array in ONE call.
+3. **PROCESSING**: `context-mode_ctx_execute(language, code)` | `context-mode_ctx_execute_file(path, language, code)` — Sandbox execution. Only stdout enters context.
+4. **WEB**: `context-mode_ctx_fetch_and_index(url, source)` then `context-mode_ctx_search(queries)` — Fetch, chunk, index, query. Raw HTML never enters context.
+5. **INDEX**: `context-mode_ctx_index(content, source)` — Store content in FTS5 knowledge base for later search.
+
+## Output constraints
+
+- Keep responses under 500 words.
+- Write artifacts (code, configs, PRDs) to FILES — never return them as inline text. Return only: file path + 1-line description.
+- When indexing content, use descriptive source labels so others can `search(source: "label")` later.
+
+## ctx commands
+
+| Command | Action |
+|---------|--------|
+| `ctx stats` | Call the `stats` MCP tool and display the full output verbatim |
+| `ctx doctor` | Call the `doctor` MCP tool, run the returned shell command, display as checklist |
+| `ctx upgrade` | Call the `upgrade` MCP tool, run the returned shell command, display as checklist |
