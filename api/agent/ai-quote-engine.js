@@ -1505,127 +1505,146 @@ IMPORTANT: This is a QUOTE TWEET, not a reply. You are sharing this tweet with y
     const currentUrl = await api.getCurrentUrl();
     this.logger.info(`[QuoteMethodC] Current URL: ${currentUrl}`);
 
-    // Copy URL to clipboard for pasting
-    await api.eval((url) => {
-      navigator.clipboard.writeText(url);
-    }, currentUrl);
-
-    // Close any open menus
-    await api.getPage().keyboard.press("Escape");
-    await api.wait(300);
-
-    // STEP 1: Find and click Compose / New Post button
-    const composeBtnSelectors = [
-      '[data-testid="SideNav_NewTweet_Button"]',
-      '[aria-label="Post"]',
-      '[aria-label="New post"]',
-      '[aria-label="Post your reply"]',
-      'button:has-text("Post")',
-      'button:has-text("New post")',
-    ];
-
-    let composeBtnSelector = await api.findElement(composeBtnSelectors);
-
-    if (!composeBtnSelector) {
-      this.logger.warn(`[QuoteMethodC] Compose button not found`);
-      return {
-        success: false,
-        reason: "compose_button_not_found",
-        method: "new_post",
-      };
-    }
-
-    // Click Compose Button
-    await api.click(composeBtnSelector, { precision: "high" });
-    await api.wait(1500);
-
-    // Wait for composer to be fully loaded
-    await api
-      .waitVisible('[data-testid="tweetTextarea_0"]', { timeout: 5000 })
-      .catch(() =>
-        this.logger.warn(`[QuoteMethodC] Composer visibility timeout`),
+    // Use clipboard lock to prevent race conditions with concurrent sessions
+    // Fallback to no-op if getClipboardLock is not available (e.g., in tests)
+    let clipboardLock = null;
+    try {
+      clipboardLock = api.getClipboardLock?.();
+    } catch (e) {
+      this.logger.warn(
+        `[QuoteMethodC] Clipboard lock not available: ${e.message}`,
       );
-
-    // STEP 2: Verify composer is open
-    const verify = await human.verifyComposerOpen(page);
-    if (!verify.open) {
-      this.logger.warn(`[QuoteMethodC] Composer did not open`);
-      return {
-        success: false,
-        reason: "composer_not_open",
-        method: "new_post",
-      };
     }
+    if (clipboardLock?.acquire) {
+      await clipboardLock.acquire();
+    }
+    try {
+      // Copy URL to clipboard for pasting
+      await api.eval((url) => {
+        navigator.clipboard.writeText(url);
+      }, currentUrl);
 
-    // STEP 3: Type the comment FIRST
-    const composer = api.getPage().locator(verify.selector).first();
+      // Close any open menus
+      await api.getPage().keyboard.press("Escape");
+      await api.wait(300);
 
-    this.logger.info(
-      `[QuoteMethodC] Typing comment (${quoteText.length} chars, ghost cursor)...`,
-    );
-    await api.type(composer, quoteText);
+      // STEP 1: Find and click Compose / New Post button
+      const composeBtnSelectors = [
+        '[data-testid="SideNav_NewTweet_Button"]',
+        '[aria-label="Post"]',
+        '[aria-label="New post"]',
+        '[aria-label="Post your reply"]',
+        'button:has-text("Post")',
+        'button:has-text("New post")',
+      ];
 
-    // Step 4: Create new line AFTER typing comment
-    await api.getPage().keyboard.press("Enter");
-    await api.wait(500);
+      let composeBtnSelector = await api.findElement(composeBtnSelectors);
 
-    // Verify new line was created
-    const contentAfterEnter = await api.eval(() => {
-      const composer = document.querySelector(
-        '[data-testid="tweetTextarea_0"]',
+      if (!composeBtnSelector) {
+        this.logger.warn(`[QuoteMethodC] Compose button not found`);
+        if (clipboardLock?.release) clipboardLock.release();
+        return {
+          success: false,
+          reason: "compose_button_not_found",
+          method: "new_post",
+        };
+      }
+
+      // Click Compose Button
+      await api.click(composeBtnSelector, { precision: "high" });
+      await api.wait(1500);
+
+      // Wait for composer to be fully loaded
+      await api
+        .waitVisible('[data-testid="tweetTextarea_0"]', { timeout: 5000 })
+        .catch(() =>
+          this.logger.warn(`[QuoteMethodC] Composer visibility timeout`),
+        );
+
+      // STEP 2: Verify composer is open
+      const verify = await human.verifyComposerOpen(page);
+      if (!verify.open) {
+        this.logger.warn(`[QuoteMethodC] Composer did not open`);
+        if (clipboardLock?.release) clipboardLock.release();
+        return {
+          success: false,
+          reason: "composer_not_open",
+          method: "new_post",
+        };
+      }
+
+      // STEP 3: Type the comment FIRST
+      const composer = api.getPage().locator(verify.selector).first();
+
+      this.logger.info(
+        `[QuoteMethodC] Typing comment (${quoteText.length} chars, ghost cursor)...`,
       );
-      return composer?.innerHTML || "";
-    });
+      await api.type(composer, quoteText);
 
-    // If no <br> or new div, try Enter again
-    if (
-      !contentAfterEnter.includes("<br>") &&
-      !contentAfterEnter.includes("<div>")
-    ) {
+      // Step 4: Create new line AFTER typing comment
       await api.getPage().keyboard.press("Enter");
       await api.wait(500);
-    }
 
-    // Step 5: Paste the URL LAST (appears as preview/card below comment)
-    this.logger.info(`[QuoteMethodC] Pasting tweet URL...`);
-
-    // Focus composer
-    await api.click(composer);
-
-    const isMac = process.platform === "darwin";
-    const modifier = isMac ? "Meta" : "Control";
-    await api.getPage().keyboard.press(`${modifier}+v`);
-
-    await api.wait(1000);
-
-    // Verify URL was pasted with retry
-    let urlPasted = false;
-    for (let i = 0; i < 3; i++) {
-      const finalContent = await api.text(composer);
-
-      if (
-        finalContent.includes("x.com") ||
-        finalContent.includes("twitter.com")
-      ) {
-        urlPasted = true;
-        break;
-      }
-
-      if (i < 2) {
-        this.logger.warn(
-          `[QuoteMethodC] URL not found, retrying paste (attempt ${i + 2})`,
+      // Verify new line was created
+      const contentAfterEnter = await api.eval(() => {
+        const composer = document.querySelector(
+          '[data-testid="tweetTextarea_0"]',
         );
-        await api.click(composer);
-        await api.getPage().keyboard.press(`${modifier}+v`);
-        await api.wait(1000);
-      }
-    }
+        return composer?.innerHTML || "";
+      });
 
-    if (!urlPasted) {
-      this.logger.warn(
-        `[QuoteMethodC] URL may not have pasted correctly, typing manually`,
-      );
-      await api.getPage().keyboard.type(currentUrl, { delay: 10 });
+      // If no <br> or new div, try Enter again
+      if (
+        !contentAfterEnter.includes("<br>") &&
+        !contentAfterEnter.includes("<div>")
+      ) {
+        await api.getPage().keyboard.press("Enter");
+        await api.wait(500);
+      }
+
+      // Step 5: Paste the URL LAST (appears as preview/card below comment)
+      this.logger.info(`[QuoteMethodC] Pasting tweet URL...`);
+
+      // Focus composer
+      await api.click(composer);
+
+      const isMac = process.platform === "darwin";
+      const modifier = isMac ? "Meta" : "Control";
+      await api.getPage().keyboard.press(`${modifier}+v`);
+
+      await api.wait(1000);
+
+      // Verify URL was pasted with retry
+      let urlPasted = false;
+      for (let i = 0; i < 3; i++) {
+        const finalContent = await api.text(composer);
+
+        if (
+          finalContent.includes("x.com") ||
+          finalContent.includes("twitter.com")
+        ) {
+          urlPasted = true;
+          break;
+        }
+
+        if (i < 2) {
+          this.logger.warn(
+            `[QuoteMethodC] URL not found, retrying paste (attempt ${i + 2})`,
+          );
+          await api.click(composer);
+          await api.getPage().keyboard.press(`${modifier}+v`);
+          await api.wait(1000);
+        }
+      }
+      if (!urlPasted) {
+        this.logger.warn(
+          `[QuoteMethodC] URL may not have pasted correctly, typing manually`,
+        );
+        await api.getPage().keyboard.type(currentUrl, { delay: 10 });
+      }
+    } finally {
+      // Release clipboard lock
+      if (clipboardLock?.release) clipboardLock.release();
     }
 
     // STEP 6: Post

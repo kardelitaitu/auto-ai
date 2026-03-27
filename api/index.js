@@ -122,6 +122,7 @@ import {
   evalPage,
   getEvents,
   getPlugins,
+  getClipboardLock,
 } from "./core/context.js";
 import {
   getContextState,
@@ -476,6 +477,7 @@ export const api = {
   screenshot,
   emulateMedia,
   clearLiteMode,
+  getClipboardLock,
   config: configManager,
 
   // ── Actions (top-level for ergonomics) ───────────────────────
@@ -734,6 +736,7 @@ export {
   getPage,
   getCursor,
   evalPage as eval,
+  getClipboardLock,
   getContextState,
   setContextState,
   getStateSection,

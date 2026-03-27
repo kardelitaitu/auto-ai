@@ -7,6 +7,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("../../../api/index.js", () => {
+  const mockClipboardLock = {
+    acquire: vi.fn().mockResolvedValue(undefined),
+    release: vi.fn().mockResolvedValue(undefined),
+    runExclusive: vi.fn().mockImplementation(async (fn) => fn()),
+  };
   const mockLocator = {
     first: vi.fn().mockReturnThis(),
     click: vi.fn().mockResolvedValue(undefined),
@@ -46,6 +51,7 @@ vi.mock("../../../api/index.js", () => {
     api: {
       setPage: vi.fn(),
       getPage: vi.fn().mockReturnValue(mockPage),
+      getClipboardLock: vi.fn().mockReturnValue(mockClipboardLock),
       wait: vi.fn().mockResolvedValue(undefined),
       click: vi.fn().mockResolvedValue(true),
       type: vi.fn().mockResolvedValue(undefined),
