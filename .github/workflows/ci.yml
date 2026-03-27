@@ -122,6 +122,7 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Build check
+              shell: bash
               run: |
                   if grep -q '"build":' package.json; then
                     pnpm build
