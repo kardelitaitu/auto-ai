@@ -115,6 +115,7 @@ const pkg = JSON.parse(
 import {
   withPage,
   clearContext,
+  destroySession,
   isSessionActive,
   checkSession,
   getPage,
@@ -332,7 +333,11 @@ import {
   VPrepPresets,
   processForVision as _processForVision,
 } from "./utils/vision-preprocessor.js";
-const visionPreprocessor = new VisionPreprocessor();
+let visionPreprocessor = null;
+function getVisionPreprocessor() {
+  if (!visionPreprocessor) visionPreprocessor = new VisionPreprocessor();
+  return visionPreprocessor;
+}
 
 // ─── Game State ───────────────────────────────────────────────
 import * as gameState from "./interactions/gameState.js";
@@ -467,6 +472,7 @@ export const api = {
   // Note: Use api.withPage(page, fn) for context isolation
   withPage,
   clearContext,
+  destroySession,
   isSessionActive,
   checkSession,
   getPage,
@@ -511,6 +517,7 @@ export const api = {
   visible,
   count,
   exists,
+  getUrl: currentUrl,
   getCurrentUrl: currentUrl,
 
   // ── Wait (synchronization) ───────────────────────────────────
@@ -646,7 +653,7 @@ export const api = {
      * @param {object} [config] - Processing options
      * @returns {Promise<object>} Result with base64, buffer, and stats
      */
-    process: (input, config) => visionPreprocessor.process(input, config),
+    process: (input, config) => getVisionPreprocessor().process(input, config),
 
     /**
      * Preset configurations for common use cases
@@ -657,17 +664,19 @@ export const api = {
      * Get processing statistics
      * @returns {object} Stats including total processed, bytes saved
      */
-    getStats: () => visionPreprocessor.getStats(),
+    getStats: () => getVisionPreprocessor().getStats(),
 
     /**
      * Reset statistics
      */
-    resetStats: () => visionPreprocessor.resetStats(),
+    resetStats: () => getVisionPreprocessor().resetStats(),
 
     /**
      * The VisionPreprocessor instance for advanced usage
      */
-    instance: visionPreprocessor,
+    get instance() {
+      return getVisionPreprocessor();
+    },
   },
 
   // ── Game State ───────────────────────────────────────────────
@@ -731,6 +740,7 @@ export {
   // Note: setPage is deprecated - use withPage instead
   withPage,
   clearContext,
+  destroySession,
   isSessionActive,
   checkSession,
   getPage,
