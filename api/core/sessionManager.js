@@ -309,9 +309,26 @@ class SessionManager {
     if (session) session.managedPages.delete(page);
   }
 
+  _cleanupStalePageRefs(sessionId) {
+    const session = this.sessions.find((s) => s.id === sessionId);
+    if (!session || !session.managedPages) return;
+
+    for (const page of session.managedPages) {
+      try {
+        if (page.isClosed()) {
+          session.managedPages.delete(page);
+        }
+      } catch (_e) {
+        session.managedPages.delete(page);
+      }
+    }
+  }
+
   async acquirePage(sessionId, context) {
     const session = this.sessions.find((s) => s.id === sessionId);
     if (!session || !context) return null;
+
+    this._cleanupStalePageRefs(sessionId);
 
     const page = await context.newPage();
     this.registerPage(sessionId, page);
@@ -322,8 +339,19 @@ class SessionManager {
     const session = this.sessions.find((s) => s.id === sessionId);
     if (!session) return;
 
-    if (!page || (typeof page.isClosed === "function" && page.isClosed()))
+    let isPageClosed = false;
+    try {
+      if (!page || (typeof page.isClosed === "function" && page.isClosed())) {
+        isPageClosed = true;
+      }
+    } catch (_e) {
+      isPageClosed = true;
+    }
+
+    if (isPageClosed) {
+      this.unregisterPage(sessionId, page);
       return;
+    }
 
     await Promise.race([
       page.close().catch(() => {}),

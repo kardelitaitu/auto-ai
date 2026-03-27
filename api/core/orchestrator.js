@@ -27,6 +27,10 @@ const DEFAULT_TASK_TIMEOUT_MS = 600000;
 const DEFAULT_GROUP_TIMEOUT_MS = 600000;
 const DEFAULT_WORKER_WAIT_TIMEOUT_MS = 10000;
 const STUCK_WORKER_THRESHOLD_MS = 120000;
+const TASK_MODULE_CACHE_MAX_SIZE = 50;
+const SESSION_FAILURE_SCORES_MAX_SIZE = 100;
+const MEMORY_WARNING_THRESHOLD_MB = 1024;
+const MEMORY_CHECK_INTERVAL_MS = 30000;
 
 class Orchestrator extends EventEmitter {
   constructor(options = {}) {
@@ -58,12 +62,14 @@ class Orchestrator extends EventEmitter {
     this.dashboardProcess = null;
     this.dashboardSocket = null;
     this.dashboardInterval = null;
+    this.memoryCheckInterval = null;
 
     this.globalActiveTasks = 0;
     this.maxGlobalConcurrency = 20; // Default global limit
     this.taskStaggerDelayMs = 2000; // Delay between task starts
 
     this._loadConfig();
+    this._startMemoryMonitoring();
 
     this.automator.onReconnect = async (wsEndpoint, newBrowser) => {
       await this.sessionManager.replaceBrowserByEndpoint(
@@ -580,7 +586,70 @@ class Orchestrator extends EventEmitter {
       if (next === 0) this.sessionFailureScores.delete(sessionId);
       else this.sessionFailureScores.set(sessionId, next);
     } else {
+      if (this.sessionFailureScores.size >= SESSION_FAILURE_SCORES_MAX_SIZE) {
+        const oldestKey = this.sessionFailureScores.keys().next().value;
+        this.sessionFailureScores.delete(oldestKey);
+        logger.debug(
+          `[Orchestrator] Evicted oldest session failure score: ${oldestKey}`,
+        );
+      }
       this.sessionFailureScores.set(sessionId, current + 1);
+    }
+  }
+
+  _evictTaskModuleCache() {
+    if (this.taskModuleCache.size >= TASK_MODULE_CACHE_MAX_SIZE) {
+      const oldestKey = this.taskModuleCache.keys().next().value;
+      this.taskModuleCache.delete(oldestKey);
+      logger.debug(
+        `[Orchestrator] Evicted oldest task module from cache: ${oldestKey}`,
+      );
+    }
+  }
+
+  _getMemoryUsage() {
+    const usage = process.memoryUsage();
+    return {
+      heapUsed: Math.round(usage.heapUsed / 1024 / 1024),
+      heapTotal: Math.round(usage.heapTotal / 1024 / 1024),
+      external: Math.round(usage.external / 1024 / 1024),
+      rss: Math.round(usage.rss / 1024 / 1024),
+    };
+  }
+
+  _checkMemoryHealth() {
+    const mem = this._getMemoryUsage();
+    if (mem.heapUsed > MEMORY_WARNING_THRESHOLD_MB) {
+      logger.warn(
+        `[Orchestrator] High memory usage: ${mem.heapUsed}MB heap used (threshold: ${MEMORY_WARNING_THRESHOLD_MB}MB). ` +
+          `Caches: taskModuleCache=${this.taskModuleCache.size}, ` +
+          `sessionFailureScores=${this.sessionFailureScores.size}, ` +
+          `activeTasks=${this.activeTasks.size}`,
+      );
+    }
+    return mem;
+  }
+
+  _startMemoryMonitoring() {
+    if (this.memoryCheckInterval) return;
+
+    this.memoryCheckInterval = setInterval(() => {
+      this._checkMemoryHealth();
+    }, MEMORY_CHECK_INTERVAL_MS);
+
+    const mem = this._getMemoryUsage();
+    if (mem.heapUsed > MEMORY_WARNING_THRESHOLD_MB) {
+      logger.warn(
+        `[Orchestrator] High memory at startup: ${mem.heapUsed}MB heap used`,
+      );
+    }
+  }
+
+  _stopMemoryMonitoring() {
+    if (this.memoryCheckInterval) {
+      clearInterval(this.memoryCheckInterval);
+      this.memoryCheckInterval = null;
+      logger.info("[Orchestrator] Memory monitoring stopped");
     }
   }
 
@@ -600,6 +669,7 @@ class Orchestrator extends EventEmitter {
     for (const path of possiblePaths) {
       try {
         const mod = await import(path);
+        this._evictTaskModuleCache();
         this.taskModuleCache.set(taskName, mod);
         return mod;
       } catch (_e) {
@@ -626,6 +696,7 @@ class Orchestrator extends EventEmitter {
           `[Orchestrator] Task '${taskName}' resolved via case-insensitive lookup → ${match}`,
         );
         const mod = await import(fileUrl);
+        this._evictTaskModuleCache();
         this.taskModuleCache.set(taskName, mod);
         return mod;
       }
@@ -727,6 +798,8 @@ class Orchestrator extends EventEmitter {
     } else {
       this._forceCancelAllTasks();
     }
+
+    this._stopMemoryMonitoring();
 
     if (this.sessionManager) await this.sessionManager.shutdown();
     await this.stopDashboard();
