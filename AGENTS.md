@@ -143,6 +143,48 @@ pnpm amend --no-verify
     - using isolated fixtures for agent and interaction modules
 - CI mirrors `pnpm run lint`, `pnpm run test:bun:unit`, `pnpm run test:bun:integration`, and `pnpm run test:bun:edge` on push and pull request events.
 
+### Test Mocking Standards
+
+Always use **top-level `vi.mock()`** instead of `vi.unmock()` or dynamic mocking inside tests. This prevents flaky CI failures due to module caching.
+
+**DO:**
+```javascript
+import { describe, it, expect, vi, beforeAll } from 'vitest';
+
+// Top-level mocks - runs before any imports
+vi.mock('fs', async () => {
+    const actual = await vi.importActual('fs');
+    return { ...actual };
+});
+
+vi.mock('child_process', async () => {
+    const actual = await vi.importActual('child_process');
+    return { ...actual };
+});
+
+describe('My Integration Test', () => {
+    beforeAll(async () => {
+        vi.resetModules();
+        // Import after resetModules
+    });
+});
+```
+
+**DON'T:**
+```javascript
+// This causes flaky CI failures
+beforeAll(async () => {
+    vi.unmock('fs');  // ❌ Unreliable
+    vi.resetModules();
+});
+```
+
+Key points:
+- Place `vi.mock()` at the **top of the file**, before any imports
+- Use `vi.importActual()` to get real module behavior when needed
+- Call `vi.resetModules()` in `beforeAll` before importing the module under test
+- Add `beforeEach` hooks to ensure state is fresh for each test if needed
+
 ## Task System & Configuration
 
 - Tasks are loaded dynamically from `tasks/` by task name.
@@ -185,3 +227,4 @@ Use these docs for the detailed version of the repo conventions:
 | Git workflow helpers (`pnpm commit`, `pnpm amend`, `pnpm exec lint-staged`) | `package.json`, `scripts/git-commit.js`, `scripts/git-amend.js`, commit `035664c` |
 | Parallel Vitest audit runner (`.\vitest-individual.ps1`) | `vitest-individual.ps1`, commits `9e8e4a8` and `a9a1919` |
 | CI test matrix (`pnpm run lint`, `pnpm run test:bun:unit`, `pnpm run test:bun:integration`, `pnpm run test:bun:edge`) | `.github/workflows/ci.yml`, commits `938dd2f`, `37d7e58`, `fc172bc`, `1d6fd25`, `5d4544a` |
+| Test mocking standards (top-level vi.mock) | `AGENTS.md`, commit `87abc3b` |
