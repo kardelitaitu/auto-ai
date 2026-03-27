@@ -92,8 +92,11 @@
         "jsdoc": "^4.0.5",
         "jsdom": "^28.1.0",
         "lint-staged": "^15.4.3",
+        "minimatch": "10.2.3",
         "mocha": "^11.7.5",
         "prettier": "^3.8.1",
+        "serialize-javascript": "7.0.3",
+        "tar": "7.5.11",
         "typedoc": "^0.28.17",
         "vitest": "^3.2.4"
     },
