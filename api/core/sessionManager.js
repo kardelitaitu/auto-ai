@@ -16,7 +16,7 @@ import Database from "better-sqlite3";
 import { createLogger } from "../core/logger.js";
 import { getTimeoutValue, getSettings } from "../utils/configLoader.js";
 import metricsCollector from "../utils/metrics.js";
-import { SESSION_TIMEOUTS } from "../constants/session-timeouts.js";
+import { SESSION_TIMEOUTS } from "../constants/timeouts.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SESSION_DB_FILE = path.join(__dirname, "../../data/sessions.db");

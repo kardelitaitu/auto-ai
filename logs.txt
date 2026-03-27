@@ -1,4 +1,137 @@
-[17:08:46] [INFO] [EntropyController] [session-1773914926559-sof6eo661] Session initialized with paceMultiplier=0.77
-[17:08:46] [INFO] [EntropyController] [session-1773914926559-sof6eo661] Fatigue scheduled for T+3.8m
-[17:08:46] [INFO] [api/agent/visualDiff.js] Sharp module loaded successfully
-[17:08:46] [INFO] [api/agent/sessionStore.js] [SessionStore] Database initialized successfully
+[09:13:29] [INFO] [EntropyController] [session-1774577609727-qlus8u30w] Session initialized with paceMultiplier=0.82
+[09:13:29] [INFO] [EntropyController] [session-1774577609727-qlus8u30w] Fatigue scheduled for T+3.7m
+[09:13:29] [INFO] [main.js] MultiBrowseAutomation - Starting up...
+[09:13:29] [INFO] [api/agent/visualDiff.js] Sharp module loaded successfully
+[09:13:29] [WARN] [api/agent/sessionStore.js] [SessionStore] Database not available, using in-memory fallback:
+[09:13:29] [DEBUG] [configLoader.js] Loaded configuration from settings.json
+[09:13:29] [INFO] [localLLM.js] [LocalLLM] Checking local LLM status...
+[09:13:29] [DEBUG] [localLLM.js] [LocalLLM] Checking API at http://localhost:11434...
+[09:13:29] [SUCCESS] [localLLM.js] [LocalLLM] ✓ Service is ready at http://localhost:11434
+[09:13:29] [ERROR] [sessionManager.js] [SessionManager] Database init failed: Could not locate the bindings file. Tried:
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\build\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\build\Debug\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\build\Release\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\out\Debug\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\Debug\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\out\Release\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\Release\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\build\default\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\compiled\20.19.1\win32\x64\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\addon-build\release\install-root\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\addon-build\debug\install-root\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\addon-build\default\install-root\better_sqlite3.node
+ → C:\My Script\auto-ai\node_modules\.pnpm\better-sqlite3@12.8.0\node_modules\better-sqlite3\lib\binding\node-v115-win32-x64\better_sqlite3.node
+[09:13:29] [INFO] [main.js] Attempting to discover and connect to available browsers...
+[09:13:29] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[09:13:29] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
+[09:13:29] [DEBUG] [configLoader.js] Loaded configuration from timeouts.json
+[09:13:29] [INFO] [orchestrator.js] [Orchestrator] Persistent dashboard process spawned on port 3001
+[09:13:29] [INFO] [orchestrator.js] [Orchestrator] Starting browser discovery...
+[09:13:29] [INFO] [sessionManager.js] [SessionManager] Configured: session=1800000ms, concurrency=5
+[09:13:29] [INFO] [discovery.js] Loading 8 discovery connectors...
+[09:13:29] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: ixbrowser
+[09:13:29] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[09:13:29] [INFO] [ixbrowser.js] Initialized IxbrowserDiscover with API URL: http://127.0.0.1:53200
+[09:13:29] [INFO] [discovery.js] Loaded connector: ixbrowser
+[09:13:29] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localBrave
+[09:13:29] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[09:13:29] [INFO] [localBrave.js] Initialized LocalBraveDiscover
+[09:13:29] [INFO] [discovery.js] Loaded connector: localBrave
+[09:13:29] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localChrome
+[09:13:29] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[09:13:29] [INFO] [discovery.js] Loaded connector: localChrome
+[09:13:29] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localEdge
+[09:13:29] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[09:13:29] [INFO] [discovery.js] Loaded connector: localEdge
+[09:13:29] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: localVivaldi
+[09:13:29] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[09:13:29] [INFO] [discovery.js] Loaded connector: localVivaldi
+[09:13:29] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: morelogin
+[09:13:29] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[09:13:29] [INFO] [discovery.js] Loaded connector: morelogin
+[09:13:29] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: roxybrowser
+[09:13:29] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[09:13:29] [INFO] [roxybrowser.js] Initialized RoxybrowserDiscover with API URL: http://127.0.0.1:50000/
+[09:13:29] [INFO] [discovery.js] Loaded connector: roxybrowser
+[09:13:29] [INFO] [discovery.js] [DISCOVERY DEBUG] Loading connector: undetectable
+[09:13:29] [INFO] [baseDiscover.js] BaseDiscover initialized for type: base
+[09:13:29] [INFO] [undetectable.js] Initialized UndetectableDiscover with API URL: http://127.0.0.1:25325/
+[09:13:29] [INFO] [discovery.js] Loaded connector: undetectable
+[09:13:29] [INFO] [discovery.js] Successfully loaded 8 connectors
+[09:13:29] [INFO] [discovery.js] Starting browser discovery with 8 connectors in parallel...
+[09:13:29] [INFO] [ixbrowser.js] Starting discovery for ixbrowser browser type
+[09:13:29] [INFO] [ixbrowser.js] Discovering ixbrowser instances from: http://127.0.0.1:53200
+[09:13:29] [INFO] [localBrave.js] Discovering localBrave instances
+[09:13:29] [DEBUG] [localBrave.js] Scanning 50 ports for Brave instances
+[09:13:29] [INFO] [roxybrowser.js] Starting discovery for roxybrowser browser type
+[09:13:29] [INFO] [roxybrowser.js] Discovering roxybrowser instances from: http://127.0.0.1:50000/
+[09:13:29] [INFO] [undetectable.js] Starting discovery for undetectable browser type
+[09:13:29] [INFO] [undetectable.js] Discovering undetectable instances from: http://127.0.0.1:25325/
+[09:13:29] [WARN] [retry.js] [API request to http://127.0.0.1:50000/browser/connection_info] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[09:13:29] [WARN] [retry.js] [API request to http://127.0.0.1:25325/list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[09:13:29] [WARN] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] Attempt 1 failed: fetch failed. Retrying in 1000ms...
+[09:13:29] [DEBUG] [localBrave.js] Found 9 browser tabs from Brave on port 9002
+[09:13:29] [INFO] [localBrave.js] Found connectable Brave instance: Local Brave Browser (Port 9002)
+[09:13:29] [INFO] [localBrave.js] Discovery complete. Found 1 localBrave profiles.
+[09:13:30] [ERROR] [retry.js] [API request to http://127.0.0.1:50000/browser/connection_info] All 2 attempts failed. Last error: fetch failed
+[09:13:30] [ERROR] [roxybrowser.js] Error during roxybrowser discovery: fetch failed
+[09:13:30] [ERROR] [retry.js] [API request to http://127.0.0.1:25325/list] All 2 attempts failed. Last error: fetch failed
+[09:13:30] [ERROR] [undetectable.js] Error during undetectable discovery: fetch failed
+[09:13:30] [ERROR] [retry.js] [API request to http://127.0.0.1:53200/api/v2/native-client-profile-opened-list] All 2 attempts failed. Last error: fetch failed
+[09:13:30] [ERROR] [ixbrowser.js] Error during ixbrowser discovery: fetch failed
+[09:13:30] [INFO] [discovery.js] Connector ixbrowser found no endpoints
+[09:13:30] [INFO] [discovery.js] Connector localBrave found 1 endpoints
+[09:13:30] [INFO] [discovery.js] Connector localChrome found no endpoints
+[09:13:30] [INFO] [discovery.js] Connector localEdge found no endpoints
+[09:13:30] [INFO] [discovery.js] Connector localVivaldi found no endpoints
+[09:13:30] [INFO] [discovery.js] Connector morelogin found no endpoints
+[09:13:30] [INFO] [discovery.js] Connector roxybrowser found no endpoints
+[09:13:30] [INFO] [discovery.js] Connector undetectable found no endpoints
+[09:13:30] [INFO] [discovery.js] Discovery complete. Found 1 total endpoints
+[09:13:30] [INFO] [orchestrator.js] Found 1 browser endpoints. Connecting...
+[09:13:30] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:9002/devtools/browser/1960da8d-3d0c-4400-9718-2939c6f6227d
+[09:13:31] [INFO] [automator.js] Successfully connected to ws://127.0.0.1:9002/devtools/browser/1960da8d-3d0c-4400-9718-2939c6f6227d
+[09:13:31] [INFO] [sessionManager.js] [SessionManager] Session added: brave:9002 (5 workers)
+[09:13:31] [INFO] [orchestrator.js] [Orchestrator] Connected: brave:9002
+[09:13:31] [INFO] [orchestrator.js] [Orchestrator] Discovery complete. Connected to 1 browsers.
+[09:13:31] [DEBUG] [metrics.js] Browser discovery: 1 discovered, 1 connected, 0 failed
+[09:13:31] [INFO] [automator.js] [Automator] Proactive background health polling is DISABLED in Phase 2 for maximum CPU responsiveness. Relying exclusively on native socket disconnect events.
+[09:13:31] [INFO] [main.js] Successfully connected to 1 browser(s). Ready for automation.
+[09:13:31] [INFO] [main.js] MultiBrowseAutomation - Initialized. Processing 1 task(s) in 1 group(s).
+[09:13:31] [INFO] [orchestrator.js] [Orchestrator] Task 'pageview' added (timeout: 600000ms). Queue: 1
+[09:13:31] [DEBUG] [api/plugins/manager.js] [Plugin] Initialized: __builtin_coverage_dummy
+[09:13:31] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_coverage_dummy
+[09:13:31] [WARN] [api/plugins/manager.js] [Plugin] Init failed for "__builtin_fail":
+[09:13:31] [INFO] [api/plugins/manager.js] [Plugin] Registered: __builtin_fail
+[09:13:31] [INFO] [orchestrator.js] [HumanizationPatch] Injecting consistency and entropy scripts...
+[09:13:31] [INFO] [orchestrator.js] [HumanizationPatch] Scripts injected.
+[09:13:31] [INFO] [pageview.js] Starting migrated pageview task...
+[09:13:31] [INFO] [pageview.js] Initialized with profile: 11-Balanced (Persona: casual)
+[09:13:31] [INFO] [pageview.js] Target (Random): https://x.com/tin_hestina/with_replies
+[09:13:31] [INFO] [pageview.js] Referrer: https://web.telegram.org/
+[09:13:31] [INFO] [pageview.js] Navigating...
+[09:13:40] [INFO] [pageview.js] Simulating reading for ~45.00s (20 cycles)
+[09:13:40] [DEBUG] [configLoader.js] Loaded configuration from settings.json
+[09:14:21] [WARN] [pageview.js] Task forced to stop: Pageview task exceeded 50s limit
+[09:14:21] [DEBUG] [pageview.js] Page closed successfully.
+[09:14:21] [INFO] [pageview.js] Total task duration: 50.06 seconds
+[09:14:21] [DEBUG] [metrics.js] Task 'pageview' recorded: SUCCESS, duration: 50098ms
+[09:14:21] [DEBUG] [sessionManager.js] [SessionManager] Released worker 0 in brave:9002 (50194ms)
+[09:14:21] [INFO] [orchestrator.js] [Orchestrator] All tasks completed
+[09:14:21] [INFO] [main.js] [Queue] Group 1 completed successfully.
+[09:14:21] [INFO] [main.js] MultiBrowseAutomation - Shutting down...
+[09:14:21] [INFO] [orchestrator.js] [Orchestrator] Queue empty, resolving immediately
+[09:14:21] [INFO] [sessionManager.js] [SessionManager] SessionManager shutting down...
+[09:14:21] [WARN] [automator.js] [Automator] Native disconnect event fired for: ws://127.0.0.1:9002/devtools/browser/1960da8d-3d0c-4400-9718-2939c6f6227d
+[09:14:21] [INFO] [automator.js] Background reconnection attempt 1 for ws://127.0.0.1:9002/devtools/browser/1960da8d-3d0c-4400-9718-2939c6f6227d
+[09:14:21] [INFO] [automator.js] Attempting to reconnect to ws://127.0.0.1:9002/devtools/browser/1960da8d-3d0c-4400-9718-2939c6f6227d
+[09:14:21] [INFO] [automator.js] Attempting connection to ws://127.0.0.1:9002/devtools/browser/1960da8d-3d0c-4400-9718-2939c6f6227d
+[09:14:21] [INFO] [sessionManager.js] [SessionManager] SessionManager shutdown complete
+[09:14:21] [INFO] [automator.js] Automator shutting down...
+[09:14:21] [INFO] [automator.js] Closing 0 browser connections
+[09:14:21] [INFO] [automator.js] [Automator] Proactive health checks natively disabled.
+[09:14:21] [INFO] [automator.js] All connections closed
+[09:14:21] [INFO] [automator.js] Automator shutdown complete
+[09:14:21] [INFO] [metrics.js] Generating JSON summary report...
+[09:14:21] [INFO] [metrics.js] Successfully generated JSON report at C:\My Script\auto-ai\run-summary.json
+[09:14:21] [INFO] [orchestrator.js] [Orchestrator] Orchestrator shutdown complete

@@ -83,6 +83,19 @@ node agent-main.js owb play=rush
 node agent-main.js owb state-a x20
 ```
 
+### Git Workflow
+
+```bash
+pnpm commit "message"
+pnpm commit --no-verify "message"
+pnpm commit --no-push "message"
+pnpm amend
+pnpm amend "updated message"
+pnpm amend --no-verify
+```
+
+> `pnpm commit` auto-generates a date-based message when you omit one, and both helpers run `pnpm exec lint-staged` by default.
+
 ### Agent Modes (`agent-main.js`)
 
 | Mode       | Description               |
@@ -97,6 +110,14 @@ node agent-main.js owb state-a x20
 | `attack`   | Aggressive combat         |
 | `gather`   | Resource collection       |
 | `state-*`  | Run a specific game state |
+
+### Test Audit Runner
+
+```powershell
+.\vitest-individual.ps1
+```
+
+> Scans `api/**/*.test.js`, runs tests in parallel batches, and writes `vitest-individual.txt` for long-form audit runs.
 
 ## Working Conventions
 
@@ -120,6 +141,7 @@ node agent-main.js owb state-a x20
     - mocking `api/core/logger.js` and other core dependencies with `vi.mock()`
     - exercising `api.withPage()` blocks instead of calling raw `page.*`
     - using isolated fixtures for agent and interaction modules
+- CI mirrors `pnpm run lint`, `pnpm run test:bun:unit`, `pnpm run test:bun:integration`, and `pnpm run test:bun:edge` on push and pull request events.
 
 ## Task System & Configuration
 
@@ -155,3 +177,11 @@ Use these docs for the detailed version of the repo conventions:
 - [`.agents/TASK-AND-CONFIG.md`](.agents/TASK-AND-CONFIG.md)
 - [`.agents/TECH-STACK.md`](.agents/TECH-STACK.md)
 - [`.agents/STEALTH-PROTOCOL.md`](.agents/STEALTH-PROTOCOL.md)
+
+## Verification Log
+
+| Entry | Evidence |
+| ----- | -------- |
+| Git workflow helpers (`pnpm commit`, `pnpm amend`, `pnpm exec lint-staged`) | `package.json`, `scripts/git-commit.js`, `scripts/git-amend.js`, commits `035664c` and `d16b6d3` |
+| Parallel Vitest audit runner (`.\vitest-individual.ps1`) | `vitest-individual.ps1`, commits `9e8e4a8` and `a9a1919` |
+| CI test matrix (`pnpm run lint`, `pnpm run test:bun:unit`, `pnpm run test:bun:integration`, `pnpm run test:bun:edge`) | `.github/workflows/ci.yml`, commits `938dd2f`, `37d7e58`, `fc172bc`, `1d6fd25`, `5d4544a` |

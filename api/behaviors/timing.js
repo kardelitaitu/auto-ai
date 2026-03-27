@@ -6,7 +6,7 @@
 
 /**
  * @fileoverview Timing & Delay Helpers
- * Persona-aware delays wrapping human-timing.js and mathUtils.js.
+ * Persona-aware delays wrapping utils/timing.js and mathUtils.js.
  *
  * @module api/timing
  */

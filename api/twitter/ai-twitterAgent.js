@@ -32,7 +32,7 @@ import { RetweetAction } from "../actions/ai-twitter-retweet.js";
 import { GoHomeAction } from "../actions/ai-twitter-go-home.js";
 import { FollowAction } from "../actions/ai-twitter-follow.js";
 import { ActionRunner } from "../actions/advanced-index.js";
-import { TWITTER_TIMEOUTS } from "../constants/twitter-timeouts.js";
+import { TWITTER_TIMEOUTS } from "../constants/timeouts.js";
 import { HumanInteraction } from "../behaviors/human-interaction.js";
 import { createBufferedLogger } from "../core/logger.js";
 import { api } from "../index.js";

@@ -11,7 +11,7 @@
  */
 
 import { createLogger } from "../core/logger.js";
-import { TWITTER_TIMEOUTS } from "../constants/twitter-timeouts.js";
+import { TWITTER_TIMEOUTS } from "../constants/timeouts.js";
 
 export class AsyncQueue {
   constructor(options = {}) {
