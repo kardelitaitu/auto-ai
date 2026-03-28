@@ -281,16 +281,66 @@ describe("Test Helper Utilities", () => {
   });
 
   describe("expectSuccess", () => {
-    it("should be defined", () => {
+    it("should be defined as function", () => {
       const { expectSuccess } = require("./test-helpers.js");
       expect(expectSuccess).toBeDefined();
+      expect(typeof expectSuccess).toBe("function");
     });
   });
 
   describe("expectError", () => {
-    it("should be defined", () => {
+    it("should be defined as function", () => {
       const { expectError } = require("./test-helpers.js");
       expect(expectError).toBeDefined();
+      expect(typeof expectError).toBe("function");
+    });
+  });
+
+  describe("mockLoggerModule", () => {
+    it("should create mock logger module", () => {
+      const { mockLoggerModule } = require("./test-helpers.js");
+      const module = mockLoggerModule();
+      expect(module.createLogger).toBeDefined();
+    });
+  });
+
+  describe("mockConfigLoaderModule", () => {
+    it("should create mock config loader module", () => {
+      const { mockConfigLoaderModule } = require("./test-helpers.js");
+      const module = mockConfigLoaderModule();
+      expect(module.getTimeoutValue).toBeDefined();
+      expect(module.getSettings).toBeDefined();
+    });
+  });
+
+  describe("mockMetricsModule", () => {
+    it("should create mock metrics module", () => {
+      const { mockMetricsModule } = require("./test-helpers.js");
+      const module = mockMetricsModule();
+      expect(module.default).toBeDefined();
+      expect(module.default.recordBrowserDiscovery).toBeDefined();
+      expect(module.default.getStats).toBeDefined();
+    });
+  });
+
+  describe("createMockLLMResponse", () => {
+    it("should create mock LLM response", () => {
+      const { createMockLLMResponse } = require("./test-helpers.js");
+      const response = createMockLLMResponse();
+      expect(response.success).toBe(true);
+      expect(response.content).toBeDefined();
+      expect(response.metadata).toBeDefined();
+      expect(response.metadata.model).toBeDefined();
+    });
+
+    it("should create response with overrides", () => {
+      const { createMockLLMResponse } = require("./test-helpers.js");
+      const response = createMockLLMResponse({
+        success: false,
+        content: "custom",
+      });
+      expect(response.success).toBe(false);
+      expect(response.content).toBe("custom");
     });
   });
 

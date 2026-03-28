@@ -81,7 +81,7 @@
         "@tavily/core": "^0.7.2",
         "better-sqlite3": "^12.8.0",
         "dotenv": "^16.4.7",
-        "express": "^4.21.0",
+        "express": "^5.2.1",
         "https-proxy-agent": "^7.0.6",
         "playwright": "^1.56.1",
         "sharp": "^0.34.5",
