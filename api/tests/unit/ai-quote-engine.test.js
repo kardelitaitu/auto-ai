@@ -1519,7 +1519,7 @@ describe("ai-quote-engine", () => {
               .first()
               .textContent();
             return !!text && text.length > 50;
-          } catch (_e) {
+          } catch (___e) {
             return false;
           }
         },
@@ -1599,7 +1599,7 @@ describe("ai-quote-engine", () => {
               .first()
               .textContent();
             return !!text && text.length > 50;
-          } catch (_e) {
+          } catch (___e) {
             return false;
           }
         },
@@ -1880,7 +1880,7 @@ describe("ai-quote-engine", () => {
                 .first()
                 .textContent();
               return !!text && text.length > 50;
-            } catch (_e) {
+            } catch (___e) {
               return false;
             }
           },
@@ -1957,7 +1957,7 @@ describe("ai-quote-engine", () => {
                 .first()
                 .textContent();
               return !!text && text.length > 50;
-            } catch (_e) {
+            } catch (___e) {
               return false;
             }
           },
@@ -2026,7 +2026,7 @@ describe("ai-quote-engine", () => {
                 .first()
                 .textContent();
               return !!text && text.length > 50;
-            } catch (_e) {
+            } catch (___e) {
               return false;
             }
           },
@@ -2118,7 +2118,7 @@ describe("ai-quote-engine", () => {
                 .first()
                 .textContent();
               return !!text && text.length > 50;
-            } catch (_e) {
+            } catch (___e) {
               return false;
             }
           },
@@ -2216,7 +2216,7 @@ describe("ai-quote-engine", () => {
                 .first()
                 .textContent();
               return !!text && text.length > 50;
-            } catch (_e) {
+            } catch (___e) {
               return false;
             }
           },
@@ -2310,7 +2310,7 @@ describe("ai-quote-engine", () => {
                 .first()
                 .textContent();
               return !!text && text.length > 50;
-            } catch (_e) {
+            } catch (___e) {
               return false;
             }
           },
@@ -2405,7 +2405,7 @@ describe("ai-quote-engine", () => {
                 .first()
                 .textContent();
               return !!text && text.length > 50;
-            } catch (_e) {
+            } catch (___e) {
               return false;
             }
           },

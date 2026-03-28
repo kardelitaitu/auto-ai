@@ -10,7 +10,7 @@
  * @module tests/unit/twitter-activity-abort-signal.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 
 describe("Abort Signal Propagation Tests", () => {
   describe("api.wait() without abort signal (current behavior)", () => {

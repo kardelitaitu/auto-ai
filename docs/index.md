@@ -4,14 +4,15 @@ Welcome to the Auto-AI documentation. Here you'll find everything you need to ge
 
 ## Quick Links
 
-| Guide | Description |
-|-------|-------------|
+| Guide                                 | Description                           |
+| ------------------------------------- | ------------------------------------- |
 | [Getting Started](getting-started.md) | Install and run your first automation |
-| [API Reference](api.md) | Complete API documentation |
-| [Architecture](architecture.md) | System design and core concepts |
-| [Configuration](configuration.md) | Settings and environment variables |
-| [Tasks](tasks.md) | Built-in automation tasks |
-| [Contributing](../CONTRIBUTING.md) | How to contribute to this project |
+| [Developer Guide](development.md)     | Internal dev workflows and debugging  |
+| [API Reference](api.md)               | Complete API documentation            |
+| [Architecture](architecture.md)       | System design and core concepts       |
+| [Configuration](configuration.md)     | Settings and environment variables    |
+| [Tasks](tasks.md)                     | Built-in automation tasks             |
+| [Contributing](../CONTRIBUTING.md)    | How to contribute to this project     |
 
 ## What is Auto-AI?
 

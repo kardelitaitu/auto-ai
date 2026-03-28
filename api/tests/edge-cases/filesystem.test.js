@@ -15,7 +15,7 @@
  * - File watching
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/logger.js", () => ({
   createLogger: vi.fn(() => ({
@@ -64,7 +64,7 @@ describe("Edge Cases: File System", () => {
           return await mockFs.readFile(path, "utf-8");
         } catch (error) {
           if (error.code === "EACCES") {
-            throw new Error(`Permission denied: ${path}`);
+            throw new Error(`Permission denied: ${path}`, { cause: error });
           }
           throw error;
         }
@@ -289,7 +289,7 @@ describe("Edge Cases: File System", () => {
 
     it("should handle path normalization", () => {
       const normalizePath = (path) => {
-        const parts = path.split(/[\/\\]/).filter(Boolean);
+        const parts = path.split(/[/\\]/).filter(Boolean);
         const result = [];
 
         for (const part of parts) {

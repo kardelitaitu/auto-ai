@@ -57,6 +57,7 @@ export async function read(target, options = {}) {
       options.pauses < 0)
   ) {
     throw new ValidationError(
+      "VALIDATION_ERROR",
       `read() options.pauses must be a non-negative number, got: ${options.pauses}`,
     );
   }
@@ -329,6 +330,7 @@ export async function focus(selector, options = {}) {
 export async function scroll(distance) {
   if (typeof distance !== "number" || !Number.isFinite(distance)) {
     throw new ValidationError(
+      "VALIDATION_ERROR",
       `scroll() requires a finite number, got: ${distance}`,
     );
   }

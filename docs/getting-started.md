@@ -4,12 +4,12 @@ This guide will help you set up and run your first automation with Auto-AI.
 
 ## Prerequisites
 
-| Requirement | Version | Notes |
-|-------------|---------|-------|
-| Node.js | 18+ | LTS recommended |
-| pnpm | 8+ | Or npm/yarn |
-| Browser | - | ixBrowser, Brave, Chrome, Edge, Vivaldi |
-| Docker | 24+ | For local LLM (optional) |
+| Requirement | Version | Notes                                   |
+| ----------- | ------- | --------------------------------------- |
+| Node.js     | 18+     | LTS recommended                         |
+| pnpm        | 8+      | Or npm/yarn                             |
+| Browser     | -       | ixBrowser, Brave, Chrome, Edge, Vivaldi |
+| Docker      | 24+     | For local LLM (optional)                |
 
 ## Installation
 
@@ -47,6 +47,7 @@ Start a browser with remote debugging enabled:
 **ixBrowser**: Enable "Remote Debugging" in settings (port 8855)
 
 **Brave/Chrome/Edge**:
+
 ```bash
 # Windows
 start "" "C:\Program Files\BraveSoftware\Brave-Browser\Application\browser.exe" --remote-debugging-port=9222
@@ -85,13 +86,13 @@ node agent-main.js owb rush
 
 ## Quick Reference
 
-| Command | Description |
-|---------|-------------|
-| `node main.js pageview=<url>` | Navigate to URL |
+| Command                            | Description         |
+| ---------------------------------- | ------------------- |
+| `node main.js pageview=<url>`      | Navigate to URL     |
 | `node main.js twitterFollow=<url>` | Follow Twitter user |
-| `node main.js like tweetUrl=<url>` | Like a tweet |
-| `node agent-main.js owb play` | Run game agent |
-| `pnpm test:unit` | Run unit tests |
+| `node main.js like tweetUrl=<url>` | Like a tweet        |
+| `node agent-main.js owb play`      | Run game agent      |
+| `pnpm test:unit`                   | Run unit tests      |
 
 ## Troubleshooting
 

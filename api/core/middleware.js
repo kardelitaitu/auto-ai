@@ -11,12 +11,12 @@
  * @module api/middleware
  */
 
-import { createLogger } from './logger.js';
-import { getEvents } from './context.js';
-import { isErrorCode, ActionError } from './errors.js';
-import { getStateSection, updateStateSection } from './context-state.js';
+import { createLogger } from "./logger.js";
+import { getEvents } from "./context.js";
+import { isErrorCode, ActionError } from "./errors.js";
+import { getStateSection, updateStateSection } from "./context-state.js";
 
-const logger = createLogger('api/middleware.js');
+const logger = createLogger("api/middleware.js");
 
 /**
  * Create a middleware pipeline.
@@ -26,19 +26,19 @@ const logger = createLogger('api/middleware.js');
  * @returns {Function} Pipeline function
  */
 export function createPipeline(...middlewares) {
-    return async (action, context) => {
-        let index = 0;
+  return async (action, context) => {
+    let index = 0;
 
-        const next = async () => {
-            if (index >= middlewares.length) {
-                return await action(context);
-            }
-            const middleware = middlewares[index++];
-            return await middleware(context, next);
-        };
-
-        return await next();
+    const next = async () => {
+      if (index >= middlewares.length) {
+        return await action(context);
+      }
+      const middleware = middlewares[index++];
+      return await middleware(context, next);
     };
+
+    return await next();
+  };
 }
 
 /**
@@ -49,19 +49,19 @@ export function createPipeline(...middlewares) {
  * @returns {Function} Pipeline function
  */
 export function createSyncPipeline(...middlewares) {
-    return (action, context) => {
-        let index = 0;
+  return (action, context) => {
+    let index = 0;
 
-        const next = () => {
-            if (index >= middlewares.length) {
-                return action(context);
-            }
-            const middleware = middlewares[index++];
-            return middleware(context, next);
-        };
-
-        return next();
+    const next = () => {
+      if (index >= middlewares.length) {
+        return action(context);
+      }
+      const middleware = middlewares[index++];
+      return middleware(context, next);
     };
+
+    return next();
+  };
 }
 
 // ─── Common Middlewares ───────────────────────────────────────────
@@ -75,34 +75,37 @@ export function createSyncPipeline(...middlewares) {
  * @returns {Function}
  */
 export function loggingMiddleware(options = {}) {
-    const { logArgs = true, logResult = true, logTime = false } = options;
+  const { logArgs = true, logResult = true, logTime = false } = options;
 
-    return async (context, next) => {
-        const { action, selector, options: actionOptions } = context;
+  return async (context, next) => {
+    const { action, selector, options: actionOptions } = context;
 
-        if (logArgs) {
-            logger.debug(`[Middleware] ${action}:`, { selector, options: actionOptions });
-        }
+    if (logArgs) {
+      logger.debug(`[Middleware] ${action}:`, {
+        selector,
+        options: actionOptions,
+      });
+    }
 
-        const startTime = Date.now();
+    const startTime = Date.now();
 
-        try {
-            const result = await next();
+    try {
+      const result = await next();
 
-            if (logTime) {
-                logger.debug(`[Middleware] ${action} took ${Date.now() - startTime}ms`);
-            }
+      if (logTime) {
+        logger.debug(`[Middleware] ${action} took ${Date.now() - startTime}ms`);
+      }
 
-            if (logResult) {
-                logger.debug(`[Middleware] ${action} result:`, result);
-            }
+      if (logResult) {
+        logger.debug(`[Middleware] ${action} result:`, result);
+      }
 
-            return result;
-        } catch (e) {
-            logger.debug(`[Middleware] ${action} error:`, e.message);
-            throw e;
-        }
-    };
+      return result;
+    } catch (e) {
+      logger.debug(`[Middleware] ${action} error:`, e.message);
+      throw e;
+    }
+  };
 }
 
 /**
@@ -111,95 +114,104 @@ export function loggingMiddleware(options = {}) {
  * @returns {Function}
  */
 export function validationMiddleware() {
-    return async (context, next) => {
-        const { action, selector, options = {} } = context;
+  return async (context, next) => {
+    const { action, selector, options = {} } = context;
 
-        // Validate selector for DOM actions
-        if (['click', 'type', 'hover'].includes(action)) {
-            if (!selector) {
-                throw new Error(`Selector is required for ${action}`);
-            }
-            const isString = typeof selector === 'string';
-            const isLocator =
-                selector && typeof selector === 'object' && selector.constructor.name === 'Locator';
+    // Validate selector for DOM actions
+    if (["click", "type", "hover"].includes(action)) {
+      if (!selector) {
+        throw new Error(`Selector is required for ${action}`);
+      }
+      const isString = typeof selector === "string";
+      const isLocator =
+        selector &&
+        typeof selector === "object" &&
+        selector.constructor.name === "Locator";
 
-            if (!isString && !isLocator) {
-                throw new Error(
-                    `Invalid selector type for ${action}: ${typeof selector}. Expected string or Locator.`
-                );
-            }
+      if (!isString && !isLocator) {
+        throw new Error(
+          `Invalid selector type for ${action}: ${typeof selector}. Expected string or Locator.`,
+        );
+      }
 
-            if (isString && selector.trim() === '') {
-                throw new Error(`Empty selector for ${action}`);
-            }
-        }
+      if (isString && selector.trim() === "") {
+        throw new Error(`Empty selector for ${action}`);
+      }
+    }
 
-        // Validate options
-        if (options.timeoutMs !== undefined && options.timeoutMs < 0) {
-            throw new Error('timeoutMs must be non-negative');
-        }
+    // Validate options
+    if (options.timeoutMs !== undefined && options.timeoutMs < 0) {
+      throw new Error("timeoutMs must be non-negative");
+    }
 
-        if (options.maxRetries !== undefined && options.maxRetries < 0) {
-            throw new Error('maxRetries must be non-negative');
-        }
+    if (options.maxRetries !== undefined && options.maxRetries < 0) {
+      throw new Error("maxRetries must be non-negative");
+    }
 
-        return await next();
-    };
+    return await next();
+  };
 }
 
 const NON_RETRYABLE_ERRORS = [
-    'Target closed',
-    'Context closed',
-    'Browser has been closed',
-    'SessionDisconnectedError',
-    'SESSION_DISCONNECTED',
-    'PAGE_CLOSED',
+  "Target closed",
+  "Context closed",
+  "Browser has been closed",
+  "SessionDisconnectedError",
+  "SESSION_DISCONNECTED",
+  "PAGE_CLOSED",
 ];
 
 export function isNonRetryableError(error) {
-    if (!error) return false;
-    const msg = (error.message || '').toLowerCase();
-    const code = error.code || '';
-    return NON_RETRYABLE_ERRORS.some((err) => msg.includes(err.toLowerCase()) || code === err);
+  if (!error) return false;
+  const msg = (error.message || "").toLowerCase();
+  const code = error.code || "";
+  return NON_RETRYABLE_ERRORS.some(
+    (err) => msg.includes(err.toLowerCase()) || code === err,
+  );
 }
 
 /**
  * Retry middleware - auto-retry on failure.
  */
 export function retryMiddleware(options = {}) {
-    const {
-        maxRetries = 3,
-        backoffMultiplier = 2,
-        shouldRetry = (e) => !isNonRetryableError(e),
-    } = options;
+  const {
+    maxRetries = 3,
+    backoffMultiplier = 2,
+    shouldRetry = (e) => !isNonRetryableError(e),
+  } = options;
 
-    return async (context, next) => {
-        let lastError;
+  return async (context, next) => {
+    let lastError;
 
-        const budget = getStateSection('retryBudget');
-        if (budget.used >= budget.max) {
-            throw new ActionError('Session retry budget exhausted', 'RETRY_BUDGET_EXCEEDED');
+    const budget = getStateSection("retryBudget");
+    if (budget.used >= budget.max) {
+      throw new ActionError(
+        "RETRY_BUDGET_EXCEEDED",
+        "Session retry budget exhausted",
+      );
+    }
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        return await next();
+      } catch (e) {
+        lastError = e;
+
+        if (!shouldRetry(lastError) || attempt >= maxRetries) {
+          throw lastError;
         }
 
-        for (let attempt = 0; attempt <= maxRetries; attempt++) {
-            try {
-                return await next();
-            } catch (e) {
-                lastError = e;
+        const delay = Math.pow(backoffMultiplier, attempt) * 100;
+        logger.debug(
+          `[Retry] Attempt ${attempt + 1} failed, retrying in ${delay}ms...`,
+        );
+        await new Promise((r) => setTimeout(r, delay));
+      }
+    }
 
-                if (!shouldRetry(lastError) || attempt >= maxRetries) {
-                    throw lastError;
-                }
-
-                const delay = Math.pow(backoffMultiplier, attempt) * 100;
-                logger.debug(`[Retry] Attempt ${attempt + 1} failed, retrying in ${delay}ms...`);
-                await new Promise((r) => setTimeout(r, delay));
-            }
-        }
-
-        updateStateSection('retryBudget', { used: budget.used + 1 });
-        throw lastError;
-    };
+    updateStateSection("retryBudget", { used: budget.used + 1 });
+    throw lastError;
+  };
 }
 
 /**
@@ -210,43 +222,45 @@ export function retryMiddleware(options = {}) {
  * @returns {Function}
  */
 export function recoveryMiddleware(options = {}) {
-    const { scrollOnDetached = true, retryOnObscured = true } = options;
+  const { scrollOnDetached = true, retryOnObscured = true } = options;
 
-    return async (context, next) => {
-        const { action, selector: _selector } = context;
+  return async (context, next) => {
+    const { action, selector: _selector } = context;
 
-        try {
-            return await next();
-        } catch (e) {
-            // Element detached - focal recovery (wait + retry)
-            if (
-                scrollOnDetached &&
-                (isErrorCode(e, 'ELEMENT_DETACHED') ||
-                    isErrorCode(e, 'ELEMENT_NOT_FOUND') ||
-                    (e.message || '').toLowerCase().includes('detached') ||
-                    (e.message || '').toLowerCase().includes('stale'))
-            ) {
-                logger.warn(`[Recovery] Element detached for ${action}. Retrying...`);
-                await new Promise((r) => setTimeout(r, 500));
-                return await next();
-            }
+    try {
+      return await next();
+    } catch (e) {
+      // Element detached - focal recovery (wait + retry)
+      if (
+        scrollOnDetached &&
+        (isErrorCode(e, "ELEMENT_DETACHED") ||
+          isErrorCode(e, "ELEMENT_NOT_FOUND") ||
+          (e.message || "").toLowerCase().includes("detached") ||
+          (e.message || "").toLowerCase().includes("stale"))
+      ) {
+        logger.warn(`[Recovery] Element detached for ${action}. Retrying...`);
+        await new Promise((r) => setTimeout(r, 500));
+        return await next();
+      }
 
-            // Element obscured - retry once with force if it's a click
-            if (
-                retryOnObscured &&
-                (isErrorCode(e, 'ELEMENT_OBSCURED') ||
-                    (e.message || '').toLowerCase().includes('obscured'))
-            ) {
-                logger.warn(`[Recovery] Element obscured during ${action}. Retrying with force...`);
-                if (context.options) {
-                    context.options.force = true;
-                }
-                return await next();
-            }
-
-            throw e;
+      // Element obscured - retry once with force if it's a click
+      if (
+        retryOnObscured &&
+        (isErrorCode(e, "ELEMENT_OBSCURED") ||
+          (e.message || "").toLowerCase().includes("obscured"))
+      ) {
+        logger.warn(
+          `[Recovery] Element obscured during ${action}. Retrying with force...`,
+        );
+        if (context.options) {
+          context.options.force = true;
         }
-    };
+        return await next();
+      }
+
+      throw e;
+    }
+  };
 }
 
 /**
@@ -256,34 +270,36 @@ export function recoveryMiddleware(options = {}) {
  * @returns {Function}
  */
 export function metricsMiddleware(options = {}) {
-    const { emitEvents = true } = options;
+  const { emitEvents = true } = options;
 
-    return async (context, next) => {
-        const { action } = context;
-        const startTime = Date.now();
-        let success = false;
+  return async (context, next) => {
+    const { action } = context;
+    const startTime = Date.now();
+    let success = false;
 
-        try {
-            const result = await next();
-            success = true;
-            return result;
-        } finally {
-            const duration = Date.now() - startTime;
+    try {
+      const result = await next();
+      success = true;
+      return result;
+    } finally {
+      const duration = Date.now() - startTime;
 
-            const metric = {
-                action,
-                duration,
-                success,
-                timestamp: Date.now(),
-            };
+      const metric = {
+        action,
+        duration,
+        success,
+        timestamp: Date.now(),
+      };
 
-            if (emitEvents) {
-                getEvents().emitSafe('on:metrics', metric);
-            }
+      if (emitEvents) {
+        getEvents().emitSafe("on:metrics", metric);
+      }
 
-            logger.debug(`[Metrics] ${action}: ${duration}ms (${success ? 'success' : 'failure'})`);
-        }
-    };
+      logger.debug(
+        `[Metrics] ${action}: ${duration}ms (${success ? "success" : "failure"})`,
+      );
+    }
+  };
 }
 
 /**
@@ -294,36 +310,36 @@ export function metricsMiddleware(options = {}) {
  * @returns {Function}
  */
 export function rateLimitMiddleware(options = {}) {
-    const { maxPerSecond = 10, state = null } = options;
+  const { maxPerSecond = 10, state = null } = options;
 
-    const _state = state || { actionCount: 0, windowStart: Date.now() };
+  const _state = state || { actionCount: 0, windowStart: Date.now() };
 
-    return async (context, next) => {
-        const now = Date.now();
+  return async (context, next) => {
+    const now = Date.now();
 
-        if (now - _state.windowStart >= 1000) {
-            _state.actionCount = 0;
-            _state.windowStart = now;
-        }
+    if (now - _state.windowStart >= 1000) {
+      _state.actionCount = 0;
+      _state.windowStart = now;
+    }
 
-        if (_state.actionCount >= maxPerSecond) {
-            const waitTime = 1000 - (now - _state.windowStart);
-            logger.debug(`[RateLimit] Throttling, waiting ${waitTime}ms`);
-            await new Promise((r) => setTimeout(r, waitTime));
-        }
+    if (_state.actionCount >= maxPerSecond) {
+      const waitTime = 1000 - (now - _state.windowStart);
+      logger.debug(`[RateLimit] Throttling, waiting ${waitTime}ms`);
+      await new Promise((r) => setTimeout(r, waitTime));
+    }
 
-        _state.actionCount++;
-        return await next();
-    };
+    _state.actionCount++;
+    return await next();
+  };
 }
 
 export default {
-    createPipeline,
-    createSyncPipeline,
-    loggingMiddleware,
-    validationMiddleware,
-    retryMiddleware,
-    recoveryMiddleware,
-    metricsMiddleware,
-    rateLimitMiddleware,
+  createPipeline,
+  createSyncPipeline,
+  loggingMiddleware,
+  validationMiddleware,
+  retryMiddleware,
+  recoveryMiddleware,
+  metricsMiddleware,
+  rateLimitMiddleware,
 };

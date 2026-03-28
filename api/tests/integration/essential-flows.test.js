@@ -3,7 +3,7 @@
  * Core flows that browser automation depends on
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/context.js", () => ({
   getPage: vi.fn(() => ({

@@ -2,8 +2,14 @@
 SETLOCAL EnableDelayedExpansion
 
 echo ===========================================
-echo   Auto-AI Full Project Setup
+echo   ⚠ DEPRECATED - Use setup.bat instead!
 echo ===========================================
+echo.
+echo This script is deprecated. Please use:
+echo   setup.bat
+echo.
+echo Press Ctrl+C to cancel, or any key to continue anyway...
+pause >nul
 echo.
 
 :: ============================================================================

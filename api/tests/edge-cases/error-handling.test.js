@@ -15,7 +15,7 @@
  * - Unhandled error scenarios
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/logger.js", () => ({
   createLogger: vi.fn(() => ({
@@ -86,11 +86,11 @@ describe("Edge Cases: Error Handling", () => {
 
     it("should handle finally with errors", async () => {
       const cleanup = vi.fn();
-      let caught = false;
+      let caught = false; // eslint-disable-line no-useless-assignment
 
       try {
         throw new Error("test error");
-      } catch (e) {
+      } catch (___e) {
         caught = true;
       } finally {
         cleanup();
@@ -105,7 +105,7 @@ describe("Edge Cases: Error Handling", () => {
         try {
           throw new Error("original error");
         } catch (e) {
-          throw new Error(`recovery failed: ${e.message}`);
+          throw new Error(`recovery failed: ${e.message}`, { cause: e });
         }
       };
 
@@ -308,10 +308,10 @@ describe("Edge Cases: Error Handling", () => {
       const degrade = async (primary, secondary, fallback) => {
         try {
           return await primary();
-        } catch (primaryError) {
+        } catch (__primaryError) {
           try {
             return await secondary();
-          } catch (secondaryError) {
+          } catch (__secondaryError) {
             return fallback;
           }
         }
@@ -428,7 +428,7 @@ describe("Edge Cases: Error Handling", () => {
           try {
             throw new Error("inner error");
           } catch (inner) {
-            throw new Error(`wrapped: ${inner.message}`);
+            throw new Error(`wrapped: ${inner.message}`, { cause: inner });
           }
         } catch (outer) {
           return `final: ${outer.message}`;
@@ -489,7 +489,7 @@ describe("Edge Cases: Error Handling", () => {
         try {
           throw new Error("original");
         } catch (e) {
-          throw new Error(`handler failed: ${e.message}`);
+          throw new Error(`handler failed: ${e.message}`, { cause: e });
         }
       };
 
@@ -676,12 +676,12 @@ describe("Edge Cases: Error Handling", () => {
       };
 
       // We expect the error to be thrown, but finally still runs
-      let errorCaught = false;
+      let errorCaught = false; // eslint-disable-line no-useless-assignment
       try {
         resources.connections = 1;
         resources.files = 1;
         throw new Error("operation failed");
-      } catch (e) {
+      } catch (___e) {
         errorCaught = true;
       } finally {
         resources.cleanup();
@@ -752,8 +752,8 @@ describe("Edge Cases: Error Handling", () => {
         try {
           throw originalError;
         } finally {
-          // Cleanup throws
-          throw cleanupError;
+          // Cleanup throws - intentional test of finally behavior
+          throw cleanupError; // eslint-disable-line no-unsafe-finally
         }
       };
 

@@ -15,11 +15,15 @@ permissions:
 
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-    # VITEST_MAX_THREADS and VITEST_MIN_THREADS removed to use maximum parallelism (cpuCount - 2)
+    # Enable parallel execution
+    VITEST_MAX_THREADS: '16'
+    VITEST_MIN_THREADS: '4'
 
 jobs:
     lint:
         runs-on: self-hosted-windows11
+        timeout-minutes: 10
+        fail-fast: false
 
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
@@ -31,7 +35,19 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
               with:
-                dest: ${{ runner.temp }}\setup-pnpm
+                  dest: ${{ runner.temp }}\setup-pnpm
+
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+            - name: Setup pnpm cache
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -39,8 +55,13 @@ jobs:
             - name: Run ESLint
               run: pnpm run lint
 
+            - name: Check Prettier formatting
+              run: pnpm exec prettier --check . --config config/.prettierrc
+
     test-unit:
         runs-on: self-hosted-windows11
+        timeout-minutes: 30
+        fail-fast: false
 
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
@@ -52,7 +73,19 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
               with:
-                dest: ${{ runner.temp }}\setup-pnpm
+                  dest: ${{ runner.temp }}\setup-pnpm
+
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+            - name: Setup pnpm cache
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -62,6 +95,8 @@ jobs:
 
     test-integration:
         runs-on: self-hosted-windows11
+        timeout-minutes: 30
+        fail-fast: false
 
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
@@ -73,7 +108,19 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
               with:
-                dest: ${{ runner.temp }}\setup-pnpm
+                  dest: ${{ runner.temp }}\setup-pnpm
+
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+            - name: Setup pnpm cache
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -83,6 +130,8 @@ jobs:
 
     test-edge:
         runs-on: self-hosted-windows11
+        timeout-minutes: 30
+        fail-fast: false
 
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
@@ -94,7 +143,19 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
               with:
-                dest: ${{ runner.temp }}\setup-pnpm
+                  dest: ${{ runner.temp }}\setup-pnpm
+
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+            - name: Setup pnpm cache
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -104,7 +165,9 @@ jobs:
 
     build:
         runs-on: self-hosted-windows11
+        timeout-minutes: 15
         needs: [lint, test-unit, test-integration, test-edge]
+        fail-fast: false
 
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
@@ -116,7 +179,19 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
               with:
-                dest: ${{ runner.temp }}\setup-pnpm
+                  dest: ${{ runner.temp }}\setup-pnpm
+
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+            - name: Setup pnpm cache
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile

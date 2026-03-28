@@ -2,7 +2,7 @@
  * Integration tests for utils modules - Real Implementations
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mathUtils } from "@api/utils/math.js";
 import {
   taskConfigLoader,

@@ -15,7 +15,7 @@
  * - Token/credential handling
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/logger.js", () => ({
   createLogger: vi.fn(() => ({
@@ -186,13 +186,13 @@ describe("Edge Cases: Security", () => {
     it("should validate safe file names", () => {
       const isValidFileName = (name) => {
         // Check for invalid characters
-        if (/[<>:"|?*\x00-\x1f]/.test(name)) return false;
+        if (/[<>:"|?*\x00-\x1f]/.test(name)) return false; // eslint-disable-line no-control-regex
         // Check for reserved names (Windows)
         if (/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/i.test(name)) return false;
         // Check for empty name
         if (!name || name.length === 0) return false;
         // Check for path separators
-        if (/[\/\\]/.test(name)) return false;
+        if (/[/\\]/.test(name)) return false;
         return true;
       };
 
@@ -231,7 +231,7 @@ describe("Edge Cases: Security", () => {
     it("should sanitize shell command arguments", () => {
       const sanitizeShellArg = (arg) => {
         // Remove null bytes
-        let sanitized = arg.replace(/\x00/g, "");
+        let sanitized = arg.replace(/\x00/g, ""); // eslint-disable-line no-control-regex
         // Escape shell metacharacters
         sanitized = sanitized.replace(/[`$\\]/g, "\\$&");
         return sanitized;

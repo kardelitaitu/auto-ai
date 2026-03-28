@@ -4,7 +4,7 @@
  * Unauthorized copying, distribution, or modification prohibited
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock all dependencies using hoisted functions
 const mockLogger = vi.hoisted(() => ({

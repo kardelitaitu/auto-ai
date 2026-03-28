@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 /**
  * Edge Case Tests: Memory Leaks and Resource Cleanup
@@ -671,7 +671,7 @@ describe("Edge Cases: Memory Leaks and Resource Cleanup", () => {
       expect(tracker.get("key2")).toBe(obj2);
 
       // Clear reference
-      obj1 = null;
+      obj1 = null; // eslint-disable-line no-useless-assignment
 
       // Manually trigger cleanup check
       tracker.cleanup();

@@ -59,3 +59,26 @@ tests/debug-sanitization.js
 CODEOWNERS
 api/docs/
 api/_api-overview.md
+
+# Build artifacts
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/settings.json
+
+# Temp files
+tmp/
+temp/
+*.tmp
+
+# Vitest
+.vitest/
+
+# pnpm
+.pnpm-debug.log*
+
+# bun
+.bun/
+bunfig.toml

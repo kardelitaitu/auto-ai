@@ -4,7 +4,7 @@
  * Unauthorized copying, distribution, or modification prohibited
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GhostCursor } from "@api/utils/ghostCursor.js";
 import { TWITTER_CLICK_PROFILES } from "@api/constants/engagement.js";
 import { mathUtils } from "@api/utils/math.js";

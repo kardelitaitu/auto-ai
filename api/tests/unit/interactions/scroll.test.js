@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import * as scroll from "@api/interactions/scroll.js";
 
 vi.mock("@api/core/context.js", () => ({
@@ -45,9 +45,12 @@ vi.mock("@api/utils/locator.js", () => ({
 
 vi.mock("@api/core/errors.js", () => ({
   ValidationError: class ValidationError extends Error {
-    constructor(message) {
+    constructor(code, message, metadata, cause) {
       super(message);
       this.name = "ValidationError";
+      this.code = code;
+      this.metadata = metadata;
+      this.cause = cause;
     }
   },
 }));

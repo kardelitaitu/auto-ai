@@ -20,13 +20,17 @@ const calculatedThreads = envMaxThreads || Math.max(1, cpuCount - 2);
 const calculatedMinThreads =
     envMinThreads || Math.max(1, Math.min(calculatedThreads, Math.floor(cpuCount / 2)));
 
-console.log(`\n=== [SYSTEM_NODE] Test Execution Orchestrator ===`);
-console.log(`Hardware Detected: ${cpuCount} Logical Cores`);
-console.log(
-    `Thread Allocation: ${calculatedThreads} Max Workers (env override: ${process.env.VITEST_MAX_THREADS || 'none'})`
-);
-console.log(`Coverage Engine: istanbul (Memory Optimized)`);
-console.log(`=================================================\n`);
+// Only show system info if not silent
+const isSilent = process.argv.includes('--silent') || process.env.VITEST_SILENT === 'true';
+if (!isSilent) {
+    console.log(`\n=== [SYSTEM_NODE] Test Execution Orchestrator ===`);
+    console.log(`Hardware Detected: ${cpuCount} Logical Cores`);
+    console.log(
+        `Thread Allocation: ${calculatedThreads} Max Workers (env override: ${process.env.VITEST_MAX_THREADS || 'none'})`
+    );
+    console.log(`Coverage Engine: istanbul (Memory Optimized)`);
+    console.log(`=================================================\n`);
+}
 
 // ============================================================================
 // Module B: Pathing & Directory Hygiene
@@ -90,7 +94,7 @@ export default defineConfig({
                 'node_modules/',
                 'dist/',
                 '.git/',
-                'tests/',
+                // 'tests/',  // Commented out to include test utilities
                 'backup/',
                 '**/*.test.js',
                 '**/*.spec.js',

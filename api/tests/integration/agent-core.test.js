@@ -10,7 +10,7 @@
  * @module tests/integration/agent-core.test
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { withPage } from "../../core/context.js";
 
 vi.mock("../../core/logger.js", () => ({

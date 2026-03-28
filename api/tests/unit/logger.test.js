@@ -299,7 +299,7 @@ describe("logger", () => {
   });
 
   describe("Coloring Edge Cases", () => {
-    const stripAnsi = (str) => str.replace(/\u001b\[[0-9;]*m/g, "");
+    const stripAnsi = (str) => str.replace(/\u001b\[[0-9;]*m/g, ""); // eslint-disable-line no-control-regex
 
     it("should colorize special script name formats", async () => {
       const { createLogger } = await import("../../core/logger.js");

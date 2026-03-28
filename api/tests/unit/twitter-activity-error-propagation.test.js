@@ -92,7 +92,7 @@ describe("Error Propagation Improvements", () => {
   describe("Session Success Tracking Pattern", () => {
     // Simulate the session success tracking pattern
     const simulateSession = async (runSession, logger) => {
-      let sessionSuccess = false;
+      let sessionSuccess = false; // eslint-disable-line no-useless-assignment
       try {
         await runSession();
         sessionSuccess = true;

@@ -15,7 +15,7 @@
  * - Type mismatches
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/logger.js", () => ({
   createLogger: vi.fn(() => ({
@@ -29,12 +29,12 @@ vi.mock("@api/core/logger.js", () => ({
 describe("Edge Cases: Input Validation", () => {
   describe("Null and Undefined Handling", () => {
     it("should handle null input gracefully", () => {
-      const safeValue = null ?? "default";
+      const safeValue = null ?? "default"; // eslint-disable-line no-constant-binary-expression
       expect(safeValue).toBe("default");
     });
 
     it("should handle undefined input gracefully", () => {
-      const safeValue = undefined ?? "default";
+      const safeValue = undefined ?? "default"; // eslint-disable-line no-constant-binary-expression
       expect(safeValue).toBe("default");
     });
 
@@ -237,7 +237,7 @@ describe("Edge Cases: Input Validation", () => {
 
     it("should handle negative zero", () => {
       expect(Object.is(-0, 0)).toBe(false);
-      expect(-0 === 0).toBe(true);
+      expect(-0 === 0).toBe(true); // eslint-disable-line no-compare-neg-zero
       expect(1 / -0).toBe(-Infinity);
     });
 
@@ -306,8 +306,8 @@ describe("Edge Cases: Input Validation", () => {
 
       expect("existing" in obj).toBe(true);
       expect("missing" in obj).toBe(false);
-      expect(obj.hasOwnProperty("existing")).toBe(true);
-      expect(obj.hasOwnProperty("missing")).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(obj, "existing")).toBe(true);
+      expect(Object.prototype.hasOwnProperty.call(obj, "missing")).toBe(false);
     });
   });
 

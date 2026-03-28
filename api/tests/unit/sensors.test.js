@@ -146,7 +146,7 @@ describe("sensors", () => {
       scriptFn(params);
 
       // Check if getBattery was mocked
-      if ("getBattery" in navigator || true) {
+      if ("getBattery" in navigator) {
         // The script checks 'getBattery' in navigator
         // We need to set it up first
         expect(navigator.getBattery).toBeDefined();

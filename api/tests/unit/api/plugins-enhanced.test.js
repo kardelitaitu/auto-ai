@@ -4,7 +4,7 @@
  * Unauthorized copying, distribution, or modification prohibited
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { PluginManager } from "@api/core/plugins/manager.js";
 import { BasePlugin } from "@api/core/plugins/base.js";
 

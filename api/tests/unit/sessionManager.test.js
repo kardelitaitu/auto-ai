@@ -155,6 +155,103 @@ describe("SessionManager", () => {
     });
   });
 
+  describe("Session map operations", () => {
+    it("should track sessions in map", () => {
+      const browser = {
+        close: vi.fn(),
+        contexts: () => [],
+        isConnected: vi.fn().mockReturnValue(true),
+      };
+      manager.addSession(browser, "session1");
+      expect(manager.sessionsMap.has("session1")).toBe(true);
+    });
+
+    it("should get session by id", () => {
+      const browser = {
+        close: vi.fn(),
+        contexts: () => [],
+        isConnected: vi.fn().mockReturnValue(true),
+      };
+      manager.addSession(browser, "session2");
+      const session = manager.getSession("session2");
+      expect(session).toBeDefined();
+      expect(session.id).toBe("session2");
+    });
+
+    it("should return all sessions", () => {
+      const browser = {
+        close: vi.fn(),
+        contexts: () => [],
+        isConnected: vi.fn().mockReturnValue(true),
+      };
+      manager.addSession(browser, "s3");
+      manager.addSession(browser, "s4");
+      const all = manager.getAllSessions();
+      expect(all.length).toBe(2);
+    });
+  });
+
+  describe("Worker occupancy tracking", () => {
+    it("should track worker occupancy after acquire", async () => {
+      const browser = {
+        close: vi.fn(),
+        contexts: () => [],
+        isConnected: vi.fn().mockReturnValue(true),
+      };
+      const id = manager.addSession(browser, "worker-test");
+      const worker = await manager.acquireWorker(id);
+
+      const occupancyKey = `${id}:${worker.id}`;
+      const occupancy = manager.workerOccupancy.get(occupancyKey);
+      expect(occupancy).toBeDefined();
+      expect(occupancy.startTime).toBeDefined();
+    });
+  });
+
+  describe("Page management", () => {
+    it("should handle null page release", async () => {
+      const browser = {
+        close: vi.fn(),
+        contexts: () => [],
+        isConnected: vi.fn().mockReturnValue(true),
+      };
+      const id = manager.addSession(browser, "null-page-test");
+
+      await manager.releasePage(id, null);
+    });
+  });
+
+  describe("Active/idle session counts", () => {
+    it("should count active sessions", () => {
+      const browser = {
+        close: vi.fn(),
+        contexts: () => [],
+        isConnected: vi.fn().mockReturnValue(true),
+      };
+      manager.addSession(browser, "count1");
+      manager.addSession(browser, "count2");
+      expect(manager.activeSessionsCount).toBe(2);
+    });
+
+    it("should count idle workers per session", async () => {
+      const browser = {
+        close: vi.fn(),
+        contexts: () => [],
+        isConnected: vi.fn().mockReturnValue(true),
+      };
+      const id = manager.addSession(browser, "idle-test");
+      await manager.acquireWorker(id);
+      expect(manager.idleSessionsCount).toBe(0);
+    });
+  });
+
+  describe("Health check operations", () => {
+    it("should stop cleanup timer", () => {
+      manager.stopCleanupTimer();
+      expect(manager.cleanupInterval).toBeNull();
+    });
+  });
+
   describe("Advanced functionality", () => {
     it("should shutdown all sessions", async () => {
       const browser = {

@@ -30,7 +30,10 @@ export async function think(ms) {
     ms !== undefined &&
     (typeof ms !== "number" || Number.isNaN(ms) || ms <= 0)
   ) {
-    throw new ValidationError(`think() requires a positive number, got: ${ms}`);
+    throw new ValidationError(
+      "VALIDATION_ERROR",
+      `think() requires a positive number, got: ${ms}`,
+    );
   }
   const page = getPage();
   const persona = getPersona();
@@ -83,7 +86,10 @@ export async function think(ms) {
  */
 export async function delay(ms) {
   if (typeof ms !== "number" || Number.isNaN(ms) || ms <= 0) {
-    throw new ValidationError(`delay() requires a positive number, got: ${ms}`);
+    throw new ValidationError(
+      "VALIDATION_ERROR",
+      `delay() requires a positive number, got: ${ms}`,
+    );
   }
   const jittered = humanTiming.humanDelay(ms);
   await new Promise((r) => setTimeout(r, jittered));

@@ -1,14 +1,26 @@
 {
     "name": "multi-browser-automation",
-    "version": "0.0.30",
+    "version": "1.2.0",
     "description": "Agentic orchestration framework for discovering and automating pre-existing browser instances via CDP",
     "main": "main.js",
     "scripts": {
         "prepare": "husky install",
         "commit": "node scripts/git-commit.js",
         "amend": "node scripts/git-amend.js",
+        "setup": "node scripts/setup.js",
+        "setup:win": "setup.bat",
         "start": "node main.js",
         "debug": "node --inspect-brk main.js",
+        "backup": "powershell -ExecutionPolicy Bypass -File scripts/backup.ps1",
+        "test:parallel": "powershell -ExecutionPolicy Bypass -File scripts/windows/vitest-individual.ps1",
+        "browser:close": "scripts/windows/browser-close.bat",
+        "ixbrowser:open": "scripts/windows/ix-open.bat",
+        "ixbrowser:close": "scripts/windows/ix-close_any_profiles.bat",
+        "llm:ollama": "scripts/windows/start-ollama.bat",
+        "llm:docker": "scripts/windows/start-docker.bat",
+        "llm:setup": "scripts/windows/setup-ollama.bat",
+        "dashboard": "scripts/windows/startDashboard.bat",
+        "ui": "powershell -ExecutionPolicy Bypass -File scripts/windows/ui.ps1",
         "test": "npx vitest run -c config/vitest.config.js",
         "test:smoke": "npx vitest run -c config/vitest.smoke.config.js",
         "test:unit": "npx vitest run -c config/vitest.config.js api/tests/unit",
@@ -19,15 +31,19 @@
         "test:coverage": "node --max-old-space-size=32768 node_modules/vitest/vitest.mjs run -c config/vitest.config.js --coverage --silent --reporter=dot",
         "test:ci": "vitest run -c config/vitest.config.js --coverage --silent",
         "test:verbose": "npx vitest run -c config/vitest.config.js --reporter=verbose",
-        "test:bun": "bun run vitest run -c config/vitest.config.js",
-        "test:bun:unit": "bun run vitest run -c config/vitest.config.js api/tests/unit",
-        "test:bun:integration": "bun run vitest run -c config/vitest.config.js api/tests/integration",
-        "test:bun:edge": "bun run vitest run -c config/vitest.config.js api/tests/edge-cases",
-        "test:bun:all": "bun run vitest run -c config/vitest.config.js api/tests",
-        "test:bun:watch": "bun run vitest -c config/vitest.config.js",
+        "test:bun": "bun run vitest run -c config/vitest.config.js --silent --reporter=dot",
+        "test:bun:unit": "bun run vitest run -c config/vitest.config.js --silent --reporter=dot api/tests/unit",
+        "test:bun:integration": "bun run vitest run -c config/vitest.config.js --silent --reporter=dot api/tests/integration",
+        "test:bun:edge": "bun run vitest run -c config/vitest.config.js --silent --reporter=dot api/tests/edge-cases",
+        "test:bun:all": "bun run vitest run -c config/vitest.config.js --silent --reporter=dot api/tests",
+        "test:bun:watch": "bun run vitest -c config/vitest.config.js --silent --reporter=dot",
         "test:bun:coverage": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot",
         "test:bun:coverage:integration": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot api/tests/integration",
         "test:bun:verbose": "bun run vitest run -c config/vitest.config.js --reporter=verbose",
+        "test:bun:v8": "bun run vitest run -c config/vitest.config.v8.js --silent --reporter=dot",
+        "test:bun:v8:coverage": "bun run vitest run -c config/vitest.config.v8.js --coverage --silent --reporter=dot",
+        "coverage:badge": "node scripts/generate-coverage-badge.js",
+        "coverage:full": "pnpm run test:bun:coverage && pnpm run coverage:badge",
         "lint": "eslint . --config config/eslint.config.js",
         "lint:fix": "eslint . --config config/eslint.config.js --fix",
         "format": "prettier --write . --config config/.prettierrc",
@@ -107,6 +123,11 @@
     "pnpm": {
         "overrides": {
             "esbuild": "^0.24.0"
-        }
+        },
+        "onlyBuiltDependencies": [
+            "better-sqlite3",
+            "esbuild",
+            "sharp"
+        ]
     }
 }

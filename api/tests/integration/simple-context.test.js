@@ -3,7 +3,7 @@
  * Basic context and session functionality
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("../../core/logger.js", () => ({
   loggerContext: {

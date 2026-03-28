@@ -14,7 +14,7 @@
  * - Throttling and rate limiting
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/logger.js", () => ({
   createLogger: vi.fn(() => ({
@@ -113,7 +113,7 @@ describe("Edge Cases: Performance", () => {
       expect(getObjectCache(target)).toEqual({ computed: "value" });
 
       // When target is garbage collected, cache entry is automatically cleaned
-      target = null;
+      target = null; // eslint-disable-line no-useless-assignment
       // Cache would be cleaned up by GC (can't test directly)
     });
 

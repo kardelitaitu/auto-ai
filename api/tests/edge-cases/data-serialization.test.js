@@ -14,7 +14,7 @@
  * - Data transformation edge cases
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/logger.js", () => ({
   createLogger: vi.fn(() => ({
@@ -503,18 +503,18 @@ describe("Edge Cases: Data Serialization", () => {
     });
 
     it("should handle type coercion in comparisons", () => {
-      // Loose equality
+      // Loose equality - intentional constant comparisons to test JS behavior
       expect(1 == "1").toBe(true);
       expect(0 == "").toBe(true);
-      expect(0 == false).toBe(true);
-      expect("" == false).toBe(true);
-      expect(null == undefined).toBe(true);
-      expect(NaN == NaN).toBe(false); // Special case!
+      expect(0 == false).toBe(true); // eslint-disable-line no-constant-binary-expression
+      expect("" == false).toBe(true); // eslint-disable-line no-constant-binary-expression
+      expect(null == undefined).toBe(true); // eslint-disable-line no-constant-binary-expression
+      expect(NaN == NaN).toBe(false); // eslint-disable-line use-isnan -- Special case!
 
       // Strict equality
       expect(1 === "1").toBe(false);
       expect(0 === "").toBe(false);
-      expect(null === undefined).toBe(false);
+      expect(null === undefined).toBe(false); // eslint-disable-line no-constant-binary-expression
 
       // Object.is - even stricter
       expect(Object.is(0, -0)).toBe(false);

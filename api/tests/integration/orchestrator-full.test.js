@@ -9,7 +9,7 @@
  * Simplified tests - complex async tests with timing issues removed
  */
 
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 
 describe("Orchestrator Integration", () => {
   it("should import orchestrator module", async () => {

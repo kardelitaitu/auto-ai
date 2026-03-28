@@ -487,7 +487,21 @@ export const api = {
   config: configManager,
 
   // ── Actions (top-level for ergonomics) ───────────────────────
+  /**
+   * Human-like click with automatic scrolling and cursor movement
+   * @example
+   * await api.click('.btn-submit'); // Simple click
+   * await api.click('#login', { button: 'right' }); // Right-click
+   * await api.click('.dropdown', { hoverBeforeClick: true }); // Hover first
+   */
   click,
+  /**
+   * Type text into an input field with human-like keystroke timing
+   * @example
+   * await api.type('.username', 'john_doe'); // Type into input
+   * await api.type('.search', 'query', { delay: 50 }); // Custom delay
+   * await api.type('.textarea', ' multiline\ntext', { noClear: true }); // Append text
+   */
   type,
   hover,
   rightClick,
@@ -506,21 +520,64 @@ export const api = {
   followWithAPI,
 
   // ── Scroll (dual: api.scroll(300) + api.scroll.focus('.el')) ─
+  /**
+   * Scroll actions - dual API: api.scroll(pixels) or api.scroll.focus(selector)
+   * @example
+   * await api.scroll(300); // Scroll down 300px
+   * await api.scroll(-200); // Scroll up 200px
+   * await api.scroll.focus('.element'); // Scroll to element
+   * await api.scroll.toTop(); // Scroll to top of page
+   * await api.scroll.toBottom(); // Scroll to bottom
+   */
   scroll: scrollFn,
 
   // ── Cursor (low-level) ───────────────────────────────────────
   cursor: cursorFn,
 
   // ── Queries (read-only) ──────────────────────────────────────
+  /**
+   * Get text content of an element
+   * @example
+   * const text = await api.text('.heading'); // Get element text
+   */
   text,
+  /**
+   * Get element attribute value
+   * @example
+   * const href = await api.attr('a', 'href'); // Get href attribute
+   * const value = await api.attr('input', 'placeholder'); // Get placeholder
+   */
   attr,
+  /**
+   * Check if element is visible
+   * @example
+   * const isVisible = await api.visible('.modal'); // Returns boolean
+   */
   visible,
+  /**
+   * Count elements matching selector
+   * @example
+   * const count = await api.count('.item'); // Number of matching elements
+   */
   count,
+  /**
+   * Check if element exists in DOM
+   * @example
+   * const exists = await api.exists('.missing'); // Returns boolean
+   */
   exists,
   getUrl: currentUrl,
   getCurrentUrl: currentUrl,
 
   // ── Wait (synchronization) ───────────────────────────────────
+  /**
+   * Wait for a duration or condition
+   * @example
+   * await api.wait(1000); // Wait 1 second
+   * await api.waitFor('.element'); // Wait for element to exist
+   * await api.waitVisible('.modal', { timeout: 5000 }); // Wait for visible
+   * await api.waitHidden('.loader'); // Wait for hidden
+   */
   wait,
   waitWithAbort,
   waitFor,
@@ -530,9 +587,31 @@ export const api = {
   waitForURL,
 
   // ── Navigation ───────────────────────────────────────────────
+  /**
+   * Navigate to a URL with human-like behavior and warmup
+   * @example
+   * await api.goto('https://example.com'); // Simple navigation
+   * await api.goto('https://example.com', { timeout: 30000 }); // Custom timeout
+   * await api.goto('https://example.com', { waitUntil: 'networkidle' }); // Wait for network idle
+   */
   goto,
+  /**
+   * Reload the current page
+   * @example
+   * await api.reload();
+   */
   reload,
+  /**
+   * Go back to previous page in browser history
+   * @example
+   * await api.back();
+   */
   back,
+  /**
+   * Go forward to next page in browser history
+   * @example
+   * await api.forward();
+   */
   forward,
   setExtraHTTPHeaders,
 
@@ -546,15 +625,57 @@ export const api = {
   warmupPause,
 
   // ── Timing ───────────────────────────────────────────────────
+  /**
+   * Simulate thinking/reading time with human-like delays
+   * @example
+   * await api.think(); // Random think time (2-5s)
+   * await api.think(3000); // Think for 3 seconds
+   */
   think,
+  /**
+   * Fixed delay in milliseconds
+   * @example
+   * await api.delay(500); // Wait 500ms
+   */
   delay,
+  /**
+   * Gaussian random delay (bell-curve distribution)
+   * @example
+   * await api.gaussian(1000, 200); // ~1000ms with std dev 200ms
+   */
   gaussian,
+  /**
+   * Random delay within a range
+   * @example
+   * await api.randomInRange(100, 500); // Random between 100-500ms
+   */
   randomInRange,
 
   // ── Persona ──────────────────────────────────────────────────
+  /**
+   * Set the active persona for humanization behaviors
+   * @example
+   * await api.setPersona('casual'); // Set casual persona
+   * await api.setPersona('focused', { delay: 20 }); // Custom overrides
+   */
   setPersona,
+  /**
+   * Get current persona settings
+   * @example
+   * const persona = await api.getPersona();
+   */
   getPersona,
+  /**
+   * Get current persona name
+   * @example
+   * const name = await api.getPersonaName(); // 'casual', 'focused', etc.
+   */
   getPersonaName,
+  /**
+   * List all available personas
+   * @example
+   * const personas = await api.listPersonas(); // ['casual', 'focused', 'fast', ...]
+   */
   listPersonas,
 
   // ── Recovery ─────────────────────────────────────────────────
@@ -717,6 +838,15 @@ export const api = {
   memory,
 
   // ── Twitter ────────────────────────────────────────────────────
+  /**
+   * Twitter-specific actions and intents
+   * @example
+   * await api.twitter.intent.like(tweetUrl); // Like a tweet
+   * await api.twitter.intent.follow(username); // Follow a user
+   * await api.twitter.intent.quote(tweetUrl, 'Great post!'); // Quote tweet
+   * await api.twitter.intent.retweet(tweetUrl); // Retweet
+   * await api.twitter.intent.post('Hello world!'); // Post new tweet
+   */
   twitter: {
     intent: {
       like: intentLike,

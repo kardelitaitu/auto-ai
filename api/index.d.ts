@@ -19,7 +19,12 @@ export declare const api: {
     eval: (fn: (...args: any[]) => any, ...args: any[]) => Promise<any>;
     init: (page: Page, options?: ApiOptions) => Promise<void>;
     diagnose: (page: Page) => Promise<object>;
-    screenshot: (options?: { path?: string; fullPage?: boolean; type?: 'jpeg' | 'png'; quality?: number }) => Promise<Buffer>;
+    screenshot: (options?: {
+        path?: string;
+        fullPage?: boolean;
+        type?: 'jpeg' | 'png';
+        quality?: number;
+    }) => Promise<Buffer>;
     emulateMedia: (options?: {
         type?: string;
         colorScheme?: 'light' | 'dark' | 'no-preference';

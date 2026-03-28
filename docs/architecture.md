@@ -36,6 +36,7 @@ Auto-AI uses a layered architecture with clear separation of concerns:
 ### Context (`api/core/context.js`)
 
 Provides session isolation using Node.js `AsyncLocalStorage`. Each browser session runs in an isolated context with its own:
+
 - Page instance
 - Configuration
 - State
@@ -49,6 +50,7 @@ api.withPage(async (page) => {
 ### Orchestrator (`api/core/orchestrator.js`)
 
 Manages the lifecycle:
+
 - Browser discovery
 - Task queueing
 - Dispatch and execution
@@ -57,6 +59,7 @@ Manages the lifecycle:
 ### Session Manager (`api/core/sessionManager.js`)
 
 Handles:
+
 - Worker health monitoring
 - Persistent session state
 - Connection lifecycle
@@ -64,6 +67,7 @@ Handles:
 ### Agent (`api/agent/`)
 
 The AI agent stack:
+
 - **Perception** - Vision, screen capture, DOM analysis
 - **Reasoning** - LLM-powered decision making
 - **Action** - Execution with rollback support
@@ -71,11 +75,13 @@ The AI agent stack:
 ## Browser Connectors
 
 Located in `connectors/`, each adapter:
+
 - Discovers running browser instances
 - Provides connection endpoints
 - Handles browser-specific quirks
 
 Supported browsers:
+
 - ixBrowser
 - MoreLogin
 - Dolphin Anty
@@ -120,6 +126,7 @@ Tests are organized in `api/tests/`:
 - `edge-cases/` - Edge case and error handling tests
 
 Run tests:
+
 ```bash
 pnpm test:unit       # Unit tests
 pnpm test:integration # Integration tests

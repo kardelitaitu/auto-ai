@@ -57,10 +57,10 @@ await api.withPage(async (page) => {
 });
 ```
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `page` | Page | Playwright page instance |
-| `fn` | Function | Async function to execute |
+| Parameter | Type     | Description               |
+| --------- | -------- | ------------------------- |
+| `page`    | Page     | Playwright page instance  |
+| `fn`      | Function | Async function to execute |
 
 ---
 
@@ -73,17 +73,17 @@ await api.init(page, {
     persona: 'casual',
     patch: true,
     humanizationPatch: true,
-    sensors: true
+    sensors: true,
 });
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `page` | Page | - | Playwright page |
-| `options.persona` | string | 'default' | Persona name |
-| `options.patch` | boolean | true | Enable detection patching |
-| `options.humanizationPatch` | boolean | true | Enable humanization |
-| `options.sensors` | boolean | false | Enable sensor simulation |
+| Parameter                   | Type    | Default   | Description               |
+| --------------------------- | ------- | --------- | ------------------------- |
+| `page`                      | Page    | -         | Playwright page           |
+| `options.persona`           | string  | 'default' | Persona name              |
+| `options.patch`             | boolean | true      | Enable detection patching |
+| `options.humanizationPatch` | boolean | true      | Enable humanization       |
+| `options.sensors`           | boolean | false     | Enable sensor simulation  |
 
 ---
 
@@ -136,16 +136,16 @@ const buffer = await api.screenshot({
     path: 'screenshot.png',
     fullPage: false,
     type: 'jpeg',
-    quality: 80
+    quality: 80,
 });
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `options.path` | string | - | Output file path |
-| `options.fullPage` | boolean | false | Capture full page |
-| `options.type` | string | 'jpeg' | Image type |
-| `options.quality` | number | 80 | JPEG quality |
+| Parameter          | Type    | Default | Description       |
+| ------------------ | ------- | ------- | ----------------- |
+| `options.path`     | string  | -       | Output file path  |
+| `options.fullPage` | boolean | false   | Capture full page |
+| `options.type`     | string  | 'jpeg'  | Image type        |
+| `options.quality`  | number  | 80      | JPEG quality      |
 
 ---
 
@@ -182,13 +182,13 @@ await api.click('#submit-button');
 await api.click('.btn', { precision: 'safe', recovery: true });
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `selector` | string | - | Element selector |
-| `options.recovery` | boolean | true | Auto-recovery on failure |
-| `options.precision` | string | 'safe' | 'exact', 'safe', 'rough' |
-| `options.button` | string | 'left' | Mouse button |
-| `options.force` | boolean | false | Force click |
+| Parameter           | Type    | Default | Description              |
+| ------------------- | ------- | ------- | ------------------------ |
+| `selector`          | string  | -       | Element selector         |
+| `options.recovery`  | boolean | true    | Auto-recovery on failure |
+| `options.precision` | string  | 'safe'  | 'exact', 'safe', 'rough' |
+| `options.button`    | string  | 'left'  | Mouse button             |
+| `options.force`     | boolean | false   | Force click              |
 
 ---
 
@@ -201,13 +201,13 @@ await api.type('input[name="email"]', 'user@example.com');
 await api.type('#search', 'query', { delay: 50, humanize: true });
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `selector` | string | - | Element selector |
-| `text` | string | - | Text to type |
-| `options.delay` | number | 0 | Delay between keystrokes |
-| `options.noClear` | boolean | false | Don't clear field first |
-| `options.humanize` | boolean | true | Apply human-like timing |
+| Parameter          | Type    | Default | Description              |
+| ------------------ | ------- | ------- | ------------------------ |
+| `selector`         | string  | -       | Element selector         |
+| `text`             | string  | -       | Text to type             |
+| `options.delay`    | number  | 0       | Delay between keystrokes |
+| `options.noClear`  | boolean | false   | Don't clear field first  |
+| `options.humanize` | boolean | true    | Apply human-like timing  |
 
 ---
 
@@ -304,10 +304,10 @@ await api.scroll(300, 'down');
 await api.scroll(100, 'up');
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `amount` | number | 300 | Pixels to scroll |
-| `direction` | string | 'down' | 'up', 'down', 'left', 'right' |
+| Parameter   | Type   | Default | Description                   |
+| ----------- | ------ | ------- | ----------------------------- |
+| `amount`    | number | 300     | Pixels to scroll              |
+| `direction` | string | 'down'  | 'up', 'down', 'left', 'right' |
 
 ---
 
@@ -505,12 +505,12 @@ Wait for element to meet condition.
 await api.waitFor('.loaded', { state: 'visible', timeout: 5000 });
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `selector` | string | - | Element selector |
-| `options.timeout` | number | 30000 | Timeout in ms |
-| `options.state` | string | 'visible' | 'visible', 'hidden', 'attached' |
-| `options.throwOnTimeout` | boolean | true | Throw or return false |
+| Parameter                | Type    | Default   | Description                     |
+| ------------------------ | ------- | --------- | ------------------------------- |
+| `selector`               | string  | -         | Element selector                |
+| `options.timeout`        | number  | 30000     | Timeout in ms                   |
+| `options.state`          | string  | 'visible' | 'visible', 'hidden', 'attached' |
+| `options.throwOnTimeout` | boolean | true      | Throw or return false           |
 
 ---
 
@@ -565,12 +565,12 @@ await api.goto('https://example.com');
 await api.goto('https://example.com', { timeout: 30000 });
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `url` | string | - | Target URL |
-| `options.timeout` | number | 30000 | Navigation timeout |
-| `options.waitUntil` | string | 'load' | 'load', 'domcontentloaded', 'networkidle' |
-| `options.headers` | object | - | Extra HTTP headers |
+| Parameter           | Type   | Default | Description                               |
+| ------------------- | ------ | ------- | ----------------------------------------- |
+| `url`               | string | -       | Target URL                                |
+| `options.timeout`   | number | 30000   | Navigation timeout                        |
+| `options.waitUntil` | string | 'load'  | 'load', 'domcontentloaded', 'networkidle' |
+| `options.headers`   | object | -       | Extra HTTP headers                        |
 
 ---
 
@@ -1230,7 +1230,7 @@ Process image for LLM vision.
 const result = await api.vprep.process(buffer, {
     targetWidth: 800,
     grayscale: true,
-    contrast: 1.3
+    contrast: 1.3,
 });
 ```
 
@@ -1347,7 +1347,7 @@ Register a plugin.
 ```javascript
 api.plugins.register('myPlugin', {
     onInit: () => {},
-    onAction: () => {}
+    onAction: () => {},
 });
 ```
 
@@ -1400,10 +1400,7 @@ const enabled = api.plugins.listEnabled();
 Create async middleware pipeline.
 
 ```javascript
-const pipeline = api.middleware.createPipeline([
-    api.middleware.logging,
-    api.middleware.retry
-]);
+const pipeline = api.middleware.createPipeline([api.middleware.logging, api.middleware.retry]);
 ```
 
 ---
@@ -1532,7 +1529,7 @@ api.config.set('llm.model', 'claude-3');
 All error classes are exported:
 
 ```javascript
-import { 
+import {
     AutomationError,
     SessionError,
     SessionTimeoutError,
@@ -1542,24 +1539,24 @@ import {
     LLMError,
     LLMTimeoutError,
     ConfigError,
-    ValidationError
+    ValidationError,
 } from './api/index.js';
 ```
 
 ### Error Types
 
-| Error | Description |
-|-------|-------------|
-| `AutomationError` | Base automation error |
-| `SessionError` | Session-related errors |
-| `SessionTimeoutError` | Session timeout |
-| `SessionNotFoundError` | Session not found |
-| `ElementNotFoundError` | Element not found |
-| `ElementObscuredError` | Element is obscured |
-| `ElementTimeoutError` | Element wait timeout |
-| `NavigationError` | Navigation failed |
-| `LLMError` | LLM generic error |
-| `LLMTimeoutError` | LLM timeout |
-| `LLMRateLimitError` | LLM rate limit |
-| `ConfigError` | Configuration error |
-| `ValidationError` | Validation failed |
+| Error                  | Description            |
+| ---------------------- | ---------------------- |
+| `AutomationError`      | Base automation error  |
+| `SessionError`         | Session-related errors |
+| `SessionTimeoutError`  | Session timeout        |
+| `SessionNotFoundError` | Session not found      |
+| `ElementNotFoundError` | Element not found      |
+| `ElementObscuredError` | Element is obscured    |
+| `ElementTimeoutError`  | Element wait timeout   |
+| `NavigationError`      | Navigation failed      |
+| `LLMError`             | LLM generic error      |
+| `LLMTimeoutError`      | LLM timeout            |
+| `LLMRateLimitError`    | LLM rate limit         |
+| `ConfigError`          | Configuration error    |
+| `ValidationError`      | Validation failed      |

@@ -9,7 +9,7 @@
  * Simplified tests - complex async tests with timing issues removed
  */
 
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 
 describe("SessionManager Integration", () => {
   it("should import session manager module", async () => {

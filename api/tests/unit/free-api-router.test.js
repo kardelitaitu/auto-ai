@@ -5155,5 +5155,189 @@ describe("FreeApiRouter", () => {
         expect(router.isReady()).toBe(false);
       });
     });
+
+    describe("validateConfig", () => {
+      it("should validate config settings", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({ enabled: false });
+
+        router.configValidator = {
+          validateConfig: vi.fn().mockResolvedValue({ valid: true }),
+        };
+
+        const result = await router.validateConfig({ test: "config" });
+        expect(result).toBeDefined();
+      });
+    });
+
+    describe("refreshRateLimits", () => {
+      it("should refresh rate limits for session API key", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        router.rateLimitTracker.refreshKey = vi.fn().mockResolvedValue({});
+
+        const result = await router.refreshRateLimits();
+        expect(router.rateLimitTracker.refreshKey).toHaveBeenCalledWith(
+          "test-key",
+        );
+      });
+
+      it("should return null when no session API key", async () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({ enabled: false });
+
+        const result = await router.refreshRateLimits();
+        expect(result).toBeNull();
+      });
+    });
+
+    describe("getSessionInfo", () => {
+      it("should return session information", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["key1", "key2"],
+          primaryModel: "test/model",
+          fallbackModels: ["fallback1", "fallback2"],
+          proxyEnabled: true,
+          proxyList: ["proxy1:8080"],
+          browserId: "browser1",
+          taskId: "task1",
+        });
+
+        const info = router.getSessionInfo();
+        expect(info.sessionId).toBe("browser1:task1");
+        expect(info.browserId).toBe("browser1");
+        expect(info.taskId).toBe("task1");
+        expect(info.apiKeyIndex).toBeGreaterThan(0);
+        expect(info.totalApiKeys).toBe(2);
+        expect(info.primaryModel).toBe("test/model");
+        expect(info.fallbackCount).toBe(2);
+        expect(info.proxyEnabled).toBe(true);
+        expect(info.proxyCount).toBe(1);
+        expect(info.timeout).toBeDefined();
+      });
+    });
+
+    describe("getStats", () => {
+      it("should return router statistics", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        router.circuitBreaker.getStats = vi.fn().mockReturnValue({});
+        router.rateLimitTracker.getStats = vi.fn().mockReturnValue({});
+        router.requestDedupe.getStats = vi.fn().mockReturnValue({});
+        router.modelPerfTracker.getStats = vi.fn().mockReturnValue({});
+        router.apiKeyTimeoutTracker.getStats = vi.fn().mockReturnValue({});
+
+        const stats = router.getStats();
+        expect(stats.router).toBeDefined();
+        expect(stats.circuitBreaker).toBeDefined();
+        expect(stats.rateLimitTracker).toBeDefined();
+        expect(stats.requestDedupe).toBeDefined();
+        expect(stats.modelPerfTracker).toBeDefined();
+        expect(stats.apiKeyTimeoutTracker).toBeDefined();
+      });
+
+      it("should calculate success rate correctly", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        router.stats.totalRequests = 10;
+        router.stats.successes = 7;
+        router.stats.failures = 3;
+
+        const stats = router.getStats();
+        expect(stats.router.successRate).toBe("70.0%");
+      });
+
+      it("should return 0% when no requests", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+        });
+
+        const stats = router.getStats();
+        expect(stats.router.successRate).toBe("0%");
+      });
+    });
+
+    describe("getDetailedStats", () => {
+      it("should return detailed statistics", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "test/model",
+          fallbackModels: ["fallback"],
+        });
+
+        router.circuitBreaker.getAllStates = vi.fn().mockReturnValue({});
+        router.rateLimitTracker.getCacheStatus = vi.fn().mockReturnValue({});
+        router.modelPerfTracker.getAllStats = vi.fn().mockReturnValue({});
+        router.modelPerfTracker.getBestModel = vi
+          .fn()
+          .mockReturnValue("test/model");
+
+        const detailed = router.getDetailedStats();
+        expect(detailed.session).toBeDefined();
+        expect(detailed.router).toBeDefined();
+        expect(detailed.circuitBreakerStates).toBeDefined();
+        expect(detailed.rateLimitStatus).toBeDefined();
+        expect(detailed.modelPerformance).toBeDefined();
+        expect(detailed.bestModel).toBeDefined();
+      });
+    });
+
+    describe("syncWithHelper", () => {
+      it("should return true when helper has working models", () => {
+        setSharedHelper({
+          getResults: vi.fn().mockReturnValue({
+            working: ["model1"],
+            failed: [],
+            total: 1,
+          }),
+        });
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "model1",
+        });
+
+        const result = router.syncWithHelper();
+        expect(result).toBe(true);
+      });
+    });
+
+    describe("getModelsInfo", () => {
+      it("should return models info", () => {
+        const { FreeApiRouter } = require("../../utils/free-api-router.js");
+        router = new FreeApiRouter({
+          enabled: true,
+          apiKeys: ["test-key"],
+          primaryModel: "model1",
+          fallbackModels: ["fallback"],
+        });
+
+        const info = router.getModelsInfo();
+        expect(info.primary).toBeDefined();
+      });
+    });
   });
 });

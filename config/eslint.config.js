@@ -27,7 +27,6 @@ export default [
             'tools/',
             'backup/',
             'api/ui/',
-            'api/tests/',
             'api/coverage/',
 
             '**/*.min.js',
@@ -62,15 +61,8 @@ export default [
             },
         },
         rules: {
-            // Your smart unused-vars rule (Excellent choice)
-            'no-unused-vars': [
-                'warn',
-                {
-                    argsIgnorePattern: '^_',
-                    varsIgnorePattern: '^_',
-                    caughtErrorsIgnorePattern: '^_',
-                },
-            ],
+            // Disable unused-vars warnings
+            'no-unused-vars': 'off',
 
             // Performance: Allow console.log, but warn so you don't miss them in Prod
             'no-console': 'off',

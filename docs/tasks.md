@@ -12,13 +12,13 @@ node main.js taskName=param
 
 ### Built-in Tasks
 
-| Task | Usage | Description |
-|------|-------|-------------|
-| `pageview` | `pageview=<url>` | Navigate to URL |
-| `twitterFollow` | `twitterFollow=<url>` | Follow a Twitter user |
-| `twitterLike` | `like tweetUrl=<url>` | Like a tweet |
-| `twitterRetweet` | `retweet tweetUrl=<url>` | Retweet |
-| `twitterQuote` | `quote tweetUrl=<url> text=<text>` | Quote tweet |
+| Task             | Usage                              | Description           |
+| ---------------- | ---------------------------------- | --------------------- |
+| `pageview`       | `pageview=<url>`                   | Navigate to URL       |
+| `twitterFollow`  | `twitterFollow=<url>`              | Follow a Twitter user |
+| `twitterLike`    | `like tweetUrl=<url>`              | Like a tweet          |
+| `twitterRetweet` | `retweet tweetUrl=<url>`           | Retweet               |
+| `twitterQuote`   | `quote tweetUrl=<url> text=<text>` | Quote tweet           |
 
 ## Task Examples
 
@@ -62,10 +62,10 @@ Create a file in `tasks/` with this pattern:
 // tasks/my-task.js
 export default async function myTask(page, payload) {
     const { targetUrl, options } = payload;
-    
+
     await page.goto(targetUrl);
     // ... task logic
-    
+
     return { success: true };
 }
 ```

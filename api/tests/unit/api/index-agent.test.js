@@ -3,7 +3,7 @@
  * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("@api/agent/index.js", () => ({
   actionEngine: {

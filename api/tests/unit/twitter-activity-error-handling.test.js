@@ -9,7 +9,7 @@
  * @module tests/unit/twitter-activity-error-handling.test
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 describe("Error Handling Improvements", () => {
   describe("Session Success/Failure Tracking", () => {
@@ -27,7 +27,7 @@ describe("Error Handling Improvements", () => {
 
     // Simulate the fixed behavior
     const fixedSessionHandler = async (runSession, logger) => {
-      let sessionSuccess = false;
+      let sessionSuccess = false; // eslint-disable-line no-useless-assignment
       try {
         await runSession();
         sessionSuccess = true;

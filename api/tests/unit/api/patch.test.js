@@ -211,8 +211,18 @@ describe("api/utils/patch.js", () => {
       expect(pluginList.namedItem("ignored")).toBe(pluginList[0]);
       expect(() => pluginList.refresh()).not.toThrow();
       expect([...pluginList]).toHaveLength(3);
-      expect(global.window.navigator.hasOwnProperty("languages")).toBe(false);
-      expect(global.window.navigator.hasOwnProperty("webdriver")).toBe(false);
+      expect(
+        Object.prototype.hasOwnProperty.call(
+          global.window.navigator,
+          "languages",
+        ),
+      ).toBe(false);
+      expect(
+        Object.prototype.hasOwnProperty.call(
+          global.window.navigator,
+          "webdriver",
+        ),
+      ).toBe(false);
       expect(Object.keys(global.window.navigator)).not.toContain("webdriver");
       expect(Reflect.ownKeys(global.window.navigator)).not.toContain(
         "webdriver",

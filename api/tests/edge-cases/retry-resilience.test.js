@@ -15,7 +15,7 @@
  * - Health checks
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/logger.js", () => ({
   createLogger: vi.fn(() => ({
@@ -326,10 +326,14 @@ describe("Edge Cases: Retry and Resilience", () => {
       // Cause circuit to open
       try {
         await execute(failingFn);
-      } catch {}
+      } catch {
+        // Expected to fail - testing retry exhaustion
+      }
       try {
         await execute(failingFn);
-      } catch {}
+      } catch {
+        // Expected to fail - testing circuit breaker state
+      }
 
       expect(cbState).toBe("OPEN");
 

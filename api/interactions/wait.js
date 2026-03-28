@@ -23,7 +23,10 @@ import { ValidationError, ElementTimeoutError } from "../core/errors.js";
  */
 export async function wait(ms) {
   if (typeof ms !== "number" || Number.isNaN(ms) || ms < 0) {
-    throw new ValidationError(`wait() requires a positive number, got: ${ms}`);
+    throw new ValidationError(
+      "VALIDATION_ERROR",
+      `wait() requires a positive number, got: ${ms}`,
+    );
   }
   const jitter = ms * 0.15 * (Math.random() - 0.5) * 2;
   await new Promise((r) => setTimeout(r, Math.max(0, Math.round(ms + jitter))));
@@ -40,6 +43,7 @@ export async function wait(ms) {
 export async function waitWithAbort(ms, signal) {
   if (typeof ms !== "number" || Number.isNaN(ms) || ms < 0) {
     throw new ValidationError(
+      "VALIDATION_ERROR",
       `waitWithAbort() requires a positive number, got: ${ms}`,
     );
   }

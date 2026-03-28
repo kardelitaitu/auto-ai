@@ -3,7 +3,7 @@
  * Basic orchestrator functionality without complex mocking
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("../../core/logger.js", () => ({
   createLogger: vi.fn(() => ({

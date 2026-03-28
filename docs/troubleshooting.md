@@ -7,11 +7,13 @@ Solutions for common issues with Auto-AI.
 ### Browser Not Found
 
 **Symptoms:**
+
 ```
 Error: No browsers discovered
 ```
 
 **Solutions:**
+
 1. Ensure browser is running with remote debugging enabled
 2. Check the browser port matches config
 3. Restart the browser
@@ -24,11 +26,13 @@ Error: No browsers discovered
 ### Connection Timeout
 
 **Symptoms:**
+
 ```
 Error: Connection timeout after 30000ms
 ```
 
 **Solutions:**
+
 1. Check firewall settings
 2. Verify the port is correct
 3. Try a different browser
@@ -38,11 +42,13 @@ Error: Connection timeout after 30000ms
 ### Local LLM Not Connecting
 
 **Symptoms:**
+
 ```
 Error: connect ECONNREFUSED 127.0.0.1:11434
 ```
 
 **Solutions:**
+
 1. Start Ollama: `ollama serve`
 2. Pull a model: `ollama pull llama3`
 3. Check Docker is running
@@ -58,11 +64,13 @@ ollama pull llama3
 ### OpenRouter API Error
 
 **Symptoms:**
+
 ```
 Error: 401 - Invalid API key
 ```
 
 **Solutions:**
+
 1. Verify `OPENROUTER_API_KEY` in `.env`
 2. Check API key has credits
 3. Try a different model
@@ -70,11 +78,13 @@ Error: 401 - Invalid API key
 ### LLM Response Timeout
 
 **Symptoms:**
+
 ```
 Error: LLM request timeout
 ```
 
 **Solutions:**
+
 1. Increase timeout in `config/timeouts.json`
 2. Use faster local LLM for simple tasks
 3. Check network connection
@@ -84,11 +94,13 @@ Error: LLM request timeout
 ### Session Crashed
 
 **Symptoms:**
+
 ```
 Error: Session crashed
 ```
 
 **Solutions:**
+
 1. Check browser is still running
 2. Increase timeout settings
 3. Review logs for error details
@@ -96,11 +108,13 @@ Error: Session crashed
 ### Context Isolation Error
 
 **Symptoms:**
+
 ```
 Error: No context available
 ```
 
 **Solutions:**
+
 1. Always use `api.withPage()` for operations
 2. Don't access page outside callback
 
@@ -119,11 +133,13 @@ await page.goto('https://example.com');
 ### Detection by Website
 
 **Symptoms:**
+
 ```
 Website detects automation
 ```
 
 **Solutions:**
+
 1. Enable all humanization features
 2. Use a different persona
 3. Check for canvas fingerprinting
@@ -141,11 +157,13 @@ PERSONA=stealth
 ### Node Module Build Failed
 
 **Symptoms:**
+
 ```
 Error: better-sqlite3 build failed
 ```
 
 **Solutions:**
+
 1. Install build tools: `npm install --global windows-build-tools`
 2. Or install Visual Studio Build Tools
 3. Then rebuild: `npm rebuild better-sqlite3`
@@ -153,11 +171,13 @@ Error: better-sqlite3 build failed
 ### pnpm Install Fails
 
 **Symptoms:**
+
 ```
 Error: pnpm install failed
 ```
 
 **Solutions:**
+
 1. Clear cache: `pnpm store prune`
 2. Delete node_modules: `rm -rf node_modules`
 3. Retry: `pnpm install --force`
@@ -167,11 +187,13 @@ Error: pnpm install failed
 ### Slow Execution
 
 **Symptoms:**
+
 ```
 Tasks taking too long
 ```
 
 **Solutions:**
+
 1. Use local LLM for simple tasks
 2. Reduce humanization delays
 3. Increase concurrent sessions
@@ -179,11 +201,13 @@ Tasks taking too long
 ### Memory Leaks
 
 **Symptoms:**
+
 ```
 Memory usage growing indefinitely
 ```
 
 **Solutions:**
+
 1. Run tests to identify issues
 2. Check for unclosed pages
 3. Review session cleanup

@@ -3,7 +3,7 @@
  * Copyright (c) 2025 gantengmaksimal - All Rights Reserved
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 vi.mock("@api/core/context.js", () => ({
   withPage: vi.fn((page, fn) => fn()),

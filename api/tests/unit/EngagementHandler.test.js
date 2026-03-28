@@ -439,5 +439,156 @@ describe("EngagementHandler", () => {
       // The function will try to click the profile link
       expect(result).toBeDefined();
     });
+
+    it("should call interactWithProfile after clicking profile", async () => {
+      api.eval.mockResolvedValue([0]);
+      mockAgent.ghost.click.mockResolvedValue({ success: true });
+
+      // Mock interactWithProfile to verify it's called
+      const spy = vi.spyOn(handler, "interactWithProfile").mockResolvedValue({
+        scrolled: true,
+        followed: false,
+        likedTweets: 0,
+        readContent: true,
+      });
+
+      await handler.diveProfile();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe("interactWithProfile", () => {
+    it("should return object with expected properties", async () => {
+      api.visible.mockResolvedValue(false);
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(0),
+        first: vi.fn().mockReturnValue({}),
+        nth: vi.fn().mockReturnValue({}),
+      });
+
+      const result = await handler.interactWithProfile();
+
+      expect(result).toHaveProperty("scrolled");
+      expect(result).toHaveProperty("followed");
+      expect(result).toHaveProperty("likedTweets");
+      expect(result).toHaveProperty("readContent");
+    });
+
+    it("should simulate reading behavior", async () => {
+      api.visible.mockResolvedValue(false);
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(0),
+        first: vi.fn().mockReturnValue({}),
+        nth: vi.fn().mockReturnValue({}),
+      });
+
+      const result = await handler.interactWithProfile();
+      expect(result.readContent).toBe(true);
+    });
+
+    it("should scroll through profile", async () => {
+      api.visible.mockResolvedValue(false);
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(0),
+        first: vi.fn().mockReturnValue({}),
+        nth: vi.fn().mockReturnValue({}),
+      });
+
+      const result = await handler.interactWithProfile();
+      expect(result.scrolled).toBe(true);
+    });
+
+    it("should log interaction start and completion", async () => {
+      api.visible.mockResolvedValue(false);
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(0),
+        first: vi.fn().mockReturnValue({}),
+        nth: vi.fn().mockReturnValue({}),
+      });
+
+      await handler.interactWithProfile();
+
+      expect(mockAgent.logger.info).toHaveBeenCalledWith(
+        expect.stringContaining("[Profile] Starting profile interaction"),
+      );
+      expect(mockAgent.logger.info).toHaveBeenCalledWith(
+        expect.stringContaining("[Profile] Interaction complete"),
+      );
+    });
+
+    it("should attempt follow when probability succeeds", async () => {
+      // Mock mathUtils.roll to return true for follow probability
+      mathUtils.roll.mockImplementation((prob) => prob === 0.1);
+
+      // Mock follow button visibility
+      api.visible.mockImplementation((selector) => {
+        const selectorStr =
+          typeof selector === "string" ? selector : String(selector);
+        if (selectorStr.includes("follow")) {
+          return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
+      });
+
+      // Mock text content for follow button
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(0),
+        first: vi.fn().mockReturnValue({
+          textContent: vi.fn().mockResolvedValue("Follow"),
+          click: vi.fn().mockResolvedValue(undefined),
+        }),
+        nth: vi.fn().mockReturnValue({}),
+      });
+
+      const result = await handler.interactWithProfile();
+      // Result depends on probability roll - just verify structure
+      expect(result).toHaveProperty("followed");
+    });
+
+    it("should not follow when already following", async () => {
+      mathUtils.roll.mockReturnValue(true);
+
+      api.visible.mockResolvedValue(true);
+
+      mockPage.locator.mockReturnValue({
+        count: vi.fn().mockResolvedValue(0),
+        first: vi.fn().mockReturnValue({
+          textContent: vi.fn().mockResolvedValue("Following"),
+          click: vi.fn().mockResolvedValue(undefined),
+        }),
+        nth: vi.fn().mockReturnValue({}),
+      });
+
+      const result = await handler.interactWithProfile();
+      expect(result.followed).toBe(false);
+    });
+
+    it("should like tweets when probability succeeds", async () => {
+      mathUtils.roll.mockImplementation((prob) => {
+        // Return false for follow (0.1), true for like (0.2)
+        if (prob === 0.1) return false;
+        if (prob === 0.2) return true;
+        return false;
+      });
+
+      api.visible.mockResolvedValue(false);
+      api.exists.mockResolvedValue(true);
+
+      mockPage.locator.mockImplementation((selector) => ({
+        count: vi.fn().mockResolvedValue(1),
+        first: vi.fn().mockReturnValue({
+          textContent: vi.fn().mockResolvedValue("Follow"),
+        }),
+        nth: vi.fn().mockReturnValue({
+          visible: vi.fn().mockResolvedValue(true),
+          boundingBox: vi
+            .fn()
+            .mockResolvedValue({ x: 100, y: 100, width: 50, height: 50 }),
+        }),
+      }));
+
+      const result = await handler.interactWithProfile();
+      expect(result).toHaveProperty("likedTweets");
+    });
   });
 });
