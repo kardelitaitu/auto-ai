@@ -1,6 +1,6 @@
 # Auto-AI Development Roadmap
 
-> Last updated: 2026-03-28
+> Last updated: 2026-03-29
 
 ## Current Focus
 
@@ -68,7 +68,7 @@ Phase 2 complete. Ready for Phase 3: Features.
 | 🔴       | Real-time metrics dashboard (web UI)    | High   | 20h    | 📋 Planned |
 | 🔴       | Circuit breaker for browser connections | High   | 12h    | 📋 Planned |
 | 🟡       | Exponential backoff retry logic         | Medium | 10h    | 📋 Planned |
-| 🟡       | Fix 5 flaky tests in coverage run       | Medium | 2h     | 📋 Planned |
+| 🟡       | Fix 5 flaky tests in coverage run       | Medium | 2h     | ✅ Done (2026-03-29) |
 | 🟢       | Plugin system for custom tasks          | Medium | 16h    | 📋 Planned |
 
 **Exit criteria**: Live monitoring, improved reliability metrics (>95% connection success).
