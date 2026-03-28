@@ -15,13 +15,12 @@ permissions:
 
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-    # Enable parallel execution
     VITEST_MAX_THREADS: '16'
     VITEST_MIN_THREADS: '4'
 
 jobs:
     lint:
-        runs-on: self-hosted-windows11
+        runs-on: win-main
         timeout-minutes: 10
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
@@ -56,11 +55,23 @@ jobs:
             - name: Check Prettier formatting
               run: pnpm exec prettier --check . --config config/.prettierrc
 
-    test-unit:
-        runs-on: self-hosted-windows11
+    test:
+        runs-on: ${{ matrix.runner }}
         timeout-minutes: 30
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        strategy:
+            fail-fast: false
+            matrix:
+                runner: [win-parallel-1, win-parallel-2, win-parallel-3, win-parallel-4]
+                test-type: [unit, integration, edge]
+                include:
+                    - runner: win-parallel-1
+                      test-type: unit
+                    - runner: win-parallel-2
+                      test-type: integration
+                    - runner: win-parallel-3
+                      test-type: edge
 
         steps:
             - name: Checkout code
@@ -86,79 +97,13 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Run Unit Tests
-              run: pnpm run test:bun:unit
-
-    test-integration:
-        runs-on: self-hosted-windows11
-        timeout-minutes: 30
-        env:
-            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v5
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  dest: ${{ runner.temp }}\setup-pnpm
-
-            - name: Get pnpm store directory
-              id: pnpm-cache
-              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-            - name: Setup pnpm cache
-              uses: actions/cache@v4
-              with:
-                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Run Integration Tests
-              run: pnpm run test:bun:integration
-
-    test-edge:
-        runs-on: self-hosted-windows11
-        timeout-minutes: 30
-        env:
-            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v5
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  dest: ${{ runner.temp }}\setup-pnpm
-
-            - name: Get pnpm store directory
-              id: pnpm-cache
-              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-            - name: Setup pnpm cache
-              uses: actions/cache@v4
-              with:
-                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Run Edge Case Tests
-              run: pnpm run test:bun:edge
+            - name: Run ${{ matrix.test-type }} Tests
+              run: pnpm run test:bun:${{ matrix.test-type }}
 
     build:
-        runs-on: self-hosted-windows11
+        runs-on: win-main
         timeout-minutes: 15
-        needs: [lint, test-unit, test-integration, test-edge]
+        needs: [lint, test]
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
@@ -197,17 +142,17 @@ jobs:
                   }
 
     notify:
-        runs-on: self-hosted-windows11
-        needs: [lint, test-unit, test-integration, test-edge, build]
+        runs-on: win-main
+        needs: [lint, test, build]
         if: always()
 
         steps:
             - name: Success notification
-              if: needs.lint.result == 'success' && needs.test-unit.result == 'success' && needs.test-integration.result == 'success' && needs.test-edge.result == 'success' && needs.build.result == 'success'
+              if: needs.lint.result == 'success' && needs.test.result == 'success' && needs.build.result == 'success'
               run: echo "✅ All checks passed!"
 
             - name: Failure notification
-              if: needs.lint.result == 'failure' || needs.test-unit.result == 'failure' || needs.test-integration.result == 'failure' || needs.test-edge.result == 'failure' || needs.build.result == 'failure'
+              if: needs.lint.result == 'failure' || needs.test.result == 'failure' || needs.build.result == 'failure'
               run: |
                   echo "❌ CI Failed!"
                   echo "Check the logs above for details."
