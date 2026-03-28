@@ -12,6 +12,9 @@ concurrency:
 
 permissions:
     contents: read
+    actions: write
+    checks: write
+    statuses: write
 
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
