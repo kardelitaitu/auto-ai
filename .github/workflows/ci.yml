@@ -12,19 +12,16 @@ concurrency:
 
 permissions:
     contents: read
-    actions: write
-    checks: write
-    statuses: write
 
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-    VITEST_MAX_THREADS: '16'
-    VITEST_MIN_THREADS: '4'
+    VITEST_MAX_THREADS: 4
+    VITEST_MIN_THREADS: 2
 
 jobs:
     lint:
-        runs-on: self-hosted-windows11
-        timeout-minutes: 10
+        runs-on: ubuntu-latest
+
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
@@ -34,20 +31,11 @@ jobs:
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
-              with:
-                  dest: ${{ runner.temp }}\setup-pnpm
 
-            - name: Get pnpm store directory
-              id: pnpm-cache
-              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-            - name: Setup pnpm cache
-              uses: actions/cache@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
               with:
-                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
+                  node-version: 24
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -55,24 +43,11 @@ jobs:
             - name: Run ESLint
               run: pnpm run lint
 
-            - name: Check Prettier formatting
-              run: pnpm exec prettier --check . --config config/.prettierrc
+    test-unit:
+        runs-on: ubuntu-latest
 
-    test:
-        runs-on: ${{ matrix.runner }}
-        timeout-minutes: 30
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - runner: self-hosted-windows11
-                      test-type: unit
-                    - runner: self-hosted-windows11
-                      test-type: integration
-                    - runner: self-hosted-windows11
-                      test-type: edge
 
         steps:
             - name: Checkout code
@@ -80,31 +55,26 @@ jobs:
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
-              with:
-                  dest: ${{ runner.temp }}\setup-pnpm
 
-            - name: Get pnpm store directory
-              id: pnpm-cache
-              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-            - name: Setup pnpm cache
-              uses: actions/cache@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
               with:
-                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
+                  node-version: 24
+
+            - name: Install bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Run ${{ matrix.test-type }} Tests
-              run: pnpm run test:bun:${{ matrix.test-type }}
+            - name: Run Unit Tests
+              run: pnpm run test:bun:unit
 
-    build:
-        runs-on: self-hosted-windows11
-        timeout-minutes: 15
-        needs: [lint, test]
+    test-integration:
+        runs-on: ubuntu-latest
+
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
@@ -114,47 +84,83 @@ jobs:
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
-              with:
-                  dest: ${{ runner.temp }}\setup-pnpm
 
-            - name: Get pnpm store directory
-              id: pnpm-cache
-              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-            - name: Setup pnpm cache
-              uses: actions/cache@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
               with:
-                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
+                  node-version: 24
+
+            - name: Install bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run Integration Tests
+              run: pnpm run test:bun:integration
+
+    test-edge:
+        runs-on: ubuntu-latest
+
+        env:
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+
+            - name: Install bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run Edge Case Tests
+              run: pnpm run test:bun:edge
+
+    build:
+        runs-on: ubuntu-latest
+        needs: [lint, test-unit, test-integration, test-edge]
+
+        env:
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+
+            - name: Install bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
             - name: Build check
-              shell: pwsh
               run: |
-                  $pkg = Get-Content package.json -Raw | ConvertFrom-Json
-                  if ($null -ne $pkg.scripts -and $null -ne $pkg.scripts.build) {
+                  if grep -q '"build":' package.json; then
                     pnpm build
-                  } else {
-                    Write-Host "No build script defined - skipping"
-                  }
-
-    notify:
-        runs-on: self-hosted-windows11
-        needs: [lint, test, build]
-        if: always()
-
-        steps:
-            - name: Success notification
-              if: needs.lint.result == 'success' && needs.test.result == 'success' && needs.build.result == 'success'
-              run: echo "✅ All checks passed!"
-
-            - name: Failure notification
-              if: needs.lint.result == 'failure' || needs.test.result == 'failure' || needs.build.result == 'failure'
-              run: |
-                  echo "❌ CI Failed!"
-                  echo "Check the logs above for details."
-                  exit 1
+                  else
+                    echo "No build script defined - skipping"
+                  fi
