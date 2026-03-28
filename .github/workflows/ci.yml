@@ -20,7 +20,7 @@ env:
 
 jobs:
     lint:
-        runs-on: win-main
+        runs-on: self-hosted-windows11
         timeout-minutes: 10
         env:
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
@@ -64,11 +64,11 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - runner: win-parallel-1
+                    - runner: self-hosted-windows11
                       test-type: unit
-                    - runner: win-parallel-2
+                    - runner: self-hosted-windows11
                       test-type: integration
-                    - runner: win-parallel-3
+                    - runner: self-hosted-windows11
                       test-type: edge
 
         steps:
@@ -99,7 +99,7 @@ jobs:
               run: pnpm run test:bun:${{ matrix.test-type }}
 
     build:
-        runs-on: win-main
+        runs-on: self-hosted-windows11
         timeout-minutes: 15
         needs: [lint, test]
         env:
@@ -140,7 +140,7 @@ jobs:
                   }
 
     notify:
-        runs-on: win-main
+        runs-on: self-hosted-windows11
         needs: [lint, test, build]
         if: always()
 
