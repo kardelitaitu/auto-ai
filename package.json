@@ -112,7 +112,7 @@
         "mocha": "^11.7.5",
         "picomatch": "4.0.3",
         "prettier": "^3.8.1",
-        "serialize-javascript": "7.0.3",
+        "serialize-javascript": "7.0.5",
         "tar": "7.5.11",
         "typedoc": "^0.28.17",
         "vitest": "^3.2.4"
