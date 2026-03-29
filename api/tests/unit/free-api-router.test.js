@@ -44,16 +44,8 @@ vi.mock("../../core/circuit-breaker.js", () => {
   return { default: CircuitBreaker };
 });
 
-vi.mock("../../utils/rate-limit-tracker.js", () => {
-  class RateLimitTracker {
-    constructor() {}
-    getWarningStatus() {
-      return "ok";
-    }
-    trackRequest() {}
-  }
-  return { RateLimitTracker };
-});
+// Note: rate-limit-tracker.js is NOT mocked here - use real implementation
+// Only logger is mocked at top of file
 
 vi.mock("../../utils/request-dedupe.js", () => {
   class RequestDedupe {

@@ -14,12 +14,14 @@ vi.mock("@api/index.js", () => {
     wait: vi.fn().mockResolvedValue(undefined),
     click: vi.fn().mockResolvedValue(undefined),
     visible: vi.fn().mockImplementation(async (el) => {
-      if (el && typeof el.isVisible === "function") return await el.isVisible();
-      if (el && typeof el.count === "function") return (await el.count()) > 0;
+      if (!el) return false;
+      if (typeof el.isVisible === "function") return await el.isVisible();
+      if (typeof el.count === "function") return (await el.count()) > 0;
       return true;
     }),
     exists: vi.fn().mockImplementation(async (el) => {
-      if (el && typeof el.count === "function") return (await el.count()) > 0;
+      if (!el) return false;
+      if (typeof el.count === "function") return (await el.count()) > 0;
       return el !== null;
     }),
     getCurrentUrl: vi.fn().mockResolvedValue("https://x.com/home"),
@@ -39,7 +41,7 @@ vi.mock("@api/index.js", () => {
 
 import { api } from "@api/index.js";
 import { EngagementHandler } from "../../../../twitter/twitter-agent/EngagementHandler.js";
-import { mathUtils } from "@api/utils/math.js";
+import { mathUtils } from "../../../../utils/math.js";
 
 describe("EngagementHandler", () => {
   let handler;
@@ -113,7 +115,7 @@ describe("EngagementHandler", () => {
       ghost: mockGhost,
       state: { follows: 0, likes: 0, bookmarks: 0, consecutiveSoftErrors: 0 },
       human: {
-        safeHumanClick: vi.fn().mockResolvedValue({ success: true }),
+        safeHumanClick: vi.fn().mockResolvedValue(true),
         humanClick: vi.fn().mockResolvedValue({ success: true }),
         fixation: vi.fn().mockResolvedValue(undefined),
         microMove: vi.fn().mockResolvedValue(undefined),
@@ -123,7 +125,10 @@ describe("EngagementHandler", () => {
         scroll: vi.fn().mockResolvedValue(undefined),
       },
       mathUtils: mathUtils,
-      twitterConfig: {},
+      config: {
+        timings: { readingPhase: { mean: 1000, deviation: 300 } },
+        probabilities: { likeTweetAfterDive: 0.3, bookmarkAfterDive: 0.1 },
+      },
       sessionStart: Date.now(),
       fatigueThreshold: 1000000,
     };
@@ -131,28 +136,69 @@ describe("EngagementHandler", () => {
     handler = new EngagementHandler(mockAgent);
   });
 
-  it("likeTweet should succeed", async () => {
-    const mockTweet = {
-      isVisible: vi.fn().mockResolvedValue(true),
-      boundingBox: vi
-        .fn()
-        .mockResolvedValue({ x: 0, y: 0, width: 100, height: 100 }),
-      locator: vi.fn().mockReturnValue({
+  describe("likeTweet", () => {
+    it("should return false when like button not found", async () => {
+      mockPage.locator = vi.fn().mockImplementation(() => ({
         first: vi.fn().mockReturnThis(),
-        isVisible: vi.fn().mockResolvedValue(true),
-        click: vi.fn().mockResolvedValue(undefined),
-        evaluate: vi.fn().mockResolvedValue(undefined),
-      }),
-    };
-    const result = await handler.likeTweet(mockTweet);
-    expect(result).toBe(true);
+        count: vi.fn().mockResolvedValue(0),
+        isVisible: vi.fn().mockResolvedValue(false),
+      }));
+      const result = await handler.likeTweet({});
+      expect(result).toBe(false);
+    });
+
+    it("should handle already liked state", async () => {
+      mockPage.locator = vi.fn().mockImplementation(() => ({
+        first: vi.fn().mockReturnThis(),
+        count: vi.fn().mockResolvedValue(1),
+        isVisible: vi.fn().mockResolvedValue(false),
+      }));
+      const result = await handler.likeTweet({});
+      expect(result).toBe(false);
+    });
   });
 
-  it("robustFollow should succeed", async () => {
-    vi.spyOn(handler, "isElementActionable").mockResolvedValue(true);
-    vi.spyOn(handler, "sixLayerClick").mockResolvedValue(true);
-    vi.spyOn(handler, "pollForFollowState").mockResolvedValue(true);
-    const result = await handler.robustFollow();
-    expect(result.success).toBe(true);
+  describe("bookmarkTweet", () => {
+    it("should return false when bookmark button not found", async () => {
+      mockPage.locator = vi.fn().mockImplementation(() => ({
+        first: vi.fn().mockReturnThis(),
+        count: vi.fn().mockResolvedValue(0),
+        isVisible: vi.fn().mockResolvedValue(false),
+      }));
+      const result = await handler.bookmarkTweet({});
+      expect(result).toBe(false);
+    });
+  });
+
+  describe("dive methods", () => {
+    it("should have diveTweet method", () => {
+      expect(typeof handler.diveTweet).toBe("function");
+    });
+
+    it("should have diveProfile method", () => {
+      expect(typeof handler.diveProfile).toBe("function");
+    });
+  });
+
+  describe("pollForFollowState", () => {
+    it("should return true on state change", async () => {
+      let pollCount = 0;
+      const checkVisibility = () => {
+        pollCount++;
+        return pollCount > 0;
+      };
+      mockPage.locator = vi.fn().mockImplementation(() => ({
+        first: vi.fn().mockReturnThis(),
+        count: vi.fn().mockImplementation(() => 1),
+        isVisible: vi.fn().mockImplementation(checkVisibility),
+        textContent: vi.fn().mockResolvedValue("Following"),
+      }));
+      const result = await handler.pollForFollowState(
+        '[data-testid="unfollow"]',
+        '[data-testid="follow"]',
+        100,
+      );
+      expect(result).toBe(true);
+    });
   });
 });

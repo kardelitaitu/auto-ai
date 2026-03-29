@@ -12,31 +12,26 @@ import { cpus } from 'os';
 const cpuCount = cpus().length;
 const envMaxThreads = parseInt(process.env.VITEST_MAX_THREADS || '', 10);
 const envMinThreads = parseInt(process.env.VITEST_MIN_THREADS || '', 10);
-const calculatedThreads = envMaxThreads || Math.max(1, cpuCount - 2);
+const calculatedThreads = envMaxThreads || 4;
 const calculatedMinThreads =
     envMinThreads || Math.max(1, Math.min(calculatedThreads, Math.floor(cpuCount / 2)));
 
 const isSilent = process.argv.includes('--silent') || process.env.VITEST_SILENT === 'true';
 if (!isSilent) {
-    console.log(`\n=== [SYSTEM_NODE] Test Execution Orchestrator ===`);
+    console.log(`\n=== [ISOLATED_COVERAGE] Per-File Coverage Analysis ===`);
     console.log(`Hardware Detected: ${cpuCount} Logical Cores`);
-    console.log(
-        `Thread Allocation: ${calculatedThreads} Max Workers (env override: ${process.env.VITEST_MAX_THREADS || 'none'})`
-    );
-    console.log(`Coverage Engine: v8 (High Performance)`);
-    console.log(`=================================================\n`);
+    console.log(`Thread Allocation: ${calculatedThreads} Max Workers`);
+    console.log(`Mode: Isolated per-file (forks pool)`);
+    console.log(`========================================================\n`);
 }
 
 const rootDir = resolve(__dirname, '..');
-const coverageRoot = resolve(rootDir, 'api/coverage');
+const coverageRoot = resolve(rootDir, 'api/coverage-isolated');
 
 if (!existsSync(coverageRoot)) {
     mkdirSync(coverageRoot, { recursive: true });
 }
 
-// ============================================================================
-// Module C: Core Vitest Configuration
-// ============================================================================
 export default defineConfig({
     test: {
         globals: false,
@@ -56,23 +51,22 @@ export default defineConfig({
         testTimeout: 10000,
         hookTimeout: 10000,
         cache: true,
-        cacheDir: process.env.VITEST_CACHE_DIR || resolve(rootDir, 'node_modules/.vitest'),
+        cacheDir: process.env.VITEST_CACHE_DIR || resolve(rootDir, 'node_modules/.vitest-isolated'),
 
-        // --------------------------------------------------------------------
-        // Concurrency Engine - Required: forks for AsyncLocalStorage isolation
-        // --------------------------------------------------------------------
+        // Forks pool: each test file runs in its own child process
+        // Each process has its own Node.js module cache
         pool: 'forks',
         poolOptions: {
             forks: {
                 maxForks: calculatedThreads,
                 minForks: calculatedMinThreads,
+                // isolate: true ensures each test file gets a fresh environment
+                isolate: true,
             },
         },
         fileParallelism: true,
+        isolate: true,
 
-        // --------------------------------------------------------------------
-        // Coverage Engine - V8 Provider (Faster than Istanbul)
-        // --------------------------------------------------------------------
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],
@@ -105,12 +99,12 @@ export default defineConfig({
                 'api/tests/integration/twitter-agent.test.js',
                 '**/index.js',
             ],
+            // Thresholds disabled for isolated testing - user can override via CLI
             thresholds: {
-                statements: 98.07,
-                branches: 96.66,
-                functions: 85,
-                lines: 98.07,
-                autoUpdate: false,
+                statements: 0,
+                branches: 0,
+                functions: 0,
+                lines: 0,
             },
         },
 

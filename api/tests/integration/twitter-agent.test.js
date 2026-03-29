@@ -6,7 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@api/core/logger.js", () => ({
+vi.mock("../../core/logger.js", () => ({
   createLogger: vi.fn(() => ({
     info: vi.fn(),
     warn: vi.fn(),
@@ -16,7 +16,7 @@ vi.mock("@api/core/logger.js", () => ({
   })),
 }));
 
-vi.mock("@api/utils/math.js", () => ({
+vi.mock("../../utils/math.js", () => ({
   mathUtils: {
     gaussian: vi.fn((mean) => mean),
     randomInRange: vi.fn((min, max) => (min + max) / 2),
@@ -24,39 +24,39 @@ vi.mock("@api/utils/math.js", () => ({
   },
 }));
 
-vi.mock("@api/utils/entropyController.js", () => ({
+vi.mock("../../utils/entropyController.js", () => ({
   entropy: { add: vi.fn() },
 }));
 
-vi.mock("@api/utils/profileManager.js", () => ({
+vi.mock("../../utils/profileManager.js", () => ({
   profileManager: { get: vi.fn().mockReturnValue({}) },
 }));
 
-vi.mock("@api/behaviors/scroll-helper.js", () => ({
+vi.mock("../../behaviors/scroll-helper.js", () => ({
   scrollDown: vi.fn(),
   scrollRandom: vi.fn(),
 }));
 
-vi.mock("@api/twitter/twitter-agent/NavigationHandler.js", () => ({
+vi.mock("../../twitter/twitter-agent/NavigationHandler.js", () => ({
   NavigationHandler: vi.fn().mockImplementation(() => ({
     navigateHome: vi.fn().mockResolvedValue(true),
     ensureForYouTab: vi.fn().mockResolvedValue(true),
   })),
 }));
 
-vi.mock("@api/twitter/twitter-agent/EngagementHandler.js", () => ({
+vi.mock("../../twitter/twitter-agent/EngagementHandler.js", () => ({
   EngagementHandler: vi.fn().mockImplementation(() => ({
     handleLike: vi.fn().mockResolvedValue(true),
   })),
 }));
 
-vi.mock("@api/twitter/twitter-agent/SessionHandler.js", () => ({
+vi.mock("../../twitter/twitter-agent/SessionHandler.js", () => ({
   SessionHandler: vi.fn().mockImplementation(() => ({
     checkLoginState: vi.fn().mockResolvedValue(true),
   })),
 }));
 
-vi.mock("@api/utils/engagement-limits.js", () => ({
+vi.mock("../../utils/engagement-limits.js", () => ({
   engagementLimits: {
     createEngagementTracker: vi.fn().mockReturnValue({
       canPerform: vi.fn().mockReturnValue(true),
@@ -69,12 +69,32 @@ vi.mock("@api/utils/engagement-limits.js", () => ({
   },
 }));
 
+vi.mock("../../behaviors/humanization/index.js", () => ({
+  HumanizationEngine: vi.fn().mockImplementation(() => ({
+    think: vi.fn().mockResolvedValue(undefined),
+    recoverFromError: vi.fn().mockResolvedValue(undefined),
+  })),
+}));
+
+vi.mock("../../utils/ghostCursor.js", () => ({
+  GhostCursor: vi.fn().mockImplementation(() => ({
+    click: vi.fn().mockResolvedValue({ success: true, x: 100, y: 100 }),
+  })),
+}));
+
+vi.mock("../../index.js", () => ({
+  api: {
+    wait: vi.fn().mockResolvedValue(undefined),
+  },
+}));
+
 describe("TwitterAgent Integration", () => {
   let TwitterAgent;
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const mod = await import("@api/twitter/twitterAgent.js");
+    vi.resetModules();
+    const mod = await import("../../twitter/twitterAgent.js");
     TwitterAgent = mod.TwitterAgent;
   }, 30000);
 
@@ -193,6 +213,111 @@ describe("TwitterAgent Integration", () => {
 
     it("should have session handler", () => {
       expect(agent.session).toBeDefined();
+    });
+  });
+
+  describe("clamp method", () => {
+    let agent;
+    let mockPage;
+    let mockLogger;
+    let mockConfig;
+
+    beforeEach(() => {
+      mockLogger = { info: vi.fn() };
+      mockConfig = { id: "test" };
+      mockPage = {
+        locator: vi.fn(),
+        keyboard: {},
+        waitForSelector: vi.fn().mockResolvedValue(true),
+        url: vi.fn().mockReturnValue("https://twitter.com"),
+        mouse: { move: vi.fn() },
+        on: vi.fn(),
+      };
+      agent = new TwitterAgent(mockPage, mockConfig, mockLogger);
+    });
+
+    it("should return value when within range", () => {
+      expect(agent.clamp(5, 0, 10)).toBe(5);
+    });
+
+    it("should clamp value above max", () => {
+      expect(agent.clamp(15, 0, 10)).toBe(10);
+    });
+
+    it("should clamp value below min", () => {
+      expect(agent.clamp(-5, 0, 10)).toBe(0);
+    });
+
+    it("should handle boundary values", () => {
+      expect(agent.clamp(0, 0, 10)).toBe(0);
+      expect(agent.clamp(10, 0, 10)).toBe(10);
+    });
+  });
+
+  describe("log method", () => {
+    let mockPage;
+    let mockLogger;
+    let mockConfig;
+
+    beforeEach(() => {
+      mockLogger = { info: vi.fn() };
+      mockConfig = { id: "test" };
+      mockPage = {
+        locator: vi.fn(),
+        keyboard: {},
+        waitForSelector: vi.fn().mockResolvedValue(true),
+        url: vi.fn().mockReturnValue("https://twitter.com"),
+        mouse: { move: vi.fn() },
+        on: vi.fn(),
+      };
+    });
+
+    it("should log with logger when available", () => {
+      const agent = new TwitterAgent(mockPage, mockConfig, mockLogger);
+      agent.log("test message");
+      expect(mockLogger.info).toHaveBeenCalledWith("[Agent:test] test message");
+    });
+
+    it("should handle null logger with console.log", () => {
+      const agent = new TwitterAgent(mockPage, mockConfig, null);
+      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+      agent.log("test message");
+      expect(consoleSpy).toHaveBeenCalledWith("[Agent:test] test message");
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe("shutdown method", () => {
+    let agent;
+    let mockPage;
+    let mockLogger;
+    let mockConfig;
+
+    beforeEach(() => {
+      mockLogger = { info: vi.fn() };
+      mockConfig = { id: "test" };
+      mockPage = {
+        locator: vi.fn(),
+        keyboard: {},
+        waitForSelector: vi.fn().mockResolvedValue(true),
+        url: vi.fn().mockReturnValue("https://twitter.com"),
+        mouse: { move: vi.fn() },
+        on: vi.fn(),
+        removeAllListeners: vi.fn(),
+        isClosed: vi.fn().mockReturnValue(false),
+      };
+      agent = new TwitterAgent(mockPage, mockConfig, mockLogger);
+    });
+
+    it("should remove network listeners", () => {
+      agent.shutdown();
+      expect(mockPage.removeAllListeners).toHaveBeenCalledWith("request");
+      expect(mockPage.removeAllListeners).toHaveBeenCalledWith("response");
+    });
+
+    it("should handle closed page gracefully", () => {
+      mockPage.isClosed = vi.fn().mockReturnValue(true);
+      expect(() => agent.shutdown()).not.toThrow();
     });
   });
 });

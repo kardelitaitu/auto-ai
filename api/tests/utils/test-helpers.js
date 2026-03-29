@@ -277,10 +277,11 @@ export const mockMetricsModule = () => ({
 
 /**
  * Asserts that a result is successful
+ * @param {Object} expect - Vitest expect function
  * @param {Object} result - Result object to check
  * @param {string} message - Optional failure message
  */
-export const expectSuccess = (result, message = "Expected success") => {
+export const expectSuccess = (expect, result, message = "Expected success") => {
   expect(result).toBeDefined();
   expect(result.success).toBe(true);
   if (message) {
@@ -290,10 +291,11 @@ export const expectSuccess = (result, message = "Expected success") => {
 
 /**
  * Asserts that a result is an error
+ * @param {Object} expect - Vitest expect function
  * @param {Object} result - Result object to check
  * @param {string} expectedError - Expected error message (optional)
  */
-export const expectError = (result, expectedError = null) => {
+export const expectError = (expect, result, expectedError = null) => {
   expect(result).toBeDefined();
   expect(result.success).toBe(false);
   expect(result.error).toBeDefined();
@@ -304,20 +306,22 @@ export const expectError = (result, expectedError = null) => {
 
 /**
  * Asserts that a mock function was called with expected args
+ * @param {Object} expect - Vitest expect function
  * @param {Function} mockFn - Mock function to check
  * @param {...any} expectedArgs - Expected arguments
  */
-export const expectCalledWith = (mockFn, ...expectedArgs) => {
+export const expectCalledWith = (expect, mockFn, ...expectedArgs) => {
   expect(mockFn).toHaveBeenCalled();
   expect(mockFn).toHaveBeenCalledWith(...expectedArgs);
 };
 
 /**
  * Asserts that a promise rejects with expected error
+ * @param {Object} expect - Vitest expect function
  * @param {Function} fn - Async function to test
  * @param {string|RegExp} expectedError - Expected error message/pattern
  */
-export const expectRejects = async (fn, expectedError) => {
+export const expectRejects = async (expect, fn, expectedError) => {
   await expect(fn()).rejects.toThrow(expectedError);
 };
 

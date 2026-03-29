@@ -6,7 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-vi.mock("@api/core/logger.js", () => ({
+vi.mock("../../../core/logger.js", () => ({
   createLogger: () => ({
     info: vi.fn(),
     debug: vi.fn(),
@@ -36,12 +36,11 @@ describe("api/agent/visualDiff.js", () => {
     vi.clearAllMocks();
     vi.resetModules();
 
-    // Re-mock sharp for each test
     vi.doMock("sharp", () => ({
       default: mockSharp,
     }));
 
-    const module = await import("@api/agent/visualDiff.js");
+    const module = await import("../../../agent/visualDiff.js");
     visualDiffEngine = module.visualDiffEngine || module.default;
   });
 
@@ -300,7 +299,7 @@ describe("api/agent/visualDiff.js", () => {
 
   describe("default export", () => {
     it("should export visualDiffEngine as default", async () => {
-      const mod = await import("@api/agent/visualDiff.js");
+      const mod = await import("../../../agent/visualDiff.js");
       expect(mod.default).toBe(visualDiffEngine);
     });
   });

@@ -102,6 +102,28 @@ describe("Test Helper Utilities", () => {
       expect(cdp.newPage).toBeDefined();
       expect(cdp.close).toBeDefined();
     });
+
+    it("should have locator methods", () => {
+      const { createMockPage } = require("./test-helpers.js");
+      const page = createMockPage();
+
+      expect(page.locator).toBeDefined();
+      expect(page.getByRole).toBeDefined();
+      expect(page.getByText).toBeDefined();
+      expect(page.getByLabel).toBeDefined();
+      expect(page.getByPlaceholder).toBeDefined();
+      expect(page.getByTestId).toBeDefined();
+    });
+
+    it("should have viewport and evaluate methods", () => {
+      const { createMockPage } = require("./test-helpers.js");
+      const page = createMockPage();
+
+      expect(page.viewportSize).toBeDefined();
+      expect(page.evaluate).toBeDefined();
+      expect(page.evaluateHandle).toBeDefined();
+      expect(page.waitForURL).toBeDefined();
+    });
   });
 
   describe("createMockLocator", () => {
@@ -152,6 +174,17 @@ describe("Test Helper Utilities", () => {
       expect(locator.waitFor).toBeDefined();
       expect(locator.filter).toBeDefined();
     });
+
+    it("should create locator with overrides", () => {
+      const { createMockLocator } = require("./test-helpers.js");
+      const customIsVisible = vi.fn().mockResolvedValue(false);
+      const locator = createMockLocator({
+        click: vi.fn().mockResolvedValue(true),
+        isVisible: customIsVisible,
+      });
+
+      expect(locator.isVisible).toBe(customIsVisible);
+    });
   });
 
   describe("createMockSession", () => {
@@ -199,6 +232,20 @@ describe("Test Helper Utilities", () => {
 
       expect(browser.version).toBeDefined();
       expect(browser.version()).toBe("1.0.0");
+    });
+
+    it("should create browser with overrides", () => {
+      const {
+        createMockBrowser,
+        createMockPage,
+      } = require("./test-helpers.js");
+      const browser = createMockBrowser({
+        isConnected: vi.fn().mockReturnValue(false),
+        version: vi.fn().mockReturnValue("2.0.0"),
+      });
+
+      expect(browser.isConnected()).toBe(false);
+      expect(browser.version()).toBe("2.0.0");
     });
   });
 
@@ -270,6 +317,13 @@ describe("Test Helper Utilities", () => {
       expect(wait).toBeDefined();
       expect(typeof wait).toBe("function");
     });
+
+    it("should return a promise", async () => {
+      const { wait } = require("./test-helpers.js");
+      const result = wait(10);
+      expect(result).toBeInstanceOf(Promise);
+      await result;
+    });
   });
 
   describe("advanceTimers", () => {
@@ -286,6 +340,16 @@ describe("Test Helper Utilities", () => {
       expect(expectSuccess).toBeDefined();
       expect(typeof expectSuccess).toBe("function");
     });
+
+    it("should pass for successful result", () => {
+      const { expectSuccess } = require("./test-helpers.js");
+      expectSuccess(expect, { success: true });
+    });
+
+    it("should pass for successful result without error", () => {
+      const { expectSuccess } = require("./test-helpers.js");
+      expectSuccess(expect, { success: true, error: undefined });
+    });
   });
 
   describe("expectError", () => {
@@ -294,6 +358,20 @@ describe("Test Helper Utilities", () => {
       expect(expectError).toBeDefined();
       expect(typeof expectError).toBe("function");
     });
+
+    it("should pass for error result", () => {
+      const { expectError } = require("./test-helpers.js");
+      expectError(expect, { success: false, error: "Something went wrong" });
+    });
+
+    it("should match expected error substring", () => {
+      const { expectError } = require("./test-helpers.js");
+      expectError(
+        expect,
+        { success: false, error: "Something went wrong" },
+        "Something",
+      );
+    });
   });
 
   describe("mockLoggerModule", () => {
@@ -301,6 +379,13 @@ describe("Test Helper Utilities", () => {
       const { mockLoggerModule } = require("./test-helpers.js");
       const module = mockLoggerModule();
       expect(module.createLogger).toBeDefined();
+    });
+
+    it("should have logger context methods", () => {
+      const { mockLoggerModule } = require("./test-helpers.js");
+      const module = mockLoggerModule();
+      expect(module.loggerContext.run).toBeDefined();
+      expect(module.loggerContext.getStore).toBeDefined();
     });
   });
 
@@ -311,6 +396,12 @@ describe("Test Helper Utilities", () => {
       expect(module.getTimeoutValue).toBeDefined();
       expect(module.getSettings).toBeDefined();
     });
+
+    it("should have clearCache method", () => {
+      const { mockConfigLoaderModule } = require("./test-helpers.js");
+      const module = mockConfigLoaderModule();
+      expect(module.clearCache).toBeDefined();
+    });
   });
 
   describe("mockMetricsModule", () => {
@@ -320,6 +411,14 @@ describe("Test Helper Utilities", () => {
       expect(module.default).toBeDefined();
       expect(module.default.recordBrowserDiscovery).toBeDefined();
       expect(module.default.getStats).toBeDefined();
+    });
+
+    it("should have metrics properties", () => {
+      const { mockMetricsModule } = require("./test-helpers.js");
+      const module = mockMetricsModule();
+      expect(module.default.metrics).toBeDefined();
+      expect(module.default.metrics.startTime).toBeDefined();
+      expect(module.default.recordTaskExecution).toBeDefined();
     });
   });
 
@@ -350,6 +449,16 @@ describe("Test Helper Utilities", () => {
       expect(expectCalledWith).toBeDefined();
       expect(typeof expectCalledWith).toBe("function");
     });
+
+    it("should verify mock was called with args", () => {
+      const {
+        expectCalledWith,
+        createMockLogger,
+      } = require("./test-helpers.js");
+      const logger = createMockLogger();
+      logger.info("test", 123);
+      expectCalledWith(expect, logger.info, "test", 123);
+    });
   });
 
   describe("expectRejects", () => {
@@ -357,6 +466,14 @@ describe("Test Helper Utilities", () => {
       const { expectRejects } = require("./test-helpers.js");
       expect(expectRejects).toBeDefined();
       expect(typeof expectRejects).toBe("function");
+    });
+
+    it("should verify async function throws", async () => {
+      const { expectRejects } = require("./test-helpers.js");
+      const failingFn = async () => {
+        throw new Error("Test error");
+      };
+      await expectRejects(expect, failingFn, "Test error");
     });
   });
 

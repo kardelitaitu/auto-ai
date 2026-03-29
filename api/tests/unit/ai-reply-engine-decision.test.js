@@ -247,7 +247,6 @@ describe("ai-reply-engine/decision", () => {
   describe("applySafetyFilters edge cases", () => {
     it("should reject empty string (edge case behavior)", () => {
       const result = mockEngine.applySafetyFilters("");
-      // Empty string is actually rejected per existing behavior
       expect(result.safe).toBe(false);
     });
 
@@ -260,6 +259,32 @@ describe("ai-reply-engine/decision", () => {
       const longText = "a".repeat(1000);
       const result = mockEngine.applySafetyFilters(longText);
       expect(result).toBeDefined();
+    });
+
+    it("should reject text exceeding max length", () => {
+      const longTweet = "a".repeat(501);
+      const result = mockEngine.applySafetyFilters(longTweet);
+      expect(result.reason).toBe("too_long");
+    });
+
+    it("should accept exactly minimum length", () => {
+      const result = mockEngine.applySafetyFilters("hello world");
+      expect(result.safe).toBe(true);
+    });
+  });
+
+  describe("shouldReply validation paths", () => {
+    it("should skip when safety filter blocks", async () => {
+      mathUtils.roll.mockReturnValue(true);
+      sentimentService.analyze.mockReturnValue(baseSentiment);
+      mockEngine.applySafetyFilters = vi
+        .fn()
+        .mockReturnValue({ safe: false, reason: "too_short" });
+
+      const result = await shouldReply(mockEngine, "hi", "user");
+
+      expect(result.decision).toBe("skip");
+      expect(result.reason).toBe("safety");
     });
   });
 });

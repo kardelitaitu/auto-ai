@@ -424,7 +424,9 @@ function writeLog(message) {
     const logLine = `[${timestamp}] ${message}\n`;
     const existing = existsSync(LOG_FILE) ? readFileSync(LOG_FILE, "utf8") : "";
     writeFileSync(LOG_FILE, existing + logLine);
-  } catch (e) {}
+  } catch (e) {
+    /* silently ignore logging errors */
+  }
 }
 
 function log(msg, color = "white") {
@@ -1119,7 +1121,9 @@ const actions = {
         try {
           rmSync(fullPath, { recursive: true, force: true });
           log(`  Removed: ${item}`, "gray");
-        } catch (e) {}
+        } catch (e) {
+          /* ignore cleanup errors */
+        }
       }
     }
 

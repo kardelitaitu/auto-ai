@@ -41,6 +41,13 @@ pnpm run format
 
 ### Testing
 
+
+test unit individual file:
+pnpm exec bun run vitest run path/to/file.test.js
+
+test coverage individual file:
+pnpm exec bun run vitest run --coverage path/to/file.test.js
+
 **Preferred (Bun via pnpm):**
 
 ```bash

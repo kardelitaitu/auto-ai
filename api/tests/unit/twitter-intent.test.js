@@ -80,7 +80,7 @@ describe("Twitter Intent Helpers", () => {
     });
 
     it("should trigger timeout if operation takes more than 20s", async () => {
-      vi.useFakeTimers();
+      vi.useFakeTimers({ legacy: true });
       goto.mockImplementationOnce(
         () => new Promise((resolve) => setTimeout(resolve, 30000)),
       );
@@ -124,7 +124,7 @@ describe("Twitter Intent Helpers", () => {
     });
 
     it("should trigger timeout on slow navigation", async () => {
-      vi.useFakeTimers();
+      vi.useFakeTimers({ legacy: true });
       goto.mockImplementationOnce(
         () => new Promise((resolve) => setTimeout(resolve, 30000)),
       );
@@ -181,7 +181,7 @@ describe("Twitter Intent Helpers", () => {
     });
 
     it("should trigger timeout on slow quote", async () => {
-      vi.useFakeTimers();
+      vi.useFakeTimers({ legacy: true });
       goto.mockImplementationOnce(
         () => new Promise((resolve) => setTimeout(resolve, 30000)),
       );
@@ -238,7 +238,7 @@ describe("Twitter Intent Helpers", () => {
     });
 
     it("should trigger timeout on slow follow", async () => {
-      vi.useFakeTimers();
+      vi.useFakeTimers({ legacy: true });
       goto.mockImplementationOnce(
         () => new Promise((resolve) => setTimeout(resolve, 30000)),
       );

@@ -670,6 +670,247 @@ describe("sentiment-service", () => {
         expect(result).toBeDefined();
         expect(result.isNegative).toBeDefined();
       });
+
+      it("should export shouldSkipAction", () => {
+        const result = shouldSkipAction("test", "like");
+        expect(typeof result).toBe("boolean");
+      });
+
+      it("should export getSafeActions", () => {
+        const result = getSafeActions("test content");
+        expect(result).toBeDefined();
+        expect(result.canLike).toBeDefined();
+        expect(result.canRetweet).toBeDefined();
+      });
+
+      it("should export formatSentimentReport", () => {
+        const result = formatSentimentReport("test content");
+        expect(result).toBeDefined();
+        expect(typeof result).toBe("string");
+      });
+    });
+
+    describe("analyze edge cases", () => {
+      it("should return cached result on cache hit", () => {
+        const text = "Cache hit test";
+        const firstResult = service.analyze(text, { useCache: true });
+        const secondResult = service.analyze(text, { useCache: true });
+        expect(firstResult).toEqual(secondResult);
+      });
+
+      it("should handle whitespace-only text", () => {
+        const result = service.analyze("   ");
+        expect(result.score).toBe(0);
+      });
+
+      it("should handle numeric text", () => {
+        const result = service.analyze(12345);
+        expect(result.score).toBe(0);
+      });
+
+      it("should include allowExpand in result", () => {
+        const result = service.analyze("Test content");
+        expect(result.allowExpand).toBeDefined();
+      });
+    });
+
+    describe("analyzeForReplySelection strategies", () => {
+      it("should return longest strategy for default", () => {
+        const replies = [{ text: "Short" }, { text: "Much longer reply here" }];
+        const result = service.analyzeForReplySelection(replies);
+        expect(result.strategy).toBeDefined();
+        expect(result.recommendations).toBeDefined();
+      });
+
+      it("should include recommendations in result", () => {
+        const replies = [{ text: "Test reply" }];
+        const result = service.analyzeForReplySelection(replies);
+        expect(result.recommendations).toBeDefined();
+      });
+
+      it("should return analyzed replies with sentiment", () => {
+        const replies = [{ text: "Great post!" }];
+        const result = service.analyzeForReplySelection(replies);
+        expect(result.analyzed).toBeDefined();
+        expect(result.analyzed[0].sentiment).toBeDefined();
+      });
+
+      it("should handle empty replies array", () => {
+        const result = service.analyzeForReplySelection([]);
+        expect(result.strategy).toBe("none");
+        expect(result.replies).toEqual([]);
+      });
+
+      it("should handle undefined replies", () => {
+        const result = service.analyzeForReplySelection(undefined);
+        expect(result.strategy).toBe("none");
+      });
+    });
+
+    describe("getReplyRecommendations", () => {
+      it("should return default longest strategy", () => {
+        const result = service.getReplyRecommendations("unknown-strategy", []);
+        expect(result.sort).toBeDefined();
+        expect(result.filter).toBeDefined();
+      });
+
+      it("should filter neutral-only replies", () => {
+        const analyzed = [
+          {
+            text: "Positive!",
+            sentiment: { dimensions: { valence: { valence: 0.5 } } },
+          },
+          {
+            text: "Neutral",
+            sentiment: { dimensions: { valence: { valence: 0 } } },
+          },
+          {
+            text: "Negative",
+            sentiment: { dimensions: { valence: { valence: -0.5 } } },
+          },
+        ];
+        const result = service.getReplyRecommendations(
+          "neutral-only",
+          analyzed,
+        );
+        const filtered = analyzed.filter(result.filter);
+        expect(filtered.length).toBe(1);
+      });
+
+      it("should sort by sarcasm for match-sarcasm", () => {
+        const analyzed = [
+          {
+            text: "Low",
+            sentiment: { dimensions: { sarcasm: { sarcasm: 0.1 } } },
+          },
+          {
+            text: "High",
+            sentiment: { dimensions: { sarcasm: { sarcasm: 0.8 } } },
+          },
+        ];
+        const result = service.getReplyRecommendations(
+          "match-sarcasm",
+          analyzed,
+        );
+        expect(result.sort).toBeDefined();
+      });
+
+      it("should filter positive-biased replies", () => {
+        const analyzed = [
+          {
+            text: "Positive",
+            sentiment: { dimensions: { valence: { valence: 0.5 } } },
+          },
+          {
+            text: "Negative",
+            sentiment: { dimensions: { valence: { valence: -0.5 } } },
+          },
+        ];
+        const result = service.getReplyRecommendations(
+          "positive-biased",
+          analyzed,
+        );
+        const filtered = analyzed.filter(result.filter);
+        expect(filtered.length).toBe(1);
+      });
+
+      it("should include max in all strategies", () => {
+        const strategies = [
+          "neutral-only",
+          "match-sarcasm",
+          "balanced",
+          "positive-biased",
+          "longest",
+        ];
+        strategies.forEach((strategy) => {
+          const result = service.getReplyRecommendations(strategy, []);
+          expect(result.max).toBe(30);
+        });
+      });
+    });
+
+    describe("deriveCompositeMetrics", () => {
+      it("should calculate medium risk for moderate toxicity and high sarcasm", () => {
+        const dimensions = {
+          valence: { valence: 0 },
+          arousal: { arousal: 0.5 },
+          dominance: { dominance: 0.5 },
+          sarcasm: { sarcasm: 0.7 },
+          toxicity: { toxicity: 0.45 },
+        };
+        const result = service.deriveCompositeMetrics(dimensions);
+        expect(result.riskLevel).toBe("medium");
+      });
+
+      it("should return general conversation type by default", () => {
+        const dimensions = {
+          valence: { valence: 0 },
+          arousal: { arousal: 0.3 },
+          dominance: { dominance: 0.5 },
+          sarcasm: { sarcasm: 0.1 },
+          toxicity: { toxicity: 0.1 },
+        };
+        const result = service.deriveCompositeMetrics(dimensions);
+        expect(result.conversationType).toBe("general");
+      });
+    });
+
+    describe("hasNegativePattern", () => {
+      it("should return false for non-negative valence", () => {
+        const dimensions = {
+          valence: { valence: -0.3 },
+          arousal: { arousal: 0.5 },
+        };
+        expect(service.hasNegativePattern(dimensions)).toBe(false);
+      });
+
+      it("should return false for low arousal", () => {
+        const dimensions = {
+          valence: { valence: -0.6 },
+          arousal: { arousal: 0.4 },
+        };
+        expect(service.hasNegativePattern(dimensions)).toBe(false);
+      });
+    });
+
+    describe("calculateConfidence", () => {
+      it("should return low for very low values", () => {
+        expect(
+          service.calculateConfidence({
+            valence: { confidence: "very_low" },
+            sarcasm: { confidence: "very_low" },
+          }),
+        ).toBe("low");
+      });
+    });
+
+    describe("getNeutralAnalysis", () => {
+      it("should include all required fields", () => {
+        const result = service.getNeutralAnalysis();
+        expect(result.allowExpand).toBeUndefined();
+        expect(result.categories).toBeUndefined();
+      });
+    });
+
+    describe("cache management", () => {
+      it("should return undefined for non-existent key", () => {
+        expect(service.getFromCache("nonexistent")).toBeUndefined();
+      });
+
+      it("should handle long text in cache key", () => {
+        const longText = "a".repeat(300);
+        service.addToCache(longText, { data: "test" });
+        const result = service.getFromCache(longText);
+        expect(result).toBeDefined();
+      });
+
+      it("should evict oldest entry when cache is full", () => {
+        service.clearCache();
+        for (let i = 0; i < 100; i++) {
+          service.addToCache(`key${i}`, { data: i });
+        }
+        expect(service.cache.size).toBeLessThanOrEqual(100);
+      });
     });
   });
 });

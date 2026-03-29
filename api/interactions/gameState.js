@@ -350,6 +350,58 @@ export async function getGameState(options = {}) {
   return state;
 }
 
+/**
+ * Extract gold amount from game UI
+ * @param {object} options - Options
+ * @returns {Promise<number>} Current gold amount (falls back to 180 if unavailable)
+ */
+export async function extractGold(options = {}) {
+  if (!isSessionActive()) {
+    throw new SessionDisconnectedError("Browser closed.");
+  }
+
+  const page = getPage();
+  const { defaultValue = 180, timeout = 2000 } = options;
+
+  const goldSelectors = [
+    '[class*="gold"]',
+    "#gold",
+    '[id*="gold"]',
+    ':text-matches("Gold", "i")',
+  ];
+
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeout) {
+    for (const selector of goldSelectors) {
+      try {
+        const locator = page.locator(selector).first();
+        const isVisible = await locator.isVisible().catch(() => false);
+        if (!isVisible) continue;
+
+        const text = await locator.textContent().catch(() => "");
+        if (!text) continue;
+
+        const match = text.match(/\d[\d,]*/);
+        if (match) {
+          const gold = parseInt(match[0].replace(/,/g, ""), 10);
+          if (!isNaN(gold) && gold > 0) {
+            logger.debug(`Extracted gold: ${gold}`);
+            return gold;
+          }
+        }
+      } catch {
+        continue;
+      }
+    }
+
+    await page.waitForTimeout(100);
+  }
+
+  logger.debug(`Gold extraction failed, using default: ${defaultValue}`);
+  return defaultValue;
+}
+
 export default {
   waitForElementState,
   waitForEnabled,
@@ -359,4 +411,5 @@ export default {
   waitForPopup,
   waitForResources,
   getGameState,
+  extractGold,
 };

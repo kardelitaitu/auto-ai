@@ -218,7 +218,7 @@ describe("Edge Cases: Memory Leaks and Resource Cleanup", () => {
       vi.useRealTimers();
     });
 
-    it("should handle timer cleanup on abort", () => {
+    it("should handle timer cleanup on abort", async () => {
       vi.useFakeTimers();
 
       const createAbortableTimer = (signal) => {
@@ -248,7 +248,7 @@ describe("Edge Cases: Memory Leaks and Resource Cleanup", () => {
       // Abort before timer completes
       controller.abort();
 
-      expect(promise).rejects.toThrow("Aborted");
+      await expect(promise).rejects.toThrow("Aborted");
 
       vi.useRealTimers();
     });

@@ -106,7 +106,7 @@ export default defineConfig({
             exclude: [
                 'node_modules/',
                 'dist/',
-                '.git/',
+                'git/',
                 'tests/',
                 'backup/',
                 '**/*.test.js',
@@ -120,13 +120,13 @@ export default defineConfig({
                 'api/tests/simulate-task-history.js',
                 'api/tests/mocks/index.js',
                 'api/tests/integration/twitter-agent.test.js',
+                '**/index.js',
             ],
-            // Conservative starting thresholds — ratchet up as coverage improves
             thresholds: {
-                statements: 35,
-                branches: 25,
-                functions: 30,
-                lines: 35,
+                statements: 85,
+                branches: 80,
+                functions: 85,
+                lines: 85,
                 autoUpdate: false,
             },
         },
