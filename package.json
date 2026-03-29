@@ -40,8 +40,6 @@
         "test:bun:coverage": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot",
         "test:bun:coverage:integration": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot api/tests/integration",
         "test:bun:verbose": "bun run vitest run -c config/vitest.config.js --reporter=verbose",
-        "test:bun:v8": "bun run vitest run -c config/vitest.config.js --silent --reporter=dot",
-        "test:bun:v8:coverage": "bun run vitest run -c config/vitest.config.js --coverage --silent --reporter=dot",
         "coverage:badge": "node scripts/generate-coverage-badge.js",
         "coverage:full": "pnpm run test:bun:coverage && pnpm run coverage:badge",
         "lint": "eslint . --config config/eslint.config.js",
