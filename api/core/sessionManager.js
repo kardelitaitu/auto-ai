@@ -27,30 +27,33 @@ export class SimpleSemaphore {
     this.permits = permits;
     this.maxPermits = permits;
     this.queue = [];
+    this._lock = Promise.resolve();
   }
 
   async acquire(timeoutMs = null) {
-    if (this.permits > 0) {
-      this.permits--;
-      return true;
-    }
-
-    return new Promise((resolve) => {
-      const entry = { resolve, timer: null, addedAt: Date.now() };
-
-      if (timeoutMs) {
-        entry.timer = setTimeout(() => {
-          const idx = this.queue.indexOf(entry);
-          if (idx !== -1) {
-            this.queue.splice(idx, 1);
-            logger.debug(`Semaphore acquire timed out after ${timeoutMs}ms`);
-            resolve(false);
-          }
-        }, timeoutMs);
+    return (this._lock = this._lock.then(async () => {
+      if (this.permits > 0) {
+        this.permits--;
+        return true;
       }
 
-      this.queue.push(entry);
-    });
+      return new Promise((resolve) => {
+        const entry = { resolve, timer: null, addedAt: Date.now() };
+
+        if (timeoutMs) {
+          entry.timer = setTimeout(() => {
+            const idx = this.queue.indexOf(entry);
+            if (idx !== -1) {
+              this.queue.splice(idx, 1);
+              logger.debug(`Semaphore acquire timed out after ${timeoutMs}ms`);
+              resolve(false);
+            }
+          }, timeoutMs);
+        }
+
+        this.queue.push(entry);
+      });
+    }));
   }
 
   release() {
