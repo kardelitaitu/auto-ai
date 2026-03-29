@@ -4,7 +4,7 @@
 
 ## Current Focus
 
-Phase 2 complete. Ready for Phase 3: Features.
+Phase 3: Features
 
 ---
 
@@ -45,19 +45,6 @@ Phase 2 complete. Ready for Phase 3: Features.
 - Added LLM config schema validation
 - Created 11 performance benchmarks for queries, timing, and actions
 - Created `docs/development.md` for internal developer workflows
-
----
-
-## Phase 2: Quality & Reliability (Week 2-3)
-
-| Priority | Task                                               | Impact | Effort |
-| -------- | -------------------------------------------------- | ------ | ------ |
-| 🔴       | Standardize error handling in `api/core/errors.js` | High   | 6h     |
-| 🔴       | Add performance benchmarks for critical paths      | High   | 8h     |
-| 🟡       | Enhance config validation & error messages         | Medium | 4h     |
-| 🟡       | Create developer onboarding guide                  | Medium | 4h     |
-
-**Exit criteria**: Consistent error patterns, baseline benchmarks documented.
 
 ---
 
@@ -112,6 +99,9 @@ Phase 2 complete. Ready for Phase 3: Features.
 
 ## Tech Debt Log
 
+- [x] Semaphore race condition - Added Promise lock for atomic acquire operations
+- [x] Config loader standardization - ConfigLoader is now single source of truth
+- [x] CI workflow - Replaced self-hosted with ubuntu-latest runners
 - [x] TODO in `api/twitter/twitter-agent/EngagementHandler.js:42` - Implemented `interactWithProfile()` method
 - [x] ESLint ignores `api/tests/` - Removed from ignores, fixed 29 errors across test files
 - [x] No coverage badge in README - Added auto-generated SVG badge (79.7% coverage)
