@@ -124,6 +124,18 @@ export class SessionDisconnectedError extends SessionError {
   }
 }
 
+export class SessionClosedError extends SessionError {
+  constructor(
+    sessionId = "unknown",
+    message = "Session has been closed",
+    metadata = {},
+    cause = null,
+  ) {
+    super("SESSION_CLOSED", message, { sessionId, ...metadata }, cause);
+    this.name = "SessionClosedError";
+  }
+}
+
 export class SessionNotFoundError extends SessionError {
   constructor(sessionId, metadata = {}) {
     super("SESSION_NOT_FOUND", `Session not found: ${sessionId}`, metadata);
@@ -382,6 +394,7 @@ export async function withErrorHandling(
 export default {
   AutomationError,
   SessionError,
+  SessionClosedError,
   SessionDisconnectedError,
   SessionNotFoundError,
   SessionTimeoutError,

@@ -83,14 +83,14 @@ describe("SessionManager", () => {
     expect(manager.sessions.length).toBe(1);
   });
 
-  it("should remove a session", () => {
+  it("should remove a session", async () => {
     const browser = {
       close: vi.fn(),
       contexts: () => [],
       isConnected: vi.fn().mockReturnValue(true),
     };
     const id = manager.addSession(browser, "test-profile");
-    manager.removeSession(id);
+    await manager.removeSession(id);
     expect(manager.sessions.length).toBe(0);
   });
 

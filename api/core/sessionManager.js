@@ -305,19 +305,33 @@ class SessionManager {
     return false;
   }
 
-  markSessionFailed(sessionId) {
+  async markSessionFailed(sessionId) {
     logger.warn(
       `[SessionManager] Session ${sessionId} marked failed, removing`,
     );
-    return this.removeSession(sessionId);
+    return await this.removeSession(sessionId);
   }
 
-  removeSession(sessionId) {
+  async removeSession(sessionId) {
     const session = this.sessionsMap.get(sessionId);
     if (session) {
       const index = this.sessions.indexOf(session);
-      this.closeManagedPages(session).catch(() => {});
-      this.closeSessionBrowser(session).catch(() => {});
+      try {
+        await this.closeManagedPages(session);
+      } catch (e) {
+        logger.warn(
+          `[SessionManager] Error closing pages for ${sessionId}:`,
+          e.message,
+        );
+      }
+      try {
+        await this.closeSessionBrowser(session);
+      } catch (e) {
+        logger.warn(
+          `[SessionManager] Error closing browser for ${sessionId}:`,
+          e.message,
+        );
+      }
       this.workerSemaphores.delete(sessionId);
       this.sessionsMap.delete(sessionId);
       for (const worker of session.workers || []) {
@@ -387,7 +401,9 @@ class SessionManager {
     }
 
     await Promise.race([
-      page.close().catch(() => {}),
+      page.close().catch((e) => {
+        logger.debug(`[SessionManager] Page close error:`, e.message);
+      }),
       new Promise((r) => setTimeout(r, SESSION_TIMEOUTS.PAGE_CLOSE_TIMEOUT_MS)),
     ]);
     this.unregisterPage(sessionId, page);
