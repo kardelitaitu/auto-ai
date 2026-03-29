@@ -157,6 +157,93 @@ describe("SessionState", () => {
     });
   });
 
+  describe("clear", () => {
+    it("should clear all data", () => {
+      sessionState.set("key1", "value1");
+      sessionState.set("key2", "value2");
+      expect(sessionState.size()).toBe(2);
+
+      sessionState.clear();
+      expect(sessionState.size()).toBe(0);
+    });
+
+    it("should throw when frozen", () => {
+      sessionState.freeze();
+      expect(() => sessionState.clear()).toThrow("frozen");
+    });
+  });
+
+  describe("size", () => {
+    it("should return correct size", () => {
+      expect(sessionState.size()).toBe(0);
+      sessionState.set("key1", "value1");
+      sessionState.set("key2", "value2");
+      expect(sessionState.size()).toBe(2);
+    });
+  });
+
+  describe("deepClone", () => {
+    it("should clone Date objects", () => {
+      const date = new Date("2026-01-01");
+      sessionState.set("date", date);
+      const cloned = sessionState.get("date");
+      expect(cloned).toBeInstanceOf(Date);
+      expect(cloned.getTime()).toBe(date.getTime());
+    });
+
+    it("should clone Map objects", () => {
+      const map = new Map([
+        ["key1", "value1"],
+        ["key2", "value2"],
+      ]);
+      sessionState.set("map", map);
+      const cloned = sessionState.get("map");
+      expect(cloned).toBeInstanceOf(Map);
+      expect(cloned.get("key1")).toBe("value1");
+      expect(cloned.get("key2")).toBe("value2");
+    });
+
+    it("should clone Set objects", () => {
+      const set = new Set(["a", "b", "c"]);
+      sessionState.set("set", set);
+      const cloned = sessionState.get("set");
+      expect(cloned).toBeInstanceOf(Set);
+      expect(cloned.has("a")).toBe(true);
+      expect(cloned.has("b")).toBe(true);
+      expect(cloned.has("c")).toBe(true);
+    });
+
+    it("should clone nested objects", () => {
+      const nested = { level1: { level2: { level3: "deep" } } };
+      sessionState.set("nested", nested);
+      const cloned = sessionState.get("nested");
+      cloned.level1.level2.level3 = "modified";
+      expect(sessionState.get("nested").level1.level2.level3).toBe("deep");
+    });
+
+    it("should clone arrays", () => {
+      const arr = [1, 2, { nested: true }];
+      sessionState.set("arr", arr);
+      const cloned = sessionState.get("arr");
+      cloned[2].nested = false;
+      expect(sessionState.get("arr")[2].nested).toBe(true);
+    });
+
+    it("should handle primitives", () => {
+      sessionState.set("str", "hello");
+      sessionState.set("num", 42);
+      sessionState.set("bool", true);
+      sessionState.set("null", null);
+      sessionState.set("undef", undefined);
+
+      expect(sessionState.get("str")).toBe("hello");
+      expect(sessionState.get("num")).toBe(42);
+      expect(sessionState.get("bool")).toBe(true);
+      expect(sessionState.get("null")).toBe(null);
+      expect(sessionState.get("undef")).toBe(undefined);
+    });
+  });
+
   describe("freeze", () => {
     it("should prevent modifications when frozen", () => {
       sessionState.set("key", "value");
