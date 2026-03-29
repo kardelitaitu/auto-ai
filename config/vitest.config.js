@@ -16,6 +16,7 @@ const cpuCount = cpus().length;
 // Allow CI override, fallback to calculated threads (reserve 2 for OS/IDE stability)
 const envMaxThreads = parseInt(process.env.VITEST_MAX_THREADS || '', 10);
 const envMinThreads = parseInt(process.env.VITEST_MIN_THREADS || '', 10);
+// Use more threads for local (user has powerful machine)
 const calculatedThreads = envMaxThreads || Math.max(1, cpuCount - 2);
 const calculatedMinThreads =
     envMinThreads || Math.max(1, Math.min(calculatedThreads, Math.floor(cpuCount / 2)));
@@ -28,7 +29,7 @@ if (!isSilent) {
     console.log(
         `Thread Allocation: ${calculatedThreads} Max Workers (env override: ${process.env.VITEST_MAX_THREADS || 'none'})`
     );
-    console.log(`Coverage Engine: istanbul (Memory Optimized)`);
+    console.log(`Coverage Engine: v8 (High Performance)`);
     console.log(`=================================================\n`);
 }
 
@@ -67,24 +68,22 @@ export default defineConfig({
         cacheDir: process.env.VITEST_CACHE_DIR || resolve(rootDir, 'node_modules/.vitest'),
 
         // --------------------------------------------------------------------
-        // Concurrency Engine - Unchained Architecture
+        // Concurrency Engine - Required: forks for AsyncLocalStorage isolation
         // --------------------------------------------------------------------
-        pool: 'threads',
+        pool: 'forks',
         poolOptions: {
-            threads: {
-                maxThreads: calculatedThreads,
-                minThreads: calculatedMinThreads,
-                isolate: true,
+            forks: {
+                maxForks: calculatedThreads,
+                minForks: calculatedMinThreads,
             },
         },
         fileParallelism: true,
-        logHeapUsage: true, // Injects memory telemetry into the dot reporter
 
         // --------------------------------------------------------------------
-        // Coverage Engine - Transpilation Variant
+        // Coverage Engine - V8 Provider (Faster than Istanbul)
         // --------------------------------------------------------------------
         coverage: {
-            provider: 'istanbul',
+            provider: 'v8',
             reporter: ['text', 'json', 'html'],
             reportsDirectory: coverageRoot,
             clean: true,
