@@ -30,7 +30,13 @@
         "connectionTimeoutMs": 10000,
         "healthCheckIntervalMs": 30000,
         "reconnectDelayMs": 2000,
-        "maxReconnectAttempts": 3
+        "maxReconnectAttempts": 3,
+        "circuitBreaker": {
+            "enabled": true,
+            "failureThreshold": 5,
+            "successThreshold": 3,
+            "halfOpenTime": 30000
+        }
     },
     "orchestration": {
         "workerWaitTimeoutMs": 10000,

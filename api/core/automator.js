@@ -13,6 +13,10 @@ import { chromium } from "playwright";
 import { createLogger } from "../core/logger.js";
 import { getTimeoutValue } from "../utils/configLoader.js";
 import { withRetry } from "../utils/retry.js";
+import {
+  BrowserCircuitBreaker,
+  CircuitOpenError,
+} from "../core/circuit-breaker.js";
 
 const logger = createLogger("automator.js");
 
@@ -30,6 +34,26 @@ class Automator {
     this.healthCheckInterval = null;
     this.isShuttingDown = false;
     this.onReconnect = null;
+    this.circuitBreaker = new BrowserCircuitBreaker({
+      enabled: false,
+      failureThreshold: 5,
+      successThreshold: 3,
+      halfOpenTime: 30000,
+    });
+  }
+
+  async _ensureCircuitBreaker() {
+    if (!this.circuitBreaker._configLoaded) {
+      const browserConfig = await getTimeoutValue("browser", {});
+      const cbConfig = browserConfig.circuitBreaker || {};
+      this.circuitBreaker = new BrowserCircuitBreaker({
+        enabled: cbConfig.enabled ?? true,
+        failureThreshold: cbConfig.failureThreshold ?? 5,
+        successThreshold: cbConfig.successThreshold ?? 3,
+        halfOpenTime: cbConfig.halfOpenTime ?? 30000,
+      });
+      this.circuitBreaker._configLoaded = true;
+    }
   }
 
   /**
@@ -39,20 +63,40 @@ class Automator {
    * @returns {Promise<object>} A promise that resolves with the connected browser instance.
    */
   async connectToBrowser(wsEndpoint, options = {}) {
+    await this._ensureCircuitBreaker();
+    const profileId = options.profileId || wsEndpoint;
+
+    const check = this.circuitBreaker.check(profileId);
+    if (!check.allowed) {
+      const waitSec = Math.ceil((check.retryAfter || 0) / 1000);
+      logger.warn(
+        `[Automator] Circuit breaker OPEN for ${profileId}, rejecting connection. Retry after ${waitSec}s`,
+      );
+      throw new CircuitOpenError(profileId, check.retryAfter || 30000);
+    }
+
     const timeout = await getTimeoutValue("browser.connectionTimeoutMs", 10000);
 
-    const browser = await withRetry(
-      async () => {
-        logger.info(`Attempting connection to ${wsEndpoint}`);
-        const browser = await chromium.connectOverCDP(wsEndpoint, {
-          timeout,
-          ...options,
-        });
-        await this.testConnection(browser);
-        return browser;
-      },
-      { description: `Browser connection to ${wsEndpoint}` },
-    );
+    let browser;
+    try {
+      browser = await withRetry(
+        async () => {
+          logger.info(`Attempting connection to ${wsEndpoint}`);
+          const browser = await chromium.connectOverCDP(wsEndpoint, {
+            timeout,
+            ...options,
+          });
+          await this.testConnection(browser);
+          return browser;
+        },
+        { description: `Browser connection to ${wsEndpoint}` },
+      );
+
+      this.circuitBreaker.recordSuccess(profileId);
+    } catch (error) {
+      this.circuitBreaker.recordFailure(profileId);
+      throw error;
+    }
 
     this.connections.set(wsEndpoint, {
       browser,
