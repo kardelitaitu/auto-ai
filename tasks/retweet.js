@@ -16,6 +16,7 @@ import { profileManager } from "../api/utils/profileManager.js";
 import { retweetWithAPI } from "../api/actions/retweet.js";
 import { ReferrerEngine } from "../api/utils/urlReferrer.js";
 import { mathUtils } from "../api/utils/math.js";
+import { createSuccessResult, createFailedResult } from "../api/core/task-result.js";
 
 const DEFAULT_TIMEOUT_MS = 600000; // 10 minutes (accounts for 4-8 min branch activities)
 const HYDRATION_DELAY_MS = 3000;
@@ -1258,22 +1259,29 @@ export default async function retweetTestTask(page, payload) {
                   `Retweet execution finished. Success: ${result.success}`,
                 );
 
-                if (result.success) {
-                  logger.info(
-                    `✅ Retweet Test PASSED. Branch: ${selectedBranch}, Reason: ${result.reason}`,
-                  );
-                } else {
-                  logger.error(
-                    `❌ Retweet Test FAILED. Branch: ${selectedBranch}, Reason: ${result.reason}`,
-                  );
-                }
-
                 // Observation delay
                 logger.info(
                   `Waiting ${OBSERVATION_DELAY_MS}ms before finishing...`,
                 );
                 await api.wait(OBSERVATION_DELAY_MS);
-                return;
+
+                if (result.success) {
+                  logger.info(
+                    `✅ Retweet Test PASSED. Branch: ${selectedBranch}, Reason: ${result.reason}`,
+                  );
+                  return createSuccessResult('retweet', {
+                    branch: selectedBranch,
+                    reason: result.reason,
+                    targetUrl
+                  }, { startTime: Date.now(), sessionId: browserInfo });
+                } else {
+                  logger.error(
+                    `❌ Retweet Test FAILED. Branch: ${selectedBranch}, Reason: ${result.reason}`,
+                  );
+                  return createFailedResult('retweet', result.reason, {
+                    partialData: { branch: selectedBranch, targetUrl }
+                  });
+                }
               } catch (innerError) {
                 logger.warn(
                   `Attempt ${attempt + 1} failed: ${innerError.message}`,

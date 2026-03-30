@@ -8,6 +8,7 @@ import { api } from "../api/index.js";
 import { createLogger } from "../api/core/logger.js";
 import { profileManager } from "../api/utils/profileManager.js";
 import { ReferrerEngine } from "../api/utils/urlReferrer.js";
+import { createSuccessResult, createFailedResult } from "../api/core/task-result.js";
 import fs from "fs/promises";
 
 const URL_FILE = "./tasks/pageview.txt";
@@ -50,148 +51,100 @@ function ensureProtocol(url) {
 }
 
 /**
- * Main pageview task migrated to Unified API
+ * Main pageview task - Returns structured result
+ * @param {object} page - Playwright page instance
+ * @param {object} payload - Task payload
+ * @returns {Promise<Object>} Task result with status, data, and error
  */
 export default async function pageview(page, payload) {
-  const startTime = process.hrtime.bigint();
+  const startTime = Date.now();
   const browserInfo = payload.browserInfo || "unknown_profile";
   const logger = createLogger("pageview.js");
+  let targetUrl = null;
 
-  logger.info("Starting migrated pageview task...");
+  logger.info("Starting pageview task...");
 
-  return await api.withPage(
-    page,
-    async () => {
-      try {
+  try {
+    return await api.withPage(
+      page,
+      async () => {
         // 1. Setup Profile & Persona
         let profile;
         try {
           profile = profileManager.getStarter();
-          const personaName = profile.persona || "casual";
           await api.init(page, {
             logger,
-            persona: personaName,
+            persona: profile.persona || "casual",
             colorScheme: profile.theme || "dark",
           });
-          logger.info(
-            `Initialized with profile: ${profile.id} (Persona: ${personaName})`,
-          );
         } catch (e) {
           logger.warn(`Profile load failed: ${e.message}, using defaults`);
           await api.init(page, { logger, colorScheme: "dark" });
         }
 
         // 2. Determine target URL
-        let targetUrl;
         if (payload.url) {
           targetUrl = ensureProtocol(payload.url);
-          logger.info(`Target (Arg): ${targetUrl}`);
         } else {
           targetUrl = await getRandomUrl();
-          logger.info(`Target (Random): ${targetUrl}`);
         }
+        logger.info(`Target: ${targetUrl}`);
 
-        // 3. Referrer (use natural referer, browser sets Sec-Fetch headers automatically)
+        // 3. Referrer
         const engine = new ReferrerEngine({ addUTM: false });
         const ctx = engine.generateContext(targetUrl);
-        logger.info(`Referrer: ${ctx.referrer || "(Direct)"}`);
 
-        // 4. Navigation using Unified API (handles warmup jitter & mouse movement internally)
-        logger.info(`Navigating...`);
-
-        // Use a Promise.race to enforce a global 50s timeout for the "work" phase
+        // 4. Navigation
         const taskTimeoutMs = 50000;
+        
+        await Promise.race([
+          (async () => {
+            await api.goto(targetUrl, {
+              waitUntil: "domcontentloaded",
+              timeout: 20000,
+              warmup: true,
+              warmupMouse: true,
+              warmupPause: true,
+              referer: ctx.referrer || undefined,
+            });
 
-        try {
-          await Promise.race([
-            (async () => {
-              try {
-                await api.goto(targetUrl, {
-                  waitUntil: "domcontentloaded",
-                  timeout: 20000,
-                  warmup: true,
-                  warmupMouse: true,
-                  warmupPause: true,
-                  referer: ctx.referrer || undefined,
-                });
-              } catch (navError) {
-                logger.error(`Navigation failed: ${navError.message}`);
-                return;
-              }
+            await api.wait(api.randomInRange(1000, 2000));
 
-              // Settle time
-              await api.wait(api.randomInRange(1000, 2000));
+            // 5. Reading Simulation
+            const readingMs = api.gaussian(
+              profile?.timings?.readingPhase?.mean || 30000,
+              profile?.timings?.readingPhase?.deviation || 10000,
+              10000, 45000
+            );
+            const readingS = Math.min(Math.max(readingMs / 1000, 15), 45);
+            const pauses = Math.max(1, Math.floor(readingS / 2.2));
 
-              // 5. Reading Simulation
-              const meanDurationMs =
-                profile?.timings?.readingPhase?.mean || 30000;
-              const devDurationMs =
-                profile?.timings?.readingPhase?.deviation || 10000;
+            await api.scroll.read(null, {
+              pauses,
+              scrollAmount: api.randomInRange(600, 1200),
+              variableSpeed: true,
+              backScroll: true,
+            });
 
-              const profileReadingMs = api.gaussian(
-                meanDurationMs,
-                devDurationMs,
-                10000,
-                45000,
-              );
-              const readingDurationS = Math.min(
-                Math.max(profileReadingMs / 1000, 15),
-                45,
-              );
+            await api.wait(api.randomInRange(1000, 2000));
+          })(),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Pageview timeout")), taskTimeoutMs)
+          ),
+        ]);
 
-              const estimatedPauses = Math.max(
-                1,
-                Math.floor(readingDurationS / 2.2),
-              );
-
-              logger.info(
-                `Simulating reading for ~${readingDurationS.toFixed(2)}s (${estimatedPauses} cycles)`,
-              );
-
-              await api.scroll.read(null, {
-                pauses: estimatedPauses,
-                scrollAmount: api.randomInRange(600, 1200),
-                variableSpeed: true,
-                backScroll: true,
-              });
-
-              // Final pause
-              await api.wait(api.randomInRange(1000, 2000));
-            })(),
-            new Promise((_, reject) =>
-              setTimeout(
-                () => reject(new Error("Pageview task exceeded 50s limit")),
-                taskTimeoutMs,
-              ),
-            ),
-          ]);
-        } catch (error) {
-          if (error.message.includes("exceeded 50s limit")) {
-            logger.warn(`Task forced to stop: ${error.message}`);
-          } else {
-            throw error;
-          }
-        }
-      } finally {
-        try {
-          if (page && !page.isClosed()) {
-            await Promise.race([
-              page.close(),
-              new Promise((r) => setTimeout(r, 5000)),
-            ]);
-            logger.debug(`Page closed successfully.`);
-          }
-        } catch (closeError) {
-          logger.warn(`Error closing page: ${closeError.message}`);
-        }
-        // Cleanup (finally block in main orchestrator or task wrapper handles close)
-        const endTime = process.hrtime.bigint();
-        const durationInSeconds = (
-          Number(endTime - startTime) / 1_000_000_000
-        ).toFixed(2);
-        logger.info(`Total task duration: ${durationInSeconds} seconds`);
-      }
-    },
-    { taskName: "pageview", sessionId: browserInfo },
-  );
+        return createSuccessResult('pageview', {
+          url: targetUrl,
+          referrer: ctx.referrer
+        }, { startTime, sessionId: browserInfo });
+      },
+      { taskName: "pageview", sessionId: browserInfo }
+    );
+  } catch (error) {
+    logger.error(`Pageview error: ${error.message}`);
+    return createFailedResult('pageview', error, {
+      partialData: { url: targetUrl },
+      sessionId: browserInfo
+    });
+  }
 }
