@@ -214,7 +214,8 @@ describe("Orchestrator", () => {
 
       expect(result).toBeUndefined();
       expect(orchestrator.isProcessingTasks).toBe(false);
-      expect(orchestrator.taskQueue).toHaveLength(1);
+      // Queue is cleared so orchestrator can exit gracefully
+      expect(orchestrator.taskQueue).toHaveLength(0);
     });
 
     it("should exit early when already processing", async () => {

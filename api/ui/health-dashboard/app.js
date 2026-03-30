@@ -6,6 +6,9 @@
 // Configuration
 const WS_URL = `ws://${window.location.hostname}:3002/health-ws`;
 const HTTP_URL = `http://${window.location.hostname}:3001/api/health`;
+const ALERTS_URL = `http://${window.location.hostname}:3001/api/health/alerts`;
+const RECONNECT_DELAY = 3000;
+const POLL_INTERVAL = 5000;
 
 // State
 let ws = null;
@@ -13,7 +16,9 @@ let healthHistory = [];
 let alerts = [];
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 5;
-const RECONNECT_DELAY = 3000;
+let isPolling = false;
+let pollTimer = null;
+let reconnectTimer = null;
 
 // DOM Elements
 const elements = {
@@ -48,10 +53,18 @@ function connectWebSocket() {
     ws.onopen = () => {
       console.log('WebSocket connected');
       reconnectAttempts = 0;
+      isPolling = false;
+      if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+      }
       updateConnectionStatus('connected');
       
       // Subscribe to health updates
       ws.send(JSON.stringify({ type: 'health:subscribe' }));
+      
+      // Fetch initial alerts
+      fetchAlerts();
     };
     
     ws.onmessage = (event) => {
@@ -66,7 +79,7 @@ function connectWebSocket() {
     ws.onclose = () => {
       console.log('WebSocket closed');
       updateConnectionStatus('disconnected');
-      attemptReconnect();
+      startReconnect();
     };
     
     ws.onerror = (error) => {
@@ -76,23 +89,54 @@ function connectWebSocket() {
     
   } catch (error) {
     console.error('Failed to create WebSocket:', error);
-    attemptReconnect();
+    startHttpPolling();
   }
 }
 
 /**
- * Attempt to reconnect
+ * Start reconnection attempts
  */
-function attemptReconnect() {
+function startReconnect() {
   if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
     reconnectAttempts++;
     console.log(`Reconnecting in ${RECONNECT_DELAY}ms (attempt ${reconnectAttempts})...`);
-    setTimeout(connectWebSocket, RECONNECT_DELAY);
+    reconnectTimer = setTimeout(connectWebSocket, RECONNECT_DELAY);
   } else {
-    console.error('Max reconnection attempts reached');
-    // Fall back to HTTP polling
+    console.error('Max reconnection attempts reached, switching to HTTP polling');
     startHttpPolling();
   }
+}
+
+/**
+ * Start HTTP polling fallback
+ */
+function startHttpPolling() {
+  if (isPolling) return;
+  
+  isPolling = true;
+  updateConnectionStatus('polling');
+  console.log('Starting HTTP polling fallback...');
+  
+  // Fetch immediately
+  fetchHealth();
+  fetchAlerts();
+  
+  // Then poll at interval
+  pollTimer = setInterval(() => {
+    fetchHealth();
+    fetchAlerts();
+  }, POLL_INTERVAL);
+}
+
+/**
+ * Stop HTTP polling
+ */
+function stopHttpPolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+  isPolling = false;
 }
 
 /**
@@ -107,7 +151,11 @@ function updateConnectionStatus(status) {
   switch (status) {
     case 'connected':
       dot.classList.add('connected');
-      text.textContent = 'Connected';
+      text.textContent = 'Connected (WebSocket)';
+      break;
+    case 'polling':
+      dot.classList.add('polling');
+      text.textContent = 'Connected (HTTP Polling)';
       break;
     case 'disconnected':
       dot.classList.add('disconnected');
@@ -117,6 +165,25 @@ function updateConnectionStatus(status) {
     default:
       text.textContent = 'Connecting...';
       break;
+  }
+}
+
+/**
+ * Fetch alerts from API
+ */
+async function fetchAlerts() {
+  try {
+    const response = await fetch(ALERTS_URL);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.alerts) {
+        alerts = data.alerts;
+        updateAlerts();
+      }
+    }
+  } catch (error) {
+    // Alerts endpoint may not exist yet, silently fail
+    console.debug('Alerts fetch failed (endpoint may not exist):', error.message);
   }
 }
 
@@ -430,11 +497,11 @@ function updateAlerts() {
     elements.alertsContainer.innerHTML = '<div class="alert-info">No recent alerts</div>';
     return;
   }
-  
+
   elements.alertsContainer.innerHTML = alerts.map(alert => {
     const severity = alert.current === 'unhealthy' ? 'critical' : 'warning';
     const icon = alert.current === 'unhealthy' ? '🔴' : '🟡';
-    
+
     return `
       <div class="alert ${severity}">
         <div class="alert-icon">${icon}</div>
@@ -450,20 +517,8 @@ function updateAlerts() {
 }
 
 /**
- * HTTP polling fallback
+ * Fetch health data via HTTP
  */
-let httpPollingInterval = null;
-
-function startHttpPolling() {
-  console.log('Starting HTTP polling fallback...');
-  
-  // Fetch initial data
-  fetchHealth();
-  
-  // Poll every 5 seconds
-  httpPollingInterval = setInterval(fetchHealth, 5000);
-}
-
 async function fetchHealth() {
   try {
     const response = await fetch(HTTP_URL);
@@ -490,8 +545,9 @@ window.addEventListener('beforeunload', () => {
   if (ws) {
     ws.close();
   }
-  if (httpPollingInterval) {
-    clearInterval(httpPollingInterval);
+  stopHttpPolling();
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
   }
 });
 

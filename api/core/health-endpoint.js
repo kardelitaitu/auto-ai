@@ -15,6 +15,7 @@ import {
   getHealth,
   getRecommendedProvider,
 } from "./health-monitor.js";
+import { getHealthAlerts } from "./health-alerts.js";
 import { createLogger } from "./logger.js";
 
 const logger = createLogger("health-endpoint.js");
@@ -189,6 +190,38 @@ export function createHealthEndpoints(app, options = {}) {
       res.status(500).json({
         status: "error",
         error: error.message,
+      });
+    }
+  });
+
+  /**
+   * GET /api/health/alerts
+   * Get recent health alerts
+   */
+  app.get(`${healthPath}/alerts`, (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit) || 20;
+      const alertsManager = getHealthAlerts();
+      
+      if (!alertsManager) {
+        return res.json({
+          status: 'ok',
+          alerts: [],
+          message: 'Alerts not initialized'
+        });
+      }
+      
+      const alerts = alertsManager.getAlerts(limit);
+      res.json({
+        status: 'ok',
+        alerts,
+        total: alerts.length
+      });
+    } catch (error) {
+      logger.error("Health alerts endpoint error:", error.message);
+      res.status(500).json({
+        status: 'error',
+        error: error.message
       });
     }
   });

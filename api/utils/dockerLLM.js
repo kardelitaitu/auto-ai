@@ -50,7 +50,7 @@ async function isLocalLLMReady() {
 
 /**
  * Start the Local LLM service based on provider.
- * Simplified: Just check if already running, don't try to start.
+ * Runs in background to avoid blocking forever.
  */
 async function startLocalLLM() {
     try {
@@ -58,24 +58,46 @@ async function startLocalLLM() {
         const provider = settings.llm?.local?.provider || 'ollama';
         const model = settings.llm?.local?.model || 'llama3.2-vision';
 
-        // Just check if already running - don't try to start
-        logger.info(`[LocalLLM] Checking if ${provider} is already running...`);
+        logger.info(`[LocalLLM] Starting ${provider} in background...`);
 
         if (provider === 'ollama') {
-            return await new Promise((resolve) => {
-                exec('ollama serve', () => resolve(true));
+            // Use background execution to avoid blocking forever
+            // Windows: start /B runs in background
+            // Linux/Mac: use & at end
+            const isWindows = process.platform === 'win32';
+            const cmd = isWindows 
+                ? 'start /B "" ollama serve' 
+                : 'ollama serve &';
+            
+            exec(cmd, { windowsHide: true }, (error) => {
+                if (error) {
+                    logger.warn(`[LocalLLM] Failed to start: ${error.message}`);
+                } else {
+                    logger.info(`[LocalLLM] Started ollama serve in background`);
+                }
             });
+            
+            // Return immediately without waiting for process to exit
+            return true;
         }
 
         if (provider === 'docker') {
-            return await new Promise((resolve) => {
-                exec(`docker model run ${model}`, () => resolve(true));
+            const isWindows = process.platform === 'win32';
+            const cmd = isWindows
+                ? `start /B docker model run ${model}`
+                : `docker model run ${model} &`;
+                
+            exec(cmd, (error) => {
+                if (error) {
+                    logger.warn(`[LocalLLM] Docker start failed: ${error.message}`);
+                }
             });
+            return true;
         }
 
         return false;
     } catch (e) {
-        logger.warn(`[LocalLLM] Check failed: ${e.message}`);
+        logger.warn(`[LocalLLM] Start failed: ${e.message}`);
         return false;
     }
 }

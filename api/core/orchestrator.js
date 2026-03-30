@@ -251,6 +251,11 @@ class Orchestrator extends EventEmitter {
 
     if (this.sessionManager.activeSessionsCount === 0) {
       logger.warn("[Orchestrator] No active sessions available.");
+      // Clear queue since no sessions can process them - allows graceful exit
+      if (this.taskQueue.length > 0) {
+        logger.warn(`[Orchestrator] Clearing ${this.taskQueue.length} queued tasks (no sessions)`);
+        this.taskQueue.length = 0;
+      }
       this.isProcessingTasks = false;
       this.emit("tasksProcessed");
       return;

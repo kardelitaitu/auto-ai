@@ -74,6 +74,11 @@ body {
   background: var(--status-healthy);
 }
 
+.status-dot.polling {
+  background: var(--accent-blue);
+  animation: pulse 1s infinite;
+}
+
 .status-dot.disconnected {
   background: var(--status-unhealthy);
 }
