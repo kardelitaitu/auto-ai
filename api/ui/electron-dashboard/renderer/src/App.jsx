@@ -17,6 +17,10 @@ import MetricsPanel from './components/metrics/MetricsPanel';
 import TwitterStats from './components/metrics/TwitterStats';
 import TabContent, { TabHeader } from './components/common/TabContent';
 
+// Health Tab
+import HealthTab from './components/health/HealthTab';
+import './components/health/health.css';
+
 function App() {
     // Custom hooks
     const { data, status, emit } = useSocketConnection();
@@ -101,6 +105,7 @@ function App() {
                                 setActiveTab={setActiveTab}
                                 sessions={sessions}
                                 recentTasks={data.recentTasks}
+                                healthData={data.health}
                             />
                             <div
                                 className="glass"
@@ -115,6 +120,7 @@ function App() {
                                     activeTab={activeTab}
                                     sessions={sessions}
                                     recentTasks={data.recentTasks}
+                                    data={data}
                                 />
                             </div>
                         </div>

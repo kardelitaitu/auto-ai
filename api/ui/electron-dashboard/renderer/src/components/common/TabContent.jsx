@@ -1,11 +1,12 @@
 /**
- * Tab Content component - handles Status/History tabs
+ * Tab Content component - handles Status/History/Health tabs
  */
 import React from 'react';
 import SessionItem from '../sessions/SessionItem';
 import TaskList from './TaskList';
+import HealthTab from '../health/HealthTab';
 
-export function TabContent({ activeTab, sessions, recentTasks }) {
+export function TabContent({ activeTab, sessions, recentTasks, data }) {
     if (activeTab === 'fleet') {
         return (
             <div
@@ -34,10 +35,22 @@ export function TabContent({ activeTab, sessions, recentTasks }) {
         );
     }
 
+    if (activeTab === 'health') {
+        return <HealthTab data={data} />;
+    }
+
     return <TaskList tasks={recentTasks || []} />;
 }
 
-export function TabHeader({ activeTab, setActiveTab, sessions, recentTasks }) {
+export function TabHeader({ activeTab, setActiveTab, sessions, recentTasks, healthData }) {
+    const healthStatus = healthData?.overall || 'unknown';
+    const healthIcon = {
+        healthy: '🟢',
+        degraded: '🟡',
+        unhealthy: '🔴',
+        unknown: '⚪'
+    }[healthStatus] || '⚪';
+
     return (
         <div
             style={{
@@ -56,6 +69,12 @@ export function TabHeader({ activeTab, setActiveTab, sessions, recentTasks }) {
                     Status
                 </button>
                 <button
+                    onClick={() => setActiveTab('health')}
+                    style={tabButtonStyle(activeTab === 'health')}
+                >
+                    {healthIcon} Health
+                </button>
+                <button
                     onClick={() => setActiveTab('history')}
                     style={tabButtonStyle(activeTab === 'history')}
                 >
@@ -65,6 +84,8 @@ export function TabHeader({ activeTab, setActiveTab, sessions, recentTasks }) {
             <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
                 {activeTab === 'fleet'
                     ? `${sessions.length} Browser(s) Discovered`
+                    : activeTab === 'health'
+                    ? `Health: ${healthStatus}`
                     : `${(recentTasks || []).length} Events`}
             </span>
         </div>
