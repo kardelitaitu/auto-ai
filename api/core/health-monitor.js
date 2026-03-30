@@ -11,6 +11,7 @@
  */
 
 import { createLogger } from "./logger.js";
+import { recordStatusChange, recordProviderFailure } from "./health-alerts.js";
 
 const logger = createLogger("health-monitor.js");
 
@@ -265,6 +266,20 @@ export class HealthMonitor {
     };
 
     this.lastCheck = new Date().toISOString();
+
+    // Record status change alert
+    if (previousHealth !== HealthStatus.UNKNOWN && previousHealth !== this.currentHealth.overall) {
+      recordStatusChange(previousHealth, this.currentHealth.overall, this.currentHealth);
+    }
+
+    // Record provider failures
+    const cbHealth = this.getCircuitBreakerHealth();
+    for (const [providerId, data] of Object.entries(cbHealth)) {
+      const failureRate = parseFloat(data.failureRate) || 0;
+      if (failureRate > 0) {
+        recordProviderFailure(providerId, failureRate);
+      }
+    }
 
     this.healthHistory.push({
       timestamp: this.lastCheck,
