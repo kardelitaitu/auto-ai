@@ -3,6 +3,57 @@
 Quick reference guide for agents working on this repository.
 
 > **Detailed guides**: See `.agents/*.md` files for deeper documentation.
+> **MCP Tools**: See [`.agents/MCP-TOOLS-REFERENCE.md`](.agents/MCP-TOOLS-REFERENCE.md) for complete MCP tools documentation.
+
+## MCP Tools Quick Reference
+
+| Task | Primary Tools |
+|------|---------------|
+| Find a file | `glob`, `filesystem_search_files` |
+| Search code | `grep_search`, `ctx_batch_execute` |
+| Read file | `read_file`, `filesystem_read_text_file` |
+| Edit file | `edit`, `filesystem_edit_file` |
+| Run commands | `run_shell_command` (short output), `ctx_execute` (large output) |
+| Research | `tavily_search`, `tavily_research` |
+| Extract URL | `tavily_extract`, `ctx_fetch_and_index` |
+| Store knowledge | `Memory_create_entities`, `Memory_create_relations` |
+| Complex problems | `Sequential_Thinking_sequentialthinking` |
+| Context protection | `ctx_batch_execute`, `ctx_stats` |
+
+### Context-Mode Tools (Mandatory for Large Output)
+
+Use context-mode tools to prevent context flooding:
+
+- `ctx_execute` — Execute code in sandbox (only stdout enters context)
+- `ctx_batch_execute` — Run multiple commands + search in ONE call
+- `ctx_execute_file` — Process files without loading full content
+- `ctx_fetch_and_index` — Fetch URL, index for search
+- `ctx_search` — Query indexed content
+- `ctx_index` — Store content in knowledge base
+- `ctx_stats` — View context consumption
+- `ctx_doctor` — Diagnostic health check
+
+> **Rule**: Any command producing >20 lines output MUST use `ctx_execute` or `ctx_batch_execute`.
+
+### Memory Tools
+
+- `read_graph` — Read entire knowledge graph
+- `search_nodes` — Search entities by query
+- `create_entities` — Create new entities
+- `add_observations` — Add observations to entities
+- `create_relations` — Create relations between entities
+- `delete_entities`, `delete_observations`, `delete_relations` — Cleanup
+
+### Tavily Tools
+
+- `tavily_search` — AI-powered web search
+- `tavily_extract` — Extract content from URLs
+- `tavily_crawl` — Deep crawl websites
+- `tavily_map` — Map site structure
+- `tavily_research` — Comprehensive multi-source research
+- `tavily_skill` — Search library documentation
+
+---
 
 ## Codebase Overview
 
@@ -147,63 +198,152 @@ pnpm amend --no-verify             # Skip lint-staged
 - **Never run `git push` unless explicitly asked by the user.** Always commit only by default.
 - Keep branches small and focused, and prefer PR-based merges for shared work.
 
+---
+
+## Workflow Reminders
+
+### Pre-Commit Checklist
+
+```
+☐ Lint passes:        pnpm run lint
+☐ Tests pass:         pnpm run test:bun:unit (or test:bun:all)
+☐ Coverage acceptable: pnpm run test:bun:coverage (if touching core)
+☐ Format applied:     pnpm run format
+☐ Journal updated:    AGENT-JOURNAL.md (if exists)
+```
+
+### Post-Change Actions
+
+| Change Type | Required Actions |
+|-------------|------------------|
+| Bug fix | Update `AGENT-JOURNAL.md`, add/fix tests |
+| New feature | Update `AGENT-JOURNAL.md`, add tests, update `patchnotes.md` |
+| Refactor | Update `AGENT-JOURNAL.md`, verify tests still pass |
+| Config change | Update `AGENT-JOURNAL.md`, document in PR |
+| Documentation | Update `AGENT-JOURNAL.md` (optional for minor docs) |
+
+### Git Workflow Quick Reference
+
+```bash
+# Stage and commit (commit-only, no push)
+pnpm commit "message"
+
+# Commit with push
+pnpm commit "message" --push
+
+# Skip lint-staged
+pnpm commit --no-verify "message"
+
+# Amend last commit
+pnpm amend "updated message"
+
+# Amend and force push
+pnpm amend "updated message" --push
+```
+
+### Agent Journal Format
+
+If `AGENT-JOURNAL.md` exists, add entries at the TOP:
+
+```markdown
+31-03-2026--14:30 > AGENTS.md, README.md > Improved documentation with MCP tools reference and troubleshooting section
+30-03-2026--09:15 > api/core/context.js > Fixed AsyncLocalStorage leak in withPage()
+```
+
+---
+
 ## Testing
 
-- Test files live primarily under `api/tests/`.
-- Use `pnpm run test:bun:*` for fast local test runs.
-- Use `pnpm run test:*` when Bun is unavailable or Node compatibility is being verified.
-- Vitest uses `pool: 'forks'` because AsyncLocalStorage-based session isolation depends on worker-process isolation.
-- Coverage is expected for core paths, and `pnpm run test:coverage` is the standard pre-commit validation when touching core modules or tests.
-- Common test patterns include:
-    - mocking `api/core/logger.js` and other core dependencies with `vi.mock()`
-    - exercising `api.withPage()` blocks instead of calling raw `page.*`
-    - using isolated fixtures for agent and interaction modules
-- CI mirrors `pnpm run lint`, `pnpm run test:bun:unit`, `pnpm run test:bun:integration`, and `pnpm run test:bun:edge` on push and pull request events.
+### Test Structure
 
-### Test Mocking Standards
+```
+api/tests/
+├── unit/                    # Unit tests (isolated modules)
+│   ├── api/                 # API module tests
+│   ├── agent/               # Agent system tests
+│   └── ...
+├── integration/             # Integration tests (cross-module)
+├── edge-cases/              # Edge case scenarios
+└── *.test.js                # Root-level tests
+```
 
-Always use **top-level `vi.mock()`** instead of `vi.unmock()` or dynamic mocking inside tests. This prevents flaky CI failures due to module caching.
+### Test Commands
 
-**DO:**
+| Command | Description |
+|---------|-------------|
+| `pnpm run test:bun:unit` | Unit tests only (fast) |
+| `pnpm run test:bun:integration` | Integration tests only |
+| `pnpm run test:bun:edge` | Edge case tests |
+| `pnpm run test:bun:all` | All tests |
+| `pnpm run test:bun:coverage` | With coverage report |
+| `pnpm run test:bun:verbose` | Detailed output |
+| `pnpm run test:bun:watch` | Watch mode (dev) |
+
+> **Performance**: Bun runs tests 3-5x faster than Node.js. Use `pnpm run test:bun:*` for development.
+
+### Test File Naming
+
+- **Pattern**: `*.test.js` (e.g., `context.test.js`, `actionEngine.test.js`)
+- **Location**: Mirror source structure under `api/tests/unit/` or `api/tests/integration/`
+- **Example**: `api/core/context.js` → `api/tests/unit/api/context.test.js`
+
+### Coverage
+
+- **Target**: >90% line coverage for core modules
+- **Badge**: Run `pnpm run coverage:full` to generate/update `coverage-badge.svg`
+- **Report**: Open `api/coverage/index.html` for detailed HTML report
+- **Pre-commit**: Run `pnpm run test:bun:coverage` when touching core modules or tests
+
+### Vitest Configuration
+
+- **Pool**: `pool: 'forks'` (required for AsyncLocalStorage isolation)
+- **Setup**: `vitest.setup.js` creates coverage directories
+- **Config**: `config/vitest.config.js`
+
+### Common Test Patterns
 
 ```javascript
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Top-level mocks - runs before any imports
-vi.mock('fs', async () => {
-    const actual = await vi.importActual('fs');
-    return { ...actual };
-});
+// Top-level mocks (BEFORE any imports)
+vi.mock('../core/logger.js', () => ({
+    createLogger: () => ({
+        info: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
+    }),
+}));
 
-vi.mock('child_process', async () => {
-    const actual = await vi.importActual('child_process');
-    return { ...actual };
-});
+describe('myModule', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-describe('My Integration Test', () => {
-    beforeAll(async () => {
-        vi.resetModules();
-        // Import after resetModules
+    it('should do something', async () => {
+        // Use api.withPage() for browser tests
+        await api.withPage(mockPage, async () => {
+            await api.init(mockPage);
+            await api.click('.btn');
+            expect(mockPage.click).toHaveBeenCalled();
+        });
     });
 });
 ```
 
-**DON'T:**
+**Key Patterns:**
+- Mock `api/core/logger.js` and core dependencies with top-level `vi.mock()`
+- Exercise `api.withPage()` blocks instead of calling raw `page.*`
+- Use isolated fixtures for agent and interaction modules
 
-```javascript
-// This causes flaky CI failures
-beforeAll(async () => {
-    vi.unmock('fs'); // ❌ Unreliable
-    vi.resetModules();
-});
+### CI Test Matrix
+
+CI runs on push/PR:
+```bash
+pnpm run lint
+pnpm run test:bun:unit
+pnpm run test:bun:integration
+pnpm run test:bun:edge
 ```
-
-Key points:
-
-- Place `vi.mock()` at the **top of the file**, before any imports
-- Use `vi.importActual()` to get real module behavior when needed
-- Call `vi.resetModules()` in `beforeAll` before importing the module under test
-- Add `beforeEach` hooks to ensure state is fresh for each test if needed
 
 ## Task System & Configuration
 
@@ -231,14 +371,17 @@ Start with these hotspots when learning or changing behavior:
 
 ## Further Reading
 
-Use these docs for the detailed version of the repo conventions:
-
-- [`.agents/PROJECT-STRUCTURE.md`](.agents/PROJECT-STRUCTURE.md)
-- [`.agents/API-ARCHITECTURE.md`](.agents/API-ARCHITECTURE.md)
-- [`.agents/TESTING-GUIDE.md`](.agents/TESTING-GUIDE.md)
-- [`.agents/TASK-AND-CONFIG.md`](.agents/TASK-AND-CONFIG.md)
-- [`.agents/TECH-STACK.md`](.agents/TECH-STACK.md)
-- [`.agents/STEALTH-PROTOCOL.md`](.agents/STEALTH-PROTOCOL.md)
+| Document | Description |
+|----------|-------------|
+| [`.agents/PROJECT-STRUCTURE.md`](.agents/PROJECT-STRUCTURE.md) | Directory structure and module responsibilities |
+| [`.agents/API-ARCHITECTURE.md`](.agents/API-ARCHITECTURE.md) | API patterns, context isolation, agent loop |
+| [`.agents/TESTING-GUIDE.md`](.agents/TESTING-GUIDE.md) | Vitest testing strategy and patterns |
+| [`.agents/TASK-AND-CONFIG.md`](.agents/TASK-AND-CONFIG.md) | Task system and configuration layers |
+| [`.agents/TECH-STACK.md`](.agents/TECH-STACK.md) | Technology stack and dependencies |
+| [`.agents/STEALTH-PROTOCOL.md`](.agents/STEALTH-PROTOCOL.md) | Anti-detection and humanization |
+| [`.agents/MCP-TOOLS-REFERENCE.md`](.agents/MCP-TOOLS-REFERENCE.md) | Complete MCP tools documentation |
+| [`README.md`](README.md) | Project overview and quick start |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Contribution guidelines |
 
 ## Verification Log
 
@@ -248,6 +391,55 @@ Use these docs for the detailed version of the repo conventions:
 | Parallel Vitest audit runner (`.\vitest-individual.ps1`)                                                              | `vitest-individual.ps1`, commits `9e8e4a8` and `a9a1919`                                  |
 | CI test matrix (`pnpm run lint`, `pnpm run test:bun:unit`, `pnpm run test:bun:integration`, `pnpm run test:bun:edge`) | `.github/workflows/ci.yml`, commits `938dd2f`, `37d7e58`, `fc172bc`, `1d6fd25`, `5d4544a` |
 | Test mocking standards (top-level vi.mock)                                                                            | `AGENTS.md`, commit `87abc3b`                                                             |
+
+---
+
+## Quick Troubleshooting
+
+### Browser Connection Issues
+
+| Symptom | Check | Fix |
+|---------|-------|-----|
+| Cannot connect to browser | Remote debugging enabled? | Launch browser with `--remote-debugging-port=9222` |
+| Port already in use | `netstat -an \| findstr "9222"` | `npx kill-port 9222` |
+| WebSocket connection failed | CDP endpoint correct? | Check `ws` URL from browser discovery |
+
+### LLM Connection Issues
+
+| Symptom | Check | Fix |
+|---------|-------|-----|
+| Ollama not responding | `curl http://localhost:11434/api/tags` | Start Ollama: `ollama serve` |
+| OpenRouter 401 | API key valid? | Verify `OPENROUTER_API_KEY` in `.env` |
+| Model not found | Model pulled? | `ollama pull <model-name>` |
+
+### Test Failures
+
+| Symptom | Check | Fix |
+|---------|-------|-----|
+| Tests fail randomly | AsyncLocalStorage isolation? | Ensure `pool: 'forks'` in vitest config |
+| Coverage not generating | Coverage dir exists? | Run `pnpm run test:coverage` |
+| Mocks not working | Top-level `vi.mock()`? | Move mocks to top of file, before imports |
+
+### Quick Diagnostic Commands
+
+```bash
+# Check port usage
+netstat -an | findstr "9222 18800"
+
+# Kill process on port
+npx kill-port 9222
+
+# Test Ollama
+curl http://localhost:11434/api/tags
+
+# Test OpenRouter
+curl -H "Authorization: Bearer $OPENROUTER_API_KEY" https://openrouter.ai/api/v1/models
+
+# Run quick tests
+pnpm run test:bun:unit
+```
+
+---
 
 # context-mode — MANDATORY routing rules
 
@@ -296,13 +488,37 @@ If you are reading to **analyze, explore, or summarize** → use `context-mode_c
 
 Search results can flood context. Use `context-mode_ctx_execute(language: "shell", code: "grep ...")` to run searches in sandbox. Only your printed summary enters context.
 
-## Tool selection hierarchy
+## Tool Selection Hierarchy
 
-1. **GATHER**: `context-mode_ctx_batch_execute(commands, queries)` — Primary tool. Runs all commands, auto-indexes output, returns search results. ONE call replaces 30+ individual calls.
-2. **FOLLOW-UP**: `context-mode_ctx_search(queries: ["q1", "q2", ...])` — Query indexed content. Pass ALL questions as array in ONE call.
-3. **PROCESSING**: `context-mode_ctx_execute(language, code)` | `context-mode_ctx_execute_file(path, language, code)` — Sandbox execution. Only stdout enters context.
-4. **WEB**: `context-mode_ctx_fetch_and_index(url, source)` then `context-mode_ctx_search(queries)` — Fetch, chunk, index, query. Raw HTML never enters context.
-5. **INDEX**: `context-mode_ctx_index(content, source)` — Store content in FTS5 knowledge base for later search.
+### Primary Workflow
+
+1. **GATHER**: `ctx_batch_execute(commands, queries)` — Run multiple commands + search in ONE call. Replaces 30+ individual calls.
+2. **FOLLOW-UP**: `ctx_search(queries: ["q1", "q2", ...])` — Query indexed content. Pass ALL questions as array in ONE call.
+3. **PROCESSING**: `ctx_execute(language, code)` or `ctx_execute_file(path, language, code)` — Sandbox execution. Only stdout enters context.
+4. **WEB**: `ctx_fetch_and_index(url, source)` then `ctx_search(queries)` — Fetch, chunk, index, query. Raw HTML never enters context.
+5. **INDEX**: `ctx_index(content, source)` — Store content in FTS5 knowledge base for later search.
+
+### File Operations
+
+| Task | Tool | Notes |
+|------|------|-------|
+| Find files by pattern | `glob(pattern)` | Fast pattern matching |
+| Search file contents | `grep_search(pattern, path)` | ripgrep-based, fast |
+| List directory | `list_directory(path)` | With ignore options |
+| Read to edit | `read_file(path)` | Use when you need content for editing |
+| Read to analyze | `ctx_execute_file(path, language, code)` | Summary only, no content flood |
+| Edit file | `edit(file_path, old_string, new_string)` | Surgical changes |
+| Write file | `write_file(file_path, content)` | New files or full rewrites |
+
+### Code Analysis
+
+| Task | Tool | Notes |
+|------|------|-------|
+| Simple search | `grep_search(pattern)` | Use for keyword/regex search |
+| AST parsing | Use `ctx_execute` with tree-sitter | For structure analysis |
+| Find definitions | `grep_search("class Foo", "function bar")` | Quick location |
+
+> **Rule**: Use `grep_search` for simple patterns. Use tree-sitter via `ctx_execute` for complex AST analysis.
 
 ## Output constraints
 
