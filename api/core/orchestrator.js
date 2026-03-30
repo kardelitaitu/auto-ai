@@ -20,6 +20,13 @@ import { getSettings, getTimeoutValue } from "../utils/configLoader.js";
 import { validateTaskExecution, validatePayload } from "../utils/validator.js";
 import { TaskTimeoutError } from "./errors.js";
 import metricsCollector from "../utils/metrics.js";
+import {
+  TaskStatus,
+  createSuccessResult,
+  createFailedResult,
+  createTimeoutResult,
+  formatResult,
+} from "./task-result.js";
 
 const logger = createLogger("orchestrator.js");
 
@@ -447,8 +454,7 @@ class Orchestrator extends EventEmitter {
   async executeTask(task, page, session) {
     const startTime = Date.now();
     const taskId = `${session.id}-${task.taskName}-${startTime}`;
-    let success = false;
-    let error = null;
+    let result = null;
 
     const abortController = new AbortController();
     this.taskAbortControllers.set(taskId, abortController);
@@ -460,12 +466,14 @@ class Orchestrator extends EventEmitter {
 
     try {
       const validation = validateTaskExecution(page, task.payload);
-      if (!validation.isValid)
+      if (!validation.isValid) {
         throw new Error(`Validation failed: ${validation.errors.join(", ")}`);
+      }
 
       const taskModule = await this._importTaskModule(task.taskName);
-      if (typeof taskModule.default !== "function")
+      if (typeof taskModule.default !== "function") {
         throw new Error(`Task '${task.taskName}' missing default export`);
+      }
 
       const augmentedPayload = {
         ...task.payload,
@@ -496,25 +504,47 @@ class Orchestrator extends EventEmitter {
         });
 
         try {
-          await Promise.race([
+          // Execute task and capture result
+          const taskResult = await Promise.race([
             taskModule.default(page, augmentedPayload),
             timeoutPromise,
           ]);
-          success = true;
+
+          // If task returned a result, use it; otherwise create success result
+          if (
+            taskResult &&
+            typeof taskResult === "object" &&
+            taskResult.status
+          ) {
+            result = {
+              ...taskResult,
+              duration: (Date.now() - startTime) / 1000,
+            };
+          } else {
+            result = createSuccessResult(task.taskName, taskResult || {}, {
+              startTime,
+              duration: (Date.now() - startTime) / 1000,
+              sessionId: session.id,
+            });
+          }
+
           this._recordSessionOutcome(session.id, true);
         } finally {
           this.activeTasks.delete(taskId);
         }
       });
     } catch (err) {
-      error = err;
-      success = false;
       logger.error(
         `[Orchestrator] Task '${task.taskName}' error:`,
         err.message,
       );
 
       if (err instanceof TaskTimeoutError) {
+        result = createTimeoutResult(task.taskName, effectiveTimeout, {
+          startTime,
+          duration: (Date.now() - startTime) / 1000,
+          sessionId: session.id,
+        });
         logger.warn(
           `[Orchestrator] Task '${task.taskName}' timed out after ${effectiveTimeout}ms`,
         );
@@ -522,6 +552,12 @@ class Orchestrator extends EventEmitter {
           sessionId: session.id,
           task,
           duration: Date.now() - startTime,
+        });
+      } else {
+        result = createFailedResult(task.taskName, err, {
+          startTime,
+          duration: (Date.now() - startTime) / 1000,
+          sessionId: session.id,
         });
       }
     } finally {
@@ -531,19 +567,20 @@ class Orchestrator extends EventEmitter {
       metricsCollector.recordTaskExecution(
         task.taskName,
         Date.now() - startTime,
-        success,
+        result?.status === TaskStatus.SUCCESS,
         session.id,
-        error,
+        result?.error,
       );
 
       // Immediate task-update emission to Dashboard
       const taskUpdate = {
         taskName: task.taskName,
         duration: Date.now() - startTime,
-        success,
+        success: result?.status === TaskStatus.SUCCESS,
+        status: result?.status || "unknown",
         sessionId: session.id,
-        error: error ? error.message : null,
-        timestamp: Date.now(),
+        error: result?.error ? result.error.message : null,
+        timestamp: Date.now,
       };
 
       if (this.dashboardProcess && this.dashboardProcess.connected) {
