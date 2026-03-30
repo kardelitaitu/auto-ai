@@ -36,6 +36,9 @@ import { createExportRouter } from "./routes/export.js";
 import { setupSocketHandlers } from "./socket/handlers.js";
 import { BroadcastManager } from "./socket/broadcast.js";
 
+// Import health monitoring
+import { getHealth } from "../../../core/health-monitor.js";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logger = createLogger("server/index.js");
 const HISTORY_FILE = path.join(

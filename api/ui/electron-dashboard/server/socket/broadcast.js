@@ -7,6 +7,9 @@ import { quickHash } from "../utils/hashing.js";
 import { getSystemMetrics } from "../utils/metrics.js";
 import os from "os";
 
+// Import health monitoring
+import { getHealth } from "../../../core/health-monitor.js";
+
 const logger = createLogger("server/socket/broadcast.js");
 
 /**
@@ -198,6 +201,9 @@ export class BroadcastManager {
       this.lastCpuInfo = systemMetrics.cpuInfo;
       delete systemMetrics.cpuInfo; // Remove from output
 
+      // Get health data
+      const healthData = getHealth();
+
       const result = {
         timestamp: now,
         ...this.server.latestMetrics,
@@ -206,6 +212,7 @@ export class BroadcastManager {
           completedTasks: this.server.historyManager.getCompletedTasksCount(),
         },
         system: systemMetrics,
+        health: healthData
       };
 
       return result;
