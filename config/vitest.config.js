@@ -90,6 +90,7 @@ export default defineConfig({
                 '.vscode/',
                 '.husky/',
                 'dist/',
+                'api/coverage-isolated',
                 '.git/',
                 'backup/',
                 '**/*.test.js',

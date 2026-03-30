@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__context-mode__ctx_stats",
+      "mcp__context-mode__ctx_doctor",
+      "mcp__context-mode__ctx_execute",
+      "mcp__context-mode__ctx_execute_file",
+      "mcp__context-mode__ctx_batch_execute",
+      "mcp__context-mode__ctx_index",
+      "mcp__context-mode__ctx_search",
+      "mcp__context-mode__ctx_fetch_and_index",
+      "mcp__Memory__delete_observations",
+      "mcp__Memory__delete_relations",
+      "mcp__Memory__delete_entities",
+      "mcp__Tavily__tavily_search",
+      "mcp__Tavily__tavily_skill",
+      "mcp__Tavily__tavily_extract",
+      "Bash(pnpm run *)"
+    ]
+  },
+  "$version": 3
+}

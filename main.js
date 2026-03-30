@@ -17,6 +17,12 @@ import Orchestrator from "./api/core/orchestrator.js";
 import { ensureDockerLLM } from "./api/utils/dockerLLM.js";
 import { getSettings } from "./api/utils/configLoader.js";
 import { parseTaskArgs } from "./api/utils/task-parser.js";
+import { validateTaskPayload } from "./api/utils/task-validator.js";
+import {
+  TaskStatus,
+  summarizeResults,
+  formatResult,
+} from "./api/core/task-result.js";
 
 const logger = createLogger("main.js");
 
@@ -146,31 +152,96 @@ const logger = createLogger("main.js");
         `MultiBrowseAutomation - Initialized. Processing ${taskCount} task(s) in ${groups.length} group(s).`,
       );
 
+      // Collect all task results for summary
+      const allResults = [];
+
       for (let i = 0; i < groups.length; i++) {
         const group = groups[i];
-        // logger.info(`[Queue] Processing Group ${i + 1}/${groups.length}...`);
+        const groupResults = [];
 
+        // Validate tasks before adding
         let tasksAdded = 0;
-        let _tasksSkipped = 0;
+        let tasksSkipped = 0;
 
         for (const { name, payload } of group) {
+          // Validate task payload
+          const validation = validateTaskPayload(name, payload);
+          if (!validation.isValid) {
+            logger.warn(
+              `[Queue] Skipping task '${name}': ${validation.errors.join(", ")}`,
+            );
+            groupResults.push({
+              taskName: name,
+              status: TaskStatus.FAILED,
+              error: {
+                name: "ValidationError",
+                message: validation.errors.join(", "),
+              },
+            });
+            tasksSkipped++;
+            continue;
+          }
+
+          // Add warnings to logger
+          if (validation.warnings) {
+            validation.warnings.forEach((w) =>
+              logger.warn(`[Queue] ${name}: ${w}`),
+            );
+          }
+
           try {
             orchestrator.addTask(name, payload);
             tasksAdded++;
           } catch (error) {
             logger.warn(`[Queue] Skipping task '${name}': ${error.message}`);
-            _tasksSkipped++;
+            groupResults.push({
+              taskName: name,
+              status: TaskStatus.FAILED,
+              error: { name: "AddTaskError", message: error.message },
+            });
+            tasksSkipped++;
           }
         }
 
         if (tasksAdded === 0) {
           logger.warn(`[Queue] No valid tasks in group ${i + 1}, skipping...`);
+          allResults.push(...groupResults);
           continue;
         }
 
-        // logger.info(`[Queue] Added ${tasksAdded} task(s)${tasksSkipped > 0 ? `, skipped ${tasksSkipped}` : ''}...`);
+        logger.info(
+          `[Queue] Added ${tasksAdded} task(s)${tasksSkipped > 0 ? `, skipped ${tasksSkipped}` : ""}...`,
+        );
+
+        // Wait for tasks and collect results
         await orchestrator.waitForTasksToComplete();
-        logger.info(`[Queue] Group ${i + 1} completed successfully.`);
+
+        // Get results from orchestrator (will be populated by task events)
+        logger.info(`[Queue] Group ${i + 1} completed.`);
+      }
+
+      // Print summary
+      logger.info("\n========== TASK RESULTS ==========");
+      const summary = summarizeResults(allResults);
+
+      logger.info(`Total: ${summary.total}`);
+      logger.info(`Success: ${summary.success}`);
+      logger.info(`Failed: ${summary.failed}`);
+      logger.info(`Success Rate: ${summary.successRate}`);
+      logger.info(`Total Duration: ${summary.totalDuration.toFixed(1)}s`);
+      logger.info("");
+
+      // Print individual results
+      for (const result of allResults) {
+        logger.info(formatResult(result));
+      }
+
+      logger.info("=================================\n");
+
+      // Exit with error code if any tasks failed
+      if (summary.failed > 0 || summary.timeout > 0) {
+        logger.error("Some tasks failed or timed out");
+        process.exit(1);
       }
     }
   } catch (error) {

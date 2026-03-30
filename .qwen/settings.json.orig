@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__context-mode__ctx_stats"
+    ]
+  }
+}
