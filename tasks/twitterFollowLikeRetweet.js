@@ -21,6 +21,7 @@ import { ReferrerEngine } from "../utils/urlReferrer.js";
 import metricsCollector from "../utils/metrics.js";
 import { takeScreenshot } from "../utils/screenshot.js";
 import { applyHumanizationPatch } from "../utils/browserPatch.js";
+import { createSuccessResult, createFailedResult } from "../api/core/task-result.js";
 
 // Helper: Extract username from tweet URL
 function extractUsername(tweetUrl) {
@@ -465,6 +466,11 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
         await agent.simulateReading();
 
         logger.info(`[followLikeRetweet] Task completed.`);
+        
+        return createSuccessResult('twitterFollowLikeRetweet', {
+          targetUrl,
+          targetUsername: safeUsername
+        }, { startTime: Date.now(), sessionId: browserInfo });
       })(),
       new Promise((_, reject) =>
         setTimeout(
@@ -479,37 +485,21 @@ export default async function twitterFollowLikeRetweetTask(page, payload) {
       ),
     ]);
   } catch (error) {
-    if (
-      error.message.includes("Target page, context or browser has been closed")
-    ) {
-      logger.warn(
-        `[followLikeRetweet] Task interrupted: Browser/Page closed (likely Ctrl+C).`,
-      );
+    if (error.message.includes("Target page, context or browser has been closed")) {
+      logger.warn(`[followLikeRetweet] Task interrupted`);
+      return createFailedResult('twitterFollowLikeRetweet', error, { sessionId: browserInfo });
     } else {
-      logger.error(`[followLikeRetweet] Error: ${error.message}`, error);
+      logger.error(`[followLikeRetweet] Error: ${error.message}`);
+      return createFailedResult('twitterFollowLikeRetweet', error, { sessionId: browserInfo });
     }
   } finally {
-    const sessionStart =
-      agent && typeof agent === "object" && agent["sessionStart"]
-        ? agent["sessionStart"]
-        : null;
+    const sessionStart = agent?.sessionStart || null;
     if (sessionStart) {
-      const duration = ((Date.now() - sessionStart) / 1000 / 60).toFixed(1);
-      logger.info(`[Metrics] Task Finished. Duration: ${duration}m`);
+      logger.info(`[Metrics] Duration: ${((Date.now() - sessionStart) / 1000 / 60).toFixed(1)}m`);
     }
 
-    // Proper page closing
     try {
-      if (page && !page.isClosed()) {
-        await Promise.race([
-          page.close(),
-          new Promise((r) => setTimeout(r, 5000)),
-        ]);
-      }
-    } catch (closeError) {
-      logger.warn(
-        `[followLikeRetweet] Failed to close page: ${closeError.message}`,
-      );
-    }
+      if (page && !page.isClosed()) await page.close();
+    } catch {}
   }
 }
