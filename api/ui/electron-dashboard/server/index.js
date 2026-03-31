@@ -28,7 +28,7 @@ import {
 } from "./socket/validation.js";
 import { isAuthenticated, withAuth, requireAuth } from "./middleware/auth.js";
 import { createRateLimit } from "./middleware/rateLimit.js";
-import { createHealthRouter } from "./routes/health.js";
+import { createHealthDashboardRouter } from "./routes/health.js";
 import { createStatusRouter } from "./routes/status.js";
 import { createTasksRouter } from "./routes/tasks.js";
 import { createDashboardRouter } from "./routes/dashboard.js";
@@ -307,7 +307,7 @@ export class DashboardServer {
       );
 
       // Setup routes
-      expressApp.use(createHealthRouter({ io: this.io }));
+      expressApp.use(createHealthDashboardRouter({ io: this.io }));
       expressApp.use(createStatusRouter({ server: this }));
       expressApp.use(createTasksRouter({ server: this }));
       expressApp.use(
