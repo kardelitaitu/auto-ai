@@ -8,7 +8,7 @@ import { getSystemMetrics } from "../utils/metrics.js";
 import os from "os";
 
 // Import health monitoring
-import { getHealth } from "../../../core/health-monitor.js";
+import { getHealth } from "../../../../core/health-monitor.js";
 
 const logger = createLogger("server/socket/broadcast.js");
 

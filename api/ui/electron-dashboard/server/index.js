@@ -36,7 +36,7 @@ import { createExportRouter } from "./routes/export.js";
 import { setupSocketHandlers } from "./socket/handlers.js";
 import { BroadcastManager } from "./socket/broadcast.js";
 
-// Import health monitoring
+// Import health monitoring from api/core/
 import { getHealth } from "../../../core/health-monitor.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
