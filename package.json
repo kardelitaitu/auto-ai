@@ -115,7 +115,7 @@
         "serialize-javascript": "7.0.3",
         "tar": "7.5.11",
         "typedoc": "^0.28.17",
-        "vitest": "^3.2.4"
+        "vitest": "^4.1.0"
     },
     "packageManager": "pnpm@10.33.0",
     "pnpm": {
